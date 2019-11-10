@@ -1,0 +1,18 @@
+Server
+
+Um mit externen Programmen zu kommunizieren wird die Netzwerkschnittstelle verwendet.
+Dafür läuft im Programm einen Serverinstance, die von sich aus dann die Solvis-Threads startet.
+Pro Anlage läuft ein Thread, der u.U. weitere Threads startet.
+Der Client teilt dem Client den Namen und URL der Solvis-Anklage mit.
+
+
+Ferner gibt es folgende Einstellmöglichkeiten:
+
+-	Solvis-Mode			(Tag, Nacht, Standby, Urlaub, Timer )
+-	Temperaturen			(Tag/Nacht)
+-	Raumabhängigkeit	(0 - 90%)
+-   Heizwasserpumpe		Ein/Aus/Auto
+
+Diese Einstellungen werden auch regelmäßig geprüft, falls eine manueller Eingriff an der
+  Console erkannt wurde. Es werden dann entsprechnde Events erzeugt, so dass Readings o.ä.
+  z.B. im FHEm abgedatzed werden.

@@ -1,0 +1,53 @@
+Ständige Checks
+
+1. Synchronisation der Zählfunktion
+
+	Da die aktuelle Zählfunktion im laufer der Zeit sich von den Solvis-Werten immer
+	  weiter entfernt, sind diese in regelmäßigen Abständen zu synchronieren.
+	  Das läuft wie folgt ab:
+	    1. Warten bis der Brenner abschaltet
+	    2. Brennerstarts immer anpassen
+	    3. Wenn die Solvis-Zeitzähler zu stark von den internen abweichen, direkt korrigieren
+	    4. Untersuchen, ob der Zeitzähler (Stufe 1) sich zum vorhergehenden geändert hat (erst beim 2. Check).
+	    5.   Wenn ja, den internen Zähler entsprechend korrigieren und die Synchronisation ist abgeschlossen.
+	    5.   Wenn nein, Zyklus wiederholen
+
+
+2. Bildschirmüberwachung
+
+	Jede Minute wird untersucht, ob sich der Bildschirm verändert hat.
+	  Hierbei ist im Main-Bildschirm die Temperatur- und Zeitanzeige auszublenden.
+	  
+	  Dabei wird direkt untersucht, ob eine Systemstörung angezeigt wird.
+	  Ein entsprechen des Event wird in diesem Fall ausgelöst. Es kann auch regelmäßig
+	  wiederholt werden, damit nicht verschluckt wird. 
+	  
+	  Folgende Aktualisierungen/Überwachungen erfolgen, wenn Bildschirmänderung erkannt wurde,
+	  nachdem keinerlei Änderungen innerhalb von 5 Minuten (einstellbar) erkannt wurden:
+	  
+	    1. Solvis-Status aus dem Main-Display
+	    2. Eingestellte Temperaturen für Nacht und Tag
+	    3. Raumabhängigkeit
+	    4. Warmwasserpumpe
+
+	
+	
+3. Uhrsynchronisation
+
+	Da die Solvis-Uhr recht ungenau ist, wird sie nachsynchronisiert, wenn sie mehr als 20 s von der Echtzeit abweicht.
+	  
+	  Die Synchronisation läuft wie folgt ab:
+	  
+	    1. Warten bis Minutenwechsel, aber nächste Wechsel darf kein Stundenwechsel sein
+	    2. Einstellen der Solvis-Uhr auf die nächste Minute
+	    3. Bei Minutenwechsel OK betätigen
+	    4. Wenn bei OK etwas schief gelaufen (nicht angenommen) ab 1 wiederholen
+	    
+	  Wenn die Zeitabweichung zu groß ist, mus erst die Datums- und Zeit komplett eingestellt werden.
+	  Danach erst obigen Ablauf ausführen
+	  
+	  
+4. Brennerstörung
+
+	Da offenbar nicht alle Brennerstörungen über den XML-String erkannt werden, muss das Display auf
+	entsprechende Änderungen gecheckt weren. Erfolgt unter 2.
