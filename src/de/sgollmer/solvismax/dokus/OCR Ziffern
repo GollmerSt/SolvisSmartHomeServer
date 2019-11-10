@@ -1,0 +1,40 @@
+OCR
+
+Erkennung:
+
+1. Kontrast maximieren
+
+2. Pixel-Löcher werden in zuerst in der senkrechten und dann in der waagerechten entfernt,
+    erfolgt rekursiv bis keine Änderung, invertiert und nicht invertiert
+    
+3. Histogramme der schwarzen Pixel in senkrechter als auch waagerechter Richtung werden ermittelt
+
+4. Erkennung durch "Nachzeichnen" der gechlossenen Strukturen durch Nachzeichnen, sowohl von oben als auch unten,
+    Mittelwerte der Koordinaten der geschlossenen Struktur dabei bilden
+
+
+Prio von oben nach unten
+
+- Erkennung von 4, geschlossene Struktur obere Hälfte, waagerechtes Maximum 3/4 * Breite, nahe Mitte
+
+- Erkennung von 8, zwei geschlossene Strukturen
+
+- Erkennung von 0, geschlossene Struktur nahe Mitte
+
+- Erkennung von 6, geschlossene Struktur untere Hälfte
+
+- Erkennung von 9, geschlossene Struktur obere Hälfte
+	
+- Erkennung von 1, senkrechtes Maximum = Höhe, rechts
+
+- Erkennung von -, waagerechtes Maximum = Breite, senkrechtes Maximum < 1/2 Höhe
+
+- Erkennung von +, senkrechtes Maximum = Höhe, waagerechtes maximum = Breite
+
+- Erkennung von 2, waagerechtes Maximum unten
+
+- Erkennung von 7, waagerechtes Maximum = 1, oben
+
+- Erkennung von 5, Waagerechtes Maximum oben, 2. Maximum ausgeprägt Mitte
+
+- Erkennung von 3, Senkrechtes Maximum rechte Hälfte, 2. Maximum ebenfalls rechte Hälfte
