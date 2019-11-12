@@ -6,8 +6,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import de.sgollmer.solvismax.imagepatternrecognition.image.Coordinate;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.objects.Coordinate;
 
 public class Pattern extends MyImage {
 
@@ -49,9 +49,7 @@ public class Pattern extends MyImage {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		} else if (!(obj instanceof Pattern)) {
+		if (!(obj instanceof Pattern)) {
 			return false;
 		}
 		Pattern p = (Pattern) obj;

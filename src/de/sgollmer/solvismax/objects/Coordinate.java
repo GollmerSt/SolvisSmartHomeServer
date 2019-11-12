@@ -1,4 +1,4 @@
-package de.sgollmer.solvismax.imagepatternrecognition.image;
+package de.sgollmer.solvismax.objects;
 
 public class Coordinate {
 	private final int x ;
@@ -50,9 +50,6 @@ public class Coordinate {
 	}
 	
 	public boolean equals(  Object coord ) {
-		if ( coord == null ) {
-			return false ;
-		}
 		if (!(coord instanceof Coordinate )) {
 			return false ;
 		}

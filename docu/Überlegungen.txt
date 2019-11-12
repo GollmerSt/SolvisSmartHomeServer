@@ -1,85 +1,20 @@
 Überlegungen
 
+Suchalgorithmus, um den zu suchenden Bildschirmauszuwählen:
 
-FHEM Ergänzungen
+Die Bildschirmobjekte sind in zwei Bäumen angeordnet.
 
-Verifikation des Ortes (Scren) über Checksumme
+1.	Baum mit den Nachfolge-Bildschirmen
+2.	Baum mit den Bildschirmen, welche mit der Back-Taste zu erreichen ist
+3.	Previous-Baum
 
-Verifikation des Ortes muss über mehere Rectangles möglich sein
+Algorithmus:
 
-Reicht Ziffernerkennung über Häuffigkeitsbetrachtung der Pixel von 6 Flächen? Die Pixelzahl der Flächen wird auf Fläche mit den der höchsten Pixelzahl bezogen, dadurch größenunabhängig.
-
-
-Vorbereiten f. Tastenoptimierung. 511/511 evtl. häufiger und früher schicken (nach 250ms einstellbar)
-
-Bildschirmschoner scheint öfter zu kommen. Evtl. ausschalten, da kein Nutzen. Sonst bei unerwarteten Bild die Koordinaten 511/511? schicken
-
-Display beobachten und bei manueller Änderung eine definierbare Zeit keine Änderungen durch FHEM. Zeit über Attribut wählbar.
-Änderungen werden gepuffert, daher müssen sämtliche Kommandos im NonBlockingMode ausgeführt werden. Pufferung über Attribut abschaltbar.
-
-Es muss auch überwacht werden, ob eine Störungsmeldung vorliegt.
-
-Eine Set-Tabelle definieren, aus denen der Set-Name, das Auslese-, das Inkrement-, das Dekrement-Makro, der Min-, Max-Wert
-   und die Schrittweite hervorgeht.
-
-Vor jeder Abfrage Bildschirmimage speichern und am Ende wieder darauf zurückstellen, wenn bekannt. Dies soll durch Attribut ausschaltbar sein.
-   Attrbutname: RestoreView
-
-Befehlsliste kann Makros enthalten (rekursiv)
-
-Punkte der Sequenz kann mit Verifikation markiert sein. Dann wird über einen ausgewählten Bildschirmbereich ein Hash gebildet
-   und intern verglichen. Die Verifikation ist mit einem Namen versehen, der eindeutig und den Screen beschreibt z.B. Day-Temperature,
-   HotwaterOverview, Hotwatertemperature
-
-Auch müssen besondere Symbole erkannt werden, wie Sonne, Mond, Aus, Urlaub, Uhr, WW-Pumpe an, aus, auto. Ob hier ein Learn möglich ist,
-   muss untersucht werden, sollte theoretisch möglich sein.
+   1. Die Previous-Bäume bis zum Root werden (virtuell) durchlaufen und eine Liste erstellt  
+   2. Es wird der aktuelle Bildschirm ermittelt und gemerkt
+   3. Wenn nicht gefunden, wird einmal Back getippt und wieder zu 2, sonst zu 5
+   4. Es wird der aktuelle Bildschirm ermittelt
+   5. Es wird ermittelt, ob der aktuelle Bildschirm in der Liste ist
+   6. Wenn ja, wird mittels dieser Liste der nächste Bildschirm angefahren und nach 4 gegangen
+   7. Wenn nein, wird ein Schritt zurück gegangen und nach 4 gegangen (falls Back ignoriert wird)
    
-Bei neuem MaxSolvis muss der Befehl set learn ausgeführt werden, bei dem die einzelnen Sequenzen im Slow-Mode angefahren werden. U. U. wird
-   er auch automatisiert ausgeführt, wenn immer wieder die Verifikationen fehlerhaft sind.
-
-ConditionalSkip: es wird der letzte Verifikationspunkt-Hit gesucht, von den Einträgen welche kontinuierlich als ConditionalSkip markiert waren.
-
-Geht eine Verifikation schief und bei allen vorherigen Elementen war ConditionalSkip gesetzt, kann die komplette Sequenz wiederholt werden,
-   nun aber langsamer. Wenn auch das fehlschlägt, könnte Learn ausgeführt werden. War in der Sequenz bei einem Element das ConditionalSkip
-   nicht gesetzt, wird die Sequenz abgebrochen und dem aufrufenden Programm die Reaktion darauf überlassen.
-
-Password-Container
-
-Attribute Anlagentyp
-
-
-$init_done muss auf 1 abgefragt werden!!!!!
-Set password, damit password unsichtbar, evtl. auch für user. Verstecken in den .readings.
-Set mittels hash (%) auf Parameternamen prüfen. Mit join ausgeben.
-Hinter POD-Marker eine Leerzeile
-HTML nur LF nicht CR!!!
-State wird nach Fehler nicht zurückgesetzt
-Gleitende Average-Methode
-Arbeitsleuchte Küche
-Küche Dose über Schrank?
-Büro Schreibtischlampe 1 LED
-Diele 100W Lampe 1 LED
-
-
-OCR
-
-Bereich Auswahl
-
-Felderstring mit den zu ermittelnden Ziffern und den zu ignorieren den Zeichen.
-  Beispiel: -0000#X, wobei 0 eine Ziffer sein kann, welche aber auch unterdrückt sein kann in # die muss-Zahl.
-                     X ist ein zu ignorieren des Feld, - wäre optionales Vorzeichen, + Muss-Vorzeichen
-
-Der Bildausschnitt wird auf die Anzahl der Felder untersucht, dabei die Größe und Position jedes Zeichens ermittelt.
-Dann wird anhand der obigen Maske die zu analysierenden Felder ermittelt
-Jedes Feld wird nun auf die charakteristischen Eigenschaften analysiert, genauere Analyse
-  nur in der horizontalen und den Rändern:
-    0: Tangiert an allen Seiten mittig und identisch
-    1: Senkrechter Strich rechts, volle Höhe
-    2: waagerechter Strich unten, aber u.U. nicht ganze Breite aber >50%
-    3: wie 8 aber freier Bereich links in der Mitte
-    4: Waagerechter Strich aber nicht an den Rändern, bis zum Zeichenrand
-    5: waagerechter Strich oben, aber nicht ganze Breite aber > 50%, tangiert rechts unten
-    6: Tangiert allen Seiten aber rechts weiter unten als links
-    7: waagerechter Strich oben, tangentiert nicht rechts unten
-    8: Tangiert je 2mal rechts und links, je 1mal oben und unten
-    9: tangiert an allen Seiten aber links weiter oben als rechts

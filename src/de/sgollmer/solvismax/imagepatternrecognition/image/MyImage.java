@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.sgollmer.solvismax.objects.Coordinate;
+
 public class MyImage {
 
 	public static final int BLACK = 0;

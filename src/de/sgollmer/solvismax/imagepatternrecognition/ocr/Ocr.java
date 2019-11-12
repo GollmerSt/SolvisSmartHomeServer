@@ -9,9 +9,9 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
-import de.sgollmer.solvismax.imagepatternrecognition.image.Coordinate;
 import de.sgollmer.solvismax.imagepatternrecognition.image.Maxima;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.objects.Coordinate;
 
 public class Ocr extends MyImage {
 
@@ -129,9 +129,7 @@ public class Ocr extends MyImage {
 		}
 
 		public boolean equals(Object obj) {
-			if (obj == null) {
-				return false;
-			} else if (!(obj instanceof BlackWhite)) {
+			if (!(obj instanceof BlackWhite)) {
 				return false;
 			} else {
 				BlackWhite bw = (BlackWhite) obj;

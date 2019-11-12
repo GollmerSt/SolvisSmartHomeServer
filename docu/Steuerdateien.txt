@@ -34,3 +34,10 @@ Die Steuerdatei enthält auch die Steuerelemente. Ein Steuerelementes enthält fol
 	7. Wrap around?  (true/false)
 	8. Min
 	9. Max
+	
+
+	
+Die Dateien werden Event-basiert eingelesen. Da die Grafik in Bas64-Format eingelesen werden, werden
+  schon beim Einlesen die entsprechende Objekt instanziert.
+  
+Nur für die Grafikdaten ist ein Schreiben notwendig   

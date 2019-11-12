@@ -9,8 +9,8 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
-import de.sgollmer.solvismax.imagepatternrecognition.image.Coordinate;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.objects.Coordinate;
 
 public class OcrField extends MyImage {
 	private Collection<Ocr> parts = null;

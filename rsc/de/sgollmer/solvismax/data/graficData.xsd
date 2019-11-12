@@ -1,21 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/graficData" xmlns:tns="http://www.example.org/graficData" elementFormDefault="qualified">
 
-    <complexType name="Grafic">
-    	<sequence>
+    <complexType name="ScreenGrafic">
+        <annotation>
+        	<documentation>Zu vergleichende Grafik eines Bildschirmbereichs</documentation>
+        </annotation>
+        <sequence>
     		<element name="data" type="string">
     			<annotation>
     				<documentation>Daten der Grafik in Base64-Darstellung</documentation>
     			</annotation></element>
     	</sequence>
-    	<attribute name="id" type="string"></attribute>
+    	<attribute name="id" type="string">
+    		<annotation>
+    			<documentation>Eindeutige Id über alle Grafiken, wird aus control referenziert</documentation>
+    		</annotation></attribute>
     </complexType>
 
-    <complexType name="Grafics">
-    	<sequence>
-    		<element name="Grafic" type="tns:Grafic" maxOccurs="unbounded" minOccurs="0"></element>
+    <complexType name="ScreenGrafics">
+        <annotation>
+        	<documentation>Menge aller Grafiken</documentation>
+        </annotation>
+        <sequence>
+    		<element name="Grafic" type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0"></element>
     	</sequence>
     </complexType>
 
-    <element name="SolvisGrafics" type="tns:Grafics"></element>
+
+    <complexType name="SolvisGrafics">
+        <annotation>
+        	<documentation>Root</documentation>
+        </annotation>
+        <sequence>
+    		<element name="ScreenGrafics" type="tns:ScreenGrafics"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="SolvisGrafics" type="tns:SolvisGrafics"></element>
 </schema>
