@@ -29,6 +29,7 @@ Ständige Checks
 	    2. Eingestellte Temperaturen für Nacht und Tag
 	    3. Raumabhängigkeit
 	    4. Warmwasserpumpe
+	    5. Warmwassertemperatur
 
 	
 	

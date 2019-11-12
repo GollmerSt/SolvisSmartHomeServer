@@ -18,12 +18,14 @@ public class MyImage {
 	private List<Integer> histogramY = null;
 	
 	private boolean blackWhite ;
+	private boolean autoInvert ;
 
 	public MyImage(BufferedImage image) {
 		this.image = image;
 		this.min = new Coordinate(0, 0);
 		this.maxRel = new Coordinate(image.getWidth(), image.getHeight());
 		this.blackWhite = false ;
+		this.autoInvert = false ;
 	}
 
 	public MyImage(MyImage image) {
@@ -37,22 +39,25 @@ public class MyImage {
 			this.histogramY = new ArrayList<>(image.histogramY) ;
 		}
 		this.blackWhite = image.blackWhite ;
+		this.autoInvert = image.autoInvert ;
+
 	}
 	
-	public MyImage(MyImage image, Coordinate upperLeft, Coordinate lowerRight) {
+	public MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight ) {
 		this( image ) ;
-		if ( ! this.isIn(upperLeft) || ! this.isIn(lowerRight)) {
+		if ( ! this.isIn(topLeft) || ! this.isIn(bottomRight)) {
 			throw new ErrorNotInRange("UpperLeft or lowerRigh not within the image") ;
 		}
-		if ( lowerRight.getX() < upperLeft.getX() || lowerRight.getY() < upperLeft.getY() ) {
+		if ( bottomRight.getX() < topLeft.getX() || bottomRight.getY() < topLeft.getY() ) {
 			throw new ErrorNotInRange("Upper left is not upper left") ;
 		}
-		this.maxRel = lowerRight.diff(upperLeft).increment() ;
-		this.min = this.min.add(upperLeft) ;
+		this.maxRel = bottomRight.diff(topLeft).increment() ;
+		this.min = this.min.add(topLeft) ;
 		this.blackWhite = image.blackWhite ;
 		if ( this.blackWhite ) {
 			this.createHistograms();
 		}
+		this.autoInvert = false ;
 	}
 
 	public int getRGB(Coordinate coord) {
@@ -81,9 +86,9 @@ public class MyImage {
 		}
 	}
 
-	public boolean convertToBlackWhite() {
+	public boolean convertToBlackWhite( boolean autoInvert ) {
 		
-		if ( this.blackWhite ) {
+		if ( this.blackWhite && ( autoInvert == this.autoInvert || ! autoInvert ) ) {
 			return false ;
 		}
 		
@@ -94,7 +99,7 @@ public class MyImage {
 		int cntHigherValue;
 		int cntLowerValue;
 
-		if (imageData.getTreshold() < imageData.getAverageBrightness()) {
+		if (imageData.getTreshold() < imageData.getAverageBrightness() || !autoInvert ) {
 			toRgbHigherValue = WHITE;
 			toRgbLowervalue = BLACK;
 			cntHigherValue = 0;

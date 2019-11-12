@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/control" xmlns:tns="http://www.example.org/control" elementFormDefault="qualified">
+
+    
+
+    <complexType name="Screen">
+    	<sequence>
+    		<element name="TouchPoint" type="tns:Coordinate"
+    			maxOccurs="1" minOccurs="1">
+    		</element>
+    		<sequence>
+    			<element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="1" minOccurs="0"></element>
+                <element ref="tns:ScreenGrafic" maxOccurs="1" minOccurs="0"></element>
+    		</sequence>
+
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    	<attribute name="previous" type="string">
+    		<annotation>
+    			<documentation>Vorgänger-Bildschirm
+</documentation>
+    		</annotation></attribute>
+    	<attribute name="back" type="string">
+    		<annotation>
+    			<documentation>Bildschirm nach Druck auf die Back-Taste</documentation>
+    		</annotation></attribute>
+    	<attribute name="pushDurationMs" type="int"></attribute>
+    </complexType>
+
+    <complexType name="ScreenId">
+    	<sequence>
+    		<element name="Ocr" type="tns:ScreenOcr" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0"></element>
+    		<element name="ScreenGraficRef" type="tns:ScreenGraficRef" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <complexType name="ScreenGrafic">
+    	<sequence>
+    		<element name="Field" type="tns:Field"></element>
+    	</sequence>
+        <attribute name="id" type="string">
+        	<annotation>
+        		<documentation>Die id muss über alle ScreenGrafic-Elemente eindeutig sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten
+</documentation>
+        	</annotation></attribute>
+        <attribute name="exact" type="boolean"></attribute>
+    </complexType>
+
+    <complexType name="ScreenOcr">
+    	<sequence>
+    		<element name="Field" type="tns:Field"></element>
+    	</sequence>
+    	<attribute name="value" type="string"></attribute>
+    </complexType>
+
+    <complexType name="Coordinate">
+    	<sequence></sequence>
+        <attribute name="X" type="int"></attribute>
+        <attribute name="Y" type="int"></attribute>
+    </complexType>
+
+    <complexType name="Field">
+    	<sequence>
+    		<element name="TopLeft" type="tns:Coordinate"></element>
+    		<element name="BottomRight" type="tns:Coordinate"></element>
+    	</sequence>
+    </complexType>
+
+
+
+
+    <complexType name="Screens">
+    	<sequence>
+    		<element name="Screen" type="tns:Screen" maxOccurs="1" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+
+    <complexType name="Controls">
+    	<sequence>
+    		<element name="Control" type="tns:Control" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="Control">
+    	<sequence>
+    		<choice>
+    			<element name="TypeValue" type="tns:ControlTypeValue"></element>
+    		</choice>
+    		<choice>
+    			<element name="TypeMode" type="tns:ControlTypeMode"></element>
+    		</choice>
+    		<element name="Current" type="tns:Field"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    	<attribute name="screenName" type="string"></attribute>
+    </complexType>
+
+    <complexType name="ControlTypeMode">
+    	<sequence>
+    		<element name="Mode" type="tns:Mode" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="ControlTypeValue">
+    	<sequence>
+    		<element name="TouchUpper" type="tns:Coordinate" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="TouchLower" type="tns:Coordinate" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="increment" type="int"></attribute>
+    	<attribute name="format" type="string"></attribute>
+    	<attribute name="least" type="int"></attribute>
+    	<attribute name="most" type="int"></attribute>
+    	<attribute name="wrapAround" type="boolean"></attribute>
+    </complexType>
+
+    <complexType name="Mode">
+    	<sequence>
+    		<element name="Touch" type="tns:Coordinate"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+
+
+
+    <complexType name="Solvis">
+    	<sequence>
+    		<element name="Screens" type="tns:Screens"></element>
+    		<element name="Controls" type="tns:Controls"></element>
+    		<element name="AllScreenGrafics" type="tns:AllScreenGrafics"></element>
+    	</sequence>
+    	<attribute name="homeId" type="string"></attribute>
+    </complexType>
+
+    <element name="Solvis" type="tns:Solvis"></element>
+
+
+    <complexType name="AllScreenGrafics">
+    	<sequence>
+    		<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+
+    <complexType name="ScreenGraficRef">
+    	<sequence>
+    		<element name="refId" type="string"></element>
+    	</sequence>
+    </complexType>
+</schema>

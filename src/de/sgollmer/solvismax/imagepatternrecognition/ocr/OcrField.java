@@ -22,7 +22,7 @@ public class OcrField extends MyImage {
 
 	private void split() {
 
-		this.convertToBlackWhite();
+		this.convertToBlackWhite(true);
 
 		this.shrink();
 
@@ -65,8 +65,7 @@ public class OcrField extends MyImage {
 
 	public static void main(String[] args) {
 
-		File parent = new File(
-				"E:\\Eigene Dateien\\Programmierung\\Java\\Workspace_Stefan\\SolvisMax\\src\\de\\sgollmer\\solvismax\\dokus\\images");
+		File parent = new File( "src\\de\\sgollmer\\solvismax\\dokus\\images");
 
 		File file = new File(parent, "bildschirmschoner.png");
 
@@ -79,7 +78,7 @@ public class OcrField extends MyImage {
 		}
 
 		MyImage myImage = new MyImage(bufferedImage);
-		myImage.convertToBlackWhite();
+		myImage.convertToBlackWhite(true);
 		myImage.shrink();
 		OcrField field = new OcrField(myImage, new Coordinate(73, 0), new Coordinate(139, 20));
 
@@ -101,13 +100,16 @@ public class OcrField extends MyImage {
 		}
 
 		myImage = new MyImage(bufferedImage);
-		
-		field = new OcrField(myImage, new Coordinate(82,10), new Coordinate(155, 47));
-		
-		String temperature = field.getString() ;
 
-		
-		field = new OcrField(myImage, new Coordinate(190,61), new Coordinate(237,73));
+		field = new OcrField(myImage, new Coordinate(82, 10), new Coordinate(155, 47));
+
+		String temperature = field.getString();
+
+		field = new OcrField(myImage, new Coordinate(85, 50), new Coordinate(103, 73));
+
+		String adjust = field.getString();
+
+		field = new OcrField(myImage, new Coordinate(190, 61), new Coordinate(237, 73));
 
 		uhrzeit = field.getString();
 
@@ -115,7 +117,29 @@ public class OcrField extends MyImage {
 
 		date = field.getString();
 
-		System.out.println("Time is: " + uhrzeit + ", date is " + date + ", temperature is " + temperature );
+		System.out.println("Time is: " + uhrzeit + ", date is " + date + ", temperature is " + temperature
+				+ ", adjustment is " + adjust);
+
+		file = new File(parent, "raumeinfluss.png");
+
+		try {
+			bufferedImage = ImageIO.read(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		myImage = new MyImage(bufferedImage);
+
+		field = new OcrField(myImage, new Coordinate(162, 0), new Coordinate(200, 14));
+
+		String screenId = field.getString();
+
+		field = new OcrField(myImage, new Coordinate(150, 75), new Coordinate(190, 88));
+
+		String raumeinfluss = field.getString();
+
+		System.out.println("ScreenId is: " + screenId + ", raumeinfluss is " + raumeinfluss);
 
 	}
 

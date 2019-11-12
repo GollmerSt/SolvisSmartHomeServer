@@ -1,0 +1,36 @@
+Steuerdateien
+
+Die Steuerung erfolgt über folgende Steuerdateien:
+
+1.	Steuerdatei mit den festen Werten
+2.	Datendatei, in die die gelernten Symbole geschrieben werden
+
+
+Zu 1:
+
+Die Steuerdatei enthält die für jede bekannten Bildschirm folgende Daten:
+
+	1. Name
+	2. Ein oder mehrere Id-Einträge.
+	     Dabei kann ein ID-Eintrag nur einen Grafik mit entsprechenden Koordinaten sein
+	     oder Koordinaten eines OCR-Bereichs mit zu erkennenden Werten. 
+	     Wenn die Grafik in meheren Bildschirmen identisch ist und sich der Bildschirm nur im OCR
+	     unterscheidet, kann für die Grafik ein eindeutiger Name vergeben werden.
+	     Der ID-Eintrag kann auch länderspezifisch sein. Der Default-Knoten hat den Namen Standard
+	
+	3. Name des Vorgängerbildschirms
+	4. Koordinaten des Buttons des Vorgängerbildschirms um auf den aktuellen zu gelangen
+
+
+	
+Die Steuerdatei enthält auch die Steuerelemente. Ein Steuerelementes enthält folgende Daten:
+
+	1. Funktionsname (z.B. Raumeinfluss)
+	2. Bildschirmname des Steuerelements
+	3. Koordinaten des Wertes
+	4. Koordinaten für +
+	5. Koordinaten für -
+	6. Delta
+	7. Wrap around?  (true/false)
+	8. Min
+	9. Max

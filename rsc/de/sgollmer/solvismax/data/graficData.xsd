@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/graficData" xmlns:tns="http://www.example.org/graficData" elementFormDefault="qualified">
+
+    <complexType name="Grafic">
+    	<sequence>
+    		<element name="data" type="string">
+    			<annotation>
+    				<documentation>Daten der Grafik in Base64-Darstellung</documentation>
+    			</annotation></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <complexType name="Grafics">
+    	<sequence>
+    		<element name="Grafic" type="tns:Grafic" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="SolvisGrafics" type="tns:Grafics"></element>
+</schema>
