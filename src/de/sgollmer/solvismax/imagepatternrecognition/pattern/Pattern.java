@@ -76,7 +76,7 @@ public class Pattern extends MyImage {
 
 	public static void main(String[] args) {
 		
-		File parent = new File( "src\\de\\sgollmer\\solvismax\\dokus\\images");
+		File parent = new File( "testFiles\\images");
 
 		File file = new File(parent, "Home.png");
 

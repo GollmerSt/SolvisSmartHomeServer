@@ -371,7 +371,7 @@ public class Ocr extends MyImage {
 
 	public static void main(String[] args) {
 
-		File parent = new File( "src\\de\\sgollmer\\solvismax\\dokus\\images");
+		File parent = new File( "testFiles\\images");
 
 		Collection<String> names = Arrays.asList("0.png", "1.png", "1 small.png", "2.png", "3.png", "4.png",
 				"4 black.png", "4 small.png", "5.png", "6.png", "7.png", "8.png", "9.png", "9 grey small.png",
@@ -387,6 +387,7 @@ public class Ocr extends MyImage {
 				image = ImageIO.read(file);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				System.err.println( "File: " + file.getName() ) ;
 				e.printStackTrace();
 			}
 

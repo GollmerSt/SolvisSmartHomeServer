@@ -65,7 +65,7 @@ public class OcrField extends MyImage {
 
 	public static void main(String[] args) {
 
-		File parent = new File( "src\\de\\sgollmer\\solvismax\\dokus\\images");
+		File parent = new File( "testFiles\\images");
 
 		File file = new File(parent, "bildschirmschoner.png");
 
