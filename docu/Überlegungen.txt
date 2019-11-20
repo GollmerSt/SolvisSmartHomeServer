@@ -2,19 +2,40 @@
 
 Suchalgorithmus, um den zu suchenden Bildschirmauszuwählen:
 
-Die Bildschirmobjekte sind in zwei Bäumen angeordnet.
-
-1.	Baum mit den Nachfolge-Bildschirmen
-2.	Baum mit den Bildschirmen, welche mit der Back-Taste zu erreichen ist
-3.	Previous-Baum
-
-Algorithmus:
-
-   1. Die Previous-Bäume bis zum Root werden (virtuell) durchlaufen und eine Liste erstellt  
-   2. Es wird der aktuelle Bildschirm ermittelt und gemerkt
-   3. Wenn nicht gefunden, wird einmal Back getippt und wieder zu 2, sonst zu 5
-   4. Es wird der aktuelle Bildschirm ermittelt
-   5. Es wird ermittelt, ob der aktuelle Bildschirm in der Liste ist
-   6. Wenn ja, wird mittels dieser Liste der nächste Bildschirm angefahren und nach 4 gegangen
-   7. Wenn nein, wird ein Schritt zurück gegangen und nach 4 gegangen (falls Back ignoriert wird)
+	Die Bildschirmobjekte sind in zwei Bäumen angeordnet.
+	
+	1.	Baum mit den Nachfolge-Bildschirmen
+	2.	Baum mit den Bildschirmen, welche mit der Back-Taste zu erreichen ist
+	3.	Previous-Baum
+	
+	Algorithmus:
+	
+	   1. Die Previous-Bäume bis zum Root werden (virtuell) durchlaufen und eine Liste erstellt  
+	   2. Es wird der aktuelle Bildschirm ermittelt und gemerkt
+	   3. Wenn nicht gefunden, wird einmal Back getippt und wieder zu 2, sonst zu 5
+	   4. Es wird der aktuelle Bildschirm ermittelt
+	   5. Es wird ermittelt, ob der aktuelle Bildschirm in der Liste ist
+	   6. Wenn ja, wird mittels dieser Liste der nächste Bildschirm angefahren und nach 4 gegangen
+	   7. Wenn nein, wird ein Schritt zurück gegangen und nach 4 gegangen (falls Back ignoriert wird)
    
+
+   
+Setzen und Auslesen von Anlagenparametern:
+
+	Die Befehle zum Setzen und Auslesen der Befehle werden gepuffert.
+	
+	Algorithmus wenn ein Befehl eintrifft:
+	
+		1.  Ist die Queue leer, wird der aktuelle Bildschirm gemerkt
+		2.	Der Befehl wird in die Queue abgelegt
+		
+
+Queue für die Befehle
+
+	Algorithmus:
+	
+		1. Ist die Queue leer?
+		2. Wenn ja, wird der Bilschirm auf den gemerkten Bildschirm gestellt und die Queue geht in den Idle-Zustand.
+		3. Wenn nein, wird der Befehl abgearbeitet
+		4. zurück zu 1 
+		

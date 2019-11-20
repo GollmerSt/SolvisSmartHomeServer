@@ -1,368 +1,551 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/control" xmlns:tns="http://www.example.org/control" elementFormDefault="qualified">
-
-    
-
-    <complexType name="Screen">
-        <annotation>
-        	<documentation>Bildschirm-Definition</documentation>
-        </annotation>
-        <sequence>
-        	<element name="TouchPoint" type="tns:TouchPoint"
-        		maxOccurs="unbounded" minOccurs="1">
-        		<annotation>
-        			<documentation>
-        				Bildschirmpunkt des Vorgänger-Bildschirms
-        				(previousId), der gedrückt werden muss, um auf
-        				den vorliegenden zu gelangen. Können auch
-        				mehrere sein (z.B. Main-Bildschirm Auswahl des
-        				Heizkreises)
-        			</documentation>
-        		</annotation>
-        	</element>
-        	<element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="1"
-        		minOccurs="0">
-        		<annotation>
-        			<documentation>
-        				Wenn sich der Bildschirm aus erkennbaren Zeichen
-        				bestimmt werden kann
-        			</documentation>
-        		</annotation>
-        	</element>
-
-        	<element name="ScreenGraficRef"
-        		type="tns:ScreenGraficRef" maxOccurs="1" minOccurs="0">
-        		<annotation>
-        			<documentation>
-        				Wenn sich der Bildschirm aus einem
-        				Bildschirmbereich bestimmt werden kann, die
-        				Definition erfolgt über eine Refenzierung
-        			</documentation>
-        		</annotation>
-        	</element>
-        	<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="1" minOccurs="0">
-        		<annotation>
-        			<documentation>
-        				Wenn sich der Bildschirm aus einem
-        				Bildschirmbereich bestimmt werden kann
-        			</documentation>
-        		</annotation>
-        	</element>
-        </sequence>
-        <attribute name="id" type="string"></attribute>
-    	<attribute name="previousId" type="string">
-    		<annotation>
-    			<documentation>Vorgänger-Bildschirm
-</documentation>
-    		</annotation></attribute>
-    	<attribute name="backId" type="string">
-    		<annotation>
-    			<documentation>Bildschirm nach Druck auf die Back-Taste</documentation>
-    		</annotation></attribute>
-    </complexType>
-
-
-    <complexType name="ScreenGrafic">
-        <annotation>
-        	<documentation>Daten des zu vergleichende Bildschirmbereich</documentation>
-        </annotation>
-        <sequence>
-    		<element name="Field" type="tns:Field">
-    			<annotation>
-    				<documentation>Zu vergleichende Bildschirmbereich</documentation>
-    			</annotation></element>
-    	</sequence>
-        <attribute name="id" type="string">
-        	<annotation>
-        		<documentation>Die id muss über alle ScreenGrafic-Elemente eindeutig sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten
-</documentation>
-        	</annotation></attribute>
-        <attribute name="exact" type="boolean">
-        	<annotation>
-        		<documentation>true:	Wenn auch Grauwerte verglichen werden sollen
-false:	Schwarz-Weiß reicht aus</documentation>
-        	</annotation></attribute>
-    </complexType>
-
-    <complexType name="ScreenOcr">
-        <annotation>
-        	<documentation>Die zu erkennenden Zeichen, über die der Bildschirm bestimmt werden kann</documentation>
-        </annotation>
-        <sequence>
-            <element name="Field" type="tns:Field">
-    			<annotation>
-    				<documentation>Bereich des Bildschirms mit den zeichen</documentation>
-    			</annotation></element>
-        </sequence>
-    	<attribute name="value" type="string">
-    		<annotation>
-    			<documentation>Soll-Zeichen-String
-</documentation>
-    		</annotation></attribute>
-    </complexType>
-
-    <complexType name="Coordinate">
-        <annotation>
-        	<documentation>Koordinate eines Punktes auf dem Bildschirm. Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links nach rechts, die Y-Koordinate von oben nach unten</documentation>
-        </annotation>
-        <sequence></sequence>
-        <attribute name="X" type="int"></attribute>
-        <attribute name="Y" type="int"></attribute>
-    </complexType>
-
-    <complexType name="Field">
-        <annotation>
-        	<documentation>Bereich auf dem Bildschirm</documentation>
-        </annotation>
-        <sequence>
-    		<element name="TopLeft" type="tns:Coordinate">
-    			<annotation>
-    				<documentation>Koordinate oben links</documentation>
-    			</annotation></element>
-    		<element name="BottomRight" type="tns:Coordinate">
-    			<annotation>
-    				<documentation>Koordinate unten rechts</documentation>
-    			</annotation></element>
-    	</sequence>
-    </complexType>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/control"
+	xmlns:tns="http://www.example.org/control" elementFormDefault="qualified">
 
 
 
+	<complexType name="Screen">
+		<annotation>
+			<documentation>Bildschirm-Definition</documentation>
+		</annotation>
+		<sequence>
+			<element name="TouchPoint" type="tns:TouchPoint" maxOccurs="unbounded"
+				minOccurs="1">
+				<annotation>
+					<documentation>
+						Bildschirmpunkt des Vorgänger-Bildschirms
+						(previousId), der gedrückt werden muss, um auf
+						den vorliegenden zu gelangen. Können auch
+						mehrere sein (z.B. Main-Bildschirm Auswahl des
+						Heizkreises)
+					</documentation>
+				</annotation>
+			</element>
+			<element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="1"
+				minOccurs="0">
+				<annotation>
+					<documentation>
+						Wenn sich der Bildschirm aus erkennbaren Zeichen
+						bestimmt werden kann
+					</documentation>
+				</annotation>
+			</element>
 
-    <complexType name="Screens">
-        <annotation>
-        	<documentation>Alle Bildschirme</documentation>
-        </annotation>
-        <sequence>
-    		<element name="Screen" type="tns:Screen" maxOccurs="1" minOccurs="0"></element>
-    	</sequence>
-    </complexType>
+			<element name="ScreenGraficRef" type="tns:ScreenGraficRef"
+				maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>
+						Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann, die
+						Definition erfolgt über eine Refenzierung
+					</documentation>
+				</annotation>
+			</element>
+			<element name="ScreenGrafic" type="tns:ScreenGrafic"
+				maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>
+						Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="id" type="string"></attribute>
+		<attribute name="previousId" type="string">
+			<annotation>
+				<documentation>Vorgänger-Bildschirm
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="backId" type="string">
+			<annotation>
+				<documentation>Bildschirm nach Druck auf die Back-Taste
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
 
 
-    <complexType name="Controls">
-        <annotation>
-        	<documentation>Menge aller einzustellenden Betriebsparameter</documentation>
-        </annotation>
-        <sequence>
-    		<element name="Control" type="tns:Control" minOccurs="0" maxOccurs="unbounded">
-    			<annotation>
-    				<documentation>Alle einzustellenden Anlagenparameter</documentation>
-    			</annotation></element>
-    	</sequence>
-    </complexType>
+	<complexType name="ScreenGrafic">
+		<annotation>
+			<documentation>Daten des zu vergleichende Bildschirmbereich
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="Field" type="tns:Rectangle">
+				<annotation>
+					<documentation>Zu vergleichende Bildschirmbereich</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="id" type="string">
+			<annotation>
+				<documentation>Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="exact" type="boolean">
+			<annotation>
+				<documentation>true: Wenn auch Grauwerte verglichen werden sollen
+					false: Schwarz-Weiß reicht aus
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
 
-    <complexType name="Control">
-    	<annotation>
-    		<documentation>
-    			Einstell-Parameter der Anlage (Tages-Temperatur,
-    			Raumeinfluss, Betriebsart)
-    		</documentation>
-    	</annotation>
-    	<sequence>
-    		<element name="Current" type="tns:Field">
-    			<annotation>
-    				<documentation>
-    					Feld mit aktuellem Wert
-    				</documentation>
-    			</annotation>
-    		</element>
-    		<choice>
-    			<element name="TypeValue" type="tns:ControlTypeValue">
-    				<annotation>
-    					<documentation>
-    						Wenn ein einzustellender Wert (z. B.
-    						Tages-Temperatur, Raumeinfluss)
-    					</documentation>
-    				</annotation>
-    			</element>
-    			<element name="TypeRad" type="tns:ControlTypeRead"></element>
-    			<element name="TypeMode" type="tns:ControlTypeMode">
-    				<annotation>
-    					<documentation>
-    						Einzustellender Modus (z.B. Betriebsart)
-    					</documentation>
-    				</annotation>
-    			</element>
-    		</choice>
-    	</sequence>
-    	<attribute name="id" type="string"></attribute>
-    	<attribute name="screenId" type="string">
-    		<annotation>
-    			<documentation>
-    				Name des Bildschirms, über das der Anlagenparameter
-    				ausgelesen/eingestellt werden kann
-    			</documentation>
-    		</annotation>
-    	</attribute>
-    </complexType>
+	<complexType name="ScreenOcr">
+		<annotation>
+			<documentation>Die zu erkennenden Zeichen, über die der Bildschirm
+				bestimmt werden kann</documentation>
+		</annotation>
+		<sequence>
+			<element name="Field" type="tns:Rectangle">
+				<annotation>
+					<documentation>Bereich des Bildschirms mit den zeichen
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="value" type="string">
+			<annotation>
+				<documentation>Soll-Zeichen-String
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
 
-    <complexType name="ControlTypeMode">
-        <annotation>
-        	<documentation>Wenn eine Betriebsart (z.B. Tag/Nacht/Standby)</documentation>
-        </annotation>
-        <sequence>
-    		<element name="Mode" type="tns:Mode" maxOccurs="unbounded" minOccurs="0"></element>
-    	</sequence>
-    </complexType>
-    
-    <complexType name="ControlTypeValue">
-        <annotation>
-        	<documentation>Wenn ein Wert (z.B. Raumeinfluss oder Tagestemperatur )</documentation>
-        </annotation>
-        <sequence>
-    		<element name="TouchUpper" type="tns:TouchPoint" maxOccurs="1"
-    			minOccurs="1">
-                <annotation>
-                	<documentation>Ist zu drücken, wenn der Wert erhöht werden soll</documentation>
-                </annotation>
-    		</element>
-    		<element name="TouchLower" type="tns:TouchPoint" maxOccurs="1"
-    			minOccurs="1">
-                <annotation>
-                	<documentation>Ist zu drücken, wenn der Wert erniedrigt werden soll</documentation>
-                </annotation>
-    		</element>
-    	</sequence>
-    	<attribute name="increment" type="int">
-    		<annotation>
-    			<documentation>Wert um den der Parameter bei einem Bildschirmdruck erhöht/erniedigt wird</documentation>
-    		</annotation></attribute>
-    	<attribute name="format" type="string">
-    		<annotation>
-    			<documentation>Format des Wertes auf dem Bildschirm
+	<complexType name="Coordinate">
+		<annotation>
+			<documentation>Koordinate eines Punktes auf dem Bildschirm.
+				Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft
+				von links nach rechts, die Y-Koordinate von oben nach unten
+			</documentation>
+		</annotation>
+		<sequence></sequence>
+		<attribute name="X" type="int"></attribute>
+		<attribute name="Y" type="int"></attribute>
+	</complexType>
 
-0:	Auszuwertende Ziffer
-#:	Auszuwertende Ziffer, kann aber auch unterdrückt sein (führende 0)
-X:	Nicht auszuwertendes Zeichen
-
-Bearbeitung läuftz von rechts nach links, zusätzliche Zeichen vorne werden ignoriert</documentation>
-    		</annotation></attribute>
-    	<attribute name="least" type="int">
-    		<annotation>
-    			<documentation>kleinster Wert des Parameters</documentation>
-    		</annotation></attribute>
-    	<attribute name="most" type="int">
-    		<annotation>
-    			<documentation>größter Wert des Parameters</documentation>
-    		</annotation></attribute>
-    	<attribute name="wrapAround" type="boolean">
-    		<annotation>
-    			<documentation>true:	Wenn nach kleinstem Wert des größte eingestellt wird (z.B. Raumeinfluss)
-false:	Bei fester Grenze</documentation>
-    		</annotation></attribute>
-    </complexType>
-
-    <complexType name="Mode">
-        <annotation>
-        	<documentation>Betriebsstatus, z.B. Standby</documentation>
-        </annotation>
-        <sequence>
-        	<element name="Touch" type="tns:TouchPoint">
-        		<annotation>
-        			<documentation>Zu drrückender Punkt auf dem Bildschirm um den Modus zu wählen</documentation>
-        		</annotation></element>
-        	<element name="ScreenGrafic" type="tns:ScreenGrafic">
-        		<annotation>
-        			<documentation>Bildschirmgrafik, welche den Modus bestimmt</documentation>
-        		</annotation></element>
-        </sequence>
-        <attribute name="id" type="string"></attribute>
-    </complexType>
+	<complexType name="Rectangle">
+		<annotation>
+			<documentation>Bereich auf dem Bildschirm</documentation>
+		</annotation>
+		<sequence>
+			<element name="TopLeft" type="tns:Coordinate">
+				<annotation>
+					<documentation>Koordinate oben links</documentation>
+				</annotation>
+			</element>
+			<element name="BottomRight" type="tns:Coordinate">
+				<annotation>
+					<documentation>Koordinate unten rechts</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
 
 
 
 
-    <complexType name="Solvis">
-        <annotation>
-        	<documentation>Root</documentation>
-        </annotation>
-        <sequence>
-    		<element name="Screens" type="tns:Screens"></element>
-    		<element name="Controls" type="tns:Controls"></element>
-    		<element name="ScreenGrafics"
-    			type="tns:ScreenGrafics">
-    		</element>
-    		<element name="Durations" type="tns:Durations"></element>
-    	</sequence>
-    	<attribute name="homeId" type="string"></attribute>
-    </complexType>
-
-    <element name="Solvis" type="tns:Solvis"></element>
+	<complexType name="Screens">
+		<annotation>
+			<documentation>Alle Bildschirme</documentation>
+		</annotation>
+		<sequence>
+			<element name="Screen" type="tns:Screen" maxOccurs="1"
+				minOccurs="0"></element>
+		</sequence>
+	</complexType>
 
 
-    <complexType name="ScreenGrafics">
-        <annotation>
-        	<documentation>Menge aller Bildschirmbereichs-Grafiken</documentation>
-        </annotation>
-        <sequence>
-    		<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0"></element>
-    	</sequence>
-    </complexType>
+
+	<complexType name="Control">
+		<annotation>
+			<documentation>
+				Einstell-Parameter der Anlage (Tages-Temperatur,
+				Raumeinfluss, Betriebsart)
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="Current" type="tns:Rectangle" maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>
+						Feld mit aktuellem Wert
+					</documentation>
+				</annotation>
+			</element>
+			<choice>
+				<element name="TypeValue" type="tns:Value" maxOccurs="1" minOccurs="1">
+					<annotation>
+						<documentation>
+							Wenn ein einzustellender Wert (z. B.
+							Tages-Temperatur, Raumeinfluss)
+						</documentation>
+					</annotation>
+				</element>
+				<element name="TypeRad" type="tns:Read" maxOccurs="1" minOccurs="1"></element>
+				<element name="TypeMode" type="tns:Mode" maxOccurs="1" minOccurs="1">
+					<annotation>
+						<documentation>
+							Einzustellender Modus (z.B. Betriebsart)
+						</documentation>
+					</annotation>
+				</element>
+			</choice>
+            <sequence>
+				<element name="UpdateHeatingBurner" type="tns:UpdateHeatingBurner" maxOccurs="1" minOccurs="0">
+				</element>
+				<element name="UpdateScreenChange" type="tns:ScreenChange" maxOccurs="1" minOccurs="0"></element>
+			</sequence>
+			
+		</sequence>
+		<attribute name="screenId" type="string">
+			<annotation>
+				<documentation>
+					Name des Bildschirms, über das der Anlagenparameter
+					ausgelesen/eingestellt werden kann
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+	<complexType name="Mode">
+		<annotation>
+			<documentation>Wenn eine Betriebsart (z.B. Tag/Nacht/Standby)
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="Mode" type="tns:Mode" maxOccurs="unbounded"
+				minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Value">
+		<annotation>
+			<documentation>
+				Wenn ein Wert (z.B. Raumeinfluss oder Tagestemperatur )
+			</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Read">
+				<sequence>
+					<element name="Upper" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+					<element name="Lower" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+				</sequence>
+				<attribute name="increment" type="int">
+					<annotation>
+						<documentation>
+							Wert um den der Parameter bei einem
+							Bildschirmdruck erhöht/erniedigt wird
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="least" type="int">
+					<annotation>
+						<documentation>
+							kleinster Wert des Parameters
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="most" type="int">
+					<annotation>
+						<documentation>
+							größter Wert des Parameters
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="wrapAround" type="boolean">
+					<annotation>
+						<documentation>
+							true: Wenn nach kleinstem Wert des größte
+							eingestellt wird (z.B. Raumeinfluss) false:
+							Bei fester Grenze
+						</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Mode">
+		<annotation>
+			<documentation>Betriebsstatus, z.B. Standby</documentation>
+		</annotation>
+		<sequence>
+			<element name="Touch" type="tns:TouchPoint">
+				<annotation>
+					<documentation>Zu drrückender Punkt auf dem Bildschirm um den Modus
+						zu wählen</documentation>
+				</annotation>
+			</element>
+			<element name="ScreenGrafic" type="tns:ScreenGrafic">
+				<annotation>
+					<documentation>Bildschirmgrafik, welche den Modus bestimmt
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="id" type="string"></attribute>
+	</complexType>
 
 
-    <complexType name="ScreenGraficRef">
-        <annotation>
-        	<documentation>Referenz auf die Daten des zu vergleichende Bildschirmbereich</documentation>
-        </annotation>
-        <sequence>
-    		<element name="refId" type="string"></element>
-    	</sequence>
-    </complexType>
-
-    <complexType name="Durations">
-        <annotation>
-        	<documentation>Menge aller Dauern</documentation>
-        </annotation>
-        <sequence>
-    		<element name="Duration" type="tns:Duration" maxOccurs="1" minOccurs="0">
-    			<annotation>
-    				<documentation>Sämtliche Dauern. Dadurch können die Tastendrücke zentral angepasst werden</documentation>
-    			</annotation></element>
-    	</sequence>
-    </complexType>
-
-    <complexType name="Duration">
-        <annotation>
-        	<documentation>Dauer allgemein, meist für Länge eines Druckes auf dem Bildschirm
-</documentation>
-        </annotation>
-        <attribute name="id" type="string"></attribute>
-    	<attribute name="time_ms" type="int"></attribute>
-    </complexType>
-
-    <complexType name="DurationRef">
-        <annotation>
-        	<documentation>Referenz auf die Duration</documentation>
-        </annotation>
-        <attribute name="idRef" type="string"></attribute>
-    </complexType>
-
-    <complexType name="TouchPoint">
-        <annotation>
-        	<documentation>Zu drückender Punkt auf dem Bildschirm mit einer bestimmten Dauer
-</documentation>
-        </annotation>
-        <sequence>
-        	<element name="Coordinate" type="tns:Coordinate">
-        		<annotation>
-        			<documentation>
-        				Zu drückender Punkt auf dem Bildschirm
-        			</documentation>
-        		</annotation>
-        	</element>
-        	<element name="PushTime" type="tns:DurationRef">
-        		<annotation>
-        			<documentation>
-        				Länge des Druckes auf den Bildschirm
-        			</documentation>
-        		</annotation>
-        	</element>
-        	<element name="ReleaseTime" type="tns:DurationRef"></element>
-        </sequence>
-    </complexType>
 
 
-    <complexType name="ControlTypeRead">
-    	<attribute name="format" type="string"></attribute>
-    </complexType>
+	<complexType name="SolvisControl">
+		<annotation>
+			<documentation>Root</documentation>
+		</annotation>
+		<sequence>
+			<element name="ScreenSaver" type="tns:ScreenSaver"></element>
+			<element name="Screens" type="tns:Screens"></element>
+			<element name="ScreenGrafics" type="tns:ScreenGrafics">
+			</element>
+			<element name="Durations" type="tns:Durations"></element>
+			<element name="DataDescriptions" type="tns:DataDescriptions"></element>
+		</sequence>
+		<attribute name="homeId" type="string"></attribute>
+	</complexType>
+
+	<element name="SolvisControl" type="tns:SolvisControl"></element>
+
+
+	<complexType name="ScreenGrafics">
+		<annotation>
+			<documentation>Menge aller Bildschirmbereichs-Grafiken
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="ScreenGrafic" type="tns:ScreenGrafic"
+				maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="ScreenGraficRef">
+		<annotation>
+			<documentation>Referenz auf die Daten des zu vergleichende
+				Bildschirmbereich</documentation>
+		</annotation>
+		<sequence>
+			<element name="refId" type="string"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Durations">
+		<annotation>
+			<documentation>Menge aller Dauern</documentation>
+		</annotation>
+		<sequence>
+			<element name="Duration" type="tns:Duration" maxOccurs="1"
+				minOccurs="0">
+				<annotation>
+					<documentation>Sämtliche Dauern. Dadurch können die Tastendrücke
+						zentral angepasst werden</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Duration">
+		<annotation>
+			<documentation>Dauer allgemein, meist für Länge eines Druckes auf dem
+				Bildschirm
+			</documentation>
+		</annotation>
+		<attribute name="id" type="string"></attribute>
+		<attribute name="time_ms" type="int"></attribute>
+	</complexType>
+
+	<complexType name="DurationRef">
+		<annotation>
+			<documentation>Referenz auf die Duration</documentation>
+		</annotation>
+		<attribute name="idRef" type="string"></attribute>
+	</complexType>
+
+	<complexType name="TouchPoint">
+		<annotation>
+			<documentation>Zu drückender Punkt auf dem Bildschirm mit einer
+				bestimmten Dauer
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="Coordinate" type="tns:Coordinate">
+				<annotation>
+					<documentation>
+						Zu drückender Punkt auf dem Bildschirm
+					</documentation>
+				</annotation>
+			</element>
+			<element name="PushTime" type="tns:DurationRef">
+				<annotation>
+					<documentation>
+						Länge des Druckes auf den Bildschirm
+					</documentation>
+				</annotation>
+			</element>
+			<element name="ReleaseTime" type="tns:DurationRef"></element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="Read">
+		<attribute name="format" type="string"></attribute>
+		<attribute name="unit" type="string"></attribute>
+		<attribute name="divisor" type="int"></attribute>
+	</complexType>
+
+	<complexType name="ScreenSaver">
+		<sequence>
+			<element name="TimeTopLeft" type="tns:Coordinate"></element>
+			<element name="TimeBottomLeft" type="tns:Coordinate"></element>
+			<element name="DateTopLeft" type="tns:Coordinate"></element>
+			<element name="DateBottomLeft" type="tns:Coordinate"></element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="Measurement">
+		<sequence>
+			<element name="Field" maxOccurs="unbounded" minOccurs="1"
+				type="tns:Field"></element>
+		</sequence>
+		<attribute name="type">
+			<annotation>
+				<documentation>Art der Umwandlung</documentation>
+			</annotation>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="time"></enumeration>
+					<enumeration value="unsigned"></enumeration>
+					<enumeration value="signed"></enumeration>
+					<enumeration value="boolean"></enumeration>
+					<enumeration value="hex"></enumeration>
+					<enumeration value="date"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="divisor" type="int">
+			<annotation>
+				<documentation>
+					Bei sihned und unsigned der Divisor
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="average" type="boolean">
+			<annotation>
+				<documentation>Mittelwertbildung</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="dynamic" type="boolean">
+			<annotation>
+				<documentation>
+					False: wenn nur einmalig gelesen True: wenn zyklisch
+					gelesen
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="unit" type="string">
+			<annotation>
+				<documentation>Einheit</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+
+
+
+	<complexType name="Calculation">
+		<choice>
+			<element name="Dependeny" type="tns:Dependency" maxOccurs="unbounded"
+				minOccurs="0"></element>
+		</choice>
+
+		<attribute name="strategy">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="runtime"></enumeration>
+					<enumeration value="starts"></enumeration>
+					<enumeration value="burnerStatus"></enumeration>
+					<enumeration value="mixerPosition0"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
+	</complexType>
+
+
+
+
+	<complexType name="DataDescription">
+		<choice>
+			<element name="Control" type="tns:Control"></element>
+			<element name="Measurement" type="tns:Measurement"></element>
+			<element name="Calculation" type="tns:Calculation"></element>
+		</choice>
+		<attribute name="id" type="string"></attribute>
+	</complexType>
+
+
+
+
+	<complexType name="Dependency">
+		<sequence></sequence>
+		<attribute name="id" type="string"></attribute>
+		<attribute name="dataId" type="string"></attribute>
+	</complexType>
+
+	<complexType name="DataDescriptions">
+		<sequence>
+			<element name="DataDescription" type="tns:DataDescription"></element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="SynchronisationCondition">
+		<sequence>
+			<element name="Dependency" type="tns:Dependency"></element>
+		</sequence>
+		<attribute name="Type">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="value"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
+	</complexType>
+	<complexType name="Field">
+		<sequence></sequence>
+		<attribute name="id">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="std"></enumeration>
+					<enumeration value="time"></enumeration>
+					<enumeration value="date"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="position" type="int"></attribute>
+		<attribute name="length" type="int"></attribute>
+	</complexType>
+
+
+
+	<complexType name="UpdateHeatingBurner">
+		<sequence></sequence>
+		<attribute name="id" type="string"></attribute>
+		<attribute name="burnerId" type="string"></attribute>
+
+
+		<attribute name="runParameter" type="string"></attribute>
+
+		<attribute name="factor" type="int"></attribute>
+
+		<attribute name="checkIntervallId" type="string"></attribute>
+		<attribute name="readIntervalId" type="string"></attribute>
+	</complexType>
+
+	<complexType name="ScreenChange">
+	</complexType>
 </schema>
