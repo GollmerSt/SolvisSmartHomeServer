@@ -35,7 +35,7 @@ public class Ocr extends MyImage {
 
 	private final void processing(boolean coordinatesChanged) {
 
-		if (!this.convertToBlackWhite( true) && coordinatesChanged) {
+		if (!this.convertToBlackWhite(true) && coordinatesChanged) {
 			this.createHistograms();
 		}
 		this.shrink();
@@ -128,6 +128,7 @@ public class Ocr extends MyImage {
 			}
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			if (!(obj instanceof BlackWhite)) {
 				return false;
@@ -137,6 +138,12 @@ public class Ocr extends MyImage {
 			}
 		}
 
+		@Override
+		public int hashCode() {
+			return 89 + 617 * this.black.hashCode() + this.white.hashCode();
+		}
+
+		@Override
 		public String toString() {
 			return "Black: " + this.black + ", white: " + this.white;
 		}
@@ -193,13 +200,11 @@ public class Ocr extends MyImage {
 		int x = (backSlash ? 0 : this.getWidth() - 1);
 		int add = backSlash ? 1 : -1;
 
-		while (this.getRGB(x, startY) != BLACK) {
-			x += add;
-		}
+		for (; this.getRGB(x, startY) != BLACK && x >= 0 && x < this.getWidth(); x += add)
+			;
 
-		while (this.getRGB(x, startY) == BLACK) {
-			x += add;
-		}
+		for (; this.getRGB(x, startY) == BLACK && x >= 0 && x < this.getWidth(); x += add)
+			;
 
 		Coordinate white = new Coordinate(x, startY);
 		Coordinate black = new Coordinate(x - add, startY);
@@ -369,7 +374,7 @@ public class Ocr extends MyImage {
 
 	public static void main(String[] args) {
 
-		File parent = new File( "testFiles\\images");
+		File parent = new File("testFiles\\images");
 
 		Collection<String> names = Arrays.asList("0.png", "1.png", "1 small.png", "2.png", "3.png", "4.png",
 				"4 black.png", "4 small.png", "5.png", "6.png", "7.png", "8.png", "9.png", "9 grey small.png",
@@ -385,7 +390,7 @@ public class Ocr extends MyImage {
 				image = ImageIO.read(file);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				System.err.println( "File: " + file.getName() ) ;
+				System.err.println("File: " + file.getName());
 				e.printStackTrace();
 			}
 
@@ -393,12 +398,12 @@ public class Ocr extends MyImage {
 
 			char c = ocr.toChar();
 
-			String out = "Character of file <" + file.getName() + "> is:  " ;
-			
-			while ( out.length() < 55 ) {
-				out = " " + out ;
+			String out = "Character of file <" + file.getName() + "> is:  ";
+
+			while (out.length() < 55) {
+				out = " " + out;
 			}
-			
+
 			System.out.println(out + c);
 		}
 

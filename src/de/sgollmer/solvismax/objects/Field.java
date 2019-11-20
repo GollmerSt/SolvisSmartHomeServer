@@ -1,25 +1,29 @@
 package de.sgollmer.solvismax.objects;
 
 public class Field {
-	private final Coordinate topLeft ;
-	private final Coordinate bottomRight ;
+	private final String id ;
+	private final int position ;
+	private final int length ;
 	
-	public Field( Coordinate topLeft, Coordinate bottomRight ) {
-		this.topLeft = topLeft ;
-		this.bottomRight = bottomRight ;
+	public Field( String id, int position, int length ) {
+		this.id = id ;
+		this.position = position ;
+		this.length = length ;
 	}
 
-	/**
-	 * @return the topLeft
-	 */
-	public Coordinate getTopLeft() {
-		return topLeft;
+	public String getId() {
+		return id;
 	}
 
-	/**
-	 * @return the bottomRight
-	 */
-	public Coordinate getBottomRight() {
-		return bottomRight;
+	public int getPosition() {
+		return position;
+	}
+
+	public int getLength() {
+		return length;
+	}
+	
+	public String subString( String data ) {
+		return data.substring(position, position + length ) ;
 	}
 }

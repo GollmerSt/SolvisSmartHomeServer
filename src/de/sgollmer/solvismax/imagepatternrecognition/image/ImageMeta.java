@@ -3,6 +3,8 @@ package de.sgollmer.solvismax.imagepatternrecognition.image;
 public class ImageMeta {
 	private final int averageBrightness ;
 	private final int treshold ;
+	private final boolean invert ;
+	private final MyImage image ;
 	
 	public ImageMeta( MyImage image ) {
 		
@@ -26,6 +28,10 @@ public class ImageMeta {
 		
 		this.treshold = ( minBrightness + maxBrightness ) / 2 ;
 		this.averageBrightness = (int) (sum / ( image.getWidth() * image.getHeight() )) ;
+		this.image = image ;
+		
+		this.invert = this.treshold > this.averageBrightness ;
+
 	}
 
 	/**
@@ -41,5 +47,18 @@ public class ImageMeta {
 	public int getTreshold() {
 		return treshold;
 	}
+	
+	public boolean isActiveAutoInvert( int x, int y ) {
+		int rgb = this.image.getRGB(x, y) ;
+		int brightness = Helper.getBrightness(rgb);
+		return ( brightness < this.treshold ) != this.invert ; 
+	}
+	
+	public boolean isActive( int x, int y ) {
+		int rgb = this.image.getRGB(x, y) ;
+		int brightness = Helper.getBrightness(rgb);
+		return brightness < this.treshold ; 
+	}
+	
 }
 

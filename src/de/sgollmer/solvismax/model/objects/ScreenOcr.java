@@ -1,22 +1,22 @@
 package de.sgollmer.solvismax.model.objects;
 
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
-import de.sgollmer.solvismax.objects.Field;
+import de.sgollmer.solvismax.objects.Rectangle;
 
 public class ScreenOcr implements ScreenCompare {
-	private final Field field ;
+	private final Rectangle rectangle ;
 	private final String value ;
 	
-	public ScreenOcr( Field field, String value ) {
-		this.field = field ;
+	public ScreenOcr( Rectangle rectangle, String value ) {
+		this.rectangle = rectangle ;
 		this.value = value ;
 	}
 
 	/**
-	 * @return the field
+	 * @return the rectangle
 	 */
-	public Field getField() {
-		return field;
+	public Rectangle getRectangle() {
+		return rectangle;
 	}
 
 	/**

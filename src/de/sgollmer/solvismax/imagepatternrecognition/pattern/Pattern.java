@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.objects.Coordinate;
+import de.sgollmer.solvismax.objects.Rectangle;
 
 public class Pattern extends MyImage {
 
@@ -25,6 +26,11 @@ public class Pattern extends MyImage {
 
 	public Pattern(MyImage image, Coordinate topLeft, Coordinate bottomRight) {
 		super(image, topLeft, bottomRight);
+		processing();
+	}
+	
+	public Pattern(MyImage image, Rectangle rectangle) {
+		super(image, rectangle) ;
 		processing();
 	}
 

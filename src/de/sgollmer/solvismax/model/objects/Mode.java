@@ -10,4 +10,25 @@ public class Mode {
 		this.touch = touch ;
 		this.grafic = grafic ;
 	}
+
+	/**
+	 * @return the grafic
+	 */
+	public ScreenGrafic getGrafic() {
+		return grafic;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @return the touch
+	 */
+	public TouchPoint getTouch() {
+		return touch;
+	}
 }

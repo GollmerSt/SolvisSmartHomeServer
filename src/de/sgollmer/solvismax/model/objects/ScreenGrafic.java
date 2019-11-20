@@ -1,39 +1,24 @@
 package de.sgollmer.solvismax.model.objects;
 
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
-import de.sgollmer.solvismax.objects.Field;
+import de.sgollmer.solvismax.objects.Rectangle;
 
 public class ScreenGrafic implements ScreenCompare {
 	private final String id ;
 	private final boolean exact ;
-	private final Field field ;
+	private final Rectangle rectangle ;
 	private MyImage image = null ;
 	
-	private ScreenGrafic( String id, boolean exact, Field field ) {
+	private ScreenGrafic( String id, boolean exact, Rectangle rectangle ) {
 		this.id = id ;
 		this.exact = exact ;
-		this.field = field ;
+		this.rectangle = rectangle ;
 	}
 
-	/**
-	 * @return the image
-	 */
-	public MyImage getImage() {
-		return image;
-	}
-
-	/**
-	 * @param image the image to set
-	 */
-	public void setImage(MyImage image) {
-		this.image = image;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
+	@Override
+	public boolean isElementOf(MyImage image) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	/**
@@ -44,15 +29,9 @@ public class ScreenGrafic implements ScreenCompare {
 	}
 
 	/**
-	 * @return the field
+	 * @return the id
 	 */
-	public Field getField() {
-		return field;
-	}
-
-	@Override
-	public boolean isElementOf(MyImage image) {
-		// TODO Auto-generated method stub
-		return false;
+	public String getId() {
+		return id;
 	}
 }

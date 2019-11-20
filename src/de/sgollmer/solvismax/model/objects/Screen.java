@@ -2,26 +2,28 @@ package de.sgollmer.solvismax.model.objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
-import de.sgollmer.solvismax.objects.ReferenceError;
 
 public class Screen {
 	private final String id;
 	private final String previousId;
 	private final String backId;
-	private final Collection<TouchPoint> touchPoints = new ArrayList<>();
-	private final Collection<ScreenCompare> screenCompares = new ArrayList<>() ;
+	private final TouchPoint touchPoint;
+	private final Collection<ScreenCompare> screenCompares = new ArrayList<>();
 	private final Collection<String> screenGraficRefs = new ArrayList<>();
-	
-	public Screen previousScreen = null ;
-	public Screen backScreen = null ;
-	public Collection< Screen > nextScreens = new ArrayList<>() ;
 
-	public Screen(String id, String previousId, String backId) {
+	public Screen previousScreen = null;
+	public Screen backScreen = null;
+	public Collection<Screen> nextScreens = new ArrayList<>();
+
+	public Screen(String id, String previousId, String backId, TouchPoint touchPoint) {
 		this.id = id;
 		this.previousId = previousId;
 		this.backId = backId;
+		this.touchPoint = touchPoint ;
 	}
 
 	/**
@@ -42,45 +44,55 @@ public class Screen {
 	public boolean equals(Object obj) {
 		return this.id.equals(obj);
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return this.id.hashCode() ;
+		return this.id.hashCode();
 	}
-	
-	public void assign( AllScreenGrafics allScreenGrafics ) throws ReferenceError {
-		for ( String id : screenGraficRefs ) {
-			ScreenGrafic grafic = allScreenGrafics.get(id) ;
-			if ( grafic == null ) {
-				throw new ReferenceError( "Screen grafic reference < " + id + " > not found") ;
+
+	public void assign(AllScreenGrafics allScreenGrafics) throws ReferenceError {
+		for (String id : screenGraficRefs) {
+			ScreenGrafic grafic = allScreenGrafics.get(id);
+			if (grafic == null) {
+				throw new ReferenceError("Screen grafic reference < " + id + " > not found");
 			}
-			this.screenCompares.add(grafic) ;
+			this.screenCompares.add(grafic);
 		}
 	}
-	
-	public void assign( AllScreens screens ) {
-		this.backScreen = screens.get(backId) ;
-		if ( this.backScreen == null ) {
-			throw new ReferenceError( "Screen reference < " + this.backId + " > not found") ;
+
+	public void assign(AllScreens screens) {
+		this.backScreen = screens.get(backId);
+		if (this.backScreen == null) {
+			throw new ReferenceError("Screen reference < " + this.backId + " > not found");
 		}
-		this.previousScreen = screens.get(previousId) ;
-		if ( this.previousScreen == null ) {
-			throw new ReferenceError( "Screen reference < " + this.previousId + " > not found") ;
+		this.previousScreen = screens.get(previousId);
+		if (this.previousScreen == null) {
+			throw new ReferenceError("Screen reference < " + this.previousId + " > not found");
 		}
 		this.previousScreen.addNextScreen(this);
 	}
-	
-	public void addNextScreen( Screen nextScreen ) {
-		this.nextScreens.add(nextScreen) ;
+
+	public void addNextScreen(Screen nextScreen) {
+		this.nextScreens.add(nextScreen);
 	}
 
 	public boolean isScreen(MyImage image) {
-		for ( ScreenCompare grafic : this.screenCompares ) {
-			if ( ! grafic.isElementOf(image)) {
-				return false ;
+		for (ScreenCompare grafic : this.screenCompares) {
+			if (!grafic.isElementOf(image)) {
+				return false;
 			}
 		}
-		return true ;
+		return true;
+	}
+
+	public List<Screen> getPreviosScreens() {
+
+		List<Screen> screens = new ArrayList<>();
+
+		while (this.getPreviousScreen() != null ) {
+			screens.add(this.getPreviousScreen());
+		}
+		return screens ;
 	}
 
 	/**
@@ -91,9 +103,10 @@ public class Screen {
 	}
 
 	/**
-	 * @return the touchPoints
+	 * @return the touchPoint
 	 */
-	public Collection<TouchPoint> getTouchPoints() {
-		return touchPoints;
+	public TouchPoint getTouchPoint() {
+		return touchPoint;
 	}
+
 }
