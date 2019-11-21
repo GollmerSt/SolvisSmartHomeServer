@@ -9,28 +9,24 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public class MyImage {
 
-	public static final int BLACK = 0;
-	public static final int WHITE = 0xffffffff;
+	private final BufferedImage image;
+	private Coordinate topLeft;
+	private Coordinate maxRel; // Zeigt auf 1. Pixel auﬂerhalb, relativ
+								// zu min
 
-	private BufferedImage image;
-	private Coordinate topLeft = null;
-	private Coordinate maxRel = null; // Zeigt auf 1. Pixel auﬂerhalb, relativ
-										// zu min
-	
-	private ImageMeta meta = null ;
+	private final ImageMeta meta;
 
 	private List<Integer> histogramX = null;
 	private List<Integer> histogramY = null;
 
-	private boolean blackWhite;
 	private boolean autoInvert;
 
 	public MyImage(BufferedImage image) {
 		this.image = image;
 		this.topLeft = new Coordinate(0, 0);
 		this.maxRel = new Coordinate(image.getWidth(), image.getHeight());
-		this.blackWhite = false;
 		this.autoInvert = false;
+		this.meta = new ImageMeta(this);
 	}
 
 	public MyImage(MyImage image) {
@@ -43,34 +39,41 @@ public class MyImage {
 		if (image.histogramY != null) {
 			this.histogramY = new ArrayList<>(image.histogramY);
 		}
-		this.blackWhite = image.blackWhite;
 		this.autoInvert = image.autoInvert;
+		this.meta = image.meta;
 
 	}
 
-	public MyImage(MyImage image, Rectangle rectangle) {
-		this(image, rectangle.getTopLeft(), rectangle.getBottomRight());
+	public MyImage(MyImage image, Rectangle rectangle, boolean createImageMeta) {
+		this(image, rectangle.getTopLeft(), rectangle.getBottomRight(), createImageMeta);
 	}
 
-	public MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight) {
-		this(image);
-		if (!this.isIn(topLeft) || !this.isIn(bottomRight)) {
+	public MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta) {
+		this.image = image.image;
+		if (!image.isIn(topLeft) || !image.isIn(bottomRight)) {
 			throw new ErrorNotInRange("UpperLeft or lowerRigh not within the image");
 		}
+		this.maxRel = bottomRight.diff(topLeft).increment();
+		this.topLeft = image.topLeft.add(topLeft);
+		this.autoInvert = image.autoInvert;
+		if (createImageMeta) {
+			this.meta = new ImageMeta(this);
+		} else {
+			this.meta = image.meta;
+		}
+
 		if (bottomRight.getX() < topLeft.getX() || bottomRight.getY() < topLeft.getY()) {
 			throw new ErrorNotInRange("Upper left is not upper left");
 		}
-		this.maxRel = bottomRight.diff(topLeft).increment();
-		this.topLeft = this.topLeft.add(topLeft);
-		this.blackWhite = image.blackWhite;
-		if (this.blackWhite) {
-			this.createHistograms();
+		if (this.histogramX != null) {
+			this.histogramX = null;
+			this.histogramY = null;
+			this.createHistograms(this.autoInvert);
 		}
-		this.autoInvert = false;
 	}
-	
+
 	public MyImage create() {
-		return this.create(null) ;
+		return this.create(null);
 	}
 
 	public MyImage create(Rectangle rectangle) {
@@ -102,10 +105,6 @@ public class MyImage {
 		return new MyImage(c);
 	}
 
-	public int getRGB(Coordinate coord) {
-		return this.getRGB(coord.getX(), coord.getY());
-	}
-
 	public boolean isIn(Coordinate coord) {
 		return coord.getX() >= 0 && coord.getY() >= 0 && coord.getX() < maxRel.getX() && coord.getY() < maxRel.getY();
 	}
@@ -114,101 +113,75 @@ public class MyImage {
 		return x >= 0 && y >= 0 && x < maxRel.getX() && y < maxRel.getY();
 	}
 
-	public int getRGB(int x, int y) {
+	int getRGB(int x, int y) {
+		return this.image.getRGB(x + topLeft.getX(), y + this.topLeft.getY());
+	}
+
+	public boolean isActive(Coordinate coord) {
+		return this.isActive(coord.getX(), coord.getY());
+	}
+
+	public boolean isActive(int x, int y) {
 		if (this.isIn(x, y)) {
-			return image.getRGB(x + topLeft.getX(), y + this.topLeft.getY());
+			return this.meta.isActive(image.getRGB(x + topLeft.getX(), y + this.topLeft.getY()));
 		} else {
-			return WHITE;
+			return false;
 		}
 	}
 
-	public void setRGB(int x, int y, int rgb) {
+	public boolean isLight(Coordinate coord) {
+		return this.isLight(coord.getX(), coord.getY());
+	}
+
+	public boolean isLight(int x, int y) {
 		if (this.isIn(x, y)) {
-			this.image.setRGB(x + this.topLeft.getX(), y + this.topLeft.getY(), rgb);
+			return this.meta.isLight(image.getRGB(x + topLeft.getX(), y + this.topLeft.getY()));
+		} else {
+			return !this.meta.isInvert();
 		}
 	}
 
-	public boolean convertToBlackWhite(boolean autoInvert) {
+	public boolean createHistograms(boolean autoInvert) {
 
-		if (this.blackWhite && (autoInvert == this.autoInvert || !autoInvert)) {
+		if (this.histogramX != null && (autoInvert == this.autoInvert)) {
 			return false;
 		}
 
-		ImageMeta imageData = new ImageMeta(this);
+		this.histogramX = new ArrayList<Integer>(this.getWidth());
+		this.histogramY = new ArrayList<Integer>(this.getHeight());
 
-		int toRgbHigherValue;
-		int toRgbLowervalue;
-		int cntHigherValue;
-		int cntLowerValue;
+		for (int x = 0; x < this.getWidth(); ++x) {
+			histogramX.add(0);
+		}
 
-		if (imageData.getTreshold() < imageData.getAverageBrightness() || !autoInvert) {
-			toRgbHigherValue = WHITE;
-			toRgbLowervalue = BLACK;
-			cntHigherValue = 0;
-			cntLowerValue = 1;
+		for (int y = 0; y < this.getHeight(); ++y) {
+			histogramY.add(0);
+		}
+
+		if (autoInvert) {
+
+			for (int x = 0; x < this.getWidth(); ++x) {
+				for (int y = 0; y < this.getHeight(); ++y) {
+					boolean active = this.isActive(x, y);
+					if (active) {
+						this.histogramX.set(x, 1 + this.histogramX.get(x));
+						this.histogramY.set(y, 1 + this.histogramY.get(y));
+					}
+				}
+			}
 		} else {
-			toRgbHigherValue = BLACK;
-			toRgbLowervalue = WHITE;
-			cntHigherValue = 1;
-			cntLowerValue = 0;
-		}
-
-		this.histogramX = new ArrayList<Integer>(this.getWidth());
-		this.histogramY = new ArrayList<Integer>(this.getHeight());
-
-		for (int x = 0; x < this.getWidth(); ++x) {
-			histogramX.add(0);
-		}
-
-		for (int y = 0; y < this.getHeight(); ++y) {
-			histogramY.add(0);
-		}
-
-		for (int x = 0; x < this.getWidth(); ++x) {
-			for (int y = 0; y < this.getHeight(); ++y) {
-				int rgb = this.getRGB(x, y);
-				int brightness = Helper.getBrightness(rgb);
-				if (brightness > imageData.getTreshold()) {
-					this.setRGB(x, y, toRgbHigherValue);
-					this.histogramX.set(x, cntHigherValue + this.histogramX.get(x));
-					this.histogramY.set(y, cntHigherValue + this.histogramY.get(y));
-				} else {
-					this.setRGB(x, y, toRgbLowervalue);
-					this.histogramX.set(x, cntLowerValue + this.histogramX.get(x));
-					this.histogramY.set(y, cntLowerValue + this.histogramY.get(y));
+			for (int x = 0; x < this.getWidth(); ++x) {
+				for (int y = 0; y < this.getHeight(); ++y) {
+					boolean dark = !this.isLight(x, y);
+					if (dark) {
+						this.histogramX.set(x, 1 + this.histogramX.get(x));
+						this.histogramY.set(y, 1 + this.histogramY.get(y));
+					}
 				}
 			}
 		}
-		this.blackWhite = true;
+		this.autoInvert = autoInvert;
 		return true;
-	}
-
-	public void createHistograms() {
-
-		if (!this.blackWhite) {
-			throw new WrongFormatError("Not converted to black white");
-		}
-
-		this.histogramX = new ArrayList<Integer>(this.getWidth());
-		this.histogramY = new ArrayList<Integer>(this.getHeight());
-
-		for (int x = 0; x < this.getWidth(); ++x) {
-			histogramX.add(0);
-		}
-
-		for (int y = 0; y < this.getHeight(); ++y) {
-			histogramY.add(0);
-		}
-
-		for (int x = 0; x < this.getWidth(); ++x) {
-			for (int y = 0; y < this.getHeight(); ++y) {
-				int rgb = this.getRGB(x, y);
-				if (rgb == BLACK) {
-					this.histogramX.set(x, 1 + this.histogramX.get(x));
-					this.histogramY.set(y, 1 + this.histogramY.get(y));
-				}
-			}
-		}
 	}
 
 	public void shrink() {

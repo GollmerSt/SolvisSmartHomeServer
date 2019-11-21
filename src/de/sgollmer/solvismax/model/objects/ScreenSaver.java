@@ -31,7 +31,7 @@ public class ScreenSaver {
 	}
 
 	public boolean is(MyImage image) {
-		Pattern pattern = new Pattern(image.create(null));
+		Pattern pattern = new Pattern(image);
 
 		Rectangle timeRectangle = new Rectangle(timeTopLeft,
 				new Coordinate(pattern.getWidth() - 1, timeBottomLeft.getY()));
@@ -61,7 +61,7 @@ public class ScreenSaver {
 
 		File parent = new File("testFiles\\images");
 
-		File file = new File(parent, "Bildschirmschoner1.png");
+		File file = new File(parent, "Bildschirmschoner2.png");
 
 		BufferedImage bufferedImage = null;
 		try {

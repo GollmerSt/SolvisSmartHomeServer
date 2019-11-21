@@ -17,12 +17,12 @@ public class OcrRectangle extends MyImage {
 	private Collection<Ocr> parts = null;
 
 	public OcrRectangle(MyImage image, Coordinate upperLeft, Coordinate lowerRight) {
-		super(image, upperLeft, lowerRight);
+		super(image, upperLeft, lowerRight, true);
 		this.split();
 	}
 	
 	public OcrRectangle( MyImage image, Rectangle rectangle ) {
-		super( image, rectangle ) ;
+		super( image, rectangle, true ) ;
 		this.split();
 	}
 	
@@ -33,7 +33,7 @@ public class OcrRectangle extends MyImage {
 
 	private void split() {
 
-		this.convertToBlackWhite(true);
+		this.createHistograms(true);
 
 		this.shrink();
 
@@ -53,14 +53,14 @@ public class OcrRectangle extends MyImage {
 			} else {
 				if (start != null) {
 					Coordinate end = new Coordinate(x - 1, lower);
-					this.parts.add(new Ocr(this, start, end));
+					this.parts.add(new Ocr(this, start, end, false ));
 					start = null;
 				}
 			}
 		}
 		if (start != null) {
 			Coordinate end = new Coordinate(this.getHistogramX().size() - 1, lower);
-			this.parts.add(new Ocr(this, start, end));
+			this.parts.add(new Ocr(this, start, end, false ));
 		}
 	}
 
@@ -89,7 +89,7 @@ public class OcrRectangle extends MyImage {
 		}
 
 		MyImage myImage = new MyImage(bufferedImage);
-		myImage.convertToBlackWhite(true);
+		myImage.createHistograms(true);
 		myImage.shrink();
 		OcrRectangle rectangle = new OcrRectangle(myImage, new Coordinate(73, 0), new Coordinate(139, 20));
 

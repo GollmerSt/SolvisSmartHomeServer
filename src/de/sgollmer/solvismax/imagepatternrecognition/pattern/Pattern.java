@@ -28,14 +28,14 @@ public class Pattern extends MyImage {
 		super(image, topLeft, bottomRight);
 		processing();
 	}
-	
+
 	public Pattern(MyImage image, Rectangle rectangle) {
-		super(image, rectangle) ;
+		super(image, rectangle);
 		processing();
 	}
 
 	private void processing() {
-		this.convertToBlackWhite(false);
+		this.createHistograms(false);
 		this.shrink();
 	}
 
@@ -45,8 +45,8 @@ public class Pattern extends MyImage {
 			this.hashCode = 569;
 			for (int x = 0; x < this.getWidth(); ++x) {
 				for (int y = 0; y < this.getHeight(); ++y) {
-					int rgb = this.getRGB(x, y);
-					this.hashCode = this.hashCode * 251 + rgb * 379;
+					boolean light = this.isLight(x, y);
+					this.hashCode = this.hashCode * 251 + (light ? 379 : 0);
 				}
 			}
 		}
@@ -68,9 +68,9 @@ public class Pattern extends MyImage {
 		}
 		for (int x = 0; x < this.getWidth(); ++x) {
 			for (int y = 0; y < this.getHeight(); ++y) {
-				int rgb1 = this.getRGB(x, y);
-				int rgb2 = this.getRGB(x, y);
-				if (rgb1 != rgb2) {
+				boolean light1 = this.isLight(x, y);
+				boolean light2 = this.isLight(x, y);
+				if (light1 != light2) {
 					return false;
 				}
 			}
@@ -79,8 +79,8 @@ public class Pattern extends MyImage {
 	}
 
 	public static void main(String[] args) {
-		
-		File parent = new File( "testFiles\\images");
+
+		File parent = new File("testFiles\\images");
 
 		File file = new File(parent, "Home.png");
 

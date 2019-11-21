@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
+import de.sgollmer.solvismax.imagepatternrecognition.image.ImageMeta;
 import de.sgollmer.solvismax.imagepatternrecognition.image.Maxima;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -28,18 +29,16 @@ public class Ocr extends MyImage {
 		this.processing(false);
 	}
 
-	public Ocr(MyImage image, Coordinate topLeft, Coordinate bottomRight) {
-		super(image, topLeft, bottomRight);
+	public Ocr(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta ) {
+		super(image, topLeft, bottomRight, createImageMeta );
+		
 		this.processing(true);
 	}
 
 	private final void processing(boolean coordinatesChanged) {
 
-		if (!this.convertToBlackWhite(true) && coordinatesChanged) {
-			this.createHistograms();
-		}
+		this.createHistograms(true);
 		this.shrink();
-
 		this.createMaxima();
 	}
 
@@ -90,12 +89,12 @@ public class Ocr extends MyImage {
 			Coordinate diff = this.white.diff(this.black);
 			diff = new Coordinate(-diff.getY(), diff.getX());
 			BlackWhite newBlackWhite = new BlackWhite(this.black.add(diff), this.white.add(diff));
-			int checkWhite = Ocr.this.getRGB(newBlackWhite.white);
-			int checkBlack = Ocr.this.getRGB(newBlackWhite.black);
+			boolean checkInactive = Ocr.this.isActive(newBlackWhite.white);
+			boolean checkActive = Ocr.this.isActive(newBlackWhite.black);
 
-			if (checkBlack == BLACK && checkWhite == WHITE) {
+			if (checkActive && !checkInactive) {
 				return newBlackWhite;
-			} else if (checkBlack == WHITE && checkWhite == WHITE) {
+			} else if (!checkActive && !checkInactive) {
 				return new BlackWhite(this.black, newBlackWhite.black);
 			} else {
 				return new BlackWhite(newBlackWhite.white, this.white);
@@ -106,17 +105,17 @@ public class Ocr extends MyImage {
 			Coordinate diff = this.white.diff(this.black);
 			diff = new Coordinate(left ? diff.getY() : -diff.getY(), diff.getX() > 0 ? diff.getX() : -diff.getX());
 			BlackWhite newBlackWhite = new BlackWhite(this.black.add(diff), this.white.add(diff));
-			int checkWhite = Ocr.this.getRGB(newBlackWhite.white);
-			int checkBlack = Ocr.this.getRGB(newBlackWhite.black);
+			boolean checkInactive = Ocr.this.isActive(newBlackWhite.white);
+			boolean checkActive = Ocr.this.isActive(newBlackWhite.black);
 
-			if (checkBlack == BLACK) {
-				if (checkWhite == BLACK) {
+			if (checkActive) {
+				if (checkInactive) {
 					return new BlackWhite(newBlackWhite.white, this.white);
 				} else {
 					return newBlackWhite;
 				}
 			} else {
-				if (checkWhite == BLACK) {
+				if (checkInactive) {
 					if (newBlackWhite.white.getY() >= this.black.getY()) {
 						return new BlackWhite(newBlackWhite.white, this.white);
 					} else {
@@ -151,7 +150,7 @@ public class Ocr extends MyImage {
 
 	private Coordinate getClosedStructure(Coordinate coord) {
 
-		if (this.getRGB(coord) == BLACK) {
+		if (this.isActive(coord)) {
 			return null;
 		}
 
@@ -159,7 +158,7 @@ public class Ocr extends MyImage {
 
 		int startX;
 		for (startX = coord.getX(); startX < this.getWidth(); ++startX) {
-			if (this.getRGB(startX, coord.getY()) == BLACK) {
+			if (this.isActive(startX, coord.getY())) {
 				found = true;
 				break;
 			}
@@ -200,10 +199,10 @@ public class Ocr extends MyImage {
 		int x = (backSlash ? 0 : this.getWidth() - 1);
 		int add = backSlash ? 1 : -1;
 
-		for (; this.getRGB(x, startY) != BLACK && x >= 0 && x < this.getWidth(); x += add)
+		for (; !this.isActive(x, startY) && x >= 0 && x < this.getWidth(); x += add)
 			;
 
-		for (; this.getRGB(x, startY) == BLACK && x >= 0 && x < this.getWidth(); x += add)
+		for (; this.isActive(x, startY) && x >= 0 && x < this.getWidth(); x += add)
 			;
 
 		Coordinate white = new Coordinate(x, startY);
@@ -233,11 +232,11 @@ public class Ocr extends MyImage {
 		int y = this.maximaY[0].getCoord();
 		int value = this.maximaY[0].getValue();
 
-		if (value > this.getWidth() * 7 / 8 && this.getHeight() / 3 < y && y < this.getHeight() * 3 / 4) {
+		if (value > this.getWidth() * 10 / 11 && this.getHeight() / 3 < y && y < this.getHeight() * 3 / 4) {
 
 			int x = this.maximaX[0].getCoord() / 2;
 
-			while (this.getRGB(x, --y) == BLACK)
+			while (this.isActive(x, --y))
 				;
 
 			Coordinate coord = new Coordinate(x, y);
@@ -348,7 +347,7 @@ public class Ocr extends MyImage {
 
 		if (this.detectSlash(false, 0, this.getWidth() - 1)) {
 			int x = 0;
-			while (this.getRGB(x++, 1) == WHITE)
+			while (!this.isActive(x++, 1))
 				;
 			if (x < this.getWidth() / 2) {
 				return '%';
