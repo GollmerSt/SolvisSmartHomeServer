@@ -1,7 +1,5 @@
 package de.sgollmer.solvismax.model.objects.data;
 
-import java.util.Collection;
-
 public class StringData implements SingleData {
 	private final String data ;
 	
@@ -9,11 +7,6 @@ public class StringData implements SingleData {
 		this.data = data ;
 	}
 
-	@Override
-	public SingleData average(Collection<SingleData> values) {
-		return null;
-	}
-	
 	@Override
 	public boolean equals( Object obj) {
 		if ( obj instanceof StringData ) {
@@ -32,6 +25,16 @@ public class StringData implements SingleData {
 	@Override
 	public String toString() {
 		return this.data ;
+	}
+
+	@Override
+	public Integer getInt() {
+		return null;
+	}
+
+	@Override
+	public SingleData create(long divisor, int divident) {
+		return null;
 	}
 	
 }

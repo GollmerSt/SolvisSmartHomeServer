@@ -9,7 +9,6 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
-import de.sgollmer.solvismax.imagepatternrecognition.image.ImageMeta;
 import de.sgollmer.solvismax.imagepatternrecognition.image.Maxima;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.objects.Coordinate;

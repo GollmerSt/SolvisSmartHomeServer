@@ -53,7 +53,7 @@ public class WatchDog {
 	 */
 	private long getUpdateTimeAfterNoChange() {
 		if (this.updateTimeAfterNoChange < 0) {
-			this.updateTimeAfterNoChange = this.solvis.getDuration("updateTimeAfterNoChange").getDuration_ms();
+			this.updateTimeAfterNoChange = this.solvis.getDuration("updateTimeAfterNoChange").getTime_ms();
 		}
 		return this.updateTimeAfterNoChange;
 	}

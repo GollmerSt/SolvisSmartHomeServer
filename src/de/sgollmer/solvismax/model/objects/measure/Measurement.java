@@ -1,14 +1,18 @@
 package de.sgollmer.solvismax.model.objects.measure;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import javax.xml.namespace.QName;
+
+import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.AllDataDescriptions;
-import de.sgollmer.solvismax.model.objects.DataDescription;
 import de.sgollmer.solvismax.model.objects.DataSource;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Field;
+import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Measurement extends DataSource {
 	private final Strategy type;
@@ -16,7 +20,7 @@ public class Measurement extends DataSource {
 	private final boolean average;
 	private final boolean dynamic;
 	private final String unit;
-	private final Map<String, Field> fields;
+	private final Collection<Field> fields;
 
 	// AA5555AA
 	// 056B ????
@@ -73,14 +77,13 @@ public class Measurement extends DataSource {
 	// 130B0F Datum 15.11.2019
 	// 49AB00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-	public Measurement( DataDescription description, Strategy type, int divisor, boolean average, boolean dynamic, String unit) {
-		super(description) ;
+	public Measurement(Strategy type, int divisor, boolean average, boolean dynamic, String unit, Collection< Field> fields) {
 		this.type = type;
 		this.divisor = divisor;
 		this.average = average;
 		this.dynamic = dynamic;
 		this.unit = unit;
-		this.fields = new HashMap<>();
+		this.fields = fields ;
 	}
 
 	@Override
@@ -118,13 +121,72 @@ public class Measurement extends DataSource {
 	}
 
 	@Override
-	public void assign(AllDataDescriptions descriptions) {
-		
+	public void instantiate(Solvis solvis) {
+
+	}
+
+	public static class Creator extends CreatorByXML<Measurement> {
+
+		private Strategy type;
+		private int divisor = 1;
+		private boolean average = false;
+		private boolean dynamic = false;
+		private String unit = "";
+		private final Collection<Field> fields = new ArrayList<>(2);
+
+		public Creator(String id, BaseCreator<?> creator) {
+			super(id, creator);
+		}
+
+		@Override
+		public void setAttribute(QName name, String value) {
+			String id = name.getLocalPart();
+			switch (id) {
+				case "type":
+					type = Strategy.valueOf(value.toUpperCase());
+					break;
+				case "divisor":
+					this.divisor = Integer.parseInt(value);
+					break;
+				case "average":
+					this.average = Boolean.parseBoolean(value);
+					break;
+				case "dynamic":
+					this.dynamic = Boolean.parseBoolean(value);
+					break;
+				case "unit":
+					this.unit = value;
+			}
+
+		}
+
+		@Override
+		public Measurement create() throws XmlError {
+			return new Measurement(type, divisor, average, dynamic, unit,fields);
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			String id = name.getLocalPart();
+			switch (id) {
+				case "Field":
+					return new Field.Creator(id, this.getBaseCreator());
+			}
+			return null;
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) {
+			if ( creator.getId().equals("Field")) {
+				this.fields.add((Field) created) ;
+			}
+			
+		}
+
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
-		
+	public void assign(SolvisDescription description) {
 	}
 
 }

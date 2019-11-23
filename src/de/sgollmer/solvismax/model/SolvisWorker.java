@@ -1,6 +1,7 @@
 package de.sgollmer.solvismax.model;
 
 import java.util.ArrayDeque;
+import java.util.Iterator;
 import java.util.Queue;
 
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -34,7 +35,7 @@ public class SolvisWorker {
 							queueWasEmpty = true;
 						} else {
 							try {
-								SolvisWorker.this.queue.wait(solvis.getDuration("WatchDogTime").getDuration_ms());
+								SolvisWorker.this.queue.wait(solvis.getDuration("WatchDogTime").getTime_ms());
 							} catch (InterruptedException e) {
 							}
 							if (SolvisWorker.this.queue.isEmpty()) {
@@ -89,7 +90,7 @@ public class SolvisWorker {
 					} else {
 						synchronized (SolvisWorker.this.queue) {
 							try {
-								SolvisWorker.this.queue.wait(solvis.getDuration("UnsuccessfullWaitTime").getDuration_ms());
+								SolvisWorker.this.queue.wait(solvis.getDuration("UnsuccessfullWaitTime").getTime_ms());
 							} catch (InterruptedException e) {
 							}
 						}
@@ -101,6 +102,12 @@ public class SolvisWorker {
 
 	public void push(Command command) {
 		synchronized (this.queue) {
+			for ( Iterator< Command > it = this.queue.iterator() ; it.hasNext();) {
+				Command cmp = it.next() ;
+				if ( command.getDescription() == cmp.getDescription() ) {
+					it.remove();
+				}
+			}
 			this.queue.add(command);
 			this.queue.notifyAll();
 		}

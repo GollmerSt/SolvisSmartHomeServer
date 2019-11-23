@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:SolvisDescription xmlns:tns="http://www.example.org/control"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/control control.xsd "
+	homeId="Home">
+	<tns:ScreenSaver>
+		<tns:TimeTopLeft X="75" Y="0" />
+		<tns:TimeBottomLeft X="75" Y="20" />
+		<tns:DateTopLeft X="75" Y="21" />
+		<tns:DateBottomLeft X="75" Y="33" />
+		<tns:ResetScreenSaver pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+		<tns:Coordinate X="0" Y="0"/></tns:ResetScreenSaver>
+	</tns:ScreenSaver>
+	<tns:Screens>
+		<tns:Screen id="Home">
+			<tns:ScreenGrafic exact="true" id="Home">
+				<tns:Field>
+					<tns:TopLeft X="0" Y="8" />
+					<tns:BottomRight X="45" Y="20" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Home" id="Warmwasser" previousId="Home">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="25" Y="40" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic exact="true" id="Warmwasser">
+				<tns:Field>
+					<tns:TopLeft X="0" Y="33" />
+					<tns:BottomRight X="45" Y="45" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Home" id="Zirkulation" previousId="Home">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="25" Y="65" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic exact="true" id="Zirkulation">
+				<tns:Field>
+					<tns:TopLeft X="0" Y="58" />
+					<tns:BottomRight X="45" Y="70" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Home" id="Solar" previousId="Home">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="25" Y="90" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic exact="true" id="Solar">
+				<tns:Field>
+					<tns:TopLeft X="0" Y="83" />
+					<tns:BottomRight X="45" Y="95" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Home" id="Sonstiges 1" previousId="Home">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="25" Y="115" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Sonstiges" />
+			<tns:ScreenGrafic exact="true" id="Sonstiges 1">
+				<tns:Field>
+					<tns:TopLeft X="90" Y="35" />
+					<tns:BottomRight X="205" Y="50" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Home" id="Sonstiges 2" previousId="Home">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="25" Y="115" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Sonstiges" />
+			<tns:ScreenGrafic exact="true" id="Sonstiges 2">
+				<tns:Field>
+					<tns:TopLeft X="90" Y="35" />
+					<tns:BottomRight X="205" Y="50" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Home" id="Sonstiges 3" previousId="Home">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="25" Y="115" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Sonstiges" />
+			<tns:ScreenGrafic exact="true" id="Sonstiges 3">
+				<tns:Field>
+					<tns:TopLeft X="90" Y="35" />
+					<tns:BottomRight X="205" Y="50" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Sonstiges 1" id="Heizkreise"
+			previousId="Sonstiges 1">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="65" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic id="Heizkreise">
+				<tns:Field>
+					<tns:TopLeft X="62" Y="0" />
+					<tns:BottomRight X="155" Y="25" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Heizkreise" id="Heizkreis1 1_5"
+			previousId="Heizkreise">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="20" Y="15" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="11/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="15" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+		</tns:Screen>
+		<tns:Screen backId="Heizkreise" id="Heizkreis1 2_5"
+			previousId="Heizkreis1 1_5">
+			<tns:TouchPoint  pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="12/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="15" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+		</tns:Screen>
+		<tns:Screen backId="Heizkreise" id="Heizkreis1 3_5"
+			previousId="Heizkreis1 2_5">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="13/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="15" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+		</tns:Screen>
+		<tns:Screen backId="Heizkreise" id="Heizkreis1 5_5"
+			previousId="Heizkreis1 1_5">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="15/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="15" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+		</tns:Screen>
+		<tns:Screen backId="Heizkreise" id="Heizkreis1 4_5"
+			previousId="Heizkreis1 5_5">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="14/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="15" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+		</tns:Screen>
+		<tns:Screen backId="Home" id="Tagestemperatur" previousId="Home">
+			<tns:TouchPoint pushTimeRefId="Lang" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="95" Y="105" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Tagestemperatur" />
+			<tns:ScreenGrafic id="TagestemperaturNotSelected"
+				exact="true">
+				<tns:Field>
+					<tns:TopLeft X="65" Y="55" />
+					<tns:BottomRight X="105" Y="60" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Home" id="TagestemperaturSelected"
+			previousId="Tagestemperatur">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="80" Y="45" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Tagestemperatur" />
+			<tns:ScreenGrafic id="TagestemperaturSelected"
+				exact="true">
+				<tns:Field>
+					<tns:TopLeft X="65" Y="55" />
+					<tns:BottomRight X="105" Y="60" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Home" id="Nachttemperatur" previousId="Home">
+			<tns:TouchPoint pushTimeRefId="Lang" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="125" Y="105" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Nachttemperatur" />
+			<tns:ScreenGrafic id="NachttemperaturNotSelected"
+				exact="true">
+				<tns:Field>
+					<tns:TopLeft X="65" Y="55" />
+					<tns:BottomRight X="105" Y="60" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Home" id="NachttemperaturSelected"
+			previousId="Nachttemperatur">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="80" Y="45" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Nachttemperatur" />
+			<tns:ScreenGrafic id="NachttemperaturSelected"
+				exact="true">
+				<tns:Field>
+					<tns:TopLeft X="65" Y="55" />
+					<tns:BottomRight X="105" Y="60" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Sonstiges 2" id="Zaehlfunktion"
+			previousId="Sonstiges 2">
+			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="85" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic id="Zaehlfunktion" exact="true">
+				<tns:Field>
+					<tns:TopLeft X="35" Y="0" />
+					<tns:BottomRight X="205" Y="15" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+	</tns:Screens>
+	<tns:ScreenGrafics>
+		<tns:ScreenGrafic exact="true" id="Sonstiges">
+			<tns:Field>
+				<tns:TopLeft X="0" Y="108" />
+				<tns:BottomRight X="45" Y="120" />
+			</tns:Field>
+		</tns:ScreenGrafic>
+		<tns:ScreenGrafic id="Heizkreis">
+			<tns:Field>
+				<tns:TopLeft X="40" Y="0" />
+				<tns:BottomRight X="160" Y="13" />
+			</tns:Field>
+		</tns:ScreenGrafic>
+		<tns:ScreenGrafic id="Tagestemperatur" exact="true">
+			<tns:Field>
+				<tns:TopLeft X="77" Y="80" />
+				<tns:BottomRight X="110" Y="125" />
+			</tns:Field>
+		</tns:ScreenGrafic>
+		<tns:ScreenGrafic id="Nachttemperatur" exact="true">
+			<tns:Field>
+				<tns:TopLeft X="110" Y="80" />
+				<tns:BottomRight X="140" Y="125" />
+			</tns:Field>
+		</tns:ScreenGrafic>
+	</tns:ScreenGrafics>
+	<tns:DataDescriptions>
+		<tns:DataDescription id="X6.UhrzeitSolvis">
+			<tns:Measurement dynamic="true" type="date">
+				<tns:Field position="0" length="6" />
+				<tns:Field position="216" length="6" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="I1.Anlagentyp">
+			<tns:Measurement type="unsigned" dynamic="false">
+				<tns:Field position="6" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="I2.Systemnummer">
+			<tns:Measurement type="unsigned" dynamic="false">
+				<tns:Field position="10" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S01.Warmwasserpuffer">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="14" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S02.Warmwassertemperatur">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="18" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S03.Speicherreferenztemperatur">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="22" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S04.Heizungspuffertemperatur_oben">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="26" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S05.Solarvorlauftemperatur">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="30" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S06.Solarruecklauftemperatur">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true">
+				<tns:Field position="38" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S07.Solardruck">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true">
+				<tns:Field position="38" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S08.Solarkollektortemperatur">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="42" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S09.Heizungspuffertemperatur_unten">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="46" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S10.Aussentemperatur">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="50" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S11.Zirkulationsdurchfluss">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="l/m">
+				<tns:Field position="54" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S12.Vorlauftemperatur_HK1">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="58" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S13.Vorlauftemperatur_HK2">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="62" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S14">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true">
+				<tns:Field position="66" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S15">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true">
+				<tns:Field position="70" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S16">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true">
+				<tns:Field position="74" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S18.Durchfluss_Warmwasserzirkulation">
+			<tns:Measurement type="unsigned" average="true"
+				divisor="10" dynamic="true">
+				<tns:Field position="78" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="S17.Durchfluss_Solarpanel">
+			<tns:Measurement type="unsigned" average="true"
+				dynamic="true">
+				<tns:Field position="82" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="AIn1">
+			<tns:Measurement type="unsigned" dynamic="true">
+				<tns:Field position="86" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="AIn2">
+			<tns:Measurement type="unsigned" dynamic="true">
+				<tns:Field position="90" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="AIn3">
+			<tns:Measurement type="unsigned" dynamic="true">
+				<tns:Field position="94" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="AOut0">
+			<tns:Measurement type="unsigned" dynamic="true">
+				<tns:Field position="98" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="AOut1">
+			<tns:Measurement type="unsigned" dynamic="true">
+				<tns:Field position="100" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="AOut2">
+			<tns:Measurement type="unsigned" dynamic="true">
+				<tns:Field position="102" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="AOut3">
+			<tns:Measurement type="unsigned" dynamic="true">
+				<tns:Field position="104" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="RF1.Raumfuehler_HK1">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="106" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="RF2.Raumfuehler_HK2">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="110" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="RF3.Raumfuehler_HK3">
+			<tns:Measurement type="signed" average="true"
+				divisor="10" dynamic="true" unit="°C">
+				<tns:Field position="114" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A01.Pumpe_Solar">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="118" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A02.Pumpe_Warmwasser">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="120" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A03.Pumpe_HK1">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="122" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A04.Pumpe_HK2">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="124" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A05.Pumpe_Warmwasserzirkulation">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="126" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A06.Pumpe_HK3">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="128" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A07"><!-- not used -->
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="130" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A08.Mischer_HK1_auf">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="132" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A09.Mischer.HK1_zu">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="134" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A10.Mischer_HK2_auf">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="136" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A11.Mischer.HK2_zu">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="138" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A12.Brenner">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="140" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A13.Brenner_S2">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="142" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="A14.Entstoerung">
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="144" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="SE.Solarertrag_kWh">
+			<tns:Measurement type="unsigned" dynamic="true" unit="kWh">
+				<tns:Field position="162" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="AOut5">
+			<tns:Measurement type="unsigned" dynamic="true">
+				<tns:Field position="176" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id=".isSerie7">
+			<tns:Measurement type="unsigned">
+				<tns:Field position="192" length="2" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="SL.Solarleistung_kW">
+			<tns:Measurement type="unsigned" dynamic="true" unit="kW">
+				<tns:Field position="196" length="4" />
+			</tns:Measurement>
+		</tns:DataDescription>
+		<tns:DataDescription id="X1.BrennerStarts">
+			<tns:Calculation strategy="starts">
+				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
+			</tns:Calculation>
+		</tns:DataDescription>
+		<tns:DataDescription id="X2.BrennerLaufzeit_s">
+			<tns:Calculation strategy="runtime">
+				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
+			</tns:Calculation>
+		</tns:DataDescription>
+		<tns:DataDescription id="X3.BrennerStufe2Starts">
+			<tns:Calculation strategy="starts">
+				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
+			</tns:Calculation>
+		</tns:DataDescription>
+		<tns:DataDescription id="X4.BrennerStufe2Laufzeit_s">
+			<tns:Calculation strategy="runtime">
+				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
+			</tns:Calculation>
+		</tns:DataDescription>
+		<tns:DataDescription id="X5.BrennerStatus">
+			<tns:Calculation strategy="burnerStatus">
+				<tns:Dependency id="burnerLevel1On" dataId="A12.Brenner" />
+				<tns:Dependency id="burnerLevel2On" dataId="A13.Brenner_S2" />
+			</tns:Calculation>
+		</tns:DataDescription>
+		<tns:DataDescription id="X7.MischerPosition0_HK1">
+			<tns:Calculation strategy="mixerPosition0">
+				<tns:Dependency id="pumpOn" dataId="A03.Pumpe_HK1" />
+				<tns:Dependency id="mixerClosing" dataId="A09.Mischer.HK1_zu" />
+			</tns:Calculation>
+		</tns:DataDescription>
+		<tns:DataDescription id="X8.MischerPosition0_HK2">
+			<tns:Calculation strategy="mixerPosition0">
+				<tns:Dependency id="pumpOn" dataId="A04.Pumpe_HK2" />
+				<tns:Dependency id="mixerClosing" dataId="A11.Mischer.HK2_zu" />
+			</tns:Calculation>
+		</tns:DataDescription>
+		<tns:DataDescription id="C01.StartsBrenner">
+			<tns:Control screenId="Zaehlfunktion">
+				<tns:Current>
+					<tns:TopLeft X="145" Y="75" />
+					<tns:BottomRight X="200" Y="88" />
+				</tns:Current>
+				<tns:TypeRead format="#######0" />
+				<tns:UpdateHeatingBurner burnerId="A12.Brenner"
+					runParameterId="X1.BrennerStarts" checkIntervallId="checkBrenner"
+					readIntervalId="readBrenner" />
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C02.LaufzeitBrenner">
+			<tns:Control screenId="Zaehlfunktion">
+				<tns:Current>
+					<tns:TopLeft X="145" Y="48" />
+					<tns:BottomRight X="200" Y="60" />
+				</tns:Current>
+				<tns:TypeRead format="######0C" unit="h" />
+				<tns:UpdateHeatingBurner burnerId="A12.Brenner"
+					runParameterId="X2.BrennerLaufzeit_s" factor="3600" checkIntervallId="checkBrenner"
+					readIntervalId="readBrenner" />
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C02.LaufzeitAnforderung2">
+			<tns:Control screenId="Zaehlfunktion">
+				<tns:Current>
+					<tns:TopLeft X="145" Y="105" />
+					<tns:BottomRight X="200" Y="117" />
+				</tns:Current>
+				<tns:TypeRead format="######0C" unit="h" />
+				<tns:UpdateHeatingBurner burnerId="A13.Brenner_S2"
+					runParameterId="X4.BrennerStufe2Laufzeit_s" factor="3600"
+					checkIntervallId="checkBrenner" readIntervalId="readBrenner" />
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C03.Raumeinfluss_HK1">
+			<tns:Control screenId="Heizkreis1 4_5">
+				<tns:Current>
+					<tns:TopLeft X="160" Y="75" />
+					<tns:BottomRight X="185" Y="87" />
+				</tns:Current>
+				<tns:TypeValue divisor="0" format="#0C" increment="10"
+					least="10" most="90" unit="%" wrapAround="true">
+					<tns:Upper  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="200" Y="80" />
+					</tns:Upper>
+					<tns:Lower  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="145" Y="80" />
+					</tns:Lower>
+				</tns:TypeValue>
+				<tns:UpdateScreenChange />
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C04.Tagestemperatur_HK1">
+			<tns:Control screenId="TagestemperaturSelected">
+				<tns:Current>
+					<tns:TopLeft X="55" Y="30" />
+					<tns:BottomRight X="110" Y="60" />
+				</tns:Current>
+				<tns:TypeValue format="#0CC" increment="1" least="0"
+					most="30" wrapAround="true" unit="°C">
+					<tns:Upper  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="225" Y="15" />
+					</tns:Upper>
+					<tns:Lower  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="225" Y="80" />
+					</tns:Lower>
+				</tns:TypeValue>
+				<tns:UpdateScreenChange />
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C05.Nachttemperatur_HK1">
+			<tns:Control screenId="NachttemperaturSelected">
+				<tns:Current>
+					<tns:TopLeft X="55" Y="30" />
+					<tns:BottomRight X="110" Y="60" />
+				</tns:Current>
+				<tns:TypeValue format="#0CC" increment="1" least="0"
+					most="30" wrapAround="true" unit="°C">
+					<tns:Upper  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="225" Y="15" />
+					</tns:Upper>
+					<tns:Lower  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="225" Y="80" />
+					</tns:Lower>
+				</tns:TypeValue>
+				<tns:UpdateScreenChange />
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C06.TemperatutFeineinstellung">
+			<tns:Control screenId="Home">
+				<tns:Current>
+					<tns:TopLeft X="80" Y="50" />
+					<tns:BottomRight X="105" Y="75" />
+				</tns:Current>
+				<tns:TypeValue format="C#0C" increment="1" least="-5"
+					most="5">
+					<tns:Upper  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="220" Y="20" />
+					</tns:Upper>
+					<tns:Lower  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="220" Y="50" />
+					</tns:Lower>
+				</tns:TypeValue>
+			</tns:Control>
+		</tns:DataDescription>
+	</tns:DataDescriptions>
+	<tns:Durations>
+		<tns:Duration id="Standard" time_ms="500" />
+		<tns:Duration id="Lang" time_ms="5000" />
+		<tns:Duration id="ValueChange" time_ms="500" />
+		<tns:Duration id="WindowChange" time_ms="2000" />
+		<tns:Duration id="checkBrenner" time_ms="86400000" />
+		<tns:Duration id="readBrenner" time_ms="60000" />
+	</tns:Durations>
+</tns:SolvisDescription>

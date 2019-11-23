@@ -1,6 +1,6 @@
-package de.sgollmer.solvismax.imagepatternrecognition.image;
+package de.sgollmer.solvismax.helper;
 
-public class Helper {
+public class ImageHelper {
 
 	public static int getBrightness( int rgb ) {
 		return (rgb & 0xff) + (rgb >> 8 & 0xff ) + ( rgb >> 16 & 0xff) ;

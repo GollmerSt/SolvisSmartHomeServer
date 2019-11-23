@@ -1,9 +1,5 @@
 package de.sgollmer.solvismax.model.objects.data;
 
-import java.util.Collection;
-
-import de.sgollmer.solvismax.error.TypeError;
-
 public class IntegerValue implements SingleData {
 	private final Integer data ;
 	
@@ -11,23 +7,6 @@ public class IntegerValue implements SingleData {
 		this.data = value ;
 	}
 
-	@Override
-	public SingleData average(Collection<SingleData> values) {
-		Integer average = 0 ;
-		int cnt = 0 ;
-		for ( SingleData data : values ) {
-			if ( ! ( data instanceof IntegerValue )) {
-				throw new TypeError( "Type error on calculation average ") ;
-			}
-			average += ((IntegerValue)data).data ;
-			++cnt ;
-		}
-		if ( cnt == 0 ) {
-			average = null ;
-		}
-		return( new IntegerValue( average )) ;
-	}
-	
 	@Override
 	public boolean equals( Object obj ) {
 		if ( obj instanceof IntegerValue ) {
@@ -47,6 +26,16 @@ public class IntegerValue implements SingleData {
 	 */
 	public Integer getData() {
 		return data;
+	}
+
+	@Override
+	public Integer getInt() {
+		return data;
+	}
+
+	@Override
+	public SingleData create(long divisor, int divident) {
+		return new IntegerValue( (int) (divisor / divident) );
 	}
 	
 }

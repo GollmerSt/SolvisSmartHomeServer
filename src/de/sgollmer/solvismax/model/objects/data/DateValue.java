@@ -1,7 +1,6 @@
 package de.sgollmer.solvismax.model.objects.data;
 
 import java.util.Calendar;
-import java.util.Collection;
 
 public class DateValue implements SingleData {
 	private final Calendar calendar ;
@@ -10,13 +9,18 @@ public class DateValue implements SingleData {
 		this.calendar = calendar ;
 	}
 
+	public Calendar getCalendar() {
+		return calendar;
+	}
+
 	@Override
-	public SingleData average(Collection<SingleData> values) {
+	public Integer getInt() {
 		return null;
 	}
 
-	public Calendar getCalendar() {
-		return calendar;
+	@Override
+	public SingleData create(long divisor, int divident) {
+		return null;
 	}
 	
 

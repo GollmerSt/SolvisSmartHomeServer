@@ -2,10 +2,10 @@ package de.sgollmer.solvismax.model.objects.calculation;
 
 import de.sgollmer.solvismax.error.AssignmentError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.AllDataDescriptions;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
@@ -37,7 +37,7 @@ public class RunTime extends Strategy<RunTime> {
 	@Override
 	public void instantiate(Solvis solvis) {
 		AllSolvisData allData = solvis.getAllSolvisData();
-		SolvisData result = allData.get(this.calculation.getId());
+		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
 		Dependencies dependencies = this.calculation.getDependencies();
 
@@ -46,10 +46,6 @@ public class RunTime extends Strategy<RunTime> {
 		Executable executable = new Executable(result, burnerOn);
 
 		executable.update(burnerOn);
-	}
-
-	@Override
-	public void assign(AllDataDescriptions descriptions) {
 	}
 
 	private class Executable implements ObserverI<SolvisData> {
@@ -89,12 +85,16 @@ public class RunTime extends Strategy<RunTime> {
 				}
 				int result = this.formerRunTime_s + (int) ((time - this.lastStartTime + 500) / 1000);
 
-				if (result / 60 - former / 60 > 0 || this.lastStartTime < 0 ) {
+				if (result / 60 - former / 60 > 0 || this.lastStartTime < 0) {
 					this.result.setInteger(result);
 				}
 			}
 		}
 
+	}
+
+	@Override
+	public void assign(SolvisDescription description) {
 	}
 
 }

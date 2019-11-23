@@ -1,5 +1,11 @@
 package de.sgollmer.solvismax.objects;
 
+import javax.xml.namespace.QName;
+
+import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.solvismax.xml.BaseCreator;
+
 public class Coordinate implements Cloneable {
 	private final int x;
 	private final int y;
@@ -7,6 +13,48 @@ public class Coordinate implements Cloneable {
 	public Coordinate(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	public static class Creator extends CreatorByXML<Coordinate> {
+
+		public Creator(String id, BaseCreator<?> creator) {
+			super(id, creator);
+		}
+
+		private Integer x = null;
+		private Integer y = null;
+
+		@Override
+		public void setAttribute(QName name, String value) {
+			switch (name.getLocalPart()) {
+				case "X":
+					this.x = Integer.parseInt(value);
+					break;
+				case "Y":
+					this.y = Integer.parseInt(value);
+					break;
+			}
+
+		}
+
+		@Override
+		public Coordinate create() {
+			if (this.x == null || this.y == null) {
+				throw new XmlError("Coordinates missing");
+			}
+			return new Coordinate(this.x, this.y);
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) {
+
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			return null;
+		}
+
 	}
 
 	@Override

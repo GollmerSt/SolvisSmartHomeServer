@@ -1,12 +1,17 @@
 package de.sgollmer.solvismax.model.objects.control;
 
+import javax.xml.namespace.QName;
+
+import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Command;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.AllDataDescriptions;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.UpdateStrategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class BurnerSometimes extends Strategy<BurnerSometimes> {
 
@@ -16,9 +21,8 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 	private final String checkIntervallId;
 	private final String readIntervalId;
 
-	public BurnerSometimes(Control control, String burnerId, String runParameterId, int factor, String checkIntervallId,
+	public BurnerSometimes(String burnerId, String runParameterId, int factor, String checkIntervallId,
 			String readIntervalId) {
-		super(control);
 		this.burnerId = burnerId;
 		this.runParameterId = runParameterId;
 		this.factor = factor;
@@ -27,11 +31,11 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 	}
 
 	public BurnerSometimes() {
-		this(null, null, null, -1, null, null);
+		this(null, null, -1, null, null);
 	}
 
 	@Override
-	public BurnerSometimes create(Control control, String irgendwasWieXML) {
+	public BurnerSometimes create(String irgendwasWieXML) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -45,15 +49,15 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 
 		SolvisData burnerSolvisRunTime = allData.checkAndGet(this.control.getDescription().getId());
 
-		int checkIntervall = solvis.getDuration(this.checkIntervallId).getDuration_ms();
-		int readIntervall = solvis.getDuration(this.readIntervalId).getDuration_ms();
+		int checkIntervall = solvis.getDuration(this.checkIntervallId).getTime_ms();
+		int readIntervall = solvis.getDuration(this.readIntervalId).getTime_ms();
 
 		new Executable(solvis, burner, burnerRunTime, burnerSolvisRunTime, factor, checkIntervall, readIntervall);
 
 	}
 
 	@Override
-	public void assign(AllDataDescriptions descriptions) {
+	public void assign(SolvisDescription description) {
 
 	}
 
@@ -142,67 +146,56 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 			}
 		}
 
-		// private class SyncThread extends Thread {
-		//
-		// private boolean terminate = false;
-		//
-		// @Override
-		// public void run() {
-		// solvis.execute(new Command(null, true, false));
-		//
-		// DataDescription description =
-		// BurnerSometimes.this.control.getDescription();
-		//
-		// int readPendingCnt = 10;
-		//
-		// while (!terminate) {
-		// if (!readPending) {
-		// Command command = new Command(description);
-		// readPending = true;
-		// solvis.execute(command);
-		// } else {
-		// --readPendingCnt;
-		// if (readPendingCnt == 0) {
-		// readPending = false;
-		// }
-		// }
-		// synchronized (BurnerSometimes.this) {
-		// try {
-		// this.wait(readIntervall);
-		// } catch (InterruptedException e) {
-		// }
-		// }
-		// }
-		// readPending = false;
-		// solvis.execute(new Command(null, false, true));
-		//
-		// }
-		//
-		// public void terminate() {
-		// synchronized (BurnerSometimes.this) {
-		// this.terminate = true;
-		// this.notifyAll();
-		// }
-		// }
-		//
-		// }
-		//
-		// private synchronized void stopSynchronisation() {
-		// this.syncActive = false;
-		// if (this.syncThread != null) {
-		// this.syncThread.terminate();
-		// this.syncThread = null;
-		// }
-		// }
-		//
-		// private synchronized void startSynchronisation() {
-		// this.syncActive = true;
-		// if (this.syncThread != null) {
-		// this.syncThread.terminate();
-		// }
-		// this.syncThread = new SyncThread();
-		// }
-		//
-		// }
+	}
+
+	public static class Creator extends CreatorByXML<BurnerSometimes> {
+
+		private String burnerId;
+		private String runParameterId;
+		private int factor;
+		private String checkIntervallId;
+		private String readIntervalId;
+
+		public Creator(String id, BaseCreator<?> creator) {
+			super(id, creator);
+		}
+
+		@Override
+		public void setAttribute(QName name, String value) {
+			switch (name.getLocalPart()) {
+				case "burnerId":
+					this.burnerId = value;
+					break;
+				case "runParameterId":
+					this.runParameterId = value;
+					break;
+				case "factor":
+					this.factor = Integer.parseInt(value);
+					break;
+				case "checkIntervallId":
+					this.checkIntervallId = value;
+					break;
+				case "readIntervalId":
+					this.readIntervalId = value;
+					break;
+			}
+		}
+
+		@Override
+		public BurnerSometimes create() throws XmlError {
+			return new BurnerSometimes(burnerId, runParameterId, factor, checkIntervallId, readIntervalId);
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) {
+			// TODO Auto-generated method stub
+
+		}
 	}
 }

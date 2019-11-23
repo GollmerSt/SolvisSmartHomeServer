@@ -1,7 +1,8 @@
 package de.sgollmer.solvismax.model.objects.measure;
 
 import java.util.Calendar;
-import java.util.Map;
+import java.util.Collection;
+import java.util.Iterator;
 
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.FieldError;
@@ -19,12 +20,12 @@ public enum Strategy {
 		this.type = type;
 	}
 
-	public boolean get(SolvisData destin, Map<String, Field> fields, String data) throws ErrorPowerOn {
+	public boolean get(SolvisData destin, Collection<Field> fields, String data) throws ErrorPowerOn {
 		return type.get(destin, fields, data);
 	}
 
 	private interface StrategyClass {
-		public boolean get(SolvisData destin, Map<String, Field> fields, String data) throws ErrorPowerOn;
+		public boolean get(SolvisData destin, Collection<Field> fields, String data) throws ErrorPowerOn;
 	}
 
 	private static class Integer implements StrategyClass {
@@ -35,8 +36,8 @@ public enum Strategy {
 		}
 
 		@Override
-		public boolean get(SolvisData destin, Map<String, Field> fields, String data) throws ErrorPowerOn {
-			Field field = fields.get("std");
+		public boolean get(SolvisData destin, Collection<Field> fields, String data) throws ErrorPowerOn {
+			Field field = getFirst(fields);
 			if (field == null) {
 				throw new FieldError("Field <std> unknown");
 			}
@@ -57,27 +58,21 @@ public enum Strategy {
 	private static class Date implements StrategyClass {
 
 		@Override
-		public boolean get(SolvisData destin, Map<String, Field> fields, String data) {
-			Field timeField = fields.get("time");
-			if (timeField == null) {
-				throw new FieldError("Field <time> unknown");
+		public boolean get(SolvisData destin, Collection<Field> fields, String data) {
+			String str = "" ;
+			for ( Iterator<Field> it = fields.iterator() ; it.hasNext() ;) {
+				str += it.next().subString(data) ;
 			}
-			Field dateField = fields.get("date");
-			if (dateField == null) {
-				throw new FieldError("Field <date> unknown");
-			}
-			String timeString = timeField.subString(data);
-			String dateString = dateField.subString(data);
-			if (NULL_STRING.contains(timeString) || NULL_STRING.contains(dateString)) {
+			if (NULL_STRING.contains(str) ) {
 				throw new ErrorPowerOn("Power on detected");
 			}
-			int second = (int) toInt(timeString.substring(4, 6));
-			int minute = (int) toInt(timeString.substring(2, 4));
-			int hour = (int) toInt(timeString.substring(0, 2));
+			int second = (int) toInt(str.substring(4, 6));
+			int minute = (int) toInt(str.substring(2, 4));
+			int hour = (int) toInt(str.substring(0, 2));
 
-			int year = (int) toInt(timeString.substring(0, 2)) + 2000;
-			int month = (int) toInt(timeString.substring(2, 4));
-			int date = (int) toInt(timeString.substring(4, 6));
+			int year = (int) toInt(str.substring(6, 8)) + 2000;
+			int month = (int) toInt(str.substring(8, 10));
+			int date = (int) toInt(str.substring(10, 12));
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(year, month, date, hour, minute, second);
@@ -91,8 +86,8 @@ public enum Strategy {
 	private static class Boolean implements StrategyClass {
 
 		@Override
-		public boolean get(SolvisData destin, Map<String, Field> fields, String data) throws ErrorPowerOn {
-			Field field = fields.get("std");
+		public boolean get(SolvisData destin, Collection<Field> fields, String data) throws ErrorPowerOn {
+			Field field = getFirst(fields);
 			if (field == null) {
 				throw new FieldError("Field <std> unknown");
 			}
@@ -120,6 +115,15 @@ public enum Strategy {
 			mult <<= 8;
 		}
 		return result;
+	}
+	
+	private static Field getFirst( Collection<Field> fields ) {
+		Iterator<Field> it = fields.iterator() ;
+		if ( it.hasNext() ) {
+			return it.next() ;
+		} else {
+			return null ;
+		}
 	}
 
 }

@@ -25,12 +25,12 @@ public class Pattern extends MyImage {
 	}
 
 	public Pattern(MyImage image, Coordinate topLeft, Coordinate bottomRight) {
-		super(image, topLeft, bottomRight);
+		super(image, topLeft, bottomRight,false);
 		processing();
 	}
 
 	public Pattern(MyImage image, Rectangle rectangle) {
-		super(image, rectangle);
+		super(image, rectangle,false);
 		processing();
 	}
 

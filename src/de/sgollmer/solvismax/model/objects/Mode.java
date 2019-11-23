@@ -1,6 +1,6 @@
 package de.sgollmer.solvismax.model.objects;
 
-public class Mode {
+public class Mode implements Assigner {
 	private final String id ;
 	private final TouchPoint touch ;
 	private final ScreenGrafic grafic ;
@@ -30,5 +30,11 @@ public class Mode {
 	 */
 	public TouchPoint getTouch() {
 		return touch;
+	}
+
+	@Override
+	public void assign(SolvisDescription description) {
+		this.touch.assign(description);
+		
 	}
 }

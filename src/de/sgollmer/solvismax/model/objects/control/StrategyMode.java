@@ -3,19 +3,25 @@ package de.sgollmer.solvismax.model.objects.control;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.xml.namespace.QName;
+
+import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.ScreenGrafic;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 import de.sgollmer.solvismax.objects.Rectangle;
+import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class StrategyMode implements Strategy {
 	
-	private final Collection< Mode > modes = new ArrayList<>() ;
+	private final Collection< Mode > modes = new ArrayList<>(5) ;
 
 	@Override
 	public boolean isWriteable() {
@@ -25,7 +31,7 @@ public class StrategyMode implements Strategy {
 	@Override
 	public SingleData getValue( MyImage source, Rectangle rectangle) {
 		Pattern pattern = null ;
-		MyImage image = new MyImage(source, rectangle) ;
+		MyImage image = new MyImage(source, rectangle, true ) ;
 		for ( Mode mode : this.modes ) {
 			ScreenGrafic cmp = mode.getGrafic() ;
 			MyImage cmpImage = image ;
@@ -71,5 +77,39 @@ public class StrategyMode implements Strategy {
 	public String getUnit() {
 		return null;
 	}
+	
+	public static class Creator extends CreatorByXML<StrategyMode> {
+
+		public Creator(String id, BaseCreator<?> creator) {
+			super(id, creator);
+		}
+
+		@Override
+		public void setAttribute(QName name, String value) {
+			
+		}
+
+		@Override
+		public StrategyMode create() throws XmlError {
+			return new StrategyMode();
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			return null;
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) {
+			
+		}
+		
+	}
+
+	@Override
+	public void assign(SolvisDescription description) {
+		
+	}
+
 
 }

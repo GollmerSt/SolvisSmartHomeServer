@@ -1,9 +1,17 @@
 package de.sgollmer.solvismax.model.objects;
 
-import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import javax.xml.namespace.QName;
 
-public class DataDescription implements DataSourceI {
+import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.calculation.Calculation;
+import de.sgollmer.solvismax.model.objects.control.Control;
+import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.measure.Measurement;
+import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.solvismax.xml.BaseCreator;
+
+public class DataDescription implements DataSourceI, Assigner {
 	private final String id;
 	private final DataSource dataSource;
 
@@ -47,16 +55,66 @@ public class DataDescription implements DataSourceI {
 	}
 
 	@Override
-	public void assign(AllDataDescriptions descriptions ) {
-		this.dataSource.assign(descriptions);
-		
+	public void assign(SolvisDescription description ) {
+		this.dataSource.assign(description);
+
 	}
 
 	@Override
 	public void instantiate(Solvis solvis) {
 		this.dataSource.instantiate(solvis);
-		
+
 	}
-	
+
+	public static class Creator extends CreatorByXML<DataDescription> {
+
+		private String id;
+		private DataSource dataSource;
+
+		public Creator(String id, BaseCreator<?> creator) {
+			super(id, creator);
+		}
+
+		@Override
+		public void setAttribute(QName name, String value) {
+			if ( name.getLocalPart().equals("id")) {
+				this.id = value ;
+			}
+			
+		}
+
+		@Override
+		public DataDescription create() throws XmlError {
+			DataDescription description = new DataDescription(id, dataSource);
+			dataSource.setDescription(description);
+			return description ;
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			String source = name.getLocalPart() ;
+			switch( source ) {
+				case "Control":
+					return new Control.Creator(source, this.getBaseCreator()) ;
+				case "Measurement":
+					return new Measurement.Creator(source, this.getBaseCreator()) ;
+				case "Calculation":
+					return new Calculation.Creator(source, this.getBaseCreator()) ;
+			}
+			return null;
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) {
+			switch( creator.getId() ) {
+				case "Control":
+				case "Measurement":
+				case "Calculation":
+					this.dataSource = (DataSource) created ; ;
+			}
+			
+		}
+
+	}
 
 }

@@ -1,7 +1,5 @@
 package de.sgollmer.solvismax.model.objects.data;
 
-import java.util.Collection;
-
 public class BooleanValue implements SingleData {
 
 	boolean value;
@@ -10,13 +8,18 @@ public class BooleanValue implements SingleData {
 		this.value = value;
 	}
 
-	@Override
-	public SingleData average(Collection<SingleData> values) {
-		return null;
-	}
-	
 	public Boolean get() {
-		return value ;
+		return value;
+	}
+
+	@Override
+	public Integer getInt() {
+		return this.value ? 1 : 0;
+	}
+
+	@Override
+	public SingleData create(long divisor, int divident) {
+		return new BooleanValue(divisor * 2 >= divident);
 	}
 
 }

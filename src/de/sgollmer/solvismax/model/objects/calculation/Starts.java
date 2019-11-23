@@ -2,10 +2,10 @@ package de.sgollmer.solvismax.model.objects.calculation;
 
 import de.sgollmer.solvismax.error.AssignmentError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.AllDataDescriptions;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
@@ -36,19 +36,15 @@ public class Starts extends Strategy<Starts> {
 	@Override
 	public void instantiate(Solvis solvis) {
 		AllSolvisData allData = solvis.getAllSolvisData();
-		SolvisData result = allData.get(this.calculation.getId());
-		
-		Dependencies dependencies = this.calculation.getDependencies() ;
-		
-		SolvisData burnerOn = dependencies.get(allData, "burnerOn") ;
+		SolvisData result = allData.get(this.calculation.getDescription().getId());
+
+		Dependencies dependencies = this.calculation.getDependencies();
+
+		SolvisData burnerOn = dependencies.get(allData, "burnerOn");
 
 		Executable executable = new Executable(result, burnerOn);
 
 		executable.update(burnerOn);
-	}
-
-	@Override
-	public void assign(AllDataDescriptions descriptions) {
 	}
 
 	private class Executable implements ObserverI<SolvisData> {
@@ -77,6 +73,10 @@ public class Starts extends Strategy<Starts> {
 
 		}
 
+	}
+
+	@Override
+	public void assign(SolvisDescription description) {
 	}
 
 }

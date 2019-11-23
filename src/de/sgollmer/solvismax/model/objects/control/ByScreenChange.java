@@ -1,30 +1,22 @@
 package de.sgollmer.solvismax.model.objects.control;
 
+import javax.xml.namespace.QName;
+
+import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Command;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.AllDataDescriptions;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Screen;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.UpdateStrategies.Strategy;
+import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ByScreenChange extends Strategy<ByScreenChange> {
 
-	public ByScreenChange(Control control) {
-		super(control);
-	}
-	
-	public ByScreenChange() {
-		this( null ) ;
-	}
-
 	@Override
-	public ByScreenChange create(Control control, String irgendwasWieXML) {
-		return new ByScreenChange(control);
-	}
-
-	@Override
-	public void assign(AllDataDescriptions descriptions) {
-
+	public ByScreenChange create(String irgendwasWieXML) {
+		return new ByScreenChange();
 	}
 
 	@Override
@@ -46,6 +38,39 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 			solvis.execute(new Command(control.getDescription()));
 
 		}
+	}
+
+	public static class Creator extends CreatorByXML<ByScreenChange> {
+
+		public Creator(String id, BaseCreator<?> creator) {
+			super(id, creator);
+		}
+
+		@Override
+		public void setAttribute(QName name, String value) {
+			
+		}
+
+		@Override
+		public ByScreenChange create() throws XmlError {
+			return new ByScreenChange();
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			return null;
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) {
+			
+		}
+		
+	}
+
+	@Override
+	public void assign(SolvisDescription description) {
+		
 	}
 
 }

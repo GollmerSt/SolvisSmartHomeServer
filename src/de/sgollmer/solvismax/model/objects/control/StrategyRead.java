@@ -3,13 +3,19 @@ package de.sgollmer.solvismax.model.objects.control;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.xml.namespace.QName;
+
+import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Rectangle;
+import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class StrategyRead implements Strategy {
 	private final Format format;
@@ -40,7 +46,7 @@ public class StrategyRead implements Strategy {
 	}
 
 	public static class Format {
-		private final Collection<FormatChar> formatChars = new ArrayList<>();
+		private final Collection<FormatChar> formatChars = new ArrayList<>(5);
 		private final int origin;
 
 		public Format(String format) {
@@ -119,6 +125,54 @@ public class StrategyRead implements Strategy {
 	@Override
 	public String getUnit() {
 		return this.unit;
+	}
+	
+	public static class Creator extends CreatorByXML<StrategyRead> {
+		
+		private String format;
+		private int divisor;
+		private String unit;
+
+		public Creator(String id, BaseCreator<?> creator) {
+			super(id, creator);
+		}
+
+		@Override
+		public void setAttribute(QName name, String value) {
+			switch( name.getLocalPart() ) {
+				case "format" :
+					this.format = value ;
+					break ;
+				case "unit":
+					this.unit = value ;
+					break ;
+				case "divisor":
+					this.divisor = Integer.parseInt(value);
+					break ;
+			}
+			
+		}
+
+		@Override
+		public StrategyRead create() throws XmlError {
+			return new StrategyRead(format, divisor, unit);
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			return null;
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) {
+			
+		}
+		
+	}
+
+	@Override
+	public void assign(SolvisDescription description) {
+		
 	}
 
 }

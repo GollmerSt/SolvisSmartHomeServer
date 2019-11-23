@@ -1,5 +1,7 @@
 package de.sgollmer.solvismax.imagepatternrecognition.image;
 
+import de.sgollmer.solvismax.helper.ImageHelper;
+
 public class ImageMeta {
 	private final int averageBrightness;
 	private final int treshold;
@@ -14,7 +16,7 @@ public class ImageMeta {
 		for (int x = 0; x < image.getWidth(); ++x) {
 			for (int y = 0; y < image.getHeight(); ++y) {
 				int rgb = image.getRGB(x, y);
-				int brightness = Helper.getBrightness(rgb);
+				int brightness = ImageHelper.getBrightness(rgb);
 				if (minBrightness > brightness) {
 					minBrightness = brightness;
 				}
@@ -47,12 +49,12 @@ public class ImageMeta {
 	}
 
 	public boolean isActive(int rgb) {
-			int brightness = Helper.getBrightness(rgb);
+			int brightness = ImageHelper.getBrightness(rgb);
 			return (brightness < this.treshold) != this.invert;
 	}
 
 	public boolean isLight(int rgb) {
-			int brightness = Helper.getBrightness(rgb);
+			int brightness = ImageHelper.getBrightness(rgb);
 			return brightness > this.treshold;
 	}
 

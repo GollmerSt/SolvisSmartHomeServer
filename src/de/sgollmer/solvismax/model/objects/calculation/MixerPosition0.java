@@ -2,10 +2,10 @@ package de.sgollmer.solvismax.model.objects.calculation;
 
 import de.sgollmer.solvismax.error.AssignmentError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.AllDataDescriptions;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
@@ -37,16 +37,16 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	@Override
 	public void instantiate(Solvis solvis) {
 		AllSolvisData allData = solvis.getAllSolvisData();
-		SolvisData result = allData.get(this.calculation.getId());
-		
-		Dependencies dependencies = this.calculation.getDependencies() ;
+		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
-		SolvisData pumpOn = dependencies.get(allData, "pumpOn") ;
-		SolvisData mixerClosing = dependencies.get(allData, "mixerClosing") ;
+		Dependencies dependencies = this.calculation.getDependencies();
+
+		SolvisData pumpOn = dependencies.get(allData, "pumpOn");
+		SolvisData mixerClosing = dependencies.get(allData, "mixerClosing");
 
 		Executable executable = new Executable(result, pumpOn, mixerClosing);
 
-		executable.update( pumpOn );
+		executable.update(pumpOn);
 	}
 
 	private class Executable implements ObserverI<SolvisData> {
@@ -82,7 +82,8 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	public void assign(AllDataDescriptions descriptions) {		
+	public void assign(SolvisDescription description) {
+		
 	}
 
 }

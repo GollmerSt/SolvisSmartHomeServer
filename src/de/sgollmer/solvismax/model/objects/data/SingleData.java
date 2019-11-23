@@ -1,7 +1,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
-import java.util.Collection;
-
 public interface SingleData {
-	public SingleData average( Collection< SingleData > values ) ; 
+	//public SingleData average( Collection< SingleData > values ) ; 
+	public Integer getInt() ;
+	public SingleData create( long divisor, int divident) ;
 }

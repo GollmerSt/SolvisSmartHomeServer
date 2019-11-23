@@ -16,6 +16,7 @@ import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.Screen;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -26,10 +27,10 @@ public class Solvis {
 	private SmartHome smartHome;
 
 	private Screen homeScreen;
+	
+	private final SolvisDescription solvisDescription ;
+	private final AllSolvisData allSolvisData = new AllSolvisData(this);
 
-	private AllScreens screens;
-	private AllDataDescriptions descriptions;
-	private AllDurations durations;
 	private SolvisWorker worker = new SolvisWorker(this);
 	private WatchDog watchDog = new WatchDog(this) ;
 
@@ -38,9 +39,13 @@ public class Solvis {
 	private Screen savedScreen = null;
 	private String measureData = null;
 	private boolean screenSaverActive = false ;
-	private TouchPoint resetSceenSaver = new TouchPoint(new Coordinate(0, 0), pushTimeId, releaseTimeId) ;
+	private final TouchPoint resetSceenSaver = new TouchPoint(new Coordinate(0, 0), pushTimeId, releaseTimeId) ;
+	
+	public Solvis( SolvisDescription solvisDescription ) {
+		this.solvisDescription = solvisDescription ;
+		this.resetSceenSaver 
+	}
 
-	private final AllSolvisData allSolvisData = new AllSolvisData(this);
 
 	private Observer.Observable<Screen> screenChangedByUserObserable = new Observable<Screen>();
 
@@ -78,7 +83,7 @@ public class Solvis {
 		Screen screen = this.currentScreen;
 		if (screen == null) {
 			synchronized (solvisObject) {
-				screen = this.screens.getScreen(this.getCurrentImage());
+				screen = this.solvisDescription.getScreens().getScreen(this.getCurrentImage());
 				this.currentScreen = screen;
 			}
 		}

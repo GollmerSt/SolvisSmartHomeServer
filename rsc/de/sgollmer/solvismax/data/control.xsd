@@ -10,7 +10,7 @@
 		</annotation>
 		<sequence>
 			<element name="TouchPoint" type="tns:TouchPoint" maxOccurs="unbounded"
-				minOccurs="1">
+				minOccurs="0">
 				<annotation>
 					<documentation>
 						Bildschirmpunkt des Vorgänger-Bildschirms
@@ -154,7 +154,7 @@
 			<documentation>Alle Bildschirme</documentation>
 		</annotation>
 		<sequence>
-			<element name="Screen" type="tns:Screen" maxOccurs="1"
+			<element name="Screen" type="tns:Screen" maxOccurs="unbounded"
 				minOccurs="0"></element>
 		</sequence>
 	</complexType>
@@ -185,7 +185,7 @@
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeRad" type="tns:Read" maxOccurs="1" minOccurs="1"></element>
+				<element name="TypeRead" type="tns:Read" maxOccurs="1" minOccurs="1"></element>
 				<element name="TypeMode" type="tns:Mode" maxOccurs="1" minOccurs="1">
 					<annotation>
 						<documentation>
@@ -293,7 +293,7 @@
 
 
 
-	<complexType name="SolvisControl">
+	<complexType name="SolvisDescription">
 		<annotation>
 			<documentation>Root</documentation>
 		</annotation>
@@ -302,13 +302,16 @@
 			<element name="Screens" type="tns:Screens"></element>
 			<element name="ScreenGrafics" type="tns:ScreenGrafics">
 			</element>
+			<element name="DataDescriptions"
+				type="tns:DataDescriptions">
+			</element>
 			<element name="Durations" type="tns:Durations"></element>
-			<element name="DataDescriptions" type="tns:DataDescriptions"></element>
+			<element name="Miscellaneous" type="string"></element>
 		</sequence>
 		<attribute name="homeId" type="string"></attribute>
 	</complexType>
 
-	<element name="SolvisControl" type="tns:SolvisControl"></element>
+	<element name="SolvisDescription" type="tns:SolvisDescription"></element>
 
 
 	<complexType name="ScreenGrafics">
@@ -325,12 +328,12 @@
 
 	<complexType name="ScreenGraficRef">
 		<annotation>
-			<documentation>Referenz auf die Daten des zu vergleichende
-				Bildschirmbereich</documentation>
+			<documentation>
+				Referenz auf die Daten des zu vergleichende
+				Bildschirmbereich
+			</documentation>
 		</annotation>
-		<sequence>
-			<element name="refId" type="string"></element>
-		</sequence>
+		<attribute name="refId" type="string"></attribute>
 	</complexType>
 
 	<complexType name="Durations">
@@ -338,7 +341,7 @@
 			<documentation>Menge aller Dauern</documentation>
 		</annotation>
 		<sequence>
-			<element name="Duration" type="tns:Duration" maxOccurs="1"
+			<element name="Duration" type="tns:Duration" maxOccurs="unbounded"
 				minOccurs="0">
 				<annotation>
 					<documentation>Sämtliche Dauern. Dadurch können die Tastendrücke
@@ -367,7 +370,8 @@
 
 	<complexType name="TouchPoint">
 		<annotation>
-			<documentation>Zu drückender Punkt auf dem Bildschirm mit einer
+			<documentation>
+				Zu drückender Punkt auf dem Bildschirm mit einer
 				bestimmten Dauer
 			</documentation>
 		</annotation>
@@ -379,30 +383,35 @@
 					</documentation>
 				</annotation>
 			</element>
-			<element name="PushTime" type="tns:DurationRef">
-				<annotation>
-					<documentation>
-						Länge des Druckes auf den Bildschirm
-					</documentation>
-				</annotation>
-			</element>
-			<element name="ReleaseTime" type="tns:DurationRef"></element>
 		</sequence>
+		<attribute name="pushTimeRefId" type="string"></attribute>
+		<attribute name="releaseTimeRefId" type="string"></attribute>
 	</complexType>
 
 
 	<complexType name="Read">
-		<attribute name="format" type="string"></attribute>
+		<attribute name="format" type="string">
+			<annotation>
+				<documentation>Der Format-String dient zur Extraktion der Daten aus einem String
+
+Er besteht aus folgenden zeichen:
+
+  C:	beliebiges Zeichen, wird ignoriert
+  0:	Ziffer oder +/-, muss vorhanden sein, wird übernommen
+  #:  Ziffer oder +/- optional, wird übernommen
+  </documentation>
+			</annotation></attribute>
 		<attribute name="unit" type="string"></attribute>
 		<attribute name="divisor" type="int"></attribute>
 	</complexType>
 
 	<complexType name="ScreenSaver">
 		<sequence>
-			<element name="TimeTopLeft" type="tns:Coordinate"></element>
-			<element name="TimeBottomLeft" type="tns:Coordinate"></element>
-			<element name="DateTopLeft" type="tns:Coordinate"></element>
-			<element name="DateBottomLeft" type="tns:Coordinate"></element>
+			<element name="TimeTopLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
+			<element name="TimeBottomLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
+			<element name="DateTopLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
+			<element name="DateBottomLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
+			<element name="ResetScreenSaver" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
 		</sequence>
 	</complexType>
 
@@ -418,12 +427,11 @@
 			</annotation>
 			<simpleType>
 				<restriction base="string">
-					<enumeration value="time"></enumeration>
+					<enumeration value="date"></enumeration>
 					<enumeration value="unsigned"></enumeration>
 					<enumeration value="signed"></enumeration>
 					<enumeration value="boolean"></enumeration>
 					<enumeration value="hex"></enumeration>
-					<enumeration value="date"></enumeration>
 				</restriction>
 			</simpleType>
 		</attribute>
@@ -459,7 +467,7 @@
 
 	<complexType name="Calculation">
 		<choice>
-			<element name="Dependeny" type="tns:Dependency" maxOccurs="unbounded"
+			<element name="Dependency" type="tns:Dependency" maxOccurs="unbounded"
 				minOccurs="0"></element>
 		</choice>
 
@@ -498,7 +506,7 @@
 
 	<complexType name="DataDescriptions">
 		<sequence>
-			<element name="DataDescription" type="tns:DataDescription"></element>
+			<element name="DataDescription" type="tns:DataDescription" maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
@@ -517,15 +525,6 @@
 	</complexType>
 	<complexType name="Field">
 		<sequence></sequence>
-		<attribute name="id">
-			<simpleType>
-				<restriction base="string">
-					<enumeration value="std"></enumeration>
-					<enumeration value="time"></enumeration>
-					<enumeration value="date"></enumeration>
-				</restriction>
-			</simpleType>
-		</attribute>
 		<attribute name="position" type="int"></attribute>
 		<attribute name="length" type="int"></attribute>
 	</complexType>
@@ -538,7 +537,7 @@
 		<attribute name="burnerId" type="string"></attribute>
 
 
-		<attribute name="runParameter" type="string"></attribute>
+		<attribute name="runParameterId" type="string"></attribute>
 
 		<attribute name="factor" type="int"></attribute>
 
@@ -548,4 +547,5 @@
 
 	<complexType name="ScreenChange">
 	</complexType>
+
 </schema>

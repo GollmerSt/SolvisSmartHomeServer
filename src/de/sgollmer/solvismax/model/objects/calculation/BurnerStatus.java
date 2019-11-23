@@ -2,22 +2,28 @@ package de.sgollmer.solvismax.model.objects.calculation;
 
 import de.sgollmer.solvismax.error.AssignmentError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.AllDataDescriptions;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class BurnerStatus extends Strategy<BurnerStatus> {
+	
+	public BurnerStatus() {
+		super(null) ;
+	}
+
 
 	public BurnerStatus(Calculation calculation) {
 		super(calculation);
 	}
 
-	public BurnerStatus() {
-		super(null);
+	@Override
+	public BurnerStatus create(Calculation calculation) {
+		return new BurnerStatus(calculation);
 	}
 
 	public enum Status implements ModeI {
@@ -36,11 +42,6 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	}
 
 	@Override
-	public BurnerStatus create(Calculation calculation) {
-		return new BurnerStatus(calculation);
-	}
-
-	@Override
 	public String getUnit() {
 		return null;
 	}
@@ -55,7 +56,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		Dependencies dependencies = this.calculation.getDependencies();
 
-		SolvisData result = allData.get(this.calculation.getId());
+		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
 		SolvisData burnerLevel1On = dependencies.get(allData, "burnerLevel1On");
 		SolvisData burnerLevel2On = dependencies.get(allData, "burnerLevel2On");
@@ -104,8 +105,8 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	}
 
 	@Override
-	public void assign(AllDataDescriptions descriptions) {
-
+	public void assign(SolvisDescription description) {
+		
 	}
 
 }
