@@ -4,7 +4,9 @@
 
 
 
-	<complexType name="Screen">
+    <annotation>
+    	<documentation></documentation></annotation>
+    <complexType name="Screen">
 		<annotation>
 			<documentation>Bildschirm-Definition</documentation>
 		</annotation>
@@ -97,8 +99,7 @@
 
 	<complexType name="ScreenOcr">
 		<annotation>
-			<documentation>Die zu erkennenden Zeichen, über die der Bildschirm
-				bestimmt werden kann</documentation>
+			<documentation>Die zu erkennenden Zeichen, über die der angezeigte Bildschirm bestimmt werden kann</documentation>
 		</annotation>
 		<sequence>
 			<element name="Field" type="tns:Rectangle">
@@ -118,9 +119,8 @@
 
 	<complexType name="Coordinate">
 		<annotation>
-			<documentation>Koordinate eines Punktes auf dem Bildschirm.
-				Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft
-				von links nach rechts, die Y-Koordinate von oben nach unten
+			<documentation>Koordinaten eines Punktes auf dem Bildschirm.
+Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links nach rechts, die Y-Koordinate von oben nach unten
 			</documentation>
 		</annotation>
 		<sequence></sequence>
@@ -130,7 +130,7 @@
 
 	<complexType name="Rectangle">
 		<annotation>
-			<documentation>Bereich auf dem Bildschirm</documentation>
+			<documentation>Definition eines Bereichs auf dem Bildschirm</documentation>
 		</annotation>
 		<sequence>
 			<element name="TopLeft" type="tns:Coordinate">
@@ -151,7 +151,7 @@
 
 	<complexType name="Screens">
 		<annotation>
-			<documentation>Alle Bildschirme</documentation>
+			<documentation>Alle Bildschirm-Definitionen</documentation>
 		</annotation>
 		<sequence>
 			<element name="Screen" type="tns:Screen" maxOccurs="unbounded"
@@ -163,49 +163,50 @@
 
 	<complexType name="Control">
 		<annotation>
-			<documentation>
-				Einstell-Parameter der Anlage (Tages-Temperatur,
-				Raumeinfluss, Betriebsart)
+			<documentation>Einstell-Parameter der Anlage (Tages-Temperatur, Raumeinfluss, Betriebsart)
 			</documentation>
 		</annotation>
 		<sequence>
 			<element name="Current" type="tns:Rectangle" maxOccurs="1" minOccurs="1">
 				<annotation>
-					<documentation>
-						Feld mit aktuellem Wert
+					<documentation>Feld mit aktuellem Wert
 					</documentation>
 				</annotation>
 			</element>
 			<choice>
 				<element name="TypeValue" type="tns:Value" maxOccurs="1" minOccurs="1">
 					<annotation>
-						<documentation>
-							Wenn ein einzustellender Wert (z. B.
-							Tages-Temperatur, Raumeinfluss)
+						<documentation>Definitionen, wenn derSolvis-Anlagenparameter ein einzustellender Wert (z. B.  Tages-Temperatur, Raumeinfluss) ist
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeRead" type="tns:Read" maxOccurs="1" minOccurs="1"></element>
+				<element name="TypeRead" type="tns:Read" maxOccurs="1" minOccurs="1">
+					<annotation>
+						<documentation>Definitionen, wenn derSolvis-Anlagenparameter nur ein auszulesender Wert (z. B.  Brennerstarts) ist</documentation>
+					</annotation></element>
 				<element name="TypeMode" type="tns:Mode" maxOccurs="1" minOccurs="1">
 					<annotation>
-						<documentation>
-							Einzustellender Modus (z.B. Betriebsart)
+						<documentation>Definitionen, wenn derSolvis-Anlagenparameter ein einzustellender Modus (z.B. Betriebsart) ist
 						</documentation>
 					</annotation>
 				</element>
 			</choice>
             <sequence>
 				<element name="UpdateHeatingBurner" type="tns:UpdateHeatingBurner" maxOccurs="1" minOccurs="0">
+                    <annotation>
+                    	<documentation>Abhängigkeitsdefinitionen von Solvis-Brenner-Daten</documentation>
+                    </annotation>
 				</element>
-				<element name="UpdateScreenChange" type="tns:ScreenChange" maxOccurs="1" minOccurs="0"></element>
+				<element name="UpdateScreenChange" type="tns:ScreenChange" maxOccurs="1" minOccurs="0">
+					<annotation>
+						<documentation>Abhängig von Bildschirm-Wechseln (User-Eingriff)</documentation>
+					</annotation></element>
 			</sequence>
 			
 		</sequence>
 		<attribute name="screenId" type="string">
 			<annotation>
-				<documentation>
-					Name des Bildschirms, über das der Anlagenparameter
-					ausgelesen/eingestellt werden kann
+				<documentation>Name des Bildschirms, über das der Anlagenparameter ausgelesen/eingestellt werden kann
 				</documentation>
 			</annotation>
 		</attribute>
@@ -213,7 +214,7 @@
 
 	<complexType name="Mode">
 		<annotation>
-			<documentation>Wenn eine Betriebsart (z.B. Tag/Nacht/Standby)
+			<documentation>Definitionen der Betriebsarten um die aktulle Betriebsart zu ermmitteln/einzustellen (z.B. Tag/Nacht/Standby)
 			</documentation>
 		</annotation>
 		<sequence>
@@ -224,44 +225,43 @@
 
 	<complexType name="Value">
 		<annotation>
-			<documentation>
-				Wenn ein Wert (z.B. Raumeinfluss oder Tagestemperatur )
+			<documentation>Defintionen zur Modifikation eines Wertes über das Solvis-Gui (Berührungspunkte für Aufwärts-/Abwärtszählen, Increments etc.)
 			</documentation>
 		</annotation>
 		<complexContent>
 			<extension base="tns:Read">
 				<sequence>
-					<element name="Upper" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
-					<element name="Lower" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+					<element name="Upper" type="tns:TouchPoint" maxOccurs="1" minOccurs="1">
+						<annotation>
+							<documentation>Berührungspunkt-Definition um den Wert zu erhöhen</documentation>
+						</annotation></element>
+					<element name="Lower" type="tns:TouchPoint" maxOccurs="1" minOccurs="1">
+						<annotation>
+							<documentation>Berührungspunkt-Definition um den Wert zu erniedrigen</documentation>
+						</annotation></element>
 				</sequence>
 				<attribute name="increment" type="int">
 					<annotation>
-						<documentation>
-							Wert um den der Parameter bei einem
-							Bildschirmdruck erhöht/erniedigt wird
+						<documentation>Wert um den der Parameter bei einem Bildschirmdruck erhöht/erniedigt wird
 						</documentation>
 					</annotation>
 				</attribute>
 				<attribute name="least" type="int">
 					<annotation>
-						<documentation>
-							kleinster Wert des Parameters
+						<documentation>kleinster Wert des Parameters
 						</documentation>
 					</annotation>
 				</attribute>
 				<attribute name="most" type="int">
 					<annotation>
-						<documentation>
-							größter Wert des Parameters
+						<documentation>größter Wert des Parameters
 						</documentation>
 					</annotation>
 				</attribute>
 				<attribute name="wrapAround" type="boolean">
 					<annotation>
-						<documentation>
-							true: Wenn nach kleinstem Wert des größte
-							eingestellt wird (z.B. Raumeinfluss) false:
-							Bei fester Grenze
+						<documentation>true:  Wenn nach kleinstem Wert des größte eingestellt wird (z.B. Raumeinfluss)
+false: Bei fester Grenze
 						</documentation>
 					</annotation>
 				</attribute>
@@ -271,13 +271,12 @@
 
 	<complexType name="Mode">
 		<annotation>
-			<documentation>Betriebsstatus, z.B. Standby</documentation>
+			<documentation>Definition um ein Stus zu ermitteln/verändern (Betriebsstatus, z.B. Standby)</documentation>
 		</annotation>
 		<sequence>
 			<element name="Touch" type="tns:TouchPoint">
 				<annotation>
-					<documentation>Zu drrückender Punkt auf dem Bildschirm um den Modus
-						zu wählen</documentation>
+					<documentation>Zu drückender Punkt auf dem Bildschirm um den Modus zu wählen</documentation>
 				</annotation>
 			</element>
 			<element name="ScreenGrafic" type="tns:ScreenGrafic">
@@ -287,7 +286,10 @@
 				</annotation>
 			</element>
 		</sequence>
-		<attribute name="id" type="string"></attribute>
+		<attribute name="id" type="string">
+			<annotation>
+				<documentation>Modus-Name</documentation>
+			</annotation></attribute>
 	</complexType>
 
 
@@ -295,7 +297,7 @@
 
 	<complexType name="SolvisDescription">
 		<annotation>
-			<documentation>Root</documentation>
+			<documentation>Root mit der Home-Screen-Definition</documentation>
 		</annotation>
 		<sequence>
 			<element name="ScreenSaver" type="tns:ScreenSaver"></element>
@@ -316,7 +318,7 @@
 
 	<complexType name="ScreenGrafics">
 		<annotation>
-			<documentation>Menge aller Bildschirmbereichs-Grafiken
+			<documentation>Menge aller Bildschirmbereichs-Grafiken (enthält nicht die Images)
 			</documentation>
 		</annotation>
 		<sequence>
@@ -328,9 +330,7 @@
 
 	<complexType name="ScreenGraficRef">
 		<annotation>
-			<documentation>
-				Referenz auf die Daten des zu vergleichende
-				Bildschirmbereich
+			<documentation>Referenz auf die Daten des zu vergleichende Bildschirmbereichs
 			</documentation>
 		</annotation>
 		<attribute name="refId" type="string"></attribute>
@@ -338,7 +338,7 @@
 
 	<complexType name="Durations">
 		<annotation>
-			<documentation>Menge aller Dauern</documentation>
+			<documentation>Menge aller Zeiten</documentation>
 		</annotation>
 		<sequence>
 			<element name="Duration" type="tns:Duration" maxOccurs="unbounded"
@@ -353,27 +353,17 @@
 
 	<complexType name="Duration">
 		<annotation>
-			<documentation>Dauer allgemein, meist für Länge eines Druckes auf dem
-				Bildschirm
+			<documentation>Dauer allgemein, meist für Länge eines Druckes auf dem Bildschirm
 			</documentation>
 		</annotation>
 		<attribute name="id" type="string"></attribute>
 		<attribute name="time_ms" type="int"></attribute>
 	</complexType>
 
-	<complexType name="DurationRef">
-		<annotation>
-			<documentation>Referenz auf die Duration</documentation>
-		</annotation>
-		<attribute name="idRef" type="string"></attribute>
-	</complexType>
 
 	<complexType name="TouchPoint">
 		<annotation>
-			<documentation>
-				Zu drückender Punkt auf dem Bildschirm mit einer
-				bestimmten Dauer
-			</documentation>
+			<documentation>Definitionen zum Berühren eines bestimmten Punktes auf dem Bildschirm (Koordinaten, Länge etc.)</documentation>
 		</annotation>
 		<sequence>
 			<element name="Coordinate" type="tns:Coordinate">
@@ -390,7 +380,11 @@
 
 
 	<complexType name="Read">
-		<attribute name="format" type="string">
+        <annotation>
+        	<documentation>Definitionen für einen vom Bildschirm zu erkennenden Wertes
+</documentation>
+        </annotation>
+        <attribute name="format" type="string">
 			<annotation>
 				<documentation>Der Format-String dient zur Extraktion der Daten aus einem String
 
@@ -401,12 +395,21 @@ Er besteht aus folgenden zeichen:
   #:  Ziffer oder +/- optional, wird übernommen
   </documentation>
 			</annotation></attribute>
-		<attribute name="unit" type="string"></attribute>
-		<attribute name="divisor" type="int"></attribute>
+		<attribute name="unit" type="string">
+			<annotation>
+				<documentation>Einheit des vom Bildschirm gelesenen Wertes</documentation>
+			</annotation></attribute>
+		<attribute name="divisor" type="int">
+			<annotation>
+				<documentation>Divisor des Wertes (normalerweise 1)</documentation>
+			</annotation></attribute>
 	</complexType>
 
 	<complexType name="ScreenSaver">
-		<sequence>
+        <annotation>
+        	<documentation>Daten für die Screen-Saver-Erkennung</documentation>
+        </annotation>
+        <sequence>
 			<element name="TimeTopLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
 			<element name="TimeBottomLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
 			<element name="DateTopLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
@@ -417,7 +420,11 @@ Er besteht aus folgenden zeichen:
 
 
 	<complexType name="Measurement">
-		<sequence>
+        <annotation>
+        	<documentation>Definition  für das Auslesen eines Solvis-Datums aus dem Solvis-XML Hex-String.
+Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
+        </annotation>
+        <sequence>
 			<element name="Field" maxOccurs="unbounded" minOccurs="1"
 				type="tns:Field"></element>
 		</sequence>
@@ -450,8 +457,7 @@ Er besteht aus folgenden zeichen:
 		<attribute name="dynamic" type="boolean">
 			<annotation>
 				<documentation>
-					False: wenn nur einmalig gelesen True: wenn zyklisch
-					gelesen
+					False: wenn nur einmalig gelesen True: wenn zyklisch gelesen
 				</documentation>
 			</annotation>
 		</attribute>
@@ -466,14 +472,23 @@ Er besteht aus folgenden zeichen:
 
 
 	<complexType name="Calculation">
-		<choice>
+        <annotation>
+        	<documentation>Notwendigen Definitionen zur Berechnung für einee aus den Daten zu berechnender Wwert</documentation>
+        </annotation>
+        <choice>
 			<element name="Dependency" type="tns:Dependency" maxOccurs="unbounded"
-				minOccurs="0"></element>
+				minOccurs="0">
+				<annotation>
+					<documentation>Abhängigkeiten von Solvis-Messungen (Brenner an/aus etc.)</documentation>
+				</annotation></element>
 		</choice>
 
 		<attribute name="strategy">
 			<simpleType>
-				<restriction base="string">
+                <annotation>
+                	<documentation>Berechnungsart des zu berechnendesn Wertes</documentation>
+                </annotation>
+                <restriction base="string">
 					<enumeration value="runtime"></enumeration>
 					<enumeration value="starts"></enumeration>
 					<enumeration value="burnerStatus"></enumeration>
@@ -487,7 +502,10 @@ Er besteht aus folgenden zeichen:
 
 
 	<complexType name="DataDescription">
-		<choice>
+        <annotation>
+        	<documentation>Definitionen eines darzustellenden Solvis-Datums (z.B. A09.Mischer.HK1)</documentation>
+        </annotation>
+        <choice>
 			<element name="Control" type="tns:Control"></element>
 			<element name="Measurement" type="tns:Measurement"></element>
 			<element name="Calculation" type="tns:Calculation"></element>
@@ -499,32 +517,30 @@ Er besteht aus folgenden zeichen:
 
 
 	<complexType name="Dependency">
-		<sequence></sequence>
+        <annotation>
+        	<documentation>Abhängigkeit zu einem Solvis-Datums von andern</documentation>
+        </annotation>
+        <sequence></sequence>
 		<attribute name="id" type="string"></attribute>
 		<attribute name="dataId" type="string"></attribute>
 	</complexType>
 
 	<complexType name="DataDescriptions">
-		<sequence>
+        <annotation>
+        	<documentation>Alle Definitionen der Solvis-Daten</documentation>
+        </annotation>
+        <sequence>
 			<element name="DataDescription" type="tns:DataDescription" maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
 
-	<complexType name="SynchronisationCondition">
-		<sequence>
-			<element name="Dependency" type="tns:Dependency"></element>
-		</sequence>
-		<attribute name="Type">
-			<simpleType>
-				<restriction base="string">
-					<enumeration value="value"></enumeration>
-				</restriction>
-			</simpleType>
-		</attribute>
-	</complexType>
 	<complexType name="Field">
-		<sequence></sequence>
+        <annotation>
+        	<documentation>Bereichs-Definition eines Sovis-Datum in dem Solvis-XML Hex-String.
+Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
+        </annotation>
+        <sequence></sequence>
 		<attribute name="position" type="int"></attribute>
 		<attribute name="length" type="int"></attribute>
 	</complexType>
@@ -532,20 +548,54 @@ Er besteht aus folgenden zeichen:
 
 
 	<complexType name="UpdateHeatingBurner">
-		<sequence></sequence>
-		<attribute name="id" type="string"></attribute>
-		<attribute name="burnerId" type="string"></attribute>
+		<annotation>
+			<documentation>Defintionen zum Abgleich der berechneten Brennerdaten mit den Solvis-Daten (z.B. Laufzeiten, Brennerstarts)
+			</documentation>
+		</annotation>
+
+		<attribute name="burnerId" type="string">
+			<annotation>
+				<documentation>Brenner-Name der Solvis-XML-Definitionen (normalerweise A12.Brenner)
+				</documentation>
+			</annotation>
+		</attribute>
 
 
-		<attribute name="runParameterId" type="string"></attribute>
+		<attribute name="calculatedId" type="string">
+			<annotation>
+				<documentation>berechnentes Datum, das mit den echten Solvis-Daten synchronisiert werden muss (z.B. X2.BrennerLaufzeit_s)
+				</documentation>
+			</annotation>
+		</attribute>
 
-		<attribute name="factor" type="int"></attribute>
+		<attribute name="factor" type="int">
+			<annotation>
+				<documentation>Faktor, mit dem der echte-Solvis-Wert multipliziert werden muss, um den berechneten Wert vergleichen zu können
+				</documentation>
+			</annotation>
+		</attribute>
 
-		<attribute name="checkIntervallId" type="string"></attribute>
-		<attribute name="readIntervalId" type="string"></attribute>
+		<attribute name="checkIntervallId" type="string">
+			<annotation>
+				<documentation>Zeit-Intervall, nach dem der berechnete Wert mit dem echten Solvis-Wert verglichen wird und evtl. synchronisiert wird
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="readIntervalId" type="string">
+			<annotation>
+				<documentation>Zeit-Intervall im Synchronisations-Fall, nach dem bei laufendem Brenner immer die Solvis-Anlagenparameter ausgelesen werden
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="hourly" type="boolean"></attribute>
 	</complexType>
 
 	<complexType name="ScreenChange">
+        <annotation>
+        	<documentation>Definiert die Abhängigkeit der Definition von einer Bildschirmänderung.
+Greift der User an der Solvis-Console ein, wird dieser Wert neu ermittelt,
+da der user diesen manuell verändert haben könnte.</documentation>
+        </annotation>
 	</complexType>
 
 </schema>

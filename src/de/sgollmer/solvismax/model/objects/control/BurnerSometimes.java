@@ -16,22 +16,24 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 public class BurnerSometimes extends Strategy<BurnerSometimes> {
 
 	private final String burnerId;
-	private final String runParameterId;
+	private final String burnerCalcId;
 	private final int factor;
 	private final String checkIntervallId;
 	private final String readIntervalId;
+	private final boolean hourly;
 
-	public BurnerSometimes(String burnerId, String runParameterId, int factor, String checkIntervallId,
-			String readIntervalId) {
+	public BurnerSometimes(String burnerId, String burnerCalcId, int factor, String checkIntervallId,
+			String readIntervalId, boolean hourly) {
 		this.burnerId = burnerId;
-		this.runParameterId = runParameterId;
+		this.burnerCalcId = burnerCalcId;
 		this.factor = factor;
 		this.checkIntervallId = checkIntervallId;
 		this.readIntervalId = readIntervalId;
+		this.hourly = hourly;
 	}
 
 	public BurnerSometimes() {
-		this(null, null, -1, null, null);
+		this(null, null, -1, null, null, false);
 	}
 
 	@Override
@@ -45,7 +47,7 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData burner = allData.checkAndGet(this.burnerId);
 
-		SolvisData burnerRunTime = allData.checkAndGet(this.runParameterId);
+		SolvisData burnerRunTime = allData.checkAndGet(this.burnerCalcId);
 
 		SolvisData burnerSolvisRunTime = allData.checkAndGet(this.control.getDescription().getId());
 
@@ -65,13 +67,13 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 
 		private final Solvis solvis;
 		private final SolvisData burner;
-		private final SolvisData burnerRunTime;
-		private final SolvisData burnerSolvisRunTime;
+		private final SolvisData burnerCalcValue;
+		private final SolvisData burnerSolvisValue;
 		private final int factor;
 		private final int checkIntervall;
 		private final int readIntervall;
 
-		private int lastValue = -1;
+		private int lastSolvisValue = -1;
 		private long lastCheckTime = -1;
 		private boolean syncActive = false;
 		private boolean lastBurnerState = false;
@@ -84,18 +86,18 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 			}
 		};
 
-		public Executable(Solvis solvis, SolvisData burner, SolvisData burnerRunTime, SolvisData burnerSolvisRunTime,
+		public Executable(Solvis solvis, SolvisData burner, SolvisData burnerRunTime, SolvisData burnerSolvisValue,
 				int factor, int checkIntervall, int readIntervall) {
 			this.solvis = solvis;
 			this.burner = burner;
-			this.burnerRunTime = burnerRunTime;
-			this.burnerSolvisRunTime = burnerSolvisRunTime;
+			this.burnerCalcValue = burnerRunTime;
+			this.burnerSolvisValue = burnerSolvisValue;
 			this.factor = factor;
 			this.checkIntervall = checkIntervall;
 			this.readIntervall = readIntervall;
 
 			this.burner.registerContinuousObserver(this);
-			this.burnerSolvisRunTime.register(this.controlValueObserver);
+			this.burnerSolvisValue.register(this.controlValueObserver);
 		}
 
 		@Override
@@ -124,20 +126,20 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 		}
 
 		private void updateByControl(SolvisData data) {
-			int solvisRunTime = this.burnerSolvisRunTime.getInt() * this.factor;
+			int solvisValue = this.burnerSolvisValue.getInt() * this.factor;
 			if (this.syncActive) {
-				if (this.lastValue < 0) {
-					this.lastValue = solvisRunTime;
-				} else if (this.lastValue != solvisRunTime) {
-					this.burnerRunTime.setInteger(solvisRunTime);
+				if (this.lastSolvisValue < 0) {
+					this.lastSolvisValue = solvisValue;
+				} else if (this.lastSolvisValue != solvisValue) {
+					this.burnerCalcValue.setInteger(solvisValue);
 					this.solvis.execute(new Command(null, false, true));
 					this.syncActive = false;
 				}
 			} else {
-				int runTime = this.burnerRunTime.getInt();
+				int runTime = this.burnerCalcValue.getInt();
 
-				if (runTime < solvisRunTime || runTime >= solvisRunTime + this.factor) {
-					this.burnerRunTime.setInteger(solvisRunTime);
+				if (runTime < solvisValue || runTime >= solvisValue + this.factor) {
+					this.burnerCalcValue.setInteger(solvisValue);
 					if (this.factor > 1) {
 						this.solvis.execute(new Command(null, true, false));
 						this.syncActive = true;
@@ -151,10 +153,11 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 	public static class Creator extends CreatorByXML<BurnerSometimes> {
 
 		private String burnerId;
-		private String runParameterId;
-		private int factor;
+		private String burnerCalcId;
+		private int factor = 1;
 		private String checkIntervallId;
 		private String readIntervalId;
+		private boolean hourly = false;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -166,8 +169,8 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 				case "burnerId":
 					this.burnerId = value;
 					break;
-				case "runParameterId":
-					this.runParameterId = value;
+				case "calculatedId":
+					this.burnerCalcId = value;
 					break;
 				case "factor":
 					this.factor = Integer.parseInt(value);
@@ -178,12 +181,14 @@ public class BurnerSometimes extends Strategy<BurnerSometimes> {
 				case "readIntervalId":
 					this.readIntervalId = value;
 					break;
+				case "hourly":
+					this.hourly = Boolean.parseBoolean(value);
 			}
 		}
 
 		@Override
 		public BurnerSometimes create() throws XmlError {
-			return new BurnerSometimes(burnerId, runParameterId, factor, checkIntervallId, readIntervalId);
+			return new BurnerSometimes(burnerId, burnerCalcId, factor, checkIntervallId, readIntervalId,hourly);
 		}
 
 		@Override

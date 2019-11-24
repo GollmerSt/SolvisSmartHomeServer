@@ -37,7 +37,7 @@ public class SolvisDescription {
 		this.dataDescriptions.assign(this);
 	}
 
-	public static class Creator extends CreatorByXML<SolvisDescription> implements BaseCreator<Creator>{
+	public static class Creator extends BaseCreator<SolvisDescription>{
 
 		private final AllScreenGrafics screenGrafics ;
 		private String homeId;
@@ -106,11 +106,6 @@ public class SolvisDescription {
 					break;
 			}
 
-		}
-
-		@Override
-		public Creator getCreator() {
-			return this;
 		}
 
 		/**

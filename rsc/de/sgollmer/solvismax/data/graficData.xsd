@@ -3,28 +3,16 @@
 
     <complexType name="ScreenGrafic">
         <annotation>
-        	<documentation>Zu vergleichende Grafik eines Bildschirmbereichs</documentation>
+        	<documentation>Zu vergleichende Grafik eines Bildschirmbereichs
+Der Text-Bereich enthält die Daten Base64-cosiert</documentation>
         </annotation>
-        <sequence>
-    		<element name="data" type="string">
-    			<annotation>
-    				<documentation>Daten der Grafik in Base64-Darstellung</documentation>
-    			</annotation></element>
-    	</sequence>
-    	<attribute name="id" type="string">
+
+        <attribute name="id" type="string">
     		<annotation>
     			<documentation>Eindeutige Id über alle Grafiken, wird aus control referenziert</documentation>
     		</annotation></attribute>
     </complexType>
 
-    <complexType name="ScreenGrafics">
-        <annotation>
-        	<documentation>Menge aller Grafiken</documentation>
-        </annotation>
-        <sequence>
-    		<element name="Grafic" type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0"></element>
-    	</sequence>
-    </complexType>
 
 
     <complexType name="SolvisGrafics">
@@ -32,9 +20,22 @@
         	<documentation>Root</documentation>
         </annotation>
         <sequence>
-    		<element name="ScreenGrafics" type="tns:ScreenGrafics"></element>
-    	</sequence>
+        	<element name="System" type="tns:System" maxOccurs="unbounded" minOccurs="0"></element>
+        </sequence>
     </complexType>
 
     <element name="SolvisGrafics" type="tns:SolvisGrafics"></element>
+
+    <complexType name="System">
+        <annotation>
+        	<documentation>Dieses Objekt enthält die Grafik-Daten für eine bestimmte Solvis-Anlage</documentation>
+        </annotation>
+        <sequence>
+    		<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="id" type="string">
+    		<annotation>
+    			<documentation>Id der Solvis-Anlage</documentation>
+    		</annotation></attribute>
+    </complexType>
 </schema>

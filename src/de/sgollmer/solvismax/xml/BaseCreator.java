@@ -1,7 +1,8 @@
 package de.sgollmer.solvismax.xml;
 
-public interface BaseCreator< T > {
-	
-	public T getCreator() ;
+public abstract class BaseCreator< T > extends CreatorByXML<T> {
 
+	public BaseCreator( String id ) {
+		super(id) ;
+	}
 }

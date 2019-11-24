@@ -8,8 +8,10 @@
 		<tns:TimeBottomLeft X="75" Y="20" />
 		<tns:DateTopLeft X="75" Y="21" />
 		<tns:DateBottomLeft X="75" Y="33" />
-		<tns:ResetScreenSaver pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-		<tns:Coordinate X="0" Y="0"/></tns:ResetScreenSaver>
+		<tns:ResetScreenSaver pushTimeRefId="Standard"
+			releaseTimeRefId="WindowChange">
+			<tns:Coordinate X="0" Y="0" />
+		</tns:ResetScreenSaver>
 	</tns:ScreenSaver>
 	<tns:Screens>
 		<tns:Screen id="Home">
@@ -21,7 +23,8 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen backId="Home" id="Warmwasser" previousId="Home">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="40" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic exact="true" id="Warmwasser">
@@ -32,7 +35,8 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen backId="Home" id="Zirkulation" previousId="Home">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="65" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic exact="true" id="Zirkulation">
@@ -43,7 +47,8 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen backId="Home" id="Solar" previousId="Home">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="90" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic exact="true" id="Solar">
@@ -54,7 +59,8 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen backId="Home" id="Sonstiges 1" previousId="Home">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="115" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Sonstiges" />
@@ -66,7 +72,8 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen backId="Home" id="Sonstiges 2" previousId="Home">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="115" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Sonstiges" />
@@ -78,7 +85,8 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen backId="Home" id="Sonstiges 3" previousId="Home">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="115" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Sonstiges" />
@@ -91,7 +99,8 @@
 		</tns:Screen>
 		<tns:Screen backId="Sonstiges 1" id="Heizkreise"
 			previousId="Sonstiges 1">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="65" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Heizkreise">
@@ -103,7 +112,8 @@
 		</tns:Screen>
 		<tns:Screen backId="Heizkreise" id="Heizkreis1 1_5"
 			previousId="Heizkreise">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="15" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="11/5">
@@ -116,7 +126,8 @@
 		</tns:Screen>
 		<tns:Screen backId="Heizkreise" id="Heizkreis1 2_5"
 			previousId="Heizkreis1 1_5">
-			<tns:TouchPoint  pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="12/5">
@@ -129,7 +140,8 @@
 		</tns:Screen>
 		<tns:Screen backId="Heizkreise" id="Heizkreis1 3_5"
 			previousId="Heizkreis1 2_5">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="13/5">
@@ -142,7 +154,8 @@
 		</tns:Screen>
 		<tns:Screen backId="Heizkreise" id="Heizkreis1 5_5"
 			previousId="Heizkreis1 1_5">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="15/5">
@@ -155,7 +168,8 @@
 		</tns:Screen>
 		<tns:Screen backId="Heizkreise" id="Heizkreis1 4_5"
 			previousId="Heizkreis1 5_5">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="14/5">
@@ -181,7 +195,8 @@
 		</tns:Screen>
 		<tns:Screen backId="Home" id="TagestemperaturSelected"
 			previousId="Tagestemperatur">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="80" Y="45" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Tagestemperatur" />
@@ -208,7 +223,8 @@
 		</tns:Screen>
 		<tns:Screen backId="Home" id="NachttemperaturSelected"
 			previousId="Nachttemperatur">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="80" Y="45" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Nachttemperatur" />
@@ -222,7 +238,8 @@
 		</tns:Screen>
 		<tns:Screen backId="Sonstiges 2" id="Zaehlfunktion"
 			previousId="Sonstiges 2">
-			<tns:TouchPoint pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="85" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Zaehlfunktion" exact="true">
@@ -573,7 +590,7 @@
 				</tns:Current>
 				<tns:TypeRead format="#######0" />
 				<tns:UpdateHeatingBurner burnerId="A12.Brenner"
-					runParameterId="X1.BrennerStarts" checkIntervallId="checkBrenner"
+					calculatedId="X1.BrennerStarts" checkIntervallId="checkBrenner"
 					readIntervalId="readBrenner" />
 			</tns:Control>
 		</tns:DataDescription>
@@ -585,8 +602,9 @@
 				</tns:Current>
 				<tns:TypeRead format="######0C" unit="h" />
 				<tns:UpdateHeatingBurner burnerId="A12.Brenner"
-					runParameterId="X2.BrennerLaufzeit_s" factor="3600" checkIntervallId="checkBrenner"
-					readIntervalId="readBrenner" />
+					calculatedId="X2.BrennerLaufzeit_s" factor="3600"
+					checkIntervallId="checkBrenner" readIntervalId="readBrenner"
+					hourly="true" />
 			</tns:Control>
 		</tns:DataDescription>
 		<tns:DataDescription id="C02.LaufzeitAnforderung2">
@@ -597,8 +615,9 @@
 				</tns:Current>
 				<tns:TypeRead format="######0C" unit="h" />
 				<tns:UpdateHeatingBurner burnerId="A13.Brenner_S2"
-					runParameterId="X4.BrennerStufe2Laufzeit_s" factor="3600"
-					checkIntervallId="checkBrenner" readIntervalId="readBrenner" />
+					calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"
+					checkIntervallId="checkBrenner" readIntervalId="readBrenner"
+					hourly="true" />
 			</tns:Control>
 		</tns:DataDescription>
 		<tns:DataDescription id="C03.Raumeinfluss_HK1">
@@ -609,10 +628,10 @@
 				</tns:Current>
 				<tns:TypeValue divisor="0" format="#0C" increment="10"
 					least="10" most="90" unit="%" wrapAround="true">
-					<tns:Upper  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="200" Y="80" />
 					</tns:Upper>
-					<tns:Lower  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="145" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -627,10 +646,10 @@
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
 					most="30" wrapAround="true" unit="°C">
-					<tns:Upper  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
 					</tns:Upper>
-					<tns:Lower  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -645,10 +664,10 @@
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
 					most="30" wrapAround="true" unit="°C">
-					<tns:Upper  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
 					</tns:Upper>
-					<tns:Lower  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -663,10 +682,10 @@
 				</tns:Current>
 				<tns:TypeValue format="C#0C" increment="1" least="-5"
 					most="5">
-					<tns:Upper  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="220" Y="20" />
 					</tns:Upper>
-					<tns:Lower  pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="220" Y="50" />
 					</tns:Lower>
 				</tns:TypeValue>
