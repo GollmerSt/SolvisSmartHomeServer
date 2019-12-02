@@ -1,24 +1,24 @@
 package de.sgollmer.solvismax.model.objects.data;
 
 public class IntegerValue implements SingleData {
-	private final Integer data ;
-	
-	public IntegerValue( Integer value ) { 
-		this.data = value ;
+	private final Integer data;
+
+	public IntegerValue(Integer value) {
+		this.data = value;
 	}
 
 	@Override
-	public boolean equals( Object obj ) {
-		if ( obj instanceof IntegerValue ) {
-			return this.data.equals(((IntegerValue)obj).data) ;
+	public boolean equals(Object obj) {
+		if (obj instanceof IntegerValue) {
+			return this.data.equals(((IntegerValue) obj).data);
 		} else {
-			return false ;
+			return false;
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return this.data.hashCode() ;
+		return this.data.hashCode();
 	}
 
 	/**
@@ -34,8 +34,13 @@ public class IntegerValue implements SingleData {
 	}
 
 	@Override
-	public SingleData create(long divisor, int divident) {
-		return new IntegerValue( (int) (divisor / divident) );
+	public SingleData create(int value) {
+		return new IntegerValue(value);
 	}
-	
+
+	@Override
+	public String toString() {
+		return Integer.toString(data);
+	}
+
 }

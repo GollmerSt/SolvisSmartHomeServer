@@ -20,20 +20,22 @@ public class OcrRectangle extends MyImage {
 		super(image, upperLeft, lowerRight, true);
 		this.split();
 	}
-	
-	public OcrRectangle( MyImage image, Rectangle rectangle ) {
-		super( image, rectangle, true ) ;
+
+	public OcrRectangle(MyImage image, Rectangle rectangle) {
+		super(image, rectangle, true);
 		this.split();
 	}
-	
+
 	public OcrRectangle(MyImage image) {
-		super(image) ;
+		super(image);
 		this.split();
 	}
 
 	private void split() {
 
 		this.createHistograms(true);
+		
+		this.removeFrame();
 
 		this.shrink();
 
@@ -53,14 +55,14 @@ public class OcrRectangle extends MyImage {
 			} else {
 				if (start != null) {
 					Coordinate end = new Coordinate(x - 1, lower);
-					this.parts.add(new Ocr(this, start, end, false ));
+					this.parts.add(new Ocr(this, start, end, false));
 					start = null;
 				}
 			}
 		}
 		if (start != null) {
 			Coordinate end = new Coordinate(this.getHistogramX().size() - 1, lower);
-			this.parts.add(new Ocr(this, start, end, false ));
+			this.parts.add(new Ocr(this, start, end, false));
 		}
 	}
 
@@ -74,9 +76,79 @@ public class OcrRectangle extends MyImage {
 		return builder.toString();
 	}
 
+	private void removeFrame() {
+		int i;
+		boolean missed = true;
+		for (i = 0; i < this.getWidth() && this.getHistogramX().get(i) == this.getHeight(); ++i) {
+			missed = false;
+		}
+		if (missed) {
+			return;
+		}
+
+		int left = i;
+		missed = true;
+
+		for (i = this.getWidth() - 1; i >= 0 && this.getHistogramX().get(i) == this.getHeight(); --i) {
+			missed = false;
+		}
+		if (missed) {
+			return;
+		}
+
+		int right = i;
+
+		missed = true;
+		for (i = 0; i < this.getHeight() && this.getHistogramY().get(i) == this.getWidth(); ++i) {
+			missed = false;
+		}
+		if (missed) {
+			return;
+		}
+
+		int top = i;
+		missed = true;
+
+		for (i = this.getHeight() - 1; i >= 0 && this.getHistogramY().get(i) == this.getWidth(); --i) {
+			missed = false;
+		}
+		if (missed) {
+			return;
+		}
+
+		int bottom = i;
+
+		int remainingX = right - left + 1;
+		int remainingY = bottom - top + 1;
+		int thicknessX = this.getWidth() - remainingX ;
+		int thicknessY = this.getHeight() - remainingY ;
+
+		if (remainingX == 0 || remainingY == 0) {
+			return;
+		}
+		if (this.getHistogramX().get(left) != thicknessY && this.getHistogramX().get(right) != thicknessY
+				&& this.getHistogramY().get(top) != thicknessX && this.getHistogramY().get(bottom) != thicknessX) {
+			return ;
+		}
+		this.topLeft = new Coordinate(left + this.topLeft.getX(),top+this.topLeft.getY()) ;
+		this.maxRel = new Coordinate( remainingX, remainingY ) ;
+		
+		this.histogramX = this.histogramX.subList(left, right+1) ;
+		this.histogramY = this.histogramY.subList(top, bottom+1) ;
+		
+		for ( i = 0 ; i < this.histogramX.size(); ++i ) {
+			this.histogramX.set(i, this.histogramX.get(i)-thicknessY ) ;
+		}
+
+		for ( i = 0 ; i < this.histogramY.size(); ++i ) {
+			this.histogramY.set(i, this.histogramY.get(i)-thicknessX ) ;
+		}
+
+	}
+	
 	public static void main(String[] args) {
 
-		File parent = new File( "testFiles\\images");
+		File parent = new File("testFiles\\images");
 
 		File file = new File(parent, "bildschirmschoner.png");
 
@@ -84,7 +156,6 @@ public class OcrRectangle extends MyImage {
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -106,7 +177,6 @@ public class OcrRectangle extends MyImage {
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -136,7 +206,6 @@ public class OcrRectangle extends MyImage {
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -152,6 +221,44 @@ public class OcrRectangle extends MyImage {
 
 		System.out.println("ScreenId is: " + screenId + ", raumeinfluss is " + raumeinfluss);
 
+		// -------------------------------------------------------------
+
+		file = new File(parent, "Night Temperatur selected.png");
+
+		try {
+			bufferedImage = ImageIO.read(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		myImage = new MyImage(bufferedImage);
+
+		rectangle = new OcrRectangle(myImage, new Coordinate(55, 30), new Coordinate(110, 60));
+
+		String nightTemp = rectangle.getString();
+
+		System.out.println("Night temperature is " + nightTemp);
+
+		// -------------------------------------------------------------
+
+		file = new File(parent, "Zaehlfunktion.png");
+
+		try {
+			bufferedImage = ImageIO.read(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		myImage = new MyImage(bufferedImage);
+
+		rectangle = new OcrRectangle(myImage, new Coordinate(145, 75), new Coordinate(200, 88));
+
+		String brennerStarts = rectangle.getString();
+
+		System.out.println("Burner starts is " + brennerStarts);
+
 	}
+
+
 
 }

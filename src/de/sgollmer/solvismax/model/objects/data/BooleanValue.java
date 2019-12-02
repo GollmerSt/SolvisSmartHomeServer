@@ -18,8 +18,26 @@ public class BooleanValue implements SingleData {
 	}
 
 	@Override
-	public SingleData create(long divisor, int divident) {
-		return new BooleanValue(divisor * 2 >= divident);
+	public SingleData create(int value) {
+		return new BooleanValue( value > 0 );
+	}
+
+	@Override
+	public String toString() {
+		return Boolean.toString(value) ;
+	}
+	
+	@Override
+	public boolean equals( Object obj ) {
+		if ( obj instanceof BooleanValue ) {
+			return this.value == ((BooleanValue)obj).value ;
+		}
+		return false ;
+	}
+
+	@Override
+	public int hashCode() {
+		return value?179:72;
 	}
 
 }

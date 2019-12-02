@@ -15,6 +15,7 @@ public class AllSolvisData {
 	private Map<String, SolvisData> pendingUpdates = new HashMap<>();
 	private boolean updatePending = false;
 	private int averageCount ;
+	private int readMeasurementInterval ;
 	private boolean burnerSynchronisation = true ;
 
 	public AllSolvisData(Solvis solvis) {
@@ -111,5 +112,14 @@ public class AllSolvisData {
 	public Solvis getSolvis() {
 		return solvis;
 	}
+
+	public int getReadMeasurementInterval() {
+		return readMeasurementInterval;
+	}
+
+	public void setReadMeasurementInterval(int readMeasurementInterval) {
+		this.readMeasurementInterval = readMeasurementInterval;
+	}
+	
 	
 }

@@ -71,10 +71,10 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen backId="Home" id="Sonstiges 2" previousId="Home">
+		<tns:Screen backId="Home" id="Sonstiges 2" previousId="Sonstiges 1">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="25" Y="115" />
+				<tns:Coordinate X="220" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Sonstiges" />
 			<tns:ScreenGrafic exact="true" id="Sonstiges 2">
@@ -84,10 +84,10 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen backId="Home" id="Sonstiges 3" previousId="Home">
+		<tns:Screen backId="Home" id="Sonstiges 3" previousId="Sonstiges 2">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="25" Y="115" />
+				<tns:Coordinate X="220" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Sonstiges" />
 			<tns:ScreenGrafic exact="true" id="Sonstiges 3">
@@ -280,7 +280,7 @@
 		<tns:DataDescription id="X6.UhrzeitSolvis">
 			<tns:Measurement dynamic="true" type="date">
 				<tns:Field position="0" length="6" />
-				<tns:Field position="216" length="6" />
+				<tns:Field position="202" length="6" />
 			</tns:Measurement>
 		</tns:DataDescription>
 		<tns:DataDescription id="I1.Anlagentyp">
@@ -547,11 +547,18 @@
 		<tns:DataDescription id="X1.BrennerStarts">
 			<tns:Calculation strategy="starts">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
+				<tns:UpdateBy>
+					<tns:SolvisHeatingData solvisDataId="C02.StartsBrenner" />
+				</tns:UpdateBy>
 			</tns:Calculation>
 		</tns:DataDescription>
 		<tns:DataDescription id="X2.BrennerLaufzeit_s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
+				<tns:UpdateBy>
+					<tns:SolvisHeatingData solvisDataId="C03.LaufzeitBrenner"
+						factor="3600" />
+				</tns:UpdateBy>
 			</tns:Calculation>
 		</tns:DataDescription>
 		<tns:DataDescription id="X3.BrennerStufe2Starts">
@@ -562,6 +569,10 @@
 		<tns:DataDescription id="X4.BrennerStufe2Laufzeit_s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
+				<tns:UpdateBy>
+					<tns:SolvisHeatingData solvisDataId="C04.LaufzeitAnforderung2"
+						factor="3600" />
+				</tns:UpdateBy>
 			</tns:Calculation>
 		</tns:DataDescription>
 		<tns:DataDescription id="X5.BrennerStatus">
@@ -582,45 +593,153 @@
 				<tns:Dependency id="mixerClosing" dataId="A11.Mischer.HK2_zu" />
 			</tns:Calculation>
 		</tns:DataDescription>
-		<tns:DataDescription id="C01.StartsBrenner">
+		<tns:DataDescription id="C01.Anlagenmodus">
+			<tns:Control screenId="Home">
+				<tns:Current>
+					<tns:TopLeft X="110" Y="50" />
+					<tns:BottomRight X="135" Y="70" />
+				</tns:Current>
+				<tns:TypeMode>
+					<tns:Mode id="Tag">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="95" Y="110" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="ModeTag">
+							<tns:Field>
+								<tns:TopLeft X="110" Y="50" />
+								<tns:BottomRight X="135" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+					<tns:Mode id="Nacht">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="125" Y="110" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="ModeNacht">
+							<tns:Field>
+								<tns:TopLeft X="110" Y="50" />
+								<tns:BottomRight X="135" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+					<tns:Mode id="Standby">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="160" Y="110" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="ModeStandby">
+							<tns:Field>
+								<tns:TopLeft X="110" Y="50" />
+								<tns:BottomRight X="135" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+				</tns:TypeMode>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C02.StartsBrenner">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="75" />
 					<tns:BottomRight X="200" Y="88" />
 				</tns:Current>
 				<tns:TypeRead format="#######0" />
-				<tns:UpdateHeatingBurner burnerId="A12.Brenner"
-					calculatedId="X1.BrennerStarts" checkIntervallId="checkBrenner"
-					readIntervalId="readBrenner" />
+				<tns:UpdateBy>
+					<tns:HeatingBurner burnerId="A12.Brenner" />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C02.LaufzeitBrenner">
+		<tns:DataDescription id="C03.LaufzeitBrenner">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="48" />
 					<tns:BottomRight X="200" Y="60" />
 				</tns:Current>
 				<tns:TypeRead format="######0C" unit="h" />
-				<tns:UpdateHeatingBurner burnerId="A12.Brenner"
-					calculatedId="X2.BrennerLaufzeit_s" factor="3600"
-					checkIntervallId="checkBrenner" readIntervalId="readBrenner"
-					hourly="true" />
+				<tns:UpdateBy>
+					<tns:HeatingBurner burnerId="A12.Brenner"
+						calculatedId="X2.BrennerLaufzeit_s" hourly="true"
+						checkIntervallId="checkBrenner" readIntervalId="readBrenner" />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C02.LaufzeitAnforderung2">
+		<tns:DataDescription id="C04.LaufzeitAnforderung2">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="105" />
 					<tns:BottomRight X="200" Y="117" />
 				</tns:Current>
 				<tns:TypeRead format="######0C" unit="h" />
-				<tns:UpdateHeatingBurner burnerId="A13.Brenner_S2"
-					calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"
-					checkIntervallId="checkBrenner" readIntervalId="readBrenner"
-					hourly="true" />
+				<tns:UpdateBy>
+					<tns:HeatingBurner burnerId="A13.Brenner_S2"
+						calculatedId="X4.BrennerStufe2Laufzeit_s" checkIntervallId="checkBrenner"
+						readIntervalId="readBrenner" hourly="true" />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C03.Raumeinfluss_HK1">
+		<tns:DataDescription id="C05.WarmwasserPumpe">
+			<tns:Control screenId="Warmwasser">
+				<tns:Current>
+					<tns:TopLeft X="50" Y="30" />
+					<tns:BottomRight X="80" Y="70" />
+				</tns:Current>
+				<tns:TypeMode>
+					<tns:Mode id="aus">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="65" Y="75" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="WWPumpeAus" exact="true">
+							<tns:Field>
+								<tns:TopLeft X="50" Y="30" />
+								<tns:BottomRight X="80" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+					<tns:Mode id="an">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="65" Y="25" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="WWPumpeAn" exact="true">
+							<tns:Field>
+								<tns:TopLeft X="50" Y="30" />
+								<tns:BottomRight X="80" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+					<tns:Mode id="auto">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="75" Y="50" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="WWPumpeAuto" exact="true">
+							<tns:Field>
+								<tns:TopLeft X="50" Y="30" />
+								<tns:BottomRight X="80" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+				</tns:TypeMode>
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C06.WassertemperaturSoll">
+			<tns:Control screenId="Warmwasser">
+				<tns:Current>
+					<tns:TopLeft X="115" Y="10" />
+					<tns:BottomRight X="190" Y="38" />
+				</tns:Current>
+				<tns:TypeValue format="#0CC" increment="1" least="10"
+					most="65" unit="°C">
+					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="225" Y="20" />
+					</tns:Upper>
+					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="225" Y="50" />
+					</tns:Lower>
+				</tns:TypeValue>
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C07.Raumeinfluss_HK1">
 			<tns:Control screenId="Heizkreis1 4_5">
 				<tns:Current>
 					<tns:TopLeft X="160" Y="75" />
@@ -635,10 +754,12 @@
 						<tns:Coordinate X="145" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
-				<tns:UpdateScreenChange />
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C04.Tagestemperatur_HK1">
+		<tns:DataDescription id="C08.Tagestemperatur_HK1">
 			<tns:Control screenId="TagestemperaturSelected">
 				<tns:Current>
 					<tns:TopLeft X="55" Y="30" />
@@ -653,10 +774,12 @@
 						<tns:Coordinate X="225" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
-				<tns:UpdateScreenChange />
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C05.Nachttemperatur_HK1">
+		<tns:DataDescription id="C09.Nachttemperatur_HK1">
 			<tns:Control screenId="NachttemperaturSelected">
 				<tns:Current>
 					<tns:TopLeft X="55" Y="30" />
@@ -671,10 +794,12 @@
 						<tns:Coordinate X="225" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
-				<tns:UpdateScreenChange />
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C06.TemperatutFeineinstellung">
+		<tns:DataDescription id="C10.TemperaturFeineinstellung">
 			<tns:Control screenId="Home">
 				<tns:Current>
 					<tns:TopLeft X="80" Y="50" />
@@ -689,15 +814,38 @@
 						<tns:Coordinate X="220" Y="50" />
 					</tns:Lower>
 				</tns:TypeValue>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
 	</tns:DataDescriptions>
 	<tns:Durations>
-		<tns:Duration id="Standard" time_ms="500" />
+		<!-- Standard-Zeit für das Drücken eines Bildschirmbuttons -->
+		<tns:Duration id="Standard" time_ms="400" />
+		<!-- Lange Zeit für das Drücken eines Bildschirmbuttons (z.B. für Solltemperatureinstellung) -->
 		<tns:Duration id="Lang" time_ms="5000" />
-		<tns:Duration id="ValueChange" time_ms="500" />
-		<tns:Duration id="WindowChange" time_ms="2000" />
+		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein Wert 
+			verändert wurde -->
+		<tns:Duration id="ValueChange" time_ms="2000" />
+		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neues 
+			Fenster ausgewählt wurde -->
+		<tns:Duration id="WindowChange" time_ms="3000" />
+		<!-- Zeitintervall für den Check der Zählfunktionen, um die berechneten 
+			Werte zu synchronisieren -->
 		<tns:Duration id="checkBrenner" time_ms="86400000" />
+		<!-- Zeitintervall für das Lesen der Zählfunktionen, wenn die Synchronisation 
+			läuft -->
 		<tns:Duration id="readBrenner" time_ms="60000" />
+		<!-- Wiederholzeit nach fehlgeschlagenem Befehl: -->
+		<tns:Duration id="UnsuccessfullWaitTime" time_ms="10000" />
+		<!-- Zeitintervall, das nach einem Usereingriff vergehen muss, bis die 
+			Werte upgedated werden: -->
+		<tns:Duration id="ReleaseblockingAfterUserChange"
+			time_ms="300000" />
+		<!-- Zeitintervall nach dem immer der WatchDog aufgerufen wird, wenn die 
+			Command-Queue leer ist: -->
+		<tns:Duration id="WatchDogTime" time_ms="60000" />
 	</tns:Durations>
+	<tns:Miscellaneous defaultAverageCount="12" defaultReadMeasurementsIntervall_ms="10000" powerOffDetectedAfterIoErrors="3"/>
 </tns:SolvisDescription>

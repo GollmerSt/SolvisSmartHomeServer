@@ -1,5 +1,6 @@
 package de.sgollmer.solvismax.model.objects;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,10 +8,11 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
-public class AllScreens {
+public class AllScreens implements GraficsLearnable {
 	private Map< String, Screen > screens = new HashMap<>() ;
 	
 	public void add( Screen screen ) {
@@ -21,9 +23,9 @@ public class AllScreens {
 		return this.screens.get(id) ;
 	}
 	
-	public Screen getScreen( MyImage image) {
+	public Screen getScreen(MyImage image, Solvis solvis) {
 		for ( Screen screen : screens.values()) {
-			if ( screen.isScreen(image)) {
+			if ( screen.isScreen(image, solvis)) {
 				return screen ;
 			}
 		}
@@ -64,4 +66,17 @@ public class AllScreens {
 			
 		}
 	}
+
+	@Override
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
+		for ( Screen screen : this.screens.values() ) {
+			screen.createAndAddLearnScreen(null, learnScreens);
+		}
+	}
+
+	@Override
+	public void learn(Solvis solvis) {
+		
+	}
+
 }

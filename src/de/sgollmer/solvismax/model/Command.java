@@ -8,6 +8,7 @@ public class Command {
 	private final SingleData setValue ;
 	private final boolean screenRestoreOn ;
 	private final boolean screenRestoreOff ;
+	private boolean inhibit = false ;
 	
 	public Command( DataDescription description ) {
 		this( description, null, false, false ) ;
@@ -17,8 +18,8 @@ public class Command {
 		this( description, setValue, false, false ) ;
 	}
 	
-	public Command( DataDescription description, boolean screenRestoreOff, boolean screenRestoreOn ) {
-		this( description, null, screenRestoreOff, screenRestoreOn ) ;
+	public Command( boolean screenRestore ) {
+		this( null, null, !screenRestore, screenRestore ) ;
 	}
 	
 	public Command( DataDescription description, SingleData setValue, boolean screenRestoreOff, boolean screenRestoreOn ) {
@@ -42,6 +43,14 @@ public class Command {
 
 	public boolean isScreenRestoreOff() {
 		return screenRestoreOff;
+	}
+
+	public boolean isInhibit() {
+		return inhibit;
+	}
+
+	public void setInhibit(boolean inhibit) {
+		this.inhibit = inhibit;
 	}
 
 }

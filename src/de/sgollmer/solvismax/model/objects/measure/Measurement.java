@@ -1,13 +1,17 @@
 package de.sgollmer.solvismax.model.objects.measure;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.DataSource;
+import de.sgollmer.solvismax.model.objects.DataSourceI;
+import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Field;
@@ -87,7 +91,7 @@ public class Measurement extends DataSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) {
+	public boolean getValue(SolvisData dest, Solvis solvis) throws ErrorPowerOn, IOException {
 		return type.get(dest, this.fields, solvis.getMeasureData());
 	}
 
@@ -187,6 +191,25 @@ public class Measurement extends DataSource {
 
 	@Override
 	public void assign(SolvisDescription description) {
+	}
+
+	@Override
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
+		
+	}
+
+	@Override
+	public void learn(Solvis solvis) throws IOException {
+	}
+
+	@Override
+	public Type getType() {
+		return DataSourceI.Type.MEASUREMENT;
+	}
+
+	@Override
+	public Screen getScreen() {
+		return null;
 	}
 
 }

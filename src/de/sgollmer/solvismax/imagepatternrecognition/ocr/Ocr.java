@@ -3,9 +3,11 @@ package de.sgollmer.solvismax.imagepatternrecognition.ocr;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -28,9 +30,9 @@ public class Ocr extends MyImage {
 		this.processing(false);
 	}
 
-	public Ocr(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta ) {
-		super(image, topLeft, bottomRight, createImageMeta );
-		
+	public Ocr(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta) {
+		super(image, topLeft, bottomRight, createImageMeta);
+
 		this.processing(true);
 	}
 
@@ -74,6 +76,16 @@ public class Ocr extends MyImage {
 
 	}
 
+	private static class Next {
+		private final BlackWhite blackWhite;
+		private final int rotated90Degree;
+
+		public Next(BlackWhite blackWhite, int rotated90Degree) {
+			this.blackWhite = blackWhite;
+			this.rotated90Degree = rotated90Degree;
+		}
+	}
+
 	private class BlackWhite {
 
 		private Coordinate black;
@@ -84,7 +96,7 @@ public class Ocr extends MyImage {
 			this.white = white;
 		}
 
-		public BlackWhite nextCicle() {
+		public Next nextCicle() {
 			Coordinate diff = this.white.diff(this.black);
 			diff = new Coordinate(-diff.getY(), diff.getX());
 			BlackWhite newBlackWhite = new BlackWhite(this.black.add(diff), this.white.add(diff));
@@ -92,11 +104,13 @@ public class Ocr extends MyImage {
 			boolean checkActive = Ocr.this.isActive(newBlackWhite.black);
 
 			if (checkActive && !checkInactive) {
-				return newBlackWhite;
+				return new Next(newBlackWhite, 0);
 			} else if (!checkActive && !checkInactive) {
-				return new BlackWhite(this.black, newBlackWhite.black);
-			} else {
-				return new BlackWhite(newBlackWhite.white, this.white);
+				return new Next(new BlackWhite(this.black, newBlackWhite.black), 1);
+			} else if ( checkActive && checkInactive ) {
+				return new Next(new BlackWhite(newBlackWhite.white, this.white), -1);
+			} else  {
+				return new Next(new BlackWhite(newBlackWhite.white, this.white), -1);
 			}
 		}
 
@@ -146,13 +160,30 @@ public class Ocr extends MyImage {
 			return "Black: " + this.black + ", white: " + this.white;
 		}
 	}
+	
+	private static class AnalyseResult {
+		private final boolean  closedStructure ;
+		private final Coordinate average;
+		private final List< Coordinate > rotations180Degrees ;
+		
+		public AnalyseResult(	boolean  closedStructure, Coordinate average, List< Coordinate > rotations180Degrees ) {
+			this.closedStructure = closedStructure ;
+			this.average = average ;
+			this.rotations180Degrees = rotations180Degrees ;
+		}
+	}
+	
 
-	private Coordinate getClosedStructure(Coordinate coord) {
+	private AnalyseResult analyse(Coordinate coord) {
 
+		List< Coordinate> rotations180Degrees = new ArrayList<>() ;
+
+		
 		if (this.isActive(coord)) {
-			return null;
+			return new AnalyseResult(false, null, rotations180Degrees);
 		}
 
+		
 		boolean found = false;
 
 		int startX;
@@ -164,7 +195,7 @@ public class Ocr extends MyImage {
 		}
 
 		if (!found) {
-			return null;
+			return new AnalyseResult(false, null, rotations180Degrees);
 		}
 
 		Coordinate black = new Coordinate(startX, coord.getY());
@@ -178,19 +209,32 @@ public class Ocr extends MyImage {
 		boolean cont = true;
 
 		BlackWhite current = start;
+		
+		int angle = 0 ;
 
 		while (cont) {
-			BlackWhite next = current.nextCicle();
-			if (next == null || !this.isIn(next.white)) {
-				return null;
+			Next next = current.nextCicle();
+			if (next == null || !this.isIn(next.blackWhite.white)) {
+				return new AnalyseResult(false, null, rotations180Degrees);
 			}
-			returnValue = returnValue.add(next.white);
+			returnValue = returnValue.add(next.blackWhite.white);
 			++cnt;
-			cont = !start.equals(next);
-			current = next;
+			cont = !start.equals(next.blackWhite);
+			current = next.blackWhite;
+			int rotated = next.rotated90Degree ;
+			if ( rotated != 0 ) {
+				if ( (angle > 0 && rotated < 0) || (angle < 0 && rotated > 0) ) {
+					angle = rotated ;
+				} else {
+					angle += rotated ;
+					if ( angle > 1 ) {//|| angle < -1 ) {
+						rotations180Degrees.add(current.black) ;
+					}
+				}
+			}
 		}
 
-		return returnValue.div(cnt);
+		return new AnalyseResult(true, returnValue.div(cnt), rotations180Degrees ) ;
 	}
 
 	private boolean detectSlash(boolean backSlash, int startY, int endY) {
@@ -220,6 +264,12 @@ public class Ocr extends MyImage {
 			if (diff.getY() < 0 || diff.getX() * add < 0) {
 				return false;
 			}
+			if ( diff.getX() == 0 && diff.getY() == 0 ) {
+				diff = next.black.diff( current.black ) ;
+				if (diff.getY() < 0 || diff.getX() * add < 0) {
+					return false;
+				}
+			}
 			current = next;
 		}
 	}
@@ -240,18 +290,18 @@ public class Ocr extends MyImage {
 
 			Coordinate coord = new Coordinate(x, y);
 
-			if (this.isIn(coord) && this.getClosedStructure(coord) != null) {
+			if (this.isIn(coord) && this.analyse(coord).closedStructure) {
 				return '4';
 			}
 		}
+		
+		AnalyseResult upper = this
+				.analyse(new Coordinate(this.getWidth() / 2, this.getHeight() / 4));
+		AnalyseResult lower = this
+				.analyse(new Coordinate(this.getWidth() / 2, this.getHeight() * 3 / 4));
 
-		Coordinate upperClosedStructure = this
-				.getClosedStructure(new Coordinate(this.getWidth() / 2, this.getHeight() / 4));
-		Coordinate lowerClosedStructure = this
-				.getClosedStructure(new Coordinate(this.getWidth() / 2, this.getHeight() * 3 / 4));
-
-		if (upperClosedStructure != null && lowerClosedStructure != null) {
-			if (upperClosedStructure.approximately(lowerClosedStructure, 2)) {
+		if (upper.closedStructure && lower.closedStructure) {
+			if (upper.average.approximately(lower.average, 2)) {
 				// - Erkennung von 0, geschlossene Struktur nahe Mitte
 				if (this.getHeight() > this.getWidth() * 5 / 4) {
 					return '0';
@@ -262,10 +312,10 @@ public class Ocr extends MyImage {
 				// - Erkennung von 8, zwei geschlossene Strukturen
 				return '8';
 			}
-		} else if (upperClosedStructure != null) {
+		} else if (upper.closedStructure) {
 			// - Erkennung von 9, geschlossene Struktur obere Hälfte
 			return '9';
-		} else if (lowerClosedStructure != null) {
+		} else if (lower.closedStructure) {
 			// - Erkennung von 6, geschlossene Struktur untere Hälfte
 			return '6';
 		}
@@ -353,10 +403,16 @@ public class Ocr extends MyImage {
 			}
 		}
 
-		if (this.maximaX[0].getCoord() > this.getWidth() / 2 && this.maximaX[1].getCoord() > this.getWidth() / 2) {
-			// - Erkennung von 3, Senkrechtes Maximum rechte Hälfte, 2. Maximum
-			// ebenfalls rechte Hälfte
-			return '3';
+		if (this.maximaX[0].getCoord() > this.getWidth() / 2) { // &&
+																// this.maximaX[1].getCoord()
+																// >
+																// this.getWidth()
+																// / 2) {
+			List<Coordinate> rotations = lower.rotations180Degrees ;
+			
+			if ( rotations.size() == 1 && rotations.get(0).getY() >= this.getHeight() / 3 && rotations.get(0).getY() <= this.getHeight() * 2 / 3 ) {
+				return '3' ;
+			}
 		}
 
 		if (this.maximaX[0].getValue() == this.getHeight() && this.maximaX[0].getCoord() < this.getWidth() / 3) {
@@ -374,8 +430,8 @@ public class Ocr extends MyImage {
 
 		File parent = new File("testFiles\\images");
 
-		Collection<String> names = Arrays.asList("0.png", "1.png", "1 small.png", "2.png", "3.png", "4.png",
-				"4 black.png", "4 small.png", "5.png", "6.png", "7.png", "8.png", "9.png", "9 grey small.png",
+		Collection<String> names = Arrays.asList("0.png", "1.png", "1 small.png", "2.png", "3.png", "3 grey.png",
+				"4.png", "4 black.png", "4 small.png", "5.png", "6.png", "7.png", "8.png", "9.png", "9 grey small.png",
 				"minus.png", "minus2.png", "plus.png", "doppelpunkt.png", "punkt.png", "punkt small.png", "h small.png",
 				"grad.png", "C.png", "square bracket left.png", "square bracket right.png", "slash.png", "percent.png",
 				"percent grey.png");
@@ -387,7 +443,6 @@ public class Ocr extends MyImage {
 			try {
 				image = ImageIO.read(file);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				System.err.println("File: " + file.getName());
 				e.printStackTrace();
 			}

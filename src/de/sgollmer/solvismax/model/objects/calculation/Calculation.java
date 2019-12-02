@@ -1,12 +1,17 @@
 package de.sgollmer.solvismax.model.objects.calculation;
 
+import java.io.IOException;
+import java.util.Collection;
+
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.DataSource;
+import de.sgollmer.solvismax.model.objects.DataSourceI;
 import de.sgollmer.solvismax.model.objects.Dependencies;
 import de.sgollmer.solvismax.model.objects.Dependency;
+import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -59,8 +64,7 @@ public class Calculation extends DataSource {
 
 	@Override
 	public void instantiate(Solvis solvis) {
-		// TODO Auto-generated method stub
-
+		this.strategy.instantiate(solvis);
 	}
 
 	/**
@@ -119,5 +123,24 @@ public class Calculation extends DataSource {
 		this.dependencies.assign(description);
 		this.strategy.assign(description);
 
+	}
+
+	@Override
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
+		
+	}
+
+	@Override
+	public void learn(Solvis solvis) throws IOException {		
+	}
+
+	@Override
+	public Type getType() {
+		return DataSourceI.Type.CALCULATION;
+	}
+
+	@Override
+	public Screen getScreen() {
+		return null;
 	}
 }

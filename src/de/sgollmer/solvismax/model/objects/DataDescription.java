@@ -1,7 +1,11 @@
 package de.sgollmer.solvismax.model.objects;
 
+import java.io.IOException;
+import java.util.Collection;
+
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.calculation.Calculation;
@@ -25,12 +29,12 @@ public class DataDescription implements DataSourceI, Assigner {
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) {
+	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, ErrorPowerOn {
 		return this.dataSource.getValue(dest, solvis);
 	}
 
 	@Override
-	public boolean setValue(Solvis solvis, SolvisData value) {
+	public boolean setValue(Solvis solvis, SolvisData value) throws IOException {
 		return this.dataSource.setValue(solvis, value);
 	}
 
@@ -115,6 +119,28 @@ public class DataDescription implements DataSourceI, Assigner {
 			
 		}
 
+	}
+
+	@Override
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
+		dataSource.createAndAddLearnScreen(null, learnScreens);
+		
+	}
+
+	@Override
+	public void learn(Solvis solvis) throws IOException {
+		this.dataSource.learn(solvis);
+		
+	}
+
+	@Override
+	public Type getType() {
+		return this.dataSource.getType();
+	}
+
+	@Override
+	public Screen getScreen() {
+		return this.dataSource.getScreen();
 	}
 
 }

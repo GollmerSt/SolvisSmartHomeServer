@@ -39,6 +39,13 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		}
 	}
 
+	public SolvisData(SingleData data) {
+		this.data = data;
+		this.description = null;
+		this.average = null;
+		this.datas = null;
+	}
+
 	@Override
 	public SolvisData clone() {
 		return new SolvisData(this);
@@ -71,6 +78,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (!data.equals(this.data)) {
 			this.data = data;
 			this.notify(this);
+			System.out.println( this.getId() + ": " + data ) ;
 		}
 		if (this.continousObservable != null) {
 			this.continousObservable.notify(this);
@@ -136,6 +144,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		this.setData(new ModeValue<>(mode));
 	}
 
+	public ModeValue<?> getMode() {
+		if (this.data instanceof ModeValue<?>) {
+			return (ModeValue<?>) this.data;
+		} else {
+			return null;
+		}
+	}
+
 	public void setSingleData(SingleData data) {
 		this.setData(data);
 	}
@@ -145,6 +161,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 			this.continousObservable = new Observable<>();
 		}
 		this.continousObservable.register(observer);
+	}
+	
+	@Override
+	public String toString() {
+		return this.data.toString() ;
 	}
 
 }

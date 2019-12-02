@@ -1,15 +1,23 @@
 package de.sgollmer.solvismax.model.objects;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.solvismax.model.Command;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class AllDataDescriptions implements Assigner {
+public class AllDataDescriptions implements Assigner, GraficsLearnable {
 
 	private Map<String, DataDescription> descriptions = new HashMap<>();
 
@@ -24,7 +32,7 @@ public class AllDataDescriptions implements Assigner {
 	@Override
 	public void assign(SolvisDescription description) {
 		for (DataDescription data : descriptions.values()) {
-			data.assign( description ) ;
+			data.assign(description);
 		}
 	}
 
@@ -62,4 +70,81 @@ public class AllDataDescriptions implements Assigner {
 		}
 	}
 
+	@Override
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
+		for (DataDescription description : this.descriptions.values()) {
+			((GraficsLearnable) description).createAndAddLearnScreen(null, learnScreens);
+		}
+
+	}
+
+	@Override
+	public void learn(Solvis solvis) throws IOException {
+		// TODO Auto-generated method stub
+		for (DataDescription description : this.descriptions.values()) {
+			if (description instanceof GraficsLearnable) {
+				description.learn(solvis);
+			}
+		}
+	}
+
+	public void measure(Solvis solvis, AllSolvisData datas) throws IOException {
+		solvis.clearMeasuredData();
+		for (DataDescription description : this.descriptions.values()) {
+			if (description.getType() == DataSourceI.Type.MEASUREMENT) {
+				solvis.getValue(description);
+			}
+		}
+	}
+
+	public void init(Solvis solvis, AllSolvisData datas) throws IOException {
+
+		for (DataDescription description : this.descriptions.values()) {
+			datas.get(description);
+		}
+
+		// this.measure(solvis, datas);
+		//
+		// for (DataDescription description : this.descriptions.values()) {
+		// if (description.getType() == DataSourceI.Type.CALCULATION) {
+		// description.instantiate(solvis);
+		// }
+		// }
+		// List<DataDescription> descriptions = new ArrayList<>();
+		// for (DataDescription description : this.descriptions.values()) {
+		// if (description.getType() == DataSourceI.Type.CONTROL) {
+		// descriptions.add(description);
+		// }
+		// }
+		// Collections.sort(descriptions, new Comparator<DataDescription>() {
+		//
+		// @Override
+		// public int compare(DataDescription o1, DataDescription o2) {
+		// return o1.getScreen().compareTo(o2.getScreen());
+		// }
+		// });
+		// for (DataDescription description : descriptions) {
+		// solvis.getValue(description);
+		// }
+	}
+
+	public void initControl(Solvis solvis) {
+		List<DataDescription> descriptions = new ArrayList<>();
+		for (DataDescription description : this.descriptions.values()) {
+			if (description.getType() == DataSourceI.Type.CONTROL) {
+				descriptions.add(description);
+			}
+		}
+		Collections.sort(descriptions, new Comparator<DataDescription>() {
+
+			@Override
+			public int compare(DataDescription o1, DataDescription o2) {
+				return o1.getScreen().compareTo(o2.getScreen());
+			}
+		});
+		for (DataDescription description : descriptions) {
+			solvis.execute(new Command(description));
+		}
+
+	}
 }

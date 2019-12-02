@@ -184,25 +184,18 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 					<annotation>
 						<documentation>Definitionen, wenn derSolvis-Anlagenparameter nur ein auszulesender Wert (z. B.  Brennerstarts) ist</documentation>
 					</annotation></element>
-				<element name="TypeMode" type="tns:Mode" maxOccurs="1" minOccurs="1">
+				<element name="TypeMode" type="tns:TypeMode"
+					maxOccurs="unbounded" minOccurs="1">
 					<annotation>
-						<documentation>Definitionen, wenn derSolvis-Anlagenparameter ein einzustellender Modus (z.B. Betriebsart) ist
+						<documentation>Definitionen, wenn Solvis-Anlagenparameter ein einzustellender Modus (z.B. Betriebsart) ist
 						</documentation>
 					</annotation>
 				</element>
 			</choice>
-            <sequence>
-				<element name="UpdateHeatingBurner" type="tns:UpdateHeatingBurner" maxOccurs="1" minOccurs="0">
-                    <annotation>
-                    	<documentation>Abhängigkeitsdefinitionen von Solvis-Brenner-Daten</documentation>
-                    </annotation>
-				</element>
-				<element name="UpdateScreenChange" type="tns:ScreenChange" maxOccurs="1" minOccurs="0">
-					<annotation>
-						<documentation>Abhängig von Bildschirm-Wechseln (User-Eingriff)</documentation>
-					</annotation></element>
+			<sequence>
+				<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1" minOccurs="0"></element>
 			</sequence>
-			
+
 		</sequence>
 		<attribute name="screenId" type="string">
 			<annotation>
@@ -308,7 +301,7 @@ false: Bei fester Grenze
 				type="tns:DataDescriptions">
 			</element>
 			<element name="Durations" type="tns:Durations"></element>
-			<element name="Miscellaneous" type="string"></element>
+			<element name="Miscellaneous" type="tns:Miscellaneous"></element>
 		</sequence>
 		<attribute name="homeId" type="string"></attribute>
 	</complexType>
@@ -473,17 +466,19 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 
 	<complexType name="Calculation">
         <annotation>
-        	<documentation>Notwendigen Definitionen zur Berechnung für einee aus den Daten zu berechnender Wwert</documentation>
+        	<documentation>Notwendigen Definitionen zur Berechnung für eine aus den Daten zu berechnender Wert</documentation>
         </annotation>
-        <choice>
-			<element name="Dependency" type="tns:Dependency" maxOccurs="unbounded"
-				minOccurs="0">
-				<annotation>
-					<documentation>Abhängigkeiten von Solvis-Messungen (Brenner an/aus etc.)</documentation>
-				</annotation></element>
-		</choice>
+        <sequence>
+        	<element name="Dependency" type="tns:Dependency" maxOccurs="unbounded" minOccurs="0">
+        		<annotation>
+        			<documentation>Abhängigkeiten von Solvis-Messungen (Brenner an/aus etc.)
+        			</documentation>
+        		</annotation>
+        	</element>
+        	<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1" minOccurs="0"></element>
+        </sequence>
 
-		<attribute name="strategy">
+        <attribute name="strategy">
 			<simpleType>
                 <annotation>
                 	<documentation>Berechnungsart des zu berechnendesn Wertes</documentation>
@@ -547,7 +542,7 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 
 
 
-	<complexType name="UpdateHeatingBurner">
+	<complexType name="HeatingBurner">
 		<annotation>
 			<documentation>Defintionen zum Abgleich der berechneten Brennerdaten mit den Solvis-Daten (z.B. Laufzeiten, Brennerstarts)
 			</documentation>
@@ -555,7 +550,7 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 
 		<attribute name="burnerId" type="string">
 			<annotation>
-				<documentation>Brenner-Name der Solvis-XML-Definitionen (normalerweise A12.Brenner)
+				<documentation>Brenner-Name der Solvis-XML-Definitionen A12.Brenner oder A13.Brenner_S2)
 				</documentation>
 			</annotation>
 		</attribute>
@@ -563,31 +558,37 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 
 		<attribute name="calculatedId" type="string">
 			<annotation>
-				<documentation>berechnentes Datum, das mit den echten Solvis-Daten synchronisiert werden muss (z.B. X2.BrennerLaufzeit_s)
+				<documentation>berechnente Brennerstufen-Laufzeit, die zur Ermittelung des Stundenwechsels (hourly) hergenommen wird
 				</documentation>
 			</annotation>
 		</attribute>
+
 
 		<attribute name="factor" type="int">
 			<annotation>
-				<documentation>Faktor, mit dem der echte-Solvis-Wert multipliziert werden muss, um den berechneten Wert vergleichen zu können
-				</documentation>
-			</annotation>
-		</attribute>
-
+				<documentation>Faktor, um aus der Brennerlaufzeit aus dem GUI auf die berechnete Laufzeit zu kommen, normalerweise 3600. Dies wird zur Syynchronisation nach 1h Brennerlaufzeit benötigt.
+Ist der faktor -1, handelt es sich um den Update der Brennerstarts.</documentation>
+			</annotation></attribute>
 		<attribute name="checkIntervallId" type="string">
 			<annotation>
-				<documentation>Zeit-Intervall, nach dem der berechnete Wert mit dem echten Solvis-Wert verglichen wird und evtl. synchronisiert wird
+				<documentation> Zeit-Intervall, nach dem der berechnete Wert mit dem echten Solvis-Wert verglichen wird und evtl. synchronisiert wird
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="readIntervalId" type="string">
 			<annotation>
-				<documentation>Zeit-Intervall im Synchronisations-Fall, nach dem bei laufendem Brenner immer die Solvis-Anlagenparameter ausgelesen werden
+				<documentation>Zeit-Intervall, nach deren Ablauf immer die Brennerlaufzeit aus dem GUI ermittelt wird, wenn die Synchronisation gestartet ist.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="hourly" type="boolean"></attribute>
+		<attribute name="hourly" type="boolean">
+			<annotation>
+				<documentation>Wenn der Wert nach jeder Stund der Brennerlaufzeit kontrolliert werden soll. Dazu wird der berechnete Wert (z.B. X2.BrennerLaufzeit_s) genutzt.
+Kurz bevor der Brenner 1 h gelaufen ist, wird die Überprüfung aktiviert und so der Stellenwechsel genau detektiert wird.
+Die Überwachung wird dann mit dem Erkennen des Zeitwechsels wieder bis zur nächsten Stunde deaktiviert.
+				</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
 
 	<complexType name="ScreenChange">
@@ -598,4 +599,49 @@ da der user diesen manuell verändert haben könnte.</documentation>
         </annotation>
 	</complexType>
 
+
+	<complexType name="TypeMode">
+		<sequence>
+			<element name="Mode" type="tns:Mode" maxOccurs="unbounded" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Miscellaneous">
+        <annotation>
+        	<documentation>Verschiedenes</documentation>
+        </annotation>
+        <attribute name="defaultAverageCount" type="int">
+			<annotation>
+				<documentation>Anzahl der Messwerte, über die der Mittelwert gebildet wird</documentation>
+			</annotation></attribute>
+		<attribute name="powerOffDetectedAfterIoErrors" type="int">
+			<annotation>
+				<documentation>Anzahl der IO-Fehler, nachdem ein Power-Off der Solvis-Anlage erkannt wurde
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="defaultReadMeasurementsIntervall_ms" type="int">
+			<annotation>
+				<documentation>Intervall, nachdem die Solvis-Weerte regelmäßig gelesen werden</documentation>
+			</annotation></attribute>
+	</complexType>
+
+	<complexType name="UpdateBy">
+        <annotation>
+        	<documentation>Faktor, um von der Brennerlaufzeit aus dem GUI auf die berechnete Laufzeit zu kommen, normalerweise 3600.</documentation>
+        </annotation>
+        <sequence>
+			<element name="HeatingBurner" type="tns:HeatingBurner" maxOccurs="1" minOccurs="0">
+			</element>
+			<element name="ScreenChange" type="tns:ScreenChange" maxOccurs="1" minOccurs="0"></element>
+			<element name="SolvisHeatingData"
+				type="tns:SolvisHeatingData" maxOccurs="1" minOccurs="0">
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="SolvisHeatingData">
+		<attribute name="solvisDataId" type="string"></attribute>
+		<attribute name="factor" type="int"></attribute>
+	</complexType>
 </schema>

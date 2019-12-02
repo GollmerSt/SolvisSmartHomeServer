@@ -1,5 +1,7 @@
 package de.sgollmer.solvismax.xml;
 
+import java.io.IOException;
+
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
@@ -32,7 +34,7 @@ public abstract class  CreatorByXML< T > {
 	 * @throws XmlError
 	 */
 
-	public abstract T create() throws XmlError ;
+	public abstract T create()  throws XmlError, IOException ;
 	/**
 	 * Wird aufgerufen, wenn ein nested Tag erkannt wurde
 	 * 
@@ -57,6 +59,9 @@ public abstract class  CreatorByXML< T > {
 
 	public BaseCreator<?> getBaseCreator() {
 		return creator;
+	}
+
+	public void addCharacters(String data) {
 	}
 	
 }

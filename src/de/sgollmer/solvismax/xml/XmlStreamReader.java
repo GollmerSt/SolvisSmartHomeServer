@@ -1,7 +1,6 @@
 package de.sgollmer.solvismax.xml;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
@@ -12,6 +11,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
+
 
 import de.sgollmer.solvismax.error.XmlError;
 
@@ -54,7 +54,7 @@ public class XmlStreamReader<D> {
 		return destination;
 	}
 
-	private <T> T create(CreatorByXML<T> creator, XMLEventReader reader, XMLEvent startEvent, String streamId) {
+	private <T> T create(CreatorByXML<T> creator, XMLEventReader reader, XMLEvent startEvent, String streamId) throws XmlError, IOException {
 
 		for (@SuppressWarnings("unchecked")
 		Iterator<Attribute> it = startEvent.asStartElement().getAttributes(); it.hasNext();) {
@@ -84,6 +84,8 @@ public class XmlStreamReader<D> {
 					}
 					creator.created(child, this.create(child, reader, ev, streamId));
 					break;
+				case XMLStreamConstants.CHARACTERS:
+					creator.addCharacters( ev.asCharacters().getData()) ;
 			}
 		}
 		return creator.create();

@@ -18,8 +18,27 @@ public class ModeValue< M extends ModeI > implements SingleData {
 	}
 
 	@Override
-	public SingleData create(long divisor, int divident) {
+	public SingleData create(int value) {
 		return null;
+	}
+	
+	@Override
+	public boolean equals( Object obj ) {
+		if ( obj instanceof ModeValue<?> ) {
+			return this.mode.getName().equals(((ModeValue<?>) obj).mode.getName() ) ;
+		} else {
+			return false ;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return this.mode.hashCode() ;
+	}
+	
+	@Override
+	public String toString() {
+		return this.mode.getName() ;
 	}
 
 }

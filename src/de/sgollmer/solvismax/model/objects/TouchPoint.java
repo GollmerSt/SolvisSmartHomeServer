@@ -78,4 +78,16 @@ public class TouchPoint implements Assigner {
 		this.releaseTime = releaseTimeDuration.getTime_ms();
 	}
 
+	public Coordinate getCoordinate() {
+		return coordinate;
+	}
+
+	public Integer getPushTime() {
+		return pushTime;
+	}
+
+	public Integer getReleaseTime() {
+		return releaseTime;
+	}
+
 }

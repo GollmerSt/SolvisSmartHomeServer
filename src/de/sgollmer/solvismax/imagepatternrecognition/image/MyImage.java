@@ -4,20 +4,22 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.sgollmer.solvismax.helper.ImageHelper;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
 
 public class MyImage {
 
 	private final BufferedImage image;
-	private Coordinate topLeft;
-	private Coordinate maxRel; // Zeigt auf 1. Pixel auﬂerhalb, relativ
+	protected Coordinate topLeft;
+	protected Coordinate maxRel; // Zeigt auf 1. Pixel auﬂerhalb, relativ
 								// zu min
 
 	private final ImageMeta meta;
+	private Integer hashCode ;
 
-	private List<Integer> histogramX = null;
-	private List<Integer> histogramY = null;
+	protected List<Integer> histogramX = null;
+	protected List<Integer> histogramY = null;
 
 	private boolean autoInvert;
 
@@ -72,37 +74,8 @@ public class MyImage {
 		}
 	}
 
-	public MyImage create() {
-		return this.create(null);
-	}
-
-	public MyImage create(Rectangle rectangle) {
-		int height;
-		int width;
-		int incX;
-		int incY;
-		if (rectangle == null) {
-			height = this.image.getHeight();
-			width = this.image.getWidth();
-			incX = this.topLeft.getX();
-			incY = this.topLeft.getY();
-		} else {
-			Coordinate size = rectangle.getBottomRight().diff(rectangle.getTopLeft());
-			height = size.getY() + 1;
-			width = size.getX() + 1;
-			incX = rectangle.getTopLeft().getX() + this.topLeft.getX();
-			incY = rectangle.getTopLeft().getY() + this.topLeft.getY();
-		}
-		int imageType = this.image.getType();
-		BufferedImage c = new BufferedImage(width, height, imageType);
-		for (int x = 0; x < width; ++x) {
-			int xs = x + incX;
-			for (int y = 0; y < height; ++y) {
-				int ys = y + incY;
-				c.setRGB(x, y, this.image.getRGB(xs, ys));
-			}
-		}
-		return new MyImage(c);
+	public BufferedImage createBufferdImage() {
+		return this.image.getSubimage(this.topLeft.getX(), this.topLeft.getY(), this.maxRel.getX(), this.maxRel.getY()) ;
 	}
 
 	public boolean isIn(Coordinate coord) {
@@ -278,5 +251,46 @@ public class MyImage {
 			super(message);
 		}
 	}
+	
+	@Override
+	public int hashCode() {
+		if (this.hashCode == null) {
+			this.hashCode = 269;
+			for (int x = 0; x < this.getWidth(); ++x) {
+				for (int y = 0; y < this.getHeight(); ++y) {
+					int brighness = ImageHelper.getBrightness( this.image.getRGB(x+topLeft.getX(), y+topLeft.getY())) ;
+					this.hashCode = this.hashCode * 643 + brighness * 193 ;
+				}
+			}
+		}
+		return this.hashCode;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof MyImage)) {
+			return false;
+		}
+		MyImage i = (MyImage) obj;
+
+		if (this.getWidth() != i.getWidth() || this.getHeight() != i.getHeight()) {
+			return false;
+		}
+		if (this.hashCode() != i.hashCode()) {
+			return false;
+		}
+		for (int x = 0; x < this.getWidth(); ++x) {
+			for (int y = 0; y < this.getHeight(); ++y) {
+				int brighness1 = ImageHelper.getBrightness( this.image.getRGB(x+topLeft.getX(), y+topLeft.getY())) ;
+				int brighness2 = ImageHelper.getBrightness( i.image.getRGB(x+i.topLeft.getX(), y+i.topLeft.getY())) ;
+				if (brighness1 != brighness2) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
 
 }

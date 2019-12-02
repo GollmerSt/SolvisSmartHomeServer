@@ -69,7 +69,7 @@ public class Pattern extends MyImage {
 		for (int x = 0; x < this.getWidth(); ++x) {
 			for (int y = 0; y < this.getHeight(); ++y) {
 				boolean light1 = this.isLight(x, y);
-				boolean light2 = this.isLight(x, y);
+				boolean light2 = p.isLight(x, y);
 				if (light1 != light2) {
 					return false;
 				}
@@ -88,7 +88,6 @@ public class Pattern extends MyImage {
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -101,7 +100,6 @@ public class Pattern extends MyImage {
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -112,7 +110,6 @@ public class Pattern extends MyImage {
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -123,7 +120,6 @@ public class Pattern extends MyImage {
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

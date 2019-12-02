@@ -1,5 +1,6 @@
 package de.sgollmer.solvismax.model.objects.control;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -34,14 +35,14 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public SingleData getValue(MyImage image, Rectangle rectangle) {
-		OcrRectangle ocr = new OcrRectangle(image);
+	public SingleData getValue(MyImage image, Rectangle rectangle, Solvis solvis) {
+		OcrRectangle ocr = new OcrRectangle(image, rectangle);
 		String s = ocr.getString();
 		s = format.getString(s);
 		if (s == null) {
 			return null;
 		}
-		Integer i = Integer.getInteger(s);
+		Integer i = Integer.parseInt(s);
 		return new IntegerValue(i);
 	}
 
@@ -64,6 +65,13 @@ public class StrategyRead implements Strategy {
 			int delta = source.length() - 1 - this.origin;
 			for (FormatChar fc : this.formatChars) {
 				int pos = fc.pos + delta;
+				if (pos < 0) {
+					if (fc.must) {
+						return null;
+					} else {
+						break;
+					}
+				}
 				if (fc.must && pos < 0) {
 					return null;
 				}
@@ -73,6 +81,8 @@ public class StrategyRead implements Strategy {
 					--delta;
 				} else if (!check) {
 					return null;
+				} else {
+					builder.append(c);
 				}
 			}
 			return builder.reverse().toString();
@@ -113,7 +123,7 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) {
+	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException {
 		return null;
 	}
 
@@ -126,9 +136,9 @@ public class StrategyRead implements Strategy {
 	public String getUnit() {
 		return this.unit;
 	}
-	
+
 	public static class Creator extends CreatorByXML<StrategyRead> {
-		
+
 		private String format;
 		private int divisor;
 		private String unit;
@@ -139,18 +149,18 @@ public class StrategyRead implements Strategy {
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			switch( name.getLocalPart() ) {
-				case "format" :
-					this.format = value ;
-					break ;
+			switch (name.getLocalPart()) {
+				case "format":
+					this.format = value;
+					break;
 				case "unit":
-					this.unit = value ;
-					break ;
+					this.unit = value;
+					break;
 				case "divisor":
 					this.divisor = Integer.parseInt(value);
-					break ;
+					break;
 			}
-			
+
 		}
 
 		@Override
@@ -165,14 +175,14 @@ public class StrategyRead implements Strategy {
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			
+
 		}
-		
+
 	}
 
 	@Override
 	public void assign(SolvisDescription description) {
-		
+
 	}
 
 }

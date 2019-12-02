@@ -12,13 +12,14 @@ import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 
 public class ControlFileReader {
+	
+	private static final boolean DEBUG = true ;
 
 	private static final String NAME_XML_CONTROLFILE = "control.xml";
 	private static final String NAME_XSD_CONTROLFILE = "control.xsd";
 	private static final String RELATIVE_SOURCE_PATH = "data/";
 
 	private final File parent;
-	private boolean copied = false;
 
 
 	public ControlFileReader(String pathName) {
@@ -41,9 +42,6 @@ public class ControlFileReader {
 
 	private void copyFiles() throws IOException {
 
-		if (copied) {
-			return;
-		}
 		boolean success = true;
 
 		if (!parent.exists()) {
@@ -56,7 +54,7 @@ public class ControlFileReader {
 
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
 
-		if (!xml.exists()) {
+		if (!xml.exists() || DEBUG ) {
 			FileHelper.copyFromResource(RELATIVE_SOURCE_PATH + NAME_XML_CONTROLFILE, xml);
 		}
 

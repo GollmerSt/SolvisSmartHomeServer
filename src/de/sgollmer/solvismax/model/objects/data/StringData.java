@@ -33,7 +33,7 @@ public class StringData implements SingleData {
 	}
 
 	@Override
-	public SingleData create(long divisor, int divident) {
+	public SingleData create(int value) {
 		return null;
 	}
 	

@@ -1,15 +1,24 @@
 package de.sgollmer.solvismax.model.objects;
 
+import java.io.IOException;
+
+import javax.xml.namespace.QName;
+
+import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.objects.Rectangle;
+import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ScreenOcr implements ScreenCompare {
-	private final Rectangle rectangle ;
-	private final String value ;
-	
-	public ScreenOcr( Rectangle rectangle, String value ) {
-		this.rectangle = rectangle ;
-		this.value = value ;
+	private final Rectangle rectangle;
+	private final String value;
+
+	public ScreenOcr(Rectangle rectangle, String value) {
+		this.rectangle = rectangle;
+		this.value = value;
 	}
 
 	/**
@@ -27,8 +36,53 @@ public class ScreenOcr implements ScreenCompare {
 	}
 
 	@Override
-	public boolean isElementOf(MyImage image) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isElementOf(MyImage image, Solvis solvis) {
+		OcrRectangle ocr = new OcrRectangle(image, this.rectangle);
+		String cmp = ocr.getString();
+		return cmp.equals(this.value);
+	}
+
+	public static class Creator extends CreatorByXML<ScreenOcr> {
+
+		private Rectangle rectangle;
+		private String value;
+
+		public Creator(String id, BaseCreator<?> creator) {
+			super(id, creator );
+		}
+
+		@Override
+		public void setAttribute(QName name, String value) {
+			switch (name.getLocalPart()) {
+				case "value":
+					this.value = value;
+			}
+
+		}
+
+		@Override
+		public ScreenOcr create() throws XmlError, IOException {
+			return new ScreenOcr(rectangle, value);
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			String id = name.getLocalPart();
+			switch (id) {
+				case "Field":
+					return new Rectangle.Creator(id, getBaseCreator());
+			}
+			return null;
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) {
+			switch (creator.getId()) {
+				case "Field":
+					this.rectangle = (Rectangle) created ;
+					break ;
+			}
+		}
+
 	}
 }

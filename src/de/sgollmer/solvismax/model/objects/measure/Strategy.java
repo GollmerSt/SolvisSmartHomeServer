@@ -59,11 +59,11 @@ public enum Strategy {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, String data) {
-			String str = "" ;
-			for ( Iterator<Field> it = fields.iterator() ; it.hasNext() ;) {
-				str += it.next().subString(data) ;
+			String str = "";
+			for (Iterator<Field> it = fields.iterator(); it.hasNext();) {
+				str += it.next().subString(data);
 			}
-			if (NULL_STRING.contains(str) ) {
+			if (NULL_STRING.contains(str)) {
 				throw new ErrorPowerOn("Power on detected");
 			}
 			int second = (int) toInt(str.substring(4, 6));
@@ -71,7 +71,7 @@ public enum Strategy {
 			int hour = (int) toInt(str.substring(0, 2));
 
 			int year = (int) toInt(str.substring(6, 8)) + 2000;
-			int month = (int) toInt(str.substring(8, 10));
+			int month = (int) toInt(str.substring(8, 10)) -1;
 			int date = (int) toInt(str.substring(10, 12));
 
 			Calendar calendar = Calendar.getInstance();
@@ -102,27 +102,25 @@ public enum Strategy {
 	private static long toInt(String data) {
 
 		long result = 0;
-		long mult = 1;
 
-		for (int i = 0; i < data.length() / 2; ++i) {
+		for (int i = data.length() / 2-1; i >= 0 / 2; --i) {
 
-			char c = data.charAt(i);
+			char c = data.charAt(2*i);
 			int b = Character.digit(c, 16);
-			c = data.charAt(i + 1);
+			c = data.charAt(2*i + 1);
 			b = b * 16 + Character.digit(c, 16);
 
-			result = result * 256 + b * mult;
-			mult <<= 8;
+			result = result * 256 + b;
 		}
 		return result;
 	}
-	
-	private static Field getFirst( Collection<Field> fields ) {
-		Iterator<Field> it = fields.iterator() ;
-		if ( it.hasNext() ) {
-			return it.next() ;
+
+	private static Field getFirst(Collection<Field> fields) {
+		Iterator<Field> it = fields.iterator();
+		if (it.hasNext()) {
+			return it.next();
 		} else {
-			return null ;
+			return null;
 		}
 	}
 

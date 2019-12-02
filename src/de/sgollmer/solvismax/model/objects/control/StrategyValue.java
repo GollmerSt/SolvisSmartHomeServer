@@ -1,5 +1,7 @@
 package de.sgollmer.solvismax.model.objects.control;
 
+import java.io.IOException;
+
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.TypeError;
@@ -39,18 +41,18 @@ public class StrategyValue extends StrategyRead {
 	}
 
 	@Override
-	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) {
+	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) throws IOException {
 		Integer goal = setValue.getInteger();
 
-		SingleData data = this.getValue(solvis.getCurrentImage(), rectangle);
+		SingleData data = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
 		if (data == null) {
 			return null;
 		}
-		if ((data instanceof IntegerValue)) {
+		if (!(data instanceof IntegerValue)) {
 			throw new TypeError("TypeError: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
 		}
 		int current = ((IntegerValue) data).getData();
-		int value = (2 * this.increment * (goal + this.increment)) / (2 * this.increment);
+		int value = (2 * this.increment * goal + this.increment) / (2 * this.increment);
 
 		if (current == value) {
 			return true;
@@ -153,7 +155,6 @@ public class StrategyValue extends StrategyRead {
 					this.lower = (TouchPoint) created;
 					break;
 			}
-			// TODO Auto-generated method stub
 
 		}
 

@@ -108,5 +108,5 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	public void assign(SolvisDescription description) {
 		
 	}
-
+	
 }

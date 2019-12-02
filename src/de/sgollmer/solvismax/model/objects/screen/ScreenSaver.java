@@ -1,4 +1,4 @@
-package de.sgollmer.solvismax.model.objects;
+package de.sgollmer.solvismax.model.objects.screen;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,10 +14,13 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
+import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ScreenSaver implements Assigner {
 	private static java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+:\\d+");
@@ -42,6 +45,14 @@ public class ScreenSaver implements Assigner {
 	public void assign(SolvisDescription description) {
 		this.resetScreenSaver.assign(description);
 	}
+
+	/**
+	 * @return the resetScreenSaver
+	 */
+	public TouchPoint getResetScreenSaver() {
+		return resetScreenSaver;
+	}
+
 	public static class Creator extends CreatorByXML<ScreenSaver> {
 
 		private Coordinate timeTopLeft = null;
@@ -148,7 +159,6 @@ public class ScreenSaver implements Assigner {
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -166,7 +176,6 @@ public class ScreenSaver implements Assigner {
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		myImage = new MyImage(bufferedImage);

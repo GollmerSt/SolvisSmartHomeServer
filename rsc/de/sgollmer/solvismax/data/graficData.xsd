@@ -2,15 +2,22 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/graficData" xmlns:tns="http://www.example.org/graficData" elementFormDefault="qualified">
 
     <complexType name="ScreenGrafic">
-        <annotation>
-        	<documentation>Zu vergleichende Grafik eines Bildschirmbereichs
-Der Text-Bereich enthält die Daten Base64-cosiert</documentation>
-        </annotation>
+    	<annotation>
+    		<documentation>
+    			Zu vergleichende Grafik eines Bildschirmbereichs Der
+    			Text-Bereich enthält die Daten Base64-cosiert
+    		</documentation>
+    	</annotation>
 
-        <attribute name="id" type="string">
+    	<attribute name="id" type="string">
     		<annotation>
-    			<documentation>Eindeutige Id über alle Grafiken, wird aus control referenziert</documentation>
-    		</annotation></attribute>
+    			<documentation>
+    				Eindeutige Id über alle Grafiken, wird aus control
+    				referenziert
+    			</documentation>
+    		</annotation>
+    	</attribute>
+    	<attribute name="isPattern" type="boolean"></attribute>
     </complexType>
 
 
