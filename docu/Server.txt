@@ -3,7 +3,7 @@ Server
 Um mit externen Programmen zu kommunizieren wird die Netzwerkschnittstelle verwendet.
 Dafür läuft im Programm einen Serverinstance, die von sich aus dann die Solvis-Threads startet.
 Pro Anlage läuft ein Thread, der u.U. weitere Threads startet.
-Der Client teilt dem Client den Namen und URL der Solvis-Anklage mit.
+Der Client teilt dem Server den Namen und URL der Solvis-Anklage mit.
 
 
 Ferner gibt es folgende Einstellmöglichkeiten:
@@ -16,3 +16,45 @@ Ferner gibt es folgende Einstellmöglichkeiten:
 Diese Einstellungen werden auch regelmäßig geprüft, falls eine manueller Eingriff an der
   Console erkannt wurde. Es werden dann entsprechnde Events erzeugt, so dass Readings o.ä.
   z.B. im FHEm abgedatzed werden.
+  
+  
+  
+  Vorgang des Starts einer Solvis-Verbindung, welche schon angelernt ist
+  
+  1. Client -> Server:
+  		Anforderung der Datenstruktur
+  		
+  2. Server -> Client
+  		liefert die Datenstruktur zurück, mit den Modi
+  		
+  3 ... n:  Server -> Client
+  		veränderte Werte
+  		
+  
+  
+  Das Interface beherrscht auch einen Standalone-Mode. Dann definiert das XML-File die
+  notwendigen Connection-Daten und FHEM kann sich beliebig häufig konnektieren.
+  In diesem Fall sind in der Regel die Interface-Daten aktueller und es erfolgt kein
+  Update von der Solvis-Seite
+  
+  
+  
+  Transfer-Format:
+  
+    Um möglichst Perl wenig zu belasten, wird ein sehr einfaches propritäres Format, das ähnlich JSON ist
+    verwendet.
+    Die Structur sieht wie folgt aus:
+    
+      { <Command/Event>: { Name1: Wert1 ,  Name2: Wert2 , Name3: Wert3 .... }}
+      
+      Dieses Format wird verwendet, bei veränderten Werten Server -> Client
+      aber auch bei SET von Client -> Server
+      
+    Die Struktur für die Datendefinition ist etwas komplizierter:
+    
+      { "Structure": { <Name1>: { "Unit": <value> }, <Name2>: { "StatusValues": [ "Standby", "Tag", "Nacht" ] } } }
+      
+    Die Verarbeitung erfolgt rekursiv und wird in einem hash gespeichert.
+    
+    Ob das Paket komplett ist, kann durch zählen der öffnenden und schließenden Klammern vor der eigentlichen
+    Interpretation erfolgen,da die Werte keins der Zeichen {[]} beinhaltet. 

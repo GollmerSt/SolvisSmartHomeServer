@@ -12,13 +12,40 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
-
 import de.sgollmer.solvismax.error.XmlError;
 
 public class XmlStreamReader<D> {
 
-	public D read(StreamSource streamSource, String rootId, BaseCreator<D> rootCreator, String streamId)
+	public static class Result<T> {
+		private final T tree;
+		private final int hash;
+
+		public Result(T tree, int hash) {
+			this.tree = tree;
+			this.hash = hash;
+		}
+
+		public T getTree() {
+			return tree;
+		}
+
+		public int getHash() {
+			return hash;
+		}
+	}
+
+	private static class HashContainer {
+		private int hash = 61;
+
+		private void put(Object obj) {
+			this.hash = 397 * this.hash + 43 * obj.hashCode();
+		}
+	}
+
+	public Result<D> read(StreamSource streamSource, String rootId, BaseCreator<D> rootCreator, String streamId)
 			throws IOException, XmlError, XMLStreamException {
+
+		final HashContainer hash = new HashContainer();
 
 		XMLEventReader reader = null;
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -40,27 +67,31 @@ public class XmlStreamReader<D> {
 			switch (ev.getEventType()) {
 				case XMLStreamConstants.START_ELEMENT:
 					QName name = ev.asStartElement().getName();
+					hash.put(name);
 					String localName = name.getLocalPart();
 					if (localName.equals(rootId)) {
-						destination = this.create(rootCreator, reader, ev, streamId);
+						destination = this.create(rootCreator, reader, ev, streamId, hash);
 					} else {
 						NullCreator nullCreator = new NullCreator(localName, rootCreator);
-						this.create(nullCreator, reader, ev, streamId);
+						this.create(nullCreator, reader, ev, streamId,hash);
 					}
 					break;
 			}
 		}
 		reader.close();
-		return destination;
+		return new Result<D>(destination, hash.hash);
 	}
 
-	private <T> T create(CreatorByXML<T> creator, XMLEventReader reader, XMLEvent startEvent, String streamId) throws XmlError, IOException {
+	private <T> T create(CreatorByXML<T> creator, XMLEventReader reader, XMLEvent startEvent, String streamId, HashContainer hash )
+			throws XmlError, IOException {
 
 		for (@SuppressWarnings("unchecked")
 		Iterator<Attribute> it = startEvent.asStartElement().getAttributes(); it.hasNext();) {
 			Attribute attr = it.next();
 			QName name = attr.getName();
+			hash.put(name);
 			String value = attr.getValue();
+			hash.put(value);
 			creator.setAttribute(name, value);
 		}
 
@@ -78,14 +109,17 @@ public class XmlStreamReader<D> {
 					break;
 				case XMLStreamConstants.START_ELEMENT:
 					QName name = ev.asStartElement().getName();
+					hash.put(name);
 					CreatorByXML<?> child = creator.getCreator(name);
 					if (child == null) {
 						child = new NullCreator(name.getLocalPart(), creator.getBaseCreator());
 					}
-					creator.created(child, this.create(child, reader, ev, streamId));
+					creator.created(child, this.create(child, reader, ev, streamId, hash));
 					break;
 				case XMLStreamConstants.CHARACTERS:
-					creator.addCharacters( ev.asCharacters().getData()) ;
+					String text = ev.asCharacters().getData() ;
+					hash.put(text);
+					creator.addCharacters(text);
 			}
 		}
 		return creator.create();

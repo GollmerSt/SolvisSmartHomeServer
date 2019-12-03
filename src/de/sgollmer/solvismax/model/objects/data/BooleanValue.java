@@ -1,5 +1,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
+import de.sgollmer.solvismax.model.objects.backup.Measurement;
+
 public class BooleanValue implements SingleData {
 
 	boolean value;
@@ -38,6 +40,11 @@ public class BooleanValue implements SingleData {
 	@Override
 	public int hashCode() {
 		return value?179:72;
+	}
+
+	@Override
+	public String getXmlId() {
+		return Measurement.XML_MEASUREMENT_BOOLEAN;
 	}
 
 }

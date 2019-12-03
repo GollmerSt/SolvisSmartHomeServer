@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.sgollmer.solvismax.model.objects.backup.Measurement;
+
 public class DateValue implements SingleData {
 	private static final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -46,5 +48,9 @@ public class DateValue implements SingleData {
 		return this.calendar.hashCode() ;
 	}
 
+	@Override
+	public String getXmlId() {
+		return Measurement.XML_MEASUREMENT_STRING;
+	}
 
 }

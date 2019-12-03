@@ -17,6 +17,7 @@ import de.sgollmer.solvismax.xml.XmlWriteable;
 public class AllSolvisGrafics implements XmlWriteable {
 
 	private Collection<SystemGrafics> systems;
+	private int currentControlFileHashCode = 0;
 
 	private AllSolvisGrafics(Collection<SystemGrafics> systems) {
 		this.systems = systems;
@@ -33,8 +34,14 @@ public class AllSolvisGrafics implements XmlWriteable {
 				result = system;
 			}
 		}
+
+		if (result != null && result.getControlFileHashCode() != this.currentControlFileHashCode) {
+			result.clear();
+			result.setControlFileHashCode(this.currentControlFileHashCode);
+		}
+
 		if (result == null) {
-			result = new SystemGrafics(id);
+			result = new SystemGrafics(id, currentControlFileHashCode);
 			this.systems.add(result);
 		}
 
@@ -43,17 +50,13 @@ public class AllSolvisGrafics implements XmlWriteable {
 
 	public ScreenGraficData get(String systemId, ScreenGraficDescription description) {
 		SystemGrafics system = this.get(systemId);
-		if (system == null) {
-			return null;
-		} else {
-			return system.get(description.getId());
-		}
+		return system.get(description.getId());
 	}
 
 	public void put(String systemId, ScreenGraficDescription description, MyImage image) {
 		SystemGrafics system = this.get(systemId);
 		if (system == null) {
-			system = new SystemGrafics(systemId);
+			system = new SystemGrafics(systemId, this.currentControlFileHashCode);
 		}
 		system.put(description.getId(), image);
 	}
@@ -90,7 +93,7 @@ public class AllSolvisGrafics implements XmlWriteable {
 			String id = name.getLocalPart();
 			switch (id) {
 				case "System":
-					return new SystemGrafics.Creator(id,this.getBaseCreator());
+					return new SystemGrafics.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -105,6 +108,10 @@ public class AllSolvisGrafics implements XmlWriteable {
 
 		}
 
+	}
+
+	public void setCurrentControlFileHashCode(int hashCode) {
+		this.currentControlFileHashCode = hashCode ;
 	}
 
 }

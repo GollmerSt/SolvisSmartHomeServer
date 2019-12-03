@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:SolvisMeasurements xmlns:tns="http://www.example.org/measurements" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/measurements measurements.xsd ">
+  <tns:SystemMeasurements id="">
+    <tns:Measurement id="">
+      <tns:BooleanValue>true</tns:BooleanValue>
+    </tns:Measurement>
+  </tns:SystemMeasurements>
+</tns:SolvisMeasurements>

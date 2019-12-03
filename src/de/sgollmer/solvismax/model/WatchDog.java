@@ -12,13 +12,15 @@ public class WatchDog {
 	private final ScreenSaver saver;
 	private final ErrorScreen errorScreen ;
 
-	private long updateTimeAfterNoChange = -1;
+	private final int releaseblockingAfterUserChange_ms ;
+	
 	private long changedTime = -1;
 
 	public WatchDog(Solvis solvis, ScreenSaver saver) {
 		this.solvis = solvis;
 		this.saver = saver;
 		this.errorScreen = new ErrorScreen() ;
+		this.releaseblockingAfterUserChange_ms = this.solvis.getSolvisDescription().getMiscellaneous().getReleaseblockingAfterUserChange_ms();
 	}
 
 	public boolean execute() {
@@ -42,7 +44,7 @@ public class WatchDog {
 				}
 			}
 			if (!changed) {
-				if (changedTime >= 0 && time > changedTime + this.getUpdateTimeAfterNoChange()) {
+				if (changedTime >= 0 && time > changedTime + this.releaseblockingAfterUserChange_ms) {
 					this.changedTime = - 1 ;
 					solvis.notifyScreenChangedByUserObserver(this.solvis.getCurrentScreen());
 				}
@@ -52,16 +54,6 @@ public class WatchDog {
 			e.printStackTrace();
 		}
 		return changed ;
-	}
-
-	/**
-	 * @return the updateTimeAfterNoChange
-	 */
-	private long getUpdateTimeAfterNoChange() {
-		if (this.updateTimeAfterNoChange < 0) {
-			this.updateTimeAfterNoChange = this.solvis.getDuration("ReleaseblockingAfterUserChange").getTime_ms();
-		}
-		return this.updateTimeAfterNoChange;
 	}
 
 }

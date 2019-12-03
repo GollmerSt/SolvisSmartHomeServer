@@ -12,15 +12,15 @@ import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 
 public class ControlFileReader {
-	
-	private static final boolean DEBUG = true ;
+
+	private static final boolean DEBUG = true;
 
 	private static final String NAME_XML_CONTROLFILE = "control.xml";
 	private static final String NAME_XSD_CONTROLFILE = "control.xsd";
 	private static final String RELATIVE_SOURCE_PATH = "data/";
+	private static final String XML_ROOT_ID = "SolvisDescription";
 
 	private final File parent;
-
 
 	public ControlFileReader(String pathName) {
 		File parent;
@@ -54,7 +54,7 @@ public class ControlFileReader {
 
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
 
-		if (!xml.exists() || DEBUG ) {
+		if (!xml.exists() || DEBUG) {
 			FileHelper.copyFromResource(RELATIVE_SOURCE_PATH + NAME_XML_CONTROLFILE, xml);
 		}
 
@@ -64,19 +64,19 @@ public class ControlFileReader {
 
 	}
 
-	public SolvisDescription read() throws IOException, XmlError, XMLStreamException {
+	public XmlStreamReader.Result<SolvisDescription> read() throws IOException, XmlError, XMLStreamException {
 
 		this.copyFiles();
 
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
 
 		StreamSource source = new StreamSource(xml);
-		
-		XmlStreamReader<SolvisDescription> reader = new XmlStreamReader<>() ;
-		
-		String rootId = "SolvisDescription" ;
 
-		return reader.read(source, rootId, new SolvisDescription.Creator(rootId), xml.getName()) ;
+		XmlStreamReader<SolvisDescription> reader = new XmlStreamReader<>();
+
+		String rootId = XML_ROOT_ID;
+
+		return reader.read(source, rootId, new SolvisDescription.Creator(rootId), xml.getName());
 	}
 
 	public static void main(String[] args) throws IOException, XmlError, XMLStreamException {

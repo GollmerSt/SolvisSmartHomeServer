@@ -47,8 +47,13 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 		SolvisData toUpdate = allData.checkAndGet(this.source.getDescription().getId());
 
-		int checkIntervall = solvis.getDuration(this.checkIntervallId).getTime_ms();
-		int readIntervall = solvis.getDuration(this.readIntervallId).getTime_ms();
+		int checkIntervall = -1;
+		int readIntervall = -1;
+
+		if (this.factor >= 0) {
+			checkIntervall = solvis.getDuration(this.checkIntervallId).getTime_ms();
+			readIntervall = solvis.getDuration(this.readIntervallId).getTime_ms();
+		}
 
 		new Executable(solvis, toUpdate, burner, burnerRunTime, factor, checkIntervall, readIntervall, hourly);
 
@@ -139,8 +144,8 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 				checkC |= this.lastCalcValue >= 0 && this.hourly
 						&& currentCalcValue > this.lastCalcValue + this.factor - 2 * this.readIntervall;
 
-				if (checkC && burnerOn && !this.lastBurnerState && this.screenRestore ) {
-					this.screenRestore = false ;
+				if (checkC && burnerOn && !this.lastBurnerState && this.screenRestore) {
+					this.screenRestore = false;
 					this.solvis.execute(new Command(this.screenRestore));
 				}
 
@@ -148,8 +153,8 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 					this.lastCheckTime = time;
 					this.solvis.execute(new Command(((Control) source).getDescription()));
 				}
-			} else if ( ! this.screenRestore ) {
-				this.screenRestore = true ;
+			} else if (!this.screenRestore) {
+				this.screenRestore = true;
 				this.solvis.execute(new Command(this.screenRestore));
 			}
 			this.lastBurnerState = burnerOn;
@@ -161,7 +166,7 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 		private String burnerId;
 		private String burnerCalcId;
-		private int factor = 1;
+		private int factor = -1;
 		private String checkIntervallId;
 		private String readIntervalId;
 		private boolean hourly = false;

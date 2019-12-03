@@ -80,13 +80,16 @@ public class RunTime extends Strategy<RunTime> {
 						this.lastStartTime = time;
 						this.formerRunTime_s = former;
 					}
-				} else {
-					this.lastStartTime = -1;
 				}
+				
 				int result = this.formerRunTime_s + (int) ((time - this.lastStartTime + 500) / 1000);
 
-				if (result / 60 - former / 60 > 0 || this.lastStartTime < 0) {
+				if (result % 60 == 0 || ! burnerOn ) {
 					this.result.setInteger(result);
+				}
+				
+				if ( !burnerOn ) {
+					this.lastStartTime = -1;
 				}
 			}
 		}

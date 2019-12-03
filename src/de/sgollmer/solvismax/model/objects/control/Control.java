@@ -42,6 +42,9 @@ public class Control extends DataSource {
 		this.valueRectangle = current;
 		this.strategy = strategy;
 		this.updateStrategies = updateStrategies;
+		if (this.updateStrategies != null) {
+			this.updateStrategies.setSource(this);
+		}
 	}
 
 	@Override
@@ -103,7 +106,9 @@ public class Control extends DataSource {
 
 	@Override
 	public void instantiate(Solvis solvis) {
-		this.updateStrategies.instantiate(solvis);
+		if (this.updateStrategies != null) {
+			this.updateStrategies.instantiate(solvis);
+		}
 
 	}
 
@@ -112,7 +117,7 @@ public class Control extends DataSource {
 		private String screenId;
 		private Rectangle current;
 		private Strategy strategy;
-		private UpdateStrategies updateStrategies = null ;
+		private UpdateStrategies updateStrategies = null;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);

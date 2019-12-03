@@ -293,15 +293,16 @@ false: Bei fester Grenze
 			<documentation>Root mit der Home-Screen-Definition</documentation>
 		</annotation>
 		<sequence>
-			<element name="ScreenSaver" type="tns:ScreenSaver"></element>
-			<element name="Screens" type="tns:Screens"></element>
-			<element name="ScreenGrafics" type="tns:ScreenGrafics">
+			<element name="Units" type="tns:Units" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="ScreenSaver" type="tns:ScreenSaver" maxOccurs="1" minOccurs="1"></element>
+			<element name="Screens" type="tns:Screens" maxOccurs="1" minOccurs="1"></element>
+			<element name="ScreenGrafics" type="tns:ScreenGrafics" maxOccurs="1" minOccurs="1">
 			</element>
 			<element name="DataDescriptions"
-				type="tns:DataDescriptions">
+				type="tns:DataDescriptions" maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="Durations" type="tns:Durations"></element>
-			<element name="Miscellaneous" type="tns:Miscellaneous"></element>
+			<element name="Durations" type="tns:Durations" maxOccurs="1" minOccurs="1"></element>
+			<element name="Miscellaneous" type="tns:Miscellaneous" maxOccurs="1" minOccurs="1"></element>
 		</sequence>
 		<attribute name="homeId" type="string"></attribute>
 	</complexType>
@@ -607,22 +608,53 @@ da der user diesen manuell verändert haben könnte.</documentation>
 	</complexType>
 
 	<complexType name="Miscellaneous">
-        <annotation>
-        	<documentation>Verschiedenes</documentation>
-        </annotation>
-        <attribute name="defaultAverageCount" type="int">
+		<annotation>
+			<documentation>Verschiedenes</documentation>
+		</annotation>
+		<attribute name="defaultAverageCount" type="int">
 			<annotation>
-				<documentation>Anzahl der Messwerte, über die der Mittelwert gebildet wird</documentation>
-			</annotation></attribute>
-		<attribute name="powerOffDetectedAfterIoErrors" type="int">
-			<annotation>
-				<documentation>Anzahl der IO-Fehler, nachdem ein Power-Off der Solvis-Anlage erkannt wurde
+				<documentation>
+					Anzahl der Messwerte, über die der Mittelwert
+					gebildet wird
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="defaultReadMeasurementsIntervall_ms" type="int">
+		<attribute name="powerOffDetectedAfterIoErrors" type="int">
 			<annotation>
-				<documentation>Intervall, nachdem die Solvis-Weerte regelmäßig gelesen werden</documentation>
+				<documentation>
+					Anzahl der IO-Fehler, nachdem ein Power-Off der
+					Solvis-Anlage erkannt wurde
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="defaultReadMeasurementsIntervall_ms"
+			type="int">
+			<annotation>
+				<documentation>
+					Intervall, nachdem die Solvis-Weerte regelmäßig
+					gelesen werden
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="measurementsBackupTime_ms" type="int"></attribute>
+		<attribute name="unsuccessfullWaitTime_ms" type="int">
+			<annotation>
+				<documentation>Wiederholzeit nach fehlgeschlagenem Befehl
+</documentation>
+			</annotation></attribute>
+		<attribute name="releaseblockingAfterUserChange_ms"
+			type="int">
+            <annotation>
+            	<documentation>Zeitintervall, das nach einem Usereingriff vergehen muss, bis die  Werte upgedated werden.
+In dieser zeit werden keien Werte vom GUI abgerufen, damit die Eingabe des Users nicht
+gestört wird.
+</documentation>
+            </annotation>
+		</attribute>
+		<attribute name="watchDogTime_ms" type="int">
+			<annotation>
+				<documentation>Zeitintervall nach dem immer der WatchDog aufgerufen wird, wenn die Command-Queue leer ist.
+</documentation>
 			</annotation></attribute>
 	</complexType>
 
@@ -643,5 +675,17 @@ da der user diesen manuell verändert haben könnte.</documentation>
 	<complexType name="SolvisHeatingData">
 		<attribute name="solvisDataId" type="string"></attribute>
 		<attribute name="factor" type="int"></attribute>
+	</complexType>
+
+	<complexType name="Units">
+		<sequence>
+			<element name="Unit" type="tns:Unit"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Unit">
+		<attribute name="url" type="string"></attribute>
+		<attribute name="account" type="string"></attribute>
+		<attribute name="password" type="string"></attribute>
 	</complexType>
 </schema>

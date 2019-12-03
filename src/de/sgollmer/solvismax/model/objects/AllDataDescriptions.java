@@ -103,6 +103,10 @@ public class AllDataDescriptions implements Assigner, GraficsLearnable {
 			datas.get(description);
 		}
 
+		for (DataDescription description : this.descriptions.values()) {
+			description.instantiate(solvis);
+		}
+
 		// this.measure(solvis, datas);
 		//
 		// for (DataDescription description : this.descriptions.values()) {

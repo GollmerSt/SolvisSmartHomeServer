@@ -25,12 +25,15 @@ import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
+import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
+import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.xml.ControlFileReader;
 import de.sgollmer.solvismax.xml.GraficFileHandler;
+import de.sgollmer.solvismax.xml.XmlStreamReader;
 
 public class Solvis {
 
@@ -54,8 +57,12 @@ public class Solvis {
 	private boolean screenSaverActive = false;
 	private final TouchPoint resetSceenSaver;
 	private final SolvisConnection connection;
+	private final MeasurementsBackupHandler backupHandler;
+	private final String id;
 
-	public Solvis(String id, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection) {
+	public Solvis(String id, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
+			MeasurementsBackupHandler measurementsBackupHandler) {
+		this.id = id;
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
 		this.watchDog = new WatchDog(this, solvisDescription.getSaver());
@@ -65,6 +72,8 @@ public class Solvis {
 		this.allSolvisData.setReadMeasurementInterval(
 				this.solvisDescription.getMiscellaneous().getDefaultReadMeasurementsIntervall());
 		this.worker = new SolvisWorkers(this);
+		this.backupHandler = measurementsBackupHandler;
+		this.backupHandler.register(this, id);
 	}
 
 	private Observer.Observable<Screen> screenChangedByUserObserable = new Observable<Screen>();
@@ -223,11 +232,13 @@ public class Solvis {
 		}
 	}
 
-	public void init() throws IOException {
+	public void init() throws IOException, XmlError, XMLStreamException {
 		synchronized (solvisGUIObject) {
 			synchronized (solvisMeasureObject) {
 				this.getSolvisDescription().getDataDescriptions().init(this, this.getAllSolvisData());
 			}
+			SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.id);
+			this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 			this.worker.start();
 			this.getSolvisDescription().getDataDescriptions().initControl(this);
 		}
@@ -350,9 +361,15 @@ public class Solvis {
 	public static void main(String[] args) throws IOException, XmlError, XMLStreamException {
 		String id = "mySolvis";
 		ControlFileReader reader = new ControlFileReader(null);
-		SolvisDescription solvisDescription = reader.read();
 
-		GraficFileHandler graficFileHandler = new GraficFileHandler(null);
+		XmlStreamReader.Result<SolvisDescription> result = reader.read();
+
+		SolvisDescription solvisDescription = result.getTree();
+
+		final MeasurementsBackupHandler measurementsBackupHandler = new MeasurementsBackupHandler(null,
+				solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
+
+		GraficFileHandler graficFileHandler = new GraficFileHandler(null, result.getHash());
 		AllSolvisGrafics grafics = graficFileHandler.read();
 
 		SolvisConnection connection = new SolvisConnection("http://192.168.1.40", new AccountInfo() {
@@ -368,9 +385,9 @@ public class Solvis {
 			}
 		});
 
-		Solvis solvis = new Solvis(id, solvisDescription, grafics.get(id), connection);
+		final Solvis solvis = new Solvis(id, solvisDescription, grafics.get(id), connection, measurementsBackupHandler);
 
-		if (LEARNING) {
+		if (LEARNING || solvis.getGrafics().isEmpty()) {
 			solvis.learning();
 
 			graficFileHandler.write(grafics);
@@ -379,8 +396,16 @@ public class Solvis {
 		solvis.gotoHome();
 
 		solvis.init();
-		
 
+		measurementsBackupHandler.start();
+
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				measurementsBackupHandler.terminate();
+				solvis.worker.terminate();
+			}
+		}));
 		DataDescription description = solvis.getDataDescription("C01.Anlagenmodus");
 
 		solvis.execute(new Command(description));
@@ -389,7 +414,7 @@ public class Solvis {
 
 			@Override
 			public String getName() {
-				return "Standby";
+				return "Tag";
 			}
 		})));
 
@@ -406,7 +431,7 @@ public class Solvis {
 
 		solvis.execute(new Command(description, new IntegerValue(90)));
 
-//		solvis.worker.terminate();
+		// solvis.worker.terminate();
 
 	}
 
@@ -416,14 +441,19 @@ public class Solvis {
 	public SolvisDescription getSolvisDescription() {
 		return solvisDescription;
 	}
-	
-	public void powerDetected( boolean power ) {
+
+	public void powerDetected(boolean power) {
 		// TODO Auto-generated method stub
 	}
 
 	public void errorScreenDetected() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public void backupMeasurements(SystemMeasurements system) {
+		this.allSolvisData.backupSpecialMeasurements(system);
+
 	}
 
 }

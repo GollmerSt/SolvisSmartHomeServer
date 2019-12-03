@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/measurements" xmlns:tns="http://www.example.org/measurements" elementFormDefault="qualified">
+
+    <element name="SolvisMeasurements" type="tns:SolvisMeasurements"></element>
+
+    <complexType name="SystemMeasurements">
+    	<sequence>
+    		<element name="Measurement" type="tns:Measurement"
+    			maxOccurs="unbounded" minOccurs="0">
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <complexType name="Measurement">
+        <choice>
+        	<element name="BooleanValue" type="boolean" maxOccurs="1"
+        		minOccurs="1">
+        	</element>
+        	<element name="IntegerValue" type="int" maxOccurs="1"
+        		minOccurs="1">
+        	</element>
+        	<element name="StringValue" type="string" maxOccurs="1"
+        		minOccurs="1">
+        	</element>
+        	<element name="ModeValue" type="string" maxOccurs="1" minOccurs="1"></element>
+        </choice>
+        
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <complexType name="SolvisMeasurements">
+    	<sequence>
+    		<element name="SystemMeasurements"
+    			type="tns:SystemMeasurements">
+    		</element>
+    	</sequence>
+    </complexType>
+</schema>

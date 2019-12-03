@@ -38,8 +38,9 @@ public class SolvisWorkers {
 			this.screenRestoreInhibitCnt = 0;
 			long screenChangedByUser = -1;
 
-			int releaseblockingAfterUserChange = solvis.getDuration("ReleaseblockingAfterUserChange").getTime_ms();
-			int unsuccessfullWaitTime = solvis.getDuration("UnsuccessfullWaitTime").getTime_ms();
+			int releaseblockingAfterUserChange = solvis.getSolvisDescription().getMiscellaneous().getReleaseblockingAfterUserChange_ms() ;
+			int unsuccessfullWaitTime = solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms();
+			int watchDogTime = solvis.getSolvisDescription().getMiscellaneous().getWatchDogTime_ms();
 
 			while (!this.terminate) {
 				Command command = null;
@@ -61,7 +62,7 @@ public class SolvisWorkers {
 							queueWasEmpty = true;
 						} else {
 							try {
-								this.wait(solvis.getDuration("WatchDogTime").getTime_ms());
+								this.wait(watchDogTime);
 							} catch (InterruptedException e) {
 							}
 							if (this.queue.isEmpty()) {

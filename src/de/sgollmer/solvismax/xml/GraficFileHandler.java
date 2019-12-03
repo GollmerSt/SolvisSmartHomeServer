@@ -21,9 +21,10 @@ public class GraficFileHandler {
 	private static final String RELATIVE_SOURCE_PATH = "data/";
 
 	private final File parent;
+	private final int currentControllFileHashCode ;
 
 
-	public GraficFileHandler(String pathName) {
+	public GraficFileHandler(String pathName, int controllFileHashCode) {
 		File parent;
 
 		if (pathName == null) {
@@ -39,6 +40,7 @@ public class GraficFileHandler {
 			parent = new File(pathName);
 		}
 		this.parent = parent;
+		this.currentControllFileHashCode = controllFileHashCode ;
 	}
 
 	private void copyFiles() throws IOException {
@@ -76,8 +78,11 @@ public class GraficFileHandler {
 		XmlStreamReader<AllSolvisGrafics> reader = new XmlStreamReader<>() ;
 		
 		String rootId = "SolvisGrafics" ;
+				
+		AllSolvisGrafics result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName()).getTree() ;
+		result.setCurrentControlFileHashCode(this.currentControllFileHashCode);
 
-		return reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName()) ;
+		return result ;
 	}
 
 	public void write( AllSolvisGrafics grafics ) throws IOException, XMLStreamException {
@@ -93,6 +98,7 @@ public class GraficFileHandler {
 		grafics.writeXml(writer);
 		writer.writeEndElement();
 		writer.writeEndDocument();
+		writer.flush();
 		writer.close();
 	}
 

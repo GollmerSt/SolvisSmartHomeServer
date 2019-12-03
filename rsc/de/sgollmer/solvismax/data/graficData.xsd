@@ -34,15 +34,22 @@
     <element name="SolvisGrafics" type="tns:SolvisGrafics"></element>
 
     <complexType name="System">
-        <annotation>
-        	<documentation>Dieses Objekt enthält die Grafik-Daten für eine bestimmte Solvis-Anlage</documentation>
-        </annotation>
-        <sequence>
-    		<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0"></element>
+    	<annotation>
+    		<documentation>
+    			Dieses Objekt enthält die Grafik-Daten für eine
+    			bestimmte Solvis-Anlage
+    		</documentation>
+    	</annotation>
+    	<sequence>
+    		<element name="ScreenGrafic" type="tns:ScreenGrafic"
+    			maxOccurs="unbounded" minOccurs="0">
+    		</element>
     	</sequence>
     	<attribute name="id" type="string">
     		<annotation>
     			<documentation>Id der Solvis-Anlage</documentation>
-    		</annotation></attribute>
+    		</annotation>
+    	</attribute>
+    	<attribute name="controlFileHashCode" type="int"></attribute>
     </complexType>
 </schema>

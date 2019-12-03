@@ -1,5 +1,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
+import de.sgollmer.solvismax.model.objects.backup.Measurement;
+
 public class StringData implements SingleData {
 	private final String data ;
 	
@@ -35,6 +37,11 @@ public class StringData implements SingleData {
 	@Override
 	public SingleData create(int value) {
 		return null;
+	}
+
+	@Override
+	public String getXmlId() {
+		return Measurement.XML_MEASUREMENT_STRING;
 	}
 	
 }

@@ -3,6 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/control control.xsd "
 	homeId="Home">
+	<tns:Units>
+		<tns:Unit url="192.168.1.40" account="SGollmer" password="e5am1kro" />
+	</tns:Units>
 	<tns:ScreenSaver>
 		<tns:TimeTopLeft X="75" Y="0" />
 		<tns:TimeBottomLeft X="75" Y="20" />
@@ -647,7 +650,8 @@
 				</tns:Current>
 				<tns:TypeRead format="#######0" />
 				<tns:UpdateBy>
-					<tns:HeatingBurner burnerId="A12.Brenner" />
+					<tns:HeatingBurner burnerId="A12.Brenner"
+						calculatedId="X1.BrennerStarts" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
@@ -660,7 +664,7 @@
 				<tns:TypeRead format="######0C" unit="h" />
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A12.Brenner"
-						calculatedId="X2.BrennerLaufzeit_s" hourly="true"
+						calculatedId="X2.BrennerLaufzeit_s" factor="3600" hourly="true"
 						checkIntervallId="checkBrenner" readIntervalId="readBrenner" />
 				</tns:UpdateBy>
 			</tns:Control>
@@ -674,8 +678,9 @@
 				<tns:TypeRead format="######0C" unit="h" />
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A13.Brenner_S2"
-						calculatedId="X4.BrennerStufe2Laufzeit_s" checkIntervallId="checkBrenner"
-						readIntervalId="readBrenner" hourly="true" />
+						calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"
+						checkIntervallId="checkBrenner" readIntervalId="readBrenner"
+						hourly="true" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
@@ -837,15 +842,10 @@
 		<!-- Zeitintervall für das Lesen der Zählfunktionen, wenn die Synchronisation 
 			läuft -->
 		<tns:Duration id="readBrenner" time_ms="60000" />
-		<!-- Wiederholzeit nach fehlgeschlagenem Befehl: -->
-		<tns:Duration id="UnsuccessfullWaitTime" time_ms="10000" />
-		<!-- Zeitintervall, das nach einem Usereingriff vergehen muss, bis die 
-			Werte upgedated werden: -->
-		<tns:Duration id="ReleaseblockingAfterUserChange"
-			time_ms="300000" />
-		<!-- Zeitintervall nach dem immer der WatchDog aufgerufen wird, wenn die 
-			Command-Queue leer ist: -->
-		<tns:Duration id="WatchDogTime" time_ms="60000" />
 	</tns:Durations>
-	<tns:Miscellaneous defaultAverageCount="12" defaultReadMeasurementsIntervall_ms="10000" powerOffDetectedAfterIoErrors="3"/>
+	<tns:Miscellaneous defaultAverageCount="12"
+		defaultReadMeasurementsIntervall_ms="10000"
+		powerOffDetectedAfterIoErrors="3" measurementsBackupTime_ms="3600000"
+		releaseblockingAfterUserChange_ms="300000" unsuccessfullWaitTime_ms="10000"
+		watchDogTime_ms="60000" />
 </tns:SolvisDescription>

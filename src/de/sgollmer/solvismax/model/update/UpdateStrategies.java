@@ -22,6 +22,12 @@ public class UpdateStrategies implements Assigner {
 		this.strategies = strategies;
 	}
 
+	public void setSource(DataSource source) {
+		for (Strategy<?> strategy : this.strategies) {
+			strategy.setSource(source);
+		}
+	}
+
 	public enum StrategyEnum {
 
 		SCREEN_CHANGED(new ByScreenChange.Creator(), "ScreenChange"),

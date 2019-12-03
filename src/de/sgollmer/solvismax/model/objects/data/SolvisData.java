@@ -168,4 +168,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return this.data.toString() ;
 	}
 
+	public SingleData getSingleData() {
+		return this.data ;
+	}
+
 }
