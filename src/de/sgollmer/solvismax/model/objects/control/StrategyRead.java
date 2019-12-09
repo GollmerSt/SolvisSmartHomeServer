@@ -12,11 +12,10 @@ import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
-import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class StrategyRead implements Strategy {
 	private final Format format;
@@ -35,7 +34,7 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public SingleData getValue(MyImage image, Rectangle rectangle, Solvis solvis) {
+	public IntegerValue getValue(MyImage image, Rectangle rectangle, Solvis solvis) {
 		OcrRectangle ocr = new OcrRectangle(image, rectangle);
 		String s = ocr.getString();
 		s = format.getString(s);
@@ -140,7 +139,7 @@ public class StrategyRead implements Strategy {
 	public static class Creator extends CreatorByXML<StrategyRead> {
 
 		private String format;
-		private int divisor;
+		private int divisor = 1;
 		private String unit;
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -183,6 +182,11 @@ public class StrategyRead implements Strategy {
 	@Override
 	public void assign(SolvisDescription description) {
 
+	}
+
+	@Override
+	public Float getAccuracy() {
+		return (float) 1 / (float) this.getDivisor();
 	}
 
 }

@@ -2,16 +2,17 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class ModeValue< M extends ModeI > implements SingleData {
-	
-	private final M mode ;
-	
-	public ModeValue( M mode) {
-		this.mode = mode ;
+public class ModeValue<M extends ModeI> implements SingleData<M> {
+
+	private final M mode;
+
+	public ModeValue(M mode) {
+		this.mode = mode;
 	}
 
+	@Override
 	public M get() {
-		return this.mode ;
+		return this.mode;
 	}
 
 	@Override
@@ -20,32 +21,37 @@ public class ModeValue< M extends ModeI > implements SingleData {
 	}
 
 	@Override
-	public SingleData create(int value) {
+	public SingleData<M> create(int value) {
 		return null;
 	}
-	
+
 	@Override
-	public boolean equals( Object obj ) {
-		if ( obj instanceof ModeValue<?> ) {
-			return this.mode.getName().equals(((ModeValue<?>) obj).mode.getName() ) ;
+	public boolean equals(Object obj) {
+		if (obj instanceof ModeValue<?>) {
+			return this.mode.getName().equals(((ModeValue<?>) obj).mode.getName());
 		} else {
-			return false ;
+			return false;
 		}
 	}
 
 	@Override
 	public int hashCode() {
-		return this.mode.hashCode() ;
+		return this.mode.hashCode();
 	}
-	
+
 	@Override
 	public String toString() {
-		return this.mode.getName() ;
+		return this.mode.getName();
 	}
 
 	@Override
 	public String getXmlId() {
 		return Measurement.XML_MEASUREMENT_MODE;
+	}
+
+	@Override
+	public String toJson() {
+		return "\"" + this.toString() + "\"";
 	}
 
 }

@@ -14,6 +14,7 @@ import de.sgollmer.solvismax.model.objects.Dependency;
 import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
+import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -60,6 +61,12 @@ public class Calculation extends DataSource {
 	@Override
 	public String getUnit() {
 		return this.strategy.getUnit();
+	}
+
+	@Override
+	public Float getAccuracy() {
+		return this.strategy.getAccuracy();
+
 	}
 
 	@Override
@@ -141,6 +148,11 @@ public class Calculation extends DataSource {
 
 	@Override
 	public Screen getScreen() {
+		return null;
+	}
+
+	@Override
+	public Collection<? extends ModeI> getModes() {
 		return null;
 	}
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:BaseData xmlns:tns="http://www.example.org/control" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/control base.xsd ">
+  <tns:Units>
+    <tns:Unit id="mySolvis" account="SGollmer" password="e5am1kro" url="http://192.168.1.40"/>
+  </tns:Units>
+</tns:BaseData>

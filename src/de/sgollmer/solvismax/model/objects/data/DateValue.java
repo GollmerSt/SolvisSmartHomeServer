@@ -6,7 +6,7 @@ import java.util.Date;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class DateValue implements SingleData {
+public class DateValue implements SingleData<Calendar> {
 	private static final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	private final Calendar calendar;
@@ -25,7 +25,7 @@ public class DateValue implements SingleData {
 	}
 
 	@Override
-	public SingleData create(int value) {
+	public SingleData<Calendar> create(int value) {
 		return null;
 	}
 
@@ -52,5 +52,17 @@ public class DateValue implements SingleData {
 	public String getXmlId() {
 		return Measurement.XML_MEASUREMENT_STRING;
 	}
+
+	@Override
+	public String toJson() {
+		return "\"" + this.toString() + "\"";
+	}
+
+	@Override
+	public Calendar get() {
+		return this.calendar;
+	}
+	
+	
 
 }

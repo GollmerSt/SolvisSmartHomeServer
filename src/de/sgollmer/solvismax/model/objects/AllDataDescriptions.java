@@ -35,6 +35,10 @@ public class AllDataDescriptions implements Assigner, GraficsLearnable {
 			data.assign(description);
 		}
 	}
+	
+	public Collection<DataDescription> get() {
+		return this.descriptions.values() ;
+	}
 
 	public static class Creator extends CreatorByXML<AllDataDescriptions> {
 

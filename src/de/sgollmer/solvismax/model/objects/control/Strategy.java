@@ -11,7 +11,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public interface Strategy extends Assigner {
 
-	public SingleData getValue(MyImage currentImage, Rectangle valueRectangle, Solvis solvis);
+	public SingleData<?> getValue(MyImage currentImage, Rectangle valueRectangle, Solvis solvis);
 
 	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException;
 
@@ -20,6 +20,8 @@ public interface Strategy extends Assigner {
 	public Integer getDivisor() ;
 	
 	public String getUnit() ;
+
+	public Float getAccuracy();
 
 
 }

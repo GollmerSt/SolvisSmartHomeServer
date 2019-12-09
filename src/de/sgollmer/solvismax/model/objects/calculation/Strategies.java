@@ -1,7 +1,10 @@
 package de.sgollmer.solvismax.model.objects.calculation;
 
+import java.util.Collection;
+
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public enum Strategies {
@@ -52,6 +55,13 @@ public enum Strategies {
 		}
 
 		public abstract void instantiate(Solvis solvis);
+		
+		@SuppressWarnings("static-method")
+		public Collection< ModeI > getModes() {
+			return null ;
+		}
+
+		public abstract Float getAccuracy() ;
 
 	}
 

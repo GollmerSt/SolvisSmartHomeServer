@@ -15,6 +15,7 @@ import de.sgollmer.solvismax.model.objects.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.update.UpdateStrategies;
@@ -50,7 +51,7 @@ public class Control extends DataSource {
 	@Override
 	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException {
 		solvis.gotoScreen(screen);
-		SingleData data = this.strategy.getValue(solvis.getCurrentImage(), this.valueRectangle, solvis);
+		SingleData<?> data = this.strategy.getValue(solvis.getCurrentImage(), this.valueRectangle, solvis);
 		if (data == null) {
 			return false;
 		} else {
@@ -87,6 +88,11 @@ public class Control extends DataSource {
 	@Override
 	public String getUnit() {
 		return this.strategy.getUnit();
+	}
+
+	@Override
+	public Float getAccuracy() {
+		return this.strategy.getAccuracy() ;
 	}
 
 	@Override
@@ -195,7 +201,7 @@ public class Control extends DataSource {
 				solvis.send(mode.getTouch());
 				mode.getGrafic().learn(solvis);
 			}
-			SingleData data = this.strategy.getValue(saved, this.valueRectangle, solvis);
+			SingleData<?> data = this.strategy.getValue(saved, this.valueRectangle, solvis);
 			this.setValue(solvis, new SolvisData(data));
 		}
 	}
@@ -208,6 +214,14 @@ public class Control extends DataSource {
 	@Override
 	public Screen getScreen() {
 		return this.screen;
+	}
+
+	@Override
+	public Collection<? extends ModeI> getModes() {
+		if (this.strategy instanceof StrategyMode) {
+			return ((StrategyMode) strategy).getModes();
+		}
+		return null;
 	}
 
 }

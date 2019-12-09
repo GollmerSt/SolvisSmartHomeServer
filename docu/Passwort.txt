@@ -1,0 +1,37 @@
+Password-Codierung
+
+1. Key:
+    Basiert auf $this->{TYPE}."_".$this->{NAME}."_$name";
+	Also vorliegend:
+	  $this->{TYPE}: Wird aus dem Prefix der Initialize-Methode ermittlet (vorsinnflutlich)
+	     Bisher "SolvisMax"
+	  $this->{NAME}:  Name des Devices: "mySolvis"
+	  $name: "PasswordBase64", "Password" ,"User"
+	  
+	Ergibt beim Passwort:
+	  "SolvisMax_mySolvis_Password"
+	  
+	
+	Daraus wird eine eindeutige ID erzeugt. Da das Erstellungsdatum im Algorithmus verwendet wird, muss
+	  bei der Übertragung dieser Key mitgeliefert werden. Ist nicht weiter tragisch, da man ehh durch
+	  den Eingriff in den Progammcode die Zugriffsadaten leicht ermitteln kann. Sie sind dann nur nicht
+	  direkt im Netzwerk sichtbar.
+	
+	Aktuell wird der Key auch aus dem Namen ("PasswordBase64", "Password" ,"User") generiert.
+	  Das erfolgt in Zukunft nicht mehr.
+	  
+	  
+	  $key = Digest::MD5::md5_hex(unpack "H*", $key);
+	  
+	  Der Key wird in einen Hex-String umgewandelt, wobei das höherwertigste Nibble zuerst kommt.
+	  Davor ist ein 0x gesetzt.
+	  
+	  	
+	 
+Fazit:
+   Die alte Password-Kodierung wird nicht mehr verwendet. Es wird eine andere verwendet.
+   
+   Vielelichtgeht es mit unsymetrischem Schlüssel besser. Anregung:
+       http://openbook.rheinwerk-verlag.de/java7/1507_22_006.html
+	
+	

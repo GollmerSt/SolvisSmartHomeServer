@@ -69,6 +69,8 @@ public class MeasurementsBackupHandler {
 			File xsd = new File(this.parent, NAME_XSD_MEASUREMENTS_FILE);
 
 			FileHelper.copyFromResource(RELATIVE_SOURCE_PATH + NAME_XSD_MEASUREMENTS_FILE, xsd);
+			
+			this.xsdWritten = true ;
 		}
 	}
 

@@ -10,6 +10,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.calculation.Calculation;
 import de.sgollmer.solvismax.model.objects.control.Control;
+import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.measure.Measurement;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -56,6 +57,11 @@ public class DataDescription implements DataSourceI, Assigner {
 	@Override
 	public String getUnit() {
 		return this.dataSource.getUnit();
+	}
+
+	@Override
+	public Float getAccuracy() {
+		return this.dataSource.getAccuracy() ;
 	}
 
 	@Override
@@ -141,6 +147,11 @@ public class DataDescription implements DataSourceI, Assigner {
 	@Override
 	public Screen getScreen() {
 		return this.dataSource.getScreen();
+	}
+
+	@Override
+	public Collection<? extends ModeI> getModes() {
+		return this.dataSource.getModes();
 	}
 
 }

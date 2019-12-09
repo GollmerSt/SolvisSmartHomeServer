@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -13,7 +12,7 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 
 public class ErrorScreen {
 
-	public boolean is(MyImage image) {
+	public static boolean is(MyImage image) {
 
 		image.createHistograms(false);
 
@@ -71,8 +70,6 @@ public class ErrorScreen {
 
 	public static void main(String[] args) {
 
-		ErrorScreen errorScreen = new ErrorScreen();
-
 		File parent = new File("testFiles\\images");
 
 		String[] files = { "Stoerung 1.png", "Stoerung 2.png", "Stoerung 3.png", "Stoerung 4.png", "Home.png", "bildschirmschoner.png", "Night Temperatur selected.png" };
@@ -90,7 +87,7 @@ public class ErrorScreen {
 
 			MyImage myImage = new MyImage(bufferedImage);
 
-			if (errorScreen.is(myImage)) {
+			if (ErrorScreen.is(myImage)) {
 				System.out.println("Error screen detected");
 			} else {
 				System.out.println("Detection failed");

@@ -30,7 +30,7 @@ public class Starts extends Strategy<Starts> {
 
 	@Override
 	public boolean isWriteable() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -77,6 +77,11 @@ public class Starts extends Strategy<Starts> {
 
 	@Override
 	public void assign(SolvisDescription description) {
+	}
+
+	@Override
+	public Float getAccuracy() {
+		return (float) 1;
 	}
 
 }

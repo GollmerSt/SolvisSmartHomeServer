@@ -31,7 +31,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 
 	@Override
 	public boolean isWriteable() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -84,6 +84,11 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	@Override
 	public void assign(SolvisDescription description) {
 		
+	}
+
+	@Override
+	public Float getAccuracy() {
+		return null;
 	}
 
 }

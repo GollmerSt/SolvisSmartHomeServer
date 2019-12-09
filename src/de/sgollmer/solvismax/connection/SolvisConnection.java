@@ -13,13 +13,16 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.objects.Coordinate;
 
-public class SolvisConnection {
+public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	private final String urlBase;
 	private final AccountInfo accountInfo;
+
+	private ConnectionState connectionState = new ConnectionState(ConnectionStatus.DISCONNECTED);
 
 	public SolvisConnection(String urlBase, AccountInfo accountInfo) {
 		this.urlBase = urlBase;
@@ -52,38 +55,51 @@ public class SolvisConnection {
 		}
 	}
 
-	public synchronized BufferedImage getScreen() throws IOException {
-		InputStream in = this.connect("/display.bmp?");
-		BufferedImage image = ImageIO.read(in);
-		in.close();
+	public BufferedImage getScreen() throws IOException {
+		BufferedImage image;
+		try {
+			synchronized (this) {
+				InputStream in = this.connect("/display.bmp?");
+				image = ImageIO.read(in);
+				in.close();
+			}
+		} catch (IOException e) {
+			this.setDisconnectedAndThrow(e);
+			throw e;
+		}
+		this.setConnected();
 		return image;
 	}
 
 	public String getMeasurements() throws IOException {
 		StringBuilder builder = new StringBuilder();
-		synchronized (this) {
-			InputStream in = this.connect("/sc2_val.xml");
-			InputStreamReader reader = new InputStreamReader(in);
+		try {
+			synchronized (this) {
+				InputStream in = this.connect("/sc2_val.xml");
+				InputStreamReader reader = new InputStreamReader(in);
 
-			boolean finished = false;
-			int length = 1024;
-			char[] array = new char[length];
-			while (!finished) {
-				int n = reader.read(array, 0, 1000);
-				if (n < 0) {
-					finished = true;
-				} else {
-					builder.append(array, 0, n);
-					if (builder.substring(builder.length() - 5).equals("</xml>")) {
+				boolean finished = false;
+				int length = 1024;
+				char[] array = new char[length];
+				while (!finished) {
+					int n = reader.read(array, 0, 1000);
+					if (n < 0) {
 						finished = true;
+					} else {
+						builder.append(array, 0, n);
+						if (builder.substring(builder.length() - 5).equals("</xml>")) {
+							finished = true;
+						}
 					}
 				}
+				in.close();
 			}
-			in.close();
+			builder.delete(0, 11);
+			builder.delete(builder.length() - 15, builder.length());
+		} catch (IOException e) {
+			setDisconnectedAndThrow(e);
 		}
-		builder.delete(0, 11);
-		builder.delete(builder.length() - 15, builder.length());
-
+		this.setConnected();
 		return builder.toString();
 	}
 
@@ -103,28 +119,43 @@ public class SolvisConnection {
 	public void sendButton(Button button) throws IOException {
 		String buttonString = "/Taster.CGI?taste=" + button.getButtonUrl() + "&i="
 				+ Math.round((Math.random() * 99999999));
-		synchronized (this) {
-			InputStream in = this.connect(buttonString);
-			in.close();
+		try {
+			synchronized (this) {
+				InputStream in = this.connect(buttonString);
+				in.close();
+			}
+		} catch (IOException e) {
+			this.setDisconnectedAndThrow(e);
 		}
+		this.setConnected();
 	}
 
 	public void sendTouch(Coordinate coord) throws IOException {
 		int x = coord.getX() * 2;
 		int y = coord.getY() * 2;
 		String touchString = "/Touch.CGI?x=" + x + "&y=" + y;
-		synchronized (this) {
-			InputStream in = this.connect(touchString);
-			in.close();
+		try {
+			synchronized (this) {
+				InputStream in = this.connect(touchString);
+				in.close();
+			}
+		} catch (IOException e) {
+			this.setDisconnectedAndThrow(e);
 		}
+		this.setConnected();
 	}
 
 	public void sendRelease() throws IOException {
 		String touchString = "/Touch.CGI?x=510&y=510";
-		synchronized (this) {
-			InputStream in = this.connect(touchString);
-			in.close();
+		try {
+			synchronized (this) {
+				InputStream in = this.connect(touchString);
+				in.close();
+			}
+		} catch (IOException e) {
+			this.setDisconnectedAndThrow(e);
 		}
+		this.setConnected();
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -172,6 +203,26 @@ public class SolvisConnection {
 		} catch (InterruptedException e) {
 		}
 		solvisConnection.sendRelease();
+	}
+
+	public ConnectionState getConnectionState() {
+		return connectionState;
+	}
+
+	public void setConnectionState(ConnectionState connectionState) {
+		this.connectionState = connectionState;
+		this.notify(connectionState);
+	}
+
+	private void setDisconnectedAndThrow(IOException e) throws IOException {
+		this.setConnectionState(new ConnectionState(ConnectionStatus.DISCONNECTED, e.getMessage()));
+		throw e;
+	}
+
+	private void setConnected() {
+		if (this.getConnectionState().getStatus() != ConnectionStatus.CONNECTED) {
+			this.setConnectionState(new ConnectionState(ConnectionStatus.CONNECTED));
+		}
 	}
 
 }

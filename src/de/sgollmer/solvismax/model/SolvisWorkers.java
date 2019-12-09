@@ -125,6 +125,9 @@ public class SolvisWorkers {
 				} catch (ErrorPowerOn e2) {
 					success = false;
 					solvis.powerDetected(false);
+				} catch (Throwable e3 ) {
+					// TODO unknown error, must be logged, command not executed
+					success = true ;
 				}
 				if (success) {
 					solvis.powerDetected(true);

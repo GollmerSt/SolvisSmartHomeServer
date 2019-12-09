@@ -97,6 +97,10 @@ public class Coordinate implements Cloneable {
 		return new Coordinate(this.getX() + 1, this.getY() + 1);
 	}
 
+	public Coordinate decrement() {
+		return new Coordinate(this.getX() - 1, this.getY() - 1);
+	}
+
 	@Override
 	public boolean equals(Object coord) {
 		if (!(coord instanceof Coordinate)) {
@@ -128,4 +132,5 @@ public class Coordinate implements Cloneable {
 	public String toString() {
 		return "(" + this.x + "|" + this.y + ")";
 	}
+
 }

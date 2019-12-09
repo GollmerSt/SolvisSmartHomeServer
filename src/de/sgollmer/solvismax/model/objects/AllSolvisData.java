@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.transfer.MeasurementsPackage;
 
 public class AllSolvisData {
 
@@ -129,7 +131,7 @@ public class AllSolvisData {
 		systemMeasurements.clear() ;
 		for (SolvisData data : this.solvisDatas.values()) {
 			if (data.getDescription().getType() == DataSourceI.Type.CALCULATION) {
-				SingleData sd = data.getSingleData();
+				SingleData<?> sd = data.getSingleData();
 				if (sd != null) {
 					systemMeasurements.add(new Measurement(data.getId(), data.getSingleData()));
 				}
@@ -141,6 +143,16 @@ public class AllSolvisData {
 		for ( Measurement measurement : backup.getMeasurements() ) {
 			SolvisData data = this.get(measurement.getId() );
 			data.setSingleData(measurement.getData());
+		}
+	}
+	
+	public synchronized MeasurementsPackage getMeasurementsPackage() {
+		return new MeasurementsPackage(this.solvisDatas.values()) ;
+	}
+
+	public void registerObserver(ObserverI<SolvisData> observer) {
+		for (SolvisData data : this.solvisDatas.values()) {
+			data.register(observer);
 		}
 	}
 

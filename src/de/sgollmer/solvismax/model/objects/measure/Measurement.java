@@ -13,6 +13,7 @@ import de.sgollmer.solvismax.model.objects.DataSource;
 import de.sgollmer.solvismax.model.objects.DataSourceI;
 import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Field;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -81,13 +82,14 @@ public class Measurement extends DataSource {
 	// 130B0F Datum 15.11.2019
 	// 49AB00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-	public Measurement(Strategy type, int divisor, boolean average, boolean dynamic, String unit, Collection< Field> fields) {
+	public Measurement(Strategy type, int divisor, boolean average, boolean dynamic, String unit,
+			Collection<Field> fields) {
 		this.type = type;
 		this.divisor = divisor;
 		this.average = average;
 		this.dynamic = dynamic;
 		this.unit = unit;
-		this.fields = fields ;
+		this.fields = fields;
 	}
 
 	@Override
@@ -117,7 +119,10 @@ public class Measurement extends DataSource {
 
 	@Override
 	public String getUnit() {
-		return this.unit;
+		if (this.type.isNumeric() && !this.unit.isEmpty()) {
+			return this.unit;
+		}
+		return null;
 	}
 
 	public boolean isDynamic() {
@@ -166,7 +171,7 @@ public class Measurement extends DataSource {
 
 		@Override
 		public Measurement create() throws XmlError {
-			return new Measurement(type, divisor, average, dynamic, unit,fields);
+			return new Measurement(type, divisor, average, dynamic, unit, fields);
 		}
 
 		@Override
@@ -181,10 +186,10 @@ public class Measurement extends DataSource {
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			if ( creator.getId().equals("Field")) {
-				this.fields.add((Field) created) ;
+			if (creator.getId().equals("Field")) {
+				this.fields.add((Field) created);
 			}
-			
+
 		}
 
 	}
@@ -195,7 +200,7 @@ public class Measurement extends DataSource {
 
 	@Override
 	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
-		
+
 	}
 
 	@Override
@@ -209,6 +214,19 @@ public class Measurement extends DataSource {
 
 	@Override
 	public Screen getScreen() {
+		return null;
+	}
+
+	@Override
+	public Collection<? extends ModeI> getModes() {
+		return null;
+	}
+
+	@Override
+	public Float getAccuracy() {
+		if (this.type.isNumeric()) {
+			return (float) 1 / (float) this.getDivisor();
+		}
 		return null;
 	}
 

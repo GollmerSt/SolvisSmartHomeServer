@@ -2,7 +2,7 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class BooleanValue implements SingleData {
+public class BooleanValue implements SingleData<Boolean> {
 
 	boolean value;
 
@@ -10,6 +10,7 @@ public class BooleanValue implements SingleData {
 		this.value = value;
 	}
 
+	@Override
 	public Boolean get() {
 		return value;
 	}
@@ -20,7 +21,7 @@ public class BooleanValue implements SingleData {
 	}
 
 	@Override
-	public SingleData create(int value) {
+	public SingleData<Boolean> create(int value) {
 		return new BooleanValue( value > 0 );
 	}
 
@@ -46,5 +47,12 @@ public class BooleanValue implements SingleData {
 	public String getXmlId() {
 		return Measurement.XML_MEASUREMENT_BOOLEAN;
 	}
+
+	@Override
+	public String toJson() {
+		return Boolean.toString(this.value);
+	}
+	
+	
 
 }

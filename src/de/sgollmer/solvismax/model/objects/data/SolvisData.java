@@ -7,6 +7,7 @@ import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.DataDescription;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
+import de.sgollmer.solvismax.model.transfer.SingleValue;
 
 public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable {
 
@@ -15,7 +16,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	private final Average average;
 
-	private SingleData data;
+	private SingleData<?> data;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
@@ -39,7 +40,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		}
 	}
 
-	public SolvisData(SingleData data) {
+	public SolvisData(SingleData<?> data) {
 		this.data = data;
 		this.description = null;
 		this.average = null;
@@ -69,7 +70,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return this.description.getId();
 	}
 
-	private void setData(SingleData data) {
+	private void setData(SingleData<?> data) {
 		if (this.description.isAverage()) {
 			this.average.add(data);
 			data = this.average.getAverage(data);
@@ -78,7 +79,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (!data.equals(this.data)) {
 			this.data = data;
 			this.notify(this);
-			System.out.println( this.getId() + ": " + data ) ;
+			System.out.println(this.getId() + ": " + data);
 		}
 		if (this.continousObservable != null) {
 			this.continousObservable.notify(this);
@@ -99,10 +100,13 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	public Integer getInteger() {
 		if (this.data == null) {
 			return null;
-		} else if (!(this.data instanceof IntegerValue)) {
-			throw new TypeError("TypeError: Type actual: <" + this.data.getClass() + ">, target: <IntegerValue>");
+		} else if (this.data instanceof FloatValue) {
+			return (int)(((FloatValue) this.data).get()+0.5);
+
+		} else if ((this.data instanceof IntegerValue)) {
+			return ((IntegerValue) this.data).get();
 		}
-		return ((IntegerValue) this.data).getData();
+		throw new TypeError("TypeError: Type actual: <" + this.data.getClass() + ">, target: <IntegerValue>");
 	}
 
 	public int getInt() {
@@ -152,7 +156,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		}
 	}
 
-	public void setSingleData(SingleData data) {
+	public void setSingleData(SingleData<?> data) {
 		this.setData(data);
 	}
 
@@ -162,14 +166,22 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		}
 		this.continousObservable.register(observer);
 	}
-	
+
 	@Override
 	public String toString() {
-		return this.data.toString() ;
+		return this.data.toString();
 	}
 
-	public SingleData getSingleData() {
-		return this.data ;
+	public SingleData<?> getSingleData() {
+		return this.data;
+	}
+
+	public SingleValue toSingleValue() {
+		if (this.data instanceof IntegerValue) {
+			return new SingleValue(new FloatValue((float) this.getInt() / this.getDescription().getDivisor()));
+		} else {
+			return new SingleValue(data);
+		}
 	}
 
 }

@@ -31,7 +31,7 @@ public class RunTime extends Strategy<RunTime> {
 
 	@Override
 	public boolean isWriteable() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -98,6 +98,11 @@ public class RunTime extends Strategy<RunTime> {
 
 	@Override
 	public void assign(SolvisDescription description) {
+	}
+
+	@Override
+	public Float getAccuracy() {
+		return (float) 1;
 	}
 
 }

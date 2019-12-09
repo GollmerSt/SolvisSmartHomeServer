@@ -5,7 +5,7 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class Command {
 	private final DataDescription description ;
-	private final SingleData setValue ;
+	private final SingleData<?> setValue ;
 	private final boolean screenRestoreOn ;
 	private final boolean screenRestoreOff ;
 	private boolean inhibit = false ;
@@ -14,7 +14,7 @@ public class Command {
 		this( description, null, false, false ) ;
 	}
 	
-	public Command( DataDescription description, SingleData setValue ) {
+	public Command( DataDescription description, SingleData<?> setValue ) {
 		this( description, setValue, false, false ) ;
 	}
 	
@@ -22,14 +22,14 @@ public class Command {
 		this( null, null, !screenRestore, screenRestore ) ;
 	}
 	
-	public Command( DataDescription description, SingleData setValue, boolean screenRestoreOff, boolean screenRestoreOn ) {
+	public Command( DataDescription description, SingleData<?> setValue, boolean screenRestoreOff, boolean screenRestoreOn ) {
 		this.description = description ;
 		this.setValue = setValue ;
 		this.screenRestoreOff = screenRestoreOff ;
 		this.screenRestoreOn = screenRestoreOn ;
 	}
 
-	public SingleData getSetValue() {
+	public SingleData<?> getSetValue() {
 		return setValue;
 	}
 

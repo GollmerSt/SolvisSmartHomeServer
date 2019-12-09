@@ -10,14 +10,16 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Field;
 
 public enum Strategy {
-	DATE(new Date()), UNSIGNED(new Integer(false)), SIGNED(new Integer(true)), BOOLEAN(new Boolean());
+	DATE(new Date(), false), UNSIGNED(new Integer(false), true), SIGNED(new Integer(true), true), BOOLEAN(new Boolean(), false);
 
 	private static String NULL_STRING = new String("0000000000000000000000000000000000000000000000000000000000000000");
 
 	private final StrategyClass type;
+	private final boolean numeric;
 
-	private Strategy(StrategyClass type) {
+	private Strategy(StrategyClass type, boolean numeric) {
 		this.type = type;
+		this.numeric = numeric;
 	}
 
 	public boolean get(SolvisData destin, Collection<Field> fields, String data) throws ErrorPowerOn {
@@ -71,7 +73,7 @@ public enum Strategy {
 			int hour = (int) toInt(str.substring(0, 2));
 
 			int year = (int) toInt(str.substring(6, 8)) + 2000;
-			int month = (int) toInt(str.substring(8, 10)) -1;
+			int month = (int) toInt(str.substring(8, 10)) - 1;
 			int date = (int) toInt(str.substring(10, 12));
 
 			Calendar calendar = Calendar.getInstance();
@@ -103,11 +105,11 @@ public enum Strategy {
 
 		long result = 0;
 
-		for (int i = data.length() / 2-1; i >= 0 / 2; --i) {
+		for (int i = data.length() / 2 - 1; i >= 0 / 2; --i) {
 
-			char c = data.charAt(2*i);
+			char c = data.charAt(2 * i);
 			int b = Character.digit(c, 16);
-			c = data.charAt(2*i + 1);
+			c = data.charAt(2 * i + 1);
 			b = b * 16 + Character.digit(c, 16);
 
 			result = result * 256 + b;
@@ -122,6 +124,10 @@ public enum Strategy {
 		} else {
 			return null;
 		}
+	}
+
+	public boolean isNumeric() {
+		return numeric;
 	}
 
 }

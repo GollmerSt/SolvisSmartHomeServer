@@ -1,16 +1,17 @@
 package de.sgollmer.solvismax.model;
 
-import java.io.IOException;
+import java.util.Collection;
 
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ErrorScreen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
+import de.sgollmer.solvismax.objects.Rectangle;
 
 public class WatchDog {
 
 	private final Solvis solvis;
 	private final ScreenSaver saver;
-	private final ErrorScreen errorScreen ;
 
 	private final int releaseblockingAfterUserChange_ms ;
 	
@@ -19,7 +20,6 @@ public class WatchDog {
 	public WatchDog(Solvis solvis, ScreenSaver saver) {
 		this.solvis = solvis;
 		this.saver = saver;
-		this.errorScreen = new ErrorScreen() ;
 		this.releaseblockingAfterUserChange_ms = this.solvis.getSolvisDescription().getMiscellaneous().getReleaseblockingAfterUserChange_ms();
 	}
 
@@ -29,15 +29,32 @@ public class WatchDog {
 		boolean changed = false;
 		try {
 			MyImage solvisImage = this.solvis.getRealImage();
-
+			
 			if (this.saver.is(solvisImage)) {
 				this.solvis.setScreenSaverActive(true);
-			} else if ( errorScreen.is(solvisImage)){
+			} else if ( ErrorScreen.is(solvisImage)){
 				this.solvis.errorScreenDetected();
 				changed = true;
 			} else {
 				this.solvis.setScreenSaverActive(false);
+				changed = false ;
 				if (!solvisImage.equals(this.solvis.getCurrentImage())) {
+					
+					Screen screen = solvis.getSolvisDescription().getScreens().getScreen(solvisImage, solvis);
+					
+					if ( screen != null && screen == solvis.getCurrentScreen() ) {
+						Collection<Rectangle> ignoreRectangles = screen.getIgnoreRectangles() ;
+						if ( ignoreRectangles != null ) {
+							MyImage ingnoreRectScreen = new MyImage(solvisImage, false, ignoreRectangles) ;
+							if ( ! ingnoreRectScreen.equals(this.solvis.getCurrentImage())) {
+								changed = true ;
+							}
+						}
+					} else {
+						changed = true ;
+					}
+				}
+				if ( changed) {
 					this.solvis.clearCurrentImage();
 					this.changedTime = time;
 					changed = true;
@@ -49,7 +66,7 @@ public class WatchDog {
 					solvis.notifyScreenChangedByUserObserver(this.solvis.getCurrentScreen());
 				}
 			}
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

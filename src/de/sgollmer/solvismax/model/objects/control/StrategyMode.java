@@ -14,7 +14,6 @@ import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
-import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -34,7 +33,7 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public SingleData getValue(MyImage source, Rectangle rectangle, Solvis solvis) {
+	public ModeValue<Mode> getValue(MyImage source, Rectangle rectangle, Solvis solvis) {
 		MyImage image = new MyImage(source, rectangle, true);
 		Pattern pattern = null;
 		for (Mode mode : this.modes) {
@@ -55,7 +54,7 @@ public class StrategyMode implements Strategy {
 
 	@Override
 	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException {
-		SingleData cmp = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
+		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
 		if (cmp != null && value.getMode().equals(cmp)) {
 			return true;
 		}
@@ -132,5 +131,10 @@ public class StrategyMode implements Strategy {
 		for (Mode mode : this.modes) {
 			mode.assign(description);
 		}
+	}
+
+	@Override
+	public Float getAccuracy() {
+		return null ;
 	}
 }

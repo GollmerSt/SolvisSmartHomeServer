@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/control"
+	xmlns:tns="http://www.example.org/control" elementFormDefault="qualified">
+
+
+
+    <annotation>
+    	<documentation></documentation></annotation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<complexType name="BaseData">
+		<annotation>
+			<documentation>Root mit der Home-Screen-Definition</documentation>
+		</annotation>
+		<sequence>
+			<element name="Units" type="tns:Units" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<element name="BaseData" type="tns:BaseData"></element>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<complexType name="Units">
+		<sequence>
+			<element name="Unit" type="tns:Unit"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Unit">
+        <attribute name="id" type="string"></attribute>
+        <attribute name="url" type="string"></attribute>
+		<attribute name="account" type="string"></attribute>
+		<attribute name="password" type="string"></attribute>
+	</complexType>
+</schema>

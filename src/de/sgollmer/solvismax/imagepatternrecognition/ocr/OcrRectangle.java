@@ -130,7 +130,7 @@ public class OcrRectangle extends MyImage {
 				&& this.getHistogramY().get(top) != thicknessX && this.getHistogramY().get(bottom) != thicknessX) {
 			return ;
 		}
-		this.topLeft = new Coordinate(left + this.topLeft.getX(),top+this.topLeft.getY()) ;
+		this.origin = new Coordinate(left + this.origin.getX(),top+this.origin.getY()) ;
 		this.maxRel = new Coordinate( remainingX, remainingY ) ;
 		
 		this.histogramX = this.histogramX.subList(left, right+1) ;

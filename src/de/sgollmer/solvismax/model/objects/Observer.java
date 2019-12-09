@@ -33,7 +33,7 @@ public class Observer<D> {
 	}
 
 	public interface ObserverI<D> {
-		public void update(D data);
+		public void update(D data) ;
 	}
 
 }

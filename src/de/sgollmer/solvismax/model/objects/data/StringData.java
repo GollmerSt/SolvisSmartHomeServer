@@ -2,7 +2,7 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class StringData implements SingleData {
+public class StringData implements SingleData<String> {
 	private final String data ;
 	
 	public StringData( String data ) {
@@ -35,13 +35,23 @@ public class StringData implements SingleData {
 	}
 
 	@Override
-	public SingleData create(int value) {
+	public SingleData<String> create(int value) {
 		return null;
 	}
 
 	@Override
 	public String getXmlId() {
 		return Measurement.XML_MEASUREMENT_STRING;
+	}
+
+	@Override
+	public String toJson() {
+		return "\"" + this.data + "\"" ;
+	}
+
+	@Override
+	public String get() {
+		return data;
 	}
 	
 }

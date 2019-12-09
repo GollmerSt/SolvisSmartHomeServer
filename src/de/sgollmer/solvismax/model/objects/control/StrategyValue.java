@@ -4,17 +4,15 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
-import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class StrategyValue extends StrategyRead {
 	private final int increment;
@@ -44,14 +42,11 @@ public class StrategyValue extends StrategyRead {
 	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) throws IOException {
 		Integer goal = setValue.getInteger();
 
-		SingleData data = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
+		IntegerValue data = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
 		if (data == null) {
 			return null;
 		}
-		if (!(data instanceof IntegerValue)) {
-			throw new TypeError("TypeError: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
-		}
-		int current = ((IntegerValue) data).getData();
+		int current = data.get();
 		int value = (2 * this.increment * goal + this.increment) / (2 * this.increment);
 
 		if (current == value) {

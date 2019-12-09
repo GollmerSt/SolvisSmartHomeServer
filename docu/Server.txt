@@ -41,20 +41,30 @@ Diese Einstellungen werden auch regelmäßig geprüft, falls eine manueller Eingrif
   
   Transfer-Format:
   
-    Um möglichst Perl wenig zu belasten, wird ein sehr einfaches propritäres Format, das ähnlich JSON ist
-    verwendet.
-    Die Structur sieht wie folgt aus:
+    Ein Paket beginnt immer mit 3 Bytes, der die Länge des anschließenden Datenblockes festlegt.
+    Das erste Byte ist das MSB, das dritte das LSB. Damit kann ein Paket aus max. 16.777.216 Zeichen
+    bestehen. Auf diese Weise wird auf einfacher Weise sicher gestellt, dass erst ein kompletter
+    Datenblock eingelesen ist, ehe man mit der UTF-8-Interpretation beginnt.
     
-      { <Command/Event>: { Name1: Wert1 ,  Name2: Wert2 , Name3: Wert3 .... }}
-      
-      Dieses Format wird verwendet, bei veränderten Werten Server -> Client
-      aber auch bei SET von Client -> Server
-      
-    Die Struktur für die Datendefinition ist etwas komplizierter:
     
-      { "Structure": { <Name1>: { "Unit": <value> }, <Name2>: { "StatusValues": [ "Standby", "Tag", "Nacht" ] } } }
-      
-    Die Verarbeitung erfolgt rekursiv und wird in einem hash gespeichert.
+    Datenblock-Format:
     
-    Ob das Paket komplett ist, kann durch zählen der öffnenden und schließenden Klammern vor der eigentlichen
-    Interpretation erfolgen,da die Werte keins der Zeichen {[]} beinhaltet. 
+    	Format: UTF-8
+  
+	    Um möglichst Perl wenig zu belasten, wird ein sehr einfaches propritäres Format, das ähnlich JSON ist
+	    verwendet.
+	    Die Struktur sieht wie folgt aus:
+	    
+	      { <Command/Event>: { "System": <Systemname>, "Werte": {Name1: Wert1 ,  Name2: Wert2 , Name3: Wert3 .... }}}
+	      
+	      Dieses Format wird verwendet, bei veränderten Werten Server -> Client
+	      aber auch bei SET von Client -> Server
+	      
+	    Die Struktur für die Datendefinition ist etwas komplizierter:
+	    
+	      { "Structure": { "Name": <Name1>, "Beschreibung": { "Unit": <value> }, "Name": <Name2>, "Beschreibung": { "StatusValues": [ "Standby", "Tag", "Nacht" ] } } }
+	      
+	    Die Verarbeitung erfolgt rekursiv und wird in einem hash gespeichert.
+	    
+	    Ob das Paket komplett ist, kann durch zählen der öffnenden und schließenden Klammern vor der eigentlichen
+	    Interpretation erfolgen,da die Werte keins der Zeichen {[]} beinhaltet. 

@@ -24,9 +24,9 @@ public class Measurement {
 	public static final String XML_MEASUREMENT_MODE = "ModeValue";
 
 	private final String id;
-	private final SingleData data;
+	private final SingleData<?> data;
 
-	public Measurement(String id, SingleData data) {
+	public Measurement(String id, SingleData<?> data) {
 		this.id = id;
 		this.data = data;
 	}
@@ -34,14 +34,14 @@ public class Measurement {
 	/**
 	 * @return the data
 	 */
-	public SingleData getData() {
+	public SingleData<?> getData() {
 		return data;
 	}
 
 	public static class Creator extends CreatorByXML<Measurement> {
 
 		private String id;
-		private SingleData data;
+		private SingleData<?> data;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -82,14 +82,14 @@ public class Measurement {
 				case XML_MEASUREMENT_INTEGER:
 				case XML_MEASUREMENT_MODE:
 				case XML_MEASUREMENT_STRING:
-					this.data = (SingleData) created;
+					this.data = (SingleData<?>) created;
 			}
 
 		}
 
 	}
 
-	private static class ValueCreator extends CreatorByXML<SingleData> {
+	private static class ValueCreator extends CreatorByXML<SingleData<?>> {
 
 		StringBuilder text = new StringBuilder();
 
@@ -102,7 +102,7 @@ public class Measurement {
 		}
 
 		@Override
-		public SingleData create() throws XmlError, IOException {
+		public SingleData<?> create() throws XmlError, IOException {
 			final String dataString = text.toString();
 			switch (this.getId()) {
 				case XML_MEASUREMENT_BOOLEAN:

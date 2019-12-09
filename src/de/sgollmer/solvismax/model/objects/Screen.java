@@ -12,6 +12,7 @@ import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -22,6 +23,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 	private static final String XML_SCREEN_GRAFICS = "ScreenGrafic";
 	private static final String XML_SCREEN_GRAFICS_REF = "ScreenGraficRef";
 	private static final String XML_SCREEN_OCR = "ScreenOcr";
+	private static final String XML_IGNORE_RECTANGLE = "IgnoreRectangle";
 
 	private final String id;
 	private final String previousId;
@@ -29,19 +31,21 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 	private final TouchPoint touchPoint;
 	private final Collection<ScreenCompare> screenCompares = new ArrayList<>();
 	private final Collection<String> screenGraficRefs;
+	private final Collection<Rectangle> ignoreRectangles;
 
 	public Screen previousScreen = null;
 	public Screen backScreen = null;
 	public Collection<Screen> nextScreens = new ArrayList<>(3);
 
 	public Screen(String id, String previousId, String backId, TouchPoint touchPoint,
-			Collection<String> screenGraficRefs, Collection<ScreenOcr> ocrs) {
+			Collection<String> screenGraficRefs, Collection<ScreenOcr> ocrs, Collection<Rectangle> ignoreRectangles) {
 		this.id = id;
 		this.previousId = previousId;
 		this.backId = backId;
 		this.touchPoint = touchPoint;
 		this.screenGraficRefs = screenGraficRefs;
 		this.screenCompares.addAll(ocrs);
+		this.ignoreRectangles = ignoreRectangles;
 	}
 
 	/**
@@ -107,7 +111,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 		}
 		return true;
 	}
-
+	
 	public boolean isLearned(Solvis solvis) {
 		for (ScreenCompare cmp : this.screenCompares) {
 			if (cmp instanceof ScreenGraficDescription) {
@@ -155,6 +159,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 		private TouchPoint touchPoint;
 		private Collection<String> screenGraficRefs = new ArrayList<>();
 		private Collection<ScreenOcr> screenOcr = new ArrayList<>();
+		private Collection<Rectangle> ignoreRectangles = null ;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -178,7 +183,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 
 		@Override
 		public Screen create() throws XmlError {
-			return new Screen(id, previousId, backId, touchPoint, screenGraficRefs, screenOcr);
+			return new Screen(id, previousId, backId, touchPoint, screenGraficRefs, screenOcr, ignoreRectangles);
 		}
 
 		@Override
@@ -193,6 +198,8 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 					return new CreatorScreenGraficRef(id, this.getBaseCreator());
 				case XML_SCREEN_OCR:
 					return new ScreenOcr.Creator(id, getBaseCreator());
+				case XML_IGNORE_RECTANGLE:
+					return new Rectangle.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -214,6 +221,11 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 				case XML_SCREEN_OCR:
 					this.screenOcr.add((ScreenOcr) created);
 					break;
+				case XML_IGNORE_RECTANGLE:
+					if ( this.ignoreRectangles == null) {
+						this.ignoreRectangles = new ArrayList<>() ;
+					}
+					this.ignoreRectangles.add((Rectangle) created);
 			}
 
 		}
@@ -298,7 +310,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 						Screen cmpScreen = solvis.getCurrentScreen();
 						if (cmpScreen == null || cmpScreen == nextScreen) {
 							nextScreen.learn(solvis, learnScreens);
-							current = solvis.getCurrentScreen() ;
+							current = solvis.getCurrentScreen();
 							success = true;
 						}
 					} catch (IOException e) {
@@ -307,8 +319,8 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 						}
 					}
 				}
-				//this.gotoScreen(solvis, this, current, learnObjects);
-				//current = this;
+				// this.gotoScreen(solvis, this, current, learnObjects);
+				// current = this;
 			}
 		}
 
@@ -383,6 +395,10 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 	@Override
 	public int compareTo(Screen o) {
 		return this.id.compareTo(o.id);
+	}
+
+	public Collection<Rectangle> getIgnoreRectangles() {
+		return ignoreRectangles;
 	}
 
 }

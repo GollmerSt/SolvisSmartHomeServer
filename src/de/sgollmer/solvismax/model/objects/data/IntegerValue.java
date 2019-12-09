@@ -2,7 +2,7 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class IntegerValue implements SingleData {
+public class IntegerValue implements SingleData<Integer> {
 	private final Integer data;
 
 	public IntegerValue(Integer value) {
@@ -23,20 +23,13 @@ public class IntegerValue implements SingleData {
 		return this.data.hashCode();
 	}
 
-	/**
-	 * @return the data
-	 */
-	public Integer getData() {
-		return data;
-	}
-
 	@Override
 	public Integer getInt() {
 		return data;
 	}
 
 	@Override
-	public SingleData create(int value) {
+	public SingleData<Integer> create(int value) {
 		return new IntegerValue(value);
 	}
 
@@ -48,6 +41,16 @@ public class IntegerValue implements SingleData {
 	@Override
 	public String getXmlId() {
 		return Measurement.XML_MEASUREMENT_INTEGER;
+	}
+
+	@Override
+	public String toJson() {
+		return Integer.toString(this.data) ;
+	}
+
+	@Override
+	public Integer get() {
+		return this.data;
 	}
 
 }

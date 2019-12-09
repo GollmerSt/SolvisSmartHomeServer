@@ -16,6 +16,7 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.DataDescription;
+import de.sgollmer.solvismax.model.objects.Distributor;
 import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.GraficsLearnable.LearnScreen;
 import de.sgollmer.solvismax.model.objects.Observer;
@@ -31,6 +32,7 @@ import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.transfer.DataDescriptionsPackage;
 import de.sgollmer.solvismax.xml.ControlFileReader;
 import de.sgollmer.solvismax.xml.GraficFileHandler;
 import de.sgollmer.solvismax.xml.XmlStreamReader;
@@ -50,6 +52,7 @@ public class Solvis {
 	private SolvisWorkers worker;
 	private WatchDog watchDog;
 
+	private final String id;
 	private MyImage currentImage = null;
 	private Screen currentScreen = null;
 	private Screen savedScreen = null;
@@ -58,7 +61,7 @@ public class Solvis {
 	private final TouchPoint resetSceenSaver;
 	private final SolvisConnection connection;
 	private final MeasurementsBackupHandler backupHandler;
-	private final String id;
+	private final Distributor distributor ;
 
 	public Solvis(String id, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler) {
@@ -74,6 +77,8 @@ public class Solvis {
 		this.worker = new SolvisWorkers(this);
 		this.backupHandler = measurementsBackupHandler;
 		this.backupHandler.register(this, id);
+		this.distributor = new Distributor() ;
+		
 	}
 
 	private Observer.Observable<Screen> screenChangedByUserObserable = new Observable<Screen>();
@@ -241,6 +246,8 @@ public class Solvis {
 			this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 			this.worker.start();
 			this.getSolvisDescription().getDataDescriptions().initControl(this);
+			this.getAllSolvisData().registerObserver(this.distributor.getSolvisDataObserver());
+			this.connection.register(this.distributor.getConnectionStateObserver());
 		}
 	}
 
@@ -288,7 +295,7 @@ public class Solvis {
 		this.screenChangedByUserObserable.register(observer);
 	}
 
-	public void notifyScreenChangedByUserObserver(Screen screen) {
+	public void notifyScreenChangedByUserObserver(Screen screen) throws Throwable {
 		this.screenChangedByUserObserable.notify(screen);
 		;
 	}
@@ -358,6 +365,28 @@ public class Solvis {
 		this.solvisDescription.getDataDescriptions().learn(this);
 	}
 
+	/**
+	 * @return the solvisDescription
+	 */
+	public SolvisDescription getSolvisDescription() {
+		return solvisDescription;
+	}
+
+	public void powerDetected(boolean power) {
+		// TODO Auto-generated method stub
+	}
+
+	public void errorScreenDetected() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void backupMeasurements(SystemMeasurements system) {
+		this.allSolvisData.backupSpecialMeasurements(system);
+
+	}
+
+
 	public static void main(String[] args) throws IOException, XmlError, XMLStreamException {
 		String id = "mySolvis";
 		ControlFileReader reader = new ControlFileReader(null);
@@ -365,6 +394,12 @@ public class Solvis {
 		XmlStreamReader.Result<SolvisDescription> result = reader.read();
 
 		SolvisDescription solvisDescription = result.getTree();
+		
+		DataDescriptionsPackage json = new DataDescriptionsPackage(solvisDescription.getDataDescriptions()) ;
+		
+		StringBuilder jsonBuiler = new StringBuilder() ;
+		json.getFrame().addTo(jsonBuiler);
+		System.out.println(jsonBuiler.toString());
 
 		final MeasurementsBackupHandler measurementsBackupHandler = new MeasurementsBackupHandler(null,
 				solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
@@ -435,25 +470,23 @@ public class Solvis {
 
 	}
 
-	/**
-	 * @return the solvisDescription
-	 */
-	public SolvisDescription getSolvisDescription() {
-		return solvisDescription;
-	}
-
-	public void powerDetected(boolean power) {
+	public void terminate() {
 		// TODO Auto-generated method stub
+		
 	}
 
-	public void errorScreenDetected() {
-		// TODO Auto-generated method stub
-
+	public String getId() {
+		return id;
+	}
+	
+	public void registerObserver( Observer.ObserverI< SolvisData > observer ) {
+		this.allSolvisData.registerObserver( observer ) ;
 	}
 
-	public void backupMeasurements(SystemMeasurements system) {
-		this.allSolvisData.backupSpecialMeasurements(system);
-
+	public Distributor getDistributor() {
+		return distributor;
 	}
+	
+	
 
 }

@@ -25,7 +25,7 @@ public class Average implements Cloneable {
 		this.size = average.size;
 	}
 
-	public void add(SingleData data) {
+	public void add(SingleData<?> data) {
 		Integer i = data.getInt();
 		if (i == null) {
 			return;
@@ -59,7 +59,7 @@ public class Average implements Cloneable {
 
 	}
 
-	SingleData getAverage(SingleData singleData) {
+	SingleData<?> getAverage(SingleData<?> singleData) {
 
 		return singleData.create(average);
 	}

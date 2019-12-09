@@ -1,5 +1,8 @@
 package de.sgollmer.solvismax.model.objects.calculation;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import de.sgollmer.solvismax.error.AssignmentError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
@@ -48,7 +51,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 	@Override
 	public boolean isWriteable() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -107,6 +110,18 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	@Override
 	public void assign(SolvisDescription description) {
 		
+	}
+
+
+	@Override
+	public Collection<ModeI> getModes() {
+		return Arrays.asList(Status.values());
+	}
+
+
+	@Override
+	public Float getAccuracy() {
+		return null;
 	}
 	
 }
