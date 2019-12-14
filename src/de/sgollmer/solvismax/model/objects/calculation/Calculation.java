@@ -155,4 +155,9 @@ public class Calculation extends DataSource {
 	public Collection<? extends ModeI> getModes() {
 		return null;
 	}
+
+	@Override
+	public UpperLowerStep getUpperLowerStep() {
+		return null;
+	}
 }

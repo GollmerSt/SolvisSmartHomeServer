@@ -1,24 +1,21 @@
 package de.sgollmer.solvismax.model.objects;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.transfer.MeasurementsPackage;
 
 public class AllSolvisData {
 
 	private final Solvis solvis;
 
 	private final Map<String, SolvisData> solvisDatas = new HashMap<>();
-	private Map<String, SolvisData> pendingUpdates = new HashMap<>();
-	private boolean updatePending = false;
 	private int averageCount;
 	private int readMeasurementInterval;
 	private boolean burnerSynchronisation = true;
@@ -59,34 +56,6 @@ public class AllSolvisData {
 			throw new UnknownError("Unknown error: <" + id + "> is unknown");
 		}
 		return this.get(description);
-	}
-
-	public void update(SolvisData data) {
-		Collection<SolvisData> toUpate = null;
-		synchronized (this) {
-			this.solvisDatas.put(data.getId(), data);
-			if (!this.updatePending) {
-				toUpate = this.pendingUpdates.values();
-				this.pendingUpdates = new HashMap<>();
-			}
-		}
-		if (toUpate != null) {
-			solvis.getSmartHome().send(toUpate, solvis);
-		}
-	}
-
-	public void setUpdatePending(boolean set) {
-		if (set) {
-			this.updatePending = true;
-		} else {
-			Collection<SolvisData> toUpate = null;
-			synchronized (this) {
-				this.updatePending = false;
-				toUpate = this.pendingUpdates.values();
-				this.pendingUpdates = new HashMap<>();
-			}
-			solvis.getSmartHome().send(toUpate, solvis);
-		}
 	}
 
 	/**

@@ -1,35 +1,65 @@
 package de.sgollmer.solvismax.helper;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Main;
 
 public class FileHelper {
-	public static void copyFromResource(String resourcePath, File destination) throws IOException {
+	
+	
 
-		InputStream inputStream = Main.class.getResourceAsStream(resourcePath);
+	public static void copyFromResource(String resourcePath, File destination)
+			throws IOException {
+		FileHelper.copyFromResource(resourcePath, destination, null, null);
+	}
 
-		OutputStream outputStream = new FileOutputStream(destination);
+	public static void copyFromResource(String resourcePath, File destination, String target, String replacement)
+			throws IOException {
+		
 
-		boolean copied = false;
 
-		byte[] buffer = new byte[2048];
+		InputStream inputStream = Main.class.getResourceAsStream(resourcePath) ;
 
-		while (!copied) {
-			int readCnt = inputStream.read(buffer);
-			if (readCnt < 0) {
-				copied = true;
-			} else {
-				outputStream.write(buffer, 0, readCnt);
+
+//		ClassLoader classLoader = new FileHelper().getClass().getClassLoader();
+//
+//		URL resource = classLoader.getResource( resourcePath);
+//		File rscFile = null;
+//		try {
+//			rscFile = new File(resource.toURI());
+//		} catch (URISyntaxException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//
+//		BufferedReader bufferedReader = null;
+		PrintWriter printWriter = null;
+
+		try {
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+			printWriter = new PrintWriter(new FileWriter(destination));
+
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+				if ( target != null && line.contains(target)) {
+					line = line.replace(target, replacement) ;
+				}
+				printWriter.println(line);
 			}
+
+			bufferedReader.close();
+			printWriter.flush();
+			printWriter.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		outputStream.flush();
-		outputStream.close();
-		inputStream.close();
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -45,8 +75,8 @@ public class FileHelper {
 
 		if (!directory.exists()) {
 			boolean success = directory.mkdir();
-			if ( !success ) {
-				return ;
+			if (!success) {
+				return;
 			}
 		}
 
@@ -56,6 +86,6 @@ public class FileHelper {
 		// System.out.println("Write not possible") ;
 		// }
 
-		FileHelper.copyFromResource("data/graficData.xsd", file);
+		FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + "graficData.xsd", file);
 	}
 }

@@ -7,9 +7,13 @@ import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.slf4j.LoggerFactory;
+
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.AccountInfo;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
+import de.sgollmer.solvismax.connection.transfer.ChannelDescriptionsPackage;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -23,6 +27,7 @@ import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.Screen;
+import de.sgollmer.solvismax.model.objects.Screen.ScreenTouch;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
@@ -32,16 +37,16 @@ import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.transfer.DataDescriptionsPackage;
 import de.sgollmer.solvismax.xml.ControlFileReader;
 import de.sgollmer.solvismax.xml.GraficFileHandler;
 import de.sgollmer.solvismax.xml.XmlStreamReader;
 
 public class Solvis {
 
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Solvis.class);
+
 	private static boolean LEARNING = false;
 
-	private SmartHome smartHome;
 
 	private Screen homeScreen;
 
@@ -61,7 +66,7 @@ public class Solvis {
 	private final TouchPoint resetSceenSaver;
 	private final SolvisConnection connection;
 	private final MeasurementsBackupHandler backupHandler;
-	private final Distributor distributor ;
+	private final Distributor distributor;
 
 	public Solvis(String id, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler) {
@@ -77,8 +82,8 @@ public class Solvis {
 		this.worker = new SolvisWorkers(this);
 		this.backupHandler = measurementsBackupHandler;
 		this.backupHandler.register(this, id);
-		this.distributor = new Distributor() ;
-		
+		this.distributor = new Distributor();
+
 	}
 
 	private Observer.Observable<Screen> screenChangedByUserObserable = new Observable<Screen>();
@@ -155,6 +160,9 @@ public class Solvis {
 	}
 
 	public void send(TouchPoint point) throws IOException {
+		if ( point == null ) {
+			logger.warn("TouchPoint is <null>, ignored");
+		}
 		synchronized (solvisGUIObject) {
 			this.connection.sendTouch(point.getCoordinate());
 			try {
@@ -185,9 +193,7 @@ public class Solvis {
 
 	public void gotoHome() throws IOException {
 		synchronized (solvisGUIObject) {
-			for (int cnt = 0; cnt < 4; ++cnt) {
-				this.sendBack();
-			}
+			this.solvisDescription.getFallBack().execute(this);
 		}
 	}
 
@@ -209,29 +215,34 @@ public class Solvis {
 				return true;
 			}
 
-			List<Screen> previousScreens = screen.getPreviosScreens();
+			List<ScreenTouch> previousScreens = screen.getPreviosScreens();
 
-			while (this.getCurrentScreen() != null && this.getCurrentScreen() != screen) {
+			int cnt = Constants.GOTO_SCREEN_TRIES;
+
+			while (this.getCurrentScreen() != null && this.getCurrentScreen() != screen && --cnt >= 0) {
+
 				// && this.getCurrentScreen() != this.homeScreen) {
 				// ListIterator<Screen> it = null;
-				Screen next = screen;
-				boolean found = false;
-				for (Iterator<Screen> it = previousScreens.iterator(); it.hasNext() && !found;) {
-					Screen previous = it.next();
+				ScreenTouch foundScreenTouch = null;
+				for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext() ;) {
+					ScreenTouch st = it.next() ;
+					Screen previous = st.getScreen();
 					if (previous == this.getCurrentScreen()) {
-						found = true;
+						foundScreenTouch = st ;
 						break;
-					} else {
-						next = previous;
 					}
 				}
-
-				if (found) {
-					this.send(next.getTouchPoint());
-				} else {
+				
+				if ( foundScreenTouch == null ) {
 					this.sendBack();
+				} else {
+					this.send(foundScreenTouch.getTouchPoint());
 				}
 
+			}
+			if (cnt < 0) {
+				logger.error(
+						"Screen <" + screen.getId() + "> not found after " + Constants.GOTO_SCREEN_TRIES + " tries");
 			}
 			return this.getCurrentScreen() != null && this.getCurrentScreen() == screen;
 		}
@@ -316,10 +327,6 @@ public class Solvis {
 		}
 	}
 
-	public SmartHome getSmartHome() {
-		return smartHome;
-	}
-
 	/**
 	 * @return the allSolvisData
 	 */
@@ -332,7 +339,14 @@ public class Solvis {
 	 *            the screenSaver to set
 	 */
 	public void setScreenSaverActive(boolean screenSaverActive) {
-		this.screenSaverActive = screenSaverActive;
+		if (this.screenSaverActive != screenSaverActive) {
+			if (screenSaverActive) {
+				logger.info("Screen saver detected");
+			} else {
+				logger.info("Screen saver finished");
+			}
+		}
+		this.screenSaverActive = screenSaverActive ;
 	}
 
 	public SystemGrafics getGrafics() {
@@ -386,7 +400,6 @@ public class Solvis {
 
 	}
 
-
 	public static void main(String[] args) throws IOException, XmlError, XMLStreamException {
 		String id = "mySolvis";
 		ControlFileReader reader = new ControlFileReader(null);
@@ -394,10 +407,10 @@ public class Solvis {
 		XmlStreamReader.Result<SolvisDescription> result = reader.read();
 
 		SolvisDescription solvisDescription = result.getTree();
-		
-		DataDescriptionsPackage json = new DataDescriptionsPackage(solvisDescription.getDataDescriptions()) ;
-		
-		StringBuilder jsonBuiler = new StringBuilder() ;
+
+		ChannelDescriptionsPackage json = new ChannelDescriptionsPackage(solvisDescription.getDataDescriptions());
+
+		StringBuilder jsonBuiler = new StringBuilder();
 		json.getFrame().addTo(jsonBuiler);
 		System.out.println(jsonBuiler.toString());
 
@@ -472,21 +485,19 @@ public class Solvis {
 
 	public void terminate() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String getId() {
 		return id;
 	}
-	
-	public void registerObserver( Observer.ObserverI< SolvisData > observer ) {
-		this.allSolvisData.registerObserver( observer ) ;
+
+	public void registerObserver(Observer.ObserverI<SolvisData> observer) {
+		this.allSolvisData.registerObserver(observer);
 	}
 
 	public Distributor getDistributor() {
 		return distributor;
 	}
-	
-	
 
 }

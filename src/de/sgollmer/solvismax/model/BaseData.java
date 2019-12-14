@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.objects.Units;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -11,7 +13,8 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class BaseData {
 
-	private static final String XML_BASEDATA_UNITS = "Current";
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BaseData.class);
+	private static final String XML_BASEDATA_UNITS = "Units";
 
 	private final Units units ;
 	
@@ -37,6 +40,7 @@ public class BaseData {
 
 		@Override
 		public BaseData create() throws XmlError, IOException {
+			logger.debug("BaseData created");
 			return new BaseData(units);
 		}
 
@@ -45,6 +49,7 @@ public class BaseData {
 			String id = name.getLocalPart() ;
 			switch ( id ) {
 				case XML_BASEDATA_UNITS :
+					logger.debug("Units.Creator created");
 					return new Units.Creator(id, this.getBaseCreator()) ;
 			}
 			return null;

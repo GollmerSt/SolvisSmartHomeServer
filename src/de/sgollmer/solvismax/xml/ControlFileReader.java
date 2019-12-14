@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.stream.StreamSource;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
@@ -17,7 +18,6 @@ public class ControlFileReader {
 
 	private static final String NAME_XML_CONTROLFILE = "control.xml";
 	private static final String NAME_XSD_CONTROLFILE = "control.xsd";
-	private static final String RELATIVE_SOURCE_PATH = "data/";
 	private static final String XML_ROOT_ID = "SolvisDescription";
 
 	private final File parent;
@@ -55,12 +55,12 @@ public class ControlFileReader {
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
 
 		if (!xml.exists() || DEBUG) {
-			FileHelper.copyFromResource(RELATIVE_SOURCE_PATH + NAME_XML_CONTROLFILE, xml);
+			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XML_CONTROLFILE, xml);
 		}
 
 		File xsd = new File(this.parent, NAME_XSD_CONTROLFILE);
 
-		FileHelper.copyFromResource(RELATIVE_SOURCE_PATH + NAME_XSD_CONTROLFILE, xsd);
+		FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XSD_CONTROLFILE, xsd);
 
 	}
 

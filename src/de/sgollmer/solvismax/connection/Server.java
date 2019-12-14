@@ -9,14 +9,18 @@ import java.util.Collection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.connection.transfer.JsonPackage;
+import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
-import de.sgollmer.solvismax.model.transfer.JsonPackage;
-import de.sgollmer.solvismax.model.transfer.ReceivedPackageCreator;
 
 public class Server {
 
-	private ServerSocket serverSocket;
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Server.class);
+
+    private ServerSocket serverSocket;
 	private final Collection<Socket> connectedClients;
 	private final int maxConnections;
 	private final CommandHandler commandHandler;
@@ -49,9 +53,14 @@ public class Server {
 					addClient(client);
 					executor.execute(new Client(client));
 
-				} catch (IOException e) {
+				} catch (Throwable e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					logger.error("Unexpected termination of server", e);
+					try {
+						Thread.sleep(Constants.RETRY_STARTING_SERVER_TIME) ;
+					} catch (InterruptedException e1) {
+					}
 				}
 			}
 
@@ -92,6 +101,8 @@ public class Server {
 
 		@Override
 		public void run() {
+			
+			logger.info("Client connected from " + this.socket.getInetAddress().toString());
 
 			try {
 				InputStream in = this.socket.getInputStream();
@@ -102,11 +113,9 @@ public class Server {
 				}
 
 			} catch (Throwable e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.debug("Client connection closed. cause:",e);
 			}
-			removeClient(this.socket);
-			commandHandler.clientClosed(this);
+			this.close();
 		}
 
 		public synchronized void send(JsonPackage jsonPackage) {
@@ -115,6 +124,7 @@ public class Server {
 					jsonPackage.send(this.socket.getOutputStream());
 				}
 			} catch (IOException e) {
+				logger.debug("IOException occured. Cause:",e);
 				/**
 				 * Im Falle einer fehlerhaften Datenübertragung wird die
 				 * Verbindung getrennt. Der Client sollte sie wieder aufbauen,
@@ -126,6 +136,7 @@ public class Server {
 		}
 
 		public synchronized void close() {
+			logger.info("Client disconnected");
 			try {
 				removeClient(this.socket);
 				commandHandler.clientClosed(this);

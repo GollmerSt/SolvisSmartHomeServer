@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" monitorInterval="60">
+
+    <Properties>
+        <Property name="log-path">****LogPath****</Property>	
+        <Property name="filePattern">[%d] %-5p %c - %m%n</Property>
+        <Property name="consolePattern">%d|%-4p|%m%n</Property>
+    </Properties>
+  
+    <!-- ##################### -->
+    <!-- DEFINITION OF LOGGERS -->
+    <!-- ##################### -->
+ 
+    <Loggers>   
+        <!-- ROOT LOGGER -->
+        <Root level="debug">            
+            <AppenderRef ref="Async"/>      
+        </Root>
+  	
+        <!-- SOLVIS -->
+        <!--Logger name="rfid_api" level="info" additivity="false">
+            <AppenderRef ref="Async"/>
+            <AppenderRef ref="Solvis-Error"/>
+            <AppenderRef ref="Console"/>
+        </Logger-->
+        
+    </Loggers>
+ 
+    <!-- ####################### -->
+    <!-- DEFINITION OF APPENDERS -->
+    <!-- ####################### -->
+  
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>${consolePattern}</pattern>
+            </PatternLayout>
+        </Console>
+        <!-- SYSLOG APPENDER -->
+        <!-->
+        <Syslog name="RFC5424" format="RFC5424" host="${syslog-server}" port="60514"   
+            protocol="UDP" appName="SOLVIS" mdcId="mdc" includeMDC="true" 
+            facility="SYSLOG" enterpriseNumber="18060" newLine="true" 
+            id="App">
+            <LoggerFields>			
+                <KeyValuePair key="exception" value="%ex{full}" />
+                <KeyValuePair key="classname" value="%c{1}" />
+            </LoggerFields>
+        </Syslog>
+        <!-->-->
+        <!-- SOLVIS LOG APPENDER -->
+        <RollingFile name="Solvis" fileName="${log-path}/solvis.log"
+                     filePattern="${log-path}/solvis.log.%i" >
+            <PatternLayout>
+                <pattern>${filePattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="1000 KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="2"/>
+        </RollingFile>
+ 
+        <!-- SOLVIS-Error LOG APPENDER -->
+        <RollingFile name="Solvis-Error" fileName="${log-path}/solvis-error.log"
+                     filePattern="${log-path}/solvis-error.log.%i" >
+            <PatternLayout>
+                <pattern>${filePattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="1000 KB" />
+            </Policies>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
+        <Async name="Async">
+            <appender-ref ref="Solvis" level="debug"/>
+            <appender-ref ref="Console"/>
+            <!-- appender-ref ref="RFC5424" level="info"/--> <!-- Database logging -->
+            <!--appender-ref ref="Solvis-Error" level="error"/-->
+        </Async>
+	
+    </Appenders>
+  
+</Configuration>

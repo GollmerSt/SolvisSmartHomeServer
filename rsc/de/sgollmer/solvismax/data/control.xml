@@ -14,7 +14,7 @@
 		</tns:ResetScreenSaver>
 	</tns:ScreenSaver>
 	<tns:Screens>
-		<tns:Screen id="Home">
+		<tns:Screen id="Home" backId="" previousId="">
 			<tns:ScreenGrafic exact="true" id="Home">
 				<tns:Field>
 					<tns:TopLeft X="0" Y="8" />
@@ -115,7 +115,7 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen backId="Heizkreise" id="Heizkreis1 1_5"
-			previousId="Heizkreise">
+			previousId="Heizkreise" ignoreChanges="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="15" />
@@ -169,6 +169,10 @@
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="145" Y="15" />
+				<tns:BottomRight X="205" Y="65" />
+			</tns:IgnoreRectangle>
 		</tns:Screen>
 		<tns:Screen backId="Heizkreise" id="Heizkreis1 4_5"
 			previousId="Heizkreis1 5_5">
@@ -183,6 +187,48 @@
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="145" Y="15" />
+				<tns:BottomRight X="205" Y="65" />
+			</tns:IgnoreRectangle>
+		</tns:Screen>
+		<!-- WICHTIG: Vor Learning muss unbedingt Anlagenstatus Heizkreise ausgewählt 
+			worden sein -->
+		<tns:Screen backId="Sonstiges 1" previousId="Sonstiges 1"
+			alternativePreviousId="Anlagenstatus WW" id="Anlagenstatus HK"
+			ignoreChanges="true">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="85" />
+			</tns:TouchPoint>
+			<tns:AlternativeTouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="230" Y="120" />
+			</tns:AlternativeTouchPoint>
+			<tns:ScreenGrafic id="Anlagenstatus HK">
+				<tns:Field>
+					<tns:TopLeft X="96" Y="13" />
+					<tns:BottomRight X="125" Y="40" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Sonstiges 1" previousId="Anlagenstatus HK"
+			alternativePreviousId="Sonstiges 1" id="Anlagenstatus WW"
+			ignoreChanges="true">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="230" Y="120" />
+			</tns:TouchPoint>
+			<tns:AlternativeTouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="85" />
+			</tns:AlternativeTouchPoint>
+			<tns:ScreenGrafic id="Anlagenstatus WW">
+				<tns:Field>
+					<tns:TopLeft X="120" Y="75" />
+					<tns:BottomRight X="150" Y="105" />
+				</tns:Field>
+			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen backId="Home" id="Tagestemperatur" previousId="Home">
 			<tns:TouchPoint pushTimeRefId="Lang" releaseTimeRefId="WindowChange">
@@ -280,6 +326,14 @@
 			</tns:Field>
 		</tns:ScreenGrafic>
 	</tns:ScreenGrafics>
+	<tns:FallBack>
+		<tns:Back />
+		<tns:Back />
+		<tns:Back />
+		<tns:Back />
+		<tns:ScreenRef id="Warmwasser" />
+		<tns:Back />
+	</tns:FallBack>
 	<tns:DataDescriptions>
 		<tns:DataDescription id="X6.UhrzeitSolvis">
 			<tns:Measurement dynamic="true" type="date">
@@ -597,53 +651,7 @@
 				<tns:Dependency id="mixerClosing" dataId="A11.Mischer.HK2_zu" />
 			</tns:Calculation>
 		</tns:DataDescription>
-		<tns:DataDescription id="C01.Anlagenmodus">
-			<tns:Control screenId="Home">
-				<tns:Current>
-					<tns:TopLeft X="110" Y="50" />
-					<tns:BottomRight X="135" Y="70" />
-				</tns:Current>
-				<tns:TypeMode>
-					<tns:Mode id="Tag">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="95" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeTag">
-							<tns:Field>
-								<tns:TopLeft X="110" Y="50" />
-								<tns:BottomRight X="135" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
-					</tns:Mode>
-					<tns:Mode id="Nacht">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="125" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeNacht">
-							<tns:Field>
-								<tns:TopLeft X="110" Y="50" />
-								<tns:BottomRight X="135" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
-					</tns:Mode>
-					<tns:Mode id="Standby">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="160" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeStandby">
-							<tns:Field>
-								<tns:TopLeft X="110" Y="50" />
-								<tns:BottomRight X="135" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
-					</tns:Mode>
-				</tns:TypeMode>
-				<tns:UpdateBy>
-					<tns:ScreenChange />
-				</tns:UpdateBy>
-			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C02.StartsBrenner">
+		<tns:DataDescription id="C01.StartsBrenner">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="75" />
@@ -656,7 +664,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C03.LaufzeitBrenner">
+		<tns:DataDescription id="C02.LaufzeitBrenner">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="48" />
@@ -670,7 +678,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C04.LaufzeitAnforderung2">
+		<tns:DataDescription id="C03.LaufzeitAnforderung2">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="105" />
@@ -685,7 +693,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C05.WarmwasserPumpe">
+		<tns:DataDescription id="C04.WarmwasserPumpe">
 			<tns:Control screenId="Warmwasser">
 				<tns:Current>
 					<tns:TopLeft X="50" Y="30" />
@@ -728,7 +736,7 @@
 				</tns:TypeMode>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C06.WassertemperaturSoll">
+		<tns:DataDescription id="C05.WassertemperaturSoll">
 			<tns:Control screenId="Warmwasser">
 				<tns:Current>
 					<tns:TopLeft X="115" Y="10" />
@@ -745,27 +753,64 @@
 				</tns:TypeValue>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C07.Raumeinfluss_HK1">
-			<tns:Control screenId="Heizkreis1 4_5">
+		<tns:DataDescription id="C06.Anlagenmodus_HK1">
+			<tns:Control screenId="Home">
 				<tns:Current>
-					<tns:TopLeft X="160" Y="75" />
-					<tns:BottomRight X="185" Y="87" />
+					<tns:TopLeft X="110" Y="50" />
+					<tns:BottomRight X="135" Y="70" />
 				</tns:Current>
-				<tns:TypeValue format="#0C" increment="10" least="10"
-					most="90" unit="%" wrapAround="true">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="200" Y="80" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="145" Y="80" />
-					</tns:Lower>
-				</tns:TypeValue>
+				<tns:TypeMode>
+					<tns:Mode id="Tag">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="95" Y="110" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="ModeTag">
+							<tns:Field>
+								<tns:TopLeft X="110" Y="50" />
+								<tns:BottomRight X="135" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+					<tns:Mode id="Nacht">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="125" Y="110" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="ModeNacht">
+							<tns:Field>
+								<tns:TopLeft X="110" Y="50" />
+								<tns:BottomRight X="135" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+					<tns:Mode id="Standby">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="160" Y="110" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="ModeStandby">
+							<tns:Field>
+								<tns:TopLeft X="110" Y="50" />
+								<tns:BottomRight X="135" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+					<tns:Mode id="Timer">
+						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="60" Y="110" />
+						</tns:Touch>
+						<tns:ScreenGrafic id="ModeTimer">
+							<tns:Field>
+								<tns:TopLeft X="110" Y="50" />
+								<tns:BottomRight X="135" Y="70" />
+							</tns:Field>
+						</tns:ScreenGrafic>
+					</tns:Mode>
+				</tns:TypeMode>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C08.Tagestemperatur_HK1">
+		<tns:DataDescription id="C07.Tagestemperatur_HK1">
 			<tns:Control screenId="TagestemperaturSelected">
 				<tns:Current>
 					<tns:TopLeft X="55" Y="30" />
@@ -785,7 +830,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C09.Nachttemperatur_HK1">
+		<tns:DataDescription id="C08.Nachttemperatur_HK1">
 			<tns:Control screenId="NachttemperaturSelected">
 				<tns:Current>
 					<tns:TopLeft X="55" Y="30" />
@@ -805,7 +850,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:DataDescription>
-		<tns:DataDescription id="C10.TemperaturFeineinstellung">
+		<tns:DataDescription id="C09.TemperaturFeineinstellung">
 			<tns:Control screenId="Home">
 				<tns:Current>
 					<tns:TopLeft X="80" Y="50" />
@@ -823,6 +868,35 @@
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C10.Raumeinfluss_HK1">
+			<tns:Control screenId="Heizkreis1 4_5">
+				<tns:Current>
+					<tns:TopLeft X="160" Y="75" />
+					<tns:BottomRight X="185" Y="87" />
+				</tns:Current>
+				<tns:TypeValue format="#0C" increment="10" least="10"
+					most="90" unit="%" wrapAround="true">
+					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="200" Y="80" />
+					</tns:Upper>
+					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="145" Y="80" />
+					</tns:Lower>
+				</tns:TypeValue>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:DataDescription>
+		<tns:DataDescription id="C11.Vorlauf_Soll_HK1">
+			<tns:Control screenId="Heizkreis1 4_5">
+				<tns:Current>
+					<tns:TopLeft X="155" Y="45" />
+					<tns:BottomRight X="190" Y="60" />
+				</tns:Current>
+				<tns:TypeRead format="#0CC" unit="°C" />
 			</tns:Control>
 		</tns:DataDescription>
 	</tns:DataDescriptions>

@@ -2,14 +2,19 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import java.util.Calendar;
 
+import org.slf4j.LoggerFactory;
+
+import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.DataDescription;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
-import de.sgollmer.solvismax.model.transfer.SingleValue;
 
 public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable {
+	
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisData.class);
+
 
 	private final DataDescription description;
 	private final AllSolvisData datas;
@@ -79,7 +84,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (!data.equals(this.data)) {
 			this.data = data;
 			this.notify(this);
-			System.out.println(this.getId() + ": " + data);
+			logger.debug("Channel: " + this.getId() + ", value: " + data.toString() );
 		}
 		if (this.continousObservable != null) {
 			this.continousObservable.notify(this);
@@ -101,7 +106,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (this.data == null) {
 			return null;
 		} else if (this.data instanceof FloatValue) {
-			return (int)(((FloatValue) this.data).get()+0.5);
+			float f = ((FloatValue)this.data).get() ;
+			return (int)(f+(f<0?-0.5:0.5));
 
 		} else if ((this.data instanceof IntegerValue)) {
 			return ((IntegerValue) this.data).get();

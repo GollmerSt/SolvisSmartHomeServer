@@ -126,9 +126,7 @@ public class MyImage {
 	}
 
 	public boolean isActive(int x, int y) {
-		if (this.ignoreRectangles != null && this.toIgnore(x, y)) {
-			return false;
-		} else if (this.isIn(x, y)) {
+		if (this.isIn(x, y)) {
 			return this.meta.isActive(image.getRGB(x + origin.getX(), y + this.origin.getY()));
 		} else {
 			return false;
@@ -140,9 +138,7 @@ public class MyImage {
 	}
 
 	public boolean isLight(int x, int y) {
-		if (this.ignoreRectangles != null && this.toIgnore(x, y)) {
-			return true;
-		} else if (this.isIn(x, y)) {
+		if (this.isIn(x, y)) {
 			return this.meta.isLight(image.getRGB(x + origin.getX(), y + this.origin.getY()));
 		} else {
 			return !this.meta.isInvert();
@@ -303,6 +299,10 @@ public class MyImage {
 
 	@Override
 	public boolean equals(Object obj) {
+		return this.equals(obj, false);
+	}
+
+	public boolean equals(Object obj, boolean ignoreEnable) {
 		if (!(obj instanceof MyImage)) {
 			return false;
 		}
@@ -311,12 +311,13 @@ public class MyImage {
 		if (this.getWidth() != i.getWidth() || this.getHeight() != i.getHeight()) {
 			return false;
 		}
-		if (this.hashCode() != i.hashCode() && this.ignoreRectangles == null && i.ignoreRectangles == null ) {
+		if (this.hashCode() != i.hashCode()
+				&& (!ignoreEnable || this.ignoreRectangles == null && i.ignoreRectangles == null)) {
 			return false;
 		}
 		for (int x = 0; x < this.getWidth(); ++x) {
 			for (int y = 0; y < this.getHeight(); ++y) {
-				if (!this.toIgnore(x, y)) {
+				if (!ignoreEnable || !this.toIgnore(x, y)) {
 					int brighness1 = ImageHelper.getBrightness(this.image.getRGB(x + origin.getX(), y + origin.getY()));
 					int brighness2 = ImageHelper
 							.getBrightness(i.image.getRGB(x + i.origin.getX(), y + i.origin.getY()));
@@ -334,11 +335,11 @@ public class MyImage {
 			return false;
 		}
 		for (Rectangle rectangle : this.ignoreRectangles) {
-			if (!rectangle.isIn(x, y)) {
-				return false;
+			if (rectangle.isIn(x, y)) {
+				return !rectangle.isInvertFunction();
 			}
 		}
-		return true;
+		return false;
 	}
 
 }

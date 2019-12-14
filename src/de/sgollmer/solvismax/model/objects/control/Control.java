@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -24,6 +26,8 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Control extends DataSource {
+
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Control.class);
 
 	private static final String XML_CONTROL_CURRENT = "Current";
 	private static final String XML_CONTROL_TYPE_VALUE = "TypeValue";
@@ -64,8 +68,17 @@ public class Control extends DataSource {
 	public boolean setValue(Solvis solvis, SolvisData value) throws IOException {
 		solvis.gotoScreen(screen);
 		boolean set = false;
-		for (int c = 0; c < 100 && !set; ++c) {
+		for (int c = 0; c < 10 && !set; ++c) {
 			set = this.strategy.setValue(solvis, this.valueRectangle, value);
+			if (c == 2) {
+				logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
+						+ " failed, set will be tried again.");
+			}
+		}
+		if (!set) {
+			logger.error("Setting of <" + this.getDescription().getId() + "> not successfull");
+		} else {
+			logger.info("Channel <" + description.getId() + "> is set to " + value.toString() + ">.");
 		}
 		return set;
 	}
@@ -92,7 +105,7 @@ public class Control extends DataSource {
 
 	@Override
 	public Float getAccuracy() {
-		return this.strategy.getAccuracy() ;
+		return this.strategy.getAccuracy();
 	}
 
 	@Override
@@ -218,10 +231,12 @@ public class Control extends DataSource {
 
 	@Override
 	public Collection<? extends ModeI> getModes() {
-		if (this.strategy instanceof StrategyMode) {
-			return ((StrategyMode) strategy).getModes();
-		}
-		return null;
+		return strategy.getModes();
+	}
+
+	@Override
+	public UpperLowerStep getUpperLowerStep() {
+		return strategy.getUpperLowerStep();
 	}
 
 }

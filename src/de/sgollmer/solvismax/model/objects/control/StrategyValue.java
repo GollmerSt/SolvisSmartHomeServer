@@ -6,6 +6,7 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.DataSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
@@ -47,7 +48,7 @@ public class StrategyValue extends StrategyRead {
 			return null;
 		}
 		int current = data.get();
-		int value = (2 * this.increment * goal + this.increment) / (2 * this.increment);
+		int value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment)) / (2 * this.increment);
 
 		if (current == value) {
 			return true;
@@ -91,7 +92,7 @@ public class StrategyValue extends StrategyRead {
 		private int increment;
 		private int least;
 		private int most;
-		private boolean wrapAround = false ;
+		private boolean wrapAround = false;
 		private TouchPoint upper;
 		private TouchPoint lower;
 
@@ -159,6 +160,12 @@ public class StrategyValue extends StrategyRead {
 	public void assign(SolvisDescription description) {
 		this.upper.assign(description);
 		this.lower.assign(description);
+	}
+
+	@Override
+	public UpperLowerStep getUpperLowerStep() {
+		return new UpperLowerStep((float) most / this.getDivisor(), (float) least / this.getDivisor(),
+				(float) increment / this.getDivisor());
 	}
 
 }

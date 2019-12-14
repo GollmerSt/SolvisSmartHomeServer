@@ -1,4 +1,4 @@
-package de.sgollmer.solvismax.model.transfer;
+package de.sgollmer.solvismax.connection.transfer;
 
 import java.util.ArrayList;
 import java.util.Collection;

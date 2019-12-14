@@ -230,4 +230,9 @@ public class Measurement extends DataSource {
 		return null;
 	}
 
+	@Override
+	public UpperLowerStep getUpperLowerStep() {
+		return null;
+	}
+
 }

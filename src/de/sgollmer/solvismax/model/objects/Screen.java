@@ -3,10 +3,14 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.slf4j.LoggerFactory;
 
 import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.XmlError;
@@ -18,8 +22,11 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Screen implements GraficsLearnable, Comparable<Screen> {
 
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Screen.class);
+
 	private final int LEARN_REPEAT_COUNT = 3;
 
+	private static final String XML_TOUCH_POINT = "TouchPoint";
 	private static final String XML_SCREEN_GRAFICS = "ScreenGrafic";
 	private static final String XML_SCREEN_GRAFICS_REF = "ScreenGraficRef";
 	private static final String XML_SCREEN_OCR = "ScreenOcr";
@@ -27,22 +34,30 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 
 	private final String id;
 	private final String previousId;
+	private final String alternativePreviousId;
 	private final String backId;
+	private final boolean ignoreChanges;
 	private final TouchPoint touchPoint;
+	private final TouchPoint alternativeTouchPoint;
 	private final Collection<ScreenCompare> screenCompares = new ArrayList<>();
 	private final Collection<String> screenGraficRefs;
 	private final Collection<Rectangle> ignoreRectangles;
 
 	public Screen previousScreen = null;
+	public Screen alternativePreviousScreen = null;
 	public Screen backScreen = null;
 	public Collection<Screen> nextScreens = new ArrayList<>(3);
 
-	public Screen(String id, String previousId, String backId, TouchPoint touchPoint,
-			Collection<String> screenGraficRefs, Collection<ScreenOcr> ocrs, Collection<Rectangle> ignoreRectangles) {
+	public Screen(String id, String previousId, String alternativePreviousId, String backId, boolean ignoreChanges,
+			TouchPoint touchPoint, TouchPoint alternativeTouchPoint, Collection<String> screenGraficRefs,
+			Collection<ScreenOcr> ocrs, Collection<Rectangle> ignoreRectangles) {
 		this.id = id;
 		this.previousId = previousId;
+		this.alternativePreviousId = alternativePreviousId;
 		this.backId = backId;
+		this.ignoreChanges = ignoreChanges;
 		this.touchPoint = touchPoint;
+		this.alternativeTouchPoint = alternativeTouchPoint;
 		this.screenGraficRefs = screenGraficRefs;
 		this.screenCompares.addAll(ocrs);
 		this.ignoreRectangles = ignoreRectangles;
@@ -94,6 +109,12 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 			}
 			this.previousScreen.addNextScreen(this);
 		}
+		if (alternativePreviousId != null) {
+			this.alternativePreviousScreen = description.getScreens().get(alternativePreviousId);
+			if (this.alternativePreviousScreen == null) {
+				throw new ReferenceError("Screen reference < " + this.alternativePreviousId + " > not found");
+			}
+		}
 		if (this.touchPoint != null) {
 			this.touchPoint.assign(description);
 		}
@@ -111,7 +132,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 		}
 		return true;
 	}
-	
+
 	public boolean isLearned(Solvis solvis) {
 		for (ScreenCompare cmp : this.screenCompares) {
 			if (cmp instanceof ScreenGraficDescription) {
@@ -123,16 +144,57 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 		return true;
 	}
 
-	public List<Screen> getPreviosScreens() { // Alle Bildschirme davor einschl.
-												// this
+	public static class ScreenTouch {
+		private final Screen screen;
+		private final TouchPoint touchPoint;
 
-		List<Screen> screens = new ArrayList<>();
+		public ScreenTouch(Screen screen, TouchPoint touchPoint) {
+			this.screen = screen;
+			this.touchPoint = touchPoint;
+		}
 
-		Screen previous = this.getPreviousScreen();
+		public Screen getScreen() {
+			return screen;
+		}
 
-		while (previous != null) {
-			screens.add(previous);
-			previous = previous.getPreviousScreen();
+		public TouchPoint getTouchPoint() {
+			return touchPoint;
+		}
+	}
+
+	public List<ScreenTouch> getPreviosScreens() {
+		return this.getPreviosScreens(false);
+	}
+
+	public List<ScreenTouch> getPreviosScreens(boolean learn) { // Alle
+																// Bildschirme
+																// davor
+		// einschl.
+		// this
+
+		List<ScreenTouch> screens = new ArrayList<>();
+
+		Screen current = this;
+
+		while (current != null) {
+			TouchPoint touch = current.getTouchPoint();
+			Screen previous = current.previousScreen;
+			Screen altScreen = current.alternativePreviousScreen;
+			if (altScreen != null && !learn) {
+				if (previous.alternativePreviousScreen != null) {
+					if (screens.contains(previous)) {
+						previous = altScreen;
+						touch = current.getAlternativeTouchPoint();
+					}
+				} else if (altScreen.alternativePreviousScreen != null) {
+					if (!screens.contains(altScreen)) {
+						previous = altScreen;
+						touch = current.getAlternativeTouchPoint();
+					}
+				}
+			}
+			screens.add(new ScreenTouch(previous, touch));
+			current = previous;
 		}
 		return screens;
 	}
@@ -155,11 +217,14 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 
 		private String id;
 		private String previousId;
+		private String alternativePreviousId = null;
 		private String backId;
+		private boolean ignoreChanges;
 		private TouchPoint touchPoint;
+		private TouchPoint alternativeTouchPoint = null;
 		private Collection<String> screenGraficRefs = new ArrayList<>();
 		private Collection<ScreenOcr> screenOcr = new ArrayList<>();
-		private Collection<Rectangle> ignoreRectangles = null ;
+		private List<Rectangle> ignoreRectangles = null;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -172,10 +237,17 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 					this.id = value;
 					break;
 				case "previousId":
-					this.previousId = value;
+					if (!value.isEmpty()) {
+						this.previousId = value;
+					}
 					break;
 				case "backId":
-					this.backId = value;
+					if (!value.isEmpty()) {
+						this.backId = value;
+					}
+					break;
+				case "ignoreChanges":
+					this.ignoreChanges = Boolean.parseBoolean(value);
 					break;
 			}
 
@@ -183,14 +255,28 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 
 		@Override
 		public Screen create() throws XmlError {
-			return new Screen(id, previousId, backId, touchPoint, screenGraficRefs, screenOcr, ignoreRectangles);
+			if (ignoreRectangles != null)
+				Collections.sort(ignoreRectangles, new Comparator<Rectangle>() {
+
+					@Override
+					public int compare(Rectangle o1, Rectangle o2) {
+						if (o1.isInvertFunction() == o2.isInvertFunction()) {
+							return 0;
+						} else if (o1.isInvertFunction()) {
+							return -1;
+						} else
+							return 1;
+					}
+				});
+			return new Screen(id, previousId, alternativePreviousId, backId, ignoreChanges, touchPoint,
+					alternativeTouchPoint, screenGraficRefs, screenOcr, ignoreRectangles);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (name.getLocalPart()) {
-				case "TouchPoint":
+				case XML_TOUCH_POINT:
 					return new TouchPoint.Creator(id, this.getBaseCreator());
 				case XML_SCREEN_GRAFICS:
 					return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
@@ -222,8 +308,8 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 					this.screenOcr.add((ScreenOcr) created);
 					break;
 				case XML_IGNORE_RECTANGLE:
-					if ( this.ignoreRectangles == null) {
-						this.ignoreRectangles = new ArrayList<>() ;
+					if (this.ignoreRectangles == null) {
+						this.ignoreRectangles = new ArrayList<>();
 					}
 					this.ignoreRectangles.add((Rectangle) created);
 			}
@@ -305,7 +391,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 				boolean success = false;
 				for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
 					try {
-						Screen.gotoScreen(solvis, nextScreen, current, learnScreens);
+						Screen.gotoScreenLearning(solvis, nextScreen, current, learnScreens);
 						current = nextScreen;
 						Screen cmpScreen = solvis.getCurrentScreen();
 						if (cmpScreen == null || cmpScreen == nextScreen) {
@@ -314,6 +400,8 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 							success = true;
 						}
 					} catch (IOException e) {
+						logger.warn("Screen <" + this.toString()
+								+ "> not learned in case of IOEexception, will be tried again.");
 						if (cnt <= 0) {
 							throw e;
 						}
@@ -327,7 +415,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 	}
 
 	/**
-	 * current muss angelernt sein
+	 * current muss angelernt sein, Nur fü den Lern-Modus!!!!!!!
 	 * 
 	 * @param solvis
 	 * @param screen
@@ -335,31 +423,34 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 	 * @param learnScreens
 	 * @throws IOException
 	 */
-	private static void gotoScreen(Solvis solvis, Screen screen, Screen current, Collection<LearnScreen> learnScreens)
-			throws IOException {
+	private static void gotoScreenLearning(Solvis solvis, Screen screen, Screen current,
+			Collection<LearnScreen> learnScreens) throws IOException {
 		if (screen == current) {
 			return;
 		}
-		List<Screen> previousScreens = screen.getPreviosScreens();
+		List<ScreenTouch> previousScreens = screen.getPreviosScreens(true);
 		boolean found = false;
 		while (!found) {
+			ScreenTouch foundScreenTouch = null;
 			Screen next = screen;
-			for (Iterator<Screen> it = previousScreens.iterator(); it.hasNext() && !found;) {
-				Screen previous = it.next();
+			for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
+				ScreenTouch st = it.next();
+				Screen previous = st.getScreen();
 				if (previous == current) {
-					found = true;
+					foundScreenTouch = st;
 					break;
 				} else {
 					next = previous;
 				}
 			}
-			if (!found) {
+			if (foundScreenTouch == null) {
 				current = back(solvis, current, learnScreens);
 				if (screen == current) {
 					found = true;
 				}
 			} else {
-				solvis.send(next.getTouchPoint());
+				found = true;
+				solvis.send(foundScreenTouch.getTouchPoint());
 				current = solvis.getCurrentScreen();
 				if (current == null) {
 					current = next;
@@ -399,6 +490,19 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 
 	public Collection<Rectangle> getIgnoreRectangles() {
 		return ignoreRectangles;
+	}
+
+	public TouchPoint getAlternativeTouchPoint() {
+		return alternativeTouchPoint;
+	}
+
+	@Override
+	public String toString() {
+		return this.getId();
+	}
+
+	public boolean isIgnoreChanges() {
+		return ignoreChanges;
 	}
 
 }

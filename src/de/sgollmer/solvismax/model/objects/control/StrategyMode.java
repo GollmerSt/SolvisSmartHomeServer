@@ -10,6 +10,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.DataSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -72,6 +73,7 @@ public class StrategyMode implements Strategy {
 		return false;
 	}
 
+	@Override
 	public Collection<Mode> getModes() {
 		return this.modes;
 	}
@@ -136,5 +138,10 @@ public class StrategyMode implements Strategy {
 	@Override
 	public Float getAccuracy() {
 		return null ;
+	}
+
+	@Override
+	public UpperLowerStep getUpperLowerStep() {
+		return null;
 	}
 }

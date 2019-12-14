@@ -16,7 +16,6 @@ public class BaseControlFileReader {
 
 	private static final String NAME_XML_BASEFILE = "base.xml";
 	private static final String NAME_XSD_BASEFILE = "base.xsd";
-	private static final String RELATIVE_SOURCE_PATH = "data/";
 	private static final String XML_ROOT_ID = "BaseData";
 
 	private final File parent;
@@ -54,12 +53,12 @@ public class BaseControlFileReader {
 		File xml = new File(this.parent, NAME_XML_BASEFILE);
 
 		if (!xml.exists() || Constants.DEBUG) {
-			FileHelper.copyFromResource(RELATIVE_SOURCE_PATH + NAME_XML_BASEFILE, xml);
+			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XML_BASEFILE, xml);
 		}
 
 		File xsd = new File(this.parent, NAME_XSD_BASEFILE);
 
-		FileHelper.copyFromResource(RELATIVE_SOURCE_PATH + NAME_XSD_BASEFILE, xsd);
+		FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XSD_BASEFILE, xsd);
 
 	}
 

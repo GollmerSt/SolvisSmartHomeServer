@@ -9,6 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.stream.StreamSource;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
@@ -18,7 +19,6 @@ public class GraficFileHandler {
 	
 	private static final String NAME_XSD_GRAFICSFILE = "graficData.xsd";
 	private static final String NAME_XML_GRAFICSFILE = "graficData.xml";
-	private static final String RELATIVE_SOURCE_PATH = "data/";
 
 	private final File parent;
 	private final int currentControllFileHashCode ;
@@ -57,7 +57,7 @@ public class GraficFileHandler {
 
 		File xsd = new File(this.parent, NAME_XSD_GRAFICSFILE);
 
-		FileHelper.copyFromResource(RELATIVE_SOURCE_PATH + NAME_XSD_GRAFICSFILE, xsd);
+		FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XSD_GRAFICSFILE, xsd);
 
 	}
 

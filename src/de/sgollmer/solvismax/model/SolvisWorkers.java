@@ -38,7 +38,8 @@ public class SolvisWorkers {
 			this.screenRestoreInhibitCnt = 0;
 			long screenChangedByUser = -1;
 
-			int releaseblockingAfterUserChange = solvis.getSolvisDescription().getMiscellaneous().getReleaseblockingAfterUserChange_ms() ;
+			int releaseblockingAfterUserChange = solvis.getSolvisDescription().getMiscellaneous()
+					.getReleaseblockingAfterUserChange_ms();
 			int unsuccessfullWaitTime = solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms();
 			int watchDogTime = solvis.getSolvisDescription().getMiscellaneous().getWatchDogTime_ms();
 
@@ -125,9 +126,9 @@ public class SolvisWorkers {
 				} catch (ErrorPowerOn e2) {
 					success = false;
 					solvis.powerDetected(false);
-				} catch (Throwable e3 ) {
+				} catch (Throwable e3) {
 					// TODO unknown error, must be logged, command not executed
-					success = true ;
+					success = true;
 				}
 				if (success) {
 					solvis.powerDetected(true);
@@ -157,15 +158,21 @@ public class SolvisWorkers {
 
 		public void push(Command command) {
 			synchronized (this) {
+				boolean insert = true;
 				for (Iterator<Command> it = this.queue.iterator(); it.hasNext();) {
 					Command cmp = it.next();
-					if (command.getDescription() == cmp.getDescription()
-							&& (cmp.getSetValue() == null) == (command.getSetValue() == null)) {
-						cmp.setInhibit(true);
+					if (command.getDescription() == cmp.getDescription()) {
+						if (command.getSetValue() != null) {
+							cmp.setInhibit(true);
+						} else {
+							insert = false;
+						}
 					}
 				}
-				this.queue.add(command);
-				this.notifyAll();
+				if (insert) {
+					this.queue.add(command);
+					this.notifyAll();
+				}
 			}
 		}
 	}

@@ -7,10 +7,16 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class Rectangle {
+	private final boolean invertFunction;
 	private final Coordinate topLeft;
 	private final Coordinate bottomRight;
-
+	
 	public Rectangle(Coordinate topLeft, Coordinate bottomRight) {
+		this(false, topLeft, bottomRight) ;
+	}
+
+	public Rectangle(boolean invertFunction, Coordinate topLeft, Coordinate bottomRight) {
+		this.invertFunction = invertFunction;
 		this.topLeft = topLeft;
 		this.bottomRight = bottomRight;
 	}
@@ -30,6 +36,7 @@ public class Rectangle {
 	}
 
 	public static class Creator extends CreatorByXML<Rectangle> {
+		private boolean invertFunction = false;
 		private Coordinate topLeft;
 		private Coordinate bottomRight;
 
@@ -39,11 +46,16 @@ public class Rectangle {
 
 		@Override
 		public void setAttribute(QName name, String value) {
+			switch (name.getLocalPart()) {
+				case "invertFunction":
+					this.invertFunction = Boolean.parseBoolean(value);
+					break;
+			}
 		}
 
 		@Override
 		public Rectangle create() throws XmlError {
-			return new Rectangle(topLeft, bottomRight);
+			return new Rectangle(invertFunction, topLeft, bottomRight);
 		}
 
 		@Override
@@ -75,13 +87,17 @@ public class Rectangle {
 		return this.topLeft.getX() <= x && x <= this.getBottomRight().getX() //
 				&& this.topLeft.getY() <= y && y <= this.bottomRight.getY();
 	}
-	
-	public boolean isIn( Coordinate c) {
-		return this.isIn(c.getX(), c.getY()) ;
+
+	public boolean isIn(Coordinate c) {
+		return this.isIn(c.getX(), c.getY());
 	}
-	
-	public Rectangle add( Coordinate origin ) {
-		return new Rectangle( this.getTopLeft().add(origin), this.getBottomRight().add(origin)) ;
+
+	public Rectangle add(Coordinate origin) {
+		return new Rectangle(this.invertFunction, this.getTopLeft().add(origin), this.getBottomRight().add(origin));
+	}
+
+	public boolean isInvertFunction() {
+		return invertFunction;
 	}
 
 }

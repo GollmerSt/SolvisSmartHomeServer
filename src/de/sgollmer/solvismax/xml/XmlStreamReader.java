@@ -12,9 +12,13 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.error.XmlError;
 
 public class XmlStreamReader<D> {
+
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(XmlStreamReader.class);
 
 	public static class Result<T> {
 		private final T tree;
@@ -67,13 +71,15 @@ public class XmlStreamReader<D> {
 			switch (ev.getEventType()) {
 				case XMLStreamConstants.START_ELEMENT:
 					QName name = ev.asStartElement().getName();
+					logger.debug("Start-Element: " + name.getLocalPart());
 					hash.put(name);
 					String localName = name.getLocalPart();
 					if (localName.equals(rootId)) {
 						destination = this.create(rootCreator, reader, ev, streamId, hash);
+						logger.debug("Root detected");
 					} else {
 						NullCreator nullCreator = new NullCreator(localName, rootCreator);
-						this.create(nullCreator, reader, ev, streamId,hash);
+						this.create(nullCreator, reader, ev, streamId, hash);
 					}
 					break;
 			}
@@ -82,8 +88,8 @@ public class XmlStreamReader<D> {
 		return new Result<D>(destination, hash.hash);
 	}
 
-	private <T> T create(CreatorByXML<T> creator, XMLEventReader reader, XMLEvent startEvent, String streamId, HashContainer hash )
-			throws XmlError, IOException {
+	private <T> T create(CreatorByXML<T> creator, XMLEventReader reader, XMLEvent startEvent, String streamId,
+			HashContainer hash) throws XmlError, IOException {
 
 		for (@SuppressWarnings("unchecked")
 		Iterator<Attribute> it = startEvent.asStartElement().getAttributes(); it.hasNext();) {
@@ -117,7 +123,7 @@ public class XmlStreamReader<D> {
 					creator.created(child, this.create(child, reader, ev, streamId, hash));
 					break;
 				case XMLStreamConstants.CHARACTERS:
-					String text = ev.asCharacters().getData() ;
+					String text = ev.asCharacters().getData();
 					hash.put(text);
 					creator.addCharacters(text);
 			}

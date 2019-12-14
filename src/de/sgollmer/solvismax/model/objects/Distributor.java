@@ -6,10 +6,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import de.sgollmer.solvismax.connection.ConnectionState;
+import de.sgollmer.solvismax.connection.transfer.JsonPackage;
+import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.transfer.JsonPackage;
-import de.sgollmer.solvismax.model.transfer.MeasurementsPackage;
 
 public class Distributor extends Observable<JsonPackage> {
 

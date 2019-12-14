@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
@@ -13,6 +15,8 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ScreenGraficDescription implements ScreenCompare, Assigner {
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ScreenGraficDescription.class);
+	
 	private final String id;
 	private final boolean exact;
 	private final Rectangle rectangle;
@@ -122,5 +126,6 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 			image = new Pattern(image, rectangle);
 		}
 		solvis.getGrafics().put(this.id, image);
+		logger.debug( "Screen grafic <" + this.getId() + "> learned.");
 	}
 }

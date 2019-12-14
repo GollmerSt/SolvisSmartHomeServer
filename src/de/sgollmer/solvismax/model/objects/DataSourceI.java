@@ -34,5 +34,32 @@ public interface DataSourceI extends Assigner, GraficsLearnable {
 	public Collection< ? extends ModeI > getModes() ;
 	
 	public Screen getScreen() ;
+	
+	public UpperLowerStep getUpperLowerStep() ;
+
+	public static class UpperLowerStep{
+		private final float upper ;
+		private final float lower ;
+		private final float step ;
+		
+		public UpperLowerStep( float upper, float lower, float step ) {
+			this.upper = upper ;
+			this.lower = lower ;
+			this.step = step ;
+		}
+
+		public float getUpper() {
+			return upper;
+		}
+
+		public float getLower() {
+			return lower;
+		}
+
+		public float getStep() {
+			return step;
+		}
+	}
+
 
 }

@@ -12,6 +12,8 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
@@ -19,6 +21,7 @@ import de.sgollmer.solvismax.objects.Coordinate;
 
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisConnection.class);
 	private final String urlBase;
 	private final AccountInfo accountInfo;
 
@@ -96,11 +99,14 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			}
 			builder.delete(0, 11);
 			builder.delete(builder.length() - 15, builder.length());
+
 		} catch (IOException e) {
 			setDisconnectedAndThrow(e);
 		}
 		this.setConnected();
-		return builder.toString();
+		String hexString = builder.toString();
+		logger.debug("Hex string reseived from solvis: " + hexString );
+		return hexString;
 	}
 
 	public enum Button {

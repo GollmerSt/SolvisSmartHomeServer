@@ -9,6 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.stream.StreamSource;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
@@ -19,7 +20,6 @@ public class MeasurementsBackupHandler {
 
 	private static final String NAME_XSD_MEASUREMENTS_FILE = "measurements.xsd";
 	private static final String NAME_XML_MEASUREMENTS_FILE = "measurements.xml";
-	private static final String RELATIVE_SOURCE_PATH = "data/";
 
 	private static final String XML_MEASUREMENTS = "SolvisMeasurements";
 
@@ -68,7 +68,7 @@ public class MeasurementsBackupHandler {
 
 			File xsd = new File(this.parent, NAME_XSD_MEASUREMENTS_FILE);
 
-			FileHelper.copyFromResource(RELATIVE_SOURCE_PATH + NAME_XSD_MEASUREMENTS_FILE, xsd);
+			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XSD_MEASUREMENTS_FILE, xsd);
 			
 			this.xsdWritten = true ;
 		}

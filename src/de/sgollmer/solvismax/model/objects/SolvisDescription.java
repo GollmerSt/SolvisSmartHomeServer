@@ -16,17 +16,19 @@ public class SolvisDescription {
 	private final String homeId;
 	private final ScreenSaver saver;
 	private final AllScreens screens;
+	private final FallBack fallBack;
 	private final AllScreenGraficDescriptions screenGrafics;
 	private final AllDataDescriptions dataDescriptions;
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
-	public SolvisDescription(String homeId, ScreenSaver saver, AllScreens screens,
+	public SolvisDescription(String homeId, ScreenSaver saver, AllScreens screens, FallBack fallBack,
 			AllScreenGraficDescriptions screenGrafics, AllDataDescriptions dataDescriptions, AllDurations durations,
 			Miscellaneous miscellaneous) {
 		this.homeId = homeId;
 		this.saver = saver;
 		this.screens = screens;
+		this.fallBack = fallBack;
 		this.screenGrafics = screenGrafics;
 		this.dataDescriptions = dataDescriptions;
 		this.durations = durations;
@@ -66,6 +68,7 @@ public class SolvisDescription {
 		private String homeId;
 		private ScreenSaver saver;
 		private AllScreens screens;
+		private FallBack fallBack;
 		private AllDataDescriptions dataDescriptions;
 		private AllDurations durations;
 		private Miscellaneous miscellaneous;
@@ -86,7 +89,7 @@ public class SolvisDescription {
 
 		@Override
 		public SolvisDescription create() throws XmlError {
-			return new SolvisDescription(homeId, saver, screens, screenGrafics, dataDescriptions, durations,
+			return new SolvisDescription(homeId, saver, screens, fallBack, screenGrafics, dataDescriptions, durations,
 					miscellaneous);
 		}
 
@@ -98,6 +101,8 @@ public class SolvisDescription {
 					return new ScreenSaver.Creator(id, this);
 				case "Screens":
 					return new AllScreens.Creator(id, this);
+				case "FallBack":
+					return new FallBack.Creator(id, this);
 				case "ScreenGrafics":
 					return new CreatorScreenGrafics(id, this);
 				case "DataDescriptions":
@@ -119,6 +124,9 @@ public class SolvisDescription {
 				case "Screens":
 					this.screens = (AllScreens) created;
 					break;
+				case "FallBack":
+					this.fallBack = (FallBack) created;
+					break;
 				case "ScreenGrafics": {
 					@SuppressWarnings("unchecked")
 					Collection<ScreenGraficDescription> collection = (Collection<ScreenGraficDescription>) created;
@@ -132,7 +140,7 @@ public class SolvisDescription {
 					this.durations = (AllDurations) created;
 					break;
 				case "Miscellaneous":
-					this.miscellaneous = (Miscellaneous) created ;
+					this.miscellaneous = (Miscellaneous) created;
 			}
 
 		}
@@ -227,5 +235,9 @@ public class SolvisDescription {
 
 	public Miscellaneous getMiscellaneous() {
 		return miscellaneous;
+	}
+
+	public FallBack getFallBack() {
+		return fallBack;
 	}
 }

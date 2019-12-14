@@ -8,12 +8,12 @@ import javax.xml.stream.XMLStreamException;
 
 import de.sgollmer.solvismax.connection.AccountInfo;
 import de.sgollmer.solvismax.connection.SolvisConnection;
+import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
-import de.sgollmer.solvismax.model.transfer.ConnectPackage;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.solvismax.xml.ControlFileReader;
 import de.sgollmer.solvismax.xml.GraficFileHandler;

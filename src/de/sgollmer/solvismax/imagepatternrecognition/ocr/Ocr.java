@@ -281,7 +281,7 @@ public class Ocr extends MyImage {
 		int y = this.maximaY[0].getCoord();
 		int value = this.maximaY[0].getValue();
 
-		if (value > this.getWidth() * 10 / 11 && this.getHeight() / 3 < y && y < this.getHeight() * 3 / 4) {
+		if (value > this.getWidth() * 10 / 11 && this.getHeight() / 3 < y && y < this.getHeight() * 4 / 5) {
 
 			int x = this.maximaX[0].getCoord() / 2;
 
@@ -431,7 +431,7 @@ public class Ocr extends MyImage {
 		File parent = new File("testFiles\\images");
 
 		Collection<String> names = Arrays.asList("0.png", "1.png", "1 small.png", "2.png", "3.png", "3 grey.png",
-				"4.png", "4 black.png", "4 small.png", "5.png", "6.png", "7.png", "8.png", "9.png", "9 grey small.png",
+				"4.png", "4 black.png", "4 small.png", "4 Feineinstellung.png", "5.png", "6.png", "7.png", "8.png", "9.png", "9 grey small.png",
 				"minus.png", "minus2.png", "plus.png", "doppelpunkt.png", "punkt.png", "punkt small.png", "h small.png",
 				"grad.png", "C.png", "square bracket left.png", "square bracket right.png", "slash.png", "percent.png",
 				"percent grey.png");

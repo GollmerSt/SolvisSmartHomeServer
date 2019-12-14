@@ -153,5 +153,10 @@ public class DataDescription implements DataSourceI, Assigner {
 	public Collection<? extends ModeI> getModes() {
 		return this.dataSource.getModes();
 	}
-
+	
+	@Override
+	public UpperLowerStep getUpperLowerStep() {
+		return this.dataSource.getUpperLowerStep() ;
+	}
+	
 }

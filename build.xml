@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="Build complete" name="SolvisMax">
+	<property environment="env" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.8" />
+	<property name="source" value="1.8" />
+	<property name="dist.dir" value="dist" />
+	<property name="lib.dir" value="lib" />
+	<property name="dist.base" value="SolvisSmartHomeServer" />
+	<path id="SolvisMax.classpath">
+		<pathelement location="bin" />
+		<pathelement location="lib/log4j-slf4j18-impl-2.12.1.jar" />
+		<pathelement location="lib/slf4j-api-1.7.29.jar" />
+		<pathelement location="lib/slf4j-log4j12-1.7.29.jar" />
+		<pathelement location="lib/log4j-1.2-api-2.12.1.jar" />
+		<pathelement location="lib/log4j-api-2.12.1.jar" />
+		<pathelement location="lib/log4j-core-2.12.1.jar" />
+	</path>
+	<target name="init">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="rsc">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="clean">
+		<delete dir="bin" />
+	</target>
+	<target depends="clean" name="cleanall" />
+	<target depends="build-subprojects,build-project" name="build" />
+	<target name="build-subprojects" />
+	<target depends="init" name="build-project">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+			<src path="src" />
+			<src path="rsc" />
+			<classpath refid="SolvisMax.classpath" />
+		</javac>
+	</target>
+	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects" />
+	<target name="ErrorScreen">
+		<java classname="de.sgollmer.solvismax.model.objects.screen.ErrorScreen" failonerror="true" fork="yes">
+			<classpath refid="SolvisMax.classpath" />
+		</java>
+	</target>
+	<target name="Main">
+		<java classname="de.sgollmer.solvismax.Main" failonerror="true" fork="yes">
+			<arg line="--solvis-id=mySolvis&#13;&#10;--solvis-url=http://192.168.1.40&#13;&#10;--solvis-account=SGollmer&#13;&#10;--solvis-password=e5am1kro" />
+			<classpath refid="SolvisMax.classpath" />
+		</java>
+	</target>
+	<target name="Ocr">
+		<java classname="de.sgollmer.solvismax.imagepatternrecognition.ocr.Ocr" failonerror="true" fork="yes">
+			<classpath refid="SolvisMax.classpath" />
+		</java>
+	</target>
+	<target name="OcrRectangle">
+		<java classname="de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle" failonerror="true" fork="yes">
+			<classpath refid="SolvisMax.classpath" />
+		</java>
+	</target>
+	<target name="Pattern">
+		<java classname="de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern" failonerror="true" fork="yes">
+			<classpath refid="SolvisMax.classpath" />
+		</java>
+	</target>
+	<target name="ScreenSaver">
+		<java classname="de.sgollmer.solvismax.model.objects.screen.ScreenSaver" failonerror="true" fork="yes">
+			<classpath refid="SolvisMax.classpath" />
+		</java>
+	</target>
+	<target name="Solvis">
+		<java classname="de.sgollmer.solvismax.model.Solvis" failonerror="true" fork="yes">
+			<classpath refid="SolvisMax.classpath" />
+		</java>
+	</target>
+	<target name="SolvisConnection">
+		<java classname="de.sgollmer.solvismax.connection.SolvisConnection" failonerror="true" fork="yes">
+			<classpath refid="SolvisMax.classpath" />
+		</java>
+	</target>
+	<target depends="build" name="createjar">
+		<jar destfile="${dist.dir}/${dist.base}_woLib.jar" basedir="bin" />
+	</target>
+	<target depends="createjar" name="Build complete">
+		<jar jarfile="${dist.dir}/${dist.base}.jar">
+			<zipfileset src="${dist.dir}/${dist.base}_woLib.jar" excludes="META-INF/*" />
+			<zipfileset src="lib/log4j-slf4j18-impl-2.12.1.jar" />
+			<zipfileset src="lib/slf4j-api-1.7.29.jar" />
+			<zipfileset src="lib/slf4j-log4j12-1.7.29.jar" />
+			<zipfileset src="lib/log4j-1.2-api-2.12.1.jar" />
+			<zipfileset src="lib/log4j-api-2.12.1.jar" />
+			<zipfileset src="lib/log4j-core-2.12.1.jar" />
+			<manifest>
+				<attribute name="Main-Class" value="de.sgollmer.solvismax.Main" />
+			</manifest>
+		</jar>
+		<!--
+		<copy todir="dist">
+			<fileset dir="${build.classes.dir}" casesensitive="yes">
+				<include name="Logo 48x48.ico" />
+			</fileset>
+		</copy>
+		<copy todir="dist">
+			<fileset dir="${build.classes.dir}" casesensitive="yes">
+				<include name="applicationInfo.xml" />
+			</fileset>
+		</copy>
+		<copy file="${build.classes.dir}/config1.xml" tofile="dist/config1.xml_new" />
+		<copy todir=".">
+			<fileset dir="${build.classes.dir}" casesensitive="yes">
+				<include name="applicationInfo.xml" />
+			</fileset>
+		</copy>-->
+	</target>
+
+</project>

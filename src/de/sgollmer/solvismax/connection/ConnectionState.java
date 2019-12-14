@@ -1,10 +1,10 @@
 package de.sgollmer.solvismax.connection;
 
-import de.sgollmer.solvismax.model.transfer.Command;
-import de.sgollmer.solvismax.model.transfer.Element;
-import de.sgollmer.solvismax.model.transfer.Frame;
-import de.sgollmer.solvismax.model.transfer.JsonPackage;
-import de.sgollmer.solvismax.model.transfer.SingleValue;
+import de.sgollmer.solvismax.connection.transfer.Command;
+import de.sgollmer.solvismax.connection.transfer.Element;
+import de.sgollmer.solvismax.connection.transfer.Frame;
+import de.sgollmer.solvismax.connection.transfer.JsonPackage;
+import de.sgollmer.solvismax.connection.transfer.SingleValue;
 
 public class ConnectionState {
 

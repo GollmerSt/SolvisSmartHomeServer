@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.log.Logger2;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.objects.Units;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
@@ -60,6 +61,13 @@ public class Main {
 						break;
 				}
 			}
+		}
+		
+		try {
+			Logger2.createInstance(path);
+		} catch (IOException e2) {
+			e2.printStackTrace();
+			System.err.println("Log4j couldn't initalized");
 		}
 
 		Unit unit = null;

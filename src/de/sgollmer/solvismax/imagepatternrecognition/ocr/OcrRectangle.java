@@ -9,11 +9,15 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
 
 public class OcrRectangle extends MyImage {
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(OcrRectangle.class);
+
 	private Collection<Ocr> parts = null;
 
 	public OcrRectangle(MyImage image, Coordinate upperLeft, Coordinate lowerRight) {
@@ -34,7 +38,7 @@ public class OcrRectangle extends MyImage {
 	private void split() {
 
 		this.createHistograms(true);
-		
+
 		this.removeFrame();
 
 		this.shrink();
@@ -73,7 +77,11 @@ public class OcrRectangle extends MyImage {
 			Ocr ocr = it.next();
 			builder.append(ocr.toChar());
 		}
-		return builder.toString();
+		String result = builder.toString();
+		
+		//logger.debug("String detected by OCR: " + result );
+
+		return result;
 	}
 
 	private void removeFrame() {
@@ -120,32 +128,32 @@ public class OcrRectangle extends MyImage {
 
 		int remainingX = right - left + 1;
 		int remainingY = bottom - top + 1;
-		int thicknessX = this.getWidth() - remainingX ;
-		int thicknessY = this.getHeight() - remainingY ;
+		int thicknessX = this.getWidth() - remainingX;
+		int thicknessY = this.getHeight() - remainingY;
 
 		if (remainingX == 0 || remainingY == 0) {
 			return;
 		}
 		if (this.getHistogramX().get(left) != thicknessY && this.getHistogramX().get(right) != thicknessY
 				&& this.getHistogramY().get(top) != thicknessX && this.getHistogramY().get(bottom) != thicknessX) {
-			return ;
+			return;
 		}
-		this.origin = new Coordinate(left + this.origin.getX(),top+this.origin.getY()) ;
-		this.maxRel = new Coordinate( remainingX, remainingY ) ;
-		
-		this.histogramX = this.histogramX.subList(left, right+1) ;
-		this.histogramY = this.histogramY.subList(top, bottom+1) ;
-		
-		for ( i = 0 ; i < this.histogramX.size(); ++i ) {
-			this.histogramX.set(i, this.histogramX.get(i)-thicknessY ) ;
+		this.origin = new Coordinate(left + this.origin.getX(), top + this.origin.getY());
+		this.maxRel = new Coordinate(remainingX, remainingY);
+
+		this.histogramX = this.histogramX.subList(left, right + 1);
+		this.histogramY = this.histogramY.subList(top, bottom + 1);
+
+		for (i = 0; i < this.histogramX.size(); ++i) {
+			this.histogramX.set(i, this.histogramX.get(i) - thicknessY);
 		}
 
-		for ( i = 0 ; i < this.histogramY.size(); ++i ) {
-			this.histogramY.set(i, this.histogramY.get(i)-thicknessX ) ;
+		for (i = 0; i < this.histogramY.size(); ++i) {
+			this.histogramY.set(i, this.histogramY.get(i) - thicknessX);
 		}
 
 	}
-	
+
 	public static void main(String[] args) {
 
 		File parent = new File("testFiles\\images");
@@ -257,8 +265,28 @@ public class OcrRectangle extends MyImage {
 
 		System.out.println("Burner starts is " + brennerStarts);
 
+
+		// -------------------------------------------------------------
+
+		file = new File(parent, "-4 fein.png");
+
+		try {
+			bufferedImage = ImageIO.read(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		myImage = new MyImage(bufferedImage);
+
+		rectangle = new OcrRectangle(myImage);
+
+		String feineinstellung = rectangle.getString();
+
+		System.out.println("Feineinstellung Soll: [-4], Ist: " + feineinstellung);
 	}
-
-
+	
+	public static void dummy() {
+		logger.debug("Nur ein Dummy");
+	}
 
 }
