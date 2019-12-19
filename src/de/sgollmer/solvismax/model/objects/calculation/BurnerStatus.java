@@ -66,7 +66,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 		Executable executable = new Executable(result, burnerLevel1On, burnerLevel2On);
 
-		executable.update(burnerLevel1On);
+		executable.update(burnerLevel1On, this );
 
 	}
 
@@ -85,7 +85,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		}
 
 		@Override
-		public void update(SolvisData data) {
+		public void update(SolvisData data, Object source ) {
 			if (result == null || burnerLevel1On == null || burnerLevel2On == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
@@ -93,7 +93,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 			Status result = null;
 
 			boolean level1 = burnerLevel1On.getBool();
-			boolean level2 = burnerLevel1On.getBool();
+			boolean level2 = burnerLevel2On.getBool();
 
 			if (level2) {
 				result = Status.LEVEL2;

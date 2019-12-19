@@ -396,7 +396,7 @@ public class Ocr extends MyImage {
 
 		if (this.detectSlash(false, 0, this.getWidth() - 1)) {
 			int x = 0;
-			while (!this.isActive(x++, 1))
+			while (!this.isActive(x++, 1) && x < this.getWidth() )
 				;
 			if (x < this.getWidth() / 2) {
 				return '%';

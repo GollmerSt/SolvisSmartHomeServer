@@ -18,22 +18,26 @@ public class Observer<D> {
 		public synchronized void unregister(ObserverI<D> observer) {
 			this.observers.remove(observer);
 		}
-
+		
 		public void notify(D data) {
+			this.notify(data, null);
+		}
+
+		public void notify(D data, Object source) {
 			if (this.observers != null) {
 				Collection<ObserverI<D>> copy;
 				synchronized (this) {
 					copy = new ArrayList<>(observers);
 				}
 				for (ObserverI<D> observer : copy) {
-					observer.update(data);
+					observer.update(data, source);
 				}
 			}
 		}
 	}
 
 	public interface ObserverI<D> {
-		public void update(D data) ;
+		public void update(D data, Object source ) ;
 	}
 
 }

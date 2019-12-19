@@ -46,7 +46,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 
 		Executable executable = new Executable(result, pumpOn, mixerClosing);
 
-		executable.update(pumpOn);
+		executable.update(pumpOn, this);
 	}
 
 	private class Executable implements ObserverI<SolvisData> {
@@ -64,7 +64,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		}
 
 		@Override
-		public void update(SolvisData data) {
+		public void update(SolvisData data, Object source ) {
 			if (result == null || pumpOn == null || mixerClosing == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}

@@ -120,7 +120,6 @@ public class Measurement {
 				case XML_MEASUREMENT_STRING:
 					return new StringData(dataString);
 			}
-			// TODO Auto-generated method stub
 			return null;
 		}
 

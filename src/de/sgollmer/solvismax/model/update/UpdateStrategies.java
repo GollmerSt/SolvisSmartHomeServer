@@ -9,7 +9,7 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Assigner;
-import de.sgollmer.solvismax.model.objects.DataSource;
+import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -22,7 +22,7 @@ public class UpdateStrategies implements Assigner {
 		this.strategies = strategies;
 	}
 
-	public void setSource(DataSource source) {
+	public void setSource(ChannelSource source) {
 		for (Strategy<?> strategy : this.strategies) {
 			strategy.setSource(source);
 		}
@@ -57,7 +57,7 @@ public class UpdateStrategies implements Assigner {
 
 	public static abstract class Strategy<S extends Strategy<?>> implements Assigner {
 
-		protected DataSource source;
+		protected ChannelSource source;
 
 		public abstract void instantiate(Solvis solvis);
 
@@ -65,7 +65,7 @@ public class UpdateStrategies implements Assigner {
 		 * @param source
 		 *            the source to set
 		 */
-		public void setSource(DataSource source) {
+		public void setSource(ChannelSource source) {
 			this.source = source;
 		}
 

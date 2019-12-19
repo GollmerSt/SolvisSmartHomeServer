@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.AccountInfo;
+import de.sgollmer.solvismax.connection.Distributor;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
 import de.sgollmer.solvismax.connection.transfer.ChannelDescriptionsPackage;
@@ -19,8 +20,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
-import de.sgollmer.solvismax.model.objects.DataDescription;
-import de.sgollmer.solvismax.model.objects.Distributor;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.GraficsLearnable.LearnScreen;
 import de.sgollmer.solvismax.model.objects.Observer;
@@ -47,15 +47,14 @@ public class Solvis {
 
 	private static boolean LEARNING = false;
 
-
 	private Screen homeScreen;
 
+	private final SolvisState solvisState = new SolvisState();
 	private final SolvisDescription solvisDescription;
 	private final AllSolvisData allSolvisData = new AllSolvisData(this);
 	private SystemGrafics grafics;
 
 	private SolvisWorkers worker;
-	private WatchDog watchDog;
 
 	private final String id;
 	private MyImage currentImage = null;
@@ -73,7 +72,6 @@ public class Solvis {
 		this.id = id;
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
-		this.watchDog = new WatchDog(this, solvisDescription.getSaver());
 		this.grafics = grafics;
 		this.connection = connection;
 		this.allSolvisData.setAverageCount(this.solvisDescription.getMiscellaneous().getDefaultAverageCount());
@@ -97,7 +95,7 @@ public class Solvis {
 
 	public MyImage getCurrentImage() throws IOException {
 		if (this.screenSaverActive) {
-			this.send(resetSceenSaver);
+			this.resetSreensaver();
 			this.screenSaverActive = false;
 		}
 		MyImage image = this.currentImage;
@@ -108,10 +106,8 @@ public class Solvis {
 	}
 
 	public MyImage getRealImage() throws IOException {
-		synchronized (solvisGUIObject) {
 			MyImage image = new MyImage(connection.getScreen());
 			return image;
-		}
 	}
 
 	public Screen getCurrentScreen() throws IOException {
@@ -144,13 +140,19 @@ public class Solvis {
 		}
 	}
 
-	public String getMeasureData() throws IOException {
+	public String getMeasureData() throws IOException, ErrorPowerOn {
+		String result = null;
 		synchronized (solvisMeasureObject) {
 			if (this.measureData == null) {
 				this.measureData = this.connection.getMeasurements().substring(12);
+				if (this.measureData.substring(0, 6).equals("000000")) {
+					this.getSolvisState().remoteConnected();
+					throw new ErrorPowerOn("Power on detected");
+				}
 			}
-			return this.measureData;
+			result = this.measureData;
 		}
+		return result;
 	}
 
 	public void clearMeasuredData() {
@@ -159,8 +161,12 @@ public class Solvis {
 		}
 	}
 
+	public void resetSreensaver() throws IOException {
+		this.send(resetSceenSaver);
+	}
+
 	public void send(TouchPoint point) throws IOException {
-		if ( point == null ) {
+		if (point == null) {
 			logger.warn("TouchPoint is <null>, ignored");
 		}
 		synchronized (solvisGUIObject) {
@@ -224,16 +230,16 @@ public class Solvis {
 				// && this.getCurrentScreen() != this.homeScreen) {
 				// ListIterator<Screen> it = null;
 				ScreenTouch foundScreenTouch = null;
-				for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext() ;) {
-					ScreenTouch st = it.next() ;
+				for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
+					ScreenTouch st = it.next();
 					Screen previous = st.getScreen();
 					if (previous == this.getCurrentScreen()) {
-						foundScreenTouch = st ;
+						foundScreenTouch = st;
 						break;
 					}
 				}
-				
-				if ( foundScreenTouch == null ) {
+
+				if (foundScreenTouch == null) {
 					this.sendBack();
 				} else {
 					this.send(foundScreenTouch.getTouchPoint());
@@ -251,20 +257,21 @@ public class Solvis {
 	public void init() throws IOException, XmlError, XMLStreamException {
 		synchronized (solvisGUIObject) {
 			synchronized (solvisMeasureObject) {
-				this.getSolvisDescription().getDataDescriptions().init(this, this.getAllSolvisData());
+				this.getSolvisDescription().getChannelDescriptions().init(this, this.getAllSolvisData());
 			}
 			SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.id);
 			this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 			this.worker.start();
-			this.getSolvisDescription().getDataDescriptions().initControl(this);
+			this.getSolvisDescription().getChannelDescriptions().initControl(this);
 			this.getAllSolvisData().registerObserver(this.distributor.getSolvisDataObserver());
 			this.connection.register(this.distributor.getConnectionStateObserver());
+			this.getSolvisState().register(this.distributor.getSolvisStateObserver());
 		}
 	}
 
-	public void measure() throws IOException {
+	public void measure() throws IOException, ErrorPowerOn {
 		synchronized (solvisMeasureObject) {
-			this.getSolvisDescription().getDataDescriptions().measure(this, this.getAllSolvisData());
+			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData());
 		}
 	}
 
@@ -272,34 +279,23 @@ public class Solvis {
 		this.worker.push(command);
 	}
 
-	public boolean getValue(DataDescription description) throws IOException, ErrorPowerOn {
+	public boolean getValue(ChannelDescription description) throws IOException, ErrorPowerOn {
 		SolvisData data = this.allSolvisData.get(description);
 		return description.getValue(data, this);
 	}
 
-	// public boolean setValue(String description, String value) {
-	// synchronized (solvisObject) {
-	// return this.descriptions.setValue(this, description, value);
-	// }
-	// }
-	//
-	public boolean setValue(DataDescription description, SolvisData value) throws IOException {
+	public boolean setValue(ChannelDescription description, SolvisData value) throws IOException {
 		synchronized (solvisGUIObject) {
 			return description.setValue(this, value);
 		}
 	}
 
-	public DataDescription getDataDescription(String description) {
-		return this.solvisDescription.getDataDescriptions().get(description);
+	public ChannelDescription getChannelDescription(String description) {
+		return this.solvisDescription.getChannelDescriptions().get(description);
 	}
 
 	public Duration getDuration(String id) {
 		return this.solvisDescription.getDurations().get(id);
-	}
-
-	public WatchDog getWatchDog() {
-		return this.watchDog;
-
 	}
 
 	public void registerScreenChangedByUserObserver(ObserverI<Screen> observer) {
@@ -346,7 +342,7 @@ public class Solvis {
 				logger.info("Screen saver finished");
 			}
 		}
-		this.screenSaverActive = screenSaverActive ;
+		this.screenSaverActive = screenSaverActive;
 	}
 
 	public SystemGrafics getGrafics() {
@@ -358,6 +354,7 @@ public class Solvis {
 	}
 
 	public void learning() throws IOException {
+		logger.info("Learning started.");
 		this.getGrafics().clear();
 		this.gotoHome();
 		String homeId = this.solvisDescription.getHomeId();
@@ -376,7 +373,8 @@ public class Solvis {
 			}
 			this.gotoHome();
 		}
-		this.solvisDescription.getDataDescriptions().learn(this);
+		this.solvisDescription.getChannelDescriptions().learn(this);
+		logger.info("Learning finished.");
 	}
 
 	/**
@@ -384,15 +382,6 @@ public class Solvis {
 	 */
 	public SolvisDescription getSolvisDescription() {
 		return solvisDescription;
-	}
-
-	public void powerDetected(boolean power) {
-		// TODO Auto-generated method stub
-	}
-
-	public void errorScreenDetected() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void backupMeasurements(SystemMeasurements system) {
@@ -408,7 +397,7 @@ public class Solvis {
 
 		SolvisDescription solvisDescription = result.getTree();
 
-		ChannelDescriptionsPackage json = new ChannelDescriptionsPackage(solvisDescription.getDataDescriptions());
+		ChannelDescriptionsPackage json = new ChannelDescriptionsPackage(solvisDescription.getChannelDescriptions());
 
 		StringBuilder jsonBuiler = new StringBuilder();
 		json.getFrame().addTo(jsonBuiler);
@@ -454,7 +443,7 @@ public class Solvis {
 				solvis.worker.terminate();
 			}
 		}));
-		DataDescription description = solvis.getDataDescription("C01.Anlagenmodus");
+		ChannelDescription description = solvis.getChannelDescription("C01.Anlagenmodus");
 
 		solvis.execute(new Command(description));
 
@@ -466,7 +455,7 @@ public class Solvis {
 			}
 		})));
 
-		description = solvis.getDataDescription("C07.Raumeinfluss_HK1");
+		description = solvis.getChannelDescription("C07.Raumeinfluss_HK1");
 
 		solvis.execute(new Command(description));
 
@@ -484,8 +473,8 @@ public class Solvis {
 	}
 
 	public void terminate() {
-		// TODO Auto-generated method stub
-
+		this.distributor.teminate();
+		this.worker.terminate();
 	}
 
 	public String getId() {
@@ -498,6 +487,10 @@ public class Solvis {
 
 	public Distributor getDistributor() {
 		return distributor;
+	}
+
+	public SolvisState getSolvisState() {
+		return solvisState;
 	}
 
 }

@@ -1,10 +1,11 @@
 package de.sgollmer.solvismax.xml;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.stream.StreamSource;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
@@ -68,7 +69,7 @@ public class BaseControlFileReader {
 
 		File xml = new File(this.parent, NAME_XML_BASEFILE);
 
-		StreamSource source = new StreamSource(xml);
+		InputStream source = new FileInputStream(xml);
 
 		XmlStreamReader<BaseData> reader = new XmlStreamReader<>();
 

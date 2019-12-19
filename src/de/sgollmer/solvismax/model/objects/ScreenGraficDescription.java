@@ -16,10 +16,10 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ScreenGraficDescription implements ScreenCompare, Assigner {
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ScreenGraficDescription.class);
-	
+
 	private final String id;
 	private final boolean exact;
-	private final Rectangle rectangle;
+	private Rectangle rectangle = null;
 
 	private ScreenGraficDescription(String id, boolean exact, Rectangle rectangle) {
 		this.id = id;
@@ -126,6 +126,12 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 			image = new Pattern(image, rectangle);
 		}
 		solvis.getGrafics().put(this.id, image);
-		logger.debug( "Screen grafic <" + this.getId() + "> learned.");
+		logger.debug("Screen grafic <" + this.getId() + "> learned.");
+	}
+
+	public void setRectangle(Rectangle rectangle) {
+		if (rectangle != null) {
+			this.rectangle = rectangle;
+		}
 	}
 }

@@ -42,6 +42,9 @@ public class ReceivedPackageCreator {
 			case GET:
 				result = new GetPackage();
 				break;
+			case SERVER_COMMAND:
+				result = new ServerCommand() ;
+				break ;
 			default:
 				logger.error("Command <" + command.name() + "> not known");
 				return null;

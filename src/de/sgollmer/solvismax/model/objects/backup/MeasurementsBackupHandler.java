@@ -1,13 +1,17 @@
 package de.sgollmer.solvismax.model.objects.backup;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.stream.StreamSource;
+
+import org.slf4j.LoggerFactory;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
@@ -18,6 +22,8 @@ import de.sgollmer.solvismax.xml.XmlStreamReader;
 
 public class MeasurementsBackupHandler {
 
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MeasurementsBackupHandler.class);
+	
 	private static final String NAME_XSD_MEASUREMENTS_FILE = "measurements.xsd";
 	private static final String NAME_XML_MEASUREMENTS_FILE = "measurements.xml";
 
@@ -48,7 +54,7 @@ public class MeasurementsBackupHandler {
 		try {
 			this.read();
 		} catch (IOException | XmlError | XMLStreamException e) {
-			// TODO Korrekt, dass Fehler ignoriert werden können?
+			logger.warn("Error on reading the BackupFile detected", e);
 		}
 	}
 
@@ -69,8 +75,8 @@ public class MeasurementsBackupHandler {
 			File xsd = new File(this.parent, NAME_XSD_MEASUREMENTS_FILE);
 
 			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XSD_MEASUREMENTS_FILE, xsd);
-			
-			this.xsdWritten = true ;
+
+			this.xsdWritten = true;
 		}
 	}
 
@@ -84,7 +90,7 @@ public class MeasurementsBackupHandler {
 			return;
 		}
 
-		StreamSource source = new StreamSource(xml);
+		InputStream source = new FileInputStream(xml);
 
 		XmlStreamReader<Measurements> reader = new XmlStreamReader<>();
 
@@ -104,12 +110,16 @@ public class MeasurementsBackupHandler {
 	}
 
 	public void write() throws IOException, XMLStreamException {
+		
+		this.update();
+		
 		this.copyFiles();
 
 		File output = new File(parent, NAME_XML_MEASUREMENTS_FILE);
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
-		XMLStreamWriter writer = factory.createXMLStreamWriter(new FileOutputStream(output));
+		OutputStream outputStream = new FileOutputStream(output) ;
+		XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream);
 		writer.writeStartDocument();
 		writer.writeStartElement(XML_MEASUREMENTS);
 		this.measurements.writeXml(writer);
@@ -117,6 +127,9 @@ public class MeasurementsBackupHandler {
 		writer.writeEndDocument();
 		writer.flush();
 		writer.close();
+		outputStream.close();
+		
+		logger.info("Backup of measurements written.");
 	}
 
 	public void register(Solvis owner, String id) {
@@ -145,11 +158,7 @@ public class MeasurementsBackupHandler {
 						this.wait(this.measurementsBackupTime_ms);
 					} catch (InterruptedException e) {
 					}
-					// if (terminate) {
-					// break;
-					// }
 					try {
-						handler.update();
 						handler.write();
 					} catch (IOException | XMLStreamException e) {
 					}

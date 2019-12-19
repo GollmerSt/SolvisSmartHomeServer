@@ -11,8 +11,8 @@ import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.DataSource;
-import de.sgollmer.solvismax.model.objects.DataSourceI;
+import de.sgollmer.solvismax.model.objects.ChannelSource;
+import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.Screen;
@@ -25,7 +25,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Control extends DataSource {
+public class Control extends ChannelSource {
 
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Control.class);
 
@@ -46,6 +46,7 @@ public class Control extends DataSource {
 		this.screenId = screenId;
 		this.valueRectangle = current;
 		this.strategy = strategy;
+		this.strategy.setCurrentRectangle(current);
 		this.updateStrategies = updateStrategies;
 		if (this.updateStrategies != null) {
 			this.updateStrategies.setSource(this);
@@ -221,7 +222,7 @@ public class Control extends DataSource {
 
 	@Override
 	public Type getType() {
-		return DataSourceI.Type.CONTROL;
+		return ChannelSourceI.Type.CONTROL;
 	}
 
 	@Override

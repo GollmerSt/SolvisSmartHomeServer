@@ -12,8 +12,6 @@ import de.sgollmer.solvismax.objects.Field;
 public enum Strategy {
 	DATE(new Date(), false), UNSIGNED(new Integer(false), true), SIGNED(new Integer(true), true), BOOLEAN(new Boolean(), false);
 
-	private static String NULL_STRING = new String("0000000000000000000000000000000000000000000000000000000000000000");
-
 	private final StrategyClass type;
 	private final boolean numeric;
 
@@ -64,9 +62,6 @@ public enum Strategy {
 			String str = "";
 			for (Iterator<Field> it = fields.iterator(); it.hasNext();) {
 				str += it.next().subString(data);
-			}
-			if (NULL_STRING.contains(str)) {
-				throw new ErrorPowerOn("Power on detected");
 			}
 			int second = (int) toInt(str.substring(4, 6));
 			int minute = (int) toInt(str.substring(2, 4));

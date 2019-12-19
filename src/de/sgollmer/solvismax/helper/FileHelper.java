@@ -28,18 +28,6 @@ public class FileHelper {
 		InputStream inputStream = Main.class.getResourceAsStream(resourcePath) ;
 
 
-//		ClassLoader classLoader = new FileHelper().getClass().getClassLoader();
-//
-//		URL resource = classLoader.getResource( resourcePath);
-//		File rscFile = null;
-//		try {
-//			rscFile = new File(resource.toURI());
-//		} catch (URISyntaxException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//
-//		BufferedReader bufferedReader = null;
 		PrintWriter printWriter = null;
 
 		try {

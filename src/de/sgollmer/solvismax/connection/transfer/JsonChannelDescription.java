@@ -2,14 +2,14 @@ package de.sgollmer.solvismax.connection.transfer;
 
 import java.util.Collection;
 
-import de.sgollmer.solvismax.model.objects.DataDescription;
-import de.sgollmer.solvismax.model.objects.DataSourceI.UpperLowerStep;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
+import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.FloatValue;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 
-public class ChannelDescription extends Element {
-	public ChannelDescription(DataDescription description) {
+public class JsonChannelDescription extends Element {
+	public JsonChannelDescription(ChannelDescription description) {
 		this.name = description.getId();
 		Frame frame = new Frame();
 		this.value = frame;

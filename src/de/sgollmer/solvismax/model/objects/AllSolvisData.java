@@ -24,7 +24,7 @@ public class AllSolvisData {
 		this.solvis = solvis;
 	}
 
-	public SolvisData get(DataDescription description) {
+	public SolvisData get(ChannelDescription description) {
 		String id = description.getId();
 		SolvisData data = null;
 		synchronized (this) {
@@ -42,7 +42,7 @@ public class AllSolvisData {
 		synchronized (this) {
 			data = this.solvisDatas.get(id);
 			if (data == null) {
-				DataDescription description = solvis.getDataDescription(id);
+				ChannelDescription description = solvis.getChannelDescription(id);
 				data = new SolvisData(description, this);
 				this.solvisDatas.put(id, data);
 			}
@@ -51,7 +51,7 @@ public class AllSolvisData {
 	}
 
 	public SolvisData checkAndGet(String id) {
-		DataDescription description = this.solvis.getDataDescription(id);
+		ChannelDescription description = this.solvis.getChannelDescription(id);
 		if (description == null) {
 			throw new UnknownError("Unknown error: <" + id + "> is unknown");
 		}
@@ -99,7 +99,7 @@ public class AllSolvisData {
 	public synchronized void backupSpecialMeasurements( SystemMeasurements systemMeasurements ) {
 		systemMeasurements.clear() ;
 		for (SolvisData data : this.solvisDatas.values()) {
-			if (data.getDescription().getType() == DataSourceI.Type.CALCULATION) {
+			if (data.getDescription().getType() == ChannelSourceI.Type.CALCULATION) {
 				SingleData<?> sd = data.getSingleData();
 				if (sd != null) {
 					systemMeasurements.add(new Measurement(data.getId(), data.getSingleData()));

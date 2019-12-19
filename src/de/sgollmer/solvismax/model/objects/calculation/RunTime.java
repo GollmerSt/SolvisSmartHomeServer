@@ -45,7 +45,7 @@ public class RunTime extends Strategy<RunTime> {
 
 		Executable executable = new Executable(result, burnerOn);
 
-		executable.update(burnerOn);
+		executable.update(burnerOn, this);
 	}
 
 	private class Executable implements ObserverI<SolvisData> {
@@ -59,15 +59,31 @@ public class RunTime extends Strategy<RunTime> {
 			this.result = result;
 			this.burnerOn = burnerOn;
 			this.burnerOn.registerContinuousObserver(this);
+			this.result.registerContinuousObserver(this);
 		}
 
 		@Override
-		public void update(SolvisData data) {
+		public void update(SolvisData data, Object source ) {
 			if (result == null || burnerOn == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
+			
+			Boolean burnerOn = null ;
 
-			boolean burnerOn = data.getBool();
+			if ( data.getDescription() == result.getDescription() ) {
+				if ( source != this ) {
+					burnerOn = this.burnerOn.getBool() ;
+					this.lastStartTime = -1 ;
+				}
+				else {
+					return ;
+				}
+			}
+			
+			if ( burnerOn == null ) {
+				burnerOn = data.getBool() ;
+			}
+
 
 			if (burnerOn || this.lastStartTime >= 0) {
 
@@ -84,8 +100,8 @@ public class RunTime extends Strategy<RunTime> {
 				
 				int result = this.formerRunTime_s + (int) ((time - this.lastStartTime + 500) / 1000);
 
-				if (result % 60 == 0 || ! burnerOn ) {
-					this.result.setInteger(result);
+				if (result - former > 60 || ! burnerOn ) {
+					this.result.setInteger(result, this);
 				}
 				
 				if ( !burnerOn ) {

@@ -16,13 +16,13 @@ import de.sgollmer.solvismax.model.objects.measure.Measurement;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
-public class DataDescription implements DataSourceI, Assigner {
+public class ChannelDescription implements ChannelSourceI, Assigner {
 	private final String id;
-	private final DataSource dataSource;
+	private final ChannelSource channelSource;
 
-	public DataDescription(String id, DataSource dataSource) {
+	public ChannelDescription(String id, ChannelSource channelSource) {
 		this.id = id;
-		this.dataSource = dataSource;
+		this.channelSource = channelSource;
 	}
 
 	public String getId() {
@@ -31,55 +31,55 @@ public class DataDescription implements DataSourceI, Assigner {
 
 	@Override
 	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, ErrorPowerOn {
-		return this.dataSource.getValue(dest, solvis);
+		return this.channelSource.getValue(dest, solvis);
 	}
 
 	@Override
 	public boolean setValue(Solvis solvis, SolvisData value) throws IOException {
-		return this.dataSource.setValue(solvis, value);
+		return this.channelSource.setValue(solvis, value);
 	}
 
 	@Override
 	public boolean isWriteable() {
-		return this.dataSource.isWriteable();
+		return this.channelSource.isWriteable();
 	}
 
 	@Override
 	public boolean isAverage() {
-		return this.dataSource.isAverage();
+		return this.channelSource.isAverage();
 	}
 
 	@Override
 	public Integer getDivisor() {
-		return this.dataSource.getDivisor();
+		return this.channelSource.getDivisor();
 	}
 
 	@Override
 	public String getUnit() {
-		return this.dataSource.getUnit();
+		return this.channelSource.getUnit();
 	}
 
 	@Override
 	public Float getAccuracy() {
-		return this.dataSource.getAccuracy() ;
+		return this.channelSource.getAccuracy() ;
 	}
 
 	@Override
 	public void assign(SolvisDescription description ) {
-		this.dataSource.assign(description);
+		this.channelSource.assign(description);
 
 	}
 
 	@Override
 	public void instantiate(Solvis solvis) {
-		this.dataSource.instantiate(solvis);
+		this.channelSource.instantiate(solvis);
 
 	}
 
-	public static class Creator extends CreatorByXML<DataDescription> {
+	public static class Creator extends CreatorByXML<ChannelDescription> {
 
 		private String id;
-		private DataSource dataSource;
+		private ChannelSource channelSource;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -94,9 +94,9 @@ public class DataDescription implements DataSourceI, Assigner {
 		}
 
 		@Override
-		public DataDescription create() throws XmlError {
-			DataDescription description = new DataDescription(id, dataSource);
-			dataSource.setDescription(description);
+		public ChannelDescription create() throws XmlError {
+			ChannelDescription description = new ChannelDescription(id, channelSource);
+			channelSource.setDescription(description);
 			return description ;
 		}
 
@@ -120,7 +120,7 @@ public class DataDescription implements DataSourceI, Assigner {
 				case "Control":
 				case "Measurement":
 				case "Calculation":
-					this.dataSource = (DataSource) created ; ;
+					this.channelSource = (ChannelSource) created ; ;
 			}
 			
 		}
@@ -129,34 +129,34 @@ public class DataDescription implements DataSourceI, Assigner {
 
 	@Override
 	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
-		dataSource.createAndAddLearnScreen(null, learnScreens);
+		channelSource.createAndAddLearnScreen(null, learnScreens);
 		
 	}
 
 	@Override
 	public void learn(Solvis solvis) throws IOException {
-		this.dataSource.learn(solvis);
+		this.channelSource.learn(solvis);
 		
 	}
 
 	@Override
 	public Type getType() {
-		return this.dataSource.getType();
+		return this.channelSource.getType();
 	}
 
 	@Override
 	public Screen getScreen() {
-		return this.dataSource.getScreen();
+		return this.channelSource.getScreen();
 	}
 
 	@Override
 	public Collection<? extends ModeI> getModes() {
-		return this.dataSource.getModes();
+		return this.channelSource.getModes();
 	}
 	
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
-		return this.dataSource.getUpperLowerStep() ;
+		return this.channelSource.getUpperLowerStep() ;
 	}
 	
 }

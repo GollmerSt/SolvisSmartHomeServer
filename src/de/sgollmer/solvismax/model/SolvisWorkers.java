@@ -2,21 +2,34 @@ package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Queue;
+import java.util.Set;
+
+import org.slf4j.LoggerFactory;
 
 import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
+import de.sgollmer.solvismax.model.objects.Miscellaneous;
+import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class SolvisWorkers {
 
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisWorkers.class);
+
 	private final Solvis solvis;
+	private final WatchDog watchDog;
 
 	private ControlWorkerThread controlsThread = null;
 	private MeasurementsWorkerThread measurementsThread = null;
+	private Set<ChannelDescription> commandsOfScreen = new HashSet<>();
+	private Screen commandScreen = null;
 
 	public SolvisWorkers(Solvis solvis) {
 		this.solvis = solvis;
+		this.watchDog = new WatchDog(solvis, solvis.getSolvisDescription().getSaver());
 	}
 
 	private class ControlWorkerThread extends Thread {
@@ -36,29 +49,16 @@ public class SolvisWorkers {
 			boolean restoreScreen = false;
 			boolean executeWatchDog = false;
 			this.screenRestoreInhibitCnt = 0;
-			long screenChangedByUser = -1;
 
-			int releaseblockingAfterUserChange = solvis.getSolvisDescription().getMiscellaneous()
-					.getReleaseblockingAfterUserChange_ms();
-			int unsuccessfullWaitTime = solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms();
-			int watchDogTime = solvis.getSolvisDescription().getMiscellaneous().getWatchDogTime_ms();
+			Miscellaneous misc = solvis.getSolvisDescription().getMiscellaneous();
+			int unsuccessfullWaitTime = misc.getUnsuccessfullWaitTime_ms();
+			int watchDogTime = misc.getWatchDogTime_ms();
 
 			while (!this.terminate) {
 				Command command = null;
 				synchronized (this) {
-					boolean screenChanged = false;
-					if (screenChangedByUser >= 0) {
-						if (System.currentTimeMillis() > screenChangedByUser + releaseblockingAfterUserChange) {
-							screenChanged = false;
-							screenChangedByUser = -1;
-							saveScreen = true;
-						} else {
-							screenChanged = true;
-						}
-					}
-
-					if (this.queue.isEmpty() || screenChanged) {
-						if (!queueWasEmpty && this.screenRestoreInhibitCnt == 0 && !screenChanged) {
+					if (this.queue.isEmpty()) {
+						if (!queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
 							restoreScreen = true;
 							queueWasEmpty = true;
 						} else {
@@ -68,9 +68,7 @@ public class SolvisWorkers {
 							}
 							if (this.queue.isEmpty()) {
 								executeWatchDog = true;
-								this.screenRestoreInhibitCnt = 0;
-							} else if (screenChanged) {
-								executeWatchDog = true;
+								// this.screenRestoreInhibitCnt = 0;
 							}
 						}
 
@@ -84,7 +82,9 @@ public class SolvisWorkers {
 							if (command.isScreenRestoreOff()) {
 								++this.screenRestoreInhibitCnt;
 							} else if (command.isScreenRestoreOn()) {
-								--this.screenRestoreInhibitCnt;
+								if (this.screenRestoreInhibitCnt > 0) {
+									--this.screenRestoreInhibitCnt;
+								}
 							}
 						}
 					}
@@ -102,36 +102,21 @@ public class SolvisWorkers {
 						restoreScreen = false;
 					}
 					if (executeWatchDog) {
-						if (SolvisWorkers.this.solvis.getWatchDog().execute()) {
-							screenChangedByUser = System.currentTimeMillis();
-						}
-						executeWatchDog = false;
+						watchDog.execute();
 					}
 					if (command != null && !command.isInhibit() && command.getDescription() != null) {
-						// SolvisData solvisData = solvis.ge;
-						SolvisData data = solvis.getAllSolvisData().get(command.getDescription());
-						if (command.getSetValue() == null) {
-							success = command.getDescription().getValue(data, solvis);
-						} else {
-							SolvisData clone = data.clone();
-							clone.setSingleData(command.getSetValue());
-							success = command.getDescription().setValue(solvis, clone);
-							if (success) {
-								data.setSingleData(command.getSetValue());
-							}
-						}
+						success = executeCommand(command);
 					}
 				} catch (IOException e) {
 					success = false;
 				} catch (ErrorPowerOn e2) {
 					success = false;
-					solvis.powerDetected(false);
+					solvis.getSolvisState().powerOff();
 				} catch (Throwable e3) {
-					// TODO unknown error, must be logged, command not executed
+					logger.error("Unknown error detected", e3);
 					success = true;
 				}
 				if (success) {
-					solvis.powerDetected(true);
 					if (command != null) {
 						queue.remove();
 					}
@@ -139,9 +124,7 @@ public class SolvisWorkers {
 					synchronized (this) {
 						try {
 							this.wait(unsuccessfullWaitTime);
-							if (SolvisWorkers.this.solvis.getWatchDog().execute()) {
-								screenChangedByUser = System.currentTimeMillis();
-							}
+							watchDog.execute();
 							executeWatchDog = false;
 						} catch (InterruptedException e) {
 						}
@@ -159,22 +142,56 @@ public class SolvisWorkers {
 		public void push(Command command) {
 			synchronized (this) {
 				boolean insert = true;
-				for (Iterator<Command> it = this.queue.iterator(); it.hasNext();) {
-					Command cmp = it.next();
-					if (command.getDescription() == cmp.getDescription()) {
-						if (command.getSetValue() != null) {
-							cmp.setInhibit(true);
-						} else {
-							insert = false;
+
+				if (command.getDescription() != null) {
+					for (Iterator<Command> it = this.queue.iterator(); it.hasNext();) {
+						Command cmp = it.next();
+						if (command.getDescription() == cmp.getDescription()) {
+							if (command.getSetValue() != null) {
+								cmp.setInhibit(true);
+							} else {
+								insert = false;
+							}
 						}
 					}
 				}
 				if (insert) {
 					this.queue.add(command);
 					this.notifyAll();
+					watchDog.bufferNotEmpty();
 				}
 			}
 		}
+	}
+
+	private boolean executeCommand(Command command) throws IOException, ErrorPowerOn {
+		boolean success = false;
+		ChannelDescription description = command.getDescription();
+		Screen commandScreen = description.getScreen();
+		if (this.solvis.getCurrentScreen() != commandScreen || this.commandScreen != commandScreen) {
+			this.commandsOfScreen.clear();
+		}
+		this.commandScreen = commandScreen;
+		boolean isIn = !this.commandsOfScreen.add(description);
+
+		if (isIn) {
+			this.solvis.clearCurrentImage();
+			this.commandsOfScreen.clear();
+			this.commandsOfScreen.add(description);
+		}
+
+		SolvisData data = solvis.getAllSolvisData().get(description);
+		if (command.getSetValue() == null) {
+			success = command.getDescription().getValue(data, solvis);
+		} else {
+			SolvisData clone = data.clone();
+			clone.setSingleData(command.getSetValue());
+			success = command.getDescription().setValue(solvis, clone);
+			if (success) {
+				data.setSingleData(command.getSetValue());
+			}
+		}
+		return success;
 	}
 
 	public void push(Command command) {
@@ -185,6 +202,7 @@ public class SolvisWorkers {
 	}
 
 	public void terminate() {
+		this.watchDog.terminate();
 		synchronized (this) {
 			if (controlsThread != null) {
 				controlsThread.terminate();
@@ -226,13 +244,15 @@ public class SolvisWorkers {
 				try {
 					solvis.measure();
 					errorCount = 0;
-					solvis.powerDetected(true);
-				} catch (IOException e) {
+					solvis.getSolvisState().connected();
+				} catch (IOException e1) {
 					++errorCount;
 					if (errorCount == solvis.getSolvisDescription().getMiscellaneous()
 							.getPowerOffDetectedAfterIoErrors()) {
-						solvis.powerDetected(false);
+						solvis.getSolvisState().powerOff();
 					}
+				} catch (ErrorPowerOn e2) {
+					solvis.getSolvisState().remoteConnected();
 				}
 				synchronized (this) {
 					try {

@@ -10,13 +10,12 @@ public class FloatValue implements SingleData<Float> {
 
 	@Override
 	public Integer getInt() {
-		return (int) value;
+		return Math.round( value ) ;
 	}
 
 	@Override
 	public SingleData<Float> create(int value) {
-		// TODO Auto-generated method stub
-		return null;
+		return new FloatValue(value);
 	}
 
 	@Override

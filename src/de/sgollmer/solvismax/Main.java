@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
 import de.sgollmer.solvismax.error.XmlError;
@@ -62,7 +64,7 @@ public class Main {
 				}
 			}
 		}
-		
+
 		try {
 			Logger2.createInstance(path);
 		} catch (IOException e2) {
@@ -70,18 +72,20 @@ public class Main {
 			System.err.println("Log4j couldn't initalized");
 		}
 
+		final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class) ;
+
 		Unit unit = null;
 
 		if (id != null & url != null && account != null && password != null) {
 			unit = new Units.Unit(id, url, account, password);
 		}
-		
-		ServerSocket serverSocket = null ;
+
+		ServerSocket serverSocket = null;
 
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException e1) {
-			System.err.println( "Port " + port + " is in use.");
+			System.err.println("Port " + port + " is in use.");
 			System.exit(40);
 		}
 
@@ -90,18 +94,26 @@ public class Main {
 		try {
 			instances = new Instances(path, unit);
 		} catch (IOException | XmlError | XMLStreamException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		try {
 			serverSocket.close();
-			Server server = new Server(port, 100, new CommandHandler(instances));
+			Server server = new Server(port, new CommandHandler(instances));
 			server.start();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			logger.error("Unexpected error on server start detected:", e);
 			e.printStackTrace();
 		}
+
+		final Instances terminateInstances = instances;
+
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				terminateInstances.terminate();
+			}
+		}));
 
 	}
 

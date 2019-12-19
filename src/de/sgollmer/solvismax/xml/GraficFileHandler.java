@@ -1,13 +1,14 @@
 package de.sgollmer.solvismax.xml;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.stream.StreamSource;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
@@ -73,7 +74,7 @@ public class GraficFileHandler {
 			return new AllSolvisGrafics() ;
 		}
 
-		StreamSource source = new StreamSource(xml);
+		InputStream source = new FileInputStream(xml);
 		
 		XmlStreamReader<AllSolvisGrafics> reader = new XmlStreamReader<>() ;
 		

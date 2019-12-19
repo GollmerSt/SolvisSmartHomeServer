@@ -1,20 +1,20 @@
 package de.sgollmer.solvismax.model;
 
-import de.sgollmer.solvismax.model.objects.DataDescription;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class Command {
-	private final DataDescription description ;
+	private final ChannelDescription description ;
 	private final SingleData<?> setValue ;
 	private final boolean screenRestoreOn ;
 	private final boolean screenRestoreOff ;
 	private boolean inhibit = false ;
 	
-	public Command( DataDescription description ) {
+	public Command( ChannelDescription description ) {
 		this( description, null, false, false ) ;
 	}
 	
-	public Command( DataDescription description, SingleData<?> setValue ) {
+	public Command( ChannelDescription description, SingleData<?> setValue ) {
 		this( description, setValue, false, false ) ;
 	}
 	
@@ -22,7 +22,7 @@ public class Command {
 		this( null, null, !screenRestore, screenRestore ) ;
 	}
 	
-	public Command( DataDescription description, SingleData<?> setValue, boolean screenRestoreOff, boolean screenRestoreOn ) {
+	public Command( ChannelDescription description, SingleData<?> setValue, boolean screenRestoreOff, boolean screenRestoreOn ) {
 		this.description = description ;
 		this.setValue = setValue ;
 		this.screenRestoreOff = screenRestoreOff ;
@@ -33,7 +33,7 @@ public class Command {
 		return setValue;
 	}
 
-	public DataDescription getDescription() {
+	public ChannelDescription getDescription() {
 		return description;
 	}
 

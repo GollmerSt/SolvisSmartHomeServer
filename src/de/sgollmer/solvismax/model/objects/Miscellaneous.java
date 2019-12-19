@@ -17,10 +17,11 @@ public class Miscellaneous {
 	private final int unsuccessfullWaitTime_ms;
 	private final int releaseblockingAfterUserChange_ms;
 	private final int watchDogTime_ms;
+	private final int connectionHoldTime_ms ;
 
 	public Miscellaneous(int defaultAverageCount, int defaultReadMeasurementsIntervall_ms,
 			int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors, int unsuccessfullWaitTime_ms,
-			int releaseblockingAfterUserChange_ms, int watchDogTime_ms) {
+			int releaseblockingAfterUserChange_ms, int watchDogTime_ms, int connectionHoldTime_ms) {
 		this.defaultAverageCount = defaultAverageCount;
 		this.defaultReadMeasurementsIntervall_ms = defaultReadMeasurementsIntervall_ms;
 		this.measurementsBackupTime_ms = measurementsBackupTime_ms;
@@ -28,6 +29,7 @@ public class Miscellaneous {
 		this.unsuccessfullWaitTime_ms = unsuccessfullWaitTime_ms;
 		this.releaseblockingAfterUserChange_ms = releaseblockingAfterUserChange_ms;
 		this.watchDogTime_ms = watchDogTime_ms;
+		this.connectionHoldTime_ms = connectionHoldTime_ms ;
 	}
 
 	public int getDefaultAverageCount() {
@@ -67,6 +69,7 @@ public class Miscellaneous {
 		private int unsuccessfullWaitTime_ms;
 		private int releaseblockingAfterUserChange_ms;
 		private int watchDogTime_ms;
+		private int connectionHoldTime_ms;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -96,6 +99,8 @@ public class Miscellaneous {
 				case "watchDogTime_ms":
 					this.watchDogTime_ms = Integer.parseInt(value);
 					break;
+				case "connectionHoldTime_ms":
+					this.connectionHoldTime_ms = Integer.parseInt(value) ;
 			}
 
 		}
@@ -104,7 +109,7 @@ public class Miscellaneous {
 		public Miscellaneous create() throws XmlError, IOException {
 			return new Miscellaneous(defaultAverageCount, defaultReadMeasurementsIntervall_ms,
 					measurementsBackupTime_ms, powerOffDetectedAfterIoErrors, unsuccessfullWaitTime_ms,
-					releaseblockingAfterUserChange_ms, watchDogTime_ms);
+					releaseblockingAfterUserChange_ms, watchDogTime_ms, connectionHoldTime_ms);
 		}
 
 		@Override
@@ -117,5 +122,9 @@ public class Miscellaneous {
 
 		}
 
+	}
+
+	public int getConnectionHoldTime() {
+		return this.connectionHoldTime_ms;
 	}
 }

@@ -1,7 +1,8 @@
 package de.sgollmer.solvismax.connection;
 
 public enum ConnectionStatus {
-	UNKNOWN,
+	CLIENT_UNKNOWN,
 	CONNECTION_NOT_POSSIBLE,
-	CONNECTED, DISCONNECTED
+	CONNECTED, DISCONNECTED,
+	ALIVE
 }

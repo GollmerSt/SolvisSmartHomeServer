@@ -28,7 +28,7 @@ public class Dependencies implements Assigner {
 			throw new DependencyError("Dependency error: <" + id + "> unknown");
 		}
 
-		DataDescription description = allData.getSolvis().getDataDescription(dependency.getDataId());
+		ChannelDescription description = allData.getSolvis().getChannelDescription(dependency.getDataId());
 		if (description == null) {
 			throw new DependencyError("Dependency error: <" + dependency.getDataId() + "> unknown");
 		}

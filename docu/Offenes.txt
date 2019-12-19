@@ -1,11 +1,26 @@
 Offene Aufgaben:
 
-1. Log4J
-
-2. Nicht verwendete Eingänge nicht als Reading erfassen. Wert enthält mal 2500, mal 0, je nach
+1. Nicht verwendete Eingänge nicht als Reading erfassen. Wert enthält mal 2500, mal 0, je nach
      Kanal. Evtl. XMl-Beschreibung entsprechend erweietern oder vielleicht auch Typ-abhänging.
      Diese Konfiguration könnte mit in die Backup-Daten gespeichert werden, dadurch könnte schon
-     beik Sender der Kanal-Namen zum Cient mitrberücksichtigt sein, ohne dass eine Verbindung zur
+     beim Senden der Kanal-Namen zum Cient mitberücksichtigt sein, ohne dass eine Verbindung zur
      Solvis-Anklage vorliegen muss
+     
+5. >1 HK-Problem lösen
+
+7. Befehle vom Client aus, um den Server zu beenden oder auch neu zu starten
+
+
+
+Erledigt:
+
+2. Der Solvis-Name muss noch definierbar sein
+
+3. Das Zurückgehen auf den letzten Userbildschirm inhibieren. Muss beim Schließen der Verbindung
+     zurückgesetzt werden
+
+4. Events wie Poweron, ScreenError o.ä. müssen noch realisiert werden
+     
+6. Versionieren + Version am Anfang zum Client übertragen (mit connected)
 
      

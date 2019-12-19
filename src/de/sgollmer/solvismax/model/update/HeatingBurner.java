@@ -2,6 +2,8 @@ package de.sgollmer.solvismax.model.update;
 
 import javax.xml.namespace.QName;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Command;
 import de.sgollmer.solvismax.model.Solvis;
@@ -16,6 +18,8 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class HeatingBurner extends Strategy<HeatingBurner> {
+
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HeatingBurner.class);
 
 	private final String burnerId;
 	private final String burnerCalcId;
@@ -75,7 +79,6 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 		private final int readIntervall;
 		private final boolean hourly;
 
-		private int lastCalcValue = -1;
 		private long lastCheckTime = -1;
 		private boolean syncActive = false;
 		private boolean lastBurnerState = false;
@@ -96,35 +99,46 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 			this.toUpdate.register(new ObserverI<SolvisData>() {
 
 				@Override
-				public void update(SolvisData data) {
-					updateByControl(data);
+				public void update(SolvisData data, Object source) {
+					updateByControl(data, source);
 
 				}
 			});
 
 		}
 
-		private void updateByControl(SolvisData data) {
+		private void updateByControl(SolvisData data, Object source ) {
 			int controlData = data.getInt();
 			int calcData = this.burnerCalcValue.getInt();
+
+			boolean update = false;
 
 			if (factor > 0) {
 				controlData *= this.factor;
 				if (syncActive) {
 					this.syncActive = false;
-					this.burnerCalcValue.setInteger(controlData);
+					update = true;
+					logger.info("Synchronisation  of <" + burnerCalcId + "> finished");
+				} else if (controlData > calcData || controlData + this.factor < calcData) {
+					update = true;
+					if (controlData > calcData + 0.1 * this.factor || controlData + this.factor < calcData) {
+						this.syncActive = true;
+						logger.info("Synchronisation  of <" + burnerCalcId + "> activated");
+					}
 				}
-				if (controlData > calcData || controlData + this.factor < calcData) {
-					this.syncActive = true;
-					this.burnerCalcValue.setInteger(controlData);
+				if (update) {
 				}
-			} else {
+			} else if (calcData != controlData) {
+				update = true;
+			}
+			if (update) {
+				logger.info("Update of <" + burnerCalcId + "> by SolvisConrol data take place, former: " + calcData
+						+ ", new: " + controlData);
 				this.burnerCalcValue.setInteger(controlData);
 			}
 		}
 
-		@Override
-		public void update(SolvisData data) { // by burner
+		private void updateByMeasurement(SolvisData data) {
 
 			if (!(source instanceof Control)) {
 				return;
@@ -138,11 +152,13 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 			if (burnerOn || this.lastBurnerState) {
 
-				boolean checkP = time > this.lastCheckTime + this.checkIntervall;
-				boolean checkC = this.syncActive && time > lastCheckTime + this.readIntervall;
+				boolean checkP = this.checkIntervall > 0 && time > this.lastCheckTime + this.checkIntervall; // periodic
+																												// check
+				boolean checkC = this.readIntervall > 0 && this.syncActive && time > this.lastCheckTime + this.readIntervall;
 				checkC |= this.syncActive && !burnerOn && this.lastBurnerState;
-				checkC |= this.lastCalcValue >= 0 && this.hourly
-						&& currentCalcValue > this.lastCalcValue + this.factor - 2 * this.readIntervall;
+				int nextHour = (currentCalcValue / this.factor + 1) * this.factor ; 
+				checkC |= this.hourly
+						&& currentCalcValue > nextHour - 4 * this.readIntervall/1000;
 
 				if (checkC && burnerOn && !this.lastBurnerState && this.screenRestore) {
 					this.screenRestore = false;
@@ -152,14 +168,20 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 				if (checkC || checkP) {
 					this.lastCheckTime = time;
 					this.solvis.execute(new Command(((Control) source).getDescription()));
+					logger.debug("Update of <" + burnerCalcId + "> requested.");
 				}
 			} else if (!this.screenRestore) {
 				this.screenRestore = true;
 				this.solvis.execute(new Command(this.screenRestore));
 			}
 			this.lastBurnerState = burnerOn;
-			this.lastCalcValue = currentCalcValue;
 		}
+
+		@Override
+		public void update(SolvisData data, Object Source) { // by burner
+			updateByMeasurement(data);
+		}
+
 	}
 
 	public static class Creator extends UpdateCreator<HeatingBurner> {

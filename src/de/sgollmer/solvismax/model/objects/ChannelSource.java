@@ -1,13 +1,13 @@
 package de.sgollmer.solvismax.model.objects;
 
-public abstract class DataSource implements DataSourceI {
+public abstract class ChannelSource implements ChannelSourceI {
 
-	protected DataDescription description;
+	protected ChannelDescription description;
 
 	/**
 	 * @return the description
 	 */
-	public DataDescription getDescription() {
+	public ChannelDescription getDescription() {
 		return description;
 	}
 
@@ -15,7 +15,7 @@ public abstract class DataSource implements DataSourceI {
 	 * @param description
 	 *            the description to set
 	 */
-	public void setDescription(DataDescription description) {
+	public void setDescription(ChannelDescription description) {
 		this.description = description;
 	}
 }

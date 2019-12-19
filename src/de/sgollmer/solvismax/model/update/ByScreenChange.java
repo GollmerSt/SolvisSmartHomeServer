@@ -5,6 +5,7 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Command;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -31,9 +32,10 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 		}
 
 		@Override
-		public void update(Screen data) {
-			if ( source instanceof Control ) {
-				solvis.execute(new Command(((Control)source).getDescription()));
+		public void update(Screen data, Object source) {
+			ChannelSourceI channelSource = ByScreenChange.this.source ;
+			if ( channelSource instanceof Control ) {
+				solvis.execute(new Command(((Control)channelSource).getDescription()));
 			}
 
 		}

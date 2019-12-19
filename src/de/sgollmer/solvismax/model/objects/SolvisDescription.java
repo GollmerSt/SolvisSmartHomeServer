@@ -13,17 +13,20 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class SolvisDescription {
+
+	private static final String XML_CHANNEL_DESCRIPTIONS = "ChannelDescriptions";
+	
 	private final String homeId;
 	private final ScreenSaver saver;
 	private final AllScreens screens;
 	private final FallBack fallBack;
 	private final AllScreenGraficDescriptions screenGrafics;
-	private final AllDataDescriptions dataDescriptions;
+	private final AllChannelDescriptions dataDescriptions;
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
 	public SolvisDescription(String homeId, ScreenSaver saver, AllScreens screens, FallBack fallBack,
-			AllScreenGraficDescriptions screenGrafics, AllDataDescriptions dataDescriptions, AllDurations durations,
+			AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions, AllDurations durations,
 			Miscellaneous miscellaneous) {
 		this.homeId = homeId;
 		this.saver = saver;
@@ -69,7 +72,7 @@ public class SolvisDescription {
 		private ScreenSaver saver;
 		private AllScreens screens;
 		private FallBack fallBack;
-		private AllDataDescriptions dataDescriptions;
+		private AllChannelDescriptions dataDescriptions;
 		private AllDurations durations;
 		private Miscellaneous miscellaneous;
 
@@ -105,8 +108,8 @@ public class SolvisDescription {
 					return new FallBack.Creator(id, this);
 				case "ScreenGrafics":
 					return new CreatorScreenGrafics(id, this);
-				case "DataDescriptions":
-					return new AllDataDescriptions.Creator(id, this);
+				case XML_CHANNEL_DESCRIPTIONS:
+					return new AllChannelDescriptions.Creator(id, this);
 				case "Durations":
 					return new AllDurations.Creator(id, this);
 				case "Miscellaneous":
@@ -133,8 +136,8 @@ public class SolvisDescription {
 					this.screenGrafics.addAll(collection);
 				}
 					break;
-				case "DataDescriptions":
-					this.dataDescriptions = (AllDataDescriptions) created;
+				case XML_CHANNEL_DESCRIPTIONS:
+					this.dataDescriptions = (AllChannelDescriptions) created;
 					break;
 				case "Durations":
 					this.durations = (AllDurations) created;
@@ -222,7 +225,7 @@ public class SolvisDescription {
 	/**
 	 * @return the dataDescriptions
 	 */
-	public AllDataDescriptions getDataDescriptions() {
+	public AllChannelDescriptions getChannelDescriptions() {
 		return dataDescriptions;
 	}
 

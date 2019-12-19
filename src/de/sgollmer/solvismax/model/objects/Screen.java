@@ -27,6 +27,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 	private final int LEARN_REPEAT_COUNT = 3;
 
 	private static final String XML_TOUCH_POINT = "TouchPoint";
+	private static final String XML_ALTERNATIVE_TOUCH_POINT = "AlternativeTouchPoint";
 	private static final String XML_SCREEN_GRAFICS = "ScreenGrafic";
 	private static final String XML_SCREEN_GRAFICS_REF = "ScreenGraficRef";
 	private static final String XML_SCREEN_OCR = "ScreenOcr";
@@ -118,6 +119,9 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 		if (this.touchPoint != null) {
 			this.touchPoint.assign(description);
 		}
+		if (this.alternativeTouchPoint != null) {
+			this.alternativeTouchPoint.assign(description);
+		}
 	}
 
 	public void addNextScreen(Screen nextScreen) {
@@ -165,20 +169,23 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 	public List<ScreenTouch> getPreviosScreens() {
 		return this.getPreviosScreens(false);
 	}
+	
+	/**
+	 * Alle Bildschirme davor ohne this
+	 * @param learn
+	 * @return
+	 */
 
-	public List<ScreenTouch> getPreviosScreens(boolean learn) { // Alle
-																// Bildschirme
-																// davor
-		// einschl.
-		// this
+	public List<ScreenTouch> getPreviosScreens(boolean learn) { 
 
 		List<ScreenTouch> screens = new ArrayList<>();
 
 		Screen current = this;
+		Screen previous = current.previousScreen;
 
-		while (current != null) {
+		while (previous != null) {
 			TouchPoint touch = current.getTouchPoint();
-			Screen previous = current.previousScreen;
+			
 			Screen altScreen = current.alternativePreviousScreen;
 			if (altScreen != null && !learn) {
 				if (previous.alternativePreviousScreen != null) {
@@ -195,6 +202,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 			}
 			screens.add(new ScreenTouch(previous, touch));
 			current = previous;
+			previous = current.previousScreen;
 		}
 		return screens;
 	}
@@ -241,6 +249,11 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 						this.previousId = value;
 					}
 					break;
+				case "alternativePreviousId":
+					if (!value.isEmpty()) {
+						this.alternativePreviousId = value;
+					}
+					break;
 				case "backId":
 					if (!value.isEmpty()) {
 						this.backId = value;
@@ -278,6 +291,8 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 			switch (name.getLocalPart()) {
 				case XML_TOUCH_POINT:
 					return new TouchPoint.Creator(id, this.getBaseCreator());
+				case XML_ALTERNATIVE_TOUCH_POINT:
+					return new TouchPoint.Creator(id, this.getBaseCreator());
 				case XML_SCREEN_GRAFICS:
 					return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
 				case XML_SCREEN_GRAFICS_REF:
@@ -293,8 +308,11 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case "TouchPoint":
+				case XML_TOUCH_POINT:
 					this.touchPoint = (TouchPoint) created;
+					break;
+				case XML_ALTERNATIVE_TOUCH_POINT:
+					this.alternativeTouchPoint = (TouchPoint) created;
 					break;
 				case XML_SCREEN_GRAFICS:
 					ScreenGraficDescription grafic = (ScreenGraficDescription) created;
@@ -397,7 +415,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 						if (cmpScreen == null || cmpScreen == nextScreen) {
 							nextScreen.learn(solvis, learnScreens);
 							current = solvis.getCurrentScreen();
-							success = true;
+							success = current != null;
 						}
 					} catch (IOException e) {
 						logger.warn("Screen <" + this.toString()
@@ -409,6 +427,12 @@ public class Screen implements GraficsLearnable, Comparable<Screen> {
 				}
 				// this.gotoScreen(solvis, this, current, learnObjects);
 				// current = this;
+			}
+		}
+		if (this.nextScreens.size() == 0 && this.alternativePreviousId != null) {
+			Screen toSelect = this.alternativePreviousScreen.nextScreens.iterator().next();
+			if (toSelect.previousScreen == toSelect.backScreen) {
+				solvis.send(toSelect.alternativeTouchPoint);
 			}
 		}
 

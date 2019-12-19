@@ -1,10 +1,6 @@
-package de.sgollmer.solvismax.connection;
+package de.sgollmer.solvismax.connection.transfer;
 
-import de.sgollmer.solvismax.connection.transfer.Command;
-import de.sgollmer.solvismax.connection.transfer.Element;
-import de.sgollmer.solvismax.connection.transfer.Frame;
-import de.sgollmer.solvismax.connection.transfer.JsonPackage;
-import de.sgollmer.solvismax.connection.transfer.SingleValue;
+import de.sgollmer.solvismax.connection.ConnectionStatus;
 
 public class ConnectionState {
 

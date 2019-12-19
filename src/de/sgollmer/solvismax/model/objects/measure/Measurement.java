@@ -9,8 +9,8 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.DataSource;
-import de.sgollmer.solvismax.model.objects.DataSourceI;
+import de.sgollmer.solvismax.model.objects.ChannelSource;
+import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.objects.Field;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Measurement extends DataSource {
+public class Measurement extends ChannelSource {
 	private final Strategy type;
 	private final int divisor;
 	private final boolean average;
@@ -209,7 +209,7 @@ public class Measurement extends DataSource {
 
 	@Override
 	public Type getType() {
-		return DataSourceI.Type.MEASUREMENT;
+		return ChannelSourceI.Type.MEASUREMENT;
 	}
 
 	@Override

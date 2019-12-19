@@ -7,7 +7,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
-public interface DataSourceI extends Assigner, GraficsLearnable {
+public interface ChannelSourceI extends Assigner, GraficsLearnable {
 
 	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException;
 

@@ -7,8 +7,8 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.DataSource;
-import de.sgollmer.solvismax.model.objects.DataSourceI;
+import de.sgollmer.solvismax.model.objects.ChannelSource;
+import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.Dependencies;
 import de.sgollmer.solvismax.model.objects.Dependency;
 import de.sgollmer.solvismax.model.objects.Screen;
@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Calculation extends DataSource {
+public class Calculation extends ChannelSource {
 
 	private final Strategy<?> strategy;
 	private final Dependencies dependencies;
@@ -143,7 +143,7 @@ public class Calculation extends DataSource {
 
 	@Override
 	public Type getType() {
-		return DataSourceI.Type.CALCULATION;
+		return ChannelSourceI.Type.CALCULATION;
 	}
 
 	@Override

@@ -7,16 +7,15 @@ import org.slf4j.LoggerFactory;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
-import de.sgollmer.solvismax.model.objects.DataDescription;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 
 public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable {
-	
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisData.class);
 
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisData.class);
 
-	private final DataDescription description;
+	private final ChannelDescription description;
 	private final AllSolvisData datas;
 
 	private final Average average;
@@ -25,7 +24,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
-	public SolvisData(DataDescription description, AllSolvisData datas) {
+	public SolvisData(ChannelDescription description, AllSolvisData datas) {
 		this.description = description;
 		this.datas = datas;
 		if (this.description.isAverage()) {
@@ -76,6 +75,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	private void setData(SingleData<?> data) {
+		this.setData(data, this);
+	}
+
+	private void setData(SingleData<?> data, Object source) {
+
 		if (this.description.isAverage()) {
 			this.average.add(data);
 			data = this.average.getAverage(data);
@@ -83,19 +87,23 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 		if (!data.equals(this.data)) {
 			this.data = data;
-			this.notify(this);
-			logger.debug("Channel: " + this.getId() + ", value: " + data.toString() );
+			this.notify(this, source);
+			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
 		}
 		if (this.continousObservable != null) {
-			this.continousObservable.notify(this);
+			this.continousObservable.notify(this, source);
 		}
 	}
 
 	/**
 	 * @return the description
 	 */
-	public DataDescription getDescription() {
+	public ChannelDescription getDescription() {
 		return this.description;
+	}
+
+	public void setInteger(Integer integer, Object source) {
+		this.setData(new IntegerValue(integer), source);
 	}
 
 	public void setInteger(Integer integer) {
@@ -106,8 +114,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (this.data == null) {
 			return null;
 		} else if (this.data instanceof FloatValue) {
-			float f = ((FloatValue)this.data).get() ;
-			return (int)(f+(f<0?-0.5:0.5));
+			float f = ((FloatValue) this.data).get();
+			return Math.round(f);
 
 		} else if ((this.data instanceof IntegerValue)) {
 			return ((IntegerValue) this.data).get();

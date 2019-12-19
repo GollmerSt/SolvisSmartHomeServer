@@ -1,6 +1,7 @@
 package de.sgollmer.solvismax.xml;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
@@ -10,7 +11,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +18,7 @@ import de.sgollmer.solvismax.error.XmlError;
 
 public class XmlStreamReader<D> {
 
+	@SuppressWarnings("unused")
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(XmlStreamReader.class);
 
 	public static class Result<T> {
@@ -46,7 +47,7 @@ public class XmlStreamReader<D> {
 		}
 	}
 
-	public Result<D> read(StreamSource streamSource, String rootId, BaseCreator<D> rootCreator, String streamId)
+	public Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId)
 			throws IOException, XmlError, XMLStreamException {
 
 		final HashContainer hash = new HashContainer();
@@ -54,7 +55,7 @@ public class XmlStreamReader<D> {
 		XMLEventReader reader = null;
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		try {
-			reader = inputFactory.createXMLEventReader(streamSource);
+			reader = inputFactory.createXMLEventReader(inputStream);
 		} catch (XMLStreamException e2) {
 			throw new XmlError(e2, "Unexpected error on opening the file \"" + streamId + "\"");
 		}
@@ -71,12 +72,10 @@ public class XmlStreamReader<D> {
 			switch (ev.getEventType()) {
 				case XMLStreamConstants.START_ELEMENT:
 					QName name = ev.asStartElement().getName();
-					logger.debug("Start-Element: " + name.getLocalPart());
 					hash.put(name);
 					String localName = name.getLocalPart();
 					if (localName.equals(rootId)) {
 						destination = this.create(rootCreator, reader, ev, streamId, hash);
-						logger.debug("Root detected");
 					} else {
 						NullCreator nullCreator = new NullCreator(localName, rootCreator);
 						this.create(nullCreator, reader, ev, streamId, hash);
@@ -85,6 +84,9 @@ public class XmlStreamReader<D> {
 			}
 		}
 		reader.close();
+
+		inputStream.close();
+
 		return new Result<D>(destination, hash.hash);
 	}
 

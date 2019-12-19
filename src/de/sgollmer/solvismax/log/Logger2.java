@@ -68,7 +68,7 @@ public class Logger2 {
 
 		File xml = new File(this.parent, Constants.LOG4J_CONFIG_FILE);
 
-		if (!xml.exists() || Constants.DEBUG) {
+		if (!xml.exists() ) {
 			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + Constants.LOG4J_CONFIG_FILE, xml, "****LogPath****",
 					this.parent.getAbsolutePath());
 		}

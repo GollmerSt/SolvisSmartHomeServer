@@ -24,8 +24,8 @@ public enum Command {
 	 */
 	SHUTDOWN,
 	/**
-	 * Triggert das Auslesen eines Parameters an, welches nur über das GUI zugänglich ist
-	 * Daten werden erst über 
+	 * Triggert das Auslesen eines Parameters an, welches nur über das GUI
+	 * zugänglich ist Daten werden erst über
 	 */
 	GET,
 	/**
@@ -40,16 +40,21 @@ public enum Command {
 	/**
 	 * Server: Komplette Datenbeschreibung
 	 */
-	DATA_DESCRIPTIONS,
+	CHANNEL_DESCRIPTIONS,
 	/**
 	 * Server: Veränderte Daten, beim Beginn der Übertragung alle Daten
 	 */
 	MEASUREMENTS,
 	/**
-	 * Server: Liefert den Verbindungs-Zustand der Anlage, z.B. Connected,
-	 * Poweroff
+	 * Server: Liefert den Verbindungs-Zustand der Client/Server-Verbindung
 	 */
-	STATE, // ...
-	CONNECTION_STATE
-	
+	CONNECTION_STATE,
+	/**
+	 * Server: Liefert den Zustand der Solvis-Anlage
+	 */
+	SOLVIS_STATE,
+	/**
+	 * Client: Startet bestimmte Server-Befehle (Backup etc.)
+	 */
+	SERVER_COMMAND
 }

@@ -44,7 +44,7 @@ public class Starts extends Strategy<Starts> {
 
 		Executable executable = new Executable(result, burnerOn);
 
-		executable.update(burnerOn);
+		executable.update(burnerOn, this);
 	}
 
 	private class Executable implements ObserverI<SolvisData> {
@@ -58,7 +58,7 @@ public class Starts extends Strategy<Starts> {
 		}
 
 		@Override
-		public void update(SolvisData data) {
+		public void update(SolvisData data, Object source ) {
 			if (result == null || burnerOn == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}

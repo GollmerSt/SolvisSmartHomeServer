@@ -14,12 +14,7 @@
     		<element name="TouchPoint" type="tns:TouchPoint"
     			maxOccurs="1" minOccurs="0">
     			<annotation>
-    				<documentation>
-    					Bildschirmpunkt des Vorgänger-Bildschirms
-    					(previousId), der gedrückt werden muss, um auf
-    					den vorliegenden zu gelangen. Können auch
-    					mehrere sein (z.B. Main-Bildschirm Auswahl des
-    					Heizkreises)
+    				<documentation>Bildschirmpunkt des Vorgänger-Bildschirms (previousId), der gedrückt werden muss, um auf den vorliegenden zu gelangen. Können auch mehrere sein (z.B. Main-Bildschirm Auswahl des Heizkreises)
     				</documentation>
     			</annotation>
     		</element>
@@ -29,9 +24,7 @@
     		<element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="1"
     			minOccurs="0">
     			<annotation>
-    				<documentation>
-    					Wenn sich der Bildschirm aus erkennbaren Zeichen
-    					bestimmt werden kann
+    				<documentation> Wenn sich der Bildschirm aus erkennbaren Zeichen bestimmt werden kann
     				</documentation>
     			</annotation>
     		</element>
@@ -39,35 +32,34 @@
     		<element name="ScreenGraficRef" type="tns:ScreenGraficRef"
     			maxOccurs="1" minOccurs="0">
     			<annotation>
-    				<documentation>
-    					Wenn sich der Bildschirm aus einem
-    					Bildschirmbereich bestimmt werden kann, die
-    					Definition erfolgt über eine Refenzierung
+    				<documentation> Wenn sich der Bildschirm aus einem Bildschirmbereich bestimmt werden kann, die Definition erfolgt über eine Refenzierung
     				</documentation>
     			</annotation>
     		</element>
     		<element name="ScreenGrafic" type="tns:ScreenGrafic"
     			maxOccurs="1" minOccurs="0">
     			<annotation>
-    				<documentation>
-    					Wenn sich der Bildschirm aus einem
-    					Bildschirmbereich bestimmt werden kann
+    				<documentation> Wenn sich der Bildschirm aus einem Bildschirmbereich bestimmt werden kann
     				</documentation>
     			</annotation>
     		</element>
     		<element name="IgnoreRectangle" type="tns:Rectangle"
     			maxOccurs="unbounded" minOccurs="0">
     			<annotation>
-    				<documentation>Zur Erkennung von Useraktivitäten, Änderungen innerhalb dieser Rechtecke werden nicht als Useraktivität registriert
-Dient der Untersuchung von Usereingriffen. Im Ruhezustand wird jede Minute untersucht, ob der Bildschirminhalt sich geändert hat.
-Da auf einigen Bildschirmen ständig sich ändernde Werte angezeigt werden (Uhrzeit, Istwerte oder Anlegenstatus) können bestimmte Teile des
-Bildschirms mit Hilfe der "IgnoreRectangle" beim Vergleich ausgeblendt werden.
-
-Achtung: Im rectangle-Element gibtes auch noch das "invertFunction"-Attribut, damit kann ein bestimmter Bereich doch wieder zum Vergleich
-herangezogen werden, auch wenn er durch die anderen Ingnorerectangles maskiert ist. Ist etwas unsauber gelöst.
+    				<documentation> Zur Erkennung von Useraktivitäten, Änderungen innerhalb dieser Rechtecke 
+werden nicht als Useraktivität registriert Dient der Untersuchung
+von Usereingriffen. Im Ruhezustand wird jede Minute untersucht,
+ob der Bildschirminhalt sich geändert hat. Da auf einigen Bildschirmen
+ständig sich ändernde Werte angezeigt werden (Uhrzeit, Istwerte oder
+Anlegenstatus) können bestimmte Teile des Bildschirms mit Hilfe der
+"IgnoreRectangle" beim Vergleich ausgeblendt werden.
+ Achtung: Im rectangle-Element gibt es auch noch das "invertFunction"-Attribut,
+ damit kann ein bestimmter Bereich doch wieder zum Vergleich herangezogen werden,
+ auch wenn er durch die anderen Ingnorerectangles maskiert ist. Ist etwas unsauber gelöst.
     				</documentation>
     			</annotation>
     		</element>
+    		<element name="LeaderRef" type="string" maxOccurs="1" minOccurs="0"></element>
     	</sequence>
     	<attribute name="id" type="string" use="required"></attribute>
     	<attribute name="previousId" type="string" use="required">
@@ -78,14 +70,11 @@ herangezogen werden, auch wenn er durch die anderen Ingnorerectangles maskiert i
     	<attribute name="alternativePreviousId" type="string"
     		use="optional">
     		<annotation>
-    			<documentation>
-    				Wenn der Folgebildschirm nicht eindeutig ist, gibt
-    				es auch einen alternativen Vorgänger (Beispiel
-    				Anlagenmodus). Der Folgebildschirm hängt in solchen
-    				Fällen von der letzten Useraktion ab. Wichti!!!! Für
-    				den Lernmodus muss daher vom User-Modus vorher der
-    				richtige Bildschirm ausgewählt werden. Im Lernmodus
-    				werden die ALternativen nicht beachtet!
+    			<documentation> Wenn der Folgebildschirm nicht eindeutig ist, gibt es auch einen alternativen Vorgänger
+(Beispiel Anlagenmodus). Der Folgebildschirm hängt in solchen Fällen von
+der letzten Useraktion ab. Wichti!!!! Für den Lernmodus muss daher vom
+User-Modus vorher der richtige Bildschirm ausgewählt werden. Im Lernmodus
+werden die ALternativen nicht beachtet!
     			</documentation>
     		</annotation>
     	</attribute>
@@ -109,9 +98,9 @@ herangezogen werden, auch wenn er durch die anderen Ingnorerectangles maskiert i
 			</documentation>
 		</annotation>
 		<sequence>
-			<element name="Field" type="tns:Rectangle">
+			<element name="Field" type="tns:Rectangle" maxOccurs="1" minOccurs="0">
 				<annotation>
-					<documentation>Zu vergleichende Bildschirmbereich</documentation>
+					<documentation>Zu vergleichende Bildschirmbereich. Die Bereichangabe ist optional, wenn sie aus dem übergeorneten Element (z.B. Control-Element) geholt werden kann.</documentation>
 				</annotation>
 			</element>
 		</sequence>
@@ -206,35 +195,54 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 			</documentation>
 		</annotation>
 		<sequence>
-			<element name="Current" type="tns:Rectangle" maxOccurs="1" minOccurs="1">
+			<element name="Current" type="tns:Rectangle" maxOccurs="1"
+				minOccurs="1">
 				<annotation>
-					<documentation>Feld mit aktuellem Wert
+					<documentation>
+						Feld mit aktuellem Wert
 					</documentation>
 				</annotation>
 			</element>
 			<choice>
-				<element name="TypeValue" type="tns:Value" maxOccurs="1" minOccurs="1">
+				<element name="TypeValue" type="tns:Value" maxOccurs="1"
+					minOccurs="1">
 					<annotation>
-						<documentation>Definitionen, wenn derSolvis-Anlagenparameter ein einzustellender Wert (z. B.  Tages-Temperatur, Raumeinfluss) ist
+						<documentation>
+							Definitionen, wenn
+							derSolvis-Anlagenparameter ein
+							einzustellender Wert (z. B.
+							Tages-Temperatur, Raumeinfluss) ist
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeRead" type="tns:Read" maxOccurs="1" minOccurs="1">
+				<element name="TypeRead" type="tns:Read" maxOccurs="1"
+					minOccurs="1">
 					<annotation>
-						<documentation>Definitionen, wenn derSolvis-Anlagenparameter nur ein auszulesender Wert (z. B.  Brennerstarts) ist</documentation>
-					</annotation></element>
+						<documentation>
+							Definitionen, wenn
+							derSolvis-Anlagenparameter nur ein
+							auszulesender Wert (z. B. Brennerstarts) ist
+						</documentation>
+					</annotation>
+				</element>
 				<element name="TypeMode" type="tns:TypeMode"
 					maxOccurs="unbounded" minOccurs="1">
 					<annotation>
-						<documentation>Definitionen, wenn Solvis-Anlagenparameter ein einzustellender Modus (z.B. Betriebsart) ist
+						<documentation>
+							Definitionen, wenn Solvis-Anlagenparameter
+							ein einzustellender Modus (z.B. Betriebsart)
+							ist
 						</documentation>
 					</annotation>
 				</element>
 			</choice>
 			<sequence>
-				<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1" minOccurs="0"></element>
+				<element name="UpdateBy" type="tns:UpdateBy"
+					maxOccurs="1" minOccurs="0">
+				</element>
 			</sequence>
 
+			<element name="LeaderRef" type="string" maxOccurs="1" minOccurs="0"></element>
 		</sequence>
 		<attribute name="screenId" type="string" use="required">
 			<annotation>
@@ -313,7 +321,7 @@ false: Bei fester Grenze
 			</element>
 			<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1">
 				<annotation>
-					<documentation>Bildschirmgrafik, welche den Modus bestimmt
+					<documentation>Bildschirmgrafik, welche den Modus bestimmt. Hier müssen nicht die Koordinaten der Grafik eingegeben werden.
 					</documentation>
 				</annotation>
 			</element>
@@ -332,6 +340,9 @@ false: Bei fester Grenze
 			<documentation>Root mit der Home-Screen-Definition</documentation>
 		</annotation>
 		<sequence>
+			<element name="Configurations" type="tns:Configurations"
+				maxOccurs="1" minOccurs="0">
+			</element>
 			<element name="ScreenSaver" type="tns:ScreenSaver"
 				maxOccurs="1" minOccurs="1">
 			</element>
@@ -341,9 +352,14 @@ false: Bei fester Grenze
 			<element name="ScreenGrafics" type="tns:ScreenGrafics"
 				maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="FallBack" type="tns:FallBack" maxOccurs="1" minOccurs="1"></element>
-			<element name="DataDescriptions" type="tns:DataDescriptions"
+			<element name="FallBack" type="tns:FallBack" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="ChannelDescriptions" type="tns:ChannelDescriptions"
 				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="Leaders" type="tns:Leaders" maxOccurs="1"
+				minOccurs="0">
 			</element>
 			<element name="Durations" type="tns:Durations" maxOccurs="1"
 				minOccurs="1">
@@ -543,7 +559,7 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 
 
 
-	<complexType name="DataDescription">
+	<complexType name="ChannelDescription">
         <annotation>
         	<documentation>Definitionen eines darzustellenden Solvis-Datums (z.B. A09.Mischer.HK1)</documentation>
         </annotation>
@@ -567,12 +583,12 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 		<attribute name="dataId" type="string" use="required"></attribute>
 	</complexType>
 
-	<complexType name="DataDescriptions">
+	<complexType name="ChannelDescriptions">
         <annotation>
         	<documentation>Alle Definitionen der Solvis-Daten</documentation>
         </annotation>
         <sequence>
-			<element name="DataDescription" type="tns:DataDescription" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="ChannelDescription" type="tns:ChannelDescription" maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
@@ -657,44 +673,66 @@ da der user diesen manuell verändert haben könnte.</documentation>
 		<annotation>
 			<documentation>Verschiedenes</documentation>
 		</annotation>
-		<attribute name="defaultAverageCount" type="int" use="required">
+		<attribute name="defaultAverageCount" type="int"
+			use="required">
 			<annotation>
-				<documentation>Anzahl der Messwerte, über die der Mittelwert gebildet wird
+				<documentation>
+					Anzahl der Messwerte, über die der Mittelwert
+					gebildet wird
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="powerOffDetectedAfterIoErrors" type="int" use="required">
+		<attribute name="powerOffDetectedAfterIoErrors" type="int"
+			use="required">
 			<annotation>
-				<documentation>Anzahl der IO-Fehler, nachdem ein Power-Off der Solvis-Anlage erkannt wurde
+				<documentation>
+					Anzahl der IO-Fehler, nachdem ein Power-Off der
+					Solvis-Anlage erkannt wurde
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="defaultReadMeasurementsIntervall_ms"
-			type="int" use="required">
+		<attribute name="defaultReadMeasurementsIntervall_ms" type="int"
+			use="required">
 			<annotation>
-				<documentation>Intervall, nachdem die Solvis-Weerte regelmäßig gelesen werden
+				<documentation>
+					Intervall, nachdem die Solvis-Weerte regelmäßig
+					gelesen werden
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="measurementsBackupTime_ms" type="int" use="required"></attribute>
-		<attribute name="unsuccessfullWaitTime_ms" type="int" use="required">
+		<attribute name="measurementsBackupTime_ms" type="int"
+			use="required">
+		</attribute>
+		<attribute name="unsuccessfullWaitTime_ms" type="int"
+			use="required">
 			<annotation>
-				<documentation>Wiederholzeit nach fehlgeschlagenem Befehl
-</documentation>
-			</annotation></attribute>
-		<attribute name="releaseblockingAfterUserChange_ms"
-			type="int" use="required">
-            <annotation>
-            	<documentation>Zeitintervall, das nach einem Usereingriff vergehen muss, bis die  Werte upgedated werden.
-In dieser zeit werden keien Werte vom GUI abgerufen, damit die Eingabe des Users nicht
-gestört wird.
-</documentation>
-            </annotation>
+				<documentation>
+					Wiederholzeit nach fehlgeschlagenem Befehl
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="releaseblockingAfterUserChange_ms" type="int"
+			use="required">
+			<annotation>
+				<documentation>
+					Zeitintervall, das nach einem Usereingriff vergehen
+					muss, bis die Werte upgedated werden. In dieser zeit
+					werden keien Werte vom GUI abgerufen, damit die
+					Eingabe des Users nicht gestört wird.
+				</documentation>
+			</annotation>
 		</attribute>
 		<attribute name="watchDogTime_ms" type="int" use="required">
 			<annotation>
-				<documentation>Zeitintervall nach dem immer der WatchDog aufgerufen wird, wenn die Command-Queue leer ist.
-</documentation>
+				<documentation>
+					Zeitintervall nach dem immer der WatchDog aufgerufen
+					wird, wenn die Command-Queue leer ist.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="connectionHoldTime_ms" type="int" use="required">
+			<annotation>
+				<documentation>Wird eine Verbindung zum Client unterbrochen, kann innerhalb dieser Zeit eine Verbindung wiederhergestellt werden, ohne dass clienbezogene Einstellungen im Server verloren gehen</documentation>
 			</annotation></attribute>
 	</complexType>
 
@@ -730,5 +768,37 @@ gestört wird.
 
     <complexType name="ScreenRef">
     	<attribute name="id" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="Leader">
+    	<sequence>
+    		<element name="TouchPoint" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+    		<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
+    	<attribute name="id" type="string" use="required"></attribute>
+    	<attribute name="condition" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="Leaders">
+    	<sequence>
+    		<element name="Leader" type="tns:Leader" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="HeaterLoops">
+    	<sequence>
+    		<element name="HK1Button" type="tns:Rectangle" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="HK2Button" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
+    		<element name="HK3Button" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
+    	<attribute name="ScreenRef" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="Configurations">
+    	<sequence>
+    		<element name="HeaterLoops" type="tns:HeaterLoops" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
     </complexType>
 </schema>

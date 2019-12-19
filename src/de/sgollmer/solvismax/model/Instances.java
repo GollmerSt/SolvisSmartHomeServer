@@ -83,5 +83,16 @@ public class Instances {
 	public SolvisDescription getSolvisDescription() {
 		return solvisDescription;
 	}
+	
+	public void terminate() {
+		for ( Solvis unit : units ) {
+			unit.terminate();
+		}
+		this.backupHandler.terminate(); 
+	}
+	
+	public void backupMeasurements() throws IOException, XMLStreamException {
+		this.backupHandler.write();
+	}
 
 }

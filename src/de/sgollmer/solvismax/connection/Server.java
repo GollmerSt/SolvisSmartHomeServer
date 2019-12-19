@@ -18,21 +18,19 @@ import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 
 public class Server {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Server.class);
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Server.class);
 
-    private ServerSocket serverSocket;
+	private ServerSocket serverSocket;
 	private final Collection<Socket> connectedClients;
-	private final int maxConnections;
 	private final CommandHandler commandHandler;
 	private ThreadPoolExecutor executor;
 	private final ServerThread serverThread;
 
-	public Server(int port, int maxConnections, CommandHandler commandHandler) throws IOException {
-		this.maxConnections = maxConnections;
-		this.connectedClients = new ArrayList<>(maxConnections);
+	public Server(int port, CommandHandler commandHandler) throws IOException {
+		this.connectedClients = new ArrayList<>(Constants.MAX_CONNECTIONS);
 		this.serverSocket = new ServerSocket(port);
 		this.commandHandler = commandHandler;
-		this.executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxConnections);
+		this.executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(Constants.MAX_CONNECTIONS);
 		this.serverThread = new ServerThread();
 	}
 
@@ -54,11 +52,10 @@ public class Server {
 					executor.execute(new Client(client));
 
 				} catch (Throwable e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					logger.error("Unexpected termination of server", e);
 					try {
-						Thread.sleep(Constants.RETRY_STARTING_SERVER_TIME) ;
+						Thread.sleep(Constants.RETRY_STARTING_SERVER_TIME);
 					} catch (InterruptedException e1) {
 					}
 				}
@@ -69,7 +66,7 @@ public class Server {
 
 	private void waitForAvailableSocket() {
 		synchronized (this.connectedClients) {
-			if (this.connectedClients.size() >= this.maxConnections) {
+			if (this.connectedClients.size() >= Constants.MAX_CONNECTIONS) {
 				try {
 					this.connectedClients.wait();
 				} catch (InterruptedException e) {
@@ -101,19 +98,21 @@ public class Server {
 
 		@Override
 		public void run() {
-			
+
 			logger.info("Client connected from " + this.socket.getInetAddress().toString());
 
 			try {
 				InputStream in = this.socket.getInputStream();
 
-				while (true) {
+				boolean terminateConnection = false;
+
+				while (!terminateConnection) {
 					JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(in);
-					commandHandler.commandFromClient(jsonPackage, this);
+					terminateConnection = commandHandler.commandFromClient(jsonPackage, this);
 				}
 
 			} catch (Throwable e) {
-				logger.debug("Client connection closed. cause:",e);
+				logger.debug("Client connection closed. cause:", e);
 			}
 			this.close();
 		}
@@ -124,7 +123,7 @@ public class Server {
 					jsonPackage.send(this.socket.getOutputStream());
 				}
 			} catch (IOException e) {
-				logger.debug("IOException occured. Cause:",e);
+				logger.debug("IOException occured. Cause:", e);
 				/**
 				 * Im Falle einer fehlerhaften Datenübertragung wird die
 				 * Verbindung getrennt. Der Client sollte sie wieder aufbauen,
@@ -141,9 +140,7 @@ public class Server {
 				removeClient(this.socket);
 				commandHandler.clientClosed(this);
 				if (this.socket != null)
-					this.socket.close(); // TODO Sollte zum beenden des Threads
-											// führen.
-				// Testen!!!
+					this.socket.close(); 
 				this.socket = null;
 				this.notifyAll();
 			} catch (IOException e) {
@@ -151,7 +148,7 @@ public class Server {
 		}
 
 		@Override
-		public synchronized void update(JsonPackage data) {
+		public synchronized void update(JsonPackage data, Object source ) {
 			this.send(data);
 
 		}
@@ -161,7 +158,6 @@ public class Server {
 				this.wait(Constants.DELAYED_CLOSING_TIME);
 			} catch (InterruptedException e) {
 			}
-			this.close();
 		}
 
 	}
@@ -169,5 +165,4 @@ public class Server {
 	public void start() {
 		this.serverThread.start();
 	}
-
 }

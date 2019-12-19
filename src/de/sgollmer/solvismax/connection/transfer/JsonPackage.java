@@ -47,9 +47,9 @@ public class JsonPackage {
 		byte[] sendData = this.createSendData();
 		int length = sendData.length;
 		byte[] lengthBytes = new byte[3];
-		lengthBytes[0] = (byte) (length & 0xff);
+		lengthBytes[0] = (byte) (length >> 16 & 0xff);
 		lengthBytes[1] = (byte) (length >> 8 & 0xff);
-		lengthBytes[2] = (byte) (length >> 16 & 0xff);
+		lengthBytes[2] = (byte) (length & 0xff);
 		stream.write(lengthBytes);
 		stream.write(sendData);
 		stream.flush();
@@ -58,7 +58,7 @@ public class JsonPackage {
 	public void receive(InputStream stream) throws IOException, JsonError {
 		byte[] lengthBytes = new byte[3];
 		stream.read(lengthBytes);
-		int length = lengthBytes[2] << 16 | lengthBytes[1] << 8 | lengthBytes[0];
+		int length = lengthBytes[0] << 16 | lengthBytes[1] << 8 | lengthBytes[2];
 		byte[] receivedData = new byte[length];
 		stream.read(receivedData);
 		Frame receivedFrame = new Frame();

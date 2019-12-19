@@ -10,7 +10,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.DataSourceI.UpperLowerStep;
+import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
@@ -193,13 +193,16 @@ public class StrategyRead implements Strategy {
 
 	@Override
 	public Collection<? extends ModeI> getModes() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
 		return null;
+	}
+
+	@Override
+	public void setCurrentRectangle(Rectangle rectangle) {
 	}
 
 }

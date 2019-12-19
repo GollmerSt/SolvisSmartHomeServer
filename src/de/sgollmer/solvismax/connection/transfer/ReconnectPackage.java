@@ -14,7 +14,7 @@ public class ReconnectPackage extends JsonPackage {
 		if ( f.elements.size() > 0 ) {
 			Element e = f.elements.get(0) ;
 			switch ( e.name ) {
-				case "id":
+				case "Id":
 					if ( e.value instanceof SingleValue ) {
 						this.clientId = ((SingleValue)e.value).getData().getInt() ;
 					}

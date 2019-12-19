@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 
 import org.slf4j.LoggerFactory;
 
+import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
@@ -105,7 +106,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 		this.setConnected();
 		String hexString = builder.toString();
-		logger.debug("Hex string reseived from solvis: " + hexString );
+		logger.debug("Hex string received from solvis: " + hexString );
 		return hexString;
 	}
 

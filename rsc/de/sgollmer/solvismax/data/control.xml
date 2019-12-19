@@ -3,6 +3,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/control control.xsd "
 	homeId="Home">
+	<tns:Configurations>
+		<tns:HeaterLoops ScreenRef="Home">
+			<tns:HK1Button>
+				<tns:TopLeft X="55" Y="10" />
+				<tns:BottomRight X="65" Y="23" />
+			</tns:HK1Button>
+			<tns:HK2Button>
+				<tns:TopLeft X="55" Y="40" />
+				<tns:BottomRight X="65" Y="53" />
+			</tns:HK2Button>
+			<tns:HK3Button>
+				<tns:TopLeft X="55" Y="70" />
+				<tns:BottomRight X="65" Y="83" />
+			</tns:HK3Button>
+		</tns:HeaterLoops>
+	</tns:Configurations>
 	<tns:ScreenSaver>
 		<tns:TimeTopLeft X="75" Y="0" />
 		<tns:TimeBottomLeft X="75" Y="20" />
@@ -331,286 +347,285 @@
 		<tns:Back />
 		<tns:Back />
 		<tns:Back />
-		<tns:ScreenRef id="Warmwasser" />
-		<tns:Back />
+		<!-- <tns:ScreenRef id="Warmwasser" /> <tns:Back /> -->
 	</tns:FallBack>
-	<tns:DataDescriptions>
-		<tns:DataDescription id="X6.UhrzeitSolvis">
+	<tns:ChannelDescriptions>
+		<tns:ChannelDescription id="X6.UhrzeitSolvis">
 			<tns:Measurement dynamic="true" type="date">
 				<tns:Field position="0" length="6" />
 				<tns:Field position="202" length="6" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="I1.Anlagentyp">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="I1.Anlagentyp">
 			<tns:Measurement type="unsigned" dynamic="false">
 				<tns:Field position="6" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="I2.Systemnummer">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="I2.Systemnummer">
 			<tns:Measurement type="unsigned" dynamic="false">
 				<tns:Field position="10" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S01.Warmwasserpuffer">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S01.Warmwasserpuffer">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="14" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S02.Warmwassertemperatur">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S02.Warmwassertemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="18" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S03.Speicherreferenztemperatur">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S03.Speicherreferenztemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="22" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S04.Heizungspuffertemperatur_oben">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S04.Heizungspuffertemperatur_oben">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="26" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S05.Solarvorlauftemperatur">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S05.Solarvorlauftemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="30" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S06.Solarruecklauftemperatur">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S06.Solarruecklauftemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S07.Solardruck">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S07.Solardruck">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S08.Solarkollektortemperatur">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S08.Solarkollektortemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="42" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S09.Heizungspuffertemperatur_unten">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S09.Heizungspuffertemperatur_unten">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="46" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S10.Aussentemperatur">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S10.Aussentemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="50" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S11.Zirkulationsdurchfluss">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S11.Zirkulationsdurchfluss">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="l/m">
 				<tns:Field position="54" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S12.Vorlauftemperatur_HK1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S12.Vorlauftemperatur_HK1">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="58" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S13.Vorlauftemperatur_HK2">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S13.Vorlauftemperatur_HK2">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="62" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S14">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S14">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="66" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S15">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S15">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="70" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S16">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S16">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="74" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S18.Durchfluss_Warmwasserzirkulation">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S18.Durchfluss_Warmwasserzirkulation">
 			<tns:Measurement type="unsigned" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="78" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="S17.Durchfluss_Solarpanel">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S17.Durchfluss_Solarpanel">
 			<tns:Measurement type="unsigned" average="true"
 				dynamic="true">
 				<tns:Field position="82" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="AIn1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="AIn1">
 			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="86" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="AIn2">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="AIn2">
 			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="90" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="AIn3">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="AIn3">
 			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="94" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="AOut0">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="AOut0">
 			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="98" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="AOut1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="AOut1">
 			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="100" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="AOut2">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="AOut2">
 			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="102" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="AOut3">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="AOut3">
 			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="104" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="RF1.Raumfuehler_HK1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="RF1.Raumfuehler_HK1">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="106" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="RF2.Raumfuehler_HK2">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="RF2.Raumfuehler_HK2">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="110" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="RF3.Raumfuehler_HK3">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="RF3.Raumfuehler_HK3">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="114" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A01.Pumpe_Solar">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A01.Pumpe_Solar">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="118" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A02.Pumpe_Warmwasser">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A02.Pumpe_Warmwasser">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="120" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A03.Pumpe_HK1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A03.Pumpe_HK1">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="122" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A04.Pumpe_HK2">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A04.Pumpe_HK2">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="124" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A05.Pumpe_Warmwasserzirkulation">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A05.Pumpe_Warmwasserzirkulation">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="126" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A06.Pumpe_HK3">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A06.Pumpe_HK3">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="128" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A07"><!-- not used -->
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A07"><!-- not used -->
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A08.Mischer_HK1_auf">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A08.Mischer_HK1_auf">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="132" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A09.Mischer.HK1_zu">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A09.Mischer.HK1_zu">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="134" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A10.Mischer_HK2_auf">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A10.Mischer_HK2_auf">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="136" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A11.Mischer.HK2_zu">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A11.Mischer.HK2_zu">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="138" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A12.Brenner">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A12.Brenner">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="140" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A13.Brenner_S2">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A13.Brenner_S2">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="142" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="A14.Entstoerung">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A14.Entstoerung">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="144" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="SE.Solarertrag_kWh">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="SE.Solarertrag_kWh">
 			<tns:Measurement type="unsigned" dynamic="true" unit="kWh">
 				<tns:Field position="162" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="AOut5">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="AOut5">
 			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="176" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id=".isSerie7">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id=".isSerie7">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="192" length="2" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="SL.Solarleistung_kW">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="SL.Solarleistung_kW">
 			<tns:Measurement type="unsigned" dynamic="true" unit="kW">
 				<tns:Field position="196" length="4" />
 			</tns:Measurement>
-		</tns:DataDescription>
-		<tns:DataDescription id="X1.BrennerStarts">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="X1.BrennerStarts">
 			<tns:Calculation strategy="starts">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
 				<tns:UpdateBy>
 					<tns:SolvisHeatingData solvisDataId="C02.StartsBrenner" />
 				</tns:UpdateBy>
 			</tns:Calculation>
-		</tns:DataDescription>
-		<tns:DataDescription id="X2.BrennerLaufzeit_s">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="X2.BrennerLaufzeit_s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
 				<tns:UpdateBy>
@@ -618,13 +633,13 @@
 						factor="3600" />
 				</tns:UpdateBy>
 			</tns:Calculation>
-		</tns:DataDescription>
-		<tns:DataDescription id="X3.BrennerStufe2Starts">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="X3.BrennerStufe2Starts">
 			<tns:Calculation strategy="starts">
 				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
-		</tns:DataDescription>
-		<tns:DataDescription id="X4.BrennerStufe2Laufzeit_s">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="X4.BrennerStufe2Laufzeit_s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
 				<tns:UpdateBy>
@@ -632,26 +647,26 @@
 						factor="3600" />
 				</tns:UpdateBy>
 			</tns:Calculation>
-		</tns:DataDescription>
-		<tns:DataDescription id="X5.BrennerStatus">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="X5.BrennerStatus">
 			<tns:Calculation strategy="burnerStatus">
 				<tns:Dependency id="burnerLevel1On" dataId="A12.Brenner" />
 				<tns:Dependency id="burnerLevel2On" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
-		</tns:DataDescription>
-		<tns:DataDescription id="X7.MischerPosition0_HK1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="X7.MischerPosition0_HK1">
 			<tns:Calculation strategy="mixerPosition0">
 				<tns:Dependency id="pumpOn" dataId="A03.Pumpe_HK1" />
 				<tns:Dependency id="mixerClosing" dataId="A09.Mischer.HK1_zu" />
 			</tns:Calculation>
-		</tns:DataDescription>
-		<tns:DataDescription id="X8.MischerPosition0_HK2">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="X8.MischerPosition0_HK2">
 			<tns:Calculation strategy="mixerPosition0">
 				<tns:Dependency id="pumpOn" dataId="A04.Pumpe_HK2" />
 				<tns:Dependency id="mixerClosing" dataId="A11.Mischer.HK2_zu" />
 			</tns:Calculation>
-		</tns:DataDescription>
-		<tns:DataDescription id="C01.StartsBrenner">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C01.StartsBrenner">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="75" />
@@ -663,8 +678,8 @@
 						calculatedId="X1.BrennerStarts" />
 				</tns:UpdateBy>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C02.LaufzeitBrenner">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C02.LaufzeitBrenner">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="48" />
@@ -677,8 +692,8 @@
 						checkIntervallId="checkBrenner" readIntervalId="readBrenner" />
 				</tns:UpdateBy>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C03.LaufzeitAnforderung2">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C03.LaufzeitAnforderung2">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="105" />
@@ -692,8 +707,8 @@
 						hourly="true" />
 				</tns:UpdateBy>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C04.WarmwasserPumpe">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C04.WarmwasserPumpe">
 			<tns:Control screenId="Warmwasser">
 				<tns:Current>
 					<tns:TopLeft X="50" Y="30" />
@@ -704,39 +719,24 @@
 						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="65" Y="75" />
 						</tns:Touch>
-						<tns:ScreenGrafic id="WWPumpeAus" exact="true">
-							<tns:Field>
-								<tns:TopLeft X="50" Y="30" />
-								<tns:BottomRight X="80" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
+						<tns:ScreenGrafic id="WWPumpeAus" exact="true" />
 					</tns:Mode>
 					<tns:Mode id="an">
 						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="65" Y="25" />
 						</tns:Touch>
-						<tns:ScreenGrafic id="WWPumpeAn" exact="true">
-							<tns:Field>
-								<tns:TopLeft X="50" Y="30" />
-								<tns:BottomRight X="80" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
+						<tns:ScreenGrafic id="WWPumpeAn" exact="true" />
 					</tns:Mode>
 					<tns:Mode id="auto">
 						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="75" Y="50" />
 						</tns:Touch>
-						<tns:ScreenGrafic id="WWPumpeAuto" exact="true">
-							<tns:Field>
-								<tns:TopLeft X="50" Y="30" />
-								<tns:BottomRight X="80" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
+						<tns:ScreenGrafic id="WWPumpeAuto" exact="true" />
 					</tns:Mode>
 				</tns:TypeMode>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C05.WassertemperaturSoll">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C05.WassertemperaturSoll">
 			<tns:Control screenId="Warmwasser">
 				<tns:Current>
 					<tns:TopLeft X="115" Y="10" />
@@ -752,8 +752,8 @@
 					</tns:Lower>
 				</tns:TypeValue>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C06.Anlagenmodus_HK1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C06.Anlagenmodus_HK1">
 			<tns:Control screenId="Home">
 				<tns:Current>
 					<tns:TopLeft X="110" Y="50" />
@@ -764,53 +764,33 @@
 						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="95" Y="110" />
 						</tns:Touch>
-						<tns:ScreenGrafic id="ModeTag">
-							<tns:Field>
-								<tns:TopLeft X="110" Y="50" />
-								<tns:BottomRight X="135" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
+						<tns:ScreenGrafic id="ModeTag" />
 					</tns:Mode>
 					<tns:Mode id="Nacht">
 						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="125" Y="110" />
 						</tns:Touch>
-						<tns:ScreenGrafic id="ModeNacht">
-							<tns:Field>
-								<tns:TopLeft X="110" Y="50" />
-								<tns:BottomRight X="135" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
+						<tns:ScreenGrafic id="ModeNacht" />
 					</tns:Mode>
 					<tns:Mode id="Standby">
 						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="160" Y="110" />
 						</tns:Touch>
-						<tns:ScreenGrafic id="ModeStandby">
-							<tns:Field>
-								<tns:TopLeft X="110" Y="50" />
-								<tns:BottomRight X="135" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
+						<tns:ScreenGrafic id="ModeStandby" />
 					</tns:Mode>
 					<tns:Mode id="Timer">
 						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="60" Y="110" />
 						</tns:Touch>
-						<tns:ScreenGrafic id="ModeTimer">
-							<tns:Field>
-								<tns:TopLeft X="110" Y="50" />
-								<tns:BottomRight X="135" Y="70" />
-							</tns:Field>
-						</tns:ScreenGrafic>
+						<tns:ScreenGrafic id="ModeTimer" />
 					</tns:Mode>
 				</tns:TypeMode>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C07.Tagestemperatur_HK1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C07.Tagestemperatur_HK1">
 			<tns:Control screenId="TagestemperaturSelected">
 				<tns:Current>
 					<tns:TopLeft X="55" Y="30" />
@@ -829,8 +809,8 @@
 					<tns:ScreenChange />
 				</tns:UpdateBy>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C08.Nachttemperatur_HK1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C08.Nachttemperatur_HK1">
 			<tns:Control screenId="NachttemperaturSelected">
 				<tns:Current>
 					<tns:TopLeft X="55" Y="30" />
@@ -849,8 +829,8 @@
 					<tns:ScreenChange />
 				</tns:UpdateBy>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C09.TemperaturFeineinstellung">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C09.TemperaturFeineinstellung">
 			<tns:Control screenId="Home">
 				<tns:Current>
 					<tns:TopLeft X="80" Y="50" />
@@ -869,8 +849,8 @@
 					<tns:ScreenChange />
 				</tns:UpdateBy>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C10.Raumeinfluss_HK1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C10.Raumeinfluss_HK1">
 			<tns:Control screenId="Heizkreis1 4_5">
 				<tns:Current>
 					<tns:TopLeft X="160" Y="75" />
@@ -889,8 +869,8 @@
 					<tns:ScreenChange />
 				</tns:UpdateBy>
 			</tns:Control>
-		</tns:DataDescription>
-		<tns:DataDescription id="C11.Vorlauf_Soll_HK1">
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C11.Vorlauf_Soll_HK1">
 			<tns:Control screenId="Heizkreis1 4_5">
 				<tns:Current>
 					<tns:TopLeft X="155" Y="45" />
@@ -898,8 +878,8 @@
 				</tns:Current>
 				<tns:TypeRead format="#0CC" unit="°C" />
 			</tns:Control>
-		</tns:DataDescription>
-	</tns:DataDescriptions>
+		</tns:ChannelDescription>
+	</tns:ChannelDescriptions>
 	<tns:Durations>
 		<!-- Standard-Zeit für das Drücken eines Bildschirmbuttons -->
 		<tns:Duration id="Standard" time_ms="400" />
@@ -916,11 +896,11 @@
 		<tns:Duration id="checkBrenner" time_ms="86400000" />
 		<!-- Zeitintervall für das Lesen der Zählfunktionen, wenn die Synchronisation 
 			läuft -->
-		<tns:Duration id="readBrenner" time_ms="60000" />
+		<tns:Duration id="readBrenner" time_ms="30000" />
 	</tns:Durations>
 	<tns:Miscellaneous defaultAverageCount="12"
 		defaultReadMeasurementsIntervall_ms="10000"
 		powerOffDetectedAfterIoErrors="3" measurementsBackupTime_ms="3600000"
 		releaseblockingAfterUserChange_ms="300000" unsuccessfullWaitTime_ms="10000"
-		watchDogTime_ms="60000" />
+		watchDogTime_ms="60000" connectionHoldTime_ms="300000" />
 </tns:SolvisDescription>
