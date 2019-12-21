@@ -133,12 +133,13 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
-		
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
+			int configurationMask) {
+
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException {		
+	public void learn(Solvis solvis) throws IOException {
 	}
 
 	@Override
@@ -147,7 +148,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public Screen getScreen() {
+	public Screen getScreen(int configurationMask) {
 		return null;
 	}
 
@@ -159,5 +160,10 @@ public class Calculation extends ChannelSource {
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
 		return null;
+	}
+
+	@Override
+	public boolean isBoolean() {
+		return this.strategy.isBoolean();
 	}
 }

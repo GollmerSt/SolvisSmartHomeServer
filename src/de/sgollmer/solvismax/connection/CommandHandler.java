@@ -147,7 +147,7 @@ public class CommandHandler {
 		this.clients.add(assignments);
 
 		ChannelDescriptionsPackage channelDescription = new ChannelDescriptionsPackage(
-				this.instances.getSolvisDescription().getChannelDescriptions());
+				this.instances.getSolvisDescription().getChannelDescriptions(), solvis.getConfigurationMask());
 		client.send(channelDescription);
 
 		client.send(solvis.getAllSolvisData().getMeasurementsPackage());

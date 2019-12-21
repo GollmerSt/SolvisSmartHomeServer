@@ -94,7 +94,9 @@ public class Main {
 		try {
 			instances = new Instances(path, unit);
 		} catch (IOException | XmlError | XMLStreamException e) {
+			logger.error("Exception on reading configuration files occured, cause:", e);
 			e.printStackTrace();
+			System.exit(-1);
 		}
 
 		try {

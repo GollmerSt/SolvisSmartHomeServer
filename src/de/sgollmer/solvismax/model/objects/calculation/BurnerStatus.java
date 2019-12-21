@@ -123,5 +123,11 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	public Float getAccuracy() {
 		return null;
 	}
+
+
+	@Override
+	public boolean isBoolean() {
+		return false;
+	}
 	
 }

@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.logging.log4j.core.async.AsyncLogger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -94,4 +95,5 @@ public class Logger2 {
 		ConfigurationSource source = new ConfigurationSource(input);
 		Configurator.initialize(null, source);
 	}
+	
 }

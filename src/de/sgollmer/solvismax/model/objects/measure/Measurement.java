@@ -199,7 +199,8 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
+			int configurationMask) {
 
 	}
 
@@ -213,7 +214,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public Screen getScreen() {
+	public Screen getScreen(int configurationMask) {
 		return null;
 	}
 
@@ -233,6 +234,11 @@ public class Measurement extends ChannelSource {
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
 		return null;
+	}
+
+	@Override
+	public boolean isBoolean() {
+		return this.type.isBoolean();
 	}
 
 }

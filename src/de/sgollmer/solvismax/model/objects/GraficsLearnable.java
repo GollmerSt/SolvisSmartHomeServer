@@ -7,7 +7,7 @@ import de.sgollmer.solvismax.model.Solvis;
 
 public interface GraficsLearnable {
 	
-	public void createAndAddLearnScreen( LearnScreen learnScreen, Collection<LearnScreen > learnScreens) ;
+	public void createAndAddLearnScreen( LearnScreen learnScreen, Collection<LearnScreen > learnScreens, int configurationMask) ;
 	public void learn( Solvis solvis) throws IOException ;
 	
 	public static class LearnScreen implements Cloneable{

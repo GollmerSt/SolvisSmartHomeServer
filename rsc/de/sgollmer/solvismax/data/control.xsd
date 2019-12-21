@@ -11,10 +11,18 @@
     		<documentation>Bildschirm-Definition</documentation>
     	</annotation>
     	<sequence>
+    		<element name="ConfigurationMasks"
+    			type="tns:ConfigurationMasks" maxOccurs="1" minOccurs="0">
+    		</element>
     		<element name="TouchPoint" type="tns:TouchPoint"
     			maxOccurs="1" minOccurs="0">
     			<annotation>
-    				<documentation>Bildschirmpunkt des Vorgänger-Bildschirms (previousId), der gedrückt werden muss, um auf den vorliegenden zu gelangen. Können auch mehrere sein (z.B. Main-Bildschirm Auswahl des Heizkreises)
+    				<documentation>
+    					Bildschirmpunkt des Vorgänger-Bildschirms
+    					(previousId), der gedrückt werden muss, um auf
+    					den vorliegenden zu gelangen. Können auch
+    					mehrere sein (z.B. Main-Bildschirm Auswahl des
+    					Heizkreises)
     				</documentation>
     			</annotation>
     		</element>
@@ -24,7 +32,9 @@
     		<element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="1"
     			minOccurs="0">
     			<annotation>
-    				<documentation> Wenn sich der Bildschirm aus erkennbaren Zeichen bestimmt werden kann
+    				<documentation>
+    					Wenn sich der Bildschirm aus erkennbaren Zeichen
+    					bestimmt werden kann
     				</documentation>
     			</annotation>
     		</element>
@@ -32,34 +42,48 @@
     		<element name="ScreenGraficRef" type="tns:ScreenGraficRef"
     			maxOccurs="1" minOccurs="0">
     			<annotation>
-    				<documentation> Wenn sich der Bildschirm aus einem Bildschirmbereich bestimmt werden kann, die Definition erfolgt über eine Refenzierung
+    				<documentation>
+    					Wenn sich der Bildschirm aus einem
+    					Bildschirmbereich bestimmt werden kann, die
+    					Definition erfolgt über eine Refenzierung
     				</documentation>
     			</annotation>
     		</element>
     		<element name="ScreenGrafic" type="tns:ScreenGrafic"
     			maxOccurs="1" minOccurs="0">
     			<annotation>
-    				<documentation> Wenn sich der Bildschirm aus einem Bildschirmbereich bestimmt werden kann
+    				<documentation>
+    					Wenn sich der Bildschirm aus einem
+    					Bildschirmbereich bestimmt werden kann
     				</documentation>
     			</annotation>
     		</element>
     		<element name="IgnoreRectangle" type="tns:Rectangle"
     			maxOccurs="unbounded" minOccurs="0">
     			<annotation>
-    				<documentation> Zur Erkennung von Useraktivitäten, Änderungen innerhalb dieser Rechtecke 
-werden nicht als Useraktivität registriert Dient der Untersuchung
-von Usereingriffen. Im Ruhezustand wird jede Minute untersucht,
-ob der Bildschirminhalt sich geändert hat. Da auf einigen Bildschirmen
-ständig sich ändernde Werte angezeigt werden (Uhrzeit, Istwerte oder
-Anlegenstatus) können bestimmte Teile des Bildschirms mit Hilfe der
-"IgnoreRectangle" beim Vergleich ausgeblendt werden.
- Achtung: Im rectangle-Element gibt es auch noch das "invertFunction"-Attribut,
- damit kann ein bestimmter Bereich doch wieder zum Vergleich herangezogen werden,
- auch wenn er durch die anderen Ingnorerectangles maskiert ist. Ist etwas unsauber gelöst.
+    				<documentation>
+    					Zur Erkennung von Useraktivitäten, Änderungen
+    					innerhalb dieser Rechtecke werden nicht als
+    					Useraktivität registriert Dient der Untersuchung
+    					von Usereingriffen. Im Ruhezustand wird jede
+    					Minute untersucht, ob der Bildschirminhalt sich
+    					geändert hat. Da auf einigen Bildschirmen
+    					ständig sich ändernde Werte angezeigt werden
+    					(Uhrzeit, Istwerte oder Anlegenstatus) können
+    					bestimmte Teile des Bildschirms mit Hilfe der
+    					"IgnoreRectangle" beim Vergleich ausgeblendt
+    					werden. Achtung: Im rectangle-Element gibt es
+    					auch noch das "invertFunction"-Attribut, damit
+    					kann ein bestimmter Bereich doch wieder zum
+    					Vergleich herangezogen werden, auch wenn er
+    					durch die anderen Ingnorerectangles maskiert
+    					ist. Ist etwas unsauber gelöst.
     				</documentation>
     			</annotation>
     		</element>
-    		<element name="LeaderRef" type="string" maxOccurs="1" minOccurs="0"></element>
+    		<element name="LaunchRef" type="tns:LaunchRef" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
     	</sequence>
     	<attribute name="id" type="string" use="required"></attribute>
     	<attribute name="previousId" type="string" use="required">
@@ -236,13 +260,12 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 					</annotation>
 				</element>
 			</choice>
-			<sequence>
-				<element name="UpdateBy" type="tns:UpdateBy"
-					maxOccurs="1" minOccurs="0">
-				</element>
-			</sequence>
 
-			<element name="LeaderRef" type="string" maxOccurs="1" minOccurs="0"></element>
+            <element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1" minOccurs="0">
+				</element>
+            <element name="LaunchRef" type="tns:LaunchRef" maxOccurs="1"
+            	minOccurs="0">
+            </element>
 		</sequence>
 		<attribute name="screenId" type="string" use="required">
 			<annotation>
@@ -358,7 +381,7 @@ false: Bei fester Grenze
 			<element name="ChannelDescriptions" type="tns:ChannelDescriptions"
 				maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="Leaders" type="tns:Leaders" maxOccurs="1"
+			<element name="Launches" type="tns:Launches" maxOccurs="1"
 				minOccurs="0">
 			</element>
 			<element name="Durations" type="tns:Durations" maxOccurs="1"
@@ -481,10 +504,11 @@ Er besteht aus folgenden zeichen:
 Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
         </annotation>
         <sequence>
-			<element name="Field" maxOccurs="unbounded" minOccurs="1"
-				type="tns:Field"></element>
-		</sequence>
-		<attribute name="type" use="required">
+        	<element name="Field" maxOccurs="unbounded" minOccurs="1"
+        		type="tns:Field">
+        	</element>
+        </sequence>
+        <attribute name="type" use="required">
 			<annotation>
 				<documentation>Art der Umwandlung</documentation>
 			</annotation>
@@ -532,13 +556,18 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
         	<documentation>Notwendigen Definitionen zur Berechnung für eine aus den Daten zu berechnender Wert</documentation>
         </annotation>
         <sequence>
-        	<element name="Dependency" type="tns:Dependency" maxOccurs="unbounded" minOccurs="0">
+        	<element name="Dependency" type="tns:Dependency"
+        		maxOccurs="unbounded" minOccurs="0">
         		<annotation>
-        			<documentation>Abhängigkeiten von Solvis-Messungen (Brenner an/aus etc.)
+        			<documentation>
+        				Abhängigkeiten von Solvis-Messungen (Brenner
+        				an/aus etc.)
         			</documentation>
         		</annotation>
         	</element>
-        	<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1" minOccurs="0"></element>
+        	<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1"
+        		minOccurs="0">
+        	</element>
         </sequence>
 
         <attribute name="strategy" use="required">
@@ -563,12 +592,16 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
         <annotation>
         	<documentation>Definitionen eines darzustellenden Solvis-Datums (z.B. A09.Mischer.HK1)</documentation>
         </annotation>
-        <choice>
-			<element name="Control" type="tns:Control"></element>
-			<element name="Measurement" type="tns:Measurement"></element>
-			<element name="Calculation" type="tns:Calculation"></element>
-		</choice>
-		<attribute name="id" type="string" use="required"></attribute>
+        <sequence>
+        	<element name="ConfigurationMasks"
+        		type="tns:ConfigurationMasks" maxOccurs="1" minOccurs="0">
+        	</element>
+        	
+        	
+        	<choice><element name="Calculation" type="tns:Calculation" maxOccurs="1" minOccurs="1"></element><element name="Control" type="tns:Control" maxOccurs="1" minOccurs="1"></element><element name="Measurement" type="tns:Measurement" maxOccurs="1" minOccurs="1"></element></choice>
+        </sequence>
+        
+        <attribute name="id" type="string" use="required"></attribute>
 	</complexType>
 
 
@@ -770,18 +803,17 @@ da der user diesen manuell verändert haben könnte.</documentation>
     	<attribute name="id" type="string" use="required"></attribute>
     </complexType>
 
-    <complexType name="Leader">
+    <complexType name="Launch">
     	<sequence>
     		<element name="TouchPoint" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
     		<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1"></element>
     	</sequence>
     	<attribute name="id" type="string" use="required"></attribute>
-    	<attribute name="condition" type="string" use="required"></attribute>
     </complexType>
 
-    <complexType name="Leaders">
+    <complexType name="Launches">
     	<sequence>
-    		<element name="Leader" type="tns:Leader" maxOccurs="unbounded" minOccurs="0"></element>
+    		<element name="Launch" type="tns:Launch" maxOccurs="unbounded" minOccurs="0"></element>
     	</sequence>
     </complexType>
 
@@ -800,5 +832,20 @@ da der user diesen manuell verändert haben könnte.</documentation>
     	<sequence>
     		<element name="HeaterLoops" type="tns:HeaterLoops" maxOccurs="1" minOccurs="1"></element>
     	</sequence>
+    </complexType>
+
+    <complexType name="ConfigurationMask">
+    	<attribute name="andMask" type="hexBinary" use="required"></attribute>
+    	<attribute name="compareMask" type="hexBinary" use="required"></attribute>
+    </complexType>
+
+    <complexType name="ConfigurationMasks">
+    	<sequence>
+    		<element name="ConfigurationMask" type="tns:ConfigurationMask" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="LaunchRef">
+    	<attribute name="refId" type="string" use="required"></attribute>
     </complexType>
 </schema>

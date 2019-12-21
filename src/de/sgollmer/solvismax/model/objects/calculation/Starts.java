@@ -84,4 +84,9 @@ public class Starts extends Strategy<Starts> {
 		return (float) 1;
 	}
 
+	@Override
+	public boolean isBoolean() {
+		return false;
+	}
+
 }

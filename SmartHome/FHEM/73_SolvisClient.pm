@@ -50,8 +50,7 @@ use constant _TRUE_ => 1;
 use constant CLIENT_VERSION => "00.01.00" ;
 use constant FORMAT_VERSION_REGEXP => "m/01\.../" ;
 
-my %SolvisClient_SetCommands ;
-my %SolvisClient_GetCommands ;
+my %SolvisClient_ChannelDescriptions ;
 
 
 
@@ -458,8 +457,7 @@ sub SolvisClient_CreateGetSetCommands($$) {
 
 	my ($this, $descriptions ) = @_;
 	
-	%SolvisClient_SetCommands = ();
-	%SolvisClient_GetCommands = ();
+	%SolvisClient_ChannelDescriptions = ();
 
 	foreach my $description( keys(%$descriptions)) {
 		my %descriptionHash = %$descriptions{$description} ;
@@ -467,29 +465,27 @@ sub SolvisClient_CreateGetSetCommands($$) {
 		my $channel = $keys[0] ;
 		SolvisClient_Log $this, 5, "Processing of channel description: ".$channel;
 		my %channelHash = %{$descriptionHash{$channel}} ;
-		if ( $channelHash{Writeable} != 0 ) {
-			$SolvisClient_SetCommands{$channel} = {} ;
-			SolvisClient_Log $this, 5, "Writeable: ".$channelHash{Writeable};
-			foreach my $keyName ( keys %channelHash ) {
-				if ( $keyName eq "Accuracy") {
-					$SolvisClient_SetCommands{$channel}{Accuracy} = $channelHash{Accuracy} ;
-				} elsif  ( $keyName eq "Modes") {
-					$SolvisClient_SetCommands{$channel}{Modes} = {} ;
-					foreach my $mode (@{$channelHash{Modes}}) {
-						$SolvisClient_SetCommands{$channel}{Modes}{$mode} = 1 ;
-					}
-				} elsif ( $keyName eq "Upper") {
-					$SolvisClient_SetCommands{$channel}{Upper} = $channelHash{Upper} ; ;
-				} elsif ( $keyName eq "Lower") {
-					$SolvisClient_SetCommands{$channel}{Lower} = $channelHash{Lower} ; ;
-				} elsif ( $keyName eq "Step") {
-					$SolvisClient_SetCommands{$channel}{Step} = $channelHash{Step} ; ;
+		$SolvisClient_ChannelDescriptions{$channel} = {} ;
+		$SolvisClient_ChannelDescriptions{$channel}{SET} = $channelHash{Writeable} ;
+		$SolvisClient_ChannelDescriptions{$channel}{GET} = $channelHash{Type} eq "CONTROL" ;
+		SolvisClient_Log $this, 5, "Writeable: ".$channelHash{Writeable};
+		foreach my $keyName ( keys %channelHash ) {
+			if ( $keyName eq "Accuracy") {
+				$SolvisClient_ChannelDescriptions{$channel}{Accuracy} = $channelHash{Accuracy} ;
+			} elsif  ( $keyName eq "Modes") {
+				$SolvisClient_ChannelDescriptions{$channel}{Modes} = {} ;
+				foreach my $mode (@{$channelHash{Modes}}) {
+					$SolvisClient_ChannelDescriptions{$channel}{Modes}{$mode} = 1 ;
 				}
+			} elsif ( $keyName eq "Upper") {
+				$SolvisClient_ChannelDescriptions{$channel}{Upper} = $channelHash{Upper} ; ;
+			} elsif ( $keyName eq "Lower") {
+				$SolvisClient_ChannelDescriptions{$channel}{Lower} = $channelHash{Lower} ; ;
+			} elsif ( $keyName eq "Step") {
+				$SolvisClient_ChannelDescriptions{$channel}{Step} = $channelHash{Step} ; ;
+			} elsif ($keyName eq "IsBoolean") {
+				$SolvisClient_ChannelDescriptions{$channel}{IsBoolean} = $channelHash{IsBoolean} ; ;
 			}
-			
-		}
-		if ( $channelHash{Type} eq "CONTROL" ) {
-			$SolvisClient_GetCommands{$channel} = 1;
 		}
 	}
 	
@@ -506,7 +502,11 @@ sub SolvisClient_UpdateReadings($$) {
 	readingsBeginUpdate($this);
 	
 	foreach my $readingName( keys(%$readings)) {
-		readingsBulkUpdate($this,$readingName,$readings->{$readingName});
+		my $value = $readings->{$readingName} ;
+		if ( $SolvisClient_ChannelDescriptions{$readingName}{IsBoolean} != _FALSE_ ) {
+			$value = $value?"on":"off";
+		}
+		readingsBulkUpdate($this,$readingName,$value);
 	}
 
 	readingsEndUpdate($this, 1);
@@ -592,10 +592,13 @@ sub SolvisClient_Set($@) {
 #	
 
 	if ( $a[1] eq '?' ) {
-		my @channels = keys(%SolvisClient_SetCommands) ;
+		my @channels = keys(%SolvisClient_ChannelDescriptions) ;
 		my $params = "" ;
 		my $firstO = _TRUE_ ;
 		foreach my $channel (@channels) {
+			if ( $SolvisClient_ChannelDescriptions{$channel}{SET} == _FALSE_ ) {
+				next ;
+			}
 			if ( ! $firstO ) {
 				$params .= ' ' ;
 			} else {
@@ -603,8 +606,8 @@ sub SolvisClient_Set($@) {
 			}
 			$params .= $channel ;
 			my $firstI = _TRUE_ ;
-			if ( defined ($SolvisClient_SetCommands{$channel}{Modes}) ) {
-				foreach my $mode (keys(%{$SolvisClient_SetCommands{$channel}{Modes}})) {
+			if ( defined ($SolvisClient_ChannelDescriptions{$channel}{Modes}) ) {
+				foreach my $mode (keys(%{$SolvisClient_ChannelDescriptions{$channel}{Modes}})) {
 					if($firstI) {
 						$params .= ':' ;
 						$firstI = _FALSE_ ;
@@ -613,8 +616,8 @@ sub SolvisClient_Set($@) {
 					}
 					$params .=$mode ;
 				}
-			} elsif ( defined ($SolvisClient_SetCommands{$channel}{Upper}) ) {
-				for ( my $count = $SolvisClient_SetCommands{$channel}{Lower} ; $count <= $SolvisClient_SetCommands{$channel}{Upper} ; $count += $SolvisClient_SetCommands{$channel}{Step}) {
+			} elsif ( defined ($SolvisClient_ChannelDescriptions{$channel}{Upper}) ) {
+				for ( my $count = $SolvisClient_ChannelDescriptions{$channel}{Lower} ; $count <= $SolvisClient_ChannelDescriptions{$channel}{Upper} ; $count += $SolvisClient_ChannelDescriptions{$channel}{Step}) {
 					if($firstI) {
 						$params .= ':' ;
 						$firstI = _FALSE_ ;
@@ -649,10 +652,10 @@ sub SolvisClient_Set($@) {
 		
 		SolvisClient_Log $this, 4, "Set entered, device := $device, Cannel := $channel, Value := $value";
 		
-		if ( defined($SolvisClient_SetCommands{$channel}) ) {
-			if ( defined ($SolvisClient_SetCommands{$channel}{Modes}) ) {
-				if ( ! defined ($SolvisClient_SetCommands{$channel}{Modes}{$value})) {
-					my @modes = keys(%{$SolvisClient_SetCommands{$channel}{Modes}}) ;
+		if ( defined($SolvisClient_ChannelDescriptions{$channel}) ) {
+			if ( defined ($SolvisClient_ChannelDescriptions{$channel}{Modes}) ) {
+				if ( ! defined ($SolvisClient_ChannelDescriptions{$channel}{Modes}{$value})) {
+					my @modes = keys(%{$SolvisClient_ChannelDescriptions{$channel}{Modes}}) ;
 			SolvisClient_Log $this, 5, "Mode 1: ".join(" ", $modes[0]);
 					return "unknown value $value choose one of " . join(" ", @modes);
 				}
@@ -661,7 +664,7 @@ sub SolvisClient_Set($@) {
 			}
 			SolvisClient_SendSetData($this, $channel, $value) ;
 		} else {
-			my @channels = keys(%SolvisClient_SetCommands) ;
+			my @channels = keys(%SolvisClient_ChannelDescriptions) ;
 			SolvisClient_Log $this, 5, "Channels: ".join(" ", @channels);
 			return "unknown argument $channel choose one of " . join(" ", @channels);
 		}
@@ -696,11 +699,14 @@ sub SolvisClient_Get($@) {
 
 	my ($device, $channel) = @a;	
 
-	if ( $channel eq '?' || ! defined($SolvisClient_GetCommands{$channel} ) ) {
-		my @channels = keys(%SolvisClient_GetCommands) ;
+	if ( $channel eq '?' || ! defined($SolvisClient_ChannelDescriptions{$channel} ) ) {
+		my @channels = keys(%SolvisClient_ChannelDescriptions) ;
 		my $params = "" ;
 		my $firstO = _TRUE_ ;
 		foreach my $channel (@channels) {
+			if ( $SolvisClient_ChannelDescriptions{$channel}{GET} == _FALSE_ ) {
+				next ;
+			}
 			if ( ! $firstO ) {
 				$params .= ' ' ;
 			} else {

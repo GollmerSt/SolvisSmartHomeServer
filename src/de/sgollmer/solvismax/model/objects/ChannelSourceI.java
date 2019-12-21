@@ -22,6 +22,8 @@ public interface ChannelSourceI extends Assigner, GraficsLearnable {
 	public String getUnit();
 	
 	public Float getAccuracy() ;
+	
+	public boolean isBoolean() ;
 
 	public void instantiate(Solvis solvis);
 	
@@ -33,7 +35,7 @@ public interface ChannelSourceI extends Assigner, GraficsLearnable {
 	
 	public Collection< ? extends ModeI > getModes() ;
 	
-	public Screen getScreen() ;
+	public Screen getScreen( int configurationMask ) ;
 	
 	public UpperLowerStep getUpperLowerStep() ;
 

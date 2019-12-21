@@ -63,6 +63,8 @@ public enum Strategies {
 
 		public abstract Float getAccuracy() ;
 
+		public abstract boolean isBoolean() ;
+
 	}
 
 	@SuppressWarnings("rawtypes")

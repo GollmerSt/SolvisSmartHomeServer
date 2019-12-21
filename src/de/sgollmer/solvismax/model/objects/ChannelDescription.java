@@ -16,15 +16,24 @@ import de.sgollmer.solvismax.model.objects.measure.Measurement;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
-public class ChannelDescription implements ChannelSourceI, Assigner {
+public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.Element<ChannelDescription> {
+
+	private static final String XML_CONFIGURATION_MASKS = "ConfigurationMasks";
+	private static final String XML_CONTROL = "Control";
+	private static final String XML_MEASUREMENT = "Measurement";
+	private static final String XML_CALCULATION = "Calculation";
+
 	private final String id;
+	private final ConfigurationMasks configurationMasks;
 	private final ChannelSource channelSource;
 
-	public ChannelDescription(String id, ChannelSource channelSource) {
+	public ChannelDescription(String id, ConfigurationMasks configurationMasks, ChannelSource channelSource) {
 		this.id = id;
+		this.configurationMasks = configurationMasks;
 		this.channelSource = channelSource;
 	}
 
+	@Override
 	public String getId() {
 		return this.id;
 	}
@@ -61,11 +70,16 @@ public class ChannelDescription implements ChannelSourceI, Assigner {
 
 	@Override
 	public Float getAccuracy() {
-		return this.channelSource.getAccuracy() ;
+		return this.channelSource.getAccuracy();
 	}
 
 	@Override
-	public void assign(SolvisDescription description ) {
+	public boolean isBoolean() {
+		return this.channelSource.isBoolean();
+	}
+
+	@Override
+	public void assign(SolvisDescription description) {
 		this.channelSource.assign(description);
 
 	}
@@ -79,6 +93,7 @@ public class ChannelDescription implements ChannelSourceI, Assigner {
 	public static class Creator extends CreatorByXML<ChannelDescription> {
 
 		private String id;
+		private ConfigurationMasks configurationMasks;
 		private ChannelSource channelSource;
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -87,56 +102,62 @@ public class ChannelDescription implements ChannelSourceI, Assigner {
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			if ( name.getLocalPart().equals("id")) {
-				this.id = value ;
+			if (name.getLocalPart().equals("id")) {
+				this.id = value;
 			}
-			
+
 		}
 
 		@Override
 		public ChannelDescription create() throws XmlError {
-			ChannelDescription description = new ChannelDescription(id, channelSource);
+			ChannelDescription description = new ChannelDescription(id, configurationMasks, channelSource);
 			channelSource.setDescription(description);
-			return description ;
+			return description;
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
-			String source = name.getLocalPart() ;
-			switch( source ) {
-				case "Control":
-					return new Control.Creator(source, this.getBaseCreator()) ;
-				case "Measurement":
-					return new Measurement.Creator(source, this.getBaseCreator()) ;
-				case "Calculation":
-					return new Calculation.Creator(source, this.getBaseCreator()) ;
+			String source = name.getLocalPart();
+			switch (source) {
+				case XML_CONFIGURATION_MASKS:
+					return new ConfigurationMasks.Creator(source, this.getBaseCreator());
+				case XML_CONTROL:
+					return new Control.Creator(source, this.getBaseCreator());
+				case XML_MEASUREMENT:
+					return new Measurement.Creator(source, this.getBaseCreator());
+				case XML_CALCULATION:
+					return new Calculation.Creator(source, this.getBaseCreator());
 			}
 			return null;
 		}
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			switch( creator.getId() ) {
-				case "Control":
-				case "Measurement":
-				case "Calculation":
-					this.channelSource = (ChannelSource) created ; ;
+			switch (creator.getId()) {
+				case XML_CONFIGURATION_MASKS:
+					this.configurationMasks = (ConfigurationMasks) created ;
+					break ;
+				case XML_CONTROL:
+				case XML_MEASUREMENT:
+				case XML_CALCULATION:
+					this.channelSource = (ChannelSource) created;
+					break;
 			}
-			
+
 		}
 
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
-		channelSource.createAndAddLearnScreen(null, learnScreens);
-		
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens, int configurationMask) {
+		channelSource.createAndAddLearnScreen(null, learnScreens, configurationMask);
+
 	}
 
 	@Override
 	public void learn(Solvis solvis) throws IOException {
 		this.channelSource.learn(solvis);
-		
+
 	}
 
 	@Override
@@ -145,18 +166,35 @@ public class ChannelDescription implements ChannelSourceI, Assigner {
 	}
 
 	@Override
-	public Screen getScreen() {
-		return this.channelSource.getScreen();
+	public Screen getScreen(int configurationMask) {
+		return this.channelSource.getScreen(configurationMask);
 	}
 
 	@Override
 	public Collection<? extends ModeI> getModes() {
 		return this.channelSource.getModes();
 	}
-	
+
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
-		return this.channelSource.getUpperLowerStep() ;
+		return this.channelSource.getUpperLowerStep();
 	}
-	
+
+	@Override
+	public boolean isInConfiguration(int configurationMask) {
+		if ( this.configurationMasks == null ) {
+			return true ;
+		}else {
+			return this.configurationMasks.isInConfiguration(configurationMask) ;
+		}
+	}
+
+	@Override
+	public boolean isConfigurationVerified(ChannelDescription e) {
+		if ((this.configurationMasks == null) || (e.configurationMasks == null)) {
+			return false;
+		} else {
+			return this.configurationMasks.isVerified(e.configurationMasks);
+		}
+	}
 }

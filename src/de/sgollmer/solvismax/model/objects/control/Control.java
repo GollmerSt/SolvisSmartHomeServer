@@ -16,6 +16,7 @@ import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.Screen;
+import de.sgollmer.solvismax.model.objects.OfConfigs;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -40,7 +41,7 @@ public class Control extends ChannelSource {
 	private final Strategy strategy;
 	private final UpdateStrategies updateStrategies;
 
-	private Screen screen = null;
+	private OfConfigs<Screen> screen = null;
 
 	public Control(String screenId, Rectangle current, Strategy strategy, UpdateStrategies updateStrategies) {
 		this.screenId = screenId;
@@ -55,7 +56,7 @@ public class Control extends ChannelSource {
 
 	@Override
 	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException {
-		solvis.gotoScreen(screen);
+		solvis.gotoScreen(screen.get(solvis.getConfigurationMask()));
 		SingleData<?> data = this.strategy.getValue(solvis.getCurrentImage(), this.valueRectangle, solvis);
 		if (data == null) {
 			return false;
@@ -67,7 +68,7 @@ public class Control extends ChannelSource {
 
 	@Override
 	public boolean setValue(Solvis solvis, SolvisData value) throws IOException {
-		solvis.gotoScreen(screen);
+		solvis.gotoScreen(screen.get(solvis.getConfigurationMask()));
 		boolean set = false;
 		for (int c = 0; c < 10 && !set; ++c) {
 			set = this.strategy.setValue(solvis, this.valueRectangle, value);
@@ -196,11 +197,11 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens, int configurationMask) {
 		if (this.strategy instanceof GraficsLearnable) {
 			LearnScreen learn = new LearnScreen();
-			learn.setScreen(this.screen);
-			((GraficsLearnable) this.strategy).createAndAddLearnScreen(learn, learnScreens);
+			learn.setScreen(this.screen.get(configurationMask));
+			((GraficsLearnable) this.strategy).createAndAddLearnScreen(learn, learnScreens, configurationMask );
 		}
 
 	}
@@ -209,7 +210,7 @@ public class Control extends ChannelSource {
 	public void learn(Solvis solvis) throws IOException {
 		if (this.strategy instanceof StrategyMode) {
 			StrategyMode strategy = (StrategyMode) this.strategy;
-			solvis.gotoScreen(this.screen);
+			solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
 			MyImage saved = solvis.getCurrentImage();
 			for (Mode mode : strategy.getModes()) {
 				solvis.send(mode.getTouch());
@@ -226,8 +227,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public Screen getScreen() {
-		return this.screen;
+	public Screen getScreen( int configurationMask ) {
+		return this.screen.get(configurationMask);
 	}
 
 	@Override
@@ -238,6 +239,11 @@ public class Control extends ChannelSource {
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
 		return strategy.getUpperLowerStep();
+	}
+
+	@Override
+	public boolean isBoolean() {
+		return false;
 	}
 
 }

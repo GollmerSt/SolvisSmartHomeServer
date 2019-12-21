@@ -57,6 +57,7 @@ public class Solvis {
 	private SolvisWorkers worker;
 
 	private final String id;
+	private int configurationMask = 0 ;
 	private MyImage currentImage = null;
 	private Screen currentScreen = null;
 	private Screen savedScreen = null;
@@ -221,7 +222,7 @@ public class Solvis {
 				return true;
 			}
 
-			List<ScreenTouch> previousScreens = screen.getPreviosScreens();
+			List<ScreenTouch> previousScreens = screen.getPreviosScreens(this.getConfigurationMask());
 
 			int cnt = Constants.GOTO_SCREEN_TRIES;
 
@@ -256,6 +257,8 @@ public class Solvis {
 
 	public void init() throws IOException, XmlError, XMLStreamException {
 		synchronized (solvisGUIObject) {
+			this.gotoHome();
+			this.configurationMask = this.getSolvisDescription().getConfigurations(this) ;
 			synchronized (solvisMeasureObject) {
 				this.getSolvisDescription().getChannelDescriptions().init(this, this.getAllSolvisData());
 			}
@@ -291,7 +294,7 @@ public class Solvis {
 	}
 
 	public ChannelDescription getChannelDescription(String description) {
-		return this.solvisDescription.getChannelDescriptions().get(description);
+		return this.solvisDescription.getChannelDescriptions().get(description,this.getConfigurationMask());
 	}
 
 	public Duration getDuration(String id) {
@@ -355,17 +358,19 @@ public class Solvis {
 
 	public void learning() throws IOException {
 		logger.info("Learning started.");
-		this.getGrafics().clear();
 		this.gotoHome();
+		this.configurationMask = this.getSolvisDescription().getConfigurations(this) ;
+		logger.info("Configuration mask: " + Integer.toHexString(this.configurationMask) );
+		this.getGrafics().clear();
 		String homeId = this.solvisDescription.getHomeId();
-		Screen home = this.solvisDescription.getScreens().get(homeId);
+		Screen home = this.solvisDescription.getScreens().get(homeId, this.getConfigurationMask() );
 		if (home == null) {
 			throw new AssertionError("Assign error: Screen description of <" + homeId + "> not found.");
 		}
 		this.forceCurrentScreen(home);
-		Collection<LearnScreen> learnScreens = this.solvisDescription.getLearnScreens();
+		Collection<LearnScreen> learnScreens = this.solvisDescription.getLearnScreens(this.getConfigurationMask());
 		while (learnScreens.size() > 0) {
-			home.learn(this, learnScreens);
+			home.learn(this, learnScreens, this.getConfigurationMask());
 			for (Iterator<LearnScreen> it = learnScreens.iterator(); it.hasNext();) {
 				if (it.next().getScreen().isLearned(this)) {
 					it.remove();
@@ -397,7 +402,7 @@ public class Solvis {
 
 		SolvisDescription solvisDescription = result.getTree();
 
-		ChannelDescriptionsPackage json = new ChannelDescriptionsPackage(solvisDescription.getChannelDescriptions());
+		ChannelDescriptionsPackage json = new ChannelDescriptionsPackage(solvisDescription.getChannelDescriptions(),1);
 
 		StringBuilder jsonBuiler = new StringBuilder();
 		json.getFrame().addTo(jsonBuiler);
@@ -491,6 +496,10 @@ public class Solvis {
 
 	public SolvisState getSolvisState() {
 		return solvisState;
+	}
+
+	public int getConfigurationMask() {
+		return this.configurationMask ;
 	}
 
 }

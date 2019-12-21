@@ -6,12 +6,16 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class FallBack {
+	
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(FallBack.class) ;
 
 	private static final String XML_BACK = "Back";
 	private static final String XML_SCREENREF = "ScreenRef";
@@ -119,7 +123,12 @@ public class FallBack {
 
 		@Override
 		public void execute(Solvis solvis) throws IOException {
-			Screen screen = solvis.getSolvisDescription().getScreens().get(id);
+			Screen screen = solvis.getSolvisDescription().getScreens().get(id).getIfSingle();
+			
+			if ( screen == null ) {
+				logger.error( "The screen < " + id +  "> is not possible in the FallBack Element of the XML, because it's not unique over all configurations. Ignored");
+			}
+			
 			solvis.send(screen.getTouchPoint());
 		}
 	}

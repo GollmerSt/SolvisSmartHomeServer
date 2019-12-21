@@ -1,21 +1,26 @@
 package de.sgollmer.solvismax.model.objects;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.Configurations.Configuration;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class HeaterLoops {
+public class HeaterLoops implements Configuration {
 
 	private static final String XML_HEATER_LOOPS_HK1 = "HK1Button";
 	private static final String XML_HEATER_LOOPS_HK2 = "HK2Button";
@@ -32,18 +37,27 @@ public class HeaterLoops {
 
 	}
 
-	public int getConfiguration(Solvis solvis) throws IOException {
+	private int getConfiguration(MyImage image) throws IOException {
 		int circle = 1;
 		int result = 0;
 		for (Rectangle rectangle : this.buttons) {
-			OcrRectangle ocr = new OcrRectangle(solvis.getCurrentImage(), rectangle);
+			OcrRectangle ocr = new OcrRectangle(image, rectangle);
 			String s = ocr.getString();
 			Matcher m = DIGIT.matcher(s);
 			if (m.matches() && circle == Integer.parseInt(s)) {
 				result |= 1 << (circle - 1);
+				++circle ;
 			}
 		}
+		if ( result == 0 ) {
+			result = 1 ;
+		}
 		return result;
+	}
+
+	@Override
+	public int getConfiguration(Solvis solvis) throws IOException {
+		return this.getConfiguration(solvis.getCurrentImage());
 	}
 
 	public String getScreenRef() {
@@ -103,6 +117,19 @@ public class HeaterLoops {
 
 		}
 
+	}
+
+	@SuppressWarnings("static-method")
+	public MyImage getTestImage() throws IOException {
+
+		File parent = new File("testFiles\\images");
+
+		File file = new File(parent, "Home 2 Heizkreise.png");
+
+		BufferedImage bufferedImage = null;
+		bufferedImage = ImageIO.read(file);
+
+		return new MyImage(bufferedImage);
 	}
 
 }

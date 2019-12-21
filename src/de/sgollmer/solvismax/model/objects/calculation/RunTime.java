@@ -121,4 +121,9 @@ public class RunTime extends Strategy<RunTime> {
 		return (float) 1;
 	}
 
+	@Override
+	public boolean isBoolean() {
+		return false;
+	}
+
 }

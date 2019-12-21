@@ -167,7 +167,7 @@ public class SolvisWorkers {
 	private boolean executeCommand(Command command) throws IOException, ErrorPowerOn {
 		boolean success = false;
 		ChannelDescription description = command.getDescription();
-		Screen commandScreen = description.getScreen();
+		Screen commandScreen = description.getScreen(solvis.getConfigurationMask());
 		if (this.solvis.getCurrentScreen() != commandScreen || this.commandScreen != commandScreen) {
 			this.commandsOfScreen.clear();
 		}

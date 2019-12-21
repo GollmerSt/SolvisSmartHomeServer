@@ -24,24 +24,38 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 
 	private static final String XML_CHANNEL_DESCRIPTION = "ChannelDescription";
 
-	private Map<String, ChannelDescription> descriptions = new HashMap<>();
+	private Map<String, OfConfigs<ChannelDescription>> descriptions = new HashMap<>();
 
 	public void addDescription(ChannelDescription description) {
-		this.descriptions.put(description.getId(), description);
+		OfConfigs<ChannelDescription> channelConf = this.descriptions.get(description.getId());
+		if (channelConf == null) {
+			channelConf = new OfConfigs<ChannelDescription>();
+			this.descriptions.put(description.getId(), channelConf);
+		}
+		channelConf.verifyAndAdd(description);
 	}
 
-	public ChannelDescription get(String descriptionString) {
-		return this.descriptions.get(descriptionString);
+	public OfConfigs<ChannelDescription> get(String id) {
+		return this.descriptions.get(id);
+	}
+
+	public ChannelDescription get(String id, int configurationMask) {
+		OfConfigs<ChannelDescription> descriptions = this.descriptions.get(id);
+		if (descriptions == null) {
+			return null;
+		} else {
+			return descriptions.get(configurationMask);
+		}
 	}
 
 	@Override
 	public void assign(SolvisDescription description) {
-		for (ChannelDescription data : descriptions.values()) {
-			data.assign(description);
+		for (OfConfigs<ChannelDescription> channelConf : descriptions.values()) {
+			channelConf.assign(description);
 		}
 	}
 
-	public Collection<ChannelDescription> get() {
+	public Collection<OfConfigs<ChannelDescription>> get() {
 		return this.descriptions.values();
 	}
 
@@ -84,17 +98,22 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens) {
-		for (ChannelDescription description : this.descriptions.values()) {
-			((GraficsLearnable) description).createAndAddLearnScreen(null, learnScreens);
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
+			int configurationMask) {
+		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
+			ChannelDescription description = descriptions.get(configurationMask);
+			if (description != null) {
+				((GraficsLearnable) description).createAndAddLearnScreen(null, learnScreens, configurationMask);
+			}
 		}
 
 	}
 
 	@Override
 	public void learn(Solvis solvis) throws IOException {
-		for (ChannelDescription description : this.descriptions.values()) {
-			if (description instanceof GraficsLearnable) {
+		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
+			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
+			if (description != null && description instanceof GraficsLearnable) {
 				description.learn(solvis);
 			}
 		}
@@ -103,8 +122,9 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 	public void measure(Solvis solvis, AllSolvisData datas) throws IOException, ErrorPowerOn {
 		solvis.clearMeasuredData();
 		solvis.getDistributor().setBurstUpdate(true);
-		for (ChannelDescription description : this.descriptions.values()) {
-			if (description.getType() == ChannelSourceI.Type.MEASUREMENT) {
+		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
+			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
+			if (description != null &&description.getType() == ChannelSourceI.Type.MEASUREMENT) {
 				solvis.getValue(description);
 			}
 		}
@@ -113,19 +133,28 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 
 	public void init(Solvis solvis, AllSolvisData datas) throws IOException {
 
-		for (ChannelDescription description : this.descriptions.values()) {
-			datas.get(description);
+		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
+			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
+			if (description != null) {
+				datas.get(description);
+			}
 		}
 
-		for (ChannelDescription description : this.descriptions.values()) {
-			description.instantiate(solvis);
+		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
+			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
+			if (description != null) {
+				description.instantiate(solvis);
+			}
 		}
 	}
 
 	public void initControl(Solvis solvis) {
+		final int configurationMask = solvis.getConfigurationMask();
 		List<ChannelDescription> descriptions = new ArrayList<>();
-		for (ChannelDescription description : this.descriptions.values()) {
-			if (description.getType() == ChannelSourceI.Type.CONTROL) {
+		for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
+			ChannelDescription description = confDescriptions.get(solvis.getConfigurationMask());
+			if (description != null && description.getType() == ChannelSourceI.Type.CONTROL
+					&& description.isInConfiguration(configurationMask)) {
 				descriptions.add(description);
 			}
 		}
@@ -134,8 +163,8 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 			@Override
 			public int compare(ChannelDescription o1, ChannelDescription o2) {
 
-				List<ScreenTouch> p1 = o1.getScreen().getPreviosScreens();
-				List<ScreenTouch> p2 = o2.getScreen().getPreviosScreens();
+				List<ScreenTouch> p1 = o1.getScreen(configurationMask).getPreviosScreens(configurationMask);
+				List<ScreenTouch> p2 = o2.getScreen(configurationMask).getPreviosScreens(configurationMask);
 
 				if (p1.size() == 0 && p2.size() == 0) {
 					return 0;

@@ -91,4 +91,9 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		return null;
 	}
 
+	@Override
+	public boolean isBoolean() {
+		return true;
+	}
+
 }

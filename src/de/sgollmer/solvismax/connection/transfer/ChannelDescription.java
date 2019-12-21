@@ -19,14 +19,13 @@ public class ChannelDescription extends Element {
 		SingleValue sv = new SingleValue(new BooleanValue(writeable));
 		writeableElement.value = sv;
 		frame.add(writeableElement);
-		
-		String type = description.getType().name() ;
+
+		String type = description.getType().name();
 		Element typeElement = new Element();
 		typeElement.name = "Type";
 		sv = new SingleValue(type);
 		typeElement.value = sv;
 		frame.add(typeElement);
-		
 
 		String unitString = description.getUnit();
 		if (unitString != null) {
@@ -43,9 +42,15 @@ public class ChannelDescription extends Element {
 			ac.value = new SingleValue(new FloatValue(accuracy));
 			frame.add(ac);
 		}
-		
-		UpperLowerStep upperLowerStep = description.getUpperLowerStep() ;
-		if ( upperLowerStep != null ) {
+
+		boolean isBoolean = description.isBoolean();
+		Element ib = new Element();
+		ib.name = "IsBoolean";
+		ib.value = new SingleValue(new BooleanValue(isBoolean));
+		frame.add(ib);
+
+		UpperLowerStep upperLowerStep = description.getUpperLowerStep();
+		if (upperLowerStep != null) {
 			Element upper = new Element();
 			upper.name = "Upper";
 			upper.value = new SingleValue(new FloatValue(upperLowerStep.getUpper()));

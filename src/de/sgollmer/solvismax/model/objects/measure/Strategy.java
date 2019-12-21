@@ -10,7 +10,10 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Field;
 
 public enum Strategy {
-	DATE(new Date(), false), UNSIGNED(new Integer(false), true), SIGNED(new Integer(true), true), BOOLEAN(new Boolean(), false);
+	DATE(new Date(), false),
+	UNSIGNED(new Integer(false), true),
+	SIGNED(new Integer(true), true),
+	BOOLEAN(new Boolean(), false);
 
 	private final StrategyClass type;
 	private final boolean numeric;
@@ -24,8 +27,14 @@ public enum Strategy {
 		return type.get(destin, fields, data);
 	}
 
+	public boolean isBoolean() {
+		return this.type.isBoolean();
+	}
+
 	private interface StrategyClass {
 		public boolean get(SolvisData destin, Collection<Field> fields, String data) throws ErrorPowerOn;
+
+		public boolean isBoolean();
 	}
 
 	private static class Integer implements StrategyClass {
@@ -53,6 +62,11 @@ public enum Strategy {
 			return true;
 		}
 
+		@Override
+		public boolean isBoolean() {
+			return false;
+		}
+
 	}
 
 	private static class Date implements StrategyClass {
@@ -78,6 +92,11 @@ public enum Strategy {
 
 			return true;
 		}
+
+		@Override
+		public boolean isBoolean() {
+			return false;
+		}
 	}
 
 	private static class Boolean implements StrategyClass {
@@ -91,6 +110,11 @@ public enum Strategy {
 			String sub = field.subString(data);
 			boolean result = toInt(sub) > 0;
 			destin.setBoolean(result);
+			return true;
+		}
+
+		@Override
+		public boolean isBoolean() {
 			return true;
 		}
 
