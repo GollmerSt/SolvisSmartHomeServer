@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.objects.Coordinate;
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisConnection.class);
+	
 	private final String urlBase;
 	private final AccountInfo accountInfo;
 
@@ -106,7 +107,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 		this.setConnected();
 		String hexString = builder.toString();
-		logger.debug("Hex string received from solvis: " + hexString );
+		logger.debug("Hex string received from solvis: " + hexString);
 		return hexString;
 	}
 
@@ -222,13 +223,17 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	}
 
 	private void setDisconnectedAndThrow(IOException e) throws IOException {
-		this.setConnectionState(new ConnectionState(ConnectionStatus.DISCONNECTED, e.getMessage()));
+		if (this.getConnectionState().getStatus() != ConnectionStatus.DISCONNECTED) {
+			this.setConnectionState(new ConnectionState(ConnectionStatus.DISCONNECTED, e.getMessage()));
+			logger.info( "Connection to solvis <" + this.urlBase + "> lost. Will be retried.");
+		}
 		throw e;
 	}
 
 	private void setConnected() {
 		if (this.getConnectionState().getStatus() != ConnectionStatus.CONNECTED) {
 			this.setConnectionState(new ConnectionState(ConnectionStatus.CONNECTED));
+			logger.info( "Connection to solvis <" + this.urlBase + "> successfull.");
 		}
 	}
 
