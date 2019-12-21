@@ -55,7 +55,7 @@ public class CommandHandler {
 		boolean terminateConnection = false;
 		switch (command) {
 			case CONNECT:
-				this.connect((ConnectPackage) jsonPackage, client);
+				terminateConnection = this.connect((ConnectPackage) jsonPackage, client);
 				break;
 			case RECONNECT:
 				terminateConnection = this.reconnect((ReconnectPackage) jsonPackage, client);
@@ -123,7 +123,7 @@ public class CommandHandler {
 		}
 	}
 
-	private void connect(ConnectPackage jsonPackage, Client client) {
+	private boolean connect(ConnectPackage jsonPackage, Client client) {
 		int clientId = this.getNewClientId();
 		Solvis solvis = null;
 		try {
@@ -132,13 +132,13 @@ public class CommandHandler {
 			client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE,
 					"Solvis not connected: " + e1.getMessage()).createJsonPackage());
 			client.closeDelayed();
-			return;
+			return true ;
 		}
 		if (solvis == null) {
 			client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE, "Solvis id unknown")
 					.createJsonPackage());
 			client.closeDelayed();
-			return;
+			return true ;
 		}
 		solvis.getDistributor().register(client);
 		client.send(new ConnectedPackage(clientId));
@@ -152,6 +152,7 @@ public class CommandHandler {
 
 		client.send(solvis.getAllSolvisData().getMeasurementsPackage());
 		client.send(solvis.getSolvisState().getPackage());
+		return false ;
 	}
 
 	private boolean reconnect(ReconnectPackage reconnectPackage, Client client) {
