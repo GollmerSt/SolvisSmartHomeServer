@@ -22,7 +22,7 @@ public class SolvisDescription {
 	private static final String XML_FALL_BACK = "FallBack";
 	private static final String XML_SCREEN_GRAFICS = "ScreenGrafics";
 	private static final String XML_CHANNEL_DESCRIPTIONS = "ChannelDescriptions";
-	private static final String XML_LAUNCHES = "Launches";
+	private static final String XML_PREPARATIONS = "Preparations";
 	private static final String XML_DURATIONS = "Durations";
 	private static final String XML_MISCELLANEOUS = "Miscellaneous";
 
@@ -33,13 +33,13 @@ public class SolvisDescription {
 	private final FallBack fallBack;
 	private final AllScreenGraficDescriptions screenGrafics;
 	private final AllChannelDescriptions dataDescriptions;
-	private final AllLaunches allLaunches;
+	private final AllPreparations allPreparations;
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
 	public SolvisDescription(String homeId, Configurations configurations, ScreenSaver saver, AllScreens screens,
 			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
-			AllLaunches allLaunches, AllDurations durations, Miscellaneous miscellaneous) {
+			AllPreparations allPreparations, AllDurations durations, Miscellaneous miscellaneous) {
 		this.homeId = homeId;
 		this.configurations = configurations;
 		this.saver = saver;
@@ -47,7 +47,7 @@ public class SolvisDescription {
 		this.fallBack = fallBack;
 		this.screenGrafics = screenGrafics;
 		this.dataDescriptions = dataDescriptions;
-		this.allLaunches = allLaunches;
+		this.allPreparations = allPreparations;
 		this.durations = durations;
 		this.miscellaneous = miscellaneous;
 
@@ -88,7 +88,7 @@ public class SolvisDescription {
 		private AllScreens screens;
 		private FallBack fallBack;
 		private AllChannelDescriptions dataDescriptions;
-		private AllLaunches allLaunches;
+		private AllPreparations allPreparations;
 		private AllDurations durations;
 		private Miscellaneous miscellaneous;
 
@@ -109,7 +109,7 @@ public class SolvisDescription {
 		@Override
 		public SolvisDescription create() throws XmlError {
 			return new SolvisDescription(homeId, configurations, saver, screens, fallBack, screenGrafics,
-					dataDescriptions, allLaunches, durations, miscellaneous);
+					dataDescriptions, allPreparations, durations, miscellaneous);
 		}
 
 		@Override
@@ -128,8 +128,8 @@ public class SolvisDescription {
 					return new CreatorScreenGrafics(id, this);
 				case XML_CHANNEL_DESCRIPTIONS:
 					return new AllChannelDescriptions.Creator(id, this);
-				case XML_LAUNCHES:
-					return new AllLaunches.Creator(id, this);
+				case XML_PREPARATIONS:
+					return new AllPreparations.Creator(id, this);
 				case XML_DURATIONS:
 					return new AllDurations.Creator(id, this);
 				case XML_MISCELLANEOUS:
@@ -162,8 +162,8 @@ public class SolvisDescription {
 				case XML_CHANNEL_DESCRIPTIONS:
 					this.dataDescriptions = (AllChannelDescriptions) created;
 					break;
-				case XML_LAUNCHES:
-					this.allLaunches = (AllLaunches) created;
+				case XML_PREPARATIONS:
+					this.allPreparations = (AllPreparations) created;
 					break;
 				case XML_DURATIONS:
 					this.durations = (AllDurations) created;

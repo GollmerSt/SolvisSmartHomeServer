@@ -11,19 +11,19 @@ import de.sgollmer.solvismax.objects.Field;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class AllLaunches {
+public class AllPreparations {
 
-	private static final String XML_LAUNCH = "Launch";
+	private static final String XML_PREPARATION = "Preparation";
 
-	private final Collection<Launch> launches;
+	private final Collection<Preparation> preparations;
 
-	public AllLaunches(Collection<Launch> launches) {
-		this.launches = launches;
+	public AllPreparations(Collection<Preparation> preparations) {
+		this.preparations = preparations;
 	}
 
-	public static class Creator extends CreatorByXML<AllLaunches> {
+	public static class Creator extends CreatorByXML<AllPreparations> {
 
-		private final Collection<Launch> launches = new ArrayList<>();
+		private final Collection<Preparation> preparations = new ArrayList<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -34,16 +34,16 @@ public class AllLaunches {
 		}
 
 		@Override
-		public AllLaunches create() throws XmlError, IOException {
-			return new AllLaunches(launches);
+		public AllPreparations create() throws XmlError, IOException {
+			return new AllPreparations(preparations);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_LAUNCH:
-					return new Launch.Creator(id, getBaseCreator());
+				case XML_PREPARATION:
+					return new Preparation.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -51,8 +51,8 @@ public class AllLaunches {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_LAUNCH:
-					this.launches.add((Launch) created);
+				case XML_PREPARATION:
+					this.preparations.add((Preparation) created);
 					break;
 			}
 
@@ -60,7 +60,7 @@ public class AllLaunches {
 
 	}
 
-	public static class Launch {
+	public static class Preparation {
 		
 		private static final String XML_TOUCH_POINT = "TouchPoint" ;
 		private static final String XML_FIELD = "Field" ;
@@ -69,13 +69,13 @@ public class AllLaunches {
 		private final TouchPoint touchPoint;
 		private final Field field;
 
-		public Launch(String id, TouchPoint touchPoint, Field field) {
+		public Preparation(String id, TouchPoint touchPoint, Field field) {
 			this.id = id;
 			this.touchPoint = touchPoint;
 			this.field = field;
 		}
 
-		public static class Creator extends CreatorByXML<Launch> {
+		public static class Creator extends CreatorByXML<Preparation> {
 
 			private String id;
 			private TouchPoint touchPoint;
@@ -94,8 +94,8 @@ public class AllLaunches {
 			}
 
 			@Override
-			public Launch create() throws XmlError, IOException {
-				return new Launch(id, touchPoint, field);
+			public Preparation create() throws XmlError, IOException {
+				return new Preparation(id, touchPoint, field);
 			}
 
 			@Override
@@ -124,5 +124,51 @@ public class AllLaunches {
 
 		}
 	}
+	
+	public static class PreparationRef {
+		private final String preparationId ;
+		
+		public PreparationRef( String preparationId) {
+			this.preparationId = preparationId ;
+		}
+		
+		public String getPreparationId() {
+			return preparationId;
+		}
+
+		public static class Creator extends CreatorByXML<PreparationRef> {
+
+			private String preparationId = null ;
+
+			public Creator(String id, BaseCreator<?> creator) {
+				super(id, creator);
+			}
+
+			@Override
+			public void setAttribute(QName name, String value) {
+				switch( name.getLocalPart() ) {
+					case "preparationRef" :
+						this.preparationId = value ;
+				}
+				
+			}
+
+			@Override
+			public PreparationRef create() throws XmlError, IOException {
+				return new PreparationRef(preparationId);
+			}
+
+			@Override
+			public CreatorByXML<?> getCreator(QName name) {
+				return null;
+			}
+
+			@Override
+			public void created(CreatorByXML<?> creator, Object created) {
+			}
+			
+		}
+	}
+
 
 }

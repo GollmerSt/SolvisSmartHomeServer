@@ -18,6 +18,7 @@ import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -35,15 +36,18 @@ public class Control extends ChannelSource {
 	private static final String XML_CONTROL_TYPE_READ = "TypeRead";
 	private static final String XML_CONTROL_TYPE_MODE = "TypeMode";
 	private static final String XML_UPDATE_BY = "UpdateBy";
+	private static final String XML_PREPARATION_REF = "PreparationRef";
 
 	private final String screenId;
 	private final Rectangle valueRectangle;
 	private final Strategy strategy;
 	private final UpdateStrategies updateStrategies;
+	private final String preparationId;
 
 	private OfConfigs<Screen> screen = null;
 
-	public Control(String screenId, Rectangle current, Strategy strategy, UpdateStrategies updateStrategies) {
+	public Control(String screenId, Rectangle current, Strategy strategy, UpdateStrategies updateStrategies,
+			String preparationId) {
 		this.screenId = screenId;
 		this.valueRectangle = current;
 		this.strategy = strategy;
@@ -52,6 +56,7 @@ public class Control extends ChannelSource {
 		if (this.updateStrategies != null) {
 			this.updateStrategies.setSource(this);
 		}
+		this.preparationId = preparationId;
 	}
 
 	@Override
@@ -139,6 +144,7 @@ public class Control extends ChannelSource {
 		private Rectangle current;
 		private Strategy strategy;
 		private UpdateStrategies updateStrategies = null;
+		private String preparationId = null;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -156,7 +162,7 @@ public class Control extends ChannelSource {
 
 		@Override
 		public Control create() throws XmlError {
-			return new Control(screenId, current, strategy, updateStrategies);
+			return new Control(screenId, current, strategy, updateStrategies, preparationId);
 		}
 
 		@Override
@@ -173,6 +179,8 @@ public class Control extends ChannelSource {
 					return new StrategyMode.Creator(id, this.getBaseCreator());
 				case XML_UPDATE_BY:
 					return new UpdateStrategies.Creator(id, this.getBaseCreator());
+				case XML_PREPARATION_REF:
+					return new PreparationRef.Creator(id, getBaseCreator()) ;
 			}
 			return null;
 		}
@@ -191,17 +199,21 @@ public class Control extends ChannelSource {
 				case XML_UPDATE_BY:
 					this.updateStrategies = (UpdateStrategies) created;
 					break;
+				case XML_PREPARATION_REF:
+					this.preparationId = ((PreparationRef)created).getPreparationId() ;
+					break ;
 			}
 		}
 
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens, int configurationMask) {
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
+			int configurationMask) {
 		if (this.strategy instanceof GraficsLearnable) {
 			LearnScreen learn = new LearnScreen();
 			learn.setScreen(this.screen.get(configurationMask));
-			((GraficsLearnable) this.strategy).createAndAddLearnScreen(learn, learnScreens, configurationMask );
+			((GraficsLearnable) this.strategy).createAndAddLearnScreen(learn, learnScreens, configurationMask);
 		}
 
 	}
@@ -227,7 +239,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public Screen getScreen( int configurationMask ) {
+	public Screen getScreen(int configurationMask) {
 		return this.screen.get(configurationMask);
 	}
 

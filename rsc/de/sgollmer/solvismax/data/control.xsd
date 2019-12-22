@@ -81,7 +81,7 @@
     				</documentation>
     			</annotation>
     		</element>
-    		<element name="LaunchRef" type="tns:LaunchRef" maxOccurs="1"
+    		<element name="PreparationRef" type="tns:PreparationRef" maxOccurs="1"
     			minOccurs="0">
     		</element>
     	</sequence>
@@ -263,7 +263,7 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 
             <element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1" minOccurs="0">
 				</element>
-            <element name="LaunchRef" type="tns:LaunchRef" maxOccurs="1"
+            <element name="PreparationRef" type="tns:PreparationRef" maxOccurs="1"
             	minOccurs="0">
             </element>
 		</sequence>
@@ -381,7 +381,7 @@ false: Bei fester Grenze
 			<element name="ChannelDescriptions" type="tns:ChannelDescriptions"
 				maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="Launches" type="tns:Launches" maxOccurs="1"
+			<element name="Preparations" type="tns:Preparations" maxOccurs="1"
 				minOccurs="0">
 			</element>
 			<element name="Durations" type="tns:Durations" maxOccurs="1"
@@ -803,7 +803,7 @@ da der user diesen manuell verändert haben könnte.</documentation>
     	<attribute name="id" type="string" use="required"></attribute>
     </complexType>
 
-    <complexType name="Launch">
+    <complexType name="Preparation">
     	<sequence>
     		<element name="TouchPoint" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
     		<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1"></element>
@@ -811,9 +811,9 @@ da der user diesen manuell verändert haben könnte.</documentation>
     	<attribute name="id" type="string" use="required"></attribute>
     </complexType>
 
-    <complexType name="Launches">
+    <complexType name="Preparations">
     	<sequence>
-    		<element name="Launch" type="tns:Launch" maxOccurs="unbounded" minOccurs="0"></element>
+    		<element name="Preparation" type="tns:Preparation" maxOccurs="unbounded" minOccurs="0"></element>
     	</sequence>
     </complexType>
 
@@ -845,7 +845,7 @@ da der user diesen manuell verändert haben könnte.</documentation>
     	</sequence>
     </complexType>
 
-    <complexType name="LaunchRef">
+    <complexType name="PreparationRef">
     	<attribute name="refId" type="string" use="required"></attribute>
     </complexType>
 </schema>

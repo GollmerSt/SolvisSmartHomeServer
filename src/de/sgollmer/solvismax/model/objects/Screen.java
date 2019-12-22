@@ -19,6 +19,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 
 public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.Element<Screen> {
 
@@ -33,6 +34,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 	private static final String XML_SCREEN_GRAFICS_REF = "ScreenGraficRef";
 	private static final String XML_SCREEN_OCR = "ScreenOcr";
 	private static final String XML_IGNORE_RECTANGLE = "IgnoreRectangle";
+	private static final String XML_PREPARATION_REF = "PreparationRef";
 
 	private final String id;
 	private final String previousId;
@@ -45,6 +47,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 	private final Collection<ScreenCompare> screenCompares = new ArrayList<>();
 	private final Collection<String> screenGraficRefs;
 	private final Collection<Rectangle> ignoreRectangles;
+	private final String preparationId;
 
 	public OfConfigs<Screen> previousScreen = null;
 	public OfConfigs<Screen> alternativePreviousScreen = null;
@@ -53,7 +56,8 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 
 	public Screen(String id, String previousId, String alternativePreviousId, String backId, boolean ignoreChanges,
 			ConfigurationMasks configurationMasks, TouchPoint touchPoint, TouchPoint alternativeTouchPoint,
-			Collection<String> screenGraficRefs, Collection<ScreenOcr> ocrs, Collection<Rectangle> ignoreRectangles) {
+			Collection<String> screenGraficRefs, Collection<ScreenOcr> ocrs, Collection<Rectangle> ignoreRectangles,
+			String preparationId) {
 		this.id = id;
 		this.previousId = previousId;
 		this.alternativePreviousId = alternativePreviousId;
@@ -65,6 +69,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		this.screenGraficRefs = screenGraficRefs;
 		this.screenCompares.addAll(ocrs);
 		this.ignoreRectangles = ignoreRectangles;
+		this.preparationId = preparationId;
 	}
 
 	/**
@@ -246,6 +251,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		private Collection<String> screenGraficRefs = new ArrayList<>();
 		private Collection<ScreenOcr> screenOcr = new ArrayList<>();
 		private List<Rectangle> ignoreRectangles = null;
+		private String preparationId = null;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -295,7 +301,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 					}
 				});
 			return new Screen(id, previousId, alternativePreviousId, backId, ignoreChanges, configurationMasks,
-					touchPoint, alternativeTouchPoint, screenGraficRefs, screenOcr, ignoreRectangles);
+					touchPoint, alternativeTouchPoint, screenGraficRefs, screenOcr, ignoreRectangles, preparationId);
 		}
 
 		@Override
@@ -316,6 +322,8 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 					return new ScreenOcr.Creator(id, getBaseCreator());
 				case XML_IGNORE_RECTANGLE:
 					return new Rectangle.Creator(id, getBaseCreator());
+				case XML_PREPARATION_REF:
+					return new PreparationRef.Creator(id, getBaseCreator()) ;
 			}
 			return null;
 		}
@@ -348,6 +356,10 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 						this.ignoreRectangles = new ArrayList<>();
 					}
 					this.ignoreRectangles.add((Rectangle) created);
+					break;
+				case XML_PREPARATION_REF:
+					this.preparationId = ((PreparationRef)created).getPreparationId() ;
+					break ;
 			}
 
 		}
@@ -626,4 +638,5 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 	public ConfigurationMasks getConfigurationMask() {
 		return configurationMasks;
 	}
+	
 }

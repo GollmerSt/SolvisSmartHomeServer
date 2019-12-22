@@ -380,7 +380,7 @@
 					<tns:BottomRight X="105" Y="60" />
 				</tns:Field>
 			</tns:ScreenGrafic>
-			<tns:LaunchRef refId="Button_HK1" />
+			<tns:PreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen backId="Home" id="TagestemperaturSelected_HK1"
 			previousId="Tagestemperatur_HK1">
@@ -414,7 +414,7 @@
 					<tns:BottomRight X="105" Y="60" />
 				</tns:Field>
 			</tns:ScreenGrafic>
-			<tns:LaunchRef refId="Button_HK2" />
+			<tns:PreparationRef refId="Button_HK2" />
 		</tns:Screen>
 		<tns:Screen backId="Home" id="TagestemperaturSelected_HK2"
 			previousId="Tagestemperatur_HK2">
@@ -472,7 +472,7 @@
 					<tns:BottomRight X="105" Y="60" />
 				</tns:Field>
 			</tns:ScreenGrafic>
-			<tns:LaunchRef refId="Button_HK1" />
+			<tns:PreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen backId="Home" id="NachttemperaturSelected_HK1"
 			previousId="Nachttemperatur_HK1">
@@ -506,7 +506,7 @@
 					<tns:BottomRight X="105" Y="60" />
 				</tns:Field>
 			</tns:ScreenGrafic>
-			<tns:LaunchRef refId="Button_HK2" />
+			<tns:PreparationRef refId="Button_HK2" />
 		</tns:Screen>
 		<tns:Screen backId="Home" id="NachttemperaturSelected_HK2"
 			previousId="Nachttemperatur_HK2">
@@ -1060,7 +1060,7 @@
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
-				<tns:LaunchRef refId="Button_HK1" />
+				<tns:PreparationRef refId="Button_HK1" />
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C07.Tagestemperatur_HK1">
@@ -1159,7 +1159,7 @@
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
-				<tns:LaunchRef refId="Button_HK1" />
+				<tns:PreparationRef refId="Button_HK1" />
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C10.Raumeinfluss_HK1">
@@ -1230,7 +1230,7 @@
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
-				<tns:LaunchRef refId="Button_HK2" />
+				<tns:PreparationRef refId="Button_HK2" />
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C13.Tagestemperatur_HK2">
@@ -1303,7 +1303,7 @@
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
-				<tns:LaunchRef refId="Button_HK2" />
+				<tns:PreparationRef refId="Button_HK2" />
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C16.Raumeinfluss_HK2">
@@ -1344,8 +1344,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 	</tns:ChannelDescriptions>
-	<tns:Launches>
-		<tns:Launch id="Button_HK1">
+	<tns:Preparations>
+		<tns:Preparation id="Button_HK1">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="60" Y="15" />
@@ -1356,8 +1356,8 @@
 					<tns:BottomRight X="76" Y="32" />
 				</tns:Field>
 			</tns:ScreenGrafic>
-		</tns:Launch>
-		<tns:Launch id="Button_HK2">
+		</tns:Preparation>
+		<tns:Preparation id="Button_HK2">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="60" Y="45" />
@@ -1368,8 +1368,8 @@
 					<tns:BottomRight X="76" Y="62" />
 				</tns:Field>
 			</tns:ScreenGrafic>
-		</tns:Launch>
-	</tns:Launches>
+		</tns:Preparation>
+	</tns:Preparations>
 	<tns:Durations>
 		<!-- Standard-Zeit für das Drücken eines Bildschirmbuttons -->
 		<tns:Duration id="Standard" time_ms="400" />
