@@ -57,7 +57,7 @@ public class FileHelper {
 			writeDirectory = System.getenv("APPDATA");
 		}
 
-		writeDirectory += File.separator + "SolvisMaxJava";
+		writeDirectory += File.separator + Constants.RESOURCE_DESTINATION_PATH;
 
 		File directory = new File(writeDirectory);
 

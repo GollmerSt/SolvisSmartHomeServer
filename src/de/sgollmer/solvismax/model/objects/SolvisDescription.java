@@ -273,4 +273,8 @@ public class SolvisDescription {
 	public int getConfigurations(Solvis solvis) throws IOException {
 		return this.configurations.get(solvis);
 	}
+
+	public AllPreparations getPreparations() {
+		return allPreparations;
+	}
 }

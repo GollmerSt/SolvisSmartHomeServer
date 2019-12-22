@@ -17,6 +17,7 @@ import de.sgollmer.solvismax.model.objects.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
+import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
@@ -43,6 +44,7 @@ public class Control extends ChannelSource {
 	private final Strategy strategy;
 	private final UpdateStrategies updateStrategies;
 	private final String preparationId;
+	private Preparation preparation = null ;
 
 	private OfConfigs<Screen> screen = null;
 
@@ -116,17 +118,24 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws ReferenceError {
 
 		if (updateStrategies != null) {
 			this.updateStrategies.assign(description);
 		}
 		this.screen = description.getScreens().get(screenId);
 		if (this.screen == null) {
-			throw new ReferenceError("Screen reference < " + this.screenId + " > not found");
+			throw new ReferenceError("Screen of reference < " + this.screenId + " > not found");
 		}
 
 		this.strategy.assign(description);
+		
+		if ( preparationId != null ) {
+			this.preparation = description.getPreparations().get( preparationId) ;
+			if ( this.preparation == null ) {
+				throw new ReferenceError("Preparation of reference < " + this.preparationId + " > not found");
+			}
+		}
 
 	}
 

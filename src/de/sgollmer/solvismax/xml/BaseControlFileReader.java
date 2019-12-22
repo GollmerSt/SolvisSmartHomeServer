@@ -30,7 +30,7 @@ public class BaseControlFileReader {
 				writeDirectory = System.getenv("APPDATA");
 			}
 
-			writeDirectory += File.separator + "SolvisMaxJava";
+			writeDirectory += File.separator + Constants.RESOURCE_DESTINATION_PATH;
 
 			parent = new File(writeDirectory);
 		} else {

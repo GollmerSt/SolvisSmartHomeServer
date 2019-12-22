@@ -48,6 +48,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 	private final Collection<String> screenGraficRefs;
 	private final Collection<Rectangle> ignoreRectangles;
 	private final String preparationId;
+	private Preparation preparation = null ;
 
 	public OfConfigs<Screen> previousScreen = null;
 	public OfConfigs<Screen> alternativePreviousScreen = null;
@@ -134,6 +135,14 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		if (this.alternativeTouchPoint != null) {
 			this.alternativeTouchPoint.assign(description);
 		}
+		
+		if ( preparationId != null ) {
+			this.preparation = description.getPreparations().get( preparationId) ;
+			if ( this.preparation == null ) {
+				throw new ReferenceError("Preparation of reference < " + this.preparationId + " > not found");
+			}
+		}
+
 	}
 
 	public void addNextScreen(Screen nextScreen) {
