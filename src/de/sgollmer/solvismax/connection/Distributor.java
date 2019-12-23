@@ -9,6 +9,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
@@ -22,6 +23,7 @@ public class Distributor extends Observable<JsonPackage> {
 	private final SolvisDataObserver solvisDataObserver = new SolvisDataObserver();
 	private final ConnectionStateObserver connectionStateObserver = new ConnectionStateObserver();
 	private final SolvisStateObserver solvisStateObserver = new SolvisStateObserver() ;
+	private final UserAccessObserver userAccessObserver = new UserAccessObserver() ;
 	private final AliveThread aliveThread = new AliveThread();
 	private boolean burstUpdate = false;
 
@@ -63,6 +65,17 @@ public class Distributor extends Observable<JsonPackage> {
 
 		}
 
+	}
+	
+	private class UserAccessObserver implements Observer.ObserverI<Boolean> {
+
+		@Override
+		public void update(Boolean data, Object source) {
+			ConnectionStatus status = data ? ConnectionStatus.USER_ACCESS_DETECTED: ConnectionStatus.USER_ACCESS_FINISHED ;
+			Distributor.this.notify(new ConnectionState(status).createJsonPackage());
+			
+		}
+		
 	}
 
 	private void sendCollection() {
@@ -152,4 +165,15 @@ public class Distributor extends Observable<JsonPackage> {
 		return solvisStateObserver;
 	}
 
+	public UserAccessObserver getUserAccessObserver() {
+		return userAccessObserver;
+	}
+	
+	public void register( Solvis solvis ) {
+		solvis.getAllSolvisData().registerObserver(this.getSolvisDataObserver());
+		solvis.getConnection().register(this.getConnectionStateObserver());
+		solvis.getSolvisState().register(this.getSolvisStateObserver());
+		solvis.registerScreenChangedByUserObserver(userAccessObserver);
+		
+	}
 }

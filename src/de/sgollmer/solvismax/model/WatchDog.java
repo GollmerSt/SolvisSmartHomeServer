@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.slf4j.LoggerFactory;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Screen;
@@ -26,7 +27,11 @@ public class WatchDog {
 		this.solvis = solvis;
 		this.saver = saver;
 		Miscellaneous misc = this.solvis.getSolvisDescription().getMiscellaneous();
-		this.releaseblockingAfterUserChange_ms = misc.getReleaseblockingAfterUserChange_ms();
+		int releaseBlocking = misc.getReleaseblockingAfterUserChange_ms();
+		if ( Constants.DEBUG ) {
+			releaseBlocking = Constants.DEBUG_USER_ACCESS_TIME ;
+		}
+		this.releaseblockingAfterUserChange_ms = releaseBlocking;
 		this.watchDogTime = misc.getWatchDogTime_ms();
 	}
 
@@ -96,7 +101,7 @@ public class WatchDog {
 					case RESET:
 						if (changedTime > 0) {
 							this.solvis.clearCurrentImage();
-							solvis.notifyScreenChangedByUserObserver(this.solvis.getCurrentScreen());
+							solvis.notifyScreenChangedByUserObserver(false);
 							logger.info("User access finished");
 						}
 						changedTime = -1;
@@ -105,6 +110,7 @@ public class WatchDog {
 					case DETECTED:
 						this.solvis.clearCurrentImage();
 						if (changedTime < 0) {
+							solvis.notifyScreenChangedByUserObserver(true);
 							logger.info("User access detected");
 						}
 						changedTime = time;

@@ -48,11 +48,15 @@ public class SolvisWorkers {
 			boolean saveScreen = false;
 			boolean restoreScreen = false;
 			boolean executeWatchDog = false;
-			this.screenRestoreInhibitCnt = 0;
+			//this.screenRestoreInhibitCnt = 0;
 
 			Miscellaneous misc = solvis.getSolvisDescription().getMiscellaneous();
 			int unsuccessfullWaitTime = misc.getUnsuccessfullWaitTime_ms();
 			int watchDogTime = misc.getWatchDogTime_ms();
+
+			synchronized (this) {
+				this.notifyAll();
+			}
 
 			while (!this.terminate) {
 				Command command = null;
@@ -219,7 +223,13 @@ public class SolvisWorkers {
 		synchronized (this) {
 			if (this.controlsThread == null) {
 				this.controlsThread = new ControlWorkerThread();
-				this.controlsThread.start();
+				synchronized (this.controlsThread) {
+					try {
+						this.controlsThread.start();
+						this.controlsThread.wait(); // in case of
+					} catch (InterruptedException e) {
+					}
+				}
 			}
 			if (this.measurementsThread == null) {
 				this.measurementsThread = new MeasurementsWorkerThread();

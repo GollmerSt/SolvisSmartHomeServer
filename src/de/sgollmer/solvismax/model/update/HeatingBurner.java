@@ -160,7 +160,7 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 				checkC |= this.hourly
 						&& currentCalcValue > nextHour - 4 * this.readIntervall/1000;
 
-				if (checkC && burnerOn && !this.lastBurnerState && this.screenRestore) {
+				if (checkC && burnerOn && this.screenRestore) {
 					this.screenRestore = false;
 					this.solvis.execute(new Command(this.screenRestore));
 				}

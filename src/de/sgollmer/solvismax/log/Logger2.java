@@ -40,17 +40,15 @@ public class Logger2 {
 		File parent;
 
 		if (pathName == null) {
-			String writeDirectory = System.getProperty("user.home");
+			pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
-				writeDirectory = System.getenv("APPDATA");
+				pathName = System.getenv("APPDATA");
 			}
 
-			writeDirectory += File.separator + Constants.RESOURCE_DESTINATION_PATH;
-
-			parent = new File(writeDirectory);
-		} else {
-			parent = new File(pathName);
 		}
+
+		pathName += File.separator + Constants.RESOURCE_DESTINATION_PATH;
+		parent = new File(pathName);
 		this.parent = parent;
 	}
 
@@ -68,9 +66,9 @@ public class Logger2 {
 
 		File xml = new File(this.parent, Constants.LOG4J_CONFIG_FILE);
 
-		if (!xml.exists() ) {
-			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + Constants.LOG4J_CONFIG_FILE, xml, "****LogPath****",
-					this.parent.getAbsolutePath());
+		if (!xml.exists()) {
+			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + Constants.LOG4J_CONFIG_FILE, xml,
+					"****LogPath****", this.parent.getAbsolutePath());
 		}
 
 	}
@@ -94,5 +92,5 @@ public class Logger2 {
 		ConfigurationSource source = new ConfigurationSource(input);
 		Configurator.initialize(null, source);
 	}
-	
+
 }

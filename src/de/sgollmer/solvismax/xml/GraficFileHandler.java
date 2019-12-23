@@ -29,17 +29,15 @@ public class GraficFileHandler {
 		File parent;
 
 		if (pathName == null) {
-			String writeDirectory = System.getProperty("user.home");
+			pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
-				writeDirectory = System.getenv("APPDATA");
+				pathName = System.getenv("APPDATA");
 			}
 
-			writeDirectory += File.separator + Constants.RESOURCE_DESTINATION_PATH;
-
-			parent = new File(writeDirectory);
-		} else {
-			parent = new File(pathName);
 		}
+
+		pathName += File.separator + Constants.RESOURCE_DESTINATION_PATH;
+		parent = new File(pathName);
 		this.parent = parent;
 		this.currentControllFileHashCode = controllFileHashCode ;
 	}

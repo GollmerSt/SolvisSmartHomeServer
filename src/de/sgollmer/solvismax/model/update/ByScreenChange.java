@@ -7,7 +7,6 @@ import de.sgollmer.solvismax.model.Command;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.Observer;
-import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.Strategy;
@@ -23,21 +22,24 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 
 	}
 
-	private class Execute implements Observer.ObserverI<Screen> {
+	private class Execute implements Observer.ObserverI<Boolean> {
 
 		private final Solvis solvis;
+		private boolean lastchangedByUser = false;
 
 		public Execute(Solvis solvis) {
 			this.solvis = solvis;
 		}
 
 		@Override
-		public void update(Screen data, Object source) {
-			ChannelSourceI channelSource = ByScreenChange.this.source ;
-			if ( channelSource instanceof Control ) {
-				solvis.execute(new Command(((Control)channelSource).getDescription()));
+		public void update(Boolean changedByUser, Object source) {
+			if (this.lastchangedByUser && !changedByUser) {
+				ChannelSourceI channelSource = ByScreenChange.this.source;
+				if (channelSource instanceof Control) {
+					solvis.execute(new Command(((Control) channelSource).getDescription()));
+				}
 			}
-
+			this.lastchangedByUser = changedByUser ;
 		}
 	}
 
@@ -53,7 +55,7 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			
+
 		}
 
 		@Override
@@ -68,19 +70,19 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			
+
 		}
 
 		@Override
 		public UpdateCreator<ByScreenChange> createCreator(String id, BaseCreator<?> creator) {
 			return new Creator(id, creator);
 		}
-		
+
 	}
 
 	@Override
 	public void assign(SolvisDescription description) {
-		
+
 	}
 
 }

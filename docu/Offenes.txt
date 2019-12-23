@@ -15,6 +15,7 @@ Offene Aufgaben:
 
 
 
+
 Erledigt:
 
 2. Der Solvis-Name muss noch definierbar sein
@@ -25,5 +26,9 @@ Erledigt:
 4. Events wie Poweron, ScreenError o.ä. müssen noch realisiert werden
      
 6. Versionieren + Version am Anfang zum Client übertragen (mit connected)
+
+ !!!!	Befehle während des User-Zugriffs scheinen verloren zu gehen
+
+!!!!	Soll-Vorlauftemperatur: Fehler 5°C Soll werden nicht angezeigt
 
      

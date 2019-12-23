@@ -85,7 +85,7 @@ public class Solvis {
 
 	}
 
-	private Observer.Observable<Screen> screenChangedByUserObserable = new Observable<Screen>();
+	private Observer.Observable<Boolean> screenChangedByUserObserable = new Observable<>();
 
 	private Object solvisGUIObject = new Object();
 	private Object solvisMeasureObject = new Object();
@@ -107,7 +107,7 @@ public class Solvis {
 	}
 
 	public MyImage getRealImage() throws IOException {
-			MyImage image = new MyImage(connection.getScreen());
+			MyImage image = new MyImage(getConnection().getScreen());
 			return image;
 	}
 
@@ -145,7 +145,7 @@ public class Solvis {
 		String result = null;
 		synchronized (solvisMeasureObject) {
 			if (this.measureData == null) {
-				this.measureData = this.connection.getMeasurements().substring(12);
+				this.measureData = this.getConnection().getMeasurements().substring(12);
 				if (this.measureData.substring(0, 6).equals("000000")) {
 					this.getSolvisState().remoteConnected();
 					throw new ErrorPowerOn("Power on detected");
@@ -171,12 +171,12 @@ public class Solvis {
 			logger.warn("TouchPoint is <null>, ignored");
 		}
 		synchronized (solvisGUIObject) {
-			this.connection.sendTouch(point.getCoordinate());
+			this.getConnection().sendTouch(point.getCoordinate());
 			try {
 				Thread.sleep(point.getPushTime());
 			} catch (InterruptedException e) {
 			}
-			this.connection.sendRelease();
+			this.getConnection().sendRelease();
 			try {
 				Thread.sleep(point.getReleaseTime());
 			} catch (InterruptedException e) {
@@ -187,7 +187,7 @@ public class Solvis {
 
 	public void sendBack() throws IOException {
 		synchronized (solvisGUIObject) {
-			this.connection.sendButton(Button.BACK);
+			this.getConnection().sendButton(Button.BACK);
 			try {
 				// Thread.sleep(this.solvisDescription.getDurations().get("Standard").getTime_ms()
 				// ) ;
@@ -266,9 +266,7 @@ public class Solvis {
 			this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 			this.worker.start();
 			this.getSolvisDescription().getChannelDescriptions().initControl(this);
-			this.getAllSolvisData().registerObserver(this.distributor.getSolvisDataObserver());
-			this.connection.register(this.distributor.getConnectionStateObserver());
-			this.getSolvisState().register(this.distributor.getSolvisStateObserver());
+			this.getDistributor().register(this);
 		}
 	}
 
@@ -301,12 +299,12 @@ public class Solvis {
 		return this.solvisDescription.getDurations().get(id);
 	}
 
-	public void registerScreenChangedByUserObserver(ObserverI<Screen> observer) {
+	public void registerScreenChangedByUserObserver(ObserverI<Boolean> observer) {
 		this.screenChangedByUserObserable.register(observer);
 	}
 
-	public void notifyScreenChangedByUserObserver(Screen screen) throws Throwable {
-		this.screenChangedByUserObserable.notify(screen);
+	public void notifyScreenChangedByUserObserver(boolean userChanged) throws Throwable {
+		this.screenChangedByUserObserable.notify(userChanged);
 		;
 	}
 
@@ -500,6 +498,10 @@ public class Solvis {
 
 	public int getConfigurationMask() {
 		return this.configurationMask ;
+	}
+
+	public SolvisConnection getConnection() {
+		return connection;
 	}
 
 }

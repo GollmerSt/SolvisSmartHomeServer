@@ -2,6 +2,7 @@ package de.sgollmer.solvismax;
 
 public class Constants {
 	public static final boolean DEBUG = true;
+	public static final int DEBUG_USER_ACCESS_TIME = 120 ; 
 	/**
 	 * In case of an error the connection to the client ist closed delayed in
 	 * case of sending the cause tro the client
@@ -9,9 +10,6 @@ public class Constants {
 	public static final int DELAYED_CLOSING_TIME = 1000;
 	public static final String LOG4J_CONFIG_FILE = "log4j2.xml";
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisJava" ;
-	// public static final String RESOURCE_PATH = File.separator + "de" +
-	// File.separator + "sgollmer" + File.separator
-	// + "solvismax" + File.separator + "data";
 	public static final String RESOURCE_PATH = "data";
 	/**
 	 * Max. number of tries, to get to the necessarry screen

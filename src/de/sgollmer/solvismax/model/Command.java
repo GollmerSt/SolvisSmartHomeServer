@@ -4,29 +4,30 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class Command {
-	private final ChannelDescription description ;
-	private final SingleData<?> setValue ;
-	private final boolean screenRestoreOn ;
-	private final boolean screenRestoreOff ;
-	private boolean inhibit = false ;
-	
-	public Command( ChannelDescription description ) {
-		this( description, null, false, false ) ;
+	private final ChannelDescription description;
+	private final SingleData<?> setValue;
+	private final boolean screenRestoreOn;
+	private final boolean screenRestoreOff;
+	private boolean inhibit = false;
+
+	public Command(ChannelDescription description) {
+		this(description, null, false, false);
 	}
-	
-	public Command( ChannelDescription description, SingleData<?> setValue ) {
-		this( description, setValue, false, false ) ;
+
+	public Command(ChannelDescription description, SingleData<?> setValue) {
+		this(description, setValue, false, false);
 	}
-	
-	public Command( boolean screenRestore ) {
-		this( null, null, !screenRestore, screenRestore ) ;
+
+	public Command(boolean screenRestore) {
+		this(null, null, !screenRestore, screenRestore);
 	}
-	
-	public Command( ChannelDescription description, SingleData<?> setValue, boolean screenRestoreOff, boolean screenRestoreOn ) {
-		this.description = description ;
-		this.setValue = setValue ;
-		this.screenRestoreOff = screenRestoreOff ;
-		this.screenRestoreOn = screenRestoreOn ;
+
+	public Command(ChannelDescription description, SingleData<?> setValue, boolean screenRestoreOff,
+			boolean screenRestoreOn) {
+		this.description = description;
+		this.setValue = setValue;
+		this.screenRestoreOff = screenRestoreOff;
+		this.screenRestoreOn = screenRestoreOn;
 	}
 
 	public SingleData<?> getSetValue() {
@@ -51,6 +52,17 @@ public class Command {
 
 	public void setInhibit(boolean inhibit) {
 		this.inhibit = inhibit;
+	}
+
+	public String toString() {
+		String restore = "";
+
+		if (screenRestoreOff || screenRestoreOn) {
+			restore = ", screen restor switched to <";
+			restore += screenRestoreOn ? "on>" : "off>";
+		}
+
+		return "Id: " + description.getId() + restore ;
 	}
 
 }

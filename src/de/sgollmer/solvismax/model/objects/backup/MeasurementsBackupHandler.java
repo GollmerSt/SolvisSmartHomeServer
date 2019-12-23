@@ -23,7 +23,7 @@ import de.sgollmer.solvismax.xml.XmlStreamReader;
 public class MeasurementsBackupHandler {
 
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MeasurementsBackupHandler.class);
-	
+
 	private static final String NAME_XSD_MEASUREMENTS_FILE = "measurements.xsd";
 	private static final String NAME_XML_MEASUREMENTS_FILE = "measurements.xml";
 
@@ -38,17 +38,15 @@ public class MeasurementsBackupHandler {
 		File parent;
 
 		if (pathName == null) {
-			String writeDirectory = System.getProperty("user.home");
+			pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
-				writeDirectory = System.getenv("APPDATA");
+				pathName = System.getenv("APPDATA");
 			}
 
-			writeDirectory += File.separator + Constants.RESOURCE_DESTINATION_PATH;
-
-			parent = new File(writeDirectory);
-		} else {
-			parent = new File(pathName);
 		}
+
+		pathName += File.separator + Constants.RESOURCE_DESTINATION_PATH;
+		parent = new File(pathName);
 		this.parent = parent;
 		this.thread = new BackupThread(this, measurementsBackupTime_ms);
 		try {
@@ -110,15 +108,15 @@ public class MeasurementsBackupHandler {
 	}
 
 	public void write() throws IOException, XMLStreamException {
-		
+
 		this.update();
-		
+
 		this.copyFiles();
 
 		File output = new File(parent, NAME_XML_MEASUREMENTS_FILE);
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
-		OutputStream outputStream = new FileOutputStream(output) ;
+		OutputStream outputStream = new FileOutputStream(output);
 		XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream);
 		writer.writeStartDocument();
 		writer.writeStartElement(XML_MEASUREMENTS);
@@ -128,7 +126,7 @@ public class MeasurementsBackupHandler {
 		writer.flush();
 		writer.close();
 		outputStream.close();
-		
+
 		logger.info("Backup of measurements written.");
 	}
 
