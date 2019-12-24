@@ -121,7 +121,7 @@ public class Distributor extends Observable<JsonPackage> {
 				boolean sendAlive = false;
 				synchronized (this) {
 					try {
-						Thread.sleep(Constants.ALIVE_TIME);
+						this.wait(Constants.ALIVE_TIME);
 					} catch (InterruptedException e) {
 					}
 					if (!triggered) {
@@ -136,8 +136,9 @@ public class Distributor extends Observable<JsonPackage> {
 			}
 		}
 
-		public void trigger() {
+		public synchronized void trigger() {
 			this.triggered = true;
+			this.notifyAll();
 		}
 
 		public synchronized void shutdown() {

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
@@ -40,7 +41,7 @@ public class StrategyValue extends StrategyRead {
 	}
 
 	@Override
-	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) throws IOException {
+	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) throws IOException, TerminationException {
 		Integer goal = setValue.getInteger();
 
 		IntegerValue data = this.getValue(solvis.getCurrentImage(), rectangle, solvis);

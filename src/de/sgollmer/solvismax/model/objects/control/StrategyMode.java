@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
@@ -54,7 +55,7 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException {
+	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException, TerminationException {
 		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
 		if (cmp != null && value.getMode().equals(cmp)) {
 			return true;

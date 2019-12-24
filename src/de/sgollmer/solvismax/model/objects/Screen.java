@@ -13,6 +13,7 @@ import javax.xml.namespace.QName;
 import org.slf4j.LoggerFactory;
 
 import de.sgollmer.solvismax.error.ReferenceError;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
@@ -211,12 +212,12 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 			Screen altScreen = current.getAlternativePreviousScreen(configurationMask);
 			if (altScreen != null && !learn) {
 				if (previous.getAlternativePreviousScreen(configurationMask) != null) {
-					if (screens.contains(previous)) {
+					if (contains(screens,previous)) {
 						previous = altScreen;
 						touch = current.getAlternativeTouchPoint();
 					}
 				} else if (altScreen.getAlternativePreviousScreen(configurationMask) != null) {
-					if (!screens.contains(altScreen)) {
+					if (!contains(screens,altScreen)) {
 						previous = altScreen;
 						touch = current.getAlternativeTouchPoint();
 					}
@@ -227,6 +228,15 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 			previous = current.getPreviousScreen(configurationMask);
 		}
 		return screens;
+	}
+	
+	private static boolean contains( List<ScreenTouch> list, Screen screen) {
+		for ( ScreenTouch screenTouch : list ) {
+			if ( screen == screenTouch.screen ) {
+				return true ;
+			}
+		}
+		return false ;
 	}
 
 	/**
@@ -421,7 +431,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		}
 	}
 
-	public void learn(Solvis solvis, Collection<LearnScreen> learnScreens, int configurationMask) throws IOException {
+	public void learn(Solvis solvis, Collection<LearnScreen> learnScreens, int configurationMask) throws IOException, TerminationException {
 
 		// Seach all LearnScreens object of current screen and learn the
 		// ScreenGrafic
@@ -513,7 +523,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 	 * @throws IOException
 	 */
 	private static void gotoScreenLearning(Solvis solvis, Screen screen, Screen current,
-			Collection<LearnScreen> learnScreens, int configurationMask) throws IOException {
+			Collection<LearnScreen> learnScreens, int configurationMask) throws IOException, TerminationException {
 		if (screen == current) {
 			return;
 		}

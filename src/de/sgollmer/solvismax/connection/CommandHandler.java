@@ -25,6 +25,7 @@ import de.sgollmer.solvismax.connection.transfer.ReconnectPackage;
 import de.sgollmer.solvismax.connection.transfer.ServerCommand;
 import de.sgollmer.solvismax.connection.transfer.SetPackage;
 import de.sgollmer.solvismax.error.JsonError;
+import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
@@ -40,7 +41,7 @@ public class CommandHandler {
 	private final Collection<ClientAssignments> clients;
 	private final Instances instances;
 	private int nextClientId = Long.hashCode(System.currentTimeMillis());
-	private final ThreadPoolExecutor executor;
+	private ThreadPoolExecutor executor;
 
 	public CommandHandler(Instances instances) {
 		this.instances = instances;
@@ -54,30 +55,30 @@ public class CommandHandler {
 		logger.info("Command <" + command.name() + "> received");
 		boolean terminateConnection = false;
 		switch (command) {
-			case CONNECT:
-				terminateConnection = this.connect((ConnectPackage) jsonPackage, client);
-				break;
-			case RECONNECT:
-				terminateConnection = this.reconnect((ReconnectPackage) jsonPackage, client);
-				break;
-			case DISCONNECT:
-				this.disconnect((DisconnectPackage) jsonPackage, client, false);
-				break;
-			case SHUTDOWN:
-				this.disconnect((DisconnectPackage) jsonPackage, client, true);
-				break;
-			case GET:
-				this.get((GetPackage) jsonPackage, client);
-				break;
-			case SET:
-				this.set((SetPackage) jsonPackage, client);
-				break;
-			case SERVER_COMMAND:
-				this.executSeverCommand((ServerCommand) jsonPackage, client);
-				break;
-			default:
-				logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
-				break;
+		case CONNECT:
+			terminateConnection = this.connect((ConnectPackage) jsonPackage, client);
+			break;
+		case RECONNECT:
+			terminateConnection = this.reconnect((ReconnectPackage) jsonPackage, client);
+			break;
+		case DISCONNECT:
+			this.disconnect((DisconnectPackage) jsonPackage, client, false);
+			break;
+		case SHUTDOWN:
+			this.disconnect((DisconnectPackage) jsonPackage, client, true);
+			break;
+		case GET:
+			this.get((GetPackage) jsonPackage, client);
+			break;
+		case SET:
+			this.set((SetPackage) jsonPackage, client);
+			break;
+		case SERVER_COMMAND:
+			this.executSeverCommand((ServerCommand) jsonPackage, client);
+			break;
+		default:
+			logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
+			break;
 		}
 		return terminateConnection;
 	}
@@ -85,24 +86,24 @@ public class CommandHandler {
 	private void executSeverCommand(ServerCommand serverCommand, Client client) throws IOException {
 		ClientAssignments assignments = this.get(client);
 		switch (serverCommand.getServerCommand()) {
-			case BACKUP:
-				try {
-					this.instances.backupMeasurements();
-				} catch (XMLStreamException e) {
-					logger.error("XMLStream error while writing the backup file");
-				}
-				break;
-			case SCREEN_RESTORE_INHIBIT:
-				this.screenRestoreInhibit(true, assignments);
-				break;
-			case SCREEN_RESTORE_ENABLE:
-				this.screenRestoreInhibit(false, assignments);
-				break;
+		case BACKUP:
+			try {
+				this.instances.backupMeasurements();
+			} catch (XMLStreamException e) {
+				logger.error("XMLStream error while writing the backup file");
+			}
+			break;
+		case SCREEN_RESTORE_INHIBIT:
+			this.screenRestoreInhibit(true, assignments);
+			break;
+		case SCREEN_RESTORE_ENABLE:
+			this.screenRestoreInhibit(false, assignments);
+			break;
 
-			default:
-				logger.warn("Server command <" + serverCommand.getServerCommand().name()
-						+ ">unknown, old version of SolvisSmartHomeServer?");
-				break;
+		default:
+			logger.warn("Server command <" + serverCommand.getServerCommand().name()
+					+ ">unknown, old version of SolvisSmartHomeServer?");
+			break;
 		}
 
 	}
@@ -128,17 +129,17 @@ public class CommandHandler {
 		Solvis solvis = null;
 		try {
 			solvis = this.instances.getInstance(jsonPackage);
-		} catch (IOException | XmlError | XMLStreamException e1) {
+		} catch (IOException | XmlError | XMLStreamException | LearningError e1) {
 			client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE,
 					"Solvis not connected: " + e1.getMessage()).createJsonPackage());
 			client.closeDelayed();
-			return true ;
+			return true;
 		}
 		if (solvis == null) {
 			client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE, "Solvis id unknown")
 					.createJsonPackage());
 			client.closeDelayed();
-			return true ;
+			return true;
 		}
 		solvis.getDistributor().register(client);
 		client.send(new ConnectedPackage(clientId));
@@ -152,7 +153,7 @@ public class CommandHandler {
 
 		client.send(solvis.getAllSolvisData().getMeasurementsPackage());
 		client.send(solvis.getSolvisState().getPackage());
-		return false ;
+		return false;
 	}
 
 	private boolean reconnect(ReconnectPackage reconnectPackage, Client client) {
@@ -236,10 +237,15 @@ public class CommandHandler {
 		}
 
 		public void reconnect(Client client) {
+			this.terminate();
+			this.client = client;
+		}
+
+		public synchronized void terminate() {
 			if (this.closingThread != null) {
 				this.closingThread.terminate();
+				this.closingThread = null;
 			}
-			this.client = client;
 		}
 	}
 
@@ -297,7 +303,9 @@ public class CommandHandler {
 		if (assignments != null) {
 			assignments.solvis.getDistributor().unregister(client);
 			assignments.closingThread = new ClosingThread(assignments);
-			this.executor.submit(assignments.closingThread);
+			if (this.executor != null) {
+				this.executor.submit(assignments.closingThread);
+			}
 			assignments.client = null;
 		}
 
@@ -330,6 +338,14 @@ public class CommandHandler {
 			this.notifyAll();
 		}
 
+	}
+
+	public void terminate() {
+		for (ClientAssignments assignments : this.clients) {
+			assignments.terminate();
+		}
+		this.executor.shutdown();
+		this.executor = null ;
 	}
 
 }

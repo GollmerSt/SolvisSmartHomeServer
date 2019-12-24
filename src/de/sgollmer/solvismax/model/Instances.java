@@ -9,6 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import de.sgollmer.solvismax.connection.AccountInfo;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
+import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -28,7 +29,7 @@ public class Instances {
 	private final int xmlHash ;
 	private final String writeablePath ;
 
-	public Instances(String writeablePath, Unit cliUnit) throws IOException, XmlError, XMLStreamException {
+	public Instances(String writeablePath, Unit cliUnit) throws IOException, XmlError, XMLStreamException, LearningError {
 		this.writeablePath = writeablePath ;
 		this.baseData = new BaseControlFileReader(writeablePath).read().getTree();
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
@@ -52,7 +53,7 @@ public class Instances {
 	}
 
 	public synchronized Solvis getInstance(ConnectPackage connectPackage)
-			throws IOException, XmlError, XMLStreamException {
+			throws IOException, XmlError, XMLStreamException, LearningError {
 		for (Solvis solvis : units) {
 			if (solvis.getId().equals(connectPackage.getId())) {
 				return solvis;
@@ -67,7 +68,7 @@ public class Instances {
 	}
 
 	private Solvis createSolvisInstance(String id, String url, AccountInfo accountInfo)
-			throws IOException, XmlError, XMLStreamException {
+			throws IOException, XmlError, XMLStreamException, LearningError {
 		SolvisConnection connection = new SolvisConnection(url, accountInfo);
 		Solvis solvis = new Solvis(id, this.solvisDescription, this.graficDatas.get(id), connection,
 				this.backupHandler);

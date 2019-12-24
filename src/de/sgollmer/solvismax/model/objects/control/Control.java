@@ -7,19 +7,22 @@ import javax.xml.namespace.QName;
 
 import org.slf4j.LoggerFactory;
 
+import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.ReferenceError;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.Mode;
-import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 import de.sgollmer.solvismax.model.objects.Preparation;
+import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
-import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -44,7 +47,7 @@ public class Control extends ChannelSource {
 	private final Strategy strategy;
 	private final UpdateStrategies updateStrategies;
 	private final String preparationId;
-	private Preparation preparation = null ;
+	private Preparation preparation = null;
 
 	private OfConfigs<Screen> screen = null;
 
@@ -129,10 +132,10 @@ public class Control extends ChannelSource {
 		}
 
 		this.strategy.assign(description);
-		
-		if ( preparationId != null ) {
-			this.preparation = description.getPreparations().get( preparationId) ;
-			if ( this.preparation == null ) {
+
+		if (preparationId != null) {
+			this.preparation = description.getPreparations().get(preparationId);
+			if (this.preparation == null) {
 				throw new ReferenceError("Preparation of reference < " + this.preparationId + " > not found");
 			}
 		}
@@ -162,9 +165,9 @@ public class Control extends ChannelSource {
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-				case "screenId":
-					this.screenId = value;
-					break;
+			case "screenId":
+				this.screenId = value;
+				break;
 			}
 
 		}
@@ -178,18 +181,18 @@ public class Control extends ChannelSource {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_CONTROL_CURRENT:
-					return new Rectangle.Creator(id, this.getBaseCreator());
-				case XML_CONTROL_TYPE_VALUE:
-					return new StrategyValue.Creator(id, this.getBaseCreator());
-				case XML_CONTROL_TYPE_READ:
-					return new StrategyRead.Creator(id, this.getBaseCreator());
-				case XML_CONTROL_TYPE_MODE:
-					return new StrategyMode.Creator(id, this.getBaseCreator());
-				case XML_UPDATE_BY:
-					return new UpdateStrategies.Creator(id, this.getBaseCreator());
-				case XML_PREPARATION_REF:
-					return new PreparationRef.Creator(id, getBaseCreator()) ;
+			case XML_CONTROL_CURRENT:
+				return new Rectangle.Creator(id, this.getBaseCreator());
+			case XML_CONTROL_TYPE_VALUE:
+				return new StrategyValue.Creator(id, this.getBaseCreator());
+			case XML_CONTROL_TYPE_READ:
+				return new StrategyRead.Creator(id, this.getBaseCreator());
+			case XML_CONTROL_TYPE_MODE:
+				return new StrategyMode.Creator(id, this.getBaseCreator());
+			case XML_UPDATE_BY:
+				return new UpdateStrategies.Creator(id, this.getBaseCreator());
+			case XML_PREPARATION_REF:
+				return new PreparationRef.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -197,20 +200,20 @@ public class Control extends ChannelSource {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_CONTROL_CURRENT:
-					this.current = (Rectangle) created;
-					break;
-				case XML_CONTROL_TYPE_VALUE:
-				case XML_CONTROL_TYPE_READ:
-				case XML_CONTROL_TYPE_MODE:
-					this.strategy = (Strategy) created;
-					break;
-				case XML_UPDATE_BY:
-					this.updateStrategies = (UpdateStrategies) created;
-					break;
-				case XML_PREPARATION_REF:
-					this.preparationId = ((PreparationRef)created).getPreparationId() ;
-					break ;
+			case XML_CONTROL_CURRENT:
+				this.current = (Rectangle) created;
+				break;
+			case XML_CONTROL_TYPE_VALUE:
+			case XML_CONTROL_TYPE_READ:
+			case XML_CONTROL_TYPE_MODE:
+				this.strategy = (Strategy) created;
+				break;
+			case XML_UPDATE_BY:
+				this.updateStrategies = (UpdateStrategies) created;
+				break;
+			case XML_PREPARATION_REF:
+				this.preparationId = ((PreparationRef) created).getPreparationId();
+				break;
 			}
 		}
 
@@ -228,16 +231,30 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException {
+	public void learn(Solvis solvis) throws IOException, TerminationException {
 		if (this.strategy instanceof StrategyMode) {
 			StrategyMode strategy = (StrategyMode) this.strategy;
 			solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
 			MyImage saved = solvis.getCurrentImage();
-			for (Mode mode : strategy.getModes()) {
-				solvis.send(mode.getTouch());
-				mode.getGrafic().learn(solvis);
+			boolean finished = false ;
+			SingleData<?> data = null ;
+			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && ! finished ; ++repeat) {
+				for (Mode mode : strategy.getModes()) {
+					solvis.send(mode.getTouch());
+					mode.getGrafic().learn(solvis);
+				}
+				data = this.strategy.getValue(saved, this.valueRectangle, solvis);
+				if (data == null) {
+					logger.info("Learning of <" + this.getDescription().getId() + "> not successfull, will be retried");
+				} else {
+					finished = true ;
+				}
 			}
-			SingleData<?> data = this.strategy.getValue(saved, this.valueRectangle, solvis);
+			if ( ! finished ) {
+				String error = "Learning of <" + this.getDescription().getId() + "> not possible, rekjected." ;
+				logger.error(error);
+				throw new LearningError(error) ;
+			}
 			this.setValue(solvis, new SolvisData(data));
 		}
 	}

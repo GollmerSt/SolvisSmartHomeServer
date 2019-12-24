@@ -7,9 +7,12 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.logging.log4j.core.util.SystemClock;
 import org.slf4j.LoggerFactory;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Screen;
@@ -48,7 +51,7 @@ public class SolvisWorkers {
 			boolean saveScreen = false;
 			boolean restoreScreen = false;
 			boolean executeWatchDog = false;
-			//this.screenRestoreInhibitCnt = 0;
+			// this.screenRestoreInhibitCnt = 0;
 
 			Miscellaneous misc = solvis.getSolvisDescription().getMiscellaneous();
 			int unsuccessfullWaitTime = misc.getUnsuccessfullWaitTime_ms();
@@ -116,16 +119,18 @@ public class SolvisWorkers {
 				} catch (ErrorPowerOn e2) {
 					success = false;
 					solvis.getSolvisState().powerOff();
-				} catch (Throwable e3) {
-					logger.error("Unknown error detected", e3);
+				} catch (TerminationException e3) {
+					return;
+				} catch (Throwable e4) {
+					logger.error("Unknown error detected", e4);
 					success = true;
 				}
-				if (success) {
-					if (command != null) {
-						queue.remove();
-					}
-				} else {
-					synchronized (this) {
+				synchronized (this) {
+					if (success) {
+						if (command != null) {
+							queue.remove();
+						}
+					} else {
 						try {
 							this.wait(unsuccessfullWaitTime);
 							watchDog.execute();
@@ -138,7 +143,6 @@ public class SolvisWorkers {
 		}
 
 		public synchronized void terminate() {
-			this.queue.clear();
 			this.terminate = true;
 			this.notifyAll();
 		}
@@ -241,14 +245,20 @@ public class SolvisWorkers {
 	private class MeasurementsWorkerThread extends Thread {
 
 		private boolean terminate = false;
+		private long nextTime;
 
 		public MeasurementsWorkerThread() {
 			super("MeasurementsWorkerThread");
+
 		}
 
 		@Override
 		public void run() {
+			int measurementIntervall = solvis.getSolvisDescription().getMiscellaneous().getDefaultReadMeasurementsIntervall();
 			int errorCount = 0;
+			int powerOffDetectedAfterIoErrors = solvis.getSolvisDescription().getMiscellaneous()
+					.getPowerOffDetectedAfterIoErrors() ;
+			this.nextTime = System.currentTimeMillis() + measurementIntervall ;
 			while (!terminate) {
 
 				try {
@@ -257,17 +267,22 @@ public class SolvisWorkers {
 					solvis.getSolvisState().connected();
 				} catch (IOException e1) {
 					++errorCount;
-					if (errorCount == solvis.getSolvisDescription().getMiscellaneous()
-							.getPowerOffDetectedAfterIoErrors()) {
+					if (errorCount == powerOffDetectedAfterIoErrors) {
 						solvis.getSolvisState().powerOff();
 					}
 				} catch (ErrorPowerOn e2) {
 					solvis.getSolvisState().remoteConnected();
 				}
+				
 				synchronized (this) {
+					int waitTime = (int) (this.nextTime - System.currentTimeMillis()) ;
+					if ( waitTime <= 0) {
+						waitTime = Constants.WAITTIME_IF_LE_ZERO ;
+					}
+					this.nextTime += measurementIntervall ;
 					try {
 						this.wait(
-								solvis.getSolvisDescription().getMiscellaneous().getDefaultReadMeasurementsIntervall());
+								waitTime);
 					} catch (InterruptedException e) {
 					}
 				}

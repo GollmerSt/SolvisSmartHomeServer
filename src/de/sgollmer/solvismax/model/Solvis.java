@@ -1,6 +1,7 @@
 package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +17,10 @@ import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
 import de.sgollmer.solvismax.connection.transfer.ChannelDescriptionsPackage;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.LearningError;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.helper.TerminationHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
@@ -57,7 +61,7 @@ public class Solvis {
 	private SolvisWorkers worker;
 
 	private final String id;
-	private int configurationMask = 0 ;
+	private int configurationMask = 0;
 	private MyImage currentImage = null;
 	private Screen currentScreen = null;
 	private Screen savedScreen = null;
@@ -67,6 +71,7 @@ public class Solvis {
 	private final SolvisConnection connection;
 	private final MeasurementsBackupHandler backupHandler;
 	private final Distributor distributor;
+	private final MeasurementUpdateThread measurementUpdateThread;
 
 	public Solvis(String id, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler) {
@@ -82,7 +87,7 @@ public class Solvis {
 		this.backupHandler = measurementsBackupHandler;
 		this.backupHandler.register(this, id);
 		this.distributor = new Distributor();
-
+		this.measurementUpdateThread = new MeasurementUpdateThread();
 	}
 
 	private Observer.Observable<Boolean> screenChangedByUserObserable = new Observable<>();
@@ -107,13 +112,13 @@ public class Solvis {
 	}
 
 	public MyImage getRealImage() throws IOException {
-			MyImage image = new MyImage(getConnection().getScreen());
-			return image;
+		MyImage image = new MyImage(getConnection().getScreen());
+		return image;
 	}
 
 	public Screen getCurrentScreen() throws IOException {
 		if (this.screenSaverActive) {
-			this.send(resetSceenSaver);
+			this.resetSreensaver();
 			this.screenSaverActive = false;
 		}
 		Screen screen = this.currentScreen;
@@ -162,38 +167,28 @@ public class Solvis {
 		}
 	}
 
-	public void resetSreensaver() throws IOException {
+	public void resetSreensaver() throws IOException, TerminationException {
+		this.setScreenSaverActive(false);
 		this.send(resetSceenSaver);
 	}
 
-	public void send(TouchPoint point) throws IOException {
+	public void send(TouchPoint point) throws IOException, TerminationException {
 		if (point == null) {
 			logger.warn("TouchPoint is <null>, ignored");
 		}
 		synchronized (solvisGUIObject) {
 			this.getConnection().sendTouch(point.getCoordinate());
-			try {
-				Thread.sleep(point.getPushTime());
-			} catch (InterruptedException e) {
-			}
+			TerminationHelper.getInstance().sleep(point.getPushTime());
 			this.getConnection().sendRelease();
-			try {
-				Thread.sleep(point.getReleaseTime());
-			} catch (InterruptedException e) {
-			}
+			TerminationHelper.getInstance().sleep(point.getReleaseTime());
 			this.clearCurrentImage();
 		}
 	}
 
-	public void sendBack() throws IOException {
+	public void sendBack() throws IOException, TerminationException {
 		synchronized (solvisGUIObject) {
 			this.getConnection().sendButton(Button.BACK);
-			try {
-				// Thread.sleep(this.solvisDescription.getDurations().get("Standard").getTime_ms()
-				// ) ;
-				Thread.sleep(this.solvisDescription.getDurations().get("WindowChange").getTime_ms());
-			} catch (InterruptedException e) {
-			}
+			TerminationHelper.getInstance().sleep(this.solvisDescription.getDurations().get("WindowChange").getTime_ms());
 			this.clearCurrentImage();
 		}
 	}
@@ -204,7 +199,7 @@ public class Solvis {
 		}
 	}
 
-	public boolean gotoScreen(Screen screen) throws IOException {
+	public boolean gotoScreen(Screen screen) throws IOException, TerminationException {
 		synchronized (solvisGUIObject) {
 			if (screen == null) {
 				return false;
@@ -224,41 +219,52 @@ public class Solvis {
 
 			List<ScreenTouch> previousScreens = screen.getPreviosScreens(this.getConfigurationMask());
 
-			int cnt = Constants.GOTO_SCREEN_TRIES;
+			boolean gone = false;
 
-			while (this.getCurrentScreen() != null && this.getCurrentScreen() != screen && --cnt >= 0) {
+			for (int cnt = 0; !gone && cnt < Constants.FAIL_REPEATS; ++cnt) {
 
-				// && this.getCurrentScreen() != this.homeScreen) {
-				// ListIterator<Screen> it = null;
-				ScreenTouch foundScreenTouch = null;
-				for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
-					ScreenTouch st = it.next();
-					Screen previous = st.getScreen();
-					if (previous == this.getCurrentScreen()) {
-						foundScreenTouch = st;
-						break;
+				for (int gotoDeepth = 0; !gone
+						&& this.getCurrentScreen() != null & gotoDeepth < Constants.MAX_GOTO_DEEPTH; ++gotoDeepth) {
+
+					// && this.getCurrentScreen() != this.homeScreen) {
+					// ListIterator<Screen> it = null;
+					ScreenTouch foundScreenTouch = null;
+					for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
+						ScreenTouch st = it.next();
+						Screen previous = st.getScreen();
+						if (previous == this.getCurrentScreen()) {
+							foundScreenTouch = st;
+							break;
+						}
+					}
+
+					if (foundScreenTouch == null) {
+						this.sendBack();
+					} else {
+						this.send(foundScreenTouch.getTouchPoint());
+					}
+
+					if (this.getCurrentScreen() == screen) {
+						gone = true;
 					}
 				}
-
-				if (foundScreenTouch == null) {
-					this.sendBack();
-				} else {
-					this.send(foundScreenTouch.getTouchPoint());
+				if (!gone) {
+					this.gotoHome(); // try it from beginning
+					logger.info("Goto screen <" + screen.getId() + "> not succcessful. Will be retried.");
 				}
-
 			}
-			if (cnt < 0) {
-				logger.error(
-						"Screen <" + screen.getId() + "> not found after " + Constants.GOTO_SCREEN_TRIES + " tries");
+			if (!gone) {
+				logger.error("Screen <" + screen.getId() + "> not found.");
 			}
-			return this.getCurrentScreen() != null && this.getCurrentScreen() == screen;
+			return this.getCurrentScreen() == screen;
 		}
+
 	}
 
 	public void init() throws IOException, XmlError, XMLStreamException {
 		synchronized (solvisGUIObject) {
 			this.gotoHome();
-			this.configurationMask = this.getSolvisDescription().getConfigurations(this) ;
+			this.configurationMask = this.getSolvisDescription().getConfigurations(this);
 			synchronized (solvisMeasureObject) {
 				this.getSolvisDescription().getChannelDescriptions().init(this, this.getAllSolvisData());
 			}
@@ -267,6 +273,7 @@ public class Solvis {
 			this.worker.start();
 			this.getSolvisDescription().getChannelDescriptions().initControl(this);
 			this.getDistributor().register(this);
+			this.measurementUpdateThread.start();
 		}
 	}
 
@@ -292,7 +299,7 @@ public class Solvis {
 	}
 
 	public ChannelDescription getChannelDescription(String description) {
-		return this.solvisDescription.getChannelDescriptions().get(description,this.getConfigurationMask());
+		return this.solvisDescription.getChannelDescriptions().get(description, this.getConfigurationMask());
 	}
 
 	public Duration getDuration(String id) {
@@ -332,8 +339,7 @@ public class Solvis {
 	}
 
 	/**
-	 * @param screenSaver
-	 *            the screenSaver to set
+	 * @param screenSaver the screenSaver to set
 	 */
 	public void setScreenSaverActive(boolean screenSaverActive) {
 		if (this.screenSaverActive != screenSaverActive) {
@@ -354,14 +360,14 @@ public class Solvis {
 		this.grafics = grafics;
 	}
 
-	public void learning() throws IOException {
+	public void learning() throws IOException, LearningError {
 		logger.info("Learning started.");
 		this.gotoHome();
-		this.configurationMask = this.getSolvisDescription().getConfigurations(this) ;
-		logger.info("Configuration mask: " + Integer.toHexString(this.configurationMask) );
+		this.configurationMask = this.getSolvisDescription().getConfigurations(this);
+		logger.info("Configuration mask: " + Integer.toHexString(this.configurationMask));
 		this.getGrafics().clear();
 		String homeId = this.solvisDescription.getHomeId();
-		Screen home = this.solvisDescription.getScreens().get(homeId, this.getConfigurationMask() );
+		Screen home = this.solvisDescription.getScreens().get(homeId, this.getConfigurationMask());
 		if (home == null) {
 			throw new AssertionError("Assign error: Screen description of <" + homeId + "> not found.");
 		}
@@ -400,7 +406,7 @@ public class Solvis {
 
 		SolvisDescription solvisDescription = result.getTree();
 
-		ChannelDescriptionsPackage json = new ChannelDescriptionsPackage(solvisDescription.getChannelDescriptions(),1);
+		ChannelDescriptionsPackage json = new ChannelDescriptionsPackage(solvisDescription.getChannelDescriptions(), 1);
 
 		StringBuilder jsonBuiler = new StringBuilder();
 		json.getFrame().addTo(jsonBuiler);
@@ -475,11 +481,6 @@ public class Solvis {
 
 	}
 
-	public void terminate() {
-		this.distributor.teminate();
-		this.worker.terminate();
-	}
-
 	public String getId() {
 		return id;
 	}
@@ -497,11 +498,68 @@ public class Solvis {
 	}
 
 	public int getConfigurationMask() {
-		return this.configurationMask ;
+		return this.configurationMask;
 	}
 
 	public SolvisConnection getConnection() {
 		return connection;
+	}
+
+	private class MeasurementUpdateThread extends Thread {
+
+		private int updateIntervall;
+		private long nextUpdate;
+		boolean terminate = false;
+
+		public MeasurementUpdateThread() {
+			super("MeasurementUpdateThread");
+			this.updateIntervall = getSolvisDescription().getMiscellaneous().getForcedUpdateIntervall();
+			Calendar midNight = Calendar.getInstance();
+			long time = midNight.getTimeInMillis();
+			midNight.set(Calendar.HOUR_OF_DAY, 0);
+			midNight.set(Calendar.MINUTE, 0);
+			midNight.set(Calendar.SECOND, 0);
+			midNight.set(Calendar.MILLISECOND, 0);
+
+			long midNightLong = midNight.getTimeInMillis();
+
+			for (nextUpdate = midNightLong; nextUpdate < time + 1000; nextUpdate += updateIntervall)
+				;
+		}
+
+		@Override
+		public void run() {
+
+			while (!terminate && updateIntervall != 0 ) {
+				long time = System.currentTimeMillis();
+				int waitTime = (int) (this.nextUpdate - time);
+				if ( waitTime <= 0) {
+					waitTime = Constants.WAITTIME_IF_LE_ZERO ;
+				}
+				this.nextUpdate += updateIntervall;
+				synchronized (this) {
+					try {
+						this.wait(waitTime);
+					} catch (InterruptedException e) {
+					}
+				}
+				if (!terminate) {
+					distributor.notify(getAllSolvisData().getMeasurementsPackage());
+				}
+			}
+		}
+
+		public synchronized void terminate() {
+			this.terminate = true;
+			this.notifyAll();
+		}
+
+	}
+
+	public void terminate() {
+		this.distributor.teminate();
+		this.worker.terminate();
+		this.measurementUpdateThread.terminate();
 	}
 
 }

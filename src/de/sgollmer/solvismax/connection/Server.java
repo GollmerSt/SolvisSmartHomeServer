@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -21,14 +22,14 @@ public class Server {
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Server.class);
 
 	private ServerSocket serverSocket;
-	private final Collection<Socket> connectedClients;
+	private final Collection<Client> connectedClients;
 	private final CommandHandler commandHandler;
 	private ThreadPoolExecutor executor;
 	private final ServerThread serverThread;
 
-	public Server(int port, CommandHandler commandHandler) throws IOException {
+	public Server(ServerSocket serverSocket, CommandHandler commandHandler) {
 		this.connectedClients = new ArrayList<>(Constants.MAX_CONNECTIONS);
-		this.serverSocket = new ServerSocket(port);
+		this.serverSocket = serverSocket;
 		this.commandHandler = commandHandler;
 		this.executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(Constants.MAX_CONNECTIONS);
 		this.serverThread = new ServerThread();
@@ -47,20 +48,35 @@ public class Server {
 			while (!terminate) {
 				try {
 					waitForAvailableSocket();
-					Socket client = serverSocket.accept();
+					Socket clientSocket = serverSocket.accept();
+					Client client = new Client(clientSocket) ;
 					addClient(client);
-					executor.execute(new Client(client));
+					executor.execute(client );
 
 				} catch (Throwable e) {
-					e.printStackTrace();
-					logger.error("Unexpected termination of server", e);
-					try {
-						Thread.sleep(Constants.RETRY_STARTING_SERVER_TIME);
-					} catch (InterruptedException e1) {
+					synchronized (this) {
+
+					}
+					if (!terminate) {
+						e.printStackTrace();
+						logger.error("Unexpected termination of server", e);
+						try {
+							this.wait(Constants.RETRY_STARTING_SERVER_TIME);
+						} catch (InterruptedException e1) {
+						}
 					}
 				}
 			}
 
+		}
+		
+		public synchronized void terminate() {
+			this.terminate = true ;
+			try {
+				serverSocket.close();
+			} catch (IOException e) {
+			}
+			this.notifyAll(); 
 		}
 	}
 
@@ -75,13 +91,13 @@ public class Server {
 		}
 	}
 
-	private void addClient(Socket client) {
+	private void addClient(Client client) {
 		synchronized (this.connectedClients) {
 			this.connectedClients.add(client);
 		}
 	}
 
-	private void removeClient(Socket client) {
+	private void removeClient(Client client) {
 		synchronized (this.connectedClients) {
 			this.connectedClients.remove(client);
 			this.connectedClients.notifyAll();
@@ -125,9 +141,8 @@ public class Server {
 			} catch (IOException e) {
 				logger.debug("IOException occured. Cause:", e);
 				/**
-				 * Im Falle einer fehlerhaften Datenübertragung wird die
-				 * Verbindung getrennt. Der Client sollte sie wieder aufbauen,
-				 * falls er noch existiert
+				 * Im Falle einer fehlerhaften Datenübertragung wird die Verbindung getrennt.
+				 * Der Client sollte sie wieder aufbauen, falls er noch existiert
 				 */
 				this.close();
 			}
@@ -137,10 +152,10 @@ public class Server {
 		public synchronized void close() {
 			logger.info("Client disconnected");
 			try {
-				removeClient(this.socket);
+				removeClient(this);
 				commandHandler.clientClosed(this);
 				if (this.socket != null)
-					this.socket.close(); 
+					this.socket.close();
 				this.socket = null;
 				this.notifyAll();
 			} catch (IOException e) {
@@ -148,7 +163,7 @@ public class Server {
 		}
 
 		@Override
-		public synchronized void update(JsonPackage data, Object source ) {
+		public synchronized void update(JsonPackage data, Object source) {
 			this.send(data);
 
 		}
@@ -158,11 +173,34 @@ public class Server {
 				this.wait(Constants.DELAYED_CLOSING_TIME);
 			} catch (InterruptedException e) {
 			}
+			try {
+				this.socket.close();
+			} catch (IOException e) {
+			}
+		}
+		
+		public synchronized void terminate() {
+			try {
+				this.socket.close();
+			} catch (IOException e) {
+			}
+			this.notifyAll();
 		}
 
 	}
 
 	public void start() {
 		this.serverThread.start();
+	}
+
+	public synchronized void terminate() {
+		for ( Iterator<Client > it = connectedClients.iterator(); it.hasNext();) {
+			Client client = it.next() ;
+			client.terminate();
+			it.remove();
+		}
+		this.serverThread.terminate();
+		this.notifyAll();
+		this.executor.shutdown();
 	}
 }

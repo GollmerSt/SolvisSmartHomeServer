@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tns:SolvisDescription xmlns:tns="http://www.example.org/control"
+<tns:SolvisDescription
+	xmlns:tns="http://www.example.org/control"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/control control.xsd "
 	homeId="Home">
@@ -54,7 +55,8 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen backId="Home" id="Zirkulation" previousId="Home">
+		<tns:Screen backId="Home" id="Zirkulation"
+			previousId="Home">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="65" />
@@ -78,7 +80,8 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen backId="Home" id="Sonstiges 1" previousId="Home">
+		<tns:Screen backId="Home" id="Sonstiges 1"
+			previousId="Home">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="115" />
@@ -91,7 +94,8 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen backId="Home" id="Sonstiges 2" previousId="Sonstiges 1">
+		<tns:Screen backId="Home" id="Sonstiges 2"
+			previousId="Sonstiges 1">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="110" />
@@ -104,7 +108,8 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen backId="Home" id="Sonstiges 3" previousId="Sonstiges 2">
+		<tns:Screen backId="Home" id="Sonstiges 3"
+			previousId="Sonstiges 2">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="110" />
@@ -314,8 +319,8 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="85" />
 			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
+			<tns:AlternativeTouchPoint
+				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="230" Y="120" />
 			</tns:AlternativeTouchPoint>
 			<tns:ScreenGrafic id="Anlagenstatus HK">
@@ -325,15 +330,15 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen backId="Sonstiges 1" previousId="Anlagenstatus HK"
-			alternativePreviousId="Sonstiges 1" id="Anlagenstatus WW"
-			ignoreChanges="true">
+		<tns:Screen backId="Sonstiges 1"
+			previousId="Anlagenstatus HK" alternativePreviousId="Sonstiges 1"
+			id="Anlagenstatus WW" ignoreChanges="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="230" Y="120" />
 			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
+			<tns:AlternativeTouchPoint
+				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="85" />
 			</tns:AlternativeTouchPoint>
 			<tns:ScreenGrafic id="Anlagenstatus WW">
@@ -349,7 +354,8 @@
 				<tns:ConfigurationMask andMask="07"
 					compareMask="01" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Lang" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Lang"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="95" Y="105" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Tagestemperatur" />
@@ -369,7 +375,8 @@
 				<tns:ConfigurationMask andMask="04"
 					compareMask="04" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Lang" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Lang"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="95" Y="105" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Tagestemperatur" />
@@ -403,7 +410,8 @@
 				<tns:ConfigurationMask andMask="02"
 					compareMask="02" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Lang" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Lang"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="95" Y="105" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Tagestemperatur" />
@@ -441,7 +449,8 @@
 				<tns:ConfigurationMask andMask="07"
 					compareMask="01" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Lang" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Lang"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="125" Y="105" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Nachttemperatur" />
@@ -461,7 +470,8 @@
 				<tns:ConfigurationMask andMask="04"
 					compareMask="04" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Lang" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Lang"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="125" Y="105" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Nachttemperatur" />
@@ -495,7 +505,8 @@
 				<tns:ConfigurationMask andMask="02"
 					compareMask="02" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Lang" releaseTimeRefId="WindowChange">
+			<tns:TouchPoint pushTimeRefId="Lang"
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="125" Y="105" />
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Nachttemperatur" />
@@ -591,37 +602,43 @@
 				<tns:Field position="10" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S01.Warmwasserpuffer">
+		<tns:ChannelDescription
+			id="S01.Warmwasserpuffer">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="14" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S02.Warmwassertemperatur">
+		<tns:ChannelDescription
+			id="S02.Warmwassertemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="18" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S03.Speicherreferenztemperatur">
+		<tns:ChannelDescription
+			id="S03.Speicherreferenztemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="22" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S04.Heizungspuffertemperatur_oben">
+		<tns:ChannelDescription
+			id="S04.Heizungspuffertemperatur_oben">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="26" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S05.Solarvorlauftemperatur">
+		<tns:ChannelDescription
+			id="S05.Solarvorlauftemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="30" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S06.Solarruecklauftemperatur">
+		<tns:ChannelDescription
+			id="S06.Solarruecklauftemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="38" length="4" />
@@ -633,37 +650,43 @@
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S08.Solarkollektortemperatur">
+		<tns:ChannelDescription
+			id="S08.Solarkollektortemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="42" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S09.Heizungspuffertemperatur_unten">
+		<tns:ChannelDescription
+			id="S09.Heizungspuffertemperatur_unten">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="46" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S10.Aussentemperatur">
+		<tns:ChannelDescription
+			id="S10.Aussentemperatur">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="50" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S11.Zirkulationsdurchfluss">
+		<tns:ChannelDescription
+			id="S11.Zirkulationsdurchfluss">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="l/m">
 				<tns:Field position="54" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S12.Vorlauftemperatur_HK1">
+		<tns:ChannelDescription
+			id="S12.Vorlauftemperatur_HK1">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="58" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S13.Vorlauftemperatur_HK2">
+		<tns:ChannelDescription
+			id="S13.Vorlauftemperatur_HK2">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="62" length="4" />
@@ -687,13 +710,15 @@
 				<tns:Field position="74" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S18.Durchfluss_Warmwasserzirkulation">
+		<tns:ChannelDescription
+			id="S18.Durchfluss_Warmwasserzirkulation">
 			<tns:Measurement type="unsigned" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="78" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S17.Durchfluss_Solarpanel">
+		<tns:ChannelDescription
+			id="S17.Durchfluss_Solarpanel">
 			<tns:Measurement type="unsigned" average="true"
 				dynamic="true">
 				<tns:Field position="82" length="4" />
@@ -734,19 +759,22 @@
 				<tns:Field position="104" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="RF1.Raumfuehler_HK1">
+		<tns:ChannelDescription
+			id="RF1.Raumfuehler_HK1">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="106" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="RF2.Raumfuehler_HK2">
+		<tns:ChannelDescription
+			id="RF2.Raumfuehler_HK2">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="110" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="RF3.Raumfuehler_HK3">
+		<tns:ChannelDescription
+			id="RF3.Raumfuehler_HK3">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="114" length="4" />
@@ -757,7 +785,8 @@
 				<tns:Field position="118" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="A02.Pumpe_Warmwasser">
+		<tns:ChannelDescription
+			id="A02.Pumpe_Warmwasser">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="120" length="2" />
 			</tns:Measurement>
@@ -772,7 +801,8 @@
 				<tns:Field position="124" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="A05.Pumpe_Warmwasserzirkulation">
+		<tns:ChannelDescription
+			id="A05.Pumpe_Warmwasserzirkulation">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="126" length="2" />
 			</tns:Measurement>
@@ -787,7 +817,8 @@
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="A08.Mischer_HK1_auf">
+		<tns:ChannelDescription
+			id="A08.Mischer_HK1_auf">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="132" length="2" />
 			</tns:Measurement>
@@ -797,7 +828,8 @@
 				<tns:Field position="134" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="A10.Mischer_HK2_auf">
+		<tns:ChannelDescription
+			id="A10.Mischer_HK2_auf">
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="136" length="2" />
 			</tns:Measurement>
@@ -823,7 +855,8 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="SE.Solarertrag_kWh">
-			<tns:Measurement type="unsigned" dynamic="true" unit="kWh">
+			<tns:Measurement type="unsigned" dynamic="true"
+				unit="kWh">
 				<tns:Field position="162" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -837,8 +870,10 @@
 				<tns:Field position="192" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="SL.Solarleistung_kW">
-			<tns:Measurement type="unsigned" dynamic="true" unit="kW">
+		<tns:ChannelDescription
+			id="SL.Solarleistung_kW">
+			<tns:Measurement type="unsigned" dynamic="true"
+				unit="kW">
 				<tns:Field position="196" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -846,49 +881,59 @@
 			<tns:Calculation strategy="starts">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
 				<tns:UpdateBy>
-					<tns:SolvisHeatingData solvisDataId="C02.StartsBrenner" />
+					<tns:SolvisHeatingData
+						solvisDataId="C02.StartsBrenner" />
 				</tns:UpdateBy>
 			</tns:Calculation>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="X2.BrennerLaufzeit_s">
+		<tns:ChannelDescription
+			id="X2.BrennerLaufzeit_s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
 				<tns:UpdateBy>
-					<tns:SolvisHeatingData solvisDataId="C03.LaufzeitBrenner"
-						factor="3600" />
+					<tns:SolvisHeatingData
+						solvisDataId="C03.LaufzeitBrenner" factor="3600" />
 				</tns:UpdateBy>
 			</tns:Calculation>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="X3.BrennerStufe2Starts">
+		<tns:ChannelDescription
+			id="X3.BrennerStufe2Starts">
 			<tns:Calculation strategy="starts">
 				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="X4.BrennerStufe2Laufzeit_s">
+		<tns:ChannelDescription
+			id="X4.BrennerStufe2Laufzeit_s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
 				<tns:UpdateBy>
-					<tns:SolvisHeatingData solvisDataId="C04.LaufzeitAnforderung2"
-						factor="3600" />
+					<tns:SolvisHeatingData
+						solvisDataId="C04.LaufzeitAnforderung2" factor="3600" />
 				</tns:UpdateBy>
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="X5.BrennerStatus">
 			<tns:Calculation strategy="burnerStatus">
-				<tns:Dependency id="burnerLevel1On" dataId="A12.Brenner" />
-				<tns:Dependency id="burnerLevel2On" dataId="A13.Brenner_S2" />
+				<tns:Dependency id="burnerLevel1On"
+					dataId="A12.Brenner" />
+				<tns:Dependency id="burnerLevel2On"
+					dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="X7.MischerPosition0_HK1">
+		<tns:ChannelDescription
+			id="X7.MischerPosition0_HK1">
 			<tns:Calculation strategy="mixerPosition0">
 				<tns:Dependency id="pumpOn" dataId="A03.Pumpe_HK1" />
-				<tns:Dependency id="mixerClosing" dataId="A09.Mischer.HK1_zu" />
+				<tns:Dependency id="mixerClosing"
+					dataId="A09.Mischer.HK1_zu" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="X8.MischerPosition0_HK2">
+		<tns:ChannelDescription
+			id="X8.MischerPosition0_HK2">
 			<tns:Calculation strategy="mixerPosition0">
 				<tns:Dependency id="pumpOn" dataId="A04.Pumpe_HK2" />
-				<tns:Dependency id="mixerClosing" dataId="A11.Mischer.HK2_zu" />
+				<tns:Dependency id="mixerClosing"
+					dataId="A11.Mischer.HK2_zu" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C01.StartsBrenner">
@@ -904,7 +949,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C02.LaufzeitBrenner">
+		<tns:ChannelDescription
+			id="C02.LaufzeitBrenner">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="48" />
@@ -918,7 +964,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C03.LaufzeitAnforderung2">
+		<tns:ChannelDescription
+			id="C03.LaufzeitAnforderung2">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="105" />
@@ -933,7 +980,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C04.WarmwasserPumpe">
+		<tns:ChannelDescription
+			id="C04.WarmwasserPumpe">
 			<tns:Control screenId="Warmwasser">
 				<tns:Current>
 					<tns:TopLeft X="50" Y="30" />
@@ -941,19 +989,22 @@
 				</tns:Current>
 				<tns:TypeMode>
 					<tns:Mode id="aus">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="65" Y="75" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="WWPumpeAus" exact="true" />
 					</tns:Mode>
 					<tns:Mode id="an">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="65" Y="25" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="WWPumpeAn" exact="true" />
 					</tns:Mode>
 					<tns:Mode id="auto">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="75" Y="50" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="WWPumpeAuto" exact="true" />
@@ -961,7 +1012,8 @@
 				</tns:TypeMode>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C05.WassertemperaturSoll">
+		<tns:ChannelDescription
+			id="C05.WassertemperaturSoll">
 			<tns:Control screenId="Warmwasser">
 				<tns:Current>
 					<tns:TopLeft X="115" Y="10" />
@@ -969,16 +1021,19 @@
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="10"
 					most="65" unit="°C">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="20" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="50" />
 					</tns:Lower>
 				</tns:TypeValue>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C06.Anlagenmodus_HK1">
+		<tns:ChannelDescription
+			id="C06.Anlagenmodus_HK1">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="07"
 					compareMask="01" />
@@ -990,25 +1045,29 @@
 				</tns:Current>
 				<tns:TypeMode>
 					<tns:Mode id="Tag">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="95" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeTag" />
 					</tns:Mode>
 					<tns:Mode id="Nacht">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="125" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeNacht" />
 					</tns:Mode>
 					<tns:Mode id="Standby">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="160" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeStandby" />
 					</tns:Mode>
 					<tns:Mode id="Timer">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="60" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeTimer" />
@@ -1019,7 +1078,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C06.Anlagenmodus_HK1">
+		<tns:ChannelDescription
+			id="C06.Anlagenmodus_HK1">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="02"
 					compareMask="02" />
@@ -1033,25 +1093,29 @@
 				</tns:Current>
 				<tns:TypeMode>
 					<tns:Mode id="Tag">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="95" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeTag" />
 					</tns:Mode>
 					<tns:Mode id="Nacht">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="125" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeNacht" />
 					</tns:Mode>
 					<tns:Mode id="Standby">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="160" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeStandby" />
 					</tns:Mode>
 					<tns:Mode id="Timer">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="60" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeTimer" />
@@ -1063,7 +1127,8 @@
 				<tns:PreparationRef refId="Button_HK1" />
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C07.Tagestemperatur_HK1">
+		<tns:ChannelDescription
+			id="C07.Tagestemperatur_HK1">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="07"
 					compareMask="01" />
@@ -1075,10 +1140,12 @@
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
 					most="30" wrapAround="true" unit="°C">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -1087,7 +1154,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C08.Nachttemperatur_HK1">
+		<tns:ChannelDescription
+			id="C08.Nachttemperatur_HK1">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="01"
 					compareMask="01" />
@@ -1099,10 +1167,12 @@
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
 					most="30" wrapAround="true" unit="°C">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -1111,7 +1181,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C09.TemperaturFeineinstellung">
+		<tns:ChannelDescription
+			id="C09.TemperaturFeineinstellung">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="07"
 					compareMask="01" />
@@ -1123,10 +1194,12 @@
 				</tns:Current>
 				<tns:TypeValue format="C#0C" increment="1" least="-5"
 					most="5">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="220" Y="20" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="220" Y="50" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -1135,7 +1208,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C09.TemperaturFeineinstellung_HK1">
+		<tns:ChannelDescription
+			id="C09.TemperaturFeineinstellung_HK1">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="02"
 					compareMask="02" />
@@ -1149,10 +1223,12 @@
 				</tns:Current>
 				<tns:TypeValue format="C#0C" increment="1" least="-5"
 					most="5">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="220" Y="20" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="220" Y="50" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -1162,18 +1238,21 @@
 				<tns:PreparationRef refId="Button_HK1" />
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C10.Raumeinfluss_HK1">
+		<tns:ChannelDescription
+			id="C10.Raumeinfluss_HK1">
 			<tns:Control screenId="Heizkreis1 4_5">
 				<tns:Current>
 					<tns:TopLeft X="160" Y="75" />
 					<tns:BottomRight X="185" Y="87" />
 				</tns:Current>
-				<tns:TypeValue format="#0C" increment="10" least="10"
+				<tns:TypeValue format="#0C" increment="10" least="0"
 					most="90" unit="%" wrapAround="true">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="200" Y="80" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="145" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -1182,7 +1261,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C11.Vorlauf_Soll_HK1">
+		<tns:ChannelDescription
+			id="C11.Vorlauf_Soll_HK1">
 			<tns:Control screenId="Heizkreis1 4_5">
 				<tns:Current>
 					<tns:TopLeft X="155" Y="45" />
@@ -1191,7 +1271,8 @@
 				<tns:TypeRead format="#0CC" unit="°C" />
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C12.Anlagenmodus_HK2">
+		<tns:ChannelDescription
+			id="C12.Anlagenmodus_HK2">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="02"
 					compareMask="02" />
@@ -1203,25 +1284,29 @@
 				</tns:Current>
 				<tns:TypeMode>
 					<tns:Mode id="Tag">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="95" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeTag" />
 					</tns:Mode>
 					<tns:Mode id="Nacht">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="125" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeNacht" />
 					</tns:Mode>
 					<tns:Mode id="Standby">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="160" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeStandby" />
 					</tns:Mode>
 					<tns:Mode id="Timer">
-						<tns:Touch pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+						<tns:Touch pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="60" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeTimer" />
@@ -1233,7 +1318,8 @@
 				<tns:PreparationRef refId="Button_HK2" />
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C13.Tagestemperatur_HK2">
+		<tns:ChannelDescription
+			id="C13.Tagestemperatur_HK2">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="02"
 					compareMask="02" />
@@ -1245,10 +1331,12 @@
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
 					most="30" wrapAround="true" unit="°C">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -1257,7 +1345,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C14.Nachttemperatur_HK2">
+		<tns:ChannelDescription
+			id="C14.Nachttemperatur_HK2">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="02"
 					compareMask="02" />
@@ -1269,10 +1358,12 @@
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
 					most="30" wrapAround="true" unit="°C">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -1281,7 +1372,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C15.TemperaturFeineinstellung_HK2">
+		<tns:ChannelDescription
+			id="C15.TemperaturFeineinstellung_HK2">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="02"
 					compareMask="02" />
@@ -1293,10 +1385,12 @@
 				</tns:Current>
 				<tns:TypeValue format="C#0C" increment="1" least="-5"
 					most="5">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="220" Y="20" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="220" Y="50" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -1306,7 +1400,8 @@
 				<tns:PreparationRef refId="Button_HK2" />
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C16.Raumeinfluss_HK2">
+		<tns:ChannelDescription
+			id="C16.Raumeinfluss_HK2">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="02"
 					compareMask="02" />
@@ -1318,10 +1413,12 @@
 				</tns:Current>
 				<tns:TypeValue format="#0C" increment="10" least="10"
 					most="90" unit="%" wrapAround="true">
-					<tns:Upper pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="200" Y="80" />
 					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard" releaseTimeRefId="ValueChange">
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="145" Y="80" />
 					</tns:Lower>
 				</tns:TypeValue>
@@ -1330,7 +1427,8 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C17.Vorlauf_Soll_HK2">
+		<tns:ChannelDescription
+			id="C17.Vorlauf_Soll_HK2">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="04"
 					compareMask="04" />
@@ -1391,6 +1489,7 @@
 	<tns:Miscellaneous defaultAverageCount="12"
 		defaultReadMeasurementsIntervall_ms="10000"
 		powerOffDetectedAfterIoErrors="3" measurementsBackupTime_ms="3600000"
-		releaseblockingAfterUserChange_ms="300000" unsuccessfullWaitTime_ms="10000"
-		watchDogTime_ms="60000" connectionHoldTime_ms="300000" />
+		releaseblockingAfterUserChange_ms="300000"
+		unsuccessfullWaitTime_ms="10000" watchDogTime_ms="60000"
+		connectionHoldTime_ms="300000" forcedUpdateIntervall_ms="3600000" />
 </tns:SolvisDescription>

@@ -3,12 +3,13 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.Collection;
 
+import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.model.Solvis;
 
 public interface GraficsLearnable {
 	
 	public void createAndAddLearnScreen( LearnScreen learnScreen, Collection<LearnScreen > learnScreens, int configurationMask) ;
-	public void learn( Solvis solvis) throws IOException ;
+	public void learn( Solvis solvis) throws IOException, LearningError ;
 	
 	public static class LearnScreen implements Cloneable{
 		private Screen screen ;

@@ -763,9 +763,20 @@ da der user diesen manuell verändert haben könnte.</documentation>
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="connectionHoldTime_ms" type="int" use="required">
+		<attribute name="connectionHoldTime_ms" type="int"
+			use="required">
 			<annotation>
-				<documentation>Wird eine Verbindung zum Client unterbrochen, kann innerhalb dieser Zeit eine Verbindung wiederhergestellt werden, ohne dass clienbezogene Einstellungen im Server verloren gehen</documentation>
+				<documentation>
+					Wird eine Verbindung zum Client unterbrochen, kann
+					innerhalb dieser Zeit eine Verbindung
+					wiederhergestellt werden, ohne dass clienbezogene
+					Einstellungen im Server verloren gehen
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="forcedUpdateIntervall_ms" type="int" use="required">
+			<annotation>
+				<documentation>Intervall, nach dem sämtliche Messwerte zum Client geschickt wierden. Wenn Wert 0, dann Feature ausgeschaltet</documentation>
 			</annotation></attribute>
 	</complexType>
 

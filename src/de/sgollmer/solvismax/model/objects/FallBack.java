@@ -8,6 +8,7 @@ import javax.xml.namespace.QName;
 
 import org.slf4j.LoggerFactory;
 
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -122,7 +123,7 @@ public class FallBack {
 		}
 
 		@Override
-		public void execute(Solvis solvis) throws IOException {
+		public void execute(Solvis solvis) throws IOException, TerminationException {
 			Screen screen = solvis.getSolvisDescription().getScreens().get(id).getIfSingle();
 			
 			if ( screen == null ) {

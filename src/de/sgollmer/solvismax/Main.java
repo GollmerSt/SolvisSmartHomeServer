@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
+import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.helper.TerminationHelper;
 import de.sgollmer.solvismax.log.Logger2;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.objects.Units;
@@ -40,27 +42,27 @@ public class Main {
 				String value = matcher.group(2);
 
 				switch (command) {
-					case "solvis-id":
-						id = value;
-						break;
-					case "solvis-url":
-						url = value;
-						break;
-					case "solvis-account":
-						account = value;
-						break;
-					case "solvis-password":
-						password = value;
-						break;
-					case "server-port":
-						port = Integer.parseInt(value);
-						break;
-					case "server-path":
-						path = value;
-						break;
-					default:
-						System.err.println("Unknowwn argument: " + arg);
-						break;
+				case "solvis-id":
+					id = value;
+					break;
+				case "solvis-url":
+					url = value;
+					break;
+				case "solvis-account":
+					account = value;
+					break;
+				case "solvis-password":
+					password = value;
+					break;
+				case "server-port":
+					port = Integer.parseInt(value);
+					break;
+				case "server-path":
+					path = value;
+					break;
+				default:
+					System.err.println("Unknowwn argument: " + arg);
+					break;
 				}
 			}
 		}
@@ -72,7 +74,7 @@ public class Main {
 			System.err.println("Log4j couldn't initalized");
 		}
 
-		final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class) ;
+		final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class);
 
 		Unit unit = null;
 
@@ -93,30 +95,35 @@ public class Main {
 
 		try {
 			instances = new Instances(path, unit);
-		} catch (IOException | XmlError | XMLStreamException e) {
-			logger.error("Exception on reading configuration files occured, cause:", e);
+		} catch (IOException | XmlError | XMLStreamException | LearningError e) {
+			logger.error("Exception on reading configuration or learning files occured, cause:", e);
 			e.printStackTrace();
 			System.exit(-1);
 		}
 
-		try {
-			serverSocket.close();
-			Server server = new Server(port, new CommandHandler(instances));
-			server.start();
-		} catch (IOException e) {
-			logger.error("Unexpected error on server start detected:", e);
-			e.printStackTrace();
-		}
+		final CommandHandler commandHandler = new CommandHandler(instances);
+		Server server = new Server(serverSocket, commandHandler);
+		server.start();
 
 		final Instances terminateInstances = instances;
-
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+		
+		Runnable runnable = new Runnable() {
+			
 			@Override
 			public void run() {
 				terminateInstances.terminate();
+				commandHandler.terminate();
+				if (server != null) {
+					server.terminate();
+				}
+				TerminationHelper.getInstance().terminate();
 			}
-		}));
+		};
 
+		Runtime.getRuntime().addShutdownHook(new Thread(runnable));
+		
+		//runnable.run();
+		
 	}
 
 }
