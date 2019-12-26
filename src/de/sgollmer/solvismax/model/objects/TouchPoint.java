@@ -89,5 +89,9 @@ public class TouchPoint implements Assigner {
 	public Integer getReleaseTime() {
 		return releaseTime;
 	}
+	
+	public int getSettingTime() {
+		return this.pushTime + this.releaseTime ;
+	}
 
 }

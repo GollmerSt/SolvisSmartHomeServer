@@ -121,6 +121,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 
 	public void measure(Solvis solvis, AllSolvisData datas) throws IOException, ErrorPowerOn {
 		solvis.clearMeasuredData();
+		solvis.getMeasureData() ;
 		solvis.getDistributor().setBurstUpdate(true);
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());

@@ -21,6 +21,10 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 	private final boolean exact;
 	private Rectangle rectangle = null;
 
+	public Rectangle getRectangle() {
+		return rectangle;
+	}
+
 	private ScreenGraficDescription(String id, boolean exact, Rectangle rectangle) {
 		this.id = id;
 		this.exact = exact;
@@ -33,6 +37,9 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 	}
 
 	public boolean isElementOf(MyImage image, Solvis solvis, boolean cmpNoRectangle) {
+		if ( ! isLearned(solvis)) {
+			return false ;
+		}
 		ScreenGraficData data = solvis.getGrafics().get(this.id);
 		if (data == null) { // not learned
 			return false;
@@ -83,12 +90,12 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-				case "id":
-					this.id = value;
-					break;
-				case "exact":
-					this.exact = Boolean.parseBoolean(value);
-					break;
+			case "id":
+				this.id = value;
+				break;
+			case "exact":
+				this.exact = Boolean.parseBoolean(value);
+				break;
 			}
 
 		}
@@ -125,8 +132,17 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 		} else {
 			image = new Pattern(image, rectangle);
 		}
-		solvis.getGrafics().put(this.id, image);
-		logger.debug("Screen grafic <" + this.getId() + "> learned.");
+		ScreenGraficData grafic = solvis.getGrafics().get(this.getId());
+
+		if (grafic != null) {
+			if (!grafic.getImage().equals(image)) {
+				logger.debug("The screen grafic <" + this.getId() + "> was learned again,"
+						+ " but didn't match with the previous. The contol file must be checked.");
+			}
+		} else {
+			solvis.getGrafics().put(this.id, image);
+			logger.debug("Screen grafic <" + this.getId() + "> learned.");
+		}
 	}
 
 	public void setRectangle(Rectangle rectangle) {
@@ -134,4 +150,5 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 			this.rectangle = rectangle;
 		}
 	}
+
 }

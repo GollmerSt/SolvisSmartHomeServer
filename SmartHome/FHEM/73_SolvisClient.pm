@@ -96,7 +96,7 @@ sub SolvisClient_Initialize($) {
 #							  "PowerOn ".
 #							  "FirmwareLth2.21.02A ".
 							  $readingFnAttributes;
-#	$this->{DbLog_splitFn}	= "SolvisClient_DbLog_splitFn";
+	$this->{DbLog_splitFn}	= "SolvisClient_DbLog_splitFn";
 
 	$this->{VERSION} = CLIENT_VERSION ;
 
@@ -484,7 +484,9 @@ sub SolvisClient_CreateGetSetCommands($$) {
 			} elsif ( $keyName eq "Step") {
 				$SolvisClient_ChannelDescriptions{$channel}{Step} = $channelHash{Step} ; ;
 			} elsif ($keyName eq "IsBoolean") {
-				$SolvisClient_ChannelDescriptions{$channel}{IsBoolean} = $channelHash{IsBoolean} ; ;
+				$SolvisClient_ChannelDescriptions{$channel}{IsBoolean} = $channelHash{IsBoolean} ;
+			} elsif ($keyName eq "Unit" ) {
+				$SolvisClient_ChannelDescriptions{$channel}{Unit} = $channelHash{Unit} ;
 			}
 		}
 	}
@@ -727,6 +729,27 @@ sub SolvisClient_Get($@) {
 } # end SolvisClient_get
 #
 
+#####################################
+#      DbLog event interpretation
+sub SolvisClient_DbLog_splitFn($)
+{
+    my ($event) = @_;
+
+    my ($reading, $value, $unit) ;
+
+    my @splited = split(/ /,$event);
+
+    $reading = $splited[0];;
+    $reading =~ tr/://d;
+	
+	$unit = "" ;
+	
+	if ( defined( $SolvisClient_ChannelDescriptions{$reading}{Unit} ) ) {
+		$unit = $SolvisClient_ChannelDescriptions{$reading}{Unit} ;
+		$value = $splited[1];
+	}
+    return ($reading, $value, $unit) ;
+}
 
 
 1;

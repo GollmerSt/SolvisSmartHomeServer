@@ -12,6 +12,7 @@ import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.helper.TerminationHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
@@ -63,10 +64,21 @@ public class Control extends ChannelSource {
 		}
 		this.preparationId = preparationId;
 	}
+	
+	private boolean prepare( Solvis solvis ) throws IOException, TerminationException {
+		if ( this.preparation == null ) {
+			return true ;
+		} else {
+			return this.preparation.execute(solvis) ;
+		}
+	}
 
 	@Override
-	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException {
+	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException, TerminationException {
 		solvis.gotoScreen(screen.get(solvis.getConfigurationMask()));
+		if ( ! this.prepare(solvis) ) {
+			return false ;
+		}
 		SingleData<?> data = this.strategy.getValue(solvis.getCurrentImage(), this.valueRectangle, solvis);
 		if (data == null) {
 			return false;
@@ -77,15 +89,18 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean setValue(Solvis solvis, SolvisData value) throws IOException {
+	public boolean setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
 		solvis.gotoScreen(screen.get(solvis.getConfigurationMask()));
+		if ( ! this.prepare(solvis) ) {
+			return false ;
+		}
 		boolean set = false;
-		for (int c = 0; c < 10 && !set; ++c) {
-			set = this.strategy.setValue(solvis, this.valueRectangle, value);
-			if (c == 2) {
+		for (int c = 0; c < Constants.SET_REPEATS && !set; ++c) {
+			if (c == 1) {
 				logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
 						+ " failed, set will be tried again.");
 			}
+			set = this.strategy.setValue(solvis, this.valueRectangle, value);
 		}
 		if (!set) {
 			logger.error("Setting of <" + this.getDescription().getId() + "> not successfull");
@@ -138,6 +153,7 @@ public class Control extends ChannelSource {
 			if (this.preparation == null) {
 				throw new ReferenceError("Preparation of reference < " + this.preparationId + " > not found");
 			}
+			this.preparation.assign(description);
 		}
 
 	}
@@ -232,6 +248,9 @@ public class Control extends ChannelSource {
 
 	@Override
 	public void learn(Solvis solvis) throws IOException, TerminationException {
+		if ( this.preparation != null ) {
+			this.preparation.learn(solvis, this.getScreen(solvis.getConfigurationMask())) ;
+		}
 		if (this.strategy instanceof StrategyMode) {
 			StrategyMode strategy = (StrategyMode) this.strategy;
 			solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
@@ -255,7 +274,14 @@ public class Control extends ChannelSource {
 				logger.error(error);
 				throw new LearningError(error) ;
 			}
-			this.setValue(solvis, new SolvisData(data));
+			for ( int repeat = 0 ; repeat < Constants.SET_REPEATS ; ++ repeat ) {
+				boolean success = this.setValue(solvis, new SolvisData(data));
+				if ( success ) {
+					break ;
+				} else {
+					TerminationHelper.getInstance().sleep(solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms());
+				}
+			}
 		}
 	}
 

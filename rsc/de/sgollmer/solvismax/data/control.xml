@@ -551,6 +551,36 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
+		<tns:Screen backId="Sonstiges 3" previousId="Sonstiges 3"
+			id="Uhrzeit / Datum">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="40" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic id="Uhrzeit / Datum">
+				<tns:Field>
+					<tns:TopLeft X="55" Y="0" />
+					<tns:BottomRight X="185" Y="18" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="0" Y="30" />
+				<tns:BottomRight X="150" Y="95" />
+			</tns:IgnoreRectangle>
+		</tns:Screen>
+		<tns:Screen backId="Uhrzeit / Datum"
+			previousId="Uhrzeit / Datum" id="Zeiteinstellung">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="110" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic id="Zeiteinstellung">
+				<tns:Field>
+					<tns:TopLeft X="60" Y="0" />
+					<tns:BottomRight X="175" Y="15" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
 	</tns:Screens>
 	<tns:ScreenGrafics>
 		<tns:ScreenGrafic exact="true" id="Sonstiges">
@@ -1443,7 +1473,8 @@
 		</tns:ChannelDescription>
 	</tns:ChannelDescriptions>
 	<tns:Preparations>
-		<tns:Preparation id="Button_HK1">
+		<tns:Preparation id="Button_HK1"
+			clearScreenId="Warmwasser">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="60" Y="15" />
@@ -1455,7 +1486,8 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Preparation>
-		<tns:Preparation id="Button_HK2">
+		<tns:Preparation id="Button_HK2"
+			clearScreenId="Warmwasser">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="60" Y="45" />
@@ -1468,6 +1500,100 @@
 			</tns:ScreenGrafic>
 		</tns:Preparation>
 	</tns:Preparations>
+	<tns:Clock screenId="Zeiteinstellung">
+		<tns:Year least="2008">
+			<tns:Rectangle>
+				<tns:TopLeft X="100" Y="57" />
+				<tns:BottomRight X="149" Y="76" />
+			</tns:Rectangle>
+			<tns:Touch pushTimeRefId="Standard"
+				releaseTimeRefId="ValueChange">
+				<tns:Coordinate X="125" Y="70" />
+			</tns:Touch>
+			<tns:ScreenGrafic id="Zeiteinstellung_YYYY">
+				<tns:Field>
+					<tns:TopLeft X="96" Y="55" />
+					<tns:BottomRight X="101" Y="78" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Year>
+		<tns:Month>
+			<tns:Rectangle>
+				<tns:TopLeft X="69" Y="57" />
+				<tns:BottomRight X="94" Y="76" />
+			</tns:Rectangle>
+			<tns:Touch pushTimeRefId="Standard"
+				releaseTimeRefId="ValueChange">
+				<tns:Coordinate X="80" Y="70" />
+			</tns:Touch>
+			<tns:ScreenGrafic id="Zeiteinstellung_MM">
+				<tns:Field>
+					<tns:TopLeft X="66" Y="55" />
+					<tns:BottomRight X="69" Y="78" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Month>
+		<tns:Day>
+			<tns:Rectangle>
+				<tns:TopLeft X="38" Y="57" />
+				<tns:BottomRight X="63" Y="76" />
+			</tns:Rectangle>
+			<tns:Touch pushTimeRefId="Standard"
+				releaseTimeRefId="ValueChange">
+				<tns:Coordinate X="50" Y="70" />
+			</tns:Touch>
+			<tns:ScreenGrafic id="Zeiteinstellung_DD">
+				<tns:Field>
+					<tns:TopLeft X="63" Y="55" />
+					<tns:BottomRight X="67" Y="78" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Day>
+		<tns:Hour>
+			<tns:Rectangle>
+				<tns:TopLeft X="69" Y="32" />
+				<tns:BottomRight X="94" Y="51" />
+			</tns:Rectangle>
+			<tns:Touch pushTimeRefId="Standard"
+				releaseTimeRefId="ValueChange">
+				<tns:Coordinate X="85" Y="40" />
+			</tns:Touch>
+			<tns:ScreenGrafic id="Zeiteinstellung_hh">
+				<tns:Field>
+					<tns:TopLeft X="94" Y="30" />
+					<tns:BottomRight X="100" Y="55" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Hour>
+		<tns:Minute>
+			<tns:Rectangle>
+				<tns:TopLeft X="100" Y="32" />
+				<tns:BottomRight X="125" Y="51" />
+			</tns:Rectangle>
+			<tns:Touch pushTimeRefId="Standard"
+				releaseTimeRefId="ValueChange">
+				<tns:Coordinate X="115" Y="40" />
+			</tns:Touch>
+			<tns:ScreenGrafic id="Zeiteinstellung_mm">
+				<tns:Field>
+					<tns:TopLeft X="97" Y="30" />
+					<tns:BottomRight X="100" Y="55" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Minute>
+		<tns:Upper pushTimeRefId="Standard"
+			releaseTimeRefId="ValueChange">
+			<tns:Coordinate X="185" Y="140" />
+		</tns:Upper>
+		<tns:Lower pushTimeRefId="Standard"
+			releaseTimeRefId="ValueChange">
+			<tns:Coordinate X="185" Y="100" />
+		</tns:Lower>
+		<tns:Ok pushTimeRefId="Standard"
+			releaseTimeRefId="WindowChange">
+			<tns:Coordinate X="185" Y="70" />
+		</tns:Ok>
+	</tns:Clock>
 	<tns:Durations>
 		<!-- Standard-Zeit für das Drücken eines Bildschirmbuttons -->
 		<tns:Duration id="Standard" time_ms="400" />

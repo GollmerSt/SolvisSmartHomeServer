@@ -107,7 +107,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 		this.setConnected();
 		String hexString = builder.toString();
-		logger.debug("Hex string received from solvis: " + hexString);
+		//logger.debug("Hex string received from solvis: " + hexString);
 		return hexString;
 	}
 

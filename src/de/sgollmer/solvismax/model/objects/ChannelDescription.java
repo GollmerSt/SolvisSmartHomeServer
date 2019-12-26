@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.calculation.Calculation;
@@ -39,12 +40,12 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, ErrorPowerOn {
+	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, ErrorPowerOn, TerminationException {
 		return this.channelSource.getValue(dest, solvis);
 	}
 
 	@Override
-	public boolean setValue(Solvis solvis, SolvisData value) throws IOException {
+	public boolean setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
 		return this.channelSource.setValue(solvis, value);
 	}
 

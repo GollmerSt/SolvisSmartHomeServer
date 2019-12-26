@@ -111,23 +111,28 @@ public class XmlStreamReader<D> {
 			} catch (XMLStreamException e1) {
 				throw new XmlError(e1, "XML syntax error in file \"" + streamId + "\"");
 			}
-			switch (ev.getEventType()) {
-				case XMLStreamConstants.END_ELEMENT:
-					finished = true;
-					break;
-				case XMLStreamConstants.START_ELEMENT:
-					QName name = ev.asStartElement().getName();
-					hash.put(name);
-					CreatorByXML<?> child = creator.getCreator(name);
-					if (child == null) {
-						child = new NullCreator(name.getLocalPart(), creator.getBaseCreator());
-					}
-					creator.created(child, this.create(child, reader, ev, streamId, hash));
-					break;
-				case XMLStreamConstants.CHARACTERS:
-					String text = ev.asCharacters().getData();
-					hash.put(text);
-					creator.addCharacters(text);
+			try {
+				switch (ev.getEventType()) {
+					case XMLStreamConstants.END_ELEMENT:
+						finished = true;
+						break;
+					case XMLStreamConstants.START_ELEMENT:
+						QName name = ev.asStartElement().getName();
+						hash.put(name);
+						CreatorByXML<?> child = creator.getCreator(name);
+						if (child == null) {
+							child = new NullCreator(name.getLocalPart(), creator.getBaseCreator());
+						}
+						creator.created(child, this.create(child, reader, ev, streamId, hash));
+						break;
+					case XMLStreamConstants.CHARACTERS:
+						String text = ev.asCharacters().getData();
+						hash.put(text);
+						creator.addCharacters(text);
+				}
+			} catch (XmlError e) {
+				throw new XmlError(
+						"XML error on line " + ev.getLocation().getLineNumber() + " occured:\n" + e.getMessage());
 			}
 		}
 		return creator.create();

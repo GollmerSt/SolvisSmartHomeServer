@@ -22,7 +22,7 @@ public class AllPreparations {
 
 	public Preparation get(String id) {
 		for (Preparation preparation : this.preparations) {
-			if (preparation.id.equals(id)) {
+			if (preparation.getId().equals(id)) {
 				return preparation;
 			}
 		}

@@ -275,7 +275,7 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 		</attribute>
 	</complexType>
 
-	<complexType name="Mode">
+	<!-- >complexType name="Mode">
 		<annotation>
 			<documentation>Definitionen der Betriebsarten um die aktulle Betriebsart zu ermmitteln/einzustellen (z.B. Tag/Nacht/Standby)
 			</documentation>
@@ -284,7 +284,7 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 			<element name="Mode" type="tns:Mode" maxOccurs="unbounded"
 				minOccurs="0"></element>
 		</sequence>
-	</complexType>
+	</complexType-->
 
 	<complexType name="Value">
 		<annotation>
@@ -378,11 +378,14 @@ false: Bei fester Grenze
 			<element name="FallBack" type="tns:FallBack" maxOccurs="1"
 				minOccurs="1">
 			</element>
-			<element name="ChannelDescriptions" type="tns:ChannelDescriptions"
-				maxOccurs="1" minOccurs="1">
+			<element name="ChannelDescriptions"
+				type="tns:ChannelDescriptions" maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="Preparations" type="tns:Preparations" maxOccurs="1"
-				minOccurs="0">
+			<element name="Preparations" type="tns:Preparations"
+				maxOccurs="1" minOccurs="0">
+			</element>
+			<element name="Clock" type="tns:Clock" maxOccurs="1"
+				minOccurs="1">
 			</element>
 			<element name="Durations" type="tns:Durations" maxOccurs="1"
 				minOccurs="1">
@@ -816,10 +819,15 @@ da der user diesen manuell verändert haben könnte.</documentation>
 
     <complexType name="Preparation">
     	<sequence>
-    		<element name="TouchPoint" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
-    		<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1"></element>
+    		<element name="TouchPoint" type="tns:TouchPoint"
+    			maxOccurs="1" minOccurs="1">
+    		</element>
+    		<element name="ScreenGrafic" type="tns:ScreenGrafic"
+    			maxOccurs="1" minOccurs="1">
+    		</element>
     	</sequence>
     	<attribute name="id" type="string" use="required"></attribute>
+    	<attribute name="clearScreenId" type="string" use="optional"></attribute>
     </complexType>
 
     <complexType name="Preparations">
@@ -858,5 +866,35 @@ da der user diesen manuell verändert haben könnte.</documentation>
 
     <complexType name="PreparationRef">
     	<attribute name="refId" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="Clock">
+    	<annotation>
+    		<documentation>Parameter zum Stellen der Uhr</documentation>
+    	</annotation>
+    	<sequence>
+    		<element name="Year" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Month" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Day" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Hour" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Minute" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Upper" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Lower" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Ok" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
+    	<attribute name="screenId" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="DatePart">
+    	<sequence>
+    		<element name="Rectangle" type="tns:Rectangle" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="Touch" type="tns:TouchPoint"></element>
+    		<element name="ScreenGrafic" type="tns:ScreenGrafic"
+    			maxOccurs="1" minOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="least" type="int" use="optional"></attribute>
     </complexType>
 </schema>

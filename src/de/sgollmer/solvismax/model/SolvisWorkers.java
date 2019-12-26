@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.Set;
 
-import org.apache.logging.log4j.core.util.SystemClock;
 import org.slf4j.LoggerFactory;
 
 import de.sgollmer.solvismax.Constants;
@@ -62,68 +61,74 @@ public class SolvisWorkers {
 			}
 
 			while (!this.terminate) {
+				boolean success;
 				Command command = null;
-				synchronized (this) {
-					if (this.queue.isEmpty()) {
-						if (!queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
-							restoreScreen = true;
-							queueWasEmpty = true;
-						} else {
-							try {
-								this.wait(watchDogTime);
-							} catch (InterruptedException e) {
+				if (solvis.getSolvisState().getState() == SolvisState.State.SOLVIS_CONNECTED) {
+					synchronized (this) {
+						if (this.queue.isEmpty()) {
+							if (!queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
+								restoreScreen = true;
+								queueWasEmpty = true;
+							} else {
+								try {
+									this.wait(watchDogTime);
+								} catch (InterruptedException e) {
+								}
+								if (this.queue.isEmpty()) {
+									executeWatchDog = true;
+									// this.screenRestoreInhibitCnt = 0;
+								}
 							}
-							if (this.queue.isEmpty()) {
-								executeWatchDog = true;
-								// this.screenRestoreInhibitCnt = 0;
-							}
-						}
 
-					} else {
-						if (queueWasEmpty && screenRestoreInhibitCnt == 0) {
-							saveScreen = true;
-						}
-						queueWasEmpty = false;
-						command = this.queue.peek();
-						if (!command.isInhibit()) {
-							if (command.isScreenRestoreOff()) {
-								++this.screenRestoreInhibitCnt;
-							} else if (command.isScreenRestoreOn()) {
-								if (this.screenRestoreInhibitCnt > 0) {
-									--this.screenRestoreInhibitCnt;
+						} else {
+							if (queueWasEmpty && screenRestoreInhibitCnt == 0) {
+								saveScreen = true;
+							}
+							queueWasEmpty = false;
+							command = this.queue.peek();
+							if (!command.isInhibit()) {
+								if (command.isScreenRestoreOff()) {
+									++this.screenRestoreInhibitCnt;
+								} else if (command.isScreenRestoreOn()) {
+									if (this.screenRestoreInhibitCnt > 0) {
+										--this.screenRestoreInhibitCnt;
+									}
 								}
 							}
 						}
 					}
-				}
-				if (this.terminate) {
-					return;
-				}
-				boolean success = true;
-				try {
-					if (saveScreen) {
-						SolvisWorkers.this.solvis.saveScreen();
-						saveScreen = false;
-					} else if (restoreScreen) {
-						SolvisWorkers.this.solvis.restoreScreen();
-						restoreScreen = false;
+					if (this.terminate) {
+						return;
 					}
-					if (executeWatchDog) {
-						watchDog.execute();
-					}
-					if (command != null && !command.isInhibit() && command.getDescription() != null) {
-						success = executeCommand(command);
-					}
-				} catch (IOException e) {
-					success = false;
-				} catch (ErrorPowerOn e2) {
-					success = false;
-					solvis.getSolvisState().powerOff();
-				} catch (TerminationException e3) {
-					return;
-				} catch (Throwable e4) {
-					logger.error("Unknown error detected", e4);
 					success = true;
+
+					try {
+						if (saveScreen) {
+							SolvisWorkers.this.solvis.saveScreen();
+							saveScreen = false;
+						} else if (restoreScreen) {
+							SolvisWorkers.this.solvis.restoreScreen();
+							restoreScreen = false;
+						}
+						if (executeWatchDog) {
+							watchDog.execute();
+						}
+						if (command != null && !command.isInhibit() && command.getDescription() != null) {
+							success = executeCommand(command);
+						}
+					} catch (IOException e) {
+						success = false;
+					} catch (ErrorPowerOn e2) {
+						success = false;
+						solvis.getSolvisState().powerOff();
+					} catch (TerminationException e3) {
+						return;
+					} catch (Throwable e4) {
+						logger.error("Unknown error detected", e4);
+						success = true;
+					}
+				} else {
+					success = false;
 				}
 				synchronized (this) {
 					if (success) {
@@ -133,8 +138,10 @@ public class SolvisWorkers {
 					} else {
 						try {
 							this.wait(unsuccessfullWaitTime);
-							watchDog.execute();
-							executeWatchDog = false;
+							if (solvis.getSolvisState().getState() == SolvisState.State.SOLVIS_CONNECTED) {
+								watchDog.execute();
+								executeWatchDog = false;
+							}
 						} catch (InterruptedException e) {
 						}
 					}
@@ -190,11 +197,11 @@ public class SolvisWorkers {
 
 		SolvisData data = solvis.getAllSolvisData().get(description);
 		if (command.getSetValue() == null) {
-			success = command.getDescription().getValue(data, solvis);
+			success = solvis.getValue( command.getDescription());
 		} else {
 			SolvisData clone = data.clone();
 			clone.setSingleData(command.getSetValue());
-			success = command.getDescription().setValue(solvis, clone);
+			success = solvis.setValue(command.getDescription(), clone);
 			if (success) {
 				data.setSingleData(command.getSetValue());
 			}
@@ -235,6 +242,7 @@ public class SolvisWorkers {
 					}
 				}
 			}
+
 			if (this.measurementsThread == null) {
 				this.measurementsThread = new MeasurementsWorkerThread();
 				this.measurementsThread.start();
@@ -254,11 +262,12 @@ public class SolvisWorkers {
 
 		@Override
 		public void run() {
-			int measurementIntervall = solvis.getSolvisDescription().getMiscellaneous().getDefaultReadMeasurementsIntervall();
+			int measurementIntervall = solvis.getSolvisDescription().getMiscellaneous()
+					.getDefaultReadMeasurementsIntervall();
 			int errorCount = 0;
 			int powerOffDetectedAfterIoErrors = solvis.getSolvisDescription().getMiscellaneous()
-					.getPowerOffDetectedAfterIoErrors() ;
-			this.nextTime = System.currentTimeMillis() + measurementIntervall ;
+					.getPowerOffDetectedAfterIoErrors();
+			this.nextTime = System.currentTimeMillis() + measurementIntervall;
 			while (!terminate) {
 
 				try {
@@ -273,16 +282,15 @@ public class SolvisWorkers {
 				} catch (ErrorPowerOn e2) {
 					solvis.getSolvisState().remoteConnected();
 				}
-				
+
 				synchronized (this) {
-					int waitTime = (int) (this.nextTime - System.currentTimeMillis()) ;
-					if ( waitTime <= 0) {
-						waitTime = Constants.WAITTIME_IF_LE_ZERO ;
+					int waitTime = (int) (this.nextTime - System.currentTimeMillis());
+					if (waitTime <= 0) {
+						waitTime = Constants.WAITTIME_IF_LE_ZERO;
 					}
-					this.nextTime += measurementIntervall ;
+					this.nextTime += measurementIntervall;
 					try {
-						this.wait(
-								waitTime);
+						this.wait(waitTime);
 					} catch (InterruptedException e) {
 					}
 				}

@@ -109,6 +109,7 @@ public class WatchDog {
 						break;
 					case DETECTED:
 						this.solvis.clearCurrentImage();
+						this.solvis.getCurrentImage();
 						if (changedTime < 0) {
 							solvis.notifyScreenChangedByUserObserver(true);
 							logger.info("User access detected");

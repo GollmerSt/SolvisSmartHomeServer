@@ -69,7 +69,9 @@ public class GraficFileHandler {
 		File xml = new File(this.parent, NAME_XML_GRAFICSFILE);
 		
 		if ( ! xml.exists() ) {
-			return new AllSolvisGrafics() ;
+			AllSolvisGrafics grafics = new AllSolvisGrafics() ;
+			grafics.setCurrentControlFileHashCode(this.currentControllFileHashCode);
+			return grafics ;
 		}
 
 		InputStream source = new FileInputStream(xml);

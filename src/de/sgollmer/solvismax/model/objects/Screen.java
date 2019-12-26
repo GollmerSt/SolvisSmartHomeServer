@@ -49,12 +49,12 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 	private final Collection<String> screenGraficRefs;
 	private final Collection<Rectangle> ignoreRectangles;
 	private final String preparationId;
-	private Preparation preparation = null ;
+	private Preparation preparation = null;
 
 	public OfConfigs<Screen> previousScreen = null;
 	public OfConfigs<Screen> alternativePreviousScreen = null;
 	public OfConfigs<Screen> backScreen = null;
-	public Collection<Screen> nextScreens = new ArrayList<>(3);
+	public List<Screen> nextScreens = new ArrayList<>(3);
 
 	public Screen(String id, String previousId, String alternativePreviousId, String backId, boolean ignoreChanges,
 			ConfigurationMasks configurationMasks, TouchPoint touchPoint, TouchPoint alternativeTouchPoint,
@@ -99,6 +99,18 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		return this.id.hashCode();
 	}
 
+	public boolean prepare(Solvis solvis) throws IOException, TerminationException {
+		if (this.preparation == null) {
+			return true;
+		} else {
+			return this.preparation.execute(solvis);
+		}
+	}
+
+	public Preparation getPreparation() {
+		return this.preparation;
+	}
+
 	@Override
 	public void assign(SolvisDescription description) throws ReferenceError {
 		for (String id : screenGraficRefs) {
@@ -136,21 +148,36 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		if (this.alternativeTouchPoint != null) {
 			this.alternativeTouchPoint.assign(description);
 		}
-		
-		if ( preparationId != null ) {
-			this.preparation = description.getPreparations().get( preparationId) ;
-			if ( this.preparation == null ) {
+
+		if (preparationId != null) {
+			this.preparation = description.getPreparations().get(preparationId);
+			if (this.preparation == null) {
 				throw new ReferenceError("Preparation of reference < " + this.preparationId + " > not found");
 			}
+			this.preparation.assign(description);
 		}
 
 	}
 
 	public void addNextScreen(Screen nextScreen) {
-		this.nextScreens.add(nextScreen);
+		int thisBack = 0;
+		for (Screen back : nextScreen.backScreen.getElements()) {
+			if (back == this) {
+				++thisBack;
+			}
+		}
+
+		if (thisBack > nextScreen.backScreen.getElements().size() / 2) {
+			this.nextScreens.add(0, nextScreen);
+		} else {
+			this.nextScreens.add(nextScreen);
+		}
 	}
 
 	public boolean isScreen(MyImage image, Solvis solvis) {
+		if ( this.screenCompares.isEmpty() ) {
+			throw new XmlError("Error in XML definition: Grafic information of screen <" + this.getId() + "> is missing.") ;
+		}
 		for (ScreenCompare grafic : this.screenCompares) {
 			if (!grafic.isElementOf(image, solvis)) {
 				return false;
@@ -166,6 +193,9 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 					return false;
 				}
 			}
+		}
+		if ( this.preparation != null ) {
+			return this.preparation.isLearned(solvis) ;
 		}
 		return true;
 	}
@@ -212,12 +242,12 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 			Screen altScreen = current.getAlternativePreviousScreen(configurationMask);
 			if (altScreen != null && !learn) {
 				if (previous.getAlternativePreviousScreen(configurationMask) != null) {
-					if (contains(screens,previous)) {
+					if (contains(screens, previous)) {
 						previous = altScreen;
 						touch = current.getAlternativeTouchPoint();
 					}
 				} else if (altScreen.getAlternativePreviousScreen(configurationMask) != null) {
-					if (!contains(screens,altScreen)) {
+					if (!contains(screens, altScreen)) {
 						previous = altScreen;
 						touch = current.getAlternativeTouchPoint();
 					}
@@ -229,14 +259,14 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		}
 		return screens;
 	}
-	
-	private static boolean contains( List<ScreenTouch> list, Screen screen) {
-		for ( ScreenTouch screenTouch : list ) {
-			if ( screen == screenTouch.screen ) {
-				return true ;
+
+	private static boolean contains(List<ScreenTouch> list, Screen screen) {
+		for (ScreenTouch screenTouch : list) {
+			if (screen == screenTouch.screen) {
+				return true;
 			}
 		}
-		return false ;
+		return false;
 	}
 
 	/**
@@ -279,27 +309,27 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-				case "id":
-					this.id = value;
-					break;
-				case "previousId":
-					if (!value.isEmpty()) {
-						this.previousId = value;
-					}
-					break;
-				case "alternativePreviousId":
-					if (!value.isEmpty()) {
-						this.alternativePreviousId = value;
-					}
-					break;
-				case "backId":
-					if (!value.isEmpty()) {
-						this.backId = value;
-					}
-					break;
-				case "ignoreChanges":
-					this.ignoreChanges = Boolean.parseBoolean(value);
-					break;
+			case "id":
+				this.id = value;
+				break;
+			case "previousId":
+				if (!value.isEmpty()) {
+					this.previousId = value;
+				}
+				break;
+			case "alternativePreviousId":
+				if (!value.isEmpty()) {
+					this.alternativePreviousId = value;
+				}
+				break;
+			case "backId":
+				if (!value.isEmpty()) {
+					this.backId = value;
+				}
+				break;
+			case "ignoreChanges":
+				this.ignoreChanges = Boolean.parseBoolean(value);
+				break;
 			}
 
 		}
@@ -327,22 +357,22 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (name.getLocalPart()) {
-				case XML_CONFIGURATION_MASKS:
-					return new ConfigurationMasks.Creator(id, this.getBaseCreator());
-				case XML_TOUCH_POINT:
-					return new TouchPoint.Creator(id, this.getBaseCreator());
-				case XML_ALTERNATIVE_TOUCH_POINT:
-					return new TouchPoint.Creator(id, this.getBaseCreator());
-				case XML_SCREEN_GRAFICS:
-					return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
-				case XML_SCREEN_GRAFICS_REF:
-					return new CreatorScreenGraficRef(id, this.getBaseCreator());
-				case XML_SCREEN_OCR:
-					return new ScreenOcr.Creator(id, getBaseCreator());
-				case XML_IGNORE_RECTANGLE:
-					return new Rectangle.Creator(id, getBaseCreator());
-				case XML_PREPARATION_REF:
-					return new PreparationRef.Creator(id, getBaseCreator()) ;
+			case XML_CONFIGURATION_MASKS:
+				return new ConfigurationMasks.Creator(id, this.getBaseCreator());
+			case XML_TOUCH_POINT:
+				return new TouchPoint.Creator(id, this.getBaseCreator());
+			case XML_ALTERNATIVE_TOUCH_POINT:
+				return new TouchPoint.Creator(id, this.getBaseCreator());
+			case XML_SCREEN_GRAFICS:
+				return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
+			case XML_SCREEN_GRAFICS_REF:
+				return new CreatorScreenGraficRef(id, this.getBaseCreator());
+			case XML_SCREEN_OCR:
+				return new ScreenOcr.Creator(id, getBaseCreator());
+			case XML_IGNORE_RECTANGLE:
+				return new Rectangle.Creator(id, getBaseCreator());
+			case XML_PREPARATION_REF:
+				return new PreparationRef.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -350,35 +380,35 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_CONFIGURATION_MASKS:
-					this.configurationMasks = (ConfigurationMasks) created;
-					break;
-				case XML_TOUCH_POINT:
-					this.touchPoint = (TouchPoint) created;
-					break;
-				case XML_ALTERNATIVE_TOUCH_POINT:
-					this.alternativeTouchPoint = (TouchPoint) created;
-					break;
-				case XML_SCREEN_GRAFICS:
-					ScreenGraficDescription grafic = (ScreenGraficDescription) created;
-					this.screenGraficRefs.add(grafic.getId());
-					((SolvisDescription.Creator) this.getBaseCreator()).getScreenGraficDescriptions().add(grafic);
-					break;
-				case XML_SCREEN_GRAFICS_REF:
-					this.screenGraficRefs.add((String) created);
-					break;
-				case XML_SCREEN_OCR:
-					this.screenOcr.add((ScreenOcr) created);
-					break;
-				case XML_IGNORE_RECTANGLE:
-					if (this.ignoreRectangles == null) {
-						this.ignoreRectangles = new ArrayList<>();
-					}
-					this.ignoreRectangles.add((Rectangle) created);
-					break;
-				case XML_PREPARATION_REF:
-					this.preparationId = ((PreparationRef)created).getPreparationId() ;
-					break ;
+			case XML_CONFIGURATION_MASKS:
+				this.configurationMasks = (ConfigurationMasks) created;
+				break;
+			case XML_TOUCH_POINT:
+				this.touchPoint = (TouchPoint) created;
+				break;
+			case XML_ALTERNATIVE_TOUCH_POINT:
+				this.alternativeTouchPoint = (TouchPoint) created;
+				break;
+			case XML_SCREEN_GRAFICS:
+				ScreenGraficDescription grafic = (ScreenGraficDescription) created;
+				this.screenGraficRefs.add(grafic.getId());
+				((SolvisDescription.Creator) this.getBaseCreator()).getScreenGraficDescriptions().add(grafic);
+				break;
+			case XML_SCREEN_GRAFICS_REF:
+				this.screenGraficRefs.add((String) created);
+				break;
+			case XML_SCREEN_OCR:
+				this.screenOcr.add((ScreenOcr) created);
+				break;
+			case XML_IGNORE_RECTANGLE:
+				if (this.ignoreRectangles == null) {
+					this.ignoreRectangles = new ArrayList<>();
+				}
+				this.ignoreRectangles.add((Rectangle) created);
+				break;
+			case XML_PREPARATION_REF:
+				this.preparationId = ((PreparationRef) created).getPreparationId();
+				break;
 			}
 
 		}
@@ -431,7 +461,8 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		}
 	}
 
-	public void learn(Solvis solvis, Collection<LearnScreen> learnScreens, int configurationMask) throws IOException, TerminationException {
+	public void learn(Solvis solvis, Collection<LearnScreen> learnScreens, int configurationMask)
+			throws IOException, TerminationException {
 
 		// Seach all LearnScreens object of current screen and learn the
 		// ScreenGrafic
@@ -461,11 +492,25 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 		if (learnScreens.size() > 0) { // Yes
 			Screen current = this;
 			for (Screen nextScreen : this.getNextScreen(configurationMask)) {
-				if (nextScreen.isForLearning(solvis, learnScreens, configurationMask)) {
+				if (nextScreen.isToBeLearning(solvis, learnScreens, configurationMask)) {
 					boolean success = false;
 					for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
 						try {
-							Screen.gotoScreenLearning(solvis, nextScreen, current, learnScreens, configurationMask);
+							Screen gotoScreen = nextScreen ;
+							Preparation preparation = nextScreen.getPreparation() ;
+							if ( preparation != null ) {
+								gotoScreen = nextScreen.getPreviousScreen(configurationMask) ;
+								Screen clearScreen = preparation.getClearScreen(configurationMask) ;
+								if ( clearScreen != null ) {
+									Screen.gotoScreenLearning(solvis, clearScreen, current, learnScreens, configurationMask);
+								}
+							}
+							Screen.gotoScreenLearning(solvis, gotoScreen, current, learnScreens, configurationMask);
+							if ( preparation != null ) {
+								preparation.learn(solvis, gotoScreen) ;
+								preparation.execute(solvis) ;
+								Screen.gotoScreenLearning(solvis, nextScreen, current, learnScreens, configurationMask);
+							}
 							current = nextScreen;
 							Screen cmpScreen = solvis.getCurrentScreen();
 							if (cmpScreen == null || cmpScreen == nextScreen) {
@@ -487,17 +532,30 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 			}
 		}
 		if (this.getNextScreen(configurationMask).size() == 0 && this.alternativePreviousId != null) {
-			Screen prevAlternative = this.alternativePreviousScreen.get(configurationMask);
-			if (prevAlternative != null) {
-				Screen toSelect = prevAlternative.getNextScreen(configurationMask).iterator().next();
-				if (toSelect.previousScreen == toSelect.backScreen) {
-					solvis.send(toSelect.alternativeTouchPoint);
+			Screen alter = this.getAlternativePreviousScreen(configurationMask);
+			Screen current = this;
+			boolean found = false;
+			TouchPoint currentTouch = current.getTouchPoint();
+			TouchPoint previousTouch = null;
+			while (!found) {
+				Screen previous = current.getPreviousScreen(configurationMask);
+				previousTouch = current.getTouchPoint();
+				if (previous == alter) {
+					previous = current.getAlternativePreviousScreen(configurationMask);
+					previousTouch = current.getAlternativeTouchPoint();
+				}
+				if (previous == this) {
+					found = true;
+				} else {
+					current = previous;
+					currentTouch = previousTouch;
 				}
 			}
+			solvis.send(currentTouch);
 		}
 	}
 
-	private boolean isForLearning(Solvis solvis, Collection<LearnScreen> learnScreens, int configurationMask) {
+	private boolean isToBeLearning(Solvis solvis, Collection<LearnScreen> learnScreens, int configurationMask) {
 		if (!this.isLearned(solvis)) {
 			for (LearnScreen learnScreen : learnScreens) {
 				if (learnScreen.getScreen() == this) {
@@ -506,7 +564,7 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 			}
 		}
 		for (Screen screen : this.getNextScreen(configurationMask)) {
-			if (screen.isForLearning(solvis, learnScreens, configurationMask)) {
+			if (screen.isToBeLearning(solvis, learnScreens, configurationMask)) {
 				return true;
 			}
 		}
@@ -657,5 +715,5 @@ public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.E
 	public ConfigurationMasks getConfigurationMask() {
 		return configurationMasks;
 	}
-	
+
 }

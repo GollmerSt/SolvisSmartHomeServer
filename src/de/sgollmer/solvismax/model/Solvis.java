@@ -287,12 +287,12 @@ public class Solvis {
 		this.worker.push(command);
 	}
 
-	public boolean getValue(ChannelDescription description) throws IOException, ErrorPowerOn {
+	public boolean getValue(ChannelDescription description) throws IOException, ErrorPowerOn, TerminationException {
 		SolvisData data = this.allSolvisData.get(description);
 		return description.getValue(data, this);
 	}
 
-	public boolean setValue(ChannelDescription description, SolvisData value) throws IOException {
+	public boolean setValue(ChannelDescription description, SolvisData value) throws IOException, TerminationException {
 		synchronized (solvisGUIObject) {
 			return description.setValue(this, value);
 		}
