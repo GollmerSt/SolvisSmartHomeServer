@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
+import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ErrorScreen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
@@ -21,7 +22,7 @@ public class WatchDog {
 
 	private final int releaseblockingAfterUserChange_ms;
 	private final int watchDogTime;
-	private boolean finished = false;
+	private boolean abort = false;
 
 	public WatchDog(Solvis solvis, ScreenSaver saver) {
 		this.solvis = solvis;
@@ -33,6 +34,16 @@ public class WatchDog {
 		}
 		this.releaseblockingAfterUserChange_ms = releaseBlocking;
 		this.watchDogTime = misc.getWatchDogTime_ms();
+		this.solvis.registerAbortObserver(new ObserverI<Boolean>() {
+			
+			@Override
+			public void update(Boolean data, Object source) {
+				if ( data  ) {
+					abort() ;
+				}
+				
+			}
+		});
 	}
 
 	private enum UserAcess {
@@ -42,9 +53,9 @@ public class WatchDog {
 	public void execute() {
 
 		long changedTime = -1;
-		this.finished = false ;
+		this.abort = false ;
 
-		while (!finished) {
+		while (!abort) {
 
 			long time = System.currentTimeMillis();
 
@@ -93,9 +104,9 @@ public class WatchDog {
 				switch (userAcess) {
 					case NONE:
 						if (changedTime > 0) {
-							finished = false;
+							abort = false;
 						} else {
-							finished = true;
+							abort = true;
 						}
 						break;
 					case RESET:
@@ -105,7 +116,7 @@ public class WatchDog {
 							logger.info("User access finished");
 						}
 						changedTime = -1;
-						finished = true;
+						abort = true;
 						break;
 					case DETECTED:
 						this.solvis.clearCurrentImage();
@@ -115,18 +126,18 @@ public class WatchDog {
 							logger.info("User access detected");
 						}
 						changedTime = time;
-						finished = false;
+						abort = false;
 						break;
 				}
 				
 				this.solvis.getSolvisState().error(errorDetected);
 
 				if (errorDetected) {
-					finished = false;
+					abort = false;
 				}
 				
 				synchronized (this) {
-					if (!finished) {
+					if (!abort) {
 						this.wait(this.watchDogTime);
 					}
 				}
@@ -138,8 +149,8 @@ public class WatchDog {
 		}
 	}
 
-	public synchronized void terminate() {
-		this.finished = true;
+	private synchronized void abort() {
+		this.abort = true;
 		this.notifyAll();
 	}
 	

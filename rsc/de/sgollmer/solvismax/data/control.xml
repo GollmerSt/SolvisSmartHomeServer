@@ -1124,28 +1124,28 @@
 				<tns:TypeMode>
 					<tns:Mode id="Tag">
 						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
+							releaseTimeRefId="WindowChange">
 							<tns:Coordinate X="95" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeTag" />
 					</tns:Mode>
 					<tns:Mode id="Nacht">
 						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
+							releaseTimeRefId="WindowChange">
 							<tns:Coordinate X="125" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeNacht" />
 					</tns:Mode>
 					<tns:Mode id="Standby">
 						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
+							releaseTimeRefId="WindowChange">
 							<tns:Coordinate X="160" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeStandby" />
 					</tns:Mode>
 					<tns:Mode id="Timer">
 						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
+							releaseTimeRefId="WindowChange">
 							<tns:Coordinate X="60" Y="110" />
 						</tns:Touch>
 						<tns:ScreenGrafic id="ModeTimer" />
@@ -1500,14 +1500,14 @@
 			</tns:ScreenGrafic>
 		</tns:Preparation>
 	</tns:Preparations>
-	<tns:Clock screenId="Zeiteinstellung">
+	<tns:Clock channelId="X6.UhrzeitSolvis" screenId="Zeiteinstellung">
 		<tns:Year least="2008">
 			<tns:Rectangle>
-				<tns:TopLeft X="100" Y="57" />
+				<tns:TopLeft X="101" Y="58" />
 				<tns:BottomRight X="149" Y="76" />
 			</tns:Rectangle>
 			<tns:Touch pushTimeRefId="Standard"
-				releaseTimeRefId="ValueChange">
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="125" Y="70" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_YYYY">
@@ -1519,11 +1519,11 @@
 		</tns:Year>
 		<tns:Month>
 			<tns:Rectangle>
-				<tns:TopLeft X="69" Y="57" />
+				<tns:TopLeft X="70" Y="58" />
 				<tns:BottomRight X="94" Y="76" />
 			</tns:Rectangle>
 			<tns:Touch pushTimeRefId="Standard"
-				releaseTimeRefId="ValueChange">
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="80" Y="70" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_MM">
@@ -1535,11 +1535,11 @@
 		</tns:Month>
 		<tns:Day>
 			<tns:Rectangle>
-				<tns:TopLeft X="38" Y="57" />
+				<tns:TopLeft X="39" Y="58" />
 				<tns:BottomRight X="63" Y="76" />
 			</tns:Rectangle>
 			<tns:Touch pushTimeRefId="Standard"
-				releaseTimeRefId="ValueChange">
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="50" Y="70" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_DD">
@@ -1551,27 +1551,27 @@
 		</tns:Day>
 		<tns:Hour>
 			<tns:Rectangle>
-				<tns:TopLeft X="69" Y="32" />
+				<tns:TopLeft X="70" Y="33" />
 				<tns:BottomRight X="94" Y="51" />
 			</tns:Rectangle>
 			<tns:Touch pushTimeRefId="Standard"
-				releaseTimeRefId="ValueChange">
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="85" Y="40" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_hh">
 				<tns:Field>
-					<tns:TopLeft X="94" Y="30" />
+					<tns:TopLeft X="95" Y="30" />
 					<tns:BottomRight X="100" Y="55" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Hour>
 		<tns:Minute>
 			<tns:Rectangle>
-				<tns:TopLeft X="100" Y="32" />
+				<tns:TopLeft X="101" Y="33" />
 				<tns:BottomRight X="125" Y="51" />
 			</tns:Rectangle>
 			<tns:Touch pushTimeRefId="Standard"
-				releaseTimeRefId="ValueChange">
+				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="115" Y="40" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_mm">
@@ -1582,8 +1582,8 @@
 			</tns:ScreenGrafic>
 		</tns:Minute>
 		<tns:Upper pushTimeRefId="Standard"
-			releaseTimeRefId="ValueChange">
-			<tns:Coordinate X="185" Y="140" />
+			releaseTimeRefId="WindowChange">
+			<tns:Coordinate X="185" Y="40" />
 		</tns:Upper>
 		<tns:Lower pushTimeRefId="Standard"
 			releaseTimeRefId="ValueChange">

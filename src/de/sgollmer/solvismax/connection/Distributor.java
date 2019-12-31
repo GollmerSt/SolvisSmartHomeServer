@@ -13,6 +13,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
+import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class Distributor extends Observable<JsonPackage> {
@@ -28,7 +29,6 @@ public class Distributor extends Observable<JsonPackage> {
 	private boolean burstUpdate = false;
 
 	public Distributor() {
-		this.aliveThread.start();
 	}
 
 	private class SolvisDataObserver implements Observer.ObserverI<SolvisData> {
@@ -93,7 +93,7 @@ public class Distributor extends Observable<JsonPackage> {
 		}
 	}
 
-	public void teminate() {
+	public void abort() {
 		this.aliveThread.shutdown();
 	}
 
@@ -111,13 +111,13 @@ public class Distributor extends Observable<JsonPackage> {
 			super("Alive thread");
 		}
 
-		boolean terminate = false;
+		boolean abort = false;
 		boolean triggered = false;
 
 		@Override
 		public void run() {
 
-			while (!terminate) {
+			while (!abort) {
 				boolean sendAlive = false;
 				synchronized (this) {
 					try {
@@ -142,7 +142,7 @@ public class Distributor extends Observable<JsonPackage> {
 		}
 
 		public synchronized void shutdown() {
-			this.terminate = true;
+			this.abort = true;
 			this.triggered = true; // disable send alive
 			this.notifyAll();
 		}
@@ -171,10 +171,18 @@ public class Distributor extends Observable<JsonPackage> {
 	}
 	
 	public void register( Solvis solvis ) {
+		solvis.registerAbortObserver(new ObserverI<Boolean>() {
+			
+			@Override
+			public void update(Boolean data, Object source) {
+				abort() ;
+				
+			}
+		});
 		solvis.getAllSolvisData().registerObserver(this.getSolvisDataObserver());
 		solvis.getConnection().register(this.getConnectionStateObserver());
 		solvis.getSolvisState().register(this.getSolvisStateObserver());
 		solvis.registerScreenChangedByUserObserver(userAccessObserver);
-		
+		this.aliveThread.start();
 	}
 }

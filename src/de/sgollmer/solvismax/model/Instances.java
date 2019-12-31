@@ -85,11 +85,11 @@ public class Instances {
 		return solvisDescription;
 	}
 	
-	public void terminate() {
+	public void abort() {
 		for ( Solvis unit : units ) {
-			unit.terminate();
+			unit.abort();
 		}
-		this.backupHandler.terminate(); 
+		this.backupHandler.abort(); 
 	}
 	
 	public void backupMeasurements() throws IOException, XMLStreamException {

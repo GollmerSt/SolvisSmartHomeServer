@@ -873,16 +873,33 @@ da der user diesen manuell verändert haben könnte.</documentation>
     		<documentation>Parameter zum Stellen der Uhr</documentation>
     	</annotation>
     	<sequence>
-    		<element name="Year" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
-    		<element name="Month" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
-    		<element name="Day" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
-    		<element name="Hour" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
-    		<element name="Minute" type="tns:DatePart" maxOccurs="1" minOccurs="1"></element>
-    		<element name="Upper" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
-    		<element name="Lower" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
-    		<element name="Ok" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Year" type="tns:DatePart" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="Month" type="tns:DatePart" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="Day" type="tns:DatePart" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="Hour" type="tns:DatePart" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="Minute" type="tns:DatePart" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="Upper" type="tns:TouchPoint" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="Lower" type="tns:TouchPoint" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element name="Ok" type="tns:TouchPoint" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
     	</sequence>
-    	<attribute name="screenId" type="string" use="required"></attribute>
+        <attribute name="channelId" type="string" use="required"></attribute>
+        <attribute name="screenId" type="string" use="required"></attribute>
     </complexType>
 
     <complexType name="DatePart">

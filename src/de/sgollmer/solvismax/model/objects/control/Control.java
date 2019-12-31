@@ -12,13 +12,12 @@ import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.helper.TerminationHelper;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI;
-import de.sgollmer.solvismax.model.objects.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 import de.sgollmer.solvismax.model.objects.Preparation;
@@ -236,17 +235,6 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
-			int configurationMask) {
-		if (this.strategy instanceof GraficsLearnable) {
-			LearnScreen learn = new LearnScreen();
-			learn.setScreen(this.screen.get(configurationMask));
-			((GraficsLearnable) this.strategy).createAndAddLearnScreen(learn, learnScreens, configurationMask);
-		}
-
-	}
-
-	@Override
 	public void learn(Solvis solvis) throws IOException, TerminationException {
 		if ( this.preparation != null ) {
 			this.preparation.learn(solvis, this.getScreen(solvis.getConfigurationMask())) ;
@@ -279,7 +267,7 @@ public class Control extends ChannelSource {
 				if ( success ) {
 					break ;
 				} else {
-					TerminationHelper.getInstance().sleep(solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms());
+					AbortHelper.getInstance().sleep(solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms());
 				}
 			}
 		}

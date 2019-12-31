@@ -37,7 +37,7 @@ public class Server {
 
 	public class ServerThread extends Thread {
 
-		private boolean terminate = false;
+		private boolean abort = false;
 
 		public ServerThread() {
 			super("Server");
@@ -45,7 +45,7 @@ public class Server {
 
 		@Override
 		public void run() {
-			while (!terminate) {
+			while (!abort) {
 				try {
 					waitForAvailableSocket();
 					Socket clientSocket = serverSocket.accept();
@@ -57,7 +57,7 @@ public class Server {
 					synchronized (this) {
 
 					}
-					if (!terminate) {
+					if (!abort) {
 						e.printStackTrace();
 						logger.error("Unexpected termination of server", e);
 						try {
@@ -70,8 +70,8 @@ public class Server {
 
 		}
 		
-		public synchronized void terminate() {
-			this.terminate = true ;
+		public synchronized void abort() {
+			this.abort = true ;
 			try {
 				serverSocket.close();
 			} catch (IOException e) {
@@ -120,11 +120,11 @@ public class Server {
 			try {
 				InputStream in = this.socket.getInputStream();
 
-				boolean terminateConnection = false;
+				boolean abortConnection = false;
 
-				while (!terminateConnection) {
+				while (!abortConnection) {
 					JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(in);
-					terminateConnection = commandHandler.commandFromClient(jsonPackage, this);
+					abortConnection = commandHandler.commandFromClient(jsonPackage, this);
 				}
 
 			} catch (Throwable e) {
@@ -179,7 +179,7 @@ public class Server {
 			}
 		}
 		
-		public synchronized void terminate() {
+		public synchronized void abort() {
 			try {
 				this.socket.close();
 			} catch (IOException e) {
@@ -193,13 +193,13 @@ public class Server {
 		this.serverThread.start();
 	}
 
-	public synchronized void terminate() {
+	public synchronized void abort() {
 		for ( Iterator<Client > it = connectedClients.iterator(); it.hasNext();) {
 			Client client = it.next() ;
-			client.terminate();
+			client.abort();
 			it.remove();
 		}
-		this.serverThread.terminate();
+		this.serverThread.abort();
 		this.notifyAll();
 		this.executor.shutdown();
 	}

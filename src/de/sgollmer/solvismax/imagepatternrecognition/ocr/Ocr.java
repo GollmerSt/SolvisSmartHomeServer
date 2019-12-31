@@ -107,9 +107,9 @@ public class Ocr extends MyImage {
 				return new Next(newBlackWhite, 0);
 			} else if (!checkActive && !checkInactive) {
 				return new Next(new BlackWhite(this.black, newBlackWhite.black), 1);
-			} else if ( checkActive && checkInactive ) {
+			} else if (checkActive && checkInactive) {
 				return new Next(new BlackWhite(newBlackWhite.white, this.white), -1);
-			} else  {
+			} else {
 				return new Next(new BlackWhite(newBlackWhite.white, this.white), -1);
 			}
 		}
@@ -160,30 +160,27 @@ public class Ocr extends MyImage {
 			return "Black: " + this.black + ", white: " + this.white;
 		}
 	}
-	
+
 	private static class AnalyseResult {
-		private final boolean  closedStructure ;
+		private final boolean closedStructure;
 		private final Coordinate average;
-		private final List< Coordinate > rotations180Degrees ;
-		
-		public AnalyseResult(	boolean  closedStructure, Coordinate average, List< Coordinate > rotations180Degrees ) {
-			this.closedStructure = closedStructure ;
-			this.average = average ;
-			this.rotations180Degrees = rotations180Degrees ;
+		private final List<Coordinate> rotations180Degrees;
+
+		public AnalyseResult(boolean closedStructure, Coordinate average, List<Coordinate> rotations180Degrees) {
+			this.closedStructure = closedStructure;
+			this.average = average;
+			this.rotations180Degrees = rotations180Degrees;
 		}
 	}
-	
 
 	private AnalyseResult analyse(Coordinate coord) {
 
-		List< Coordinate> rotations180Degrees = new ArrayList<>() ;
+		List<Coordinate> rotations180Degrees = new ArrayList<>();
 
-		
 		if (this.isActive(coord)) {
 			return new AnalyseResult(false, null, rotations180Degrees);
 		}
 
-		
 		boolean found = false;
 
 		int startX;
@@ -209,8 +206,8 @@ public class Ocr extends MyImage {
 		boolean cont = true;
 
 		BlackWhite current = start;
-		
-		int angle = 0 ;
+
+		int angle = 0;
 
 		while (cont) {
 			Next next = current.nextCicle();
@@ -221,20 +218,20 @@ public class Ocr extends MyImage {
 			++cnt;
 			cont = !start.equals(next.blackWhite);
 			current = next.blackWhite;
-			int rotated = next.rotated90Degree ;
-			if ( rotated != 0 ) {
-				if ( (angle > 0 && rotated < 0) || (angle < 0 && rotated > 0) ) {
-					angle = rotated ;
+			int rotated = next.rotated90Degree;
+			if (rotated != 0) {
+				if ((angle > 0 && rotated < 0) || (angle < 0 && rotated > 0)) {
+					angle = rotated;
 				} else {
-					angle += rotated ;
-					if ( angle > 1 ) {//|| angle < -1 ) {
-						rotations180Degrees.add(current.black) ;
+					angle += rotated;
+					if (angle > 1) {// || angle < -1 ) {
+						rotations180Degrees.add(current.black);
 					}
 				}
 			}
 		}
 
-		return new AnalyseResult(true, returnValue.div(cnt), rotations180Degrees ) ;
+		return new AnalyseResult(true, returnValue.div(cnt), rotations180Degrees);
 	}
 
 	private boolean detectSlash(boolean backSlash, int startY, int endY) {
@@ -242,11 +239,11 @@ public class Ocr extends MyImage {
 		int x = (backSlash ? 0 : this.getWidth() - 1);
 		int add = backSlash ? 1 : -1;
 
-		for (; !this.isActive(x, startY) && x >= 0 && x < this.getWidth(); x += add)
-			;
+		for (; !this.isActive(x, startY) && x >= 0 && x < this.getWidth(); x += add) {
+		}
 
-		for (; this.isActive(x, startY) && x >= 0 && x < this.getWidth(); x += add)
-			;
+		for (; this.isActive(x, startY) && x >= 0 && x < this.getWidth(); x += add) {
+		}
 
 		Coordinate white = new Coordinate(x, startY);
 		Coordinate black = new Coordinate(x - add, startY);
@@ -264,8 +261,8 @@ public class Ocr extends MyImage {
 			if (diff.getY() < 0 || diff.getX() * add < 0) {
 				return false;
 			}
-			if ( diff.getX() == 0 && diff.getY() == 0 ) {
-				diff = next.black.diff( current.black ) ;
+			if (diff.getX() == 0 && diff.getY() == 0) {
+				diff = next.black.diff(current.black);
 				if (diff.getY() < 0 || diff.getX() * add < 0) {
 					return false;
 				}
@@ -285,8 +282,8 @@ public class Ocr extends MyImage {
 
 			int x = this.maximaX[0].getCoord() / 2;
 
-			while (this.isActive(x, --y))
-				;
+			for (--y; this.isIn(x, y) && this.isActive(x, y); --y) {
+			}
 
 			Coordinate coord = new Coordinate(x, y);
 
@@ -294,11 +291,9 @@ public class Ocr extends MyImage {
 				return '4';
 			}
 		}
-		
-		AnalyseResult upper = this
-				.analyse(new Coordinate(this.getWidth() / 2, this.getHeight() / 4));
-		AnalyseResult lower = this
-				.analyse(new Coordinate(this.getWidth() / 2, this.getHeight() * 3 / 4));
+
+		AnalyseResult upper = this.analyse(new Coordinate(this.getWidth() / 2, this.getHeight() / 4));
+		AnalyseResult lower = this.analyse(new Coordinate(this.getWidth() / 2, this.getHeight() * 3 / 4));
 
 		if (upper.closedStructure && lower.closedStructure) {
 			if (upper.average.approximately(lower.average, 2)) {
@@ -396,8 +391,10 @@ public class Ocr extends MyImage {
 
 		if (this.detectSlash(false, 0, this.getWidth() - 1)) {
 			int x = 0;
-			while (!this.isActive(x++, 1) && x < this.getWidth() )
-				;
+
+			for (; !this.isActive(x, 1) && this.isIn(x, 1); ++x) {
+			}
+
 			if (x < this.getWidth() / 2) {
 				return '%';
 			}
@@ -408,10 +405,11 @@ public class Ocr extends MyImage {
 																// >
 																// this.getWidth()
 																// / 2) {
-			List<Coordinate> rotations = lower.rotations180Degrees ;
-			
-			if ( rotations.size() == 1 && rotations.get(0).getY() >= this.getHeight() / 3 && rotations.get(0).getY() <= this.getHeight() * 2 / 3 ) {
-				return '3' ;
+			List<Coordinate> rotations = lower.rotations180Degrees;
+
+			if (rotations.size() == 1 && rotations.get(0).getY() >= this.getHeight() / 3
+					&& rotations.get(0).getY() <= this.getHeight() * 2 / 3) {
+				return '3';
 			}
 		}
 
@@ -431,10 +429,10 @@ public class Ocr extends MyImage {
 		File parent = new File("testFiles\\images");
 
 		Collection<String> names = Arrays.asList("0.png", "1.png", "1 small.png", "2.png", "3.png", "3 grey.png",
-				"4.png", "4 black.png", "4 small.png", "4 Feineinstellung.png", "5.png", "6.png", "7.png", "8.png", "9.png", "9 grey small.png",
-				"minus.png", "minus2.png", "plus.png", "doppelpunkt.png", "punkt.png", "punkt small.png", "h small.png",
-				"grad.png", "C.png", "square bracket left.png", "square bracket right.png", "slash.png", "percent.png",
-				"percent grey.png");
+				"4.png", "4 black.png", "4 small.png", "4 Feineinstellung.png", "5.png", "6.png", "7.png", "8.png",
+				"9.png", "9 grey small.png", "minus.png", "minus2.png", "plus.png", "doppelpunkt.png", "punkt.png",
+				"punkt small.png", "h small.png", "grad.png", "C.png", "square bracket left.png",
+				"square bracket right.png", "slash.png", "percent.png", "percent grey.png");
 
 		BufferedImage image = null;
 

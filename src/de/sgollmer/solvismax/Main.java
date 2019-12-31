@@ -13,7 +13,7 @@ import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.helper.TerminationHelper;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.Logger2;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.objects.Units;
@@ -91,32 +91,34 @@ public class Main {
 			System.exit(40);
 		}
 
-		Instances instances = null;
+		Instances tempInstances = null;
 
 		try {
-			instances = new Instances(path, unit);
+			tempInstances = new Instances(path, unit);
 		} catch (IOException | XmlError | XMLStreamException | LearningError e) {
 			logger.error("Exception on reading configuration or learning files occured, cause:", e);
 			e.printStackTrace();
 			System.exit(-1);
+		} finally {
+			
 		}
 
+		final Instances instances = tempInstances;
 		final CommandHandler commandHandler = new CommandHandler(instances);
 		Server server = new Server(serverSocket, commandHandler);
 		server.start();
 
-		final Instances terminateInstances = instances;
 		
 		Runnable runnable = new Runnable() {
 			
 			@Override
 			public void run() {
-				terminateInstances.terminate();
-				commandHandler.terminate();
+				instances.abort();
+				commandHandler.abort();
 				if (server != null) {
-					server.terminate();
+					server.abort();
 				}
-				TerminationHelper.getInstance().terminate();
+				AbortHelper.getInstance().abort();
 			}
 		};
 

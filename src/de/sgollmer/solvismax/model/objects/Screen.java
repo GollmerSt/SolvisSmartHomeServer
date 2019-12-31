@@ -22,7 +22,7 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 
-public class Screen implements GraficsLearnable, Comparable<Screen>, OfConfigs.Element<Screen> {
+public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.Element<Screen> {
 
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Screen.class);
 

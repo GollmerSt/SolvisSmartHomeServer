@@ -9,7 +9,7 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.GraficsLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.ScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -23,6 +23,7 @@ public class SolvisDescription {
 	private static final String XML_SCREEN_GRAFICS = "ScreenGrafics";
 	private static final String XML_CHANNEL_DESCRIPTIONS = "ChannelDescriptions";
 	private static final String XML_PREPARATIONS = "Preparations";
+	private static final String XML_CLOCK = "Clock";
 	private static final String XML_DURATIONS = "Durations";
 	private static final String XML_MISCELLANEOUS = "Miscellaneous";
 
@@ -34,12 +35,17 @@ public class SolvisDescription {
 	private final AllScreenGraficDescriptions screenGrafics;
 	private final AllChannelDescriptions dataDescriptions;
 	private final AllPreparations allPreparations;
+	private final Clock clock ;
+	public Clock getClock() {
+		return clock;
+	}
+
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
 	public SolvisDescription(String homeId, Configurations configurations, ScreenSaver saver, AllScreens screens,
 			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
-			AllPreparations allPreparations, AllDurations durations, Miscellaneous miscellaneous) {
+			AllPreparations allPreparations, Clock clock, AllDurations durations, Miscellaneous miscellaneous) {
 		this.homeId = homeId;
 		this.configurations = configurations;
 		this.saver = saver;
@@ -48,6 +54,7 @@ public class SolvisDescription {
 		this.screenGrafics = screenGrafics;
 		this.dataDescriptions = dataDescriptions;
 		this.allPreparations = allPreparations;
+		this.clock = clock ;
 		this.durations = durations;
 		this.miscellaneous = miscellaneous;
 
@@ -60,6 +67,7 @@ public class SolvisDescription {
 		this.screens.assign(this);
 		this.screenGrafics.assign(this);
 		this.dataDescriptions.assign(this);
+		this.clock.assign(this);
 	}
 
 	public Collection<LearnScreen> getLearnScreens(int configurationMask) {
@@ -89,6 +97,8 @@ public class SolvisDescription {
 		private FallBack fallBack;
 		private AllChannelDescriptions dataDescriptions;
 		private AllPreparations allPreparations;
+		private Clock clock ;
+
 		private AllDurations durations;
 		private Miscellaneous miscellaneous;
 
@@ -109,7 +119,7 @@ public class SolvisDescription {
 		@Override
 		public SolvisDescription create() throws XmlError {
 			return new SolvisDescription(homeId, configurations, saver, screens, fallBack, screenGrafics,
-					dataDescriptions, allPreparations, durations, miscellaneous);
+					dataDescriptions, allPreparations, clock, durations, miscellaneous);
 		}
 
 		@Override
@@ -130,6 +140,8 @@ public class SolvisDescription {
 					return new AllChannelDescriptions.Creator(id, this);
 				case XML_PREPARATIONS:
 					return new AllPreparations.Creator(id, this);
+				case XML_CLOCK:
+					return new Clock.Creator(id, this) ;
 				case XML_DURATIONS:
 					return new AllDurations.Creator(id, this);
 				case XML_MISCELLANEOUS:
@@ -165,6 +177,9 @@ public class SolvisDescription {
 				case XML_PREPARATIONS:
 					this.allPreparations = (AllPreparations) created;
 					break;
+				case XML_CLOCK:
+					this.clock = (Clock) created ;
+					break ;
 				case XML_DURATIONS:
 					this.durations = (AllDurations) created;
 					break;

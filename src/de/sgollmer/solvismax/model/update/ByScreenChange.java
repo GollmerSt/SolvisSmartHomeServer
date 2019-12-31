@@ -3,7 +3,7 @@ package de.sgollmer.solvismax.model.update;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.model.Command;
+import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.Observer;
@@ -36,7 +36,7 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 			if (this.lastchangedByUser && !changedByUser) {
 				ChannelSourceI channelSource = ByScreenChange.this.source;
 				if (channelSource instanceof Control) {
-					solvis.execute(new Command(((Control) channelSource).getDescription()));
+					solvis.execute(new CommandControl(((Control) channelSource).getDescription()));
 				}
 			}
 			this.lastchangedByUser = changedByUser ;

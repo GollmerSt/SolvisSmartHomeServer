@@ -27,6 +27,7 @@ import de.sgollmer.solvismax.connection.transfer.SetPackage;
 import de.sgollmer.solvismax.error.JsonError;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -53,13 +54,13 @@ public class CommandHandler {
 	public boolean commandFromClient(JsonPackage jsonPackage, Client client) throws IOException {
 		Command command = jsonPackage.getCommand();
 		logger.info("Command <" + command.name() + "> received");
-		boolean terminateConnection = false;
+		boolean abortConnection = false;
 		switch (command) {
 		case CONNECT:
-			terminateConnection = this.connect((ConnectPackage) jsonPackage, client);
+			abortConnection = this.connect((ConnectPackage) jsonPackage, client);
 			break;
 		case RECONNECT:
-			terminateConnection = this.reconnect((ReconnectPackage) jsonPackage, client);
+			abortConnection = this.reconnect((ReconnectPackage) jsonPackage, client);
 			break;
 		case DISCONNECT:
 			this.disconnect((DisconnectPackage) jsonPackage, client, false);
@@ -80,7 +81,7 @@ public class CommandHandler {
 			logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
 			break;
 		}
-		return terminateConnection;
+		return abortConnection;
 	}
 
 	private void executSeverCommand(ServerCommand serverCommand, Client client) throws IOException {
@@ -119,7 +120,7 @@ public class CommandHandler {
 			}
 			if (restoreInhibit != null) {
 				assignments.screenRestoreInhibit = restoreInhibit;
-				assignments.solvis.execute(new de.sgollmer.solvismax.model.Command(!restoreInhibit));
+				assignments.solvis.execute(new CommandScreenRestore(!restoreInhibit));
 			}
 		}
 	}
@@ -189,7 +190,7 @@ public class CommandHandler {
 		client.close();
 		if (shutdown) {
 			if (this.clients.size() > 0 && !this.isSolvisConnected(solvis)) {
-				solvis.terminate();
+				solvis.abort();
 			}
 		}
 	}
@@ -212,7 +213,7 @@ public class CommandHandler {
 				throw new JsonError("Unknown mode <" + singleData.toString() + "> in revceived Json package");
 			singleData = new ModeValue<ModeI>(setMode);
 		}
-		solvis.execute(new de.sgollmer.solvismax.model.Command(description, singleData));
+		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData));
 	}
 
 	private void get(GetPackage jsonPackage, Client client) {
@@ -220,7 +221,7 @@ public class CommandHandler {
 		Solvis solvis = assignments.solvis;
 		ChannelDescription description = solvis.getChannelDescription(jsonPackage.getId());
 		logger.info("Channel <" + description.getId() + "> will be updated by GET command");
-		solvis.execute(new de.sgollmer.solvismax.model.Command(description));
+		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description));
 	}
 
 	public class ClientAssignments {
@@ -237,13 +238,13 @@ public class CommandHandler {
 		}
 
 		public void reconnect(Client client) {
-			this.terminate();
+			this.abort();
 			this.client = client;
 		}
 
-		public synchronized void terminate() {
+		public synchronized void abort() {
 			if (this.closingThread != null) {
-				this.closingThread.terminate();
+				this.closingThread.abort();
 				this.closingThread = null;
 			}
 		}
@@ -313,7 +314,7 @@ public class CommandHandler {
 
 	private class ClosingThread implements Runnable {
 		private final ClientAssignments assignments;
-		private boolean terminate = false;
+		private boolean abort = false;
 
 		public ClosingThread(ClientAssignments assignments) {
 			this.assignments = assignments;
@@ -327,22 +328,22 @@ public class CommandHandler {
 					this.wait(delay);
 				} catch (InterruptedException e) {
 				}
-				if (!terminate) {
+				if (!abort) {
 					unregister(assignments);
 				}
 			}
 		}
 
-		public synchronized void terminate() {
-			this.terminate = true;
+		public synchronized void abort() {
+			this.abort = true;
 			this.notifyAll();
 		}
 
 	}
 
-	public void terminate() {
+	public void abort() {
 		for (ClientAssignments assignments : this.clients) {
-			assignments.terminate();
+			assignments.abort();
 		}
 		this.executor.shutdown();
 		this.executor = null ;

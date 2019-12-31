@@ -14,7 +14,7 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.model.Command;
+import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Screen.ScreenTouch;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -98,18 +98,6 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
-			int configurationMask) {
-		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
-			ChannelDescription description = descriptions.get(configurationMask);
-			if (description != null) {
-				((GraficsLearnable) description).createAndAddLearnScreen(null, learnScreens, configurationMask);
-			}
-		}
-
-	}
-
-	@Override
 	public void learn(Solvis solvis) throws IOException {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
@@ -126,7 +114,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
 			if (description != null &&description.getType() == ChannelSourceI.Type.MEASUREMENT) {
-				solvis.getValue(description);
+				description.getValue(solvis);
 			}
 		}
 		solvis.getDistributor().setBurstUpdate(false);
@@ -208,7 +196,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 			}
 		});
 		for (ChannelDescription description : descriptions) {
-			solvis.execute(new Command(description));
+			solvis.execute(new CommandControl(description));
 		}
 
 	}

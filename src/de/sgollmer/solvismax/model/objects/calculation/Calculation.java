@@ -133,12 +133,6 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
-			int configurationMask) {
-
-	}
-
-	@Override
 	public void learn(Solvis solvis) throws IOException {
 	}
 

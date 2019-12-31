@@ -40,7 +40,7 @@ public enum Strategies {
 
 		public abstract T create( Calculation calculation);
 
-		public abstract String getUnit();;
+		public abstract String getUnit();
 
 		public abstract boolean isWriteable();
 

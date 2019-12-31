@@ -1,21 +1,35 @@
 package de.sgollmer.solvismax.model.objects;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.slf4j.LoggerFactory;
+
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.HelperError;
+import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
+import de.sgollmer.solvismax.model.CommandClock;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Clock implements Assigner {
+public class Clock implements Assigner, GraficsLearnable {
+
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Clock.class);
 
 	private static final String XML_YEAR = "Year";
 	private static final String XML_MONTH = "Month";
@@ -25,7 +39,10 @@ public class Clock implements Assigner {
 	private static final String XML_UPPER = "Upper";
 	private static final String XML_LOWER = "Lower";
 	private static final String XML_OK = "Ok";
+	
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss") ;
 
+	private final String channelId;
 	private final String screenId;
 	private final List<DatePart> dateParts;
 	private final TouchPoint upper;
@@ -34,7 +51,9 @@ public class Clock implements Assigner {
 
 	private OfConfigs<Screen> screen = null;
 
-	public Clock(String screenId, List<DatePart> dateParts, TouchPoint upper, TouchPoint lower, TouchPoint ok) {
+	public Clock(String channelId, String screenId, List<DatePart> dateParts, TouchPoint upper, TouchPoint lower,
+			TouchPoint ok) {
+		this.channelId = channelId;
 		this.screenId = screenId;
 		this.dateParts = dateParts;
 		this.upper = upper;
@@ -54,39 +73,82 @@ public class Clock implements Assigner {
 	@Override
 	public void assign(SolvisDescription description) {
 		this.screen = description.getScreens().get(screenId);
+		this.upper.assign(description);
+		this.lower.assign(description);
+		this.ok.assign(description);
+		for (DatePart part : this.dateParts) {
+			part.assign(description);
+		}
 	}
 
-	public void syncRequest(Calendar solvisTimeCalendar) {
-		long time = System.currentTimeMillis();
-		if (Math.abs(time - solvisTimeCalendar.getTimeInMillis()) < Constants.MIN_TIME_ERROR_ADJUSTMENT_S) {
-			return;
-		}
+	public static class NextAdjust {
+		private final long solvisAdjustTime;
+		private final long realAdjustTime;
+		private final long startAdjustTime;
 
+		public NextAdjust(long solvisAdjustTime, long realAdjustTime, long startAdjustTime) {
+			this.solvisAdjustTime = solvisAdjustTime;
+			this.realAdjustTime = realAdjustTime;
+			this.startAdjustTime = startAdjustTime;
+		}
 	}
 
-	private int calculateMaxSettingTime(Calendar solvisTimeCalendar) {
-		int singleSettingTime = Math.max(this.upper.getSettingTime(), this.lower.getSettingTime());
-		Calendar now = Calendar.getInstance();
-		int result = 0 ;
-		Calendar cal1, cal2 ;
-		if ( solvisTimeCalendar.before(now)) {
-			cal1 = solvisTimeCalendar ;
-			cal2 = now ;
-		} else {
-			cal1 = now ;
-			cal2 = solvisTimeCalendar ;
+	private NextAdjust calculateNextAdjustTime(Calendar solvisTimeCalendar, Solvis solvis) {
+		int singleSettingTime = Math.max(this.upper.getSettingTime(solvis), this.lower.getSettingTime(solvis))
+				+ solvis.getMaxResponseTime();
+		long now = System.currentTimeMillis();
+		long diffSolvis = solvisTimeCalendar.getTimeInMillis() - now;
+		int diffSec = (int) (diffSolvis % 60000 + 60000) % 60000;
+		long realAdjustTime = this.calculateNext(now);
+		long solvisAdjustTime = realAdjustTime - (diffSec > 30 ? 60000 : 0);
+		long startAdjustTime = realAdjustTime;
+		long lastStartAdjustTime = 0;
+		long earliestStartAdjustTime = realAdjustTime;
+		Calendar calendarProposal = Calendar.getInstance();
+		Calendar calendarSolvisAdjust = Calendar.getInstance();
+		Calendar calendarSolvisStart = Calendar.getInstance();
+		int adjustmentTime = 0;
+		for (int rep = 0; lastStartAdjustTime != startAdjustTime && rep < 10; ++rep) {
+			adjustmentTime = 0;
+			calendarProposal.setTimeInMillis(startAdjustTime);
+			calendarSolvisStart.setTimeInMillis(startAdjustTime + diffSolvis);
+			calendarSolvisAdjust.setTimeInMillis(solvisAdjustTime);
+			for (DatePart part : this.dateParts) {
+				int calendarInt = part.getCalendarInt();
+				int diff = Math.abs(calendarSolvisStart.get(calendarInt) - calendarProposal.get(calendarInt));
+				if (diff > 0) {
+					adjustmentTime += diff * singleSettingTime + part.touch.getSettingTime(solvis);
+				}
+			}
+			adjustmentTime = adjustmentTime + this.ok.getSettingTime(solvis) + solvis.getMaxResponseTime()
+					+ 8 * this.screen.get(solvis.getConfigurationMask()).getTouchPoint().getSettingTime(solvis);
+			adjustmentTime = adjustmentTime * Constants.TIME_ADJUSTMENT_PROPOSAL_FACTOR_PERCENT / 100;
+
+			if (realAdjustTime - adjustmentTime - now <= 0) {
+				realAdjustTime = this.calculateNext(realAdjustTime);
+				rep = 0;
+			}
+			lastStartAdjustTime = startAdjustTime;
+			startAdjustTime = realAdjustTime - adjustmentTime;
+
+			if (earliestStartAdjustTime > startAdjustTime) {
+				earliestStartAdjustTime = startAdjustTime;
+			}
 		}
-//		for ( DatePart part : this.dateParts ) {
-//			diff = 
-//		}
-//		int result = Math.abs(solvisTimeCalendar.get(Calendar.YEAR) - now.get(Calendar.YEAR)) + 1;
-//		result += 12 + 31;
-//		result += 24 + 60;
-		return -1;
+		logger.info("Next time adjust is scheduled to " + DATE_FORMAT.format(new Date(realAdjustTime)) + ".");
+		return new NextAdjust(solvisAdjustTime, realAdjustTime, startAdjustTime);
+	}
+
+	public Executable instantiate(Solvis solvis) {
+
+		Executable executable = new Executable(solvis);
+		solvis.registerObserver(executable);
+		return executable;
 	}
 
 	public static class Creator extends CreatorByXML<Clock> {
 
+		private String channelId;
 		private String screenId;
 		private List<DatePart> dateParts;
 		private TouchPoint upper;
@@ -107,12 +169,15 @@ public class Clock implements Assigner {
 				case "screenId":
 					this.screenId = value;
 					break;
+				case "channelId":
+					this.channelId = value;
+					break;
 			}
 		}
 
 		@Override
 		public Clock create() throws XmlError, IOException {
-			return new Clock(screenId, dateParts, upper, lower, ok);
+			return new Clock(channelId, screenId, dateParts, upper, lower, ok);
 		}
 
 		@Override
@@ -129,6 +194,12 @@ public class Clock implements Assigner {
 					return new DatePart.Creator(id, getBaseCreator(), Calendar.HOUR_OF_DAY, 0, 0);
 				case XML_MINUTE:
 					return new DatePart.Creator(id, getBaseCreator(), Calendar.MINUTE, 0, 0);
+				case XML_UPPER:
+					return new TouchPoint.Creator(id, getBaseCreator());
+				case XML_LOWER:
+					return new TouchPoint.Creator(id, getBaseCreator());
+				case XML_OK:
+					return new TouchPoint.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -151,27 +222,47 @@ public class Clock implements Assigner {
 				case XML_MINUTE:
 					this.dateParts.set(4, (DatePart) created);
 					break;
+				case XML_UPPER:
+					this.upper = (TouchPoint) created;
+					break;
+				case XML_LOWER:
+					this.lower = (TouchPoint) created;
+					break;
+				case XML_OK:
+					this.ok = (TouchPoint) created;
+					break;
 			}
 		}
 	}
 
 	private static class DatePart {
 
+		private static Calendar CALENDAR = Calendar.getInstance();
+
 		private static final String XML_RECTANGLE = "Rectangle";
 		private static final String XML_TOUCH = "Touch";
 		private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
 
-		private final Integer least;
 		private final Rectangle rectangle;
 		private final TouchPoint touch;
 		private final ScreenGraficDescription screenGrafic;
 		private final int calendarInt;
+
+		public int getCalendarInt() {
+			return calendarInt;
+		}
+
+		public void assign(SolvisDescription description) {
+			this.touch.assign(description);
+			this.screenGrafic.assign(description);
+
+		}
+
 		private final int calendarOrigin;
 		private final int solvisOrigin;
 
-		public DatePart(Integer least, Rectangle rectangle, TouchPoint touch, ScreenGraficDescription screenGrafic,
-				int calendarInt, int calendarOrigin, int solvisOrigin) {
-			this.least = least;
+		public DatePart(Rectangle rectangle, TouchPoint touch, ScreenGraficDescription screenGrafic, int calendarInt,
+				int calendarOrigin, int solvisOrigin) {
 			this.rectangle = rectangle;
 			this.touch = touch;
 			this.screenGrafic = screenGrafic;
@@ -182,7 +273,6 @@ public class Clock implements Assigner {
 
 		public static class Creator extends CreatorByXML<DatePart> {
 
-			private Integer least = null;
 			private Rectangle rectangle;
 			private TouchPoint touch;
 			private ScreenGraficDescription screenGrafic;
@@ -199,17 +289,11 @@ public class Clock implements Assigner {
 
 			@Override
 			public void setAttribute(QName name, String value) {
-				switch (name.getLocalPart()) {
-					case "least":
-						this.least = Integer.parseInt(value);
-						break;
-				}
-
 			}
 
 			@Override
 			public DatePart create() throws XmlError, IOException {
-				return new DatePart(least, rectangle, touch, screenGrafic, calendarInt, calendarOrigin, solvisOrigin);
+				return new DatePart(rectangle, touch, screenGrafic, calendarInt, calendarOrigin, solvisOrigin);
 			}
 
 			@Override
@@ -242,6 +326,237 @@ public class Clock implements Assigner {
 
 			}
 
+		}
+
+		public Integer getValue(Solvis solvis) throws IOException, TerminationException {
+			solvis.send(this.touch);
+			solvis.clearCurrentImage();
+			MyImage image = solvis.getCurrentImage();
+			Integer solvisData = null;
+			if (this.screenGrafic.isElementOf(image, solvis)) {
+				OcrRectangle ocr = new OcrRectangle(image, this.rectangle);
+				try {
+					solvisData = Integer.parseInt(ocr.getString());
+				} catch (NumberFormatException e) {
+					logger.error("Scanned date not an integer, check the control.xml");
+					return null;
+				}
+				if (solvisData < this.solvisOrigin
+						|| CALENDAR.getMaximum(this.calendarInt) + this.solvisOrigin < solvisData) {
+					logger.warn("Illegal time value <" + solvisData + "> on reading the current solvis date.");
+					solvisData = null;
+				}
+			}
+			return solvisData;
+		}
+	}
+
+	public class Executable implements ObserverI<SolvisData> {
+
+		private boolean timeAdjustmentRequestPending = false;
+		private final Solvis solvis;
+		private final ClockAdjustmentThread adjustmentThread;
+
+		public Executable(Solvis solvis) {
+			this.solvis = solvis;
+			this.adjustmentThread = new ClockAdjustmentThread(this);
+			this.adjustmentThread.start();
+		}
+
+		@Override
+		public void update(SolvisData data, Object source) {
+			if (!data.getId().equals(channelId) || this.timeAdjustmentRequestPending) {
+				return;
+			}
+
+			Calendar solvisDate = (Calendar) data.getSingleData().get();
+			long time = System.currentTimeMillis();
+			int diff = (int) Math.abs(solvisDate.getTimeInMillis() - time);
+			if (diff > Constants.MIN_TIME_ERROR_ADJUSTMENT_S) {
+				this.timeAdjustmentRequestPending = true;
+				this.adjustmentThread.trigger(calculateNextAdjustTime(solvisDate, solvis));
+			}
+		}
+
+		public boolean adjust(NextAdjust nextAdjust) throws IOException, TerminationException {
+			int configurationMask = solvis.getConfigurationMask();
+			Calendar adjustementCalendar = Calendar.getInstance();
+			adjustementCalendar.setTimeInMillis(nextAdjust.solvisAdjustTime);
+			boolean success = false;
+			for (int repeatFail = 0; !success && repeatFail < Constants.FAIL_REPEATS; ++repeatFail) {
+				success = true;
+				if ( repeatFail > 0 ) {
+					solvis.gotoHome();
+				}
+				try {
+					for (DatePart part : dateParts) {
+						int offset = part.solvisOrigin - part.calendarOrigin;
+						boolean adjusted = false;
+						for (int repeat = 0; !adjusted && repeat < Constants.SET_REPEATS + 1; ++repeat) {
+							solvis.gotoScreen(screen.get(configurationMask));
+							Integer solvisData = part.getValue(solvis);
+							if (solvisData == null) {
+								logger.error("Setting of the solvis clock failed, it will be tried again.");
+								throw new HelperError();
+							} else {
+								int diff = adjustementCalendar.get(part.calendarInt) + offset - solvisData;
+								int steps;
+								TouchPoint touchPoint;
+								if (diff != 0) {
+									if (repeat == 1) {
+										logger.error("Setting of the solvis clock failed, it will be tried again.");
+									}
+									if (diff > 0) {
+										steps = diff;
+										touchPoint = upper;
+									} else {
+										steps = -diff;
+										touchPoint = lower;
+									}
+									for (int cnt = 0; cnt < steps; ++cnt) {
+										solvis.send(touchPoint);
+									}
+								} else {
+									adjusted = true;
+								}
+							}
+						}
+						if (!adjusted) {
+							success = false;
+							throw new HelperError();
+						}
+					}
+				} catch (HelperError he) {
+					success = false ;
+				}
+			}
+			long time = System.currentTimeMillis();
+			int waitTime = (int) (nextAdjust.realAdjustTime - time);
+			if (waitTime > 0) {
+				AbortHelper.getInstance().sleep(waitTime);
+				solvis.send(ok);
+				solvis.clearMeasuredData();
+				Screen screen = solvis.getCurrentScreen();
+				if (screen != Clock.this.screen.get(configurationMask).getPreviousScreen(configurationMask)) {
+					success = false;
+				}
+			}
+			this.timeAdjustmentRequestPending = false;
+
+			if (success) {
+				logger.info("Setting of the solvis clock successful.");
+			} else {
+				logger.error("Setting of the solvis clock not successful.");
+
+			}
+			return success;
+		}
+
+		public void abort() {
+			this.adjustmentThread.abort();
+		}
+
+		public void execute(NextAdjust nextAdjust) {
+			CommandClock command = new CommandClock(this, nextAdjust);
+			solvis.execute(command);
+		}
+	}
+
+	private class ClockAdjustmentThread extends Thread {
+
+		private int waitTime = -1;
+		private NextAdjust nextAdjust = null;
+		private boolean abort = false;
+		private final Executable executable;
+
+		public ClockAdjustmentThread(Executable executable) {
+			super("ClockAdjustmentThread ");
+			this.executable = executable;
+		}
+
+		@Override
+		public void run() {
+			while (!this.abort) {
+				try {
+					boolean adjust = false;
+
+					synchronized (this) {
+
+						if (this.nextAdjust != null && waitTime < 0) {
+							long time = System.currentTimeMillis();
+							this.waitTime = (int) (this.nextAdjust.startAdjustTime - time);
+							adjust = false;
+						} else if (waitTime > 0) {
+							this.waitTime = -1;
+							adjust = true;
+						}
+					}
+					if (adjust) {
+						executable.execute(this.nextAdjust);
+					}
+					if (!this.abort) {
+						synchronized (this) {
+							try {
+								if (this.waitTime < 0) {
+									this.wait();
+								} else {
+									this.wait(this.waitTime);
+								}
+							} catch (InterruptedException e) {
+							}
+						}
+					}
+				} catch (TerminationException e1) {
+					this.abort = true;
+				} catch (Throwable e) {
+				}
+			}
+		}
+
+		public synchronized void trigger(NextAdjust nextAdjust) {
+			this.nextAdjust = nextAdjust;
+			this.notifyAll();
+		}
+
+		public synchronized void abort() {
+			this.abort = true;
+			this.notifyAll();
+		}
+
+	}
+
+	private long calculateNext(long time) {
+		int delta = Constants.TIME_ADJUSTMENT_MINUTE_N * 60 * 1000 ;
+		long next = time/ delta * delta + delta ;
+		if ( next % 3600000 == 0 ) {
+			next += delta ;
+		}
+		return next ;		
+	}
+
+	@Override
+	public void learn(Solvis solvis) throws IOException, LearningError {
+		solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
+		boolean finished = false;
+		for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
+			if (repeat == 1) {
+				logger.warn("Learning of clock not successfull, try it again.");
+			}
+			finished = true;
+			for (DatePart part : this.dateParts) {
+				solvis.send(part.touch);
+				solvis.clearCurrentImage();
+				part.screenGrafic.learn(solvis);
+				if (part.getValue(solvis) == null) {
+					finished = false;
+					break;
+				}
+			}
+		}
+		if (!finished) {
+			String error = "Learning of clock not possible, rekjected.";
+			logger.error(error);
+			throw new LearningError(error);
 		}
 	}
 

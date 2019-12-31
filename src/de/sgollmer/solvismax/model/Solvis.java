@@ -20,13 +20,13 @@ import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.helper.TerminationHelper;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Duration;
-import de.sgollmer.solvismax.model.objects.GraficsLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.ScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
@@ -72,6 +72,7 @@ public class Solvis {
 	private final MeasurementsBackupHandler backupHandler;
 	private final Distributor distributor;
 	private final MeasurementUpdateThread measurementUpdateThread;
+	private final Observable<Boolean> abortObservable = new Observable<>() ;
 
 	public Solvis(String id, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler) {
@@ -92,11 +93,15 @@ public class Solvis {
 
 	private Observer.Observable<Boolean> screenChangedByUserObserable = new Observable<>();
 
-	private Object solvisGUIObject = new Object();
+	private final Object syncGUIObject = new Object();
 	private Object solvisMeasureObject = new Object();
 
 	public boolean isCurrentImageValid() {
 		return this.currentImage != null;
+	}
+
+	public Object getSyncGUIObject() {
+		return syncGUIObject;
 	}
 
 	public MyImage getCurrentImage() throws IOException {
@@ -123,7 +128,7 @@ public class Solvis {
 		}
 		Screen screen = this.currentScreen;
 		if (screen == null) {
-			synchronized (solvisGUIObject) {
+			synchronized (syncGUIObject) {
 				screen = this.solvisDescription.getScreens().getScreen(this.getCurrentImage(), this);
 				this.currentScreen = screen;
 			}
@@ -132,7 +137,7 @@ public class Solvis {
 	}
 
 	public boolean forceCurrentScreen(Screen current) throws IOException {
-		synchronized (solvisGUIObject) {
+		synchronized (syncGUIObject) {
 			this.clearCurrentImage();
 			this.currentScreen = current;
 			return true;
@@ -140,7 +145,7 @@ public class Solvis {
 	}
 
 	public void clearCurrentImage() {
-		synchronized (solvisGUIObject) {
+		synchronized (syncGUIObject) {
 			this.currentImage = null;
 			this.currentScreen = null;
 		}
@@ -176,31 +181,32 @@ public class Solvis {
 		if (point == null) {
 			logger.warn("TouchPoint is <null>, ignored");
 		}
-		synchronized (solvisGUIObject) {
+		synchronized (syncGUIObject) {
 			this.getConnection().sendTouch(point.getCoordinate());
-			TerminationHelper.getInstance().sleep(point.getPushTime());
+			AbortHelper.getInstance().sleep(point.getPushTime());
 			this.getConnection().sendRelease();
-			TerminationHelper.getInstance().sleep(point.getReleaseTime());
+			AbortHelper.getInstance().sleep(point.getReleaseTime());
 			this.clearCurrentImage();
 		}
 	}
 
 	public void sendBack() throws IOException, TerminationException {
-		synchronized (solvisGUIObject) {
+		synchronized (syncGUIObject) {
 			this.getConnection().sendButton(Button.BACK);
-			TerminationHelper.getInstance().sleep(this.solvisDescription.getDurations().get("WindowChange").getTime_ms());
+			AbortHelper.getInstance()
+					.sleep(this.solvisDescription.getDurations().get("WindowChange").getTime_ms());
 			this.clearCurrentImage();
 		}
 	}
 
 	public void gotoHome() throws IOException {
-		synchronized (solvisGUIObject) {
+		synchronized (syncGUIObject) {
 			this.solvisDescription.getFallBack().execute(this);
 		}
 	}
 
 	public boolean gotoScreen(Screen screen) throws IOException, TerminationException {
-		synchronized (solvisGUIObject) {
+		synchronized (syncGUIObject) {
 			if (screen == null) {
 				return false;
 			}
@@ -262,7 +268,7 @@ public class Solvis {
 	}
 
 	public void init() throws IOException, XmlError, XMLStreamException {
-		synchronized (solvisGUIObject) {
+		synchronized (syncGUIObject) {
 			this.gotoHome();
 			this.configurationMask = this.getSolvisDescription().getConfigurations(this);
 			synchronized (solvisMeasureObject) {
@@ -274,6 +280,7 @@ public class Solvis {
 			this.getSolvisDescription().getChannelDescriptions().initControl(this);
 			this.getDistributor().register(this);
 			this.measurementUpdateThread.start();
+			this.getSolvisDescription().getClock().instantiate(this) ;
 		}
 	}
 
@@ -283,19 +290,13 @@ public class Solvis {
 		}
 	}
 
-	public void execute(Command command) {
+	public void execute(CommandI command) {
 		this.worker.push(command);
 	}
 
 	public boolean getValue(ChannelDescription description) throws IOException, ErrorPowerOn, TerminationException {
 		SolvisData data = this.allSolvisData.get(description);
 		return description.getValue(data, this);
-	}
-
-	public boolean setValue(ChannelDescription description, SolvisData value) throws IOException, TerminationException {
-		synchronized (solvisGUIObject) {
-			return description.setValue(this, value);
-		}
 	}
 
 	public ChannelDescription getChannelDescription(String description) {
@@ -312,11 +313,10 @@ public class Solvis {
 
 	public void notifyScreenChangedByUserObserver(boolean userChanged) throws Throwable {
 		this.screenChangedByUserObserable.notify(userChanged);
-		;
 	}
 
 	public void saveScreen() throws IOException {
-		synchronized (solvisGUIObject) {
+		synchronized (syncGUIObject) {
 			if (this.savedScreen == null) {
 				this.savedScreen = this.getCurrentScreen();
 			}
@@ -325,7 +325,7 @@ public class Solvis {
 	}
 
 	public void restoreScreen() throws IOException {
-		synchronized (solvisGUIObject) {
+		synchronized (syncGUIObject) {
 			this.gotoScreen(this.savedScreen);
 			this.savedScreen = null;
 		}
@@ -382,6 +382,7 @@ public class Solvis {
 			}
 			this.gotoHome();
 		}
+		this.solvisDescription.getClock().learn(this);
 		this.solvisDescription.getChannelDescriptions().learn(this);
 		logger.info("Learning finished.");
 	}
@@ -448,15 +449,15 @@ public class Solvis {
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			@Override
 			public void run() {
-				measurementsBackupHandler.terminate();
-				solvis.worker.terminate();
+				measurementsBackupHandler.abort();
+				solvis.worker.abort();
 			}
 		}));
 		ChannelDescription description = solvis.getChannelDescription("C01.Anlagenmodus");
 
-		solvis.execute(new Command(description));
+		solvis.execute(new CommandControl(description));
 
-		solvis.execute(new Command(description, new ModeValue<ModeI>(new ModeI() {
+		solvis.execute(new CommandControl(description, new ModeValue<ModeI>(new ModeI() {
 
 			@Override
 			public String getName() {
@@ -466,18 +467,16 @@ public class Solvis {
 
 		description = solvis.getChannelDescription("C07.Raumeinfluss_HK1");
 
-		solvis.execute(new Command(description));
+		solvis.execute(new CommandControl(description));
 
-		solvis.execute(new Command(description, new IntegerValue(50)));
+		solvis.execute(new CommandControl(description, new IntegerValue(50)));
 
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 		}
 
-		solvis.execute(new Command(description, new IntegerValue(90)));
-
-		// solvis.worker.terminate();
+		solvis.execute(new CommandControl(description, new IntegerValue(90)));
 
 	}
 
@@ -509,7 +508,7 @@ public class Solvis {
 
 		private int updateIntervall;
 		private long nextUpdate;
-		boolean terminate = false;
+		boolean abort = false;
 
 		public MeasurementUpdateThread() {
 			super("MeasurementUpdateThread");
@@ -523,18 +522,18 @@ public class Solvis {
 
 			long midNightLong = midNight.getTimeInMillis();
 
-			for (nextUpdate = midNightLong; nextUpdate < time + 1000; nextUpdate += updateIntervall)
-				;
+			for (nextUpdate = midNightLong; nextUpdate < time + 1000; nextUpdate += updateIntervall) {
+			}
 		}
 
 		@Override
 		public void run() {
 
-			while (!terminate && updateIntervall != 0 ) {
+			while (!abort && updateIntervall != 0) {
 				long time = System.currentTimeMillis();
 				int waitTime = (int) (this.nextUpdate - time);
-				if ( waitTime <= 0) {
-					waitTime = Constants.WAITTIME_IF_LE_ZERO ;
+				if (waitTime <= 0) {
+					waitTime = Constants.WAITTIME_IF_LE_ZERO;
 				}
 				this.nextUpdate += updateIntervall;
 				synchronized (this) {
@@ -543,23 +542,30 @@ public class Solvis {
 					} catch (InterruptedException e) {
 					}
 				}
-				if (!terminate) {
+				if (!abort) {
 					distributor.notify(getAllSolvisData().getMeasurementsPackage());
 				}
 			}
 		}
 
-		public synchronized void terminate() {
-			this.terminate = true;
+		public synchronized void abort() {
+			this.abort = true;
 			this.notifyAll();
 		}
 
 	}
+	
+	public int getMaxResponseTime() {
+		return this.connection.getMaxResponseTime() ;
+	}
+	
+	public void registerAbortObserver( ObserverI<Boolean> observer) {
+		this.abortObservable.register(observer);
+	}
 
-	public void terminate() {
-		this.distributor.teminate();
-		this.worker.terminate();
-		this.measurementUpdateThread.terminate();
+	public void abort() {
+		this.abortObservable.notify(true);
+		this.measurementUpdateThread.abort();
 	}
 
 }

@@ -23,9 +23,12 @@ import de.sgollmer.solvismax.objects.Coordinate;
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisConnection.class);
-	
+
 	private final String urlBase;
 	private final AccountInfo accountInfo;
+	private Integer maxResponseTime = null;
+
+	private long connectTime = -1;
 
 	private ConnectionState connectionState = new ConnectionState(ConnectionStatus.DISCONNECTED);
 
@@ -48,6 +51,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	public InputStream connect(String suffix) throws IOException {
 		try {
+			this.connectTime = System.currentTimeMillis();
 			Authenticator.setDefault(new MyAuthenticator());
 			URL url = new URL(this.urlBase + suffix);
 			synchronized (this) {
@@ -107,12 +111,13 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 		this.setConnected();
 		String hexString = builder.toString();
-		//logger.debug("Hex string received from solvis: " + hexString);
+		// logger.debug("Hex string received from solvis: " + hexString);
 		return hexString;
 	}
 
 	public enum Button {
 		BACK("links"), INFO("rechts");
+
 		private final String buttonUrl;
 
 		private Button(String button) {
@@ -225,7 +230,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private void setDisconnectedAndThrow(IOException e) throws IOException {
 		if (this.getConnectionState().getStatus() != ConnectionStatus.DISCONNECTED) {
 			this.setConnectionState(new ConnectionState(ConnectionStatus.DISCONNECTED, e.getMessage()));
-			logger.info( "Connection to solvis <" + this.urlBase + "> lost. Will be retried.");
+			logger.info("Connection to solvis <" + this.urlBase + "> lost. Will be retried.");
 		}
 		throw e;
 	}
@@ -233,7 +238,20 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private void setConnected() {
 		if (this.getConnectionState().getStatus() != ConnectionStatus.CONNECTED) {
 			this.setConnectionState(new ConnectionState(ConnectionStatus.CONNECTED));
-			logger.info( "Connection to solvis <" + this.urlBase + "> successfull.");
+			logger.info("Connection to solvis <" + this.urlBase + "> successfull.");
+		}
+
+		int connectionTime = (int) (System.currentTimeMillis() - connectTime);
+		if (this.maxResponseTime == null || connectionTime < this.maxResponseTime * 2) {
+			this.maxResponseTime = connectionTime;
+		}
+	}
+
+	public int getMaxResponseTime() {
+		if (this.maxResponseTime == null) {
+			return 0;
+		} else {
+			return maxResponseTime;
 		}
 	}
 

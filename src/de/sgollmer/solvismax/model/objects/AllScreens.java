@@ -12,7 +12,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
-public class AllScreens implements GraficsLearnable {
+public class AllScreens implements ScreenLearnable {
 
 	private Map<String, OfConfigs<Screen>> screens = new HashMap<>();
 

@@ -38,6 +38,12 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	public String getId() {
 		return this.id;
 	}
+	
+	public boolean getValue(Solvis solvis) throws IOException, ErrorPowerOn, TerminationException {
+		SolvisData data = solvis.getAllSolvisData().get(this);
+		return this.getValue(data, solvis);
+	}
+	
 
 	@Override
 	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, ErrorPowerOn, TerminationException {
@@ -46,7 +52,9 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 	@Override
 	public boolean setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
-		return this.channelSource.setValue(solvis, value);
+		synchronized (solvis.getSyncGUIObject()) {
+			return this.channelSource.setValue(solvis, value);
+		}
 	}
 
 	@Override
@@ -146,12 +154,6 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 			}
 
 		}
-
-	}
-
-	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens, int configurationMask) {
-		channelSource.createAndAddLearnScreen(null, learnScreens, configurationMask);
 
 	}
 

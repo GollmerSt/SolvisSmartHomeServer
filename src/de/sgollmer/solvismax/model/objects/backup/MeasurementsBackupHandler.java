@@ -139,7 +139,7 @@ public class MeasurementsBackupHandler {
 
 		private final int measurementsBackupTime_ms;
 		private final MeasurementsBackupHandler handler;
-		private boolean terminate = false;
+		private boolean abort = false;
 
 		public BackupThread(MeasurementsBackupHandler handler, int measurementsBackupTime_ms) {
 			super("BackupThread");
@@ -150,7 +150,7 @@ public class MeasurementsBackupHandler {
 
 		@Override
 		public void run() {
-			while (!terminate) {
+			while (!abort) {
 				synchronized (this) {
 					try {
 						this.wait(this.measurementsBackupTime_ms);
@@ -164,8 +164,8 @@ public class MeasurementsBackupHandler {
 			}
 		}
 
-		public synchronized void terminate() {
-			this.terminate = true;
+		public synchronized void abort() {
+			this.abort = true;
 			this.notifyAll();
 		}
 	}
@@ -174,8 +174,8 @@ public class MeasurementsBackupHandler {
 		this.thread.start();
 	}
 
-	public void terminate() {
-		this.thread.terminate();
+	public void abort() {
+		this.thread.abort();
 	}
 
 	public SystemMeasurements getSystemMeasurements(String id) {

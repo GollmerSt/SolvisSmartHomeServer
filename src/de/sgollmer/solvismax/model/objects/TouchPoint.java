@@ -4,6 +4,7 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.AssignmentError;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -90,8 +91,8 @@ public class TouchPoint implements Assigner {
 		return releaseTime;
 	}
 	
-	public int getSettingTime() {
-		return this.pushTime + this.releaseTime ;
+	public int getSettingTime( Solvis solvis) {
+		return this.pushTime + this.releaseTime + solvis.getMaxResponseTime() ;
 	}
 
 }

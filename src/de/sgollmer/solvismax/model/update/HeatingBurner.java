@@ -5,7 +5,8 @@ import javax.xml.namespace.QName;
 import org.slf4j.LoggerFactory;
 
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.model.Command;
+import de.sgollmer.solvismax.model.CommandControl;
+import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
@@ -162,17 +163,17 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 				if (checkC && burnerOn && this.screenRestore) {
 					this.screenRestore = false;
-					this.solvis.execute(new Command(this.screenRestore));
+					this.solvis.execute(new CommandScreenRestore(this.screenRestore));
 				}
 
 				if (checkC || checkP) {
 					this.lastCheckTime = time;
-					this.solvis.execute(new Command(((Control) source).getDescription()));
+					this.solvis.execute(new CommandControl(((Control) source).getDescription()));
 					logger.debug("Update of <" + burnerCalcId + "> requested.");
 				}
 			} else if (!this.screenRestore) {
 				this.screenRestore = true;
-				this.solvis.execute(new Command(this.screenRestore));
+				this.solvis.execute(new CommandScreenRestore(this.screenRestore));
 			}
 			this.lastBurnerState = burnerOn;
 		}
