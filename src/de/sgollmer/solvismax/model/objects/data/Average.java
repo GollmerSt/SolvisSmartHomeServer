@@ -41,8 +41,9 @@ public class Average implements Cloneable {
 			}
 			delta = this.average - i;
 			delta = delta < 0 ? -delta : delta;
-			if (delta > this.maxDelta) {
+			for ( int cnt = 0 ; delta > this.maxDelta && cnt < 4 ; ++cnt ) {
 				this.put(i);
+				delta -= this.maxDelta ;
 			}
 		}
 

@@ -25,16 +25,21 @@
 
 
 
-	<complexType name="BaseData">
-		<annotation>
-			<documentation>Root mit der Home-Screen-Definition</documentation>
-		</annotation>
-		<sequence>
-			<element name="Units" type="tns:Units" maxOccurs="unbounded" minOccurs="0"></element>
-		</sequence>
-	</complexType>
+    <complexType name="BaseData">
+    	<annotation>
+    		<documentation>
+    			Root mit der Home-Screen-Definition
+    		</documentation>
+    	</annotation>
+    	<sequence>
+    		<element name="Units" type="tns:Units" maxOccurs="unbounded"
+    			minOccurs="0">
+    		</element>
+    	</sequence>
+    	<attribute name="timeZone" type="string" use="required"></attribute>
+    </complexType>
 
-	<element name="BaseData" type="tns:BaseData"></element>
+    <element name="BaseData" type="tns:BaseData"></element>
 
 
 

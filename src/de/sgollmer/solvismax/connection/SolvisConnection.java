@@ -8,11 +8,13 @@ import java.net.Authenticator;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.PasswordAuthentication;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -22,19 +24,23 @@ import de.sgollmer.solvismax.objects.Coordinate;
 
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisConnection.class);
+	private static final Logger logger = LogManager.getLogger(SolvisConnection.class);
 
 	private final String urlBase;
 	private final AccountInfo accountInfo;
+	private final int connectionTimeout;
+	private final int readTimeout;
 	private Integer maxResponseTime = null;
 
 	private long connectTime = -1;
 
 	private ConnectionState connectionState = new ConnectionState(ConnectionStatus.DISCONNECTED);
 
-	public SolvisConnection(String urlBase, AccountInfo accountInfo) {
+	public SolvisConnection(String urlBase, AccountInfo accountInfo, int connectionTimeout, int readTimeout) {
 		this.urlBase = urlBase;
 		this.accountInfo = accountInfo;
+		this.connectionTimeout = connectionTimeout;
+		this.readTimeout = readTimeout;
 	}
 
 	private class MyAuthenticator extends Authenticator {
@@ -56,10 +62,15 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			URL url = new URL(this.urlBase + suffix);
 			synchronized (this) {
 				HttpURLConnection uc = (HttpURLConnection) url.openConnection();
+				uc.setConnectTimeout(this.connectionTimeout);
+				uc.setReadTimeout(this.readTimeout);
+//				System.out.println(
+//						"Connect-Timeout: " + uc.getConnectTimeout() + ", Read-Timeout: " + uc.getReadTimeout());
 				InputStream in = uc.getInputStream();
+				// TODO hier scheint es MANCHMAL keinen Timeaout zu geben
 				return in;
 			}
-		} catch (ConnectException e) {
+		} catch (ConnectException | SocketTimeoutException e) {
 			throw new IOException(e.getMessage());
 		}
 	}
@@ -187,7 +198,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			public char[] createPassword() {
 				return "e5am1kro".toCharArray();
 			}
-		});
+		}, 10000,2000);
 
 		BufferedImage image = solvisConnection.getScreen();
 

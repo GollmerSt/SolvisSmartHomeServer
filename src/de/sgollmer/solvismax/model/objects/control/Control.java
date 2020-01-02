@@ -5,7 +5,9 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.LearningError;
@@ -33,7 +35,8 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Control extends ChannelSource {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Control.class);
+	private static final Logger logger = LogManager.getLogger(Control.class);
+	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static final String XML_CONTROL_CURRENT = "Current";
 	private static final String XML_CONTROL_TYPE_VALUE = "TypeValue";
@@ -63,20 +66,20 @@ public class Control extends ChannelSource {
 		}
 		this.preparationId = preparationId;
 	}
-	
-	private boolean prepare( Solvis solvis ) throws IOException, TerminationException {
-		if ( this.preparation == null ) {
-			return true ;
+
+	private boolean prepare(Solvis solvis) throws IOException, TerminationException {
+		if (this.preparation == null) {
+			return true;
 		} else {
-			return this.preparation.execute(solvis) ;
+			return this.preparation.execute(solvis);
 		}
 	}
 
 	@Override
 	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException, TerminationException {
 		solvis.gotoScreen(screen.get(solvis.getConfigurationMask()));
-		if ( ! this.prepare(solvis) ) {
-			return false ;
+		if (!this.prepare(solvis)) {
+			return false;
 		}
 		SingleData<?> data = this.strategy.getValue(solvis.getCurrentImage(), this.valueRectangle, solvis);
 		if (data == null) {
@@ -90,8 +93,8 @@ public class Control extends ChannelSource {
 	@Override
 	public boolean setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
 		solvis.gotoScreen(screen.get(solvis.getConfigurationMask()));
-		if ( ! this.prepare(solvis) ) {
-			return false ;
+		if (!this.prepare(solvis)) {
+			return false;
 		}
 		boolean set = false;
 		for (int c = 0; c < Constants.SET_REPEATS && !set; ++c) {
@@ -180,9 +183,9 @@ public class Control extends ChannelSource {
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-			case "screenId":
-				this.screenId = value;
-				break;
+				case "screenId":
+					this.screenId = value;
+					break;
 			}
 
 		}
@@ -196,18 +199,18 @@ public class Control extends ChannelSource {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-			case XML_CONTROL_CURRENT:
-				return new Rectangle.Creator(id, this.getBaseCreator());
-			case XML_CONTROL_TYPE_VALUE:
-				return new StrategyValue.Creator(id, this.getBaseCreator());
-			case XML_CONTROL_TYPE_READ:
-				return new StrategyRead.Creator(id, this.getBaseCreator());
-			case XML_CONTROL_TYPE_MODE:
-				return new StrategyMode.Creator(id, this.getBaseCreator());
-			case XML_UPDATE_BY:
-				return new UpdateStrategies.Creator(id, this.getBaseCreator());
-			case XML_PREPARATION_REF:
-				return new PreparationRef.Creator(id, getBaseCreator());
+				case XML_CONTROL_CURRENT:
+					return new Rectangle.Creator(id, this.getBaseCreator());
+				case XML_CONTROL_TYPE_VALUE:
+					return new StrategyValue.Creator(id, this.getBaseCreator());
+				case XML_CONTROL_TYPE_READ:
+					return new StrategyRead.Creator(id, this.getBaseCreator());
+				case XML_CONTROL_TYPE_MODE:
+					return new StrategyMode.Creator(id, this.getBaseCreator());
+				case XML_UPDATE_BY:
+					return new UpdateStrategies.Creator(id, this.getBaseCreator());
+				case XML_PREPARATION_REF:
+					return new PreparationRef.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -215,20 +218,20 @@ public class Control extends ChannelSource {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-			case XML_CONTROL_CURRENT:
-				this.current = (Rectangle) created;
-				break;
-			case XML_CONTROL_TYPE_VALUE:
-			case XML_CONTROL_TYPE_READ:
-			case XML_CONTROL_TYPE_MODE:
-				this.strategy = (Strategy) created;
-				break;
-			case XML_UPDATE_BY:
-				this.updateStrategies = (UpdateStrategies) created;
-				break;
-			case XML_PREPARATION_REF:
-				this.preparationId = ((PreparationRef) created).getPreparationId();
-				break;
+				case XML_CONTROL_CURRENT:
+					this.current = (Rectangle) created;
+					break;
+				case XML_CONTROL_TYPE_VALUE:
+				case XML_CONTROL_TYPE_READ:
+				case XML_CONTROL_TYPE_MODE:
+					this.strategy = (Strategy) created;
+					break;
+				case XML_UPDATE_BY:
+					this.updateStrategies = (UpdateStrategies) created;
+					break;
+				case XML_PREPARATION_REF:
+					this.preparationId = ((PreparationRef) created).getPreparationId();
+					break;
 			}
 		}
 
@@ -236,38 +239,40 @@ public class Control extends ChannelSource {
 
 	@Override
 	public void learn(Solvis solvis) throws IOException, TerminationException {
-		if ( this.preparation != null ) {
-			this.preparation.learn(solvis, this.getScreen(solvis.getConfigurationMask())) ;
+		if (this.preparation != null) {
+			this.preparation.learn(solvis, this.getScreen(solvis.getConfigurationMask()));
 		}
 		if (this.strategy instanceof StrategyMode) {
 			StrategyMode strategy = (StrategyMode) this.strategy;
 			solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
 			MyImage saved = solvis.getCurrentImage();
-			boolean finished = false ;
-			SingleData<?> data = null ;
-			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && ! finished ; ++repeat) {
+			boolean finished = false;
+			SingleData<?> data = null;
+			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
 				for (Mode mode : strategy.getModes()) {
 					solvis.send(mode.getTouch());
 					mode.getGrafic().learn(solvis);
 				}
 				data = this.strategy.getValue(saved, this.valueRectangle, solvis);
 				if (data == null) {
-					logger.info("Learning of <" + this.getDescription().getId() + "> not successfull, will be retried");
+					logger.log(LEARN,
+							"Learning of <" + this.getDescription().getId() + "> not successfull, will be retried");
 				} else {
-					finished = true ;
+					finished = true;
 				}
 			}
-			if ( ! finished ) {
-				String error = "Learning of <" + this.getDescription().getId() + "> not possible, rekjected." ;
+			if (!finished) {
+				String error = "Learning of <" + this.getDescription().getId() + "> not possible, rekjected.";
 				logger.error(error);
-				throw new LearningError(error) ;
+				throw new LearningError(error);
 			}
-			for ( int repeat = 0 ; repeat < Constants.SET_REPEATS ; ++ repeat ) {
+			for (int repeat = 0; repeat < Constants.SET_REPEATS; ++repeat) {
 				boolean success = this.setValue(solvis, new SolvisData(data));
-				if ( success ) {
-					break ;
+				if (success) {
+					break;
 				} else {
-					AbortHelper.getInstance().sleep(solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms());
+					AbortHelper.getInstance()
+							.sleep(solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms());
 				}
 			}
 		}

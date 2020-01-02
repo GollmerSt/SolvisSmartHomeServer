@@ -31,4 +31,7 @@ Erledigt:
 
 !!!!	Soll-Vorlauftemperatur: Fehler 5°C Soll werden nicht angezeigt
 
+9. Uhrzeiteinstellung funktioniert noch nicht richtig
+
+8. Bei statischen beobachteten Bildschirm muss screen saver detection aktiv sein!!!!!!
      

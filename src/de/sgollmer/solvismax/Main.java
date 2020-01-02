@@ -7,7 +7,8 @@ import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
@@ -74,7 +75,7 @@ public class Main {
 			System.err.println("Log4j couldn't initalized");
 		}
 
-		final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class);
+		final Logger logger = LogManager.getLogger(Main.class);
 
 		Unit unit = null;
 

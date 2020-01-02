@@ -9,7 +9,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.Server.Client;
@@ -37,7 +38,7 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class CommandHandler {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CommandHandler.class);
+	private static final Logger logger = LogManager.getLogger(CommandHandler.class);
 
 	private final Collection<ClientAssignments> clients;
 	private final Instances instances;
@@ -56,30 +57,30 @@ public class CommandHandler {
 		logger.info("Command <" + command.name() + "> received");
 		boolean abortConnection = false;
 		switch (command) {
-		case CONNECT:
-			abortConnection = this.connect((ConnectPackage) jsonPackage, client);
-			break;
-		case RECONNECT:
-			abortConnection = this.reconnect((ReconnectPackage) jsonPackage, client);
-			break;
-		case DISCONNECT:
-			this.disconnect((DisconnectPackage) jsonPackage, client, false);
-			break;
-		case SHUTDOWN:
-			this.disconnect((DisconnectPackage) jsonPackage, client, true);
-			break;
-		case GET:
-			this.get((GetPackage) jsonPackage, client);
-			break;
-		case SET:
-			this.set((SetPackage) jsonPackage, client);
-			break;
-		case SERVER_COMMAND:
-			this.executSeverCommand((ServerCommand) jsonPackage, client);
-			break;
-		default:
-			logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
-			break;
+			case CONNECT:
+				abortConnection = this.connect((ConnectPackage) jsonPackage, client);
+				break;
+			case RECONNECT:
+				abortConnection = this.reconnect((ReconnectPackage) jsonPackage, client);
+				break;
+			case DISCONNECT:
+				this.disconnect((DisconnectPackage) jsonPackage, client, false);
+				break;
+			case SHUTDOWN:
+				this.disconnect((DisconnectPackage) jsonPackage, client, true);
+				break;
+			case GET:
+				this.get((GetPackage) jsonPackage, client);
+				break;
+			case SET:
+				this.set((SetPackage) jsonPackage, client);
+				break;
+			case SERVER_COMMAND:
+				this.executSeverCommand((ServerCommand) jsonPackage, client);
+				break;
+			default:
+				logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
+				break;
 		}
 		return abortConnection;
 	}
@@ -87,24 +88,24 @@ public class CommandHandler {
 	private void executSeverCommand(ServerCommand serverCommand, Client client) throws IOException {
 		ClientAssignments assignments = this.get(client);
 		switch (serverCommand.getServerCommand()) {
-		case BACKUP:
-			try {
-				this.instances.backupMeasurements();
-			} catch (XMLStreamException e) {
-				logger.error("XMLStream error while writing the backup file");
-			}
-			break;
-		case SCREEN_RESTORE_INHIBIT:
-			this.screenRestoreInhibit(true, assignments);
-			break;
-		case SCREEN_RESTORE_ENABLE:
-			this.screenRestoreInhibit(false, assignments);
-			break;
+			case BACKUP:
+				try {
+					this.instances.backupMeasurements();
+				} catch (XMLStreamException e) {
+					logger.error("XMLStream error while writing the backup file");
+				}
+				break;
+			case SCREEN_RESTORE_INHIBIT:
+				this.screenRestoreInhibit(true, assignments);
+				break;
+			case SCREEN_RESTORE_ENABLE:
+				this.screenRestoreInhibit(false, assignments);
+				break;
 
-		default:
-			logger.warn("Server command <" + serverCommand.getServerCommand().name()
-					+ ">unknown, old version of SolvisSmartHomeServer?");
-			break;
+			default:
+				logger.warn("Server command <" + serverCommand.getServerCommand().name()
+						+ ">unknown, old version of SolvisSmartHomeServer?");
+				break;
 		}
 
 	}
@@ -345,8 +346,10 @@ public class CommandHandler {
 		for (ClientAssignments assignments : this.clients) {
 			assignments.abort();
 		}
-		this.executor.shutdown();
-		this.executor = null ;
+		if (executor != null) {
+			this.executor.shutdown();
+			this.executor = null;
+		}
 	}
 
 }

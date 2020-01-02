@@ -1,13 +1,14 @@
 package de.sgollmer.solvismax.model;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 
 public class SolvisState extends Observable<SolvisState> {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisState.class);
+	private static final Logger logger = LogManager.getLogger(SolvisState.class);
 
 	private State state = State.POWER_OFF;
 	private boolean error = false;

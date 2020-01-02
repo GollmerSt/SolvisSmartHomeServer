@@ -9,7 +9,9 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.HelperError;
@@ -29,7 +31,8 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Clock implements Assigner, GraficsLearnable {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Clock.class);
+	private static final Logger logger = LogManager.getLogger(Clock.class);
+	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static final String XML_YEAR = "Year";
 	private static final String XML_MONTH = "Month";
@@ -39,8 +42,8 @@ public class Clock implements Assigner, GraficsLearnable {
 	private static final String XML_UPPER = "Upper";
 	private static final String XML_LOWER = "Lower";
 	private static final String XML_OK = "Ok";
-	
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss") ;
+
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
 	private final String channelId;
 	private final String screenId;
@@ -100,7 +103,6 @@ public class Clock implements Assigner, GraficsLearnable {
 		long diffSolvis = solvisTimeCalendar.getTimeInMillis() - now;
 		int diffSec = (int) (diffSolvis % 60000 + 60000) % 60000;
 		long realAdjustTime = this.calculateNext(now);
-		long solvisAdjustTime = realAdjustTime - (diffSec > 30 ? 60000 : 0);
 		long startAdjustTime = realAdjustTime;
 		long lastStartAdjustTime = 0;
 		long earliestStartAdjustTime = realAdjustTime;
@@ -108,17 +110,17 @@ public class Clock implements Assigner, GraficsLearnable {
 		Calendar calendarSolvisAdjust = Calendar.getInstance();
 		Calendar calendarSolvisStart = Calendar.getInstance();
 		int adjustmentTime = 0;
+		long solvisAdjustTime = 0;
 		for (int rep = 0; lastStartAdjustTime != startAdjustTime && rep < 10; ++rep) {
 			adjustmentTime = 0;
 			calendarProposal.setTimeInMillis(startAdjustTime);
 			calendarSolvisStart.setTimeInMillis(startAdjustTime + diffSolvis);
+			solvisAdjustTime = realAdjustTime - (diffSec > 30000 ? 60000 : 0);
 			calendarSolvisAdjust.setTimeInMillis(solvisAdjustTime);
 			for (DatePart part : this.dateParts) {
 				int calendarInt = part.getCalendarInt();
 				int diff = Math.abs(calendarSolvisStart.get(calendarInt) - calendarProposal.get(calendarInt));
-				if (diff > 0) {
-					adjustmentTime += diff * singleSettingTime + part.touch.getSettingTime(solvis);
-				}
+				adjustmentTime += diff * singleSettingTime + part.touch.getSettingTime(solvis);
 			}
 			adjustmentTime = adjustmentTime + this.ok.getSettingTime(solvis) + solvis.getMaxResponseTime()
 					+ 8 * this.screen.get(solvis.getConfigurationMask()).getTouchPoint().getSettingTime(solvis);
@@ -135,7 +137,6 @@ public class Clock implements Assigner, GraficsLearnable {
 				earliestStartAdjustTime = startAdjustTime;
 			}
 		}
-		logger.info("Next time adjust is scheduled to " + DATE_FORMAT.format(new Date(realAdjustTime)) + ".");
 		return new NextAdjust(solvisAdjustTime, realAdjustTime, startAdjustTime);
 	}
 
@@ -361,6 +362,14 @@ public class Clock implements Assigner, GraficsLearnable {
 			this.solvis = solvis;
 			this.adjustmentThread = new ClockAdjustmentThread(this);
 			this.adjustmentThread.start();
+			solvis.registerAbortObserver(new ObserverI<Boolean>() {
+
+				@Override
+				public void update(Boolean data, Object source) {
+					adjustmentThread.abort();
+
+				}
+			});
 		}
 
 		@Override
@@ -385,7 +394,7 @@ public class Clock implements Assigner, GraficsLearnable {
 			boolean success = false;
 			for (int repeatFail = 0; !success && repeatFail < Constants.FAIL_REPEATS; ++repeatFail) {
 				success = true;
-				if ( repeatFail > 0 ) {
+				if (repeatFail > 0) {
 					solvis.gotoHome();
 				}
 				try {
@@ -427,7 +436,7 @@ public class Clock implements Assigner, GraficsLearnable {
 						}
 					}
 				} catch (HelperError he) {
-					success = false ;
+					success = false;
 				}
 			}
 			long time = System.currentTimeMillis();
@@ -483,6 +492,10 @@ public class Clock implements Assigner, GraficsLearnable {
 					synchronized (this) {
 
 						if (this.nextAdjust != null && waitTime < 0) {
+							logger.info("Next time adjust is scheduled to "
+									+ DATE_FORMAT.format(new Date(nextAdjust.realAdjustTime))
+									+ ", adjustment starts at "
+									+ DATE_FORMAT.format(new Date(nextAdjust.startAdjustTime)) + ".");
 							long time = System.currentTimeMillis();
 							this.waitTime = (int) (this.nextAdjust.startAdjustTime - time);
 							adjust = false;
@@ -526,12 +539,12 @@ public class Clock implements Assigner, GraficsLearnable {
 	}
 
 	private long calculateNext(long time) {
-		int delta = Constants.TIME_ADJUSTMENT_MINUTE_N * 60 * 1000 ;
-		long next = time/ delta * delta + delta ;
-		if ( next % 3600000 == 0 ) {
-			next += delta ;
+		int delta = Constants.TIME_ADJUSTMENT_MINUTE_N * 60 * 1000;
+		long next = time / delta * delta + delta;
+		if (next % 3600000 == 0) {
+			next += delta;
 		}
-		return next ;		
+		return next;
 	}
 
 	@Override
@@ -540,7 +553,7 @@ public class Clock implements Assigner, GraficsLearnable {
 		boolean finished = false;
 		for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
 			if (repeat == 1) {
-				logger.warn("Learning of clock not successfull, try it again.");
+				logger.log(LEARN, "Learning of clock not successfull, try it again.");
 			}
 			finished = true;
 			for (DatePart part : this.dateParts) {

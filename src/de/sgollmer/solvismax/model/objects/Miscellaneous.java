@@ -17,12 +17,15 @@ public class Miscellaneous {
 	private final int unsuccessfullWaitTime_ms;
 	private final int releaseblockingAfterUserChange_ms;
 	private final int watchDogTime_ms;
-	private final int connectionHoldTime_ms ;
-	private final int forcedUpdateIntervall_ms ;
+	private final int connectionHoldTime_ms;
+	private final int forcedUpdateIntervall_ms;
+	private final int solvisConnectionTimeout_ms;
+	private final int solvisReadTimeout_ms;
 
 	public Miscellaneous(int defaultAverageCount, int defaultReadMeasurementsIntervall_ms,
 			int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors, int unsuccessfullWaitTime_ms,
-			int releaseblockingAfterUserChange_ms, int watchDogTime_ms, int connectionHoldTime_ms, int forcedUpdateIntervall_ms) {
+			int releaseblockingAfterUserChange_ms, int watchDogTime_ms, int connectionHoldTime_ms,
+			int forcedUpdateIntervall_ms, int solvisConnectionTimeout_ms, int solvisReadTimeout_ms) {
 		this.defaultAverageCount = defaultAverageCount;
 		this.defaultReadMeasurementsIntervall_ms = defaultReadMeasurementsIntervall_ms;
 		this.measurementsBackupTime_ms = measurementsBackupTime_ms;
@@ -30,8 +33,10 @@ public class Miscellaneous {
 		this.unsuccessfullWaitTime_ms = unsuccessfullWaitTime_ms;
 		this.releaseblockingAfterUserChange_ms = releaseblockingAfterUserChange_ms;
 		this.watchDogTime_ms = watchDogTime_ms;
-		this.connectionHoldTime_ms = connectionHoldTime_ms ;
-		this.forcedUpdateIntervall_ms = forcedUpdateIntervall_ms ;
+		this.connectionHoldTime_ms = connectionHoldTime_ms;
+		this.forcedUpdateIntervall_ms = forcedUpdateIntervall_ms;
+		this.solvisConnectionTimeout_ms = solvisConnectionTimeout_ms;
+		this.solvisReadTimeout_ms = solvisReadTimeout_ms;
 	}
 
 	public int getDefaultAverageCount() {
@@ -73,6 +78,8 @@ public class Miscellaneous {
 		private int watchDogTime_ms;
 		private int connectionHoldTime_ms;
 		private int forcedUpdateIntervall_ms;
+		private int solvisConnectionTimeout_ms;
+		private int solvisReadTimeout_ms;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -103,10 +110,17 @@ public class Miscellaneous {
 					this.watchDogTime_ms = Integer.parseInt(value);
 					break;
 				case "connectionHoldTime_ms":
-					this.connectionHoldTime_ms = Integer.parseInt(value) ;
-					break ;
+					this.connectionHoldTime_ms = Integer.parseInt(value);
+					break;
 				case "forcedUpdateIntervall_ms":
-					this.forcedUpdateIntervall_ms = Integer.parseInt(value) ;
+					this.forcedUpdateIntervall_ms = Integer.parseInt(value);
+					break;
+				case "solvisConnectionTimeout_ms":
+					this.solvisConnectionTimeout_ms = Integer.parseInt(value);
+					break;
+				case "solvisReadTimeout_ms":
+					this.solvisReadTimeout_ms = Integer.parseInt(value);
+					break;
 			}
 
 		}
@@ -115,7 +129,8 @@ public class Miscellaneous {
 		public Miscellaneous create() throws XmlError, IOException {
 			return new Miscellaneous(defaultAverageCount, defaultReadMeasurementsIntervall_ms,
 					measurementsBackupTime_ms, powerOffDetectedAfterIoErrors, unsuccessfullWaitTime_ms,
-					releaseblockingAfterUserChange_ms, watchDogTime_ms, connectionHoldTime_ms, forcedUpdateIntervall_ms);
+					releaseblockingAfterUserChange_ms, watchDogTime_ms, connectionHoldTime_ms, forcedUpdateIntervall_ms,
+					solvisConnectionTimeout_ms, solvisReadTimeout_ms);
 		}
 
 		@Override
@@ -135,6 +150,14 @@ public class Miscellaneous {
 	}
 
 	public int getForcedUpdateIntervall() {
-		return this.forcedUpdateIntervall_ms ;
+		return this.forcedUpdateIntervall_ms;
+	}
+
+	public int getSolvisReadTimeout_ms() {
+		return solvisReadTimeout_ms;
+	}
+
+	public int getSolvisConnectionTimeout_ms() {
+		return solvisConnectionTimeout_ms;
 	}
 }

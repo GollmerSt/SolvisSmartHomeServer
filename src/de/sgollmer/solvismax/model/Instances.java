@@ -12,6 +12,7 @@ import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
+import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
@@ -26,16 +27,17 @@ public class Instances {
 	private final BaseData baseData;
 	private final MeasurementsBackupHandler backupHandler;
 	private final AllSolvisGrafics graficDatas;
-	private final int xmlHash ;
-	private final String writeablePath ;
+	private final int xmlHash;
+	private final String writeablePath;
 
-	public Instances(String writeablePath, Unit cliUnit) throws IOException, XmlError, XMLStreamException, LearningError {
-		this.writeablePath = writeablePath ;
+	public Instances(String writeablePath, Unit cliUnit)
+			throws IOException, XmlError, XMLStreamException, LearningError {
+		this.writeablePath = writeablePath;
 		this.baseData = new BaseControlFileReader(writeablePath).read().getTree();
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
 		Result<SolvisDescription> result = reader.read();
 		this.solvisDescription = result.getTree();
-		this.xmlHash = result.getHash() ;
+		this.xmlHash = result.getHash();
 		this.backupHandler = new MeasurementsBackupHandler(this.writeablePath,
 				solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
 		this.graficDatas = new GraficFileHandler(this.writeablePath, this.xmlHash).read();
@@ -69,12 +71,15 @@ public class Instances {
 
 	private Solvis createSolvisInstance(String id, String url, AccountInfo accountInfo)
 			throws IOException, XmlError, XMLStreamException, LearningError {
-		SolvisConnection connection = new SolvisConnection(url, accountInfo);
-		Solvis solvis = new Solvis(id, this.solvisDescription, this.graficDatas.get(id), connection,
-				this.backupHandler);
-		if ( solvis.getGrafics().isEmpty()) {
+		Miscellaneous misc = solvisDescription.getMiscellaneous();
+		SolvisConnection connection = new SolvisConnection(url, accountInfo, misc.getSolvisConnectionTimeout_ms(),
+				misc.getSolvisReadTimeout_ms());
+		String timeZone = this.baseData.getTimeZone();
+		Solvis solvis = new Solvis(id, this.solvisDescription, this.graficDatas.get(id), connection, this.backupHandler,
+				timeZone);
+		if (solvis.getGrafics().isEmpty()) {
 			solvis.learning();
-			
+
 			new GraficFileHandler(this.writeablePath, this.xmlHash).write(this.graficDatas);
 		}
 		solvis.init();
@@ -84,14 +89,14 @@ public class Instances {
 	public SolvisDescription getSolvisDescription() {
 		return solvisDescription;
 	}
-	
+
 	public void abort() {
-		for ( Solvis unit : units ) {
+		for (Solvis unit : units) {
 			unit.abort();
 		}
-		this.backupHandler.abort(); 
+		this.backupHandler.abort();
 	}
-	
+
 	public void backupMeasurements() throws IOException, XMLStreamException {
 		this.backupHandler.write();
 	}

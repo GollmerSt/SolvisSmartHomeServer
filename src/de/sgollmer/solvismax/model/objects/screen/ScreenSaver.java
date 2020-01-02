@@ -10,7 +10,8 @@ import java.util.regex.Matcher;
 import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -27,7 +28,8 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 public class ScreenSaver implements Assigner {
 	private static java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+:\\d+");
 	private java.util.regex.Pattern DATE_PATTERN = java.util.regex.Pattern.compile("\\d+\\.\\d+\\.\\d\\d\\d\\d");
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ScreenSaver.class) ;
+	
+	private static final Logger logger = LogManager.getLogger(ScreenSaver.class) ;
 			
 	private final Coordinate timeTopLeft;
 	private final Coordinate timeBottomLeft;

@@ -777,10 +777,18 @@ da der user diesen manuell verändert haben könnte.</documentation>
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="forcedUpdateIntervall_ms" type="int" use="required">
+		<attribute name="forcedUpdateIntervall_ms" type="int"
+			use="required">
 			<annotation>
-				<documentation>Intervall, nach dem sämtliche Messwerte zum Client geschickt wierden. Wenn Wert 0, dann Feature ausgeschaltet</documentation>
-			</annotation></attribute>
+				<documentation>
+					Intervall, nach dem sämtliche Messwerte zum Client
+					geschickt wierden. Wenn Wert 0, dann Feature
+					ausgeschaltet
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="solvisConnectionTimeout_ms" type="int" use="required"></attribute>
+		<attribute name="solvisReadTimeout_ms" type="int" use="required"></attribute>
 	</complexType>
 
 	<complexType name="UpdateBy">

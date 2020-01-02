@@ -3,13 +3,14 @@ package de.sgollmer.solvismax.connection.transfer;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.error.JsonError;
 
 public class ReceivedPackageCreator {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ReceivedPackageCreator.class);
+	private static final Logger logger = LogManager.getLogger(ReceivedPackageCreator.class);
 
     public static ReceivedPackageCreator getInstance() {
 		return JsonPackageCreatorHolder.INSTANCE;

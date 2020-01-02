@@ -11,7 +11,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
@@ -22,7 +23,7 @@ import de.sgollmer.solvismax.xml.XmlStreamReader;
 
 public class MeasurementsBackupHandler {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MeasurementsBackupHandler.class);
+	private static final Logger logger = LogManager.getLogger(MeasurementsBackupHandler.class);
 
 	private static final String NAME_XSD_MEASUREMENTS_FILE = "measurements.xsd";
 	private static final String NAME_XML_MEASUREMENTS_FILE = "measurements.xml";

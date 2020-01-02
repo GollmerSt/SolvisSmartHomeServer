@@ -10,21 +10,24 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
-import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 
 public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.Element<Screen> {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Screen.class);
+	private static final Logger logger = LogManager.getLogger(Screen.class);
+	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private final int LEARN_REPEAT_COUNT = 3;
 
@@ -175,8 +178,9 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	}
 
 	public boolean isScreen(MyImage image, Solvis solvis) {
-		if ( this.screenCompares.isEmpty() ) {
-			throw new XmlError("Error in XML definition: Grafic information of screen <" + this.getId() + "> is missing.") ;
+		if (this.screenCompares.isEmpty()) {
+			throw new XmlError(
+					"Error in XML definition: Grafic information of screen <" + this.getId() + "> is missing.");
 		}
 		for (ScreenCompare grafic : this.screenCompares) {
 			if (!grafic.isElementOf(image, solvis)) {
@@ -194,8 +198,8 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 				}
 			}
 		}
-		if ( this.preparation != null ) {
-			return this.preparation.isLearned(solvis) ;
+		if (this.preparation != null) {
+			return this.preparation.isLearned(solvis);
 		}
 		return true;
 	}
@@ -309,27 +313,27 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-			case "id":
-				this.id = value;
-				break;
-			case "previousId":
-				if (!value.isEmpty()) {
-					this.previousId = value;
-				}
-				break;
-			case "alternativePreviousId":
-				if (!value.isEmpty()) {
-					this.alternativePreviousId = value;
-				}
-				break;
-			case "backId":
-				if (!value.isEmpty()) {
-					this.backId = value;
-				}
-				break;
-			case "ignoreChanges":
-				this.ignoreChanges = Boolean.parseBoolean(value);
-				break;
+				case "id":
+					this.id = value;
+					break;
+				case "previousId":
+					if (!value.isEmpty()) {
+						this.previousId = value;
+					}
+					break;
+				case "alternativePreviousId":
+					if (!value.isEmpty()) {
+						this.alternativePreviousId = value;
+					}
+					break;
+				case "backId":
+					if (!value.isEmpty()) {
+						this.backId = value;
+					}
+					break;
+				case "ignoreChanges":
+					this.ignoreChanges = Boolean.parseBoolean(value);
+					break;
 			}
 
 		}
@@ -357,22 +361,22 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (name.getLocalPart()) {
-			case XML_CONFIGURATION_MASKS:
-				return new ConfigurationMasks.Creator(id, this.getBaseCreator());
-			case XML_TOUCH_POINT:
-				return new TouchPoint.Creator(id, this.getBaseCreator());
-			case XML_ALTERNATIVE_TOUCH_POINT:
-				return new TouchPoint.Creator(id, this.getBaseCreator());
-			case XML_SCREEN_GRAFICS:
-				return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
-			case XML_SCREEN_GRAFICS_REF:
-				return new CreatorScreenGraficRef(id, this.getBaseCreator());
-			case XML_SCREEN_OCR:
-				return new ScreenOcr.Creator(id, getBaseCreator());
-			case XML_IGNORE_RECTANGLE:
-				return new Rectangle.Creator(id, getBaseCreator());
-			case XML_PREPARATION_REF:
-				return new PreparationRef.Creator(id, getBaseCreator());
+				case XML_CONFIGURATION_MASKS:
+					return new ConfigurationMasks.Creator(id, this.getBaseCreator());
+				case XML_TOUCH_POINT:
+					return new TouchPoint.Creator(id, this.getBaseCreator());
+				case XML_ALTERNATIVE_TOUCH_POINT:
+					return new TouchPoint.Creator(id, this.getBaseCreator());
+				case XML_SCREEN_GRAFICS:
+					return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
+				case XML_SCREEN_GRAFICS_REF:
+					return new CreatorScreenGraficRef(id, this.getBaseCreator());
+				case XML_SCREEN_OCR:
+					return new ScreenOcr.Creator(id, getBaseCreator());
+				case XML_IGNORE_RECTANGLE:
+					return new Rectangle.Creator(id, getBaseCreator());
+				case XML_PREPARATION_REF:
+					return new PreparationRef.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -380,35 +384,35 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-			case XML_CONFIGURATION_MASKS:
-				this.configurationMasks = (ConfigurationMasks) created;
-				break;
-			case XML_TOUCH_POINT:
-				this.touchPoint = (TouchPoint) created;
-				break;
-			case XML_ALTERNATIVE_TOUCH_POINT:
-				this.alternativeTouchPoint = (TouchPoint) created;
-				break;
-			case XML_SCREEN_GRAFICS:
-				ScreenGraficDescription grafic = (ScreenGraficDescription) created;
-				this.screenGraficRefs.add(grafic.getId());
-				((SolvisDescription.Creator) this.getBaseCreator()).getScreenGraficDescriptions().add(grafic);
-				break;
-			case XML_SCREEN_GRAFICS_REF:
-				this.screenGraficRefs.add((String) created);
-				break;
-			case XML_SCREEN_OCR:
-				this.screenOcr.add((ScreenOcr) created);
-				break;
-			case XML_IGNORE_RECTANGLE:
-				if (this.ignoreRectangles == null) {
-					this.ignoreRectangles = new ArrayList<>();
-				}
-				this.ignoreRectangles.add((Rectangle) created);
-				break;
-			case XML_PREPARATION_REF:
-				this.preparationId = ((PreparationRef) created).getPreparationId();
-				break;
+				case XML_CONFIGURATION_MASKS:
+					this.configurationMasks = (ConfigurationMasks) created;
+					break;
+				case XML_TOUCH_POINT:
+					this.touchPoint = (TouchPoint) created;
+					break;
+				case XML_ALTERNATIVE_TOUCH_POINT:
+					this.alternativeTouchPoint = (TouchPoint) created;
+					break;
+				case XML_SCREEN_GRAFICS:
+					ScreenGraficDescription grafic = (ScreenGraficDescription) created;
+					this.screenGraficRefs.add(grafic.getId());
+					((SolvisDescription.Creator) this.getBaseCreator()).getScreenGraficDescriptions().add(grafic);
+					break;
+				case XML_SCREEN_GRAFICS_REF:
+					this.screenGraficRefs.add((String) created);
+					break;
+				case XML_SCREEN_OCR:
+					this.screenOcr.add((ScreenOcr) created);
+					break;
+				case XML_IGNORE_RECTANGLE:
+					if (this.ignoreRectangles == null) {
+						this.ignoreRectangles = new ArrayList<>();
+					}
+					this.ignoreRectangles.add((Rectangle) created);
+					break;
+				case XML_PREPARATION_REF:
+					this.preparationId = ((PreparationRef) created).getPreparationId();
+					break;
 			}
 
 		}
@@ -480,6 +484,8 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 						solvis.clearCurrentImage();
 						it.remove();
 					} catch (IOException e) {
+						logger.log(LEARN, "Screen <" + learn.getScreen().getId()
+								+ "> not learned in case of IOEexception, will be tried again.");
 						success = false;
 						if (cnt <= 0) {
 							throw e;
@@ -496,19 +502,20 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 					boolean success = false;
 					for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
 						try {
-							Screen gotoScreen = nextScreen ;
-							Preparation preparation = nextScreen.getPreparation() ;
-							if ( preparation != null ) {
-								gotoScreen = nextScreen.getPreviousScreen(configurationMask) ;
-								Screen clearScreen = preparation.getClearScreen(configurationMask) ;
-								if ( clearScreen != null ) {
-									Screen.gotoScreenLearning(solvis, clearScreen, current, learnScreens, configurationMask);
+							Screen gotoScreen = nextScreen;
+							Preparation preparation = nextScreen.getPreparation();
+							if (preparation != null) {
+								gotoScreen = nextScreen.getPreviousScreen(configurationMask);
+								Screen clearScreen = preparation.getClearScreen(configurationMask);
+								if (clearScreen != null) {
+									Screen.gotoScreenLearning(solvis, clearScreen, current, learnScreens,
+											configurationMask);
 								}
 							}
 							Screen.gotoScreenLearning(solvis, gotoScreen, current, learnScreens, configurationMask);
-							if ( preparation != null ) {
-								preparation.learn(solvis, gotoScreen) ;
-								preparation.execute(solvis) ;
+							if (preparation != null) {
+								preparation.learn(solvis, gotoScreen);
+								preparation.execute(solvis);
 								Screen.gotoScreenLearning(solvis, nextScreen, current, learnScreens, configurationMask);
 							}
 							current = nextScreen;
@@ -519,7 +526,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 								success = current != null;
 							}
 						} catch (IOException e) {
-							logger.warn("Screen <" + this.toString()
+							logger.log(LEARN, "Screen <" + this.getId()
 									+ "> not learned in case of IOEexception, will be tried again.");
 							if (cnt <= 0) {
 								throw e;

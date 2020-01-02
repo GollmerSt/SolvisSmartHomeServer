@@ -6,7 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
@@ -18,7 +19,7 @@ import de.sgollmer.solvismax.model.objects.Screen;
 
 public class SolvisWorkers {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(SolvisWorkers.class);
+	private static final Logger logger = LogManager.getLogger(SolvisWorkers.class);
 
 	private final Solvis solvis;
 	private final WatchDog watchDog;
@@ -82,10 +83,7 @@ public class SolvisWorkers {
 									this.wait(watchDogTime);
 								} catch (InterruptedException e) {
 								}
-								if (this.queue.isEmpty()) {
-									executeWatchDog = true;
-									// this.screenRestoreInhibitCnt = 0;
-								}
+								executeWatchDog = true;
 							}
 
 						} else {
@@ -147,7 +145,7 @@ public class SolvisWorkers {
 								CommandI cmp = it.next();
 								if (command == cmp) {
 									it.remove();
-									deleted = true ;
+									deleted = true;
 								}
 							}
 						}
@@ -179,21 +177,23 @@ public class SolvisWorkers {
 					Handling handling = command.getHandling(cmp);
 					if (handling.isInQueueInhibt()) {
 						cmp.setInhibit(true);
-					} else if (handling.isAppendInhibit()) {
+					}
+					if (handling.isAppendInhibit()) {
 						insert = false;
 					}
 				}
 				if (insert) {
-					if ( command.first() ) {
+					if (command.first()) {
 						this.queue.addFirst(command);
 					} else {
-						this.queue.add(command) ;
+						this.queue.add(command);
 					}
 					this.notifyAll();
 					watchDog.bufferNotEmpty();
 				}
 			}
 		}
+
 	}
 
 	private boolean execute(CommandI command) throws IOException, ErrorPowerOn {

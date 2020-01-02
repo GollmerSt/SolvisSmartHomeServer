@@ -82,9 +82,9 @@ public class CommandControl implements CommandI {
 				return new Handling(false, false);
 			} else {
 				if (this.setValue == null) {
-					return new Handling(true, false);
-				} else {
 					return new Handling(false, true);
+				} else {
+					return new Handling(true, false);
 				}
 			}
 

@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -15,7 +17,9 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ScreenGraficDescription implements ScreenCompare, Assigner {
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ScreenGraficDescription.class);
+
+	private static final Logger logger = LogManager.getLogger(ScreenGraficDescription.class);
+	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private final String id;
 	private final boolean exact;
@@ -37,8 +41,8 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 	}
 
 	public boolean isElementOf(MyImage image, Solvis solvis, boolean cmpNoRectangle) {
-		if ( ! isLearned(solvis)) {
-			return false ;
+		if (!isLearned(solvis)) {
+			return false;
 		}
 		ScreenGraficData data = solvis.getGrafics().get(this.id);
 		if (data == null) { // not learned
@@ -90,12 +94,12 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-			case "id":
-				this.id = value;
-				break;
-			case "exact":
-				this.exact = Boolean.parseBoolean(value);
-				break;
+				case "id":
+					this.id = value;
+					break;
+				case "exact":
+					this.exact = Boolean.parseBoolean(value);
+					break;
 			}
 
 		}
@@ -136,12 +140,12 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 
 		if (grafic != null) {
 			if (!grafic.getImage().equals(image)) {
-				logger.debug("The screen grafic <" + this.getId() + "> was learned again,"
+				logger.log(LEARN, "The screen grafic <" + this.getId() + "> was learned again,"
 						+ " but didn't match with the previous. The contol file must be checked.");
 			}
 		} else {
 			solvis.getGrafics().put(this.id, image);
-			logger.debug("Screen grafic <" + this.getId() + "> learned.");
+			logger.log(LEARN, "Screen grafic <" + this.getId() + "> learned.");
 		}
 	}
 

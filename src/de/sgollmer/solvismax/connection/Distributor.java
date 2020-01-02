@@ -3,7 +3,8 @@ package de.sgollmer.solvismax.connection;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
@@ -18,7 +19,7 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class Distributor extends Observable<JsonPackage> {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Distributor.class) ;
+	private static final Logger logger = LogManager.getLogger(Distributor.class);
 
 	private Collection<SolvisData> collectedMeasurements = null;
 	private final SolvisDataObserver solvisDataObserver = new SolvisDataObserver();

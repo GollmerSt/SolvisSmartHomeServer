@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.objects.Units;
@@ -14,13 +15,19 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 public class BaseData {
 
 	@SuppressWarnings("unused")
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BaseData.class);
+	private static final Logger logger = LogManager.getLogger(BaseData.class);
 
 	private static final String XML_BASEDATA_UNITS = "Units";
 
+	private final String timeZone ;
+	public String getTimeZone() {
+		return timeZone;
+	}
+
 	private final Units units ;
 	
-	public BaseData( Units units ) {
+	public BaseData( String timeZone, Units units ) {
+		this.timeZone = timeZone ;
 		this.units = units ;
 	}
 	
@@ -30,6 +37,7 @@ public class BaseData {
 
 	public static class Creator extends BaseCreator<BaseData> {
 
+		private String timeZone = "Europe/Berlin" ;
 		private Units units ;
 
 		public Creator(String id) {
@@ -38,11 +46,15 @@ public class BaseData {
 
 		@Override
 		public void setAttribute(QName name, String value) {
+			switch ( name.getLocalPart() ) {
+				case "timeZone" :
+					this.timeZone = value ;
+			}
 		}
 
 		@Override
 		public BaseData create() throws XmlError, IOException {
-			return new BaseData(units);
+			return new BaseData(timeZone, units);
 		}
 
 		@Override

@@ -2,7 +2,8 @@ package de.sgollmer.solvismax.model.update;
 
 import javax.xml.namespace.QName;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.CommandControl;
@@ -20,7 +21,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class HeatingBurner extends Strategy<HeatingBurner> {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HeatingBurner.class);
+	private static final Logger logger = LogManager.getLogger(HeatingBurner.class);
 
 	private final String burnerId;
 	private final String burnerCalcId;

@@ -1500,7 +1500,8 @@
 			</tns:ScreenGrafic>
 		</tns:Preparation>
 	</tns:Preparations>
-	<tns:Clock channelId="X6.UhrzeitSolvis" screenId="Zeiteinstellung">
+	<tns:Clock channelId="X6.UhrzeitSolvis"
+		screenId="Zeiteinstellung">
 		<tns:Year least="2008">
 			<tns:Rectangle>
 				<tns:TopLeft X="101" Y="58" />
@@ -1544,8 +1545,8 @@
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_DD">
 				<tns:Field>
-					<tns:TopLeft X="63" Y="55" />
-					<tns:BottomRight X="67" Y="78" />
+					<tns:TopLeft X="65" Y="55" />
+					<tns:BottomRight X="69" Y="78" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Day>
@@ -1617,5 +1618,6 @@
 		powerOffDetectedAfterIoErrors="3" measurementsBackupTime_ms="3600000"
 		releaseblockingAfterUserChange_ms="300000"
 		unsuccessfullWaitTime_ms="10000" watchDogTime_ms="60000"
-		connectionHoldTime_ms="300000" forcedUpdateIntervall_ms="3600000" />
+		connectionHoldTime_ms="300000" forcedUpdateIntervall_ms="3600000"
+		solvisConnectionTimeout_ms="10000" solvisReadTimeout_ms="2000" />
 </tns:SolvisDescription>

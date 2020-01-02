@@ -10,7 +10,8 @@ import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
@@ -19,7 +20,7 @@ import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 
 public class Server {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Server.class);
+	private static final Logger logger = LogManager.getLogger(Server.class);
 
 	private ServerSocket serverSocket;
 	private final Collection<Client> connectedClients;

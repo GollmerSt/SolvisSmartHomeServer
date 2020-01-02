@@ -2,7 +2,8 @@ package de.sgollmer.solvismax.model;
 
 import java.util.Collection;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -15,7 +16,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public class WatchDog {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(WatchDog.class);
+	private static final Logger logger = LogManager.getLogger(WatchDog.class);
 
 	private final Solvis solvis;
 	private final ScreenSaver saver;
@@ -29,19 +30,19 @@ public class WatchDog {
 		this.saver = saver;
 		Miscellaneous misc = this.solvis.getSolvisDescription().getMiscellaneous();
 		int releaseBlocking = misc.getReleaseblockingAfterUserChange_ms();
-		if ( Constants.DEBUG ) {
-			releaseBlocking = Constants.DEBUG_USER_ACCESS_TIME ;
+		if (Constants.DEBUG) {
+			releaseBlocking = Constants.DEBUG_USER_ACCESS_TIME;
 		}
 		this.releaseblockingAfterUserChange_ms = releaseBlocking;
 		this.watchDogTime = misc.getWatchDogTime_ms();
 		this.solvis.registerAbortObserver(new ObserverI<Boolean>() {
-			
+
 			@Override
 			public void update(Boolean data, Object source) {
-				if ( data  ) {
-					abort() ;
+				if (data) {
+					abort();
 				}
-				
+
 			}
 		});
 	}
@@ -53,7 +54,7 @@ public class WatchDog {
 	public void execute() {
 
 		long changedTime = -1;
-		this.abort = false ;
+		this.abort = false;
 
 		while (!abort) {
 
@@ -75,24 +76,38 @@ public class WatchDog {
 						userAcess = UserAcess.RESET;
 					} else {
 						this.solvis.setScreenSaverActive(false);
-						if (!solvisImage.equals(this.solvis.getCurrentImage())) {
 
-							Screen screen = solvis.getSolvisDescription().getScreens().getScreen(solvisImage, solvis);
+						boolean access = true;
 
-							if (screen != null && screen == solvis.getCurrentScreen()) {
-								if (!screen.isIgnoreChanges()) {
-									Collection<Rectangle> ignoreRectangles = screen.getIgnoreRectangles();
-									if (ignoreRectangles != null) {
-										MyImage ignoreRectScreen = new MyImage(solvisImage, false, ignoreRectangles);
-										if (!ignoreRectScreen.equals(this.solvis.getCurrentImage(), true)) {
-											userAcess = UserAcess.DETECTED;
+						for (int cnt = 0; access & cnt < 2; ++cnt) {
+							if (solvisImage.equals(this.solvis.getCurrentImage())) {
+								access = false;
+								
+							} else if (!solvisImage.equals(this.solvis.getCurrentImage())) {
+
+								Screen screen = solvis.getSolvisDescription().getScreens().getScreen(solvisImage,
+										solvis);
+
+								if (screen != null && screen == solvis.getCurrentScreen()) {
+									if (screen.isIgnoreChanges()) {
+										access = false;
+									} else {
+										Collection<Rectangle> ignoreRectangles = screen.getIgnoreRectangles();
+										if (ignoreRectangles != null) {
+											MyImage ignoreRectScreen = new MyImage(solvisImage, false,
+													ignoreRectangles);
+											if (ignoreRectScreen.equals(this.solvis.getCurrentImage(), true)) {
+												access = false;
+											}
 										}
 									}
 								}
-							} else {
-								userAcess = UserAcess.DETECTED;
 							}
 						}
+						if (access) {
+							userAcess = UserAcess.DETECTED;
+						}
+
 					}
 				}
 
@@ -129,13 +144,13 @@ public class WatchDog {
 						abort = false;
 						break;
 				}
-				
+
 				this.solvis.getSolvisState().error(errorDetected);
 
 				if (errorDetected) {
 					abort = false;
 				}
-				
+
 				synchronized (this) {
 					if (!abort) {
 						this.wait(this.watchDogTime);
@@ -153,7 +168,7 @@ public class WatchDog {
 		this.abort = true;
 		this.notifyAll();
 	}
-	
+
 	public synchronized void bufferNotEmpty() {
 		this.notifyAll();
 	}

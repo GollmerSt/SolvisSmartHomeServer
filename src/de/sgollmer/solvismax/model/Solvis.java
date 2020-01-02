@@ -8,7 +8,11 @@ import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+//import org.apache.logging.slf4j.Log4jLogger;
+//import org.slf4j.LoggerFactory;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.AccountInfo;
@@ -47,7 +51,9 @@ import de.sgollmer.solvismax.xml.XmlStreamReader;
 
 public class Solvis {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Solvis.class);
+	//private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Solvis.class);
+	private static final Logger logger = LogManager.getLogger(Solvis.class);
+	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static boolean LEARNING = false;
 
@@ -73,9 +79,10 @@ public class Solvis {
 	private final Distributor distributor;
 	private final MeasurementUpdateThread measurementUpdateThread;
 	private final Observable<Boolean> abortObservable = new Observable<>() ;
+	private final String timeZone ;
 
 	public Solvis(String id, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
-			MeasurementsBackupHandler measurementsBackupHandler) {
+			MeasurementsBackupHandler measurementsBackupHandler, String timeZone) {
 		this.id = id;
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
@@ -89,6 +96,7 @@ public class Solvis {
 		this.backupHandler.register(this, id);
 		this.distributor = new Distributor();
 		this.measurementUpdateThread = new MeasurementUpdateThread();
+		this.timeZone = timeZone ;
 	}
 
 	private Observer.Observable<Boolean> screenChangedByUserObserable = new Observable<>();
@@ -361,7 +369,7 @@ public class Solvis {
 	}
 
 	public void learning() throws IOException, LearningError {
-		logger.info("Learning started.");
+		logger.log(LEARN, "Learning started.");
 		this.gotoHome();
 		this.configurationMask = this.getSolvisDescription().getConfigurations(this);
 		logger.info("Configuration mask: " + Integer.toHexString(this.configurationMask));
@@ -384,7 +392,7 @@ public class Solvis {
 		}
 		this.solvisDescription.getClock().learn(this);
 		this.solvisDescription.getChannelDescriptions().learn(this);
-		logger.info("Learning finished.");
+		logger.log(LEARN, "Learning finished.");
 	}
 
 	/**
@@ -430,9 +438,9 @@ public class Solvis {
 			public char[] createPassword() {
 				return "e5am1kro".toCharArray();
 			}
-		});
+		}, 10000,2000);
 
-		final Solvis solvis = new Solvis(id, solvisDescription, grafics.get(id), connection, measurementsBackupHandler);
+		final Solvis solvis = new Solvis(id, solvisDescription, grafics.get(id), connection, measurementsBackupHandler, "Europe/Berlin");
 
 		if (LEARNING || solvis.getGrafics().isEmpty()) {
 			solvis.learning();
@@ -566,6 +574,10 @@ public class Solvis {
 	public void abort() {
 		this.abortObservable.notify(true);
 		this.measurementUpdateThread.abort();
+	}
+
+	public String getTimeZone() {
+		return timeZone;
 	}
 
 }
