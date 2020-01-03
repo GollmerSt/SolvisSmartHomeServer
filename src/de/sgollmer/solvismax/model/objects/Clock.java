@@ -33,6 +33,7 @@ public class Clock implements Assigner, GraficsLearnable {
 
 	private static final Logger logger = LogManager.getLogger(Clock.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
+	private static final Calendar CALENDAR_2018 ;
 
 	private static final String XML_YEAR = "Year";
 	private static final String XML_MONTH = "Month";
@@ -53,6 +54,12 @@ public class Clock implements Assigner, GraficsLearnable {
 	private final TouchPoint ok;
 
 	private OfConfigs<Screen> screen = null;
+	
+	static {
+		CALENDAR_2018 = Calendar.getInstance() ;
+		CALENDAR_2018.set(2018, 0, 1, 0, 0, 0);
+		CALENDAR_2018.set(Calendar.MILLISECOND, 0);
+	}
 
 	public Clock(String channelId, String screenId, List<DatePart> dateParts, TouchPoint upper, TouchPoint lower,
 			TouchPoint ok) {
@@ -97,9 +104,9 @@ public class Clock implements Assigner, GraficsLearnable {
 	}
 
 	private NextAdjust calculateNextAdjustTime(Calendar solvisTimeCalendar, Solvis solvis) {
+		long now = System.currentTimeMillis();
 		int singleSettingTime = Math.max(this.upper.getSettingTime(solvis), this.lower.getSettingTime(solvis))
 				+ solvis.getMaxResponseTime();
-		long now = System.currentTimeMillis();
 		long diffSolvis = solvisTimeCalendar.getTimeInMillis() - now;
 		int diffSec = (int) (diffSolvis % 60000 + 60000) % 60000;
 		long realAdjustTime = this.calculateNext(now);
@@ -379,8 +386,12 @@ public class Clock implements Assigner, GraficsLearnable {
 			}
 
 			Calendar solvisDate = (Calendar) data.getSingleData().get();
-			long time = System.currentTimeMillis();
-			int diff = (int) Math.abs(solvisDate.getTimeInMillis() - time);
+			long now = System.currentTimeMillis();
+			if ( now < CALENDAR_2018.getTimeInMillis() ) {
+				return ;
+			}
+
+			int diff = (int) Math.abs(solvisDate.getTimeInMillis() - now);
 			if (diff > Constants.MIN_TIME_ERROR_ADJUSTMENT_S) {
 				this.timeAdjustmentRequestPending = true;
 				this.adjustmentThread.trigger(calculateNextAdjustTime(solvisDate, solvis));

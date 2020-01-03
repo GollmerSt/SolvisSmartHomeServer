@@ -6,6 +6,10 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -16,12 +20,16 @@ import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class StrategyMode implements Strategy {
+
+	private static final Logger logger = LogManager.getLogger(StrategyMode.class);
+	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private final Collection<Mode> modes;
 
@@ -47,7 +55,7 @@ public class StrategyMode implements Strategy {
 				}
 				current = pattern;
 			}
-			if (cmp.isElementOf(current, solvis,true)) {
+			if (cmp.isElementOf(current, solvis, true)) {
 				return new ModeValue<Mode>(mode);
 			}
 		}
@@ -55,7 +63,8 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException, TerminationException {
+	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
+			throws IOException, TerminationException {
 		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
 		if (cmp != null && value.getMode().equals(cmp)) {
 			return true;
@@ -68,7 +77,7 @@ public class StrategyMode implements Strategy {
 			}
 		}
 		if (mode == null) {
-			return null;
+			return false;
 		}
 		solvis.send(mode.getTouch());
 		return false;
@@ -138,7 +147,7 @@ public class StrategyMode implements Strategy {
 
 	@Override
 	public Float getAccuracy() {
-		return null ;
+		return null;
 	}
 
 	@Override
@@ -148,8 +157,32 @@ public class StrategyMode implements Strategy {
 
 	@Override
 	public void setCurrentRectangle(Rectangle rectangle) {
-		for ( Mode mode : this.modes ) {
+		for (Mode mode : this.modes) {
 			mode.getGrafic().setRectangle(rectangle);
 		}
+	}
+
+	@Override
+	public boolean mustBeLearned() {
+		return true;
+	}
+
+	@Override
+	public boolean learn(Solvis solvis) throws IOException {
+		boolean successfull = true;
+		for (Mode mode : this.getModes()) {
+			solvis.send(mode.getTouch());
+			ScreenGraficDescription grafic = mode.getGrafic();
+			grafic.learn(solvis);
+			solvis.clearCurrentImage();
+			SingleData<Mode> data = this.getValue(solvis.getCurrentImage(), grafic.getRectangle(), solvis);
+			if (data == null || !mode.equals(data.get())) {
+				logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
+				successfull = false ;
+				break;
+			}
+		}
+		solvis.clearCurrentImage();
+		return successfull;
 	}
 }

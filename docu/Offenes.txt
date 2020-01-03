@@ -6,14 +6,12 @@ Offene Aufgaben:
      beim Senden der Kanal-Namen zum Cient mitberücksichtigt sein, ohne dass eine Verbindung zur
      Solvis-Anklage vorliegen muss
      
-5. >1 HK-Problem lösen, folgende Aufgaben sind noch erforderlich
+5. >1 HK-Problem testen, folgende Aufgaben sind noch erforderlich
         a) Hier muss noch Launch realisiert werden (wird erst aus dem XML gelesen).
         b) Auch muss noch die LaunchRef aufgelöst werden
         c) Testen 
 
 7. Befehle vom Client aus, um den Server zu beenden oder auch neu zu starten
-
-
 
 
 Erledigt:
@@ -34,4 +32,9 @@ Erledigt:
 9. Uhrzeiteinstellung funktioniert noch nicht richtig
 
 8. Bei statischen beobachteten Bildschirm muss screen saver detection aktiv sein!!!!!!
+
+10. Achtung, Fall noch fixen, wenn System-Zeit noch auf einem Phantasiewert
+ 
+ 11. Beim Learning erfolgt der Status-Restore immer mit Fehler
+
      

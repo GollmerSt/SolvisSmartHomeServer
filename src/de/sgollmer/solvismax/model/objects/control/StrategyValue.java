@@ -41,12 +41,12 @@ public class StrategyValue extends StrategyRead {
 	}
 
 	@Override
-	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) throws IOException, TerminationException {
+	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) throws IOException, TerminationException {
 		Integer goal = setValue.getInteger();
 
 		IntegerValue data = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
 		if (data == null) {
-			return null;
+			return false;
 		}
 		int current = data.get();
 		int value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment)) / (2 * this.increment);

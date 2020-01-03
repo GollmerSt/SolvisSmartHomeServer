@@ -2,9 +2,9 @@ package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,8 +26,9 @@ public class SolvisWorkers {
 
 	private ControlWorkerThread controlsThread = null;
 	private MeasurementsWorkerThread measurementsThread = null;
-	private Set<CommandI> commandsOfScreen = new HashSet<>();
+	private Collection<CommandI> commandsOfScreen = new ArrayList<>();
 	private Screen commandScreen = null;
+	private long timeCommandScreen = System.currentTimeMillis();
 
 	public SolvisWorkers(Solvis solvis) {
 		this.solvis = solvis;
@@ -199,20 +200,33 @@ public class SolvisWorkers {
 	private boolean execute(CommandI command) throws IOException, ErrorPowerOn {
 		Screen commandScreen = command.getScreen(this.solvis);
 		if (commandScreen != null) {
-			if (this.solvis.getCurrentScreen() != commandScreen || this.commandScreen != commandScreen) {
-				this.commandsOfScreen.clear();
-			}
-			this.commandScreen = commandScreen;
-			boolean isIn = !this.commandsOfScreen.add(command);
+			long now = System.currentTimeMillis();
 
-			if (isIn) {
-				this.solvis.clearCurrentImage();
-				this.commandsOfScreen.clear();
-				this.commandsOfScreen.add(command);
+			boolean clear ;
+
+			if (this.solvis.getCurrentScreen() != commandScreen || this.commandScreen != commandScreen) {
+				clear = true ;
+			} else if (now > timeCommandScreen + Constants.TIME_COMMAND_SCREEN_VALID) {
+				clear = true;
+			} else {
+				boolean isIn = this.commandsOfScreen.contains(command);
+				if (!isIn) {
+					clear = false ;
+				} else {
+					clear = true;
+				}
 			}
+			if (clear) {
+				this.solvis.clearCurrentImage();
+				this.commandScreen = commandScreen;
+				this.timeCommandScreen = now;
+				this.commandsOfScreen.clear();
+			}
+			this.commandsOfScreen.add(command);
 		}
 
 		return command.execute(this.solvis);
+
 	}
 
 	public void push(CommandI command) {

@@ -52,5 +52,19 @@ public class CommandScreenRestore implements CommandI {
 	public boolean first() {
 		return false;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof CommandScreenRestore)) {
+			return false;
+		} else {
+			CommandScreenRestore cmp = (CommandScreenRestore) obj;
+			return this.enable == cmp.enable ;
+		}
+	}
 
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

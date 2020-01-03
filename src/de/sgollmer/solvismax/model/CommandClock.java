@@ -52,4 +52,19 @@ public class CommandClock implements CommandI {
 	public boolean first() {
 		return true;
 	}
+	
+	@Override
+	public boolean equals( Object obj) {
+		if ( !(obj instanceof CommandClock )) {
+			return false ;
+		} else {
+			CommandClock cmp = (CommandClock) obj ;
+			return this.executable == cmp.executable && this.nextAdjust == cmp.nextAdjust ;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

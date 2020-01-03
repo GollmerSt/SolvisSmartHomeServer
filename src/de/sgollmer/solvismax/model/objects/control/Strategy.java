@@ -17,7 +17,7 @@ public interface Strategy extends Assigner {
 
 	public SingleData<?> getValue(MyImage currentImage, Rectangle valueRectangle, Solvis solvis) throws TerminationException, IOException;
 
-	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException, TerminationException;
+	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException, TerminationException;
 
 	public boolean isWriteable();
 
@@ -32,5 +32,9 @@ public interface Strategy extends Assigner {
 	public UpperLowerStep getUpperLowerStep();
 	
 	public void setCurrentRectangle( Rectangle rectangle ) ;
+	
+	public boolean mustBeLearned() ;
+	
+	public boolean learn(Solvis solvis) throws IOException ;
 
 }

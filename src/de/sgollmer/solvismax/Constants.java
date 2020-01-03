@@ -28,4 +28,6 @@ public class Constants {
 	public static final int MIN_TIME_ERROR_ADJUSTMENT_S = 40000 ;
 	public static final int TIME_ADJUSTMENT_PROPOSAL_FACTOR_PERCENT = 150 ;
 	public static final int TIME_ADJUSTMENT_MINUTE_N = 10 ;
+	
+	public static final int TIME_COMMAND_SCREEN_VALID = 5000 ;
 }

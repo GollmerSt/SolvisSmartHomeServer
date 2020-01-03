@@ -12,7 +12,7 @@ public class Restart {
 	 * 
 	 * From: http://lewisleo.blogspot.com/2012/08/programmatically-restart-java.html
 	 */
-	public static final String SUN_JAVA_COMMAND = "sun.java.command"; // "de.sgollmer.solvismax.Main";
+	public static final String SUN_JAVA_COMMAND = "sun.java.command";
 
 	/**
 	 * Restart the current Java application

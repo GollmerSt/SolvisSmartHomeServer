@@ -124,8 +124,8 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public Boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException {
-		return null;
+	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException {
+		return true;
 	}
 
 	@Override
@@ -203,6 +203,16 @@ public class StrategyRead implements Strategy {
 
 	@Override
 	public void setCurrentRectangle(Rectangle rectangle) {
+	}
+
+	@Override
+	public boolean mustBeLearned() {
+		return false;
+	}
+
+	@Override
+	public boolean learn(Solvis solvis) {
+		return true;
 	}
 
 }

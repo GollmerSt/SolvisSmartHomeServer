@@ -42,6 +42,10 @@
 				<tns:TopLeft X="190" Y="61" />
 				<tns:BottomRight X="239" Y="92" />
 			</tns:IgnoreRectangle>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="80" Y="15" />
+				<tns:BottomRight X="155" Y="45" />
+			</tns:IgnoreRectangle>
 		</tns:Screen>
 		<tns:Screen backId="Home" id="Warmwasser" previousId="Home">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -79,6 +83,10 @@
 					<tns:BottomRight X="45" Y="95" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="170" Y="0" />
+				<tns:BottomRight X="239" Y="127" />
+			</tns:IgnoreRectangle>
 		</tns:Screen>
 		<tns:Screen backId="Home" id="Sonstiges 1"
 			previousId="Home">
@@ -550,6 +558,10 @@
 					<tns:BottomRight X="205" Y="15" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="135" Y="15" />
+				<tns:BottomRight X="215" Y="120" />
+			</tns:IgnoreRectangle>
 		</tns:Screen>
 		<tns:Screen backId="Sonstiges 3" previousId="Sonstiges 3"
 			id="Uhrzeit / Datum">

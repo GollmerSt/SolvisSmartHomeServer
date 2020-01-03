@@ -20,7 +20,6 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI;
-import de.sgollmer.solvismax.model.objects.Mode;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.Screen;
@@ -97,12 +96,12 @@ public class Control extends ChannelSource {
 			return false;
 		}
 		boolean set = false;
-		for (int c = 0; c < Constants.SET_REPEATS && !set; ++c) {
-			if (c == 1) {
+		for (int c = 0; c < Constants.SET_REPEATS + 1 && !set; ++c) {
+			set = this.strategy.setValue(solvis, this.valueRectangle, value);
+			if ( !set && c == 1) {
 				logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
 						+ " failed, set will be tried again.");
 			}
-			set = this.strategy.setValue(solvis, this.valueRectangle, value);
 		}
 		if (!set) {
 			logger.error("Setting of <" + this.getDescription().getId() + "> not successfull");
@@ -238,31 +237,32 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, TerminationException {
+	public void learn(Solvis solvis) throws IOException, LearningError {
 		if (this.preparation != null) {
 			this.preparation.learn(solvis, this.getScreen(solvis.getConfigurationMask()));
 		}
-		if (this.strategy instanceof StrategyMode) {
-			StrategyMode strategy = (StrategyMode) this.strategy;
+
+		if (strategy.mustBeLearned()) {
+			SingleData<?> data = null;
 			solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
 			MyImage saved = solvis.getCurrentImage();
 			boolean finished = false;
-			SingleData<?> data = null;
 			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
-				for (Mode mode : strategy.getModes()) {
-					solvis.send(mode.getTouch());
-					mode.getGrafic().learn(solvis);
+				finished = this.strategy.learn(solvis);
+				if (finished) {
+					data = this.strategy.getValue(saved, this.valueRectangle, solvis);
+					if (data == null) {
+						finished = false;
+					}
 				}
-				data = this.strategy.getValue(saved, this.valueRectangle, solvis);
-				if (data == null) {
+				if (!finished) {
 					logger.log(LEARN,
 							"Learning of <" + this.getDescription().getId() + "> not successfull, will be retried");
-				} else {
-					finished = true;
 				}
 			}
 			if (!finished) {
-				String error = "Learning of <" + this.getDescription().getId() + "> not possible, rekjected.";
+				String error = "Learning of <" + this.getDescription().getId()
+						+ "> not possible, rekjected. Check the Xml!";
 				logger.error(error);
 				throw new LearningError(error);
 			}
@@ -277,6 +277,47 @@ public class Control extends ChannelSource {
 			}
 		}
 	}
+
+//	@Override
+//	public void learn(Solvis solvis) throws IOException, TerminationException {
+//		if (this.preparation != null) {
+//			this.preparation.learn(solvis, this.getScreen(solvis.getConfigurationMask()));
+//		}
+//		if (this.strategy instanceof StrategyMode) {
+//			StrategyMode strategy = (StrategyMode) this.strategy;
+//			solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
+//			MyImage saved = solvis.getCurrentImage();
+//			boolean finished = false;
+//			SingleData<?> data = null;
+//			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
+//				for (Mode mode : strategy.getModes()) {
+//					solvis.send(mode.getTouch());
+//					mode.getGrafic().learn(solvis);
+//				}
+//				data = this.strategy.getValue(saved, this.valueRectangle, solvis);
+//				if (data == null) {
+//					logger.log(LEARN,
+//							"Learning of <" + this.getDescription().getId() + "> not successfull, will be retried");
+//				} else {
+//					finished = true;
+//				}
+//			}
+//			if (!finished) {
+//				String error = "Learning of <" + this.getDescription().getId() + "> not possible, rekjected.";
+//				logger.error(error);
+//				throw new LearningError(error);
+//			}
+//			for (int repeat = 0; repeat < Constants.SET_REPEATS; ++repeat) {
+//				boolean success = this.setValue(solvis, new SolvisData(data));
+//				if (success) {
+//					break;
+//				} else {
+//					AbortHelper.getInstance()
+//							.sleep(solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms());
+//				}
+//			}
+//		}
+//	}
 
 	@Override
 	public Type getType() {

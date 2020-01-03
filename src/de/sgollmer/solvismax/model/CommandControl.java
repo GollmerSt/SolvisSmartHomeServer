@@ -95,4 +95,19 @@ public class CommandControl implements CommandI {
 	public boolean first() {
 		return false;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof CommandControl)) {
+			return false;
+		} else {
+			CommandControl cmp = (CommandControl) obj;
+			return this.description == cmp.description && this.inhibit == cmp.inhibit;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

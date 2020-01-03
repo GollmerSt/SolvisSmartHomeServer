@@ -723,7 +723,7 @@ sub SolvisClient_Get($@) {
 		SolvisClient_Log $this, 4, "Get entered, device := $device, Cannel := $channel";
 		SolvisClient_SendGetData($this, $channel) ;
 
-		return "<not valid>" ;
+		return "The reading process was started.\nThe value will be output only in the readings." ;
 	}
 
 } # end SolvisClient_get
