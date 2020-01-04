@@ -69,12 +69,21 @@ public class Units {
 		private final String url;
 		private final String account;
 		private final String password;
+		private final int defaultAverageCount;
+		private final int defaultReadMeasurementsIntervall_ms;
+		private final int forcedUpdateIntervall_ms;
+		private final int bufferedIntervall_ms;
 
-		public Unit(String id, String url, String account, String password) {
-			this.id = id ;
+		public Unit(String id, String url, String account, String password, int defaultAverageCount,
+				int defaultReadMeasurementsIntervall_ms, int forcedUpdateIntervall_ms, int bufferedIntervall_ms) {
+			this.id = id;
 			this.url = url;
 			this.account = account;
 			this.password = password;
+			this.defaultAverageCount = defaultAverageCount;
+			this.defaultReadMeasurementsIntervall_ms = defaultReadMeasurementsIntervall_ms;
+			this.forcedUpdateIntervall_ms = forcedUpdateIntervall_ms;
+			this.bufferedIntervall_ms = bufferedIntervall_ms;
 		}
 
 		public String getId() {
@@ -96,6 +105,10 @@ public class Units {
 			private String url;
 			private String account;
 			private String password;
+			private int defaultAverageCount;
+			private int defaultReadMeasurementsIntervall_ms;
+			private int forcedUpdateIntervall_ms;
+			private int bufferedIntervall_ms;
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -115,13 +128,27 @@ public class Units {
 						break;
 					case "password":
 						this.password = value;
+						break ;
+					case "defaultAverageCount":
+						this.defaultAverageCount = Integer.parseInt(value);
+						break ;
+					case "defaultReadMeasurementsIntervall_ms":
+						this.defaultReadMeasurementsIntervall_ms = Integer.parseInt(value);
+						break ;
+					case "forcedUpdateIntervall_ms":
+						this.forcedUpdateIntervall_ms = Integer.parseInt(value);
+						break ;
+					case "bufferedIntervall_ms":
+						this.bufferedIntervall_ms = Integer.parseInt(value);
+						break ;
 				}
 
 			}
 
 			@Override
 			public Unit create() throws XmlError, IOException {
-				return new Unit(id, url, account, password);
+				return new Unit(id, url, account, password, defaultAverageCount, defaultReadMeasurementsIntervall_ms,
+						forcedUpdateIntervall_ms, bufferedIntervall_ms);
 			}
 
 			@Override
@@ -137,7 +164,27 @@ public class Units {
 
 		@Override
 		public char[] createPassword() {
-			return this.password.toCharArray() ;
+			return this.password.toCharArray();
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public int getDefaultAverageCount() {
+			return defaultAverageCount;
+		}
+
+		public int getDefaultReadMeasurementsIntervall_ms() {
+			return defaultReadMeasurementsIntervall_ms;
+		}
+
+		public int getForcedUpdateIntervall_ms() {
+			return forcedUpdateIntervall_ms;
+		}
+
+		public int getBufferedIntervall_ms() {
+			return bufferedIntervall_ms;
 		}
 
 	}

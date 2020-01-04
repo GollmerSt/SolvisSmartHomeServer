@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import javax.xml.stream.XMLStreamException;
 
-import de.sgollmer.solvismax.connection.AccountInfo;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.error.LearningError;
@@ -30,8 +29,7 @@ public class Instances {
 	private final int xmlHash;
 	private final String writeablePath;
 
-	public Instances(String writeablePath, Unit cliUnit)
-			throws IOException, XmlError, XMLStreamException, LearningError {
+	public Instances(String writeablePath) throws IOException, XmlError, XMLStreamException, LearningError {
 		this.writeablePath = writeablePath;
 		this.baseData = new BaseControlFileReader(writeablePath).read().getTree();
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
@@ -42,14 +40,9 @@ public class Instances {
 				solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
 		this.graficDatas = new GraficFileHandler(this.writeablePath, this.xmlHash).read();
 
-		if (cliUnit != null) {
-			Solvis solvis = this.createSolvisInstance(cliUnit.getId(), cliUnit.getUrl(), cliUnit);
+		for (Unit xmlUnit : baseData.getUnits().getUnits()) {
+			Solvis solvis = this.createSolvisInstance(xmlUnit);
 			this.units.add(solvis);
-		} else {
-			for (Unit xmlUnit : baseData.getUnits().getUnits()) {
-				Solvis solvis = this.createSolvisInstance(xmlUnit.getId(), xmlUnit.getUrl(), xmlUnit);
-				this.units.add(solvis);
-			}
 		}
 		this.backupHandler.start();
 	}
@@ -61,22 +54,16 @@ public class Instances {
 				return solvis;
 			}
 		}
-		Solvis solvis = null;
-		if (connectPackage.containsSolvisLogin()) {
-			solvis = createSolvisInstance(connectPackage.getId(), connectPackage.getUrl(), connectPackage);
-			this.units.add(solvis);
-		}
-		return solvis;
+		return null;
 	}
 
-	private Solvis createSolvisInstance(String id, String url, AccountInfo accountInfo)
-			throws IOException, XmlError, XMLStreamException, LearningError {
+	private Solvis createSolvisInstance(Unit unit) throws IOException, XmlError, XMLStreamException, LearningError {
 		Miscellaneous misc = solvisDescription.getMiscellaneous();
-		SolvisConnection connection = new SolvisConnection(url, accountInfo, misc.getSolvisConnectionTimeout_ms(),
+		SolvisConnection connection = new SolvisConnection(unit.getUrl(), unit, misc.getSolvisConnectionTimeout_ms(),
 				misc.getSolvisReadTimeout_ms());
 		String timeZone = this.baseData.getTimeZone();
-		Solvis solvis = new Solvis(id, this.solvisDescription, this.graficDatas.get(id), connection, this.backupHandler,
-				timeZone);
+		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId()), connection,
+				this.backupHandler, timeZone);
 		if (solvis.getGrafics().isEmpty()) {
 			solvis.learning();
 

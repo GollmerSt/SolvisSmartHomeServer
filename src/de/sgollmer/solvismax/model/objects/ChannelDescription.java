@@ -25,11 +25,14 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	private static final String XML_CALCULATION = "Calculation";
 
 	private final String id;
+	private final boolean buffered;
 	private final ConfigurationMasks configurationMasks;
 	private final ChannelSource channelSource;
 
-	public ChannelDescription(String id, ConfigurationMasks configurationMasks, ChannelSource channelSource) {
+	public ChannelDescription(String id, boolean buffered, ConfigurationMasks configurationMasks,
+			ChannelSource channelSource) {
 		this.id = id;
+		this.buffered = buffered;
 		this.configurationMasks = configurationMasks;
 		this.channelSource = channelSource;
 	}
@@ -38,12 +41,11 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	public String getId() {
 		return this.id;
 	}
-	
+
 	public boolean getValue(Solvis solvis) throws IOException, ErrorPowerOn, TerminationException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
 		return this.getValue(data, solvis);
 	}
-	
 
 	@Override
 	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, ErrorPowerOn, TerminationException {
@@ -52,9 +54,7 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 	@Override
 	public boolean setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
-		synchronized (solvis.getSyncGUIObject()) {
-			return this.channelSource.setValue(solvis, value);
-		}
+		return this.channelSource.setValue(solvis, value);
 	}
 
 	@Override
@@ -102,6 +102,7 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	public static class Creator extends CreatorByXML<ChannelDescription> {
 
 		private String id;
+		private boolean buffered;
 		private ConfigurationMasks configurationMasks;
 		private ChannelSource channelSource;
 
@@ -111,15 +112,20 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			if (name.getLocalPart().equals("id")) {
-				this.id = value;
+			switch (name.getLocalPart()) {
+				case "id":
+					this.id = value;
+					break;
+				case "buffered":
+					this.buffered = Boolean.parseBoolean(value);
+					break;
 			}
 
 		}
 
 		@Override
 		public ChannelDescription create() throws XmlError {
-			ChannelDescription description = new ChannelDescription(id, configurationMasks, channelSource);
+			ChannelDescription description = new ChannelDescription(id, buffered, configurationMasks, channelSource);
 			channelSource.setDescription(description);
 			return description;
 		}
@@ -144,8 +150,8 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
 				case XML_CONFIGURATION_MASKS:
-					this.configurationMasks = (ConfigurationMasks) created ;
-					break ;
+					this.configurationMasks = (ConfigurationMasks) created;
+					break;
 				case XML_CONTROL:
 				case XML_MEASUREMENT:
 				case XML_CALCULATION:
@@ -185,10 +191,10 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 	@Override
 	public boolean isInConfiguration(int configurationMask) {
-		if ( this.configurationMasks == null ) {
-			return true ;
-		}else {
-			return this.configurationMasks.isInConfiguration(configurationMask) ;
+		if (this.configurationMasks == null) {
+			return true;
+		} else {
+			return this.configurationMasks.isInConfiguration(configurationMask);
 		}
 	}
 
@@ -199,5 +205,9 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 		} else {
 			return this.configurationMasks.isVerified(e.configurationMasks);
 		}
+	}
+
+	public boolean isBuffered() {
+		return buffered;
 	}
 }

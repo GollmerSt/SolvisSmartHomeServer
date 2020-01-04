@@ -281,8 +281,7 @@ public class SolvisWorkers {
 
 		@Override
 		public void run() {
-			int measurementIntervall = solvis.getSolvisDescription().getMiscellaneous()
-					.getDefaultReadMeasurementsIntervall();
+			int measurementIntervall = solvis.getDefaultReadMeasurementsIntervall_ms();
 			int errorCount = 0;
 			int powerOffDetectedAfterIoErrors = solvis.getSolvisDescription().getMiscellaneous()
 					.getPowerOffDetectedAfterIoErrors();
