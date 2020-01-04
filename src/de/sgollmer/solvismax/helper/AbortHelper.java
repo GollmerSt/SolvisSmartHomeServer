@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.helper;
 
 import de.sgollmer.solvismax.error.TerminationException;

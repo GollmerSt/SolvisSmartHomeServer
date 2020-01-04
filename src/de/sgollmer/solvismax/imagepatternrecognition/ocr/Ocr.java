@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.imagepatternrecognition.ocr;
 
 import java.awt.image.BufferedImage;

@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.connection.transfer;
 
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions;

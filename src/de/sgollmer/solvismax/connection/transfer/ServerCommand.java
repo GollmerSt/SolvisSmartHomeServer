@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.connection.transfer;
 
 public class ServerCommand extends JsonPackage {

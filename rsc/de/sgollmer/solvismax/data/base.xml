@@ -5,6 +5,8 @@
 	xsi:schemaLocation="http://www.example.org/control base.xsd ">
 	<tns:Units>
 		<tns:Unit id="mySolvis" account="SGollmer"
-			password="e5am1kro" url="http://192.168.1.40" />
+			password="e5am1kro" url="http://192.168.1.40"
+			defaultAverageCount="12" defaultReadMeasurementsIntervall_ms="10000"
+			forcedUpdateIntervall_ms="3600000" bufferedIntervall_ms="60000" />
 	</tns:Units>
 </tns:BaseData>

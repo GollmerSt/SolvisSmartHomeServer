@@ -592,19 +592,33 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 
 
 	<complexType name="ChannelDescription">
-        <annotation>
-        	<documentation>Definitionen eines darzustellenden Solvis-Datums (z.B. A09.Mischer.HK1)</documentation>
-        </annotation>
-        <sequence>
-        	<element name="ConfigurationMasks"
-        		type="tns:ConfigurationMasks" maxOccurs="1" minOccurs="0">
-        	</element>
-        	
-        	
-        	<choice><element name="Calculation" type="tns:Calculation" maxOccurs="1" minOccurs="1"></element><element name="Control" type="tns:Control" maxOccurs="1" minOccurs="1"></element><element name="Measurement" type="tns:Measurement" maxOccurs="1" minOccurs="1"></element></choice>
-        </sequence>
-        
-        <attribute name="id" type="string" use="required"></attribute>
+		<annotation>
+			<documentation>
+				Definitionen eines darzustellenden Solvis-Datums (z.B.
+				A09.Mischer.HK1)
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="ConfigurationMasks"
+				type="tns:ConfigurationMasks" maxOccurs="1" minOccurs="0">
+			</element>
+
+
+			<choice>
+				<element name="Calculation" type="tns:Calculation"
+					maxOccurs="1" minOccurs="1">
+				</element>
+				<element name="Control" type="tns:Control" maxOccurs="1"
+					minOccurs="1">
+				</element>
+				<element name="Measurement" type="tns:Measurement"
+					maxOccurs="1" minOccurs="1">
+				</element>
+			</choice>
+		</sequence>
+
+		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="buffered" type="boolean" use="optional"></attribute>
 	</complexType>
 
 
@@ -709,30 +723,12 @@ da der user diesen manuell verändert haben könnte.</documentation>
 		<annotation>
 			<documentation>Verschiedenes</documentation>
 		</annotation>
-		<attribute name="defaultAverageCount" type="int"
-			use="required">
-			<annotation>
-				<documentation>
-					Anzahl der Messwerte, über die der Mittelwert
-					gebildet wird
-				</documentation>
-			</annotation>
-		</attribute>
 		<attribute name="powerOffDetectedAfterIoErrors" type="int"
 			use="required">
 			<annotation>
 				<documentation>
 					Anzahl der IO-Fehler, nachdem ein Power-Off der
 					Solvis-Anlage erkannt wurde
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="defaultReadMeasurementsIntervall_ms" type="int"
-			use="required">
-			<annotation>
-				<documentation>
-					Intervall, nachdem die Solvis-Weerte regelmäßig
-					gelesen werden
 				</documentation>
 			</annotation>
 		</attribute>
@@ -777,18 +773,12 @@ da der user diesen manuell verändert haben könnte.</documentation>
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="forcedUpdateIntervall_ms" type="int"
+		<attribute name="solvisConnectionTimeout_ms" type="int"
 			use="required">
-			<annotation>
-				<documentation>
-					Intervall, nach dem sämtliche Messwerte zum Client
-					geschickt wierden. Wenn Wert 0, dann Feature
-					ausgeschaltet
-				</documentation>
-			</annotation>
 		</attribute>
-		<attribute name="solvisConnectionTimeout_ms" type="int" use="required"></attribute>
-		<attribute name="solvisReadTimeout_ms" type="int" use="required"></attribute>
+		<attribute name="solvisReadTimeout_ms" type="int"
+			use="required">
+		</attribute>
 	</complexType>
 
 	<complexType name="UpdateBy">

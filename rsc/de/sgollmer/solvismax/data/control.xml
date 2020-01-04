@@ -645,69 +645,69 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S01.Warmwasserpuffer">
+			id="S01.Warmwasserpuffer" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="14" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S02.Warmwassertemperatur">
+			id="S02.Warmwassertemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="18" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S03.Speicherreferenztemperatur">
+			id="S03.Speicherreferenztemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="22" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S04.Heizungspuffertemperatur_oben">
+			id="S04.Heizungspuffertemperatur_oben" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="26" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S05.Solarvorlauftemperatur">
+			id="S05.Solarvorlauftemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="30" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S06.Solarruecklauftemperatur">
+			id="S06.Solarruecklauftemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S07.Solardruck">
+		<tns:ChannelDescription id="S07.Solardruck" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S08.Solarkollektortemperatur">
+			id="S08.Solarkollektortemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="42" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S09.Heizungspuffertemperatur_unten">
+			id="S09.Heizungspuffertemperatur_unten" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="46" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S10.Aussentemperatur">
+			id="S10.Aussentemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="50" length="4" />
@@ -721,14 +721,14 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S12.Vorlauftemperatur_HK1">
+			id="S12.Vorlauftemperatur_HK1" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="58" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S13.Vorlauftemperatur_HK2">
+			id="S13.Vorlauftemperatur_HK2" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="62" length="4" />
@@ -760,7 +760,7 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S17.Durchfluss_Solarpanel">
+			id="S17.Durchfluss_Solarpanel" buffered="true">
 			<tns:Measurement type="unsigned" average="true"
 				dynamic="true">
 				<tns:Field position="82" length="4" />
@@ -802,21 +802,21 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="RF1.Raumfuehler_HK1">
+			id="RF1.Raumfuehler_HK1" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="106" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="RF2.Raumfuehler_HK2">
+			id="RF2.Raumfuehler_HK2" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="110" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="RF3.Raumfuehler_HK3">
+			id="RF3.Raumfuehler_HK3" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="114" length="4" />
@@ -896,7 +896,7 @@
 				<tns:Field position="144" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="SE.Solarertrag_kWh">
+		<tns:ChannelDescription id="SE.Solarertrag_kWh" buffered="true">
 			<tns:Measurement type="unsigned" dynamic="true"
 				unit="kWh">
 				<tns:Field position="162" length="4" />
@@ -913,7 +913,7 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="SL.Solarleistung_kW">
+			id="SL.Solarleistung_kW" buffered="true">
 			<tns:Measurement type="unsigned" dynamic="true"
 				unit="kW">
 				<tns:Field position="196" length="4" />
@@ -929,7 +929,7 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X2.BrennerLaufzeit_s">
+			id="X2.BrennerLaufzeit_s" buffered="true">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
 				<tns:UpdateBy>
@@ -945,7 +945,7 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X4.BrennerStufe2Laufzeit_s">
+			id="X4.BrennerStufe2Laufzeit_s" buffered="true">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
 				<tns:UpdateBy>
@@ -1625,11 +1625,11 @@
 			läuft -->
 		<tns:Duration id="readBrenner" time_ms="30000" />
 	</tns:Durations>
-	<tns:Miscellaneous defaultAverageCount="12"
-		defaultReadMeasurementsIntervall_ms="10000"
+	<tns:Miscellaneous 
+		
 		powerOffDetectedAfterIoErrors="3" measurementsBackupTime_ms="3600000"
 		releaseblockingAfterUserChange_ms="300000"
 		unsuccessfullWaitTime_ms="10000" watchDogTime_ms="60000"
-		connectionHoldTime_ms="300000" forcedUpdateIntervall_ms="3600000"
-		solvisConnectionTimeout_ms="10000" solvisReadTimeout_ms="2000" />
+		connectionHoldTime_ms="300000" solvisConnectionTimeout_ms="10000"
+		solvisReadTimeout_ms="2000" />
 </tns:SolvisDescription>

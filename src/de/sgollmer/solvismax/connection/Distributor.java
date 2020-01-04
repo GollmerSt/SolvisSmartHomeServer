@@ -1,7 +1,17 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.connection;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,15 +31,72 @@ public class Distributor extends Observable<JsonPackage> {
 
 	private static final Logger logger = LogManager.getLogger(Distributor.class);
 
-	private Collection<SolvisData> collectedMeasurements = null;
+	private Measurements collectedMeasurements = new Measurements() {
+
+		private Collection<SolvisData> measurements = new ArrayList<>();
+
+		@Override
+		public void add(SolvisData data) {
+			this.measurements.add(data);
+		}
+
+		@Override
+		public void clear() {
+			this.measurements = new ArrayList<>() ;
+
+		}
+
+		@Override
+		public Collection<SolvisData> get() {
+			return this.measurements;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return measurements.isEmpty();
+		}
+	};
+	private Measurements collectedBufferedMeasurements = new Measurements() {
+
+		private Map<String, SolvisData> measurements = new HashMap<>();
+
+		@Override
+		public Collection<SolvisData> get() {
+			return this.measurements.values();
+		}
+
+		@Override
+		public void clear() {
+			this.measurements = new HashMap<>();
+		}
+
+		@Override
+		public void add(SolvisData data) {
+			this.measurements.put(data.getId(), data) ;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return measurements.isEmpty();
+		}
+	};
 	private final SolvisDataObserver solvisDataObserver = new SolvisDataObserver();
 	private final ConnectionStateObserver connectionStateObserver = new ConnectionStateObserver();
-	private final SolvisStateObserver solvisStateObserver = new SolvisStateObserver() ;
-	private final UserAccessObserver userAccessObserver = new UserAccessObserver() ;
+	private final SolvisStateObserver solvisStateObserver = new SolvisStateObserver();
+	private final UserAccessObserver userAccessObserver = new UserAccessObserver();
 	private final AliveThread aliveThread = new AliveThread();
+	private final PeriodicBurstThread periodicBurstThread;
+	private final int bufferedIntervall_ms;
 	private boolean burstUpdate = false;
 
-	public Distributor() {
+	public Distributor(int bufferedIntervall_ms) {
+		this.bufferedIntervall_ms = bufferedIntervall_ms;
+		if (bufferedIntervall_ms > 0) {
+			this.periodicBurstThread = new PeriodicBurstThread();
+			this.periodicBurstThread.start();
+		} else {
+			this.periodicBurstThread = null;
+		}
 	}
 
 	private class SolvisDataObserver implements Observer.ObserverI<SolvisData> {
@@ -38,53 +105,56 @@ public class Distributor extends Observable<JsonPackage> {
 		public void update(SolvisData data, Object source) {
 			synchronized (Distributor.this) {
 
-				if (collectedMeasurements == null) {
-					collectedMeasurements = new ArrayList<>();
+				if (data.getDescription().isBuffered() && periodicBurstThread != null) {
+					collectedBufferedMeasurements.add(data);
+
+				} else {
+					collectedMeasurements.add(data);
 				}
-				collectedMeasurements.add(data);
-			}
-			if (!burstUpdate) {
-				sendCollection();
+				if (!burstUpdate) {
+					sendCollection(collectedMeasurements);
+				}
 			}
 		}
 	}
-	
+
 	private class SolvisStateObserver implements Observer.ObserverI<SolvisState> {
 
 		@Override
 		public void update(SolvisState data, Object source) {
 			Distributor.this.notify(data.getPackage());
 		}
-		
+
 	}
 
 	private class ConnectionStateObserver implements Observer.ObserverI<ConnectionState> {
 
 		@Override
-		public void update(ConnectionState data, Object source ) {
+		public void update(ConnectionState data, Object source) {
 			Distributor.this.notify(data.createJsonPackage());
 
 		}
 
 	}
-	
+
 	private class UserAccessObserver implements Observer.ObserverI<Boolean> {
 
 		@Override
 		public void update(Boolean data, Object source) {
-			ConnectionStatus status = data ? ConnectionStatus.USER_ACCESS_DETECTED: ConnectionStatus.USER_ACCESS_FINISHED ;
+			ConnectionStatus status = data ? ConnectionStatus.USER_ACCESS_DETECTED
+					: ConnectionStatus.USER_ACCESS_FINISHED;
 			Distributor.this.notify(new ConnectionState(status).createJsonPackage());
-			
+
 		}
-		
+
 	}
 
-	private void sendCollection() {
+	private void sendCollection(Measurements measurements) {
 		Collection<SolvisData> collectedMeasurements = null;
 		synchronized (this) {
-			if (this.collectedMeasurements != null) {
-				collectedMeasurements = this.collectedMeasurements;
-				this.collectedMeasurements = null;
+			if (!measurements.isEmpty()) {
+				collectedMeasurements = measurements.get();
+				measurements.clear();
 			}
 		}
 		if (collectedMeasurements != null) {
@@ -95,7 +165,10 @@ public class Distributor extends Observable<JsonPackage> {
 	}
 
 	public void abort() {
-		this.aliveThread.shutdown();
+		this.aliveThread.abort();
+		if (this.periodicBurstThread != null) {
+			this.periodicBurstThread.abort();
+		}
 	}
 
 	public SolvisDataObserver getSolvisDataObserver() {
@@ -142,7 +215,7 @@ public class Distributor extends Observable<JsonPackage> {
 			this.notifyAll();
 		}
 
-		public synchronized void shutdown() {
+		public synchronized void abort() {
 			this.abort = true;
 			this.triggered = true; // disable send alive
 			this.notifyAll();
@@ -150,17 +223,56 @@ public class Distributor extends Observable<JsonPackage> {
 
 	}
 
+	private class PeriodicBurstThread extends Thread {
+
+		private boolean abort;
+
+		public PeriodicBurstThread() {
+			super("PeriodicBurst");
+		}
+
+		@Override
+		public void run() {
+			while (!abort) {
+				synchronized (this) {
+					Calendar midNight = Calendar.getInstance();
+					long now = midNight.getTimeInMillis();
+					midNight.set(Calendar.HOUR_OF_DAY, 0);
+					midNight.set(Calendar.MINUTE, 0);
+					midNight.set(Calendar.SECOND, 0);
+					midNight.set(Calendar.MILLISECOND, 200);
+
+					long nextBurst = (now - midNight.getTimeInMillis()) / bufferedIntervall_ms * bufferedIntervall_ms
+							+ midNight.getTimeInMillis() + bufferedIntervall_ms;
+
+					try {
+						this.wait(nextBurst - now);
+					} catch (InterruptedException e) {
+					}
+				}
+				if (!abort) {
+					sendCollection(collectedBufferedMeasurements);
+				}
+			}
+		}
+
+		public synchronized void abort() {
+			this.abort = true;
+			this.notifyAll();
+		}
+	}
+
 	public void setBurstUpdate(boolean burstUpdate) {
-		boolean send = false ;
+		boolean send = false;
 		synchronized (this) {
-			send = !burstUpdate && this.burstUpdate ;
-			this.burstUpdate = burstUpdate;			
+			send = !burstUpdate && this.burstUpdate;
+			this.burstUpdate = burstUpdate;
 		}
-		if (send) {
-			sendCollection();
+		if (send && this.periodicBurstThread == null) {
+			sendCollection(this.collectedMeasurements);
 		}
-		String comment = this.burstUpdate?"started":"finished" ;
-		logger.debug("Burst update " + comment );
+		String comment = this.burstUpdate ? "started" : "finished";
+		logger.debug("Burst update " + comment);
 	}
 
 	public SolvisStateObserver getSolvisStateObserver() {
@@ -170,14 +282,14 @@ public class Distributor extends Observable<JsonPackage> {
 	public UserAccessObserver getUserAccessObserver() {
 		return userAccessObserver;
 	}
-	
-	public void register( Solvis solvis ) {
+
+	public void register(Solvis solvis) {
 		solvis.registerAbortObserver(new ObserverI<Boolean>() {
-			
+
 			@Override
 			public void update(Boolean data, Object source) {
-				abort() ;
-				
+				abort();
+
 			}
 		});
 		solvis.getAllSolvisData().registerObserver(this.getSolvisDataObserver());
@@ -185,5 +297,15 @@ public class Distributor extends Observable<JsonPackage> {
 		solvis.getSolvisState().register(this.getSolvisStateObserver());
 		solvis.registerScreenChangedByUserObserver(userAccessObserver);
 		this.aliveThread.start();
+	}
+
+	public interface Measurements {
+		public void add(SolvisData data);
+
+		public boolean isEmpty();
+
+		public void clear();
+
+		public Collection<SolvisData> get();
 	}
 }

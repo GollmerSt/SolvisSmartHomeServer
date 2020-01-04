@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.xml;
 
 public abstract class BaseCreator< T > extends CreatorByXML<T> {

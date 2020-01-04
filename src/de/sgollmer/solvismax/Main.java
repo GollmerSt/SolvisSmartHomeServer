@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax;
 
 import java.io.IOException;
@@ -17,8 +24,6 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.Logger2;
 import de.sgollmer.solvismax.model.Instances;
-import de.sgollmer.solvismax.model.objects.Units;
-import de.sgollmer.solvismax.model.objects.Units.Unit;
 
 public class Main {
 
@@ -26,10 +31,6 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		String id = null;
-		String url = null;
-		String account = null;
-		String password = null;
 		int port = 'S' * 128 + 'o';
 		String path = null;
 
@@ -43,27 +44,15 @@ public class Main {
 				String value = matcher.group(2);
 
 				switch (command) {
-				case "solvis-id":
-					id = value;
-					break;
-				case "solvis-url":
-					url = value;
-					break;
-				case "solvis-account":
-					account = value;
-					break;
-				case "solvis-password":
-					password = value;
-					break;
-				case "server-port":
-					port = Integer.parseInt(value);
-					break;
-				case "server-path":
-					path = value;
-					break;
-				default:
-					System.err.println("Unknowwn argument: " + arg);
-					break;
+					case "server-port":
+						port = Integer.parseInt(value);
+						break;
+					case "server-path":
+						path = value;
+						break;
+					default:
+						System.err.println("Unknowwn argument: " + arg);
+						break;
 				}
 			}
 		}
@@ -77,12 +66,6 @@ public class Main {
 
 		final Logger logger = LogManager.getLogger(Main.class);
 
-		Unit unit = null;
-
-		if (id != null & url != null && account != null && password != null) {
-			unit = new Units.Unit(id, url, account, password);
-		}
-
 		ServerSocket serverSocket = null;
 
 		try {
@@ -95,13 +78,13 @@ public class Main {
 		Instances tempInstances = null;
 
 		try {
-			tempInstances = new Instances(path, unit);
+			tempInstances = new Instances(path);
 		} catch (IOException | XmlError | XMLStreamException | LearningError e) {
 			logger.error("Exception on reading configuration or learning files occured, cause:", e);
 			e.printStackTrace();
 			System.exit(-1);
 		} finally {
-			
+
 		}
 
 		final Instances instances = tempInstances;
@@ -109,9 +92,8 @@ public class Main {
 		Server server = new Server(serverSocket, commandHandler);
 		server.start();
 
-		
 		Runnable runnable = new Runnable() {
-			
+
 			@Override
 			public void run() {
 				instances.abort();
@@ -124,9 +106,9 @@ public class Main {
 		};
 
 		Runtime.getRuntime().addShutdownHook(new Thread(runnable));
-		
-		//runnable.run();
-		
+
+		// runnable.run();
+
 	}
 
 }
