@@ -22,7 +22,7 @@ public class Constants {
 	 * Max. number of tries, to get to the necessarry screen
 	 */
 	public static final int FAIL_REPEATS = 3;
-	public static final int SET_REPEATS = 3 ;
+	public static final int SET_REPEATS = 3;
 	public static final int MAX_GOTO_DEEPTH = 10;
 	public static final int RETRY_STARTING_SERVER_TIME = 60000;
 	public static final int ALIVE_TIME = 120000;
@@ -31,10 +31,11 @@ public class Constants {
 	public static final int MAX_CONNECTIONS = 50;
 	public static final int LEARNING_RETRIES = 10;
 	public static final int WAITTIME_IF_LE_ZERO = 100;
-	
-	public static final int MIN_TIME_ERROR_ADJUSTMENT_S = 40000 ;
-	public static final int TIME_ADJUSTMENT_PROPOSAL_FACTOR_PERCENT = 150 ;
-	public static final int TIME_ADJUSTMENT_MINUTE_N = 10 ;
-	
-	public static final int TIME_COMMAND_SCREEN_VALID = 5000 ;
+
+	public static final int MIN_TIME_ERROR_ADJUSTMENT_S = 40000;
+	public static final int TIME_ADJUSTMENT_PROPOSAL_FACTOR_PERCENT = 150;
+	public static final int TIME_ADJUSTMENT_MINUTE_N = 10;		//Possible time adjustment of the solvis time every full 10 minutes
+
+	public static final int TIME_COMMAND_SCREEN_VALID = 5000;
+	public static final int WAIT_AFTER_SCREEN_SAVER_FINISHED_DETECTED = 100;
 }
