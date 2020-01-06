@@ -98,9 +98,9 @@
 	<target depends="createjar" name="Build complete">
 		<jar jarfile="${dist.dir}/${dist.base}.jar">
 			<zipfileset src="${dist.dir}/${dist.base}_woLib.jar" excludes="META-INF/*" />
-			<zipfileset src="lib/log4j-slf4j18-impl-2.12.1.jar" />
+			<!--zipfileset src="lib/log4j-slf4j18-impl-2.12.1.jar" />
 			<zipfileset src="lib/slf4j-api-1.7.29.jar" />
-			<zipfileset src="lib/slf4j-log4j12-1.7.29.jar" />
+			<zipfileset src="lib/slf4j-log4j12-1.7.29.jar" /-->
 			<zipfileset src="lib/log4j-1.2-api-2.12.1.jar" />
 			<zipfileset src="lib/log4j-api-2.12.1.jar" />
 			<zipfileset src="lib/log4j-core-2.12.1.jar" />

@@ -110,9 +110,9 @@ public class Distributor extends Observable<JsonPackage> {
 
 				} else {
 					collectedMeasurements.add(data);
-				}
-				if (!burstUpdate) {
-					sendCollection(collectedMeasurements);
+					if (!burstUpdate) {
+						sendCollection(collectedMeasurements);
+					}
 				}
 			}
 		}
@@ -150,16 +150,16 @@ public class Distributor extends Observable<JsonPackage> {
 	}
 
 	private void sendCollection(Measurements measurements) {
-		Collection<SolvisData> collectedMeasurements = null;
+		Collection<SolvisData> sendMeasurements = null;
 		synchronized (this) {
 			if (!measurements.isEmpty()) {
-				collectedMeasurements = measurements.get();
+				sendMeasurements = measurements.get();
 				measurements.clear();
 			}
 		}
-		if (collectedMeasurements != null) {
+		if (sendMeasurements != null ) {
 			aliveThread.trigger();
-			MeasurementsPackage sendPackage = new MeasurementsPackage(collectedMeasurements);
+			MeasurementsPackage sendPackage = new MeasurementsPackage(sendMeasurements);
 			this.notify(sendPackage);
 		}
 	}
@@ -268,7 +268,7 @@ public class Distributor extends Observable<JsonPackage> {
 			send = !burstUpdate && this.burstUpdate;
 			this.burstUpdate = burstUpdate;
 		}
-		if (send && this.periodicBurstThread == null) {
+		if (send ) {
 			sendCollection(this.collectedMeasurements);
 		}
 		String comment = this.burstUpdate ? "started" : "finished";

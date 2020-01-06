@@ -14,6 +14,8 @@ Offene Aufgaben:
 7. Befehle vom Client aus, um den Server zu beenden oder auch neu zu starten
 
 
+
+
 Erledigt:
 
 2. Der Solvis-Name muss noch definierbar sein
@@ -37,4 +39,49 @@ Erledigt:
  
  11. Beim Learning erfolgt der Status-Restore immer mit Fehler
 
-     
+ 12. Folgender Fehler ist aufgetreten:
+
+		[2020-01-05 14:45:34,482] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: X6.UhrzeitSolvis, value: 2020-01-05 14:45:35
+		[2020-01-05 14:45:34,482] DEBUG de.sgollmer.solvismax.connection.Distributor - Burst update finished
+		[2020-01-05 14:45:37,411] INFO  de.sgollmer.solvismax.connection.CommandHandler - Command <SET> received
+		[2020-01-05 14:45:37,411] INFO  de.sgollmer.solvismax.connection.CommandHandler - Channel <C06.Anlagenmodus_HK1> will be set to Tag>.
+		[2020-01-05 14:45:37,454] DEBUG de.sgollmer.solvismax.model.objects.screen.ScreenSaver - Screen saver time: 14:45  05.01.2020
+		[2020-01-05 14:45:37,454] INFO  de.sgollmer.solvismax.model.Solvis - Screen saver finished
+		[2020-01-05 14:45:41,059] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: C06.Anlagenmodus_HK1, value: Tag
+		[2020-01-05 14:45:43,567] INFO  de.sgollmer.solvismax.model.objects.control.Control - Channel <C06.Anlagenmodus_HK1> is set to Tag>.
+		[2020-01-05 14:45:43,586] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: C06.Anlagenmodus_HK1, value: Tag
+		[2020-01-05 14:45:44,470] DEBUG de.sgollmer.solvismax.connection.Distributor - Burst update started
+		[2020-01-05 14:45:44,471] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: S12.Vorlauftemperatur_HK1, value: 378
+		[2020-01-05 14:45:44,472] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: X6.UhrzeitSolvis, value: 2020-01-05 14:45:45
+		[2020-01-05 14:45:44,472] DEBUG de.sgollmer.solvismax.connection.Distributor - Burst update finished
+		[2020-01-05 14:45:54,470] DEBUG de.sgollmer.solvismax.connection.Distributor - Burst update started
+		[2020-01-05 14:45:54,471] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: X7.MischerPosition0_HK1, value: false
+		[2020-01-05 14:45:54,471] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: A03.Pumpe_HK1, value: true
+		[2020-01-05 14:45:54,471] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: RF1.Raumfuehler_HK1, value: 170
+		[2020-01-05 14:45:54,472] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: X6.UhrzeitSolvis, value: 2020-01-05 14:45:55
+		[2020-01-05 14:45:54,472] DEBUG de.sgollmer.solvismax.connection.Distributor - Burst update finished
+		[2020-01-05 14:46:04,470] DEBUG de.sgollmer.solvismax.connection.Distributor - Burst update started
+		[2020-01-05 14:46:04,472] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: X6.UhrzeitSolvis, value: 2020-01-05 14:46:05
+		[2020-01-05 14:46:04,472] DEBUG de.sgollmer.solvismax.connection.Distributor - Burst update finished
+		[2020-01-05 14:46:14,470] DEBUG de.sgollmer.solvismax.connection.Distributor - Burst update started
+		[2020-01-05 14:46:14,471] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: A08.Mischer_HK1_auf, value: true
+		[2020-01-05 14:46:14,479] DEBUG de.sgollmer.solvismax.model.objects.data.SolvisData - Channel: X6.UhrzeitSolvis, value: 2020-01-05 14:46:15
+		[2020-01-05 14:46:14,480] DEBUG de.sgollmer.solvismax.connection.Distributor - Burst update finished
+		
+		Die Events um 14:45:54,471 sind weder nach München noch ins Leverkusener FHEM gesendet worden.
+		
+		Hier der Auszug vom leverkusener FHEM:
+		
+		2020-01-05_14:43:15 Buero temperature: 17.0 C (measured)
+		2020-01-05_14:44:00 mySolvis S12.Vorlauftemperatur_HK1: 38.2
+		2020-01-05_14:44:00 mySolvis S04.Heizungspuffertemperatur_oben: 49.4
+		2020-01-05_14:44:00 mySolvis RF1.Raumfuehler_HK1: 16.1
+		2020-01-05_14:45:00 mySolvis RF1.Raumfuehler_HK1: 16.5
+		2020-01-05_14:45:37 mySolvis C06.Anlagenmodus_HK1 Tag
+		2020-01-05_14:45:43 mySolvis X7.MischerPosition0_HK1: on
+		2020-01-05_14:45:43 mySolvis C06.Anlagenmodus_HK1: Tag
+		2020-01-05_14:46:00 mySolvis S12.Vorlauftemperatur_HK1: 37.8
+		2020-01-05_14:46:00 mySolvis S04.Heizungspuffertemperatur_oben: 49.2
+		2020-01-05_14:46:00 mySolvis RF1.Raumfuehler_HK1: 17
+
+ 
