@@ -131,11 +131,8 @@ public class SolvisWorkers {
 						if (command != null && !command.isInhibit()) {
 							success = execute(command);
 						}
-					} catch (IOException e) {
+					} catch (IOException | ErrorPowerOn e) {
 						success = false;
-					} catch (ErrorPowerOn e2) {
-						success = false;
-						solvis.getSolvisState().powerOff();
 					} catch (TerminationException e3) {
 						return;
 					} catch (Throwable e4) {
@@ -289,31 +286,21 @@ public class SolvisWorkers {
 		@Override
 		public void run() {
 			int measurementIntervall = solvis.getDefaultReadMeasurementsIntervall_ms();
-			int errorCount = 0;
-			int powerOffDetectedAfterIoErrors = solvis.getSolvisDescription().getMiscellaneous()
-					.getPowerOffDetectedAfterIoErrors();
-			this.nextTime = System.currentTimeMillis() + measurementIntervall;
+			this.nextTime = System.currentTimeMillis();
 			while (!abort) {
 
 				try {
 					solvis.measure();
-					errorCount = 0;
 					solvis.getSolvisState().connected();
 				} catch (IOException e1) {
-					++errorCount;
-					if (errorCount == powerOffDetectedAfterIoErrors) {
-						solvis.getSolvisState().powerOff();
-					}
 				} catch (ErrorPowerOn e2) {
 					solvis.getSolvisState().remoteConnected();
 				}
 
 				synchronized (this) {
-					int waitTime = (int) (this.nextTime - System.currentTimeMillis());
-					if (waitTime <= 0) {
-						waitTime = Constants.WAITTIME_IF_LE_ZERO;
-					}
-					this.nextTime += measurementIntervall;
+					long now = System.currentTimeMillis() ;
+					this.nextTime = now - (now-this.nextTime)%measurementIntervall + measurementIntervall ;
+					int waitTime = (int) (this.nextTime - now);
 					try {
 						this.wait(waitTime);
 					} catch (InterruptedException e) {

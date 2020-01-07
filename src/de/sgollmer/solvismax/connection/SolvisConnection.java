@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -37,17 +38,26 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private final AccountInfo accountInfo;
 	private final int connectionTimeout;
 	private final int readTimeout;
+	private final int powerOffDetectedAfterIoErrors;
+	private final int powerOffDetectedAfterTimeout_ms;
+	private SolvisState solvisState ;
 	private Integer maxResponseTime = null;
+	private int errorCount = 0;;
+	private long firstTimeout = 0;
 
 	private long connectTime = -1;
 
 	private ConnectionState connectionState = new ConnectionState(ConnectionStatus.DISCONNECTED);
 
-	public SolvisConnection(String urlBase, AccountInfo accountInfo, int connectionTimeout, int readTimeout) {
+	public SolvisConnection(String urlBase, AccountInfo accountInfo, int connectionTimeout, int readTimeout,
+			int powerOffDetectedAfterIoErrors, int powerOffDetectedAfterTimeout_ms) {
 		this.urlBase = urlBase;
 		this.accountInfo = accountInfo;
 		this.connectionTimeout = connectionTimeout;
 		this.readTimeout = readTimeout;
+		this.powerOffDetectedAfterIoErrors = powerOffDetectedAfterIoErrors;
+		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
+		this.solvisState = null ;
 	}
 
 	private class MyAuthenticator extends Authenticator {
@@ -74,10 +84,20 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 //				System.out.println(
 //						"Connect-Timeout: " + uc.getConnectTimeout() + ", Read-Timeout: " + uc.getReadTimeout());
 				InputStream in = uc.getInputStream();
-				// TODO hier scheint es MANCHMAL keinen Timeaout zu geben
+				// TODO hier scheint es MANCHMAL keinen Timeout zu geben
+				this.errorCount = 0;
+				this.firstTimeout = 0;
 				return in;
 			}
 		} catch (ConnectException | SocketTimeoutException e) {
+			++this.errorCount;
+			if (this.firstTimeout == 0) {
+				this.firstTimeout = System.currentTimeMillis();
+			}
+			if (this.errorCount >= this.powerOffDetectedAfterIoErrors
+					&& System.currentTimeMillis() > this.firstTimeout + this.powerOffDetectedAfterTimeout_ms ) {
+				this.solvisState.powerOff();
+			}
 			throw new IOException(e.getMessage());
 		}
 	}
@@ -205,7 +225,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			public char[] createPassword() {
 				return "e5am1kro".toCharArray();
 			}
-		}, 10000,2000);
+		}, 10000, 2000, 1000, 99999999);
 
 		BufferedImage image = solvisConnection.getScreen();
 
@@ -272,5 +292,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			return maxResponseTime;
 		}
 	}
+	public void setSolvisState(SolvisState solvisState) {
+		this.solvisState = solvisState;
+	}
+
 
 }

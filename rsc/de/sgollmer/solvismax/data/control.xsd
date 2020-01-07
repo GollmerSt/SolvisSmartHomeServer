@@ -726,12 +726,14 @@ da der user diesen manuell verändert haben könnte.</documentation>
 		<attribute name="powerOffDetectedAfterIoErrors" type="int"
 			use="required">
 			<annotation>
-				<documentation>
-					Anzahl der IO-Fehler, nachdem ein Power-Off der
-					Solvis-Anlage erkannt wurde
+				<documentation>Anzahl der IO-Fehler, nachdem ein Power-Off der Solvis-Anlage erkannt wurde. Zusätzlich muss die "powerOffDetectedAfterTimeout_ms"-Zeit abgelaufen ist
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="powerOffDetectedAfterTimeout_ms" type="int" use="required">
+			<annotation>
+				<documentation>Zeit ohne Reaktion der Solvis-Anlage, bis ein Power-Off erkannt wird. Zusätzlich müssen noch "powerOffDetectedAfterIoErrors" erfüllt sein</documentation>
+			</annotation></attribute>
 		<attribute name="measurementsBackupTime_ms" type="int"
 			use="required">
 		</attribute>

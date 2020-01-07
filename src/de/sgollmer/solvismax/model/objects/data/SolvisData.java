@@ -14,12 +14,14 @@ import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.TypeError;
+import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
+import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 
-public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable {
+public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, ObserverI< SolvisState> {
 
 	private static final Logger logger = LogManager.getLogger(SolvisData.class);
 
@@ -204,6 +206,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		} else {
 			return new SingleValue(data);
 		}
+	}
+
+	@Override
+	public void update(SolvisState data, Object source) {
+		if ( data.getState() == SolvisState.State.POWER_OFF && this.average != null ) { 
+			this.average.clear() ;
+		}
+		
 	}
 
 }

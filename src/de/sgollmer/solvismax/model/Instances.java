@@ -67,7 +67,8 @@ public class Instances {
 	private Solvis createSolvisInstance(Unit unit) throws IOException, XmlError, XMLStreamException, LearningError {
 		Miscellaneous misc = solvisDescription.getMiscellaneous();
 		SolvisConnection connection = new SolvisConnection(unit.getUrl(), unit, misc.getSolvisConnectionTimeout_ms(),
-				misc.getSolvisReadTimeout_ms());
+				misc.getSolvisReadTimeout_ms(), misc.getPowerOffDetectedAfterIoErrors(),
+				misc.getPowerOffDetectedAfterTimeout_ms());
 		String timeZone = this.baseData.getTimeZone();
 		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId()), connection,
 				this.backupHandler, timeZone);

@@ -19,6 +19,7 @@ public class Miscellaneous {
 
 	private final int measurementsBackupTime_ms;
 	private final int powerOffDetectedAfterIoErrors;
+	private final int powerOffDetectedAfterTimeout_ms;
 	private final int unsuccessfullWaitTime_ms;
 	private final int releaseblockingAfterUserChange_ms;
 	private final int watchDogTime_ms;
@@ -26,12 +27,12 @@ public class Miscellaneous {
 	private final int solvisConnectionTimeout_ms;
 	private final int solvisReadTimeout_ms;
 
-	public Miscellaneous(int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors, int unsuccessfullWaitTime_ms,
-			int releaseblockingAfterUserChange_ms, int watchDogTime_ms, int connectionHoldTime_ms,
-			int solvisConnectionTimeout_ms,
-			int solvisReadTimeout_ms) {
+	public Miscellaneous(int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors,
+			int powerOffDetectedAfterTimeout_ms, int unsuccessfullWaitTime_ms, int releaseblockingAfterUserChange_ms,
+			int watchDogTime_ms, int connectionHoldTime_ms, int solvisConnectionTimeout_ms, int solvisReadTimeout_ms) {
 		this.measurementsBackupTime_ms = measurementsBackupTime_ms;
 		this.powerOffDetectedAfterIoErrors = powerOffDetectedAfterIoErrors;
+		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
 		this.unsuccessfullWaitTime_ms = unsuccessfullWaitTime_ms;
 		this.releaseblockingAfterUserChange_ms = releaseblockingAfterUserChange_ms;
 		this.watchDogTime_ms = watchDogTime_ms;
@@ -64,6 +65,7 @@ public class Miscellaneous {
 
 		private int measurementsBackupTime_ms;
 		private int powerOffDetectedAfterIoErrors;
+		private int powerOffDetectedAfterTimeout_ms;
 		private int unsuccessfullWaitTime_ms;
 		private int releaseblockingAfterUserChange_ms;
 		private int watchDogTime_ms;
@@ -78,39 +80,41 @@ public class Miscellaneous {
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-				case "measurementsBackupTime_ms":
-					this.measurementsBackupTime_ms = Integer.parseInt(value);
-					break;
-				case "powerOffDetectedAfterIoErrors":
-					this.powerOffDetectedAfterIoErrors = Integer.parseInt(value);
-					break;
-				case "unsuccessfullWaitTime_ms":
-					this.unsuccessfullWaitTime_ms = Integer.parseInt(value);
-					break;
-				case "releaseblockingAfterUserChange_ms":
-					this.releaseblockingAfterUserChange_ms = Integer.parseInt(value);
-					break;
-				case "watchDogTime_ms":
-					this.watchDogTime_ms = Integer.parseInt(value);
-					break;
-				case "connectionHoldTime_ms":
-					this.connectionHoldTime_ms = Integer.parseInt(value);
-					break;
-				case "solvisConnectionTimeout_ms":
-					this.solvisConnectionTimeout_ms = Integer.parseInt(value);
-					break;
-				case "solvisReadTimeout_ms":
-					this.solvisReadTimeout_ms = Integer.parseInt(value);
-					break;
+			case "measurementsBackupTime_ms":
+				this.measurementsBackupTime_ms = Integer.parseInt(value);
+				break;
+			case "powerOffDetectedAfterIoErrors":
+				this.powerOffDetectedAfterIoErrors = Integer.parseInt(value);
+				break;
+			case "powerOffDetectedAfterTimeout_ms":
+				this.powerOffDetectedAfterTimeout_ms = Integer.parseInt(value);
+			case "unsuccessfullWaitTime_ms":
+				this.unsuccessfullWaitTime_ms = Integer.parseInt(value);
+				break;
+			case "releaseblockingAfterUserChange_ms":
+				this.releaseblockingAfterUserChange_ms = Integer.parseInt(value);
+				break;
+			case "watchDogTime_ms":
+				this.watchDogTime_ms = Integer.parseInt(value);
+				break;
+			case "connectionHoldTime_ms":
+				this.connectionHoldTime_ms = Integer.parseInt(value);
+				break;
+			case "solvisConnectionTimeout_ms":
+				this.solvisConnectionTimeout_ms = Integer.parseInt(value);
+				break;
+			case "solvisReadTimeout_ms":
+				this.solvisReadTimeout_ms = Integer.parseInt(value);
+				break;
 			}
 
 		}
 
 		@Override
 		public Miscellaneous create() throws XmlError, IOException {
-			return new Miscellaneous(
-					measurementsBackupTime_ms, powerOffDetectedAfterIoErrors, unsuccessfullWaitTime_ms,
-					releaseblockingAfterUserChange_ms, watchDogTime_ms, connectionHoldTime_ms, solvisConnectionTimeout_ms, solvisReadTimeout_ms);
+			return new Miscellaneous(measurementsBackupTime_ms, powerOffDetectedAfterIoErrors,
+					powerOffDetectedAfterTimeout_ms, unsuccessfullWaitTime_ms, releaseblockingAfterUserChange_ms,
+					watchDogTime_ms, connectionHoldTime_ms, solvisConnectionTimeout_ms, solvisReadTimeout_ms);
 		}
 
 		@Override
@@ -135,6 +139,10 @@ public class Miscellaneous {
 
 	public int getSolvisConnectionTimeout_ms() {
 		return solvisConnectionTimeout_ms;
+	}
+
+	public int getPowerOffDetectedAfterTimeout_ms() {
+		return powerOffDetectedAfterTimeout_ms;
 	}
 
 }

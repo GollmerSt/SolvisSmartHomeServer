@@ -24,6 +24,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Screen.ScreenTouch;
+import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -132,7 +133,10 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
 			if (description != null) {
-				datas.get(description);
+				SolvisData data = datas.get(description);
+				if (description.isAverage()) {
+					solvis.getSolvisState().register( data) ;
+				}
 			}
 		}
 

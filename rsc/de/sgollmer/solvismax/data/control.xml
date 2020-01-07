@@ -686,7 +686,8 @@
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S07.Solardruck" buffered="true">
+		<tns:ChannelDescription id="S07.Solardruck"
+			buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" dynamic="true">
 				<tns:Field position="38" length="4" />
@@ -896,7 +897,8 @@
 				<tns:Field position="144" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="SE.Solarertrag_kWh" buffered="true">
+		<tns:ChannelDescription id="SE.Solarertrag_kWh"
+			buffered="true">
 			<tns:Measurement type="unsigned" dynamic="true"
 				unit="kWh">
 				<tns:Field position="162" length="4" />
@@ -1625,9 +1627,9 @@
 			läuft -->
 		<tns:Duration id="readBrenner" time_ms="30000" />
 	</tns:Durations>
-	<tns:Miscellaneous 
-		
-		powerOffDetectedAfterIoErrors="3" measurementsBackupTime_ms="3600000"
+	<tns:Miscellaneous powerOffDetectedAfterIoErrors="3"
+		powerOffDetectedAfterTimeout_ms="120000"
+		measurementsBackupTime_ms="3600000"
 		releaseblockingAfterUserChange_ms="300000"
 		unsuccessfullWaitTime_ms="10000" watchDogTime_ms="60000"
 		connectionHoldTime_ms="300000" solvisConnectionTimeout_ms="10000"

@@ -88,6 +88,7 @@ public class Solvis {
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
 		this.grafics = grafics;
 		this.connection = connection;
+		this.connection.setSolvisState(this.solvisState);
 		this.allSolvisData.setAverageCount(unit.getDefaultAverageCount());
 		this.allSolvisData.setReadMeasurementInterval(unit.getDefaultReadMeasurementsIntervall_ms());
 		this.worker = new SolvisWorkers(this);
@@ -429,9 +430,6 @@ public class Solvis {
 				long nextUpdate = (now - midNightLong) / this.updateIntervall * this.updateIntervall + midNightLong
 						+ this.updateIntervall;
 				int waitTime = (int) (nextUpdate - now);
-				if (waitTime <= 0) {
-					waitTime = Constants.WAITTIME_IF_LE_ZERO;
-				}
 				synchronized (this) {
 					try {
 						this.wait(waitTime);
