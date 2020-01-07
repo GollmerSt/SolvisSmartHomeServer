@@ -80,32 +80,33 @@ public class Miscellaneous {
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-			case "measurementsBackupTime_ms":
-				this.measurementsBackupTime_ms = Integer.parseInt(value);
-				break;
-			case "powerOffDetectedAfterIoErrors":
-				this.powerOffDetectedAfterIoErrors = Integer.parseInt(value);
-				break;
-			case "powerOffDetectedAfterTimeout_ms":
-				this.powerOffDetectedAfterTimeout_ms = Integer.parseInt(value);
-			case "unsuccessfullWaitTime_ms":
-				this.unsuccessfullWaitTime_ms = Integer.parseInt(value);
-				break;
-			case "releaseblockingAfterUserChange_ms":
-				this.releaseblockingAfterUserChange_ms = Integer.parseInt(value);
-				break;
-			case "watchDogTime_ms":
-				this.watchDogTime_ms = Integer.parseInt(value);
-				break;
-			case "connectionHoldTime_ms":
-				this.connectionHoldTime_ms = Integer.parseInt(value);
-				break;
-			case "solvisConnectionTimeout_ms":
-				this.solvisConnectionTimeout_ms = Integer.parseInt(value);
-				break;
-			case "solvisReadTimeout_ms":
-				this.solvisReadTimeout_ms = Integer.parseInt(value);
-				break;
+				case "measurementsBackupTime_ms":
+					this.measurementsBackupTime_ms = Integer.parseInt(value);
+					break;
+				case "powerOffDetectedAfterIoErrors":
+					this.powerOffDetectedAfterIoErrors = Integer.parseInt(value);
+					break;
+				case "powerOffDetectedAfterTimeout_ms":
+					this.powerOffDetectedAfterTimeout_ms = Integer.parseInt(value);
+					break;
+				case "unsuccessfullWaitTime_ms":
+					this.unsuccessfullWaitTime_ms = Integer.parseInt(value);
+					break;
+				case "releaseblockingAfterUserChange_ms":
+					this.releaseblockingAfterUserChange_ms = Integer.parseInt(value);
+					break;
+				case "watchDogTime_ms":
+					this.watchDogTime_ms = Integer.parseInt(value);
+					break;
+				case "connectionHoldTime_ms":
+					this.connectionHoldTime_ms = Integer.parseInt(value);
+					break;
+				case "solvisConnectionTimeout_ms":
+					this.solvisConnectionTimeout_ms = Integer.parseInt(value);
+					break;
+				case "solvisReadTimeout_ms":
+					this.solvisReadTimeout_ms = Integer.parseInt(value);
+					break;
 			}
 
 		}
