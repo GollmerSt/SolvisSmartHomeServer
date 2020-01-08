@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.Authenticator;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.NoRouteToHostException;
 import java.net.PasswordAuthentication;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -40,14 +41,15 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private final int readTimeout;
 	private final int powerOffDetectedAfterIoErrors;
 	private final int powerOffDetectedAfterTimeout_ms;
-	private SolvisState solvisState ;
+	private SolvisState solvisState;
 	private Integer maxResponseTime = null;
 	private int errorCount = 0;;
 	private long firstTimeout = 0;
 
 	private long connectTime = -1;
+	private HttpURLConnection urlConnection = null;
 
-	private ConnectionState connectionState = new ConnectionState(ConnectionStatus.DISCONNECTED);
+	private ConnectionState connectionState = new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE);
 
 	public SolvisConnection(String urlBase, AccountInfo accountInfo, int connectionTimeout, int readTimeout,
 			int powerOffDetectedAfterIoErrors, int powerOffDetectedAfterTimeout_ms) {
@@ -57,7 +59,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.readTimeout = readTimeout;
 		this.powerOffDetectedAfterIoErrors = powerOffDetectedAfterIoErrors;
 		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
-		this.solvisState = null ;
+		this.solvisState = null;
 	}
 
 	private class MyAuthenticator extends Authenticator {
@@ -78,27 +80,19 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			Authenticator.setDefault(new MyAuthenticator());
 			URL url = new URL(this.urlBase + suffix);
 			synchronized (this) {
-				HttpURLConnection uc = (HttpURLConnection) url.openConnection();
-				uc.setConnectTimeout(this.connectionTimeout);
-				uc.setReadTimeout(this.readTimeout);
+				urlConnection = (HttpURLConnection) url.openConnection();
+				urlConnection.setConnectTimeout(this.connectionTimeout);
+				urlConnection.setReadTimeout(this.readTimeout);
 //				System.out.println(
 //						"Connect-Timeout: " + uc.getConnectTimeout() + ", Read-Timeout: " + uc.getReadTimeout());
-				InputStream in = uc.getInputStream();
+				InputStream in = urlConnection.getInputStream();
 				// TODO hier scheint es MANCHMAL keinen Timeout zu geben
-				this.errorCount = 0;
-				this.firstTimeout = 0;
+				this.setConnected();
 				return in;
 			}
-		} catch (ConnectException | SocketTimeoutException e) {
-			++this.errorCount;
-			if (this.firstTimeout == 0) {
-				this.firstTimeout = System.currentTimeMillis();
-			}
-			if (this.errorCount >= this.powerOffDetectedAfterIoErrors
-					&& System.currentTimeMillis() > this.firstTimeout + this.powerOffDetectedAfterTimeout_ms ) {
-				this.solvisState.powerOff();
-			}
-			throw new IOException(e.getMessage());
+		} catch (ConnectException | SocketTimeoutException | NoRouteToHostException e) {
+			this.handleExceptionAndThrow(e);
+			return null ;   //dummy
 		}
 	}
 
@@ -111,10 +105,10 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				in.close();
 			}
 		} catch (IOException e) {
-			this.setDisconnectedAndThrow(e);
+			this.handleExceptionAndThrow(e);
 			throw e;
 		}
-		this.setConnected();
+		this.calculateMaxResponseTime();
 		return image;
 	}
 
@@ -145,9 +139,10 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			builder.delete(builder.length() - 15, builder.length());
 
 		} catch (IOException e) {
-			setDisconnectedAndThrow(e);
+			handleExceptionAndThrow(e);
+			throw e;
 		}
-		this.setConnected();
+		this.calculateMaxResponseTime();
 		String hexString = builder.toString();
 		// logger.debug("Hex string received from solvis: " + hexString);
 		return hexString;
@@ -176,9 +171,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				in.close();
 			}
 		} catch (IOException e) {
-			this.setDisconnectedAndThrow(e);
+			this.handleExceptionAndThrow(e);
 		}
-		this.setConnected();
+		this.calculateMaxResponseTime();
 	}
 
 	public void sendTouch(Coordinate coord) throws IOException {
@@ -191,9 +186,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				in.close();
 			}
 		} catch (IOException e) {
-			this.setDisconnectedAndThrow(e);
+			this.handleExceptionAndThrow(e);
 		}
-		this.setConnected();
+		this.calculateMaxResponseTime();
 	}
 
 	public void sendRelease() throws IOException {
@@ -204,9 +199,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				in.close();
 			}
 		} catch (IOException e) {
-			this.setDisconnectedAndThrow(e);
+			this.handleExceptionAndThrow(e);
 		}
-		this.setConnected();
+		this.calculateMaxResponseTime();
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -265,19 +260,38 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.notify(connectionState);
 	}
 
-	private void setDisconnectedAndThrow(IOException e) throws IOException {
-		if (this.getConnectionState().getStatus() != ConnectionStatus.DISCONNECTED) {
-			this.setConnectionState(new ConnectionState(ConnectionStatus.DISCONNECTED, e.getMessage()));
-			logger.info("Connection to solvis <" + this.urlBase + "> lost. Will be retried.");
-		}
-		throw e;
-	}
-
 	private void setConnected() {
-		if (this.getConnectionState().getStatus() != ConnectionStatus.CONNECTED) {
-			this.setConnectionState(new ConnectionState(ConnectionStatus.CONNECTED));
+		this.errorCount = 0;
+		this.firstTimeout = 0;
+		
+		this.solvisState.connected();
+
+		if (this.solvisState.getState() != SolvisState.State.SOLVIS_CONNECTED) {
 			logger.info("Connection to solvis <" + this.urlBase + "> successfull.");
 		}
+	}
+	
+	private void handleExceptionAndThrow(Throwable e) throws IOException {
+		if (this.urlConnection != null) {
+			try {
+				this.urlConnection.disconnect();
+			} catch (Throwable e1) {
+			}
+		}
+		++this.errorCount;
+		if (this.firstTimeout == 0) {
+			this.firstTimeout = System.currentTimeMillis();
+		}
+		if (this.errorCount >= this.powerOffDetectedAfterIoErrors
+				&& System.currentTimeMillis() > this.firstTimeout + this.powerOffDetectedAfterTimeout_ms) {
+			this.solvisState.powerOff();
+		} else  {
+			this.solvisState.disconnected();;
+		}
+		throw new IOException(e.getMessage());
+	}
+
+	private void calculateMaxResponseTime() {
 
 		int connectionTime = (int) (System.currentTimeMillis() - connectTime);
 		if (this.maxResponseTime == null || connectionTime < this.maxResponseTime * 2) {
@@ -292,9 +306,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			return maxResponseTime;
 		}
 	}
+
 	public void setSolvisState(SolvisState solvisState) {
 		this.solvisState = solvisState;
 	}
-
 
 }

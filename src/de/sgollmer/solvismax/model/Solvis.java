@@ -65,7 +65,7 @@ public class Solvis {
 	private SolvisWorkers worker;
 
 	private final String id;
-	private final int defaultReadMeasurementsIntervall_ms ;
+	private final int defaultReadMeasurementsIntervall_ms;
 	private int configurationMask = 0;
 	private MyImage currentImage = null;
 	private Screen currentScreen = null;
@@ -80,10 +80,10 @@ public class Solvis {
 	private final Observable<Boolean> abortObservable = new Observable<>();
 	private final String timeZone;
 
-	public Solvis( Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
+	public Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone) {
-		this.id = unit.getId() ;
-		this.defaultReadMeasurementsIntervall_ms = unit.getDefaultReadMeasurementsIntervall_ms() ;
+		this.id = unit.getId();
+		this.defaultReadMeasurementsIntervall_ms = unit.getDefaultReadMeasurementsIntervall_ms();
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
 		this.grafics = grafics;
@@ -256,8 +256,7 @@ public class Solvis {
 	}
 
 	public void init() throws IOException, XmlError, XMLStreamException {
-		this.gotoHome();
-		this.configurationMask = this.getSolvisDescription().getConfigurations(this);
+		this.configurationMask = this.initGetConfigurationMask();
 		synchronized (solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().init(this, this.getAllSolvisData());
 		}
@@ -343,9 +342,8 @@ public class Solvis {
 	}
 
 	public void learning() throws IOException, LearningError {
+		this.configurationMask = this.initGetConfigurationMask();
 		logger.log(LEARN, "Learning started.");
-		this.gotoHome();
-		this.configurationMask = this.getSolvisDescription().getConfigurations(this);
 		logger.info("Configuration mask: " + Integer.toHexString(this.configurationMask));
 		this.getGrafics().clear();
 		String homeId = this.solvisDescription.getHomeId();
@@ -409,10 +407,30 @@ public class Solvis {
 
 		private int updateIntervall;
 		boolean abort = false;
+		boolean power = false ;
+		boolean powerDownInInterval = false ;
 
 		public MeasurementUpdateThread(int forcedUpdateIntervall_ms) {
 			super("MeasurementUpdateThread");
 			this.updateIntervall = forcedUpdateIntervall_ms;
+			solvisState.register( new PowerObserver() );
+		}
+		
+		private class PowerObserver implements ObserverI<SolvisState> {
+
+			@Override
+			public void update(SolvisState data, Object source) {
+				switch ( data.getState() ) {
+					case SOLVIS_CONNECTED:
+						power = true ;
+						powerDownInInterval = false ;
+						break ;
+					case POWER_OFF:
+						power = false ;
+				}
+				
+			}
+			
 		}
 
 		@Override
@@ -436,8 +454,12 @@ public class Solvis {
 					} catch (InterruptedException e) {
 					}
 				}
-				if (!abort) {
+				if (!abort && !powerDownInInterval ) {
 					distributor.notify(getAllSolvisData().getMeasurementsPackage());
+				}
+				
+				if ( !power ) {
+					powerDownInInterval = true ;
 				}
 			}
 		}
@@ -470,4 +492,19 @@ public class Solvis {
 		return defaultReadMeasurementsIntervall_ms;
 	}
 
+	private int initGetConfigurationMask() throws TerminationException {
+		boolean connected = false;
+		int configurationMask = 0 ;;
+		while (!connected) {
+			try {
+				this.gotoHome();
+				configurationMask = this.getSolvisDescription().getConfigurations(this);
+				connected = true;
+			} catch (IOException e) {
+				logger.error("Solvis not available. Powered down or wrong IP address. Will try again");
+				AbortHelper.getInstance().sleep(1000);
+			}
+		}
+		return configurationMask ;
+	}
 }

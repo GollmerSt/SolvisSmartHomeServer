@@ -10,6 +10,9 @@ package de.sgollmer.solvismax.model.objects.control;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import javax.xml.namespace.QName;
 
@@ -38,9 +41,9 @@ public class StrategyMode implements Strategy {
 	private static final Logger logger = LogManager.getLogger(StrategyMode.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
-	private final Collection<Mode> modes;
+	private final List<Mode> modes;
 
-	public StrategyMode(Collection<Mode> modes) {
+	public StrategyMode(List<Mode> modes) {
 		this.modes = modes;
 	}
 
@@ -91,7 +94,7 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public Collection<Mode> getModes() {
+	public List<Mode> getModes() {
 		return this.modes;
 	}
 
@@ -107,7 +110,7 @@ public class StrategyMode implements Strategy {
 
 	public static class Creator extends CreatorByXML<StrategyMode> {
 
-		private final Collection<Mode> modes = new ArrayList<>(5);
+		private final List<Mode> modes = new ArrayList<>(5);
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -185,8 +188,19 @@ public class StrategyMode implements Strategy {
 			SingleData<Mode> data = this.getValue(solvis.getCurrentImage(), grafic.getRectangle(), solvis);
 			if (data == null || !mode.equals(data.get())) {
 				logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
-				successfull = false ;
+				successfull = false;
 				break;
+			}
+		}
+		for (ListIterator<Mode> itO = this.getModes().listIterator(); itO.hasNext();) {
+			Mode modeO = itO.next();
+			for (ListIterator<Mode> itI = this.getModes().listIterator(itO.nextIndex()); itI.hasNext();) {
+				Mode modeI = itI.next();
+				if (modeO.getGrafic().equals(modeI.getGrafic())) {
+					logger.log(LEARN,
+							"Learning of <" + modeI.getId() + "> not successfull (not unique), will be retried");
+					break;
+				}
 			}
 		}
 		solvis.clearCurrentImage();

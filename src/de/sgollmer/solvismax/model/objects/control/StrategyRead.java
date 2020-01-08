@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.model.objects.control;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -199,7 +200,7 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public Collection<? extends ModeI> getModes() {
+	public List<? extends ModeI> getModes() {
 		return null;
 	}
 

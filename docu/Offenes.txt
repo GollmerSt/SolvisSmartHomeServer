@@ -84,4 +84,11 @@ Erledigt:
 		2020-01-05_14:46:00 mySolvis S04.Heizungspuffertemperatur_oben: 49.2
 		2020-01-05_14:46:00 mySolvis RF1.Raumfuehler_HK1: 17
 
+13: Bei SIGTERM:
+ Exception in thread "Thread-0" java.util.ConcurrentModificationException
+        at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:937)
+        at java.base/java.util.ArrayList$Itr.remove(ArrayList.java:905)
+        at de.sgollmer.solvismax.connection.Server.abort(Server.java:208)
+        at de.sgollmer.solvismax.Main$1.run(Main.java:102)
+        at java.base/java.lang.Thread.run(Thread.java:844)
  

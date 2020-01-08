@@ -9,6 +9,7 @@ package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -34,7 +35,7 @@ public interface Strategy extends Assigner {
 
 	public Float getAccuracy();
 
-	public Collection<? extends ModeI> getModes();
+	public List<? extends ModeI> getModes();
 
 	public UpperLowerStep getUpperLowerStep();
 	

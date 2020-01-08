@@ -205,7 +205,7 @@ public class Server {
 		for ( Iterator<Client > it = connectedClients.iterator(); it.hasNext();) {
 			Client client = it.next() ;
 			client.abort();
-			it.remove();
+			// it.remove();  // Wird durch client.abort gelöscht
 		}
 		this.serverThread.abort();
 		this.notifyAll();

@@ -21,7 +21,7 @@ public class SolvisState extends Observable<SolvisState> {
 	private boolean error = false;
 
 	public enum State {
-		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, ERROR
+		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, SOLVIS_DISCONNECTED, ERROR
 	}
 
 	public void error(boolean error) {
@@ -38,6 +38,10 @@ public class SolvisState extends Observable<SolvisState> {
 
 	public void connected() {
 		this.setState(State.SOLVIS_CONNECTED);
+	}
+
+	public void disconnected() {
+		this.setState(State.SOLVIS_DISCONNECTED);
 	}
 
 	public void remoteConnected() {
