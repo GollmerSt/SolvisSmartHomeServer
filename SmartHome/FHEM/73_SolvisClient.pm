@@ -758,320 +758,235 @@ sub SolvisClient_DbLog_splitFn($)
 =pod
 =begin html
 
-<a name="SolvisMax"></a>
-<h3>SolvisMax</h3>
+<a name="SolvisClient"></a>
+<h3>SolvisClient</h3>
 <ul>
-<table>
-	<tr>
-		<td>
-			Um auf die
-			<a href="https://www.solvis.de/privatkunden/energiemanager-solvismax.html">Solarheizsystem SolvisMax</a>
-			mittels FHEM zugreifen zu k&ouml;nnen, wird die
-			<a href="https://www.solvis.de/privatkunden/fernbedienung-solvisremote.html">SolvisRemote</a>
-			ben&ouml;tigt. Sie ist ein Kommunikations-Ger&auml;t, mit einer
-			<a href="https://www.solvis.de/public/_processed_/csm_remote_schema_01_c8032327a8.jpg">Web-Oberfl&auml;che</a>.<BR>
-			<BR>
-			Um das SolvisMax-Modul nutzen zu k&ouml;nnen, muss man mit dem
-			<a href="https://www.solvis.de/privatkunden/fernbedienung-solvisremote/konfigurationsprogramm.html">Konfigurations-Programm</a>
-			als erstes die IP-Adresse, den User und das Passwort definieren.<BR>
-			Wahlweise kann der Router die IP-Adresse vorgeben, dann sollte jedoch im Router f&uuml;r die
-			<a href="https://www.solvis.de/privatkunden/fernbedienung-solvisremote.html">SolvisRemote</a>
-			eine feste IP-Adresse festgelegt sein, damit FHEM diese auch finden kann.<BR>
-			<BR>
-			Mit der Define-Anweisung wird ein erster Kontakt mit der
-			<a href="https://www.solvis.de/privatkunden/fernbedienung-solvisremote.html">SolvisRemote</a>
-			versucht. Abh&auml;ngig, ob die Verbindung erfolgreich war, erfolgt eine entsprechende Meldung im Statusfeld.<BR>
-			Wird das Modul das erste Mal gestartet, so wird ein Authorisationsfehler ausgegeben, da der User und das Password mittels
-			des Set-Befehls einmalig definiert werden muss.<BR> 
-			Ist die Verbindung erfolgreich, wird regelm&auml;&szlig;ig die
-			<a href="https://www.solvis.de/privatkunden/fernbedienung-solvisremote.html">SolvisRemote</a>
-			abgefragt.<BR>
-			<BR>
-			Bedingt durch die Solvis-Software werden s&auml;mtliche Daten bei jeder Abfrage &uuml;bertragen. Um die Anzahl der Updates in
-			den Readings zu verringen, unterteilt das SolvisMax-Modul die Daten in dynamische und statische Daten. Beispielsweise
-			geh&ouml;rt zu den statischen Daten der Anlagentyp, zu den dynamischen die Vorlauftemperatur des Heizkreises 1.<BR>
-			Das Abfrageintervall kann &uuml;ber das Attribut "Interval" ver&auml;ndert werden. Per Default steht es auf 30 (s).<BR>
-			&Uuml;ber die Daten wird bei den Temperatur- und Durchfluss-Messungen ein Mittelwert gebildet, da ich bei meiner
-			<a href="https://www.solvis.de/privatkunden/energiemanager-solvismax.html">SolvisMax-Anlage</a>
-			gesehen habe, dass diese doch recht stark schwanken. Bei dem dabei verwendeten Algorithmus handelt es sich nicht um
-			eine einfache Mittelwert-Bildung sondern gr&ouml;&szlig;ere &Auml;nderungen werden bevorzugt. Das bedeutet, dass bei einem steileren
-			Temperatur- oder Durchflussanstieg bzw -abfall der neuere Wert h&ouml;her gewichtet wird. Die Anzahl der Messwerte, &uuml;ber
-			welche der Mittelwert gebildet wird, kann &uuml;ber das Attribut "Average" ge&auml;ndert werden. Der Default-Wert ist 5.
-			<BR>
-			Neben der Erfassung dieser Werte berechnet das Modul noch aus diesen Werten die Brennerstarts und Brennerlaufzeit der beiden Brennerstufen.
-			Zusätzlich wird auch ein Reading des Brennerstatus berechnet.<BR>
-			Folgende Readings werden zusätzlich berechnet:
-<ul><ul>
-	<table>
-		<tr><td align="right" valign="top"><code>X1.BrennerStarts</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 1</td></tr>
-		<tr><td align="right" valign="top"><code>X3.BrennerStufe2Starts</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 2</td></tr>
-		<tr><td align="right" valign="top"><code>X2.BrennerLaufzeit_s</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 1</td></tr>
-		<tr><td align="right" valign="top"><code>X4.BrennerStufe2Laufzeit_s</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 2</td></tr>
-		<tr><td align="right" valign="top"><code>X5.BrennerStatus</code> : </td><td align="left" valign="top">Aktuelle Brennstufe des Brenners (off, Stufe1 oder Stufe2)</td></tr>
-	</table>
-</ul></ul><BR>
-			Daneben kann man mit dem Modul auch den Zustand der Anlage (Tag, Nacht, Zeitgeber und Standby) einstellen.
-			<BR><BR><BR>
-			Auf folgende Weise kann man das Modul in FHEM einbinden und parametrisieren:
-			<BR><BR>
+  <table>
+    <tr><td>
+		Um auf die Solarheizsysteme 
+		<a href="https://www.solvis.de/solvisben">SolvisBen</a> oder <a href="https://www.solvis.de/solvismay">SolvisMax</a>
+		mittels FHEM zugreifen zu k&ouml;nnen, wird die
+		<a href="https://www.solvis.de/solvisremote">SolvisRemote</a>
+		ben&ouml;tigt. Sie ist ein Kommunikations-Ger&auml;t, mit einer
+		<a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/remote-mobile.png">Web-Oberfl&auml;che</a>.<BR>
+		<BR>
+		Um das SolvisClient-Modul nutzen zu k&ouml;nnen, muss man mit dem
+		<a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/Download/konfig-remote.zip">Konfigurations-Programm</a>
+		als erstes die IP-Adresse, den User und das Passwort definieren.<BR>
+		Wahlweise kann der Router die IP-Adresse vorgeben, dann sollte jedoch im Router f&uuml;r die
+		<a href="https://www.solvis.de/solvisremote">SolvisRemote</a>
+		eine feste IP-Adresse festgelegt sein, damit der SolvisSmartHome-Server diese auch finden kann.<BR>
+		<BR>
+		Neben der <a href="https://www.solvis.de/solvisremote">SolvisRemote</a> ist noch der SolvisSmartHome-Server zu installieren und einzurichten,
+		der Bestandteil des vorliegenden FHEM-Moduls ist. Gemäß der beiliegenden Anleitung ist dieser erst einzurichten und dort die Anlagenparameter
+		zu definieren.<BR>
+		<BR>
+		Mit der Define-Anweisung des FHEM-Moduls wird dann eine Verbindung zum Server versucht. 
+		Abh&auml;ngig, ob die Verbindung erfolgreich war, erfolgt eine entsprechende Meldung im Statusfeld.<BR>
+		Ist die Verbindung erfolgreich, wird der Client regelm&auml;&szlig;ig mit Daten der Heizungsanlage vom Server versorgt.<BR>
+		<BR>
+		Neben der Erfassung dieser Werte berechnet der Server noch aus diesen Werten die Brennerstarts und Brennerlaufzeit der beiden Brennerstufen.
+		Zusätzlich wird auch ein Reading des Brennerstatus berechnet sowie die Ruhestellung der Mischer.<BR>
+		<BR>
+		Folgende Readings werden zusätzlich berechnet:
+      <ul>
+        <ul>
+          <table>
+			<tr><td align="right" valign="top"><code>X1.BrennerStarts</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 1</td></tr>
+			<tr><td align="right" valign="top"><code>X3.BrennerStufe2Starts</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 2</td></tr>
+			<tr><td align="right" valign="top"><code>X2.BrennerLaufzeit_s</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 1</td></tr>
+			<tr><td align="right" valign="top"><code>X4.BrennerStufe2Laufzeit_s</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 2</td></tr>
+			<tr><td align="right" valign="top"><code>X5.BrennerStatus</code> : </td><td align="left" valign="top">Aktuelle Brennstufe des Brenners (off, Stufe1 oder Stufe2)</td></tr>
+			<tr><td align="right" valign="top"><code>X6.UhrzeitSolvis</code> : </td><td align="left" valign="top">Uhrzeit der SolvisControl</td></tr>
+			<tr><td align="right" valign="top"><code>X7.MischerPosition0_HK1</code> : </td><td align="left" valign="top">Mischer des Heizkreises 1 in Ruhestellung</td></tr>
+			<tr><td align="right" valign="top"><code>X8.MischerPosition0_HK2</code> : </td><td align="left" valign="top">Mischer des Heizkreises 2 in Ruhestellung</td></tr>
+          </table>
+        </ul>
+	  </ul><BR><BR>
+	    Daneben gibt es noch weitere Werte, welche aus dem GUI der SolvisControl mittels OCR ermittelt werden. Diese werden nur dann aktualisiert, wenn der Wert durch
+		einen GET/SET-Befehl ausgelesen/verändert wird. Sie sind also nicht immer auf dem aktuellen Stand.<BR>
+		<BR>
+		Folgende Readings werden aus der GUI ermittelt:
+	  <ul>
+	    <ul>
+	      <table>
+			<tr><td align="right" valign="top"><code>C01.StartsBrenner</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 1</td></tr>
+			<tr><td align="right" valign="top"><code>C02.LaufzeitBrenner</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 1 (in h)</td></tr>
+			<tr><td align="right" valign="top"><code>C03.LaufzeitAnforderung2</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 2 (in h)</td></tr>
+			<tr><td align="right" valign="top"><code>C04.WarmwasserPumpe</code> : </td><td align="left" valign="top">Warmwasserpume (an/aus/auto)</td></tr>
+			<tr><td align="right" valign="top"><code>C05.WassertemperaturSoll</code> : </td><td align="left" valign="top">Solltemperatur Warmwasser (10 .. 65&deg;C)</td></tr>
+			<tr><td align="right" valign="top"><code>C06.Anlagenmodus_HK1</code> : </td><td align="left" valign="top">Modus des Heizkreises 1 (Tag/Nacht/Standby/Timer)</td></tr>
+			<tr><td align="right" valign="top"><code>C07.Tagestemperatur_HK1</code> : </td><td align="left" valign="top">Solltemperatur Tag Heizkreis 1</td></tr>
+			<tr><td align="right" valign="top"><code>C08.Nachttemperatur_HK1</code> : </td><td align="left" valign="top">Solltemperatur Nacht Heizkreis 1</td></tr>
+			<tr><td align="right" valign="top"><code>C09.TemperaturFeineinstellung_HK1</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 1 (-5 ... 5)</td></tr>
+			<tr><td align="right" valign="top"><code>C10.Raumeinfluss_HK1</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 1 (0 ... 90%)</td></tr>
+			<tr><td align="right" valign="top"><code>C11.Vorlauf_Soll_HK1</code> : </td><td align="left" valign="top">Sollwert der Vorlauftemperatur Heizkreis 1</td></tr>
+			<tr><td align="right" valign="top"><code>C12.Anlagenmodus_HK2</code> : </td><td align="left" valign="top">Modus des Heizkreises 2 (Tag/Nacht/Standby/Timer)</td></tr>
+			<tr><td align="right" valign="top"><code>C13.Tagestemperatur_HK2</code> : </td><td align="left" valign="top">Solltemperatur Tag Heizkreis 2</td></tr>
+			<tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Solltemperatur Nacht Heizkreis 2</td></tr>
+			<tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 2 (-5 ... 5)</td></tr>
+			<tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 2(0 ... 90%)</td></tr>
+			<tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Sollwert der Vorlauftemperatur Heizkreis 2</td></tr>
+          </table>
+        </ul>
+      </ul><BR><BR><BR><BR>
+        Auf folgende Weise kann man das Modul in FHEM einbinden und parametrisieren:
+		<BR><BR>
 
-<table>
-<tr><td><a name="SolvisMaxDefine"></a><b>Define</b></td></tr>
-</table>
+      <table>
+        <tr><td><a name="SolvisClientDefine"></a><b>Define</b></td></tr>
+      </table>
 
-<table><tr><td><ul><code>define &lt;ger&auml;t&gt; SolvisMax &lt;url&gt;</code></ul></td></tr></table>
+      <table>
+		<tr><td><ul><code>define &lt;ger&auml;t&gt; SolvisClient &lt;url&gt;</code></ul></td></tr>
+      </table>
 
-<ul><ul>
-	<table>
-		<tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> : </td><td align="left" valign="top">
-			Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
-		<tr><td align="right" valign="top"><code>&lt;url&gt;</code> : </td><td align="left" valign="top">
-			Eine g&uuml;ltiger Url (IP-Adresse oder Internet-Pfad) des SolvisRemote. Eventuell im Router nachschauen welche
-			IP-Addresse der SolvisRemote vom DHCP-Server zugeteilt wurde.</td></tr>
-	</table>
-</ul></ul>
-
-<BR>
-
-<table>
-	<tr><td><a name="SolvisMaxSet"></a><b>Set</b></td></tr>
-	<tr><td>
+      <ul>
 		<ul>
-				Die set Funktion &auml;ndert eine Untermenge der Werte der SolvisMax. Aktuell ist nur &Auml;nderung der Brennerlaufzeiten und
-				Brennerstarts m&ouml;glich. Das sind auch aktuell nur Pseudo-Werte des Moduls, die Werte der Solvis-Steuerung
-				bleiben unver&auml;ndert. Die Laufzeit und die Brennerstarts kann aktuell noch nicht &uuml;ber das Interface
-				ausgelesen werden. Um einen Gleichstand zwischen Solvis-Steuerung und Modul zu erreichen, existieren diese beiden
-				Set-Befehle.<BR>
-				Au&szlig;erdem kann der Zustand der <a href="https://www.solvis.de/privatkunden/energiemanager-solvismax.html">SolvisMax-Anlage</a>
-				zwischen Tag, Nacht, Zeit und Standby ge&auml;ndert werden. Dies erfolgt durch simulierte Klicks auf der Consolenoberfl&auml;che. Dieser
-				Vorgang dauert relativ lange und um Fhem in dieser Zeit nicht zu blockieren, werden diese Befehle im Hintergrund
-				ausgef&uuml;hrt. Es werden max. 10 Befehle in eine Queue zwischengepuffert. Beim &Uuml;berlauf dieser Queue gibt es eine
-				Fehlermeldung und der letzte Zustandswechsel wird ignoriert.<BR>
-				Mittels der Set-Funktion wird auch der User und das Password f&uuml;r den Zugriff auf die
-				<a href="https://www.solvis.de/privatkunden/fernbedienung-solvisremote.html">SolvisRemote</a>
-				definiert, welche mit dem
-				<a href="https://www.solvis.de/privatkunden/fernbedienung-solvisremote/konfigurationsprogramm.html">SolvisRemote-Konfigurator</a>
-				festgelegt wurde. Diese beiden Werte werden verschl&uuml;sselt im Modul-Verzeichnis unter FhemUtils/uniqueID abgelegt.
+	      <table>
+		    <tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> :</td><td align="left" valign="top">
+		      Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
+		    <tr><td align="right" valign="top"><code>&lt;url&gt;</code> :</td><td align="left" valign="top">
+		      Eine g&uuml;ltiger Url (IP-Adresse oder Internet-Pfad) des SolvisSmartHome-Servers mit Channelnumber (normalerweise 10735). Eventuell im Router nachschauen welche
+			  IP-Addresse der SolvisSmartHome-Server vom DHCP-Server zugeteilt wurde. Sollte der Server auf dem Fhem-System laufen, kann auch "localhost:10735" eingetragen werden</td></tr>
+	      </table>
+        </ul>
+	  </ul><BR><BR>
+
+      <table>
+	    <tr><td><a name="SolvisClientSet"></a><b>Set</b></td></tr>
+	    <tr><td>
+		  <ul>
+			Die Set Funktion &auml;ndert eine Untermenge der Anlagen-Werte der Solvis. Aktuell sind die Veränderunge folgender Werte möglich:
+            <ul>
+		      <ul>
+	            <table>
+					<tr><td align="right" valign="top"><code>C04.WarmwasserPumpe</code> : </td><td align="left" valign="top">Warmwasserpume (an/aus/auto)</td></tr>
+					<tr><td align="right" valign="top"><code>C05.WassertemperaturSoll</code> : </td><td align="left" valign="top">Solltemperatur Warmwasser (10 .. 65&deg;C)</td></tr>
+					<tr><td align="right" valign="top"><code>C06.Anlagenmodus_HK1</code> : </td><td align="left" valign="top">Modus des Heizkreises 1 (Tag/Nacht/Standby/Timer)</td></tr>
+					<tr><td align="right" valign="top"><code>C07.Tagestemperatur_HK1</code> : </td><td align="left" valign="top">Solltemperatur Tag Heizkreis 1</td></tr>
+					<tr><td align="right" valign="top"><code>C08.Nachttemperatur_HK1</code> : </td><td align="left" valign="top">Solltemperatur Nacht Heizkreis 1</td></tr>
+					<tr><td align="right" valign="top"><code>C09.TemperaturFeineinstellung_HK1</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 1 (-5 ... 5)</td></tr>
+					<tr><td align="right" valign="top"><code>C10.Raumeinfluss_HK1</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 1 (0 ... 90%)</td></tr>
+					<tr><td align="right" valign="top"><code>C12.Anlagenmodus_HK2</code> : </td><td align="left" valign="top">Modus des Heizkreises 2 (Tag/Nacht/Standby/Timer)</td></tr>
+					<tr><td align="right" valign="top"><code>C13.Tagestemperatur_HK2</code> : </td><td align="left" valign="top">Solltemperatur Tag Heizkreis 2</td></tr>
+					<tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Solltemperatur Nacht Heizkreis 2</td></tr>
+					<tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 2 (-5 ... 5)</td></tr>
+					<tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 2(0 ... 90%)</td></tr>
+	            </table>
+              </ul>
+			</ul><BR>
+          </ul>
+	    </td></tr>
+      </table>
+
+      <table>
+	    <tr><td><ul><code>set &lt;ger&auml;t&gt; &lt;name&gt; &lt;value&gt;</code></ul></td></tr>
+      </table>
+
+      <ul>
+        <ul>
+	      <table>
+		    <tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> : </td><td align="left" valign="top">
+					Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
+			<tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
+					Der Name des Wertes, welcher gesetzt werden soll. Z.B.: "<code>C08.Nachttemperatur_HK1</code>"<BR></td></tr>
+			<tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
+					Ein g&uuml;ltiger Wert.<BR></td></tr>
+	      </table><BR>
+	    </ul>
+	        neben der SET-Befehle zur &Auml;nderung der obigen Anlagen-Werte, existieren noch zus&auml;tzlich folgende Server-Befehle (&lt;name&gt;: "ServerCommand", <value> nach folgender Tabelle):
+        <ul>
+	      <table>
+		    <tr><td align="right" valign="top"><code>BACKUP</code>: </td><td align="left" valign="top">
+		      Sichert die berechneten Messwerte (X1 .. X8) in einen Backup-Datei<BR>
+		    </td></tr>
+		    <tr><td align="right" valign="top"><code>SCREEN_RESTORE_INHIBIT</code>: </td><td align="left" valign="top">
+			  Normalerweise wird nach einer Paramter-Abfrage im GUI der SolvisControl wieder zum vorherigen Bildschirm zur&uuml;ckgegangen. Dieses verhalten wird durch diesen Befehl verhindert.<BR>
+		    </td></tr>
+		    <tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
+			  Gegenstück zu dem ServerCommand SCREEN_RESTORE_INHIBIT<BR>
+		    </td></tr>
+	      </table>
 		</ul>
+      </ul><BR><BR>
+      <table>
+	    <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>
+	    <tr><td>
+		  <ul>
+			  Die Get Funktion st&ouml;&szlig;t das Auslesen von Anlagenwerten aus der GUI der SolvisControl an. Folgende Werte k&ouml;nnen ausgelesen werden:
+            <ul>
+		      <ul>
+	            <table>
+					<tr><td align="right" valign="top"><code>C01.StartsBrenner</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 1</td></tr>
+					<tr><td align="right" valign="top"><code>C02.LaufzeitBrenner</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 1 (in h)</td></tr>
+					<tr><td align="right" valign="top"><code>C03.LaufzeitAnforderung2</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 2 (in h)</td></tr>
+					<tr><td align="right" valign="top"><code>C04.WarmwasserPumpe</code> : </td><td align="left" valign="top">Warmwasserpume (an/aus/auto)</td></tr>
+					<tr><td align="right" valign="top"><code>C05.WassertemperaturSoll</code> : </td><td align="left" valign="top">Solltemperatur Warmwasser (10 .. 65&deg;C)</td></tr>
+					<tr><td align="right" valign="top"><code>C06.Anlagenmodus_HK1</code> : </td><td align="left" valign="top">Modus des Heizkreises 1 (Tag/Nacht/Standby/Timer)</td></tr>
+					<tr><td align="right" valign="top"><code>C07.Tagestemperatur_HK1</code> : </td><td align="left" valign="top">Solltemperatur Tag Heizkreis 1</td></tr>
+					<tr><td align="right" valign="top"><code>C08.Nachttemperatur_HK1</code> : </td><td align="left" valign="top">Solltemperatur Nacht Heizkreis 1</td></tr>
+					<tr><td align="right" valign="top"><code>C09.TemperaturFeineinstellung_HK1</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 1 (-5 ... 5)</td></tr>
+					<tr><td align="right" valign="top"><code>C10.Raumeinfluss_HK1</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 1 (0 ... 90%)</td></tr>
+					<tr><td align="right" valign="top"><code>C11.Vorlauf_Soll_HK1</code> : </td><td align="left" valign="top">Sollwert der Vorlauftemperatur Heizkreis 1</td></tr>
+					<tr><td align="right" valign="top"><code>C12.Anlagenmodus_HK2</code> : </td><td align="left" valign="top">Modus des Heizkreises 2 (Tag/Nacht/Standby/Timer)</td></tr>
+					<tr><td align="right" valign="top"><code>C13.Tagestemperatur_HK2</code> : </td><td align="left" valign="top">Solltemperatur Tag Heizkreis 2</td></tr>
+					<tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Solltemperatur Nacht Heizkreis 2</td></tr>
+					<tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 2 (-5 ... 5)</td></tr>
+					<tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 2(0 ... 90%)</td></tr>
+					<tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Sollwert der Vorlauftemperatur Heizkreis 2</td></tr>
+	            </table>
+              </ul>
+		    </ul><BR>
+          </ul>
+	    </td></tr>
+      </table>
+      <table>
+	    <tr><td><ul><code>get &lt;ger&auml;t&gt; &lt;name&gt;</code></ul></td></tr>
+	  </table>
+      <ul>
+        <ul>
+	      <table>
+            <tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> : </td><td align="left" valign="top">
+				Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
+		    <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
+			    Der Name des Wertes, welcher ausgelesen werden soll. Z.B.: "<code>C08.Nachttemperatur_HK1</code>"<BR></td></tr>
+	      </table>
+	    </ul>
+	  </ul><BR><BR>
+      <table>
+	    <tr><td><a name="SolvisClientAttr"></a><b>Attribute</b></td></tr>
+	    <tr><td>
+	      <ul>
+		      Die folgenden Modul-spezifischen Attribute k&ouml;nnen neben den bekannten globalen Attributen gesetzt werden wie
+		      z.B.: <a href="#room">room</a>.<BR>
+            <ul>
+		      <ul>
+	            <table>
+				    <tr><td align="right" valign="top"><code>SolvisName</code> : </td><td align="left" valign="top">Name der Id der Unit des Servers (in base.xml definiert). Wenn das Attribut nicht definiert ist, muss der FHEM-Gerätename identisch mit der Id der Unit des base.xml des Servers sein.</td></tr>
+	            </table>
+              </ul>
+		    </ul><BR>
+		  </ul>
+	    </td></tr>
+      </table>
+
+      <table>
+	    <tr><td><ul><code>attr &lt;ger&auml;t&gt; &lt;name&gt; &lt;value&gt;</code></ul></td></tr>
+	  </table>
+      <ul>
+        <ul>
+	      <table>
+			  <tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> : </td><td align="left" valign="top">
+				  Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
+			  <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
+				  Der Name des Wertes, welcher gesetzt werden soll. Aktuell nur "SolvisName" m&ouml;glich</code>"<BR></td></tr>
+			  <tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
+				  Ein g&uuml;ltiger Wert.<BR></td></tr>
+	      </table><BR>
+	    </ul>
+      </ul>
 	</td></tr>
-</table>
-
-<table><tr><td><ul><code>set &lt;ger&auml;t&gt; &lt;name&gt; &lt;value&gt;</code></ul></td></tr></table>
-
-<ul>
-<ul>
-	<table>
-		<tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> : </td><td align="left" valign="top">
-			Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
-		<tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
-			Der Name des Wertes, welcher gesetzt werden soll. Z.B.: "<code>X.BrennerStarts</code>"<BR></td></tr>
-		<tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
-			Ein g&uuml;ltiger Wert.<BR></td></tr>
-	</table>
-	<BR>
-	</ul>
-	Folgende Set-Befehle werden aktuell unterst&uuml;tzt:
-	<table>
-		<tr>
-			<td>
-			<tr><td align="right" valign="top"><li><code>X1.BrennerStarts</code>: </li></td><td align="left" valign="top">
-				Hier&uuml;ber kann die im Modul hinterlegte Anzahl der Brennerstarts der Stufe 1 ge&auml;ndert werden, beispielsweise
-				um diese mit der der Solvis-Steuerung zu synchronisieren.<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>X2.BrennerLaufzeit_s</code>: </li></td><td align="left" valign="top">
-				Hier&uuml;ber kann die im Modul hinterlegte Brennerlaufzeit der Stufe 1 ge&auml;ndert werden, beispielsweise um diese
-				mit der der Solvis-Steuerung zu synchronisieren. Die Einheit ist s.<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>X3.BrennerStufe2Starts</code>: </li></td><td align="left" valign="top">
-				Hier&uuml;ber kann die im Modul hinterlegte Anzahl der Brennerstarts der Stufe 2 ge&auml;ndert werden, beispielsweise
-				um diese mit der der Solvis-Steuerung zu synchronisieren.<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>X4.BrennerStufe2Laufzeit_s</code>: </li></td><td align="left" valign="top">
-				Hier&uuml;ber kann die im Modul hinterlegte Brennerlaufzeit der Stufe 2 ge&auml;ndert werden, beispielsweise um diese
-				mit der der Solvis-Steuerung zu synchronisieren. Die Einheit ist s.<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>User</code>: </li></td><td align="left" valign="top">
-				Hiermit wird der in der mit dem
-				<a href="https://www.solvis.de/privatkunden/fernbedienung-solvisremote/konfigurationsprogramm.html">SolvisRemote-Konfigurator</a>
-				festgelegte User dem SolvisMax-Modul &uuml;bergeben.<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>Password</code>: </li></td><td align="left" valign="top">
-				Hiermit wird dar in der mit dem
-				<a href="https://www.solvis.de/privatkunden/fernbedienung-solvisremote/konfigurationsprogramm.html">SolvisRemote-Konfigurator</a>
-				festgelegte Passwort dem SolvisMax-Modul &uuml;bergeben.<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>SolvisState</code>: </li></td><td align="left" valign="top">
-				Hiermit kann der Zustand der <a href="https://www.solvis.de/privatkunden/energiemanager-solvismax.html">SolvisMax-Anlage</a>
-				zwischen Tag, Nacht, Zeitgeber und Standby umgeschaltet werden. Die Parameter-Werte (value) hierfür sind "day", "night", "time" und "standby".<BR>
-			</td></tr>
-			</td>
-		</tr>
-	</table>
-</ul>
-
-<BR>
-
-<!--table>
-	<tr><td><a name="KM200Get"></a><b>Get</b></td></tr>
-	<tr><td>
-		<ul>
-				Die get-Funktion ist in der Lage einen Wert eines Service innerhalb der KM200/KM50 Service Struktur auszulesen.<BR>
-				Die zus&auml;tzliche Liste von erlaubten Werten oder der Wertebereich zwischen Minimum und Maximum wird nicht zur&uuml;ck gegeben.<BR>
-		</ul>
-	</td></tr>
-</table>
-
-<table><tr><td><ul><code>get &lt;service&gt; &lt;option&gt;</code></ul></td></tr></table>
-
-<ul><ul>
-	<table>
-		<tr>
-			<td align="right" valign="top"><code>&lt;service&gt;</code> : </td><td align="left" valign="top">Der Name des Service welcher ausgelesen werden soll. Z.B.:  "<code>/heatingCircuits/hc1/operationMode</code>"<BR>
-																											 &nbsp;&nbsp;Es gibt nur den Wert, aber nicht die Werteliste oder den m&ouml;glichen Wertebereich zur&uuml;ck.<BR>
-			</td>
-		</tr>
-	</table>
-</ul></ul>
-
-<ul><ul>
-	<table>
-		<tr>
-			<td align="right" valign="top"><code>&lt;option&gt;</code> : </td><td align="left" valign="top">Das optionelle Argument f𲠤ie Ausgabe des get-Befehls Z.B.:  "<code>json</code>"<BR>
-																											 &nbsp;&nbsp;Folgende Optionen sind verf𧢡r:<BR>
-																											 &nbsp;&nbsp;json - Gibt anstelle des Wertes, die gesamte Json Antwort des KMxxx als String zur𣫮 
-			</td>
-		</tr>
-	</table>
-</ul></ul>
-
-<BR-->
-
-<table>
-	<tr><td><a name="SolvisMaxAttr"></a><b>Attribute</b></td></tr>
-	<tr><td>
-		<ul>
-				Die folgenden Modul-spezifischen Attribute k&ouml;nnen neben den bekannten globalen Attributen gesetzt werden wie
-				z.B.: <a href="#room">room</a>.<BR>
-		</ul>
-	</td></tr>
-</table>
-
-<ul><ul>
-	<table>
-		<tr>
-			<td>
-			<tr><td align="right" valign="top"><li><code>Average</code>: </li></td><td align="left" valign="top">
-				Hier wird festgelegt, &uuml;ber welche Anzahl von Messwerten die modifizierte Mittelwertbildung erfolgt.<BR>
-				Der Default-Wert ist 5.<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>Interval</code>: </li></td><td align="left" valign="top">
-				Ein g&uuml;ltiges Abfrageintervall f&uuml;r die sich st&auml;ndig ver&auml;ndernden dynamischen Werte des
-				SolvisMax-Moduls. Der Wert sollte >=10s sein, um FHEM gen&uuml;gend Zeit einzur&auml;umen eine volle Abfrage
-				auszuf&uuml;hren und auch noch &uuml;brige Aufgaben durchzuf&uuml;hren, bevor die n&auml;chste Abfrage startet.
-				Einen Anhaltspunkt, wie lange eine Abfrage dauert, ergibt sich aus der Summe der Werte "FhemTime" und
-				"HttpTime" der Internals, dabei gibt die "FhemTime" an, wie lange das Fhem durch das Modul bei jeder Abfrage
-				gebremst wird. Die "HttpTime" ist f&uuml;r Fhem nicht sichtbar. Das minimale Interval sollte deutlich dar&uuml;ber
-				liegen.<BR>
-				Der Default-Wert ist 30s.<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>Hidden</code>: </li></td><td align="left" valign="top">
-				Da meist keine Anlage voll ausgebaut ist, kann man mittels dieses Attributes die nicht ben&ouml;tigten Readings
-				verstecken. Dazu ist als Attributwert eine Liste mit den zu unterdr&uuml;ckenden Reading-Namen durch Leerzeichen
-				getrennt zu &uuml;bergeben<BR>
-				Der Default-Wert ist leer (keine Readings werden unterdr&uuml;ckt).<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>ButtonReleaseTime_ms</code>: </li></td><td align="left" valign="top">
-				Dieses Attribut bestimmt die Release-Zeit nach einem Tastendruck auf der Solvis-Console (Tag, Nacht, Stanby, bzw. Zeit).
-				Der Default-Wert ist 500 (ms). Bei Schwierigkeiten bei den Set-Befehlen "day", "night", "standby" bzw. "time"
-				sollte dieser Wert vergrößert werden<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>WaittimeAfterButtonRelease_ms</code>: </li></td><td align="left" valign="top">
-				Dieses Attribut bestimmt die Wartezeit nachdem die Taste auf der Solvis-Console "losgelassen" wurde.
-				Der Default-Wert ist 1000 (ms). Bei Schwierigkeiten bei den Set-Befehlen "day", "night", "standby" bzw. "time"
-				sollte dieser Wert vergrößert werden<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>PowerOn</code>: </li></td><td align="left" valign="top">
-				Dieses Attribut erm&ouml;glicht Sensor-spezifisch Events für einen bestimmten Zeitraum nach dem Power-On zu unterdr&uuml;cken.
-				Der Raumf&uuml;hler ben&oumltigt beispielsweise etwa 30 Minuten!, bis sich seine Temperatur nach einem PowerOn stabilisiert hat.
-				Die betroffenen Sensoren mit dem notwendigen Wert werden durch Komma getrennt in dieses Attribut geschrieben.<BR>
-				Die Syntax für einen einzelenn Sensor lautet: &lt;Sensorname&gt;:&lt;Zeit in Minuten&gt;<BR>
-				Beispiel: RF1.Raumfuehler_HK1:30,S10.Aussentemperatur:20,S02.Warmwassertemperatur:7,S12.Vorlauftemperatur_HK1:7<BR>
-			</td></tr>
-			<tr><td align="right" valign="top"><li><code>FirmwareLth2.21.02A</code>: </li></td><td align="left" valign="top">
-				Dieses Attribut kann auf TRUE gesetzt werden, wenn eine FIrmwareversion >= 2.21.02A verwendet wird. Dann erfolgt
-				ein zus&aumltzlicher Test über den Erfolg bzgl. des Dr&uumlckens eines Buttons. Der ist erst von dieser Version
-				an m&oumlglich da vorher immer das Dr&uumlcken eines Buttons eine Fehlermeldung erzeugte (War ein Bug von Solvis).
-			</td></tr>
-			
-			
-							  "WaittimeAfterButtonRelease_ms".
-
-			</td>
-		</tr>
-	</table>
-</ul></ul>
-	
-<!--ul><ul>
-	<table>
-		<tr>
-			<td>
-			<tr><td align="right" valign="top"><li><code>IntervalStatVal</code> : </li></td><td align="left" valign="top">Ein g&uuml;ltiges Abfrageintervall f&uuml;r die statischen Werte des KM200/KM50. Der Wert muss gr&ouml;&szlig;er gleich >=20s sein um dem Modul gen&uuml;gend Zeit einzur&auml;umen eine volle Abfrage auszuf&uuml;hren bevor die n&auml;chste Abfrage startet. <BR>
-																														  Der Default-Wert ist 3600s.<BR>
-																														  Der Wert "0" deaktiviert die wiederholte Abfrage der statischen Werte bis das fhem-System erneut gestartet wird oder die fhem.cfg neu geladen wird.<BR>
-			</td></tr>
-			</td>
-		</tr>
-	</table>
-</ul></ul>
-
-<ul><ul>
-	<table>
-		<tr>
-			<td>
-			<tr><td align="right" valign="top"><li><code>PollingTimeout</code> : </li></td><td align="left" valign="top">Ein g&uuml;ltiger Zeitwert um dem KM200/KM50 gen&uuml;gend Zeit zur Antwort einzelner Werte einzur&auml;umen. Normalerweise braucht dieser Wert nicht ver&auml;ndert werden, muss jedoch im Falle eines langsamen Netzwerks erh&ouml;ht werden<BR>
-																														 Der Default-Wert ist 5s.<BR>
-			</td></tr>
-			</td>
-		</tr>
-	</table>
-</ul></ul>
-
-<ul><ul>
-	<table>
-		<tr>
-			<td>
-			<tr><td align="right" valign="top"><li><code>ConsoleMessage</code> : </li></td><td align="left" valign="top">Ein g&uuml;ltiger Boolean Wert (0 oder 1) welcher die Aktivit&auml;ten und Fehlermeldungen des Modul in der Konsole ausgibt. "0" (Deaktiviert) or "1" (Aktiviert)<BR>
-																														 Der Default-Wert ist 0 (Deaktiviert).<BR>
-			</td></tr>			
-			</td>
-		</tr>
-	</table>
-</ul></ul>
-
-<ul><ul>
-	<table>
-		<tr>
-			<td>
-			<tr><td align="right" valign="top"><li><code>DoNotPoll</code> : </li></td><td align="left" valign="top">Eine durch Leerzeichen (Blank) getrennte Liste von Services welche von der Abfrage aufgrund irrelevanter Werte oder fhem - Abst&uuml;rzen ausgenommen werden sollen.<BR>
-																													Die Liste kann auch Hierarchien von services enthalten. Dies bedeutet, das alle Services unterhalb dieses Services ebenfalls gel&ouml;scht werden.<BR>
-																													Der Default Wert ist (empty) somit werden alle bekannten Services abgefragt.<BR>
-			</td></tr>			
-			</td>
-		</tr>
-	</table>
-</ul></ul>
-
-<ul><ul>
-	<table>
-		<tr>
-			<td>
-			<tr><td align="right" valign="top"><li><code>ReadBackDelay</code> : </li></td><td align="left" valign="top">Ein g&uuml;ltiger Zeitwert in Mllisekunden [ms] f&uuml;r die Pause zwischen schreiben und zur𣫬esen des Wertes durch den "set" - Befehl. Der Wert muss >=0ms sein.<BR>
-																												   Der  Default-Wert ist 100 = 100ms = 0,1s.<BR>
-			</td></tr>
-			</td>
-		</tr>
-	</table>
-</ul></ul-->
-
+  </table>
 </ul>
 =end html

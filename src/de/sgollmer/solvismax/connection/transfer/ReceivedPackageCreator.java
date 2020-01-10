@@ -38,6 +38,9 @@ public class ReceivedPackageCreator {
 			case CONNECT:
 				result = new ConnectPackage();
 				break;
+			case CONNECTED:
+				result = new ConnectedPackage();
+				break ;
 			case RECONNECT:
 				result = new ReconnectPackage();
 				break;
@@ -51,7 +54,10 @@ public class ReceivedPackageCreator {
 				result = new GetPackage();
 				break;
 			case SERVER_COMMAND:
-				result = new ServerCommand() ;
+				result = new ServerCommandPackage() ;
+				break ;
+			case TERMINATE:
+				result = new TerminatePackage();
 				break ;
 			default:
 				logger.error("Command <" + command.name() + "> not known");

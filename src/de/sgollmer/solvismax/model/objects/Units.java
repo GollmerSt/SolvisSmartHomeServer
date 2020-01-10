@@ -80,9 +80,11 @@ public class Units {
 		private final int defaultReadMeasurementsIntervall_ms;
 		private final int forcedUpdateIntervall_ms;
 		private final int bufferedIntervall_ms;
+		private final boolean delayAfterSwitchingOnEnable;
 
 		public Unit(String id, String url, String account, String password, int defaultAverageCount,
-				int defaultReadMeasurementsIntervall_ms, int forcedUpdateIntervall_ms, int bufferedIntervall_ms) {
+				int defaultReadMeasurementsIntervall_ms, int forcedUpdateIntervall_ms, int bufferedIntervall_ms,
+				boolean delayAfterSwitchingOn) {
 			this.id = id;
 			this.url = url;
 			this.account = account;
@@ -91,6 +93,7 @@ public class Units {
 			this.defaultReadMeasurementsIntervall_ms = defaultReadMeasurementsIntervall_ms;
 			this.forcedUpdateIntervall_ms = forcedUpdateIntervall_ms;
 			this.bufferedIntervall_ms = bufferedIntervall_ms;
+			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
 		}
 
 		public String getId() {
@@ -116,6 +119,7 @@ public class Units {
 			private int defaultReadMeasurementsIntervall_ms;
 			private int forcedUpdateIntervall_ms;
 			private int bufferedIntervall_ms;
+			private boolean delayAfterSwitchingOnEnable = false ;
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -135,18 +139,21 @@ public class Units {
 						break;
 					case "password":
 						this.password = value;
-						break ;
+						break;
 					case "defaultAverageCount":
 						this.defaultAverageCount = Integer.parseInt(value);
-						break ;
+						break;
 					case "defaultReadMeasurementsIntervall_ms":
 						this.defaultReadMeasurementsIntervall_ms = Integer.parseInt(value);
-						break ;
+						break;
 					case "forcedUpdateIntervall_ms":
 						this.forcedUpdateIntervall_ms = Integer.parseInt(value);
-						break ;
+						break;
 					case "bufferedIntervall_ms":
 						this.bufferedIntervall_ms = Integer.parseInt(value);
+						break;
+					case "delayAfterSwitchingOnEnable":
+						this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value) ;
 						break ;
 				}
 
@@ -155,7 +162,7 @@ public class Units {
 			@Override
 			public Unit create() throws XmlError, IOException {
 				return new Unit(id, url, account, password, defaultAverageCount, defaultReadMeasurementsIntervall_ms,
-						forcedUpdateIntervall_ms, bufferedIntervall_ms);
+						forcedUpdateIntervall_ms, bufferedIntervall_ms, delayAfterSwitchingOnEnable);
 			}
 
 			@Override
@@ -192,6 +199,10 @@ public class Units {
 
 		public int getBufferedIntervall_ms() {
 			return bufferedIntervall_ms;
+		}
+
+		public boolean isDelayAfterSwitchingOnEnable() {
+			return delayAfterSwitchingOnEnable;
 		}
 
 	}

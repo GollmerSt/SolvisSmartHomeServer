@@ -9,8 +9,6 @@ package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -201,6 +199,11 @@ public class StrategyMode implements Strategy {
 							"Learning of <" + modeI.getId() + "> not successfull (not unique), will be retried");
 					break;
 				}
+			}
+		}
+		if ( !successfull ) {
+			for ( Mode mode: this.getModes() ) {
+				solvis.getGrafics().remove(mode.getGrafic().getId()) ;
 			}
 		}
 		solvis.clearCurrentImage();

@@ -17,11 +17,12 @@ public class SolvisState extends Observable<SolvisState> {
 
 	private static final Logger logger = LogManager.getLogger(SolvisState.class);
 
-	private State state = State.POWER_OFF;
+	private State state = State.UNDEFINED;
 	private boolean error = false;
+	private long timeOfLastSwitchingOn = -1;
 
 	public enum State {
-		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, SOLVIS_DISCONNECTED, ERROR
+		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, SOLVIS_DISCONNECTED, ERROR, UNDEFINED
 	}
 
 	public void error(boolean error) {
@@ -51,6 +52,8 @@ public class SolvisState extends Observable<SolvisState> {
 	public State getState() {
 		if (error) {
 			return State.ERROR;
+		} else if ( this.state == State.UNDEFINED ){
+			return State.POWER_OFF ;
 		} else {
 			return state;
 		}
@@ -58,6 +61,13 @@ public class SolvisState extends Observable<SolvisState> {
 
 	private void setState(State state) {
 		if (this.state != state) {
+			if (state == State.SOLVIS_CONNECTED) {
+				switch (this.state) {
+					case POWER_OFF:
+					case REMOTE_CONNECTED:
+						this.timeOfLastSwitchingOn = System.currentTimeMillis();
+				}
+			}
 			this.state = state;
 			logger.info("Solvis state changed to <" + this.state.name() + ">.");
 			this.notify(this);
@@ -67,5 +77,10 @@ public class SolvisState extends Observable<SolvisState> {
 	public SolvisStatePackage getPackage() {
 		return new SolvisStatePackage(this.getState());
 	}
+
+	public long getTimeOfLastSwitchingOn() {
+		return timeOfLastSwitchingOn;
+	}
+
 
 }

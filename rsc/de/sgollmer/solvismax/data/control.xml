@@ -318,41 +318,41 @@
 				<tns:TopLeft X="145" Y="15" />
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
-		</tns:Screen>		<!-- WICHTIG: Vor Learning muss unbedingt Anlagenstatus Heizkreise ausgewählt 
+		</tns:Screen>		<!-- WICHTIG: Vor Learning muss unbedingt Anlagenstatus Warmwasser ausgewählt 
 			worden sein -->
 		<tns:Screen backId="Sonstiges 1" previousId="Sonstiges 1"
-			alternativePreviousId="Anlagenstatus WW" id="Anlagenstatus HK"
-			ignoreChanges="true">
-			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
-			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint
-				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="230" Y="120" />
-			</tns:AlternativeTouchPoint>
-			<tns:ScreenGrafic id="Anlagenstatus HK">
-				<tns:Field>
-					<tns:TopLeft X="96" Y="13" />
-					<tns:BottomRight X="125" Y="40" />
-				</tns:Field>
-			</tns:ScreenGrafic>
-		</tns:Screen>
-		<tns:Screen backId="Sonstiges 1"
-			previousId="Anlagenstatus HK" alternativePreviousId="Sonstiges 1"
+			alternativePreviousId="Anlagenstatus HK"
 			id="Anlagenstatus WW" ignoreChanges="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="230" Y="120" />
+				<tns:Coordinate X="220" Y="85" />
 			</tns:TouchPoint>
 			<tns:AlternativeTouchPoint
 				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
+				<tns:Coordinate X="230" Y="120" />
 			</tns:AlternativeTouchPoint>
 			<tns:ScreenGrafic id="Anlagenstatus WW">
 				<tns:Field>
 					<tns:TopLeft X="120" Y="75" />
 					<tns:BottomRight X="150" Y="105" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen backId="Sonstiges 1" previousId="Anlagenstatus WW"
+			alternativePreviousId="Sonstiges 1" id="Anlagenstatus HK"
+			ignoreChanges="true">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="230" Y="120" />
+			</tns:TouchPoint>
+			<tns:AlternativeTouchPoint
+				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="85" />
+			</tns:AlternativeTouchPoint>
+			<tns:ScreenGrafic id="Anlagenstatus HK">
+				<tns:Field>
+					<tns:TopLeft X="96" Y="13" />
+					<tns:BottomRight X="125" Y="40" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
@@ -647,7 +647,7 @@
 		<tns:ChannelDescription
 			id="S01.Warmwasserpuffer" buffered="true">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true" unit="°C" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="14" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -661,14 +661,14 @@
 		<tns:ChannelDescription
 			id="S03.Speicherreferenztemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true" unit="°C" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="22" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S04.Heizungspuffertemperatur_oben" buffered="true">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+	divisor="10" dynamic="true" unit="°C" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="26" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -703,14 +703,15 @@
 		<tns:ChannelDescription
 			id="S09.Heizungspuffertemperatur_unten" buffered="true">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true" unit="°C" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="46" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S10.Aussentemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true" unit="°C"
+				delayAfterSwitchingOn_ms="900000">
 				<tns:Field position="50" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -805,7 +806,8 @@
 		<tns:ChannelDescription
 			id="RF1.Raumfuehler_HK1" buffered="true">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true" unit="°C"
+				delayAfterSwitchingOn_ms="1500000">
 				<tns:Field position="106" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1226,7 +1228,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C09.TemperaturFeineinstellung">
+			id="C09.TemperaturFeineinstellung_HK1">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="07"
 					compareMask="01" />

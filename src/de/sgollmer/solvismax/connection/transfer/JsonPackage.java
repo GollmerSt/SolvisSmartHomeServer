@@ -23,10 +23,10 @@ public class JsonPackage {
 
 	public JsonPackage() {
 	}
-	
-	public JsonPackage( Command command, Frame frame ) {
-		this.command = command  ;
-		this.data = frame ;
+
+	public JsonPackage(Command command, Frame frame) {
+		this.command = command;
+		this.data = frame;
 	}
 
 	public Frame getFrame() {
@@ -74,7 +74,11 @@ public class JsonPackage {
 		if (receivedFrame.size() > 0) {
 			Element e = receivedFrame.get(0);
 			this.command = Command.valueOf(e.name);
-			this.data = (Frame) e.value;
+			if (e.value instanceof SingleValue) {
+				this.data = null;
+			} else {
+				this.data = (Frame) e.value;
+			}
 		}
 	}
 

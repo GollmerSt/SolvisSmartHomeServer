@@ -9,11 +9,25 @@ package de.sgollmer.solvismax.connection.transfer;
 
 public class ConnectPackage extends JsonPackage {
 
+	private String id = null;
+
 	public ConnectPackage() {
 		this.command = Command.CONNECT;
 	}
 
-	private String id = null;
+	public ConnectPackage(String id) {
+		this.id = id;
+		this.command = Command.CONNECT;
+		this.data = new Frame();
+		Element element = new Element();
+		this.data.add(element);
+		element.name = "Id";
+		if (id == null) {
+			element.value = null;
+		} else {
+			element.value = new SingleValue(id);
+		}
+	}
 
 	@Override
 	public void finish() {
@@ -22,7 +36,12 @@ public class ConnectPackage extends JsonPackage {
 			String id = e.name;
 			if (e.value instanceof SingleValue) {
 				SingleValue sv = (SingleValue) e.value;
-				String value = sv.getData().toString();
+				String value;
+				if (sv.getData() == null) {
+					value = null;
+				} else {
+					value = sv.getData().toString();
+				}
 				switch (id) {
 					case "Id":
 						this.id = value;

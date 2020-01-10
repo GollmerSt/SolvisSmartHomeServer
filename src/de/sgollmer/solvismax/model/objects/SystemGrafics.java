@@ -48,6 +48,10 @@ public class SystemGrafics implements XmlWriteable {
 		return this.graficDatas.get(id);
 	}
 
+	public ScreenGraficData remove(String id) {
+		return this.graficDatas.remove(id);
+	}
+
 	public void put(String id, MyImage image) {
 		ScreenGraficData data = new ScreenGraficData(id, image);
 		this.graficDatas.put(id, data);

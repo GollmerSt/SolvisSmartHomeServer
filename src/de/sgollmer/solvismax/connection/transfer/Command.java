@@ -63,5 +63,9 @@ public enum Command {
 	/**
 	 * Client: Startet bestimmte Server-Befehle (Backup etc.)
 	 */
-	SERVER_COMMAND
+	SERVER_COMMAND,
+	/**
+	 * Terminates the server
+	 */
+	TERMINATE
 }

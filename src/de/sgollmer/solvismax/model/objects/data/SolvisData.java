@@ -21,7 +21,7 @@ import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 
-public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, ObserverI< SolvisState> {
+public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, ObserverI<SolvisState> {
 
 	private static final Logger logger = LogManager.getLogger(SolvisData.class);
 
@@ -30,7 +30,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	private final Average average;
 
-	private SingleData<?> data;
+	private SingleData<?> data = null;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
@@ -69,7 +69,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof SolvisData) {
-			return data.equals(((SolvisData) obj).data);
+			return ((SolvisData) obj).data.equals(this.data);
 		} else {
 			return false;
 		}
@@ -77,7 +77,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	@Override
 	public int hashCode() {
-		return this.data.hashCode();
+		if (this.data == null) {
+			return 103;
+		} else {
+			return this.data.hashCode();
+		}
 	}
 
 	public String getId() {
@@ -89,13 +93,18 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	private void setData(SingleData<?> data, Object source) {
+		
+		if ( data == null ) {
+			this.data = null ;
+			return ;
+		}
 
 		if (this.description.isAverage()) {
 			this.average.add(data);
 			data = this.average.getAverage(data);
 		}
 
-		if (!data.equals(this.data)) {
+		if ( data != null && !data.equals(this.data)) {
 			this.data = data;
 			this.notify(this, source);
 			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
@@ -210,10 +219,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	@Override
 	public void update(SolvisState data, Object source) {
-		if ( data.getState() == SolvisState.State.POWER_OFF && this.average != null ) { 
-			this.average.clear() ;
+		if (data.getState() == SolvisState.State.POWER_OFF && this.average != null) {
+			this.average.clear();
 		}
-		
+
 	}
 
 }

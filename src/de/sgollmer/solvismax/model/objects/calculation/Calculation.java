@@ -41,7 +41,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) {
+	public boolean getValue(SolvisData dest, Solvis solvis, int timeAfterLastSwitchingOn) {
 		return this.strategy.getValue(dest, solvis);
 	}
 

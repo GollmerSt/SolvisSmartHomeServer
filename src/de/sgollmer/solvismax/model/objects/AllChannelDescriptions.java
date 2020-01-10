@@ -117,12 +117,13 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 
 	public void measure(Solvis solvis, AllSolvisData datas) throws IOException, ErrorPowerOn {
 		solvis.clearMeasuredData();
-		solvis.getMeasureData() ;
+		solvis.getMeasureData();
 		solvis.getDistributor().setBurstUpdate(true);
+		int timeAfterLastSwitchingOn = solvis.getTimeAfterLastSwitchingOn();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
-			if (description != null &&description.getType() == ChannelSourceI.Type.MEASUREMENT) {
-				description.getValue(solvis);
+			if (description != null && description.getType() == ChannelSourceI.Type.MEASUREMENT) {
+				description.getValue(solvis, timeAfterLastSwitchingOn);
 			}
 		}
 		solvis.getDistributor().setBurstUpdate(false);
@@ -135,7 +136,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 			if (description != null) {
 				SolvisData data = datas.get(description);
 				if (description.isAverage()) {
-					solvis.getSolvisState().register( data) ;
+					solvis.getSolvisState().register(data);
 				}
 			}
 		}

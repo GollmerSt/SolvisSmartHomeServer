@@ -30,7 +30,7 @@ import de.sgollmer.solvismax.connection.transfer.DisconnectPackage;
 import de.sgollmer.solvismax.connection.transfer.GetPackage;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReconnectPackage;
-import de.sgollmer.solvismax.connection.transfer.ServerCommand;
+import de.sgollmer.solvismax.connection.transfer.ServerCommandPackage;
 import de.sgollmer.solvismax.connection.transfer.SetPackage;
 import de.sgollmer.solvismax.error.JsonError;
 import de.sgollmer.solvismax.error.LearningError;
@@ -83,7 +83,12 @@ public class CommandHandler {
 				this.set((SetPackage) jsonPackage, client);
 				break;
 			case SERVER_COMMAND:
-				this.executSeverCommand((ServerCommand) jsonPackage, client);
+				this.executSeverCommand((ServerCommandPackage) jsonPackage, client);
+				break;
+			case TERMINATE:
+				if (this.get(client) == null) {
+					System.exit(0);
+				}
 				break;
 			default:
 				logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
@@ -92,7 +97,7 @@ public class CommandHandler {
 		return abortConnection;
 	}
 
-	private void executSeverCommand(ServerCommand serverCommand, Client client) throws IOException {
+	private void executSeverCommand(ServerCommandPackage serverCommand, Client client) throws IOException {
 		ClientAssignments assignments = this.get(client);
 		switch (serverCommand.getServerCommand()) {
 			case BACKUP:
@@ -135,33 +140,37 @@ public class CommandHandler {
 
 	private boolean connect(ConnectPackage jsonPackage, Client client) {
 		int clientId = this.getNewClientId();
-		Solvis solvis = null;
-		try {
-			solvis = this.instances.getInstance(jsonPackage);
-		} catch (IOException | XmlError | XMLStreamException | LearningError e1) {
-			client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE,
-					"Solvis not connected: " + e1.getMessage()).createJsonPackage());
-			client.closeDelayed();
-			return true;
-		}
-		if (solvis == null) {
-			client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE, "Solvis id unknown")
-					.createJsonPackage());
-			client.closeDelayed();
-			return true;
-		}
-		solvis.getDistributor().register(client);
-		client.send(new ConnectedPackage(clientId));
-		ClientAssignments assignments = new ClientAssignments(clientId, solvis, client);
-		this.register(assignments);
-		this.clients.add(assignments);
+		if (jsonPackage.getId() != null) {
+			Solvis solvis = null;
+			try {
+				solvis = this.instances.getInstance(jsonPackage);
+			} catch (IOException | XmlError | XMLStreamException | LearningError e1) {
+				client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE,
+						"Solvis not connected: " + e1.getMessage()).createJsonPackage());
+				client.closeDelayed();
+				return true;
+			}
+			if (solvis == null) {
+				client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE, "Solvis id unknown")
+						.createJsonPackage());
+				client.closeDelayed();
+				return true;
+			}
+			solvis.getDistributor().register(client);
+			client.send(new ConnectedPackage(clientId));
+			ClientAssignments assignments = new ClientAssignments(clientId, solvis, client);
+			this.register(assignments);
+			this.clients.add(assignments);
 
-		ChannelDescriptionsPackage channelDescription = new ChannelDescriptionsPackage(
-				this.instances.getSolvisDescription().getChannelDescriptions(), solvis.getConfigurationMask());
-		client.send(channelDescription);
+			ChannelDescriptionsPackage channelDescription = new ChannelDescriptionsPackage(
+					this.instances.getSolvisDescription().getChannelDescriptions(), solvis.getConfigurationMask());
+			client.send(channelDescription);
 
-		client.send(solvis.getAllSolvisData().getMeasurementsPackage());
-		client.send(solvis.getSolvisState().getPackage());
+			client.send(solvis.getAllSolvisData().getMeasurementsPackage());
+			client.send(solvis.getSolvisState().getPackage());
+		} else {
+			client.send(new ConnectedPackage(clientId));
+		}
 		return false;
 	}
 

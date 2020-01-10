@@ -12,7 +12,18 @@ import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 
 public class ConnectedPackage extends JsonPackage {
 
+	private int clientId;
+
+	public int getClientId() {
+		return clientId;
+	}
+	
+	public ConnectedPackage() {
+	}
+
+
 	public ConnectedPackage(int clientId) {
+		this.clientId = clientId;
 		this.command = Command.CONNECTED;
 		this.data = new Frame();
 		Element element = new Element();
@@ -28,4 +39,20 @@ public class ConnectedPackage extends JsonPackage {
 		element.name = "FormatVersion";
 		element.value = new SingleValue(Version.getInstance().getFormatVersion());
 	}
+
+	@Override
+	public void finish() {
+		Frame frame = this.data;
+		for (Element e : frame.elements) {
+			String id = e.name;
+			if (id.equals("ClientId")) {
+				if (e.value instanceof SingleValue) {
+					SingleValue sv = (SingleValue) e.value;
+					this.clientId = sv.getData().getInt();
+				}
+			}
+		}
+		this.data = null;
+	}
+
 }

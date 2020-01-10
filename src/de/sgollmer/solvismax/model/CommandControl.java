@@ -62,7 +62,7 @@ public class CommandControl implements CommandI {
 		boolean success = false;
 		SolvisData data = solvis.getAllSolvisData().get(description);
 		if (this.getSetValue() == null) {
-			success = this.getDescription().getValue(solvis);
+			success = this.getDescription().getValue(solvis, solvis.getTimeAfterLastSwitchingOn());
 		} else {
 			SolvisData clone = data.clone();
 			clone.setSingleData(this.getSetValue());

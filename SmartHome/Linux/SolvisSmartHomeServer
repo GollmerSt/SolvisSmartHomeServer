@@ -1,0 +1,25 @@
+#! /bin/sh
+test -f /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar || exit 0
+javaPath="/usr/bin/java"
+serverJarPath="/opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar"
+writeablePath="/media/data/fhem/SolvisXml"
+case "$1" in
+    start)
+        echo "Starte SolvisSmartHome-Server"
+        $javaPath -jar $serverJarPath
+        ;;
+    stop)
+        echo "Stoppe SolvisSmartHome-Server"
+        $javaPath -jar $serverJarPath --server-terminate
+        ;;
+    restart)
+        echo "Restart SolvisSmartHome-Server"
+        $javaPath -jar $serverJarPath --server-terminate
+        $javaPath -jar $serverJarPath
+        ;;
+    *)
+        echo "usage:  MATH
+ $0 start | stop | restart"
+        exit 1
+        ;;
+esac$

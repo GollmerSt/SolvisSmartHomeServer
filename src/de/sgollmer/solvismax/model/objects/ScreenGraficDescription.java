@@ -147,8 +147,11 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 
 		if (grafic != null) {
 			if (!grafic.getImage().equals(image)) {
-				logger.log(LEARN, "The screen grafic <" + this.getId() + "> was learned again,"
-						+ " but didn't match with the previous. The contol file must be checked.");
+				String error = "Error: The screen grafic <" + this.getId() + "> was tried to learn again,"
+						+ " but didn't match with the previous. Program terminated.";
+				logger.log(LEARN, error);
+				System.err.println(error);
+				System.exit(41);
 			}
 		} else {
 			solvis.getGrafics().put(this.id, image);

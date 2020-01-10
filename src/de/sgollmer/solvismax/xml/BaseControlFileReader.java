@@ -14,63 +14,22 @@ import java.io.InputStream;
 
 import javax.xml.stream.XMLStreamException;
 
-import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.FileError;
+import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
-import de.sgollmer.solvismax.model.BaseData;
 
 public class BaseControlFileReader {
 
 	private static final String NAME_XML_BASEFILE = "base.xml";
-	private static final String NAME_XSD_BASEFILE = "base.xsd";
 	private static final String XML_ROOT_ID = "BaseData";
 
-	private final File parent;
+	private final File parent ;
 
-	public BaseControlFileReader(String pathName) {
-		File parent;
-
-		if (pathName == null) {
-			pathName = System.getProperty("user.home");
-			if (System.getProperty("os.name").startsWith("Windows")) {
-				pathName = System.getenv("APPDATA");
-			}
-
-		}
-
-		pathName += File.separator + Constants.RESOURCE_DESTINATION_PATH;
-		parent = new File(pathName);
-		this.parent = parent;
-	}
-
-	private void copyFiles() throws IOException {
-
-		boolean success = true;
-
-		if (!parent.exists()) {
-			success = parent.mkdir();
-		}
-
-		if (!success) {
-			throw new FileError("Error on creating directory <" + parent.getAbsolutePath() + ">");
-		}
-
-		File xml = new File(this.parent, NAME_XML_BASEFILE);
-
-		if (!xml.exists() || Constants.DEBUG) {
-			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XML_BASEFILE, xml);
-		}
-
-		File xsd = new File(this.parent, NAME_XSD_BASEFILE);
-
-		FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XSD_BASEFILE, xsd);
-
+	public BaseControlFileReader() {
+		parent = FileHelper.getJarDir(BaseControlFileReader.class);
 	}
 
 	public XmlStreamReader.Result<BaseData> read() throws IOException, XmlError, XMLStreamException {
-
-		this.copyFiles();
 
 		File xml = new File(this.parent, NAME_XML_BASEFILE);
 
@@ -85,7 +44,7 @@ public class BaseControlFileReader {
 
 	public static void main(String[] args) throws IOException, XmlError, XMLStreamException {
 
-		BaseControlFileReader reader = new BaseControlFileReader(null);
+		BaseControlFileReader reader = new BaseControlFileReader();
 		reader.read();
 	}
 

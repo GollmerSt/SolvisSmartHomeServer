@@ -16,7 +16,7 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public interface ChannelSourceI extends Assigner, GraficsLearnable {
 
-	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException;
+	public boolean getValue(SolvisData dest, Solvis solvis, int timeAfterLastSwitchingOn) throws IOException;
 
 	public boolean setValue(Solvis solvis, SolvisData value) throws IOException;
 

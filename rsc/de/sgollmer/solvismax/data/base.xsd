@@ -35,11 +35,11 @@
 			</documentation>
 		</annotation>
 		<sequence>
-			<element name="Units" type="tns:Units" maxOccurs="unbounded"
+            <element name="ExecutionData" type="tns:ExecutionData" maxOccurs="1" minOccurs="1"></element>
+            <element name="Units" type="tns:Units" maxOccurs="unbounded"
 				minOccurs="0">
 			</element>
 		</sequence>
-		<attribute name="timeZone" type="string" use="required"></attribute>
 	</complexType>
 
 	<element name="BaseData" type="tns:BaseData"></element>
@@ -96,12 +96,26 @@
 		<attribute name="defaultAverageCount" type="int"
 			use="required">
 		</attribute>
-		<attribute name="defaultReadMeasurementsIntervall_ms"
-			type="int" use="required">
+		<attribute name="defaultReadMeasurementsIntervall_ms" type="int"
+			use="required">
 		</attribute>
 		<attribute name="forcedUpdateIntervall_ms" type="int"
-			use="required"></attribute>
+			use="required">
+		</attribute>
 		<attribute name="bufferedIntervall_ms" type="int"
-			use="required"></attribute>
+			use="required">
+		</attribute>
+		<attribute name="delayAfterSwitchingOnEnable" type="boolean" use="required"></attribute>
+	</complexType>
+
+	<complexType name="ExecutionData">
+		<attribute name="timeZone" type="string" use="required"></attribute>
+        <attribute name="port" type="int" use="required"></attribute>
+        <attribute name="writeablePathWindows" type="string"
+			use="optional">
+		</attribute>
+		<attribute name="writablePathLinux" type="string"
+			use="optional">
+		</attribute>
 	</complexType>
 </schema>

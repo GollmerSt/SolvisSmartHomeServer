@@ -19,15 +19,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.error.XmlError;
 
 public class XmlStreamReader<D> {
-
-	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(XmlStreamReader.class);
 
 	public static class Result<T> {
 		private final T tree;

@@ -82,7 +82,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException, TerminationException {
+	public boolean getValue(SolvisData destin, Solvis solvis, int timeAfterLastSwitchingOn)
+			throws IOException, TerminationException {
 		solvis.gotoScreen(screen.get(solvis.getConfigurationMask()));
 		if (!this.prepare(solvis)) {
 			return false;
@@ -105,7 +106,7 @@ public class Control extends ChannelSource {
 		boolean set = false;
 		for (int c = 0; c < Constants.SET_REPEATS + 1 && !set; ++c) {
 			set = this.strategy.setValue(solvis, this.valueRectangle, value);
-			if ( !set && c == 1) {
+			if (!set && c == 1) {
 				logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
 						+ " failed, set will be tried again.");
 			}

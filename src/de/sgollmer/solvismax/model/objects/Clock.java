@@ -399,7 +399,7 @@ public class Clock implements Assigner, GraficsLearnable {
 			}
 
 			int diff = (int) Math.abs(solvisDate.getTimeInMillis() - now);
-			if (diff > Constants.MIN_TIME_ERROR_ADJUSTMENT_S) {
+			if (diff > 30000) {
 				this.timeAdjustmentRequestPending = true;
 				this.adjustmentThread.trigger(calculateNextAdjustTime(solvisDate, solvis));
 			}

@@ -74,8 +74,11 @@ public class Average implements Cloneable {
 	}
 
 	SingleData<?> getAverage(SingleData<?> singleData) {
-
-		return singleData.create(average);
+		if (this.maxCount > this.size) {
+			return null;
+		} else {
+			return singleData.create(average);
+		}
 	}
 
 	private void put(int value) {

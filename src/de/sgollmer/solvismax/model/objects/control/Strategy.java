@@ -8,7 +8,6 @@
 package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import de.sgollmer.solvismax.error.TerminationException;

@@ -79,6 +79,7 @@ public class Solvis {
 	private final MeasurementUpdateThread measurementUpdateThread;
 	private final Observable<Boolean> abortObservable = new Observable<>();
 	private final String timeZone;
+	private final boolean delayAfterSwitchingOnEnable ;
 
 	public Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone) {
@@ -97,6 +98,7 @@ public class Solvis {
 		this.distributor = new Distributor(unit.getBufferedIntervall_ms());
 		this.measurementUpdateThread = new MeasurementUpdateThread(unit.getForcedUpdateIntervall_ms());
 		this.timeZone = timeZone;
+		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable() ;
 	}
 
 	private Observer.Observable<Boolean> screenChangedByUserObserable = new Observable<>();
@@ -277,11 +279,6 @@ public class Solvis {
 
 	public void execute(CommandI command) {
 		this.worker.push(command);
-	}
-
-	public boolean getValue(ChannelDescription description) throws IOException, ErrorPowerOn, TerminationException {
-		SolvisData data = this.allSolvisData.get(description);
-		return description.getValue(data, this);
 	}
 
 	public ChannelDescription getChannelDescription(String description) {
@@ -507,4 +504,16 @@ public class Solvis {
 		}
 		return configurationMask ;
 	}
+	
+	public int getTimeAfterLastSwitchingOn() {
+		long time = System.currentTimeMillis();
+		long timeOfLastSwitchingOn = this.solvisState.getTimeOfLastSwitchingOn() ;
+		if (timeOfLastSwitchingOn > 0 && this.delayAfterSwitchingOnEnable ) {
+			return (int) (time - timeOfLastSwitchingOn);
+		} else {
+			return 0x7fffffff;
+		}
+
+	}
+
 }

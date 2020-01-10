@@ -13,6 +13,7 @@ import java.util.Collection;
 
 import javax.xml.stream.XMLStreamException;
 
+import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.error.LearningError;
@@ -22,7 +23,6 @@ import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
-import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.solvismax.xml.ControlFileReader;
 import de.sgollmer.solvismax.xml.GraficFileHandler;
 import de.sgollmer.solvismax.xml.XmlStreamReader.Result;
@@ -36,9 +36,9 @@ public class Instances {
 	private final int xmlHash;
 	private final String writeablePath;
 
-	public Instances(String writeablePath) throws IOException, XmlError, XMLStreamException, LearningError {
-		this.writeablePath = writeablePath;
-		this.baseData = new BaseControlFileReader(writeablePath).read().getTree();
+	public Instances(BaseData baseData) throws IOException, XmlError, XMLStreamException, LearningError {
+		this.baseData = baseData;
+		this.writeablePath = baseData.getWritablePath();
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
 		Result<SolvisDescription> result = reader.read();
 		this.solvisDescription = result.getTree();

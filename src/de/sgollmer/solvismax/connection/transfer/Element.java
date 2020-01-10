@@ -17,7 +17,11 @@ public class Element {
 		builder.append('"');
 		builder.append(this.name);
 		builder.append("\":");
-		value.addTo(builder);
+		if (value == null) {
+			builder.append("null");
+		} else {
+			value.addTo(builder);
+		}
 	}
 
 	public int from(String json, int position) throws JsonError {
@@ -39,7 +43,7 @@ public class Element {
 			if (Helper.charAt(json, end - 1) == '\\') {
 				position = end + 1;
 			} else {
-				endFound = true ;
+				endFound = true;
 			}
 		}
 		this.name = json.substring(position, end);

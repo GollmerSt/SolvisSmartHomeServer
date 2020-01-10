@@ -502,16 +502,19 @@ Er besteht aus folgenden zeichen:
 
 
 	<complexType name="Measurement">
-        <annotation>
-        	<documentation>Definition  für das Auslesen eines Solvis-Datums aus dem Solvis-XML Hex-String.
-Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
-        </annotation>
-        <sequence>
-        	<element name="Field" maxOccurs="unbounded" minOccurs="1"
-        		type="tns:Field">
-        	</element>
-        </sequence>
-        <attribute name="type" use="required">
+		<annotation>
+			<documentation>
+				Definition für das Auslesen eines Solvis-Datums aus dem
+				Solvis-XML Hex-String. Auslesbar über
+				http://192.168.1.40/sc2_val.xml.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="Field" maxOccurs="unbounded" minOccurs="1"
+				type="tns:Field">
+			</element>
+		</sequence>
+		<attribute name="type" use="required">
 			<annotation>
 				<documentation>Art der Umwandlung</documentation>
 			</annotation>
@@ -540,7 +543,8 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 		<attribute name="dynamic" type="boolean">
 			<annotation>
 				<documentation>
-					False: wenn nur einmalig gelesen True: wenn zyklisch gelesen
+					False: wenn nur einmalig gelesen True: wenn zyklisch
+					gelesen
 				</documentation>
 			</annotation>
 		</attribute>
@@ -549,6 +553,10 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 				<documentation>Einheit</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="delayAfterSwitchingOn_ms" type="int" use="optional">
+			<annotation>
+				<documentation>Einige  Sensoren der Solvis-Anlage benötigen nach dem Einschalten eine gewise Zeit, bis sie die richtigen Messwerte anzeigen. Mir dem Setzen dieses Wertes wird bewirkt, dass die Weitergabe der Messergebnisse dieses Sensors erst spätererfolgt.</documentation>
+			</annotation></attribute>
 	</complexType>
 
 
