@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
 import de.sgollmer.solvismax.connection.TerminateClient;
-import de.sgollmer.solvismax.connection.transfer.TerminatePackage;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -43,6 +42,18 @@ public class Main {
 			System.exit(40);
 		}
 
+		String path = baseData.getWritablePath();
+
+		try {
+			Logger2.createInstance(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Log4j couldn't initalized");
+		}
+
+		final Logger logger = LogManager.getLogger(Main.class);
+		boolean learn = false ;
+
 		for (String arg : args) {
 			Matcher matcher = cmdPattern.matcher(arg);
 			if (!matcher.matches()) {
@@ -62,7 +73,10 @@ public class Main {
 							e.printStackTrace();
 							System.err.println("Terminate not successfull.");
 						}
-						System.exit(0); ;
+						System.exit(0);
+						break;
+					case "server-learn":
+						learn = true ;;
 						break;
 					default:
 						System.err.println("Unknowwn argument: " + arg);
@@ -71,17 +85,6 @@ public class Main {
 			}
 		}
 
-
-		String path = baseData.getWritablePath();
-
-		try {
-			Logger2.createInstance(path);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println("Log4j couldn't initalized");
-		}
-
-		final Logger logger = LogManager.getLogger(Main.class);
 
 		ServerSocket serverSocket = null;
 
@@ -103,6 +106,11 @@ public class Main {
 		} finally {
 
 		}
+		
+		if ( learn) {
+			System.exit(0); ;
+		}
+		
 
 		final Instances instances = tempInstances;
 		final CommandHandler commandHandler = new CommandHandler(instances);

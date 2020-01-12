@@ -21,7 +21,13 @@ public class TerminateClient {
 	}
 
 	public boolean connectAndTerminateOtherServer() throws UnknownHostException, IOException {
-		Socket socket = new Socket("localhost", port);
+		Socket socket = null;
+		try {
+			socket = new Socket("localhost", port);
+		} catch (IOException e) {
+			System.out.println("Server not startetd");
+			System.exit(0);
+		}
 
 		ConnectPackage connectPackage = new ConnectPackage(null);
 
@@ -38,7 +44,7 @@ public class TerminateClient {
 			return false;
 		}
 
-		//int clientId = ((ConnectedPackage) jsonPackage).getClientId();
+		// int clientId = ((ConnectedPackage) jsonPackage).getClientId();
 
 		TerminatePackage terminatePackage = new TerminatePackage();
 
