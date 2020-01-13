@@ -13,64 +13,7 @@ Offene Aufgaben:
 
 7. Befehle vom Client aus, um den Server zu beenden oder auch neu zu starten
 
-14. Learning-Error aufgetreten, kommt nicht raus:
 
-	a020-01-09 21:00:41,861|LEARN|Screen grafic <Zeiteinstellung_mm> learned.
-	2020-01-09 21:00:57,261|LEARN|Screen grafic <ModeTag> learned.
-	2020-01-09 21:00:59,912|LEARN|Screen grafic <ModeNacht> learned.
-	2020-01-09 21:01:02,432|LEARN|Screen grafic <ModeStandby> learned.
-	2020-01-09 21:01:02,477|LEARN|Learning of <Standby> not successfull, will be retried
-	2020-01-09 21:01:02,479|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	2020-01-09 21:01:10,179|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
-	2020-01-09 21:01:10,270|LEARN|Learning of <Standby> not successfull, will be retried
-	2020-01-09 21:01:10,271|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	2020-01-09 21:01:17,875|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
-	2020-01-09 21:01:17,920|LEARN|Learning of <Standby> not successfull, will be retried
-	2020-01-09 21:01:17,920|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	2020-01-09 21:01:20,430|LEARN|The screen grafic <ModeTag> was learned again, but didn't match with the previous. The contol file must be checked.
-	2020-01-09 21:01:20,473|LEARN|Learning of <Tag> not successfull, will be retried
-	2020-01-09 21:01:20,474|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	2020-01-09 21:01:22,941|LEARN|The screen grafic <ModeTag> was learned again, but didn't match with the previous. The contol file must be checked.
-	2020-01-09 21:01:22,984|LEARN|Learning of <Tag> not successfull, will be retried
-	2020-01-09 21:01:22,985|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	2020-01-09 21:01:30,478|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
-	2020-01-09 21:01:30,522|LEARN|Learning of <Standby> not successfull, will be retried
-	2020-01-09 21:01:30,522|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	2020-01-09 21:01:38,022|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
-	2020-01-09 21:01:38,066|LEARN|Learning of <Standby> not successfull, will be retried
-	2020-01-09 21:01:38,067|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	ps -ef | grep java
-	stefan    1420     1  6 20:57 pts/1    00:00:15 java -jar SolvisSmartHomeServer.jar --server-path=/media/data/fhem
-	stefan    1461 29149  0 21:01 pts/1    00:00:00 grep --color=auto java
-	stefan@Rp3Fhem:~ $ 2020-01-09 21:01:45,782|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
-	2020-01-09 21:01:45,825|LEARN|Learning of <Standby> not successfull, will be retried
-	2020-01-09 21:01:45,826|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	kill 2020-01-09 21:01:53,423|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
-	2020-01-09 21:01:53,468|LEARN|Learning of <Standby> not successfull, will be retried
-	2020-01-09 21:01:53,468|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	2020-01-09 21:01:55,936|LEARN|The screen grafic <ModeTag> was learned again, but didn't match with the previous. The contol file must be checked.
-	2020-01-09 21:01:55,979|LEARN|Learning of <Tag> not successfull, will be retried
-	2020-01-09 21:01:55,980|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
-	2020-01-09 21:01:55,980|ERROR|Learning of <C06.Anlagenmodus_HK1> not possible, rekjected. Check the Xml!
-	de.sgollmer.solvismax.error.LearningError: Learning of <C06.Anlagenmodus_HK1> not possible, rekjected. Check the Xml!
-	        at de.sgollmer.solvismax.model.objects.control.Control.learn(Control.java:275)
-	        at de.sgollmer.solvismax.model.objects.ChannelDescription.learn(ChannelDescription.java:176)
-	        at de.sgollmer.solvismax.model.objects.AllChannelDescriptions.learn(AllChannelDescriptions.java:113)
-	        at de.sgollmer.solvismax.model.Solvis.learning(Solvis.java:363)
-	        at de.sgollmer.solvismax.model.Instances.createSolvisInstance(Instances.java:76)
-	        at de.sgollmer.solvismax.model.Instances.<init>(Instances.java:51)
-	        at de.sgollmer.solvismax.Main.main(Main.java:81)
-	2020-01-09 21:01:55,981|ERROR|Exception on reading configuration or learning files occured, cause:
-	de.sgollmer.solvismax.error.LearningError: Learning of <C06.Anlagenmodus_HK1> not possible, rekjected. Check the Xml!
-	        at de.sgollmer.solvismax.model.objects.control.Control.learn(Control.java:275) ~[SolvisSmartHomeServer.jar:?]
-	        at de.sgollmer.solvismax.model.objects.ChannelDescription.learn(ChannelDescription.java:176) ~[SolvisSmartHomeServer.jar:?]
-	        at de.sgollmer.solvismax.model.objects.AllChannelDescriptions.learn(AllChannelDescriptions.java:113) ~[SolvisSmartHomeServer.jar:?]
-	        at de.sgollmer.solvismax.model.Solvis.learning(Solvis.java:363) ~[SolvisSmartHomeServer.jar:?]
-	        at de.sgollmer.solvismax.model.Instances.createSolvisInstance(Instances.java:76) ~[SolvisSmartHomeServer.jar:?]
-	        at de.sgollmer.solvismax.model.Instances.<init>(Instances.java:51) ~[SolvisSmartHomeServer.jar:?]
-	        at de.sgollmer.solvismax.Main.main(Main.java:81) [SolvisSmartHomeServer.jar:?]
-	^C
-	
 
 
 Erledigt:
@@ -149,3 +92,62 @@ Erledigt:
         at de.sgollmer.solvismax.Main$1.run(Main.java:102)
         at java.base/java.lang.Thread.run(Thread.java:844)
  
+ 
+ 14. Learning-Error aufgetreten, kommt nicht raus:
+
+	a020-01-09 21:00:41,861|LEARN|Screen grafic <Zeiteinstellung_mm> learned.
+	2020-01-09 21:00:57,261|LEARN|Screen grafic <ModeTag> learned.
+	2020-01-09 21:00:59,912|LEARN|Screen grafic <ModeNacht> learned.
+	2020-01-09 21:01:02,432|LEARN|Screen grafic <ModeStandby> learned.
+	2020-01-09 21:01:02,477|LEARN|Learning of <Standby> not successfull, will be retried
+	2020-01-09 21:01:02,479|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	2020-01-09 21:01:10,179|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
+	2020-01-09 21:01:10,270|LEARN|Learning of <Standby> not successfull, will be retried
+	2020-01-09 21:01:10,271|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	2020-01-09 21:01:17,875|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
+	2020-01-09 21:01:17,920|LEARN|Learning of <Standby> not successfull, will be retried
+	2020-01-09 21:01:17,920|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	2020-01-09 21:01:20,430|LEARN|The screen grafic <ModeTag> was learned again, but didn't match with the previous. The contol file must be checked.
+	2020-01-09 21:01:20,473|LEARN|Learning of <Tag> not successfull, will be retried
+	2020-01-09 21:01:20,474|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	2020-01-09 21:01:22,941|LEARN|The screen grafic <ModeTag> was learned again, but didn't match with the previous. The contol file must be checked.
+	2020-01-09 21:01:22,984|LEARN|Learning of <Tag> not successfull, will be retried
+	2020-01-09 21:01:22,985|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	2020-01-09 21:01:30,478|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
+	2020-01-09 21:01:30,522|LEARN|Learning of <Standby> not successfull, will be retried
+	2020-01-09 21:01:30,522|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	2020-01-09 21:01:38,022|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
+	2020-01-09 21:01:38,066|LEARN|Learning of <Standby> not successfull, will be retried
+	2020-01-09 21:01:38,067|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	ps -ef | grep java
+	stefan    1420     1  6 20:57 pts/1    00:00:15 java -jar SolvisSmartHomeServer.jar --server-path=/media/data/fhem
+	stefan    1461 29149  0 21:01 pts/1    00:00:00 grep --color=auto java
+	stefan@Rp3Fhem:~ $ 2020-01-09 21:01:45,782|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
+	2020-01-09 21:01:45,825|LEARN|Learning of <Standby> not successfull, will be retried
+	2020-01-09 21:01:45,826|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	kill 2020-01-09 21:01:53,423|LEARN|The screen grafic <ModeStandby> was learned again, but didn't match with the previous. The contol file must be checked.
+	2020-01-09 21:01:53,468|LEARN|Learning of <Standby> not successfull, will be retried
+	2020-01-09 21:01:53,468|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	2020-01-09 21:01:55,936|LEARN|The screen grafic <ModeTag> was learned again, but didn't match with the previous. The contol file must be checked.
+	2020-01-09 21:01:55,979|LEARN|Learning of <Tag> not successfull, will be retried
+	2020-01-09 21:01:55,980|LEARN|Learning of <C06.Anlagenmodus_HK1> not successfull, will be retried
+	2020-01-09 21:01:55,980|ERROR|Learning of <C06.Anlagenmodus_HK1> not possible, rekjected. Check the Xml!
+	de.sgollmer.solvismax.error.LearningError: Learning of <C06.Anlagenmodus_HK1> not possible, rekjected. Check the Xml!
+	        at de.sgollmer.solvismax.model.objects.control.Control.learn(Control.java:275)
+	        at de.sgollmer.solvismax.model.objects.ChannelDescription.learn(ChannelDescription.java:176)
+	        at de.sgollmer.solvismax.model.objects.AllChannelDescriptions.learn(AllChannelDescriptions.java:113)
+	        at de.sgollmer.solvismax.model.Solvis.learning(Solvis.java:363)
+	        at de.sgollmer.solvismax.model.Instances.createSolvisInstance(Instances.java:76)
+	        at de.sgollmer.solvismax.model.Instances.<init>(Instances.java:51)
+	        at de.sgollmer.solvismax.Main.main(Main.java:81)
+	2020-01-09 21:01:55,981|ERROR|Exception on reading configuration or learning files occured, cause:
+	de.sgollmer.solvismax.error.LearningError: Learning of <C06.Anlagenmodus_HK1> not possible, rekjected. Check the Xml!
+	        at de.sgollmer.solvismax.model.objects.control.Control.learn(Control.java:275) ~[SolvisSmartHomeServer.jar:?]
+	        at de.sgollmer.solvismax.model.objects.ChannelDescription.learn(ChannelDescription.java:176) ~[SolvisSmartHomeServer.jar:?]
+	        at de.sgollmer.solvismax.model.objects.AllChannelDescriptions.learn(AllChannelDescriptions.java:113) ~[SolvisSmartHomeServer.jar:?]
+	        at de.sgollmer.solvismax.model.Solvis.learning(Solvis.java:363) ~[SolvisSmartHomeServer.jar:?]
+	        at de.sgollmer.solvismax.model.Instances.createSolvisInstance(Instances.java:76) ~[SolvisSmartHomeServer.jar:?]
+	        at de.sgollmer.solvismax.model.Instances.<init>(Instances.java:51) ~[SolvisSmartHomeServer.jar:?]
+	        at de.sgollmer.solvismax.Main.main(Main.java:81) [SolvisSmartHomeServer.jar:?]
+	^C
+	

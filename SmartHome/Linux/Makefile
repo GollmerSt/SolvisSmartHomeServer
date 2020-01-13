@@ -1,5 +1,5 @@
 SHELL = /bin/sh
-fhemDir = /opt/fhem/FHEM
+fhemDir = /opt/fhem
 fhemModul = 73_SolvisClient.pm
 fhemCommand = ./contrib/commandref_join.pl -noWarnings
 solvisDir = /opt/SolvisSmartHomeServer
@@ -31,13 +31,12 @@ uninstallService:
 	systemctl disable $(service)
 
 
-installFHEM: $(fhemDir)/$(fhemModul)
+installFHEM: $(fhemDir)/FHEM/$(fhemModul)
 
 
 uninstallFHEM:	
-	rm $(fhemDir)/$(fhemModul)
-	cd $(fhemDir)
-	sudo -u $(account) $(perl) $(fhemCommand)
+	rm $(fhemDir)/FHEM/$(fhemModul)
+	cd $(fhemDir);sudo -u $(account) $(perl) $(fhemCommand)
 
 
 uninstallSolvis: uninstallService
@@ -56,10 +55,10 @@ $(solvisDir):
 	mkdir $@
 
 
-$(fhemDir)/$(fhemModul): $(fhemModul)
+$(fhemDir)/FHEM/$(fhemModul): $(fhemModul)
 	cp $< $@
 	chown -c $(account):$(group) $@ 
-	sudo -u $(account) $(perl) $(fhemCommand)
+	cd $(fhemDir);sudo -u $(account) $(perl) $(fhemCommand)
 
 
 $(solvisDir)/$(solvisJar): $(solvisJar) $(solvisDir)

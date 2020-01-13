@@ -764,7 +764,7 @@ sub SolvisClient_DbLog_splitFn($)
   <table>
     <tr><td>
 		Um auf die Solarheizsysteme 
-		<a href="https://www.solvis.de/solvisben">SolvisBen</a> oder <a href="https://www.solvis.de/solvismay">SolvisMax</a>
+		<a href="https://www.solvis.de/solvisben">SolvisBen</a> oder <a href="https://www.solvis.de/solvismax">SolvisMax</a>
 		mittels FHEM zugreifen zu k&ouml;nnen, wird die
 		<a href="https://www.solvis.de/solvisremote">SolvisRemote</a>
 		ben&ouml;tigt. Sie ist ein Kommunikations-Ger&auml;t, mit einer
