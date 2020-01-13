@@ -1,11 +1,11 @@
 /************************************************************************
  * 
- * $Id$
+ * $Id: HeaterLoops.java 81 2020-01-04 21:05:15Z stefa $
  *
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects;
+package de.sgollmer.solvismax.model.objects.configuration;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -22,7 +22,8 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Configurations.Configuration;
+import de.sgollmer.solvismax.model.objects.Screen;
+import de.sgollmer.solvismax.model.objects.configuration.Configurations.Configuration;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -63,7 +64,7 @@ public class HeaterLoops implements Configuration {
 	}
 
 	@Override
-	public int getConfiguration(Solvis solvis) throws IOException {
+	public int getConfiguration(Solvis solvis ) throws IOException {
 		return this.getConfiguration(solvis.getCurrentImage());
 	}
 
@@ -137,6 +138,11 @@ public class HeaterLoops implements Configuration {
 		bufferedImage = ImageIO.read(file);
 
 		return new MyImage(bufferedImage);
+	}
+
+	@Override
+	public Screen getScreen(Solvis solvis) {
+		return solvis.getSolvisDescription().getScreens().get(this.getScreenRef(), 0) ;
 	}
 
 }

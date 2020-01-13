@@ -12,6 +12,7 @@
 	<property name="bin.dir" value="bin" />
 	<property name="dist.dir" value="dist" />
 	<property name="pub.dir" value="publish" />
+	<property name="pdf" value="docu/SolvisSmartHomeServer.pdf" />
 	<property name="fhem.pm" value="SmartHome/FHEM/73_SolvisClient.pm" />
 	<property name="makefile" value="SmartHome/Linux/Makefile" />
 	<property name="linux.systemd" value="SmartHome/Linux/SolvisSmartHomeServer.service" />
@@ -138,6 +139,7 @@
 			<fileset file="${pubBase}.xml" casesensitive="yes" />
 			<fileset file="${pubBase}.xsd" casesensitive="yes" />
 			<fileset file="${makefile}" casesensitive="yes" />
+			<fileset file="${pdf}" casesensitive="yes"/>
 		</copy>
 	</target>
 </project>

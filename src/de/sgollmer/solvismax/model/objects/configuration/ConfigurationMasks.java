@@ -1,11 +1,11 @@
 /************************************************************************
  * 
- * $Id$
+ * $Id: ConfigurationMasks.java 81 2020-01-04 21:05:15Z stefa $
  *
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects;
+package de.sgollmer.solvismax.model.objects.configuration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,13 +116,20 @@ public class ConfigurationMasks {
 			public void setAttribute(QName name, String value) {
 				switch (name.getLocalPart()) {
 					case "andMask":
-						this.andMask = Integer.parseInt(value, 16);
+						this.andMask = toInt(value);
 						break;
 					case "compareMask":
-						this.cmpMask = Integer.parseInt(value, 16);
+						this.cmpMask = toInt(value);
 						break;
 				}
 
+			}
+
+			private int toInt(String hexValue) {
+				if (hexValue.startsWith("0x")) {
+					hexValue = hexValue.substring(2);
+				}
+				return Integer.parseInt(hexValue, 16);
 			}
 
 			@Override

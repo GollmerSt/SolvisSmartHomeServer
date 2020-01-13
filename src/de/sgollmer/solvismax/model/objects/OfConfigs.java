@@ -26,6 +26,9 @@ public class OfConfigs<E extends OfConfigs.Element<E>> {
 	}
 
 	public E get(int configurationMask) {
+		if ( configurationMask == 0 && this.elements.size() == 1 ) {
+			return this.elements.iterator().next() ;
+		}
 		for (E e : this.elements) {
 			if (e.isInConfiguration(configurationMask)) {
 				return e;
@@ -57,5 +60,9 @@ public class OfConfigs<E extends OfConfigs.Element<E>> {
 		public boolean isInConfiguration(int configurationMask) ;
 		public String getId() ;
 		public void assign(SolvisDescription description);
+	}
+	
+	public int size() {
+		return elements.size() ;
 	}
 }

@@ -15,14 +15,18 @@ import java.util.Iterator;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ScreenLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.configuration.Configurations;
+import de.sgollmer.solvismax.model.objects.configuration.Types;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class SolvisDescription {
 
+	private static final String XML_TYPES = "Types";
 	private static final String XML_CONFIGURATIONS = "Configurations";
 	private static final String XML_SCREEN_SAVER = "ScreenSaver";
 	private static final String XML_SCREENS = "Screens";
@@ -35,6 +39,7 @@ public class SolvisDescription {
 	private static final String XML_MISCELLANEOUS = "Miscellaneous";
 
 	private final String homeId;
+	private final Types types;
 	private final Configurations configurations;
 	private final ScreenSaver saver;
 	private final AllScreens screens;
@@ -42,7 +47,8 @@ public class SolvisDescription {
 	private final AllScreenGraficDescriptions screenGrafics;
 	private final AllChannelDescriptions dataDescriptions;
 	private final AllPreparations allPreparations;
-	private final Clock clock ;
+	private final Clock clock;
+
 	public Clock getClock() {
 		return clock;
 	}
@@ -50,10 +56,12 @@ public class SolvisDescription {
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
-	public SolvisDescription(String homeId, Configurations configurations, ScreenSaver saver, AllScreens screens,
-			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
-			AllPreparations allPreparations, Clock clock, AllDurations durations, Miscellaneous miscellaneous) {
+	public SolvisDescription(String homeId, Types types, Configurations configurations, ScreenSaver saver,
+			AllScreens screens, FallBack fallBack, AllScreenGraficDescriptions screenGrafics,
+			AllChannelDescriptions dataDescriptions, AllPreparations allPreparations, Clock clock,
+			AllDurations durations, Miscellaneous miscellaneous) {
 		this.homeId = homeId;
+		this.types = types;
 		this.configurations = configurations;
 		this.saver = saver;
 		this.screens = screens;
@@ -61,7 +69,7 @@ public class SolvisDescription {
 		this.screenGrafics = screenGrafics;
 		this.dataDescriptions = dataDescriptions;
 		this.allPreparations = allPreparations;
-		this.clock = clock ;
+		this.clock = clock;
 		this.durations = durations;
 		this.miscellaneous = miscellaneous;
 
@@ -98,13 +106,14 @@ public class SolvisDescription {
 
 		private final AllScreenGraficDescriptions screenGrafics;
 		private String homeId;
+		private Types types ;
 		private Configurations configurations;
 		private ScreenSaver saver;
 		private AllScreens screens;
 		private FallBack fallBack;
 		private AllChannelDescriptions dataDescriptions;
 		private AllPreparations allPreparations;
-		private Clock clock ;
+		private Clock clock;
 
 		private AllDurations durations;
 		private Miscellaneous miscellaneous;
@@ -125,7 +134,7 @@ public class SolvisDescription {
 
 		@Override
 		public SolvisDescription create() throws XmlError {
-			return new SolvisDescription(homeId, configurations, saver, screens, fallBack, screenGrafics,
+			return new SolvisDescription(homeId, types, configurations, saver, screens, fallBack, screenGrafics,
 					dataDescriptions, allPreparations, clock, durations, miscellaneous);
 		}
 
@@ -133,6 +142,8 @@ public class SolvisDescription {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
+				case XML_TYPES:
+					return new Types.Creator(id, getBaseCreator()) ;
 				case XML_CONFIGURATIONS:
 					return new Configurations.Creator(id, this);
 				case XML_SCREEN_SAVER:
@@ -148,7 +159,7 @@ public class SolvisDescription {
 				case XML_PREPARATIONS:
 					return new AllPreparations.Creator(id, this);
 				case XML_CLOCK:
-					return new Clock.Creator(id, this) ;
+					return new Clock.Creator(id, this);
 				case XML_DURATIONS:
 					return new AllDurations.Creator(id, this);
 				case XML_MISCELLANEOUS:
@@ -160,6 +171,9 @@ public class SolvisDescription {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
+				case XML_TYPES:
+					this.types = (Types) created;
+					break ;
 				case XML_CONFIGURATIONS:
 					this.configurations = (Configurations) created;
 					break;
@@ -185,8 +199,8 @@ public class SolvisDescription {
 					this.allPreparations = (AllPreparations) created;
 					break;
 				case XML_CLOCK:
-					this.clock = (Clock) created ;
-					break ;
+					this.clock = (Clock) created;
+					break;
 				case XML_DURATIONS:
 					this.durations = (AllDurations) created;
 					break;
@@ -292,8 +306,9 @@ public class SolvisDescription {
 		return fallBack;
 	}
 
-	public int getConfigurations(Solvis solvis) throws IOException {
-		return this.configurations.get(solvis);
+	public int getConfigurations(Solvis solvis, Reference<Screen> current) throws IOException {
+		int configurationMask = this.types.getConfiguration(solvis.getType()) ;
+		return configurationMask | this.configurations.get(solvis, current);
 	}
 
 	public AllPreparations getPreparations() {

@@ -51,5 +51,6 @@
     		</annotation>
     	</attribute>
     	<attribute name="controlFileHashCode" type="int"></attribute>
+    	<attribute name="configurationMask" type="int"></attribute>
     </complexType>
 </schema>

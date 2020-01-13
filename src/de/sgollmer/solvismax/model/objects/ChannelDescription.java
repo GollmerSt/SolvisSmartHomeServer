@@ -17,6 +17,7 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.calculation.Calculation;
+import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;

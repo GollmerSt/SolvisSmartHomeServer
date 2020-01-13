@@ -30,6 +30,7 @@ import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -65,6 +66,7 @@ public class Solvis {
 	private SolvisWorkers worker;
 
 	private final String id;
+	private final String type ;
 	private final int defaultReadMeasurementsIntervall_ms;
 	private int configurationMask = 0;
 	private MyImage currentImage = null;
@@ -79,11 +81,12 @@ public class Solvis {
 	private final MeasurementUpdateThread measurementUpdateThread;
 	private final Observable<Boolean> abortObservable = new Observable<>();
 	private final String timeZone;
-	private final boolean delayAfterSwitchingOnEnable ;
+	private final boolean delayAfterSwitchingOnEnable;
 
 	public Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone) {
 		this.id = unit.getId();
+		this.type = unit.getType() ;
 		this.defaultReadMeasurementsIntervall_ms = unit.getDefaultReadMeasurementsIntervall_ms();
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
@@ -98,7 +101,7 @@ public class Solvis {
 		this.distributor = new Distributor(unit.getBufferedIntervall_ms());
 		this.measurementUpdateThread = new MeasurementUpdateThread(unit.getForcedUpdateIntervall_ms());
 		this.timeZone = timeZone;
-		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable() ;
+		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
 	}
 
 	private Observer.Observable<Boolean> screenChangedByUserObserable = new Observable<>();
@@ -258,7 +261,7 @@ public class Solvis {
 	}
 
 	public void init() throws IOException, XmlError, XMLStreamException {
-		this.configurationMask = this.initGetConfigurationMask();
+		this.configurationMask = this.getGrafics().getConfigurationMask();
 		synchronized (solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().init(this, this.getAllSolvisData());
 		}
@@ -339,16 +342,23 @@ public class Solvis {
 	}
 
 	public void learning() throws IOException, LearningError {
-		this.configurationMask = this.initGetConfigurationMask();
-		logger.log(LEARN, "Learning started.");
-		logger.info("Configuration mask: " + Integer.toHexString(this.configurationMask));
+		Reference<Screen> currentRef = new Reference<Screen>();
 		this.getGrafics().clear();
+		logger.log(LEARN, "Learning started.");
+		this.initConfigurationMask(currentRef);
+		logger.info("Configuration mask: " + Integer.toHexString(this.configurationMask));
+		this.getGrafics().setConfigurationMask(configurationMask);
 		String homeId = this.solvisDescription.getHomeId();
 		Screen home = this.solvisDescription.getScreens().get(homeId, this.getConfigurationMask());
 		if (home == null) {
 			throw new AssertionError("Assign error: Screen description of <" + homeId + "> not found.");
 		}
-		this.forceCurrentScreen(home);
+		if (!home.isLearned(this)) {
+			this.gotoHome();
+			this.forceCurrentScreen(home);
+		} else {
+			this.gotoScreen(home);
+		}
 		Collection<LearnScreen> learnScreens = this.solvisDescription.getLearnScreens(this.getConfigurationMask());
 		while (learnScreens.size() > 0) {
 			home.learn(this, learnScreens, this.getConfigurationMask());
@@ -380,6 +390,10 @@ public class Solvis {
 		return id;
 	}
 
+	public String getType() {
+		return type;
+	}
+
 	public void registerObserver(Observer.ObserverI<SolvisData> observer) {
 		this.allSolvisData.registerObserver(observer);
 	}
@@ -404,30 +418,30 @@ public class Solvis {
 
 		private int updateIntervall;
 		boolean abort = false;
-		boolean power = false ;
-		boolean powerDownInInterval = false ;
+		boolean power = false;
+		boolean powerDownInInterval = false;
 
 		public MeasurementUpdateThread(int forcedUpdateIntervall_ms) {
 			super("MeasurementUpdateThread");
 			this.updateIntervall = forcedUpdateIntervall_ms;
-			solvisState.register( new PowerObserver() );
+			solvisState.register(new PowerObserver());
 		}
-		
+
 		private class PowerObserver implements ObserverI<SolvisState> {
 
 			@Override
 			public void update(SolvisState data, Object source) {
-				switch ( data.getState() ) {
+				switch (data.getState()) {
 					case SOLVIS_CONNECTED:
-						power = true ;
-						powerDownInInterval = false ;
-						break ;
+						power = true;
+						powerDownInInterval = false;
+						break;
 					case POWER_OFF:
-						power = false ;
+						power = false;
 				}
-				
+
 			}
-			
+
 		}
 
 		@Override
@@ -451,12 +465,12 @@ public class Solvis {
 					} catch (InterruptedException e) {
 					}
 				}
-				if (!abort && !powerDownInInterval ) {
+				if (!abort && !powerDownInInterval) {
 					distributor.notify(getAllSolvisData().getMeasurementsPackage());
 				}
-				
-				if ( !power ) {
-					powerDownInInterval = true ;
+
+				if (!power) {
+					powerDownInInterval = true;
 				}
 			}
 		}
@@ -489,26 +503,25 @@ public class Solvis {
 		return defaultReadMeasurementsIntervall_ms;
 	}
 
-	private int initGetConfigurationMask() throws TerminationException {
+	private void initConfigurationMask(Reference<Screen> current) throws TerminationException {
 		boolean connected = false;
-		int configurationMask = 0 ;;
+		this.configurationMask = 0;
+		;
 		while (!connected) {
 			try {
-				this.gotoHome();
-				configurationMask = this.getSolvisDescription().getConfigurations(this);
+				this.configurationMask = this.getSolvisDescription().getConfigurations(this, current);
 				connected = true;
 			} catch (IOException e) {
 				logger.error("Solvis not available. Powered down or wrong IP address. Will try again");
 				AbortHelper.getInstance().sleep(1000);
 			}
 		}
-		return configurationMask ;
 	}
-	
+
 	public int getTimeAfterLastSwitchingOn() {
 		long time = System.currentTimeMillis();
-		long timeOfLastSwitchingOn = this.solvisState.getTimeOfLastSwitchingOn() ;
-		if (timeOfLastSwitchingOn > 0 && this.delayAfterSwitchingOnEnable ) {
+		long timeOfLastSwitchingOn = this.solvisState.getTimeOfLastSwitchingOn();
+		if (timeOfLastSwitchingOn > 0 && this.delayAfterSwitchingOnEnable) {
 			return (int) (time - timeOfLastSwitchingOn);
 		} else {
 			return 0x7fffffff;

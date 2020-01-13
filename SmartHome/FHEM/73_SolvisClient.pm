@@ -857,7 +857,7 @@ sub SolvisClient_DbLog_splitFn($)
 	    <tr><td><a name="SolvisClientSet"></a><b>Set</b></td></tr>
 	    <tr><td>
 		  <ul>
-			Die Set Funktion &auml;ndert eine Untermenge der Anlagen-Werte der Solvis. Aktuell sind die Veränderunge folgender Werte möglich:
+			Die Set Funktion &auml;ndert eine Untermenge der Anlagen-Werte der Solvis. Aktuell sind die Ver&auml;nderungen folgender Werte m&ouml;glich:
             <ul>
 		      <ul>
 	            <table>
@@ -902,7 +902,7 @@ sub SolvisClient_DbLog_splitFn($)
 		      Sichert die berechneten Messwerte (X1 .. X8) in einen Backup-Datei<BR>
 		    </td></tr>
 		    <tr><td align="right" valign="top"><code>SCREEN_RESTORE_INHIBIT</code>: </td><td align="left" valign="top">
-			  Normalerweise wird nach einer Paramter-Abfrage im GUI der SolvisControl wieder zum vorherigen Bildschirm zur&uuml;ckgegangen. Dieses verhalten wird durch diesen Befehl verhindert.<BR>
+			  Normalerweise wird nach einer Parameter-Abfrage im GUI der SolvisControl wieder zum vorherigen Bildschirm zur&uuml;ckgegangen. Dieses verhalten wird durch diesen Befehl verhindert.<BR>
 		    </td></tr>
 		    <tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
 			  Gegenstück zu dem ServerCommand SCREEN_RESTORE_INHIBIT<BR>

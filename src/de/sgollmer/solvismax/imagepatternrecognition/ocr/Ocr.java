@@ -322,6 +322,11 @@ public class Ocr extends MyImage {
 			return '6';
 		}
 
+		AnalyseResult middle = this.analyse(new Coordinate(this.getWidth() / 2, this.getHeight() / 2));
+		if ( middle.closedStructure) {
+			return '°';
+		}
+
 		if (this.maximaY[0].getValue() == this.getWidth() && this.maximaX[0].getValue() < (this.getWidth() + 1) / 2) {
 			// - Erkennung von -, waagerechtes Maximum = Breite, senkrechtes
 			// Maximum < 1/2 Breite
@@ -347,7 +352,8 @@ public class Ocr extends MyImage {
 		}
 
 		if (this.getHistogramX().get(0) > this.getHeight() * 4 / 5
-				&& this.getHistogramY().get(0) > this.getWidth() * 4 / 5) {
+				&& this.getHistogramY().get(0) > this.getWidth() * 4 / 5
+				&& this.getHeight() >= 2 * getWidth() ) {
 			return '[';
 		}
 
@@ -396,7 +402,7 @@ public class Ocr extends MyImage {
 			return '5';
 		}
 
-		if (this.detectSlash(false, 0, this.getWidth() - 1)) {
+		if (this.detectSlash(false, 0, this.getHeight() - 1)) {
 			int x = 0;
 
 			for (; !this.isActive(x, 1) && this.isIn(x, 1); ++x) {

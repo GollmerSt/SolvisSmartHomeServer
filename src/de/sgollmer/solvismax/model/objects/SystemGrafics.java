@@ -22,17 +22,21 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.XmlWriteable;
 
 public class SystemGrafics implements XmlWriteable {
+
 	private final String id;
 	private int controlFileHashCode;
+	private int configurationMask;
 	private final Map<String, ScreenGraficData> graficDatas;
 
 	public SystemGrafics(String id, int controllFileHashCode) {
-		this(id, controllFileHashCode, new HashMap<>());
+		this(id, controllFileHashCode, 0, new HashMap<>());
 	}
 
-	private SystemGrafics(String id, int controllFileHashCode, Map<String, ScreenGraficData> graficDatas) {
+	private SystemGrafics(String id, int controllFileHashCode, int configurationMask,
+			Map<String, ScreenGraficData> graficDatas) {
 		this.id = id;
 		this.controlFileHashCode = controllFileHashCode;
+		this.configurationMask = configurationMask;
 		this.graficDatas = graficDatas;
 	}
 
@@ -61,6 +65,7 @@ public class SystemGrafics implements XmlWriteable {
 	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException {
 		writer.writeAttribute("id", this.id);
 		writer.writeAttribute("controlFileHashCode", Integer.toString(this.controlFileHashCode));
+		writer.writeAttribute("configurationMask", Integer.toString(this.configurationMask));
 		for (ScreenGraficData data : this.graficDatas.values()) {
 			writer.writeStartElement("ScreenGrafic");
 			data.writeXml(writer);
@@ -73,6 +78,7 @@ public class SystemGrafics implements XmlWriteable {
 
 		private String id;
 		private int controlFileHashCode;
+		private int configurationMask;
 		private final Map<String, ScreenGraficData> graficDatas = new HashMap<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -88,6 +94,8 @@ public class SystemGrafics implements XmlWriteable {
 				case "controlFileHashCode":
 					this.controlFileHashCode = Integer.parseInt(value);
 					break;
+				case "configurationMask":
+					this.configurationMask = Integer.parseInt(value);
 			}
 
 		}
@@ -95,7 +103,7 @@ public class SystemGrafics implements XmlWriteable {
 		@Override
 		public SystemGrafics create() throws XmlError, IOException {
 
-			return new SystemGrafics(id, controlFileHashCode, graficDatas);
+			return new SystemGrafics(id, controlFileHashCode, configurationMask, graficDatas);
 		}
 
 		@Override
@@ -136,5 +144,13 @@ public class SystemGrafics implements XmlWriteable {
 	 */
 	public void setControlFileHashCode(int controlFileHashCode) {
 		this.controlFileHashCode = controlFileHashCode;
+	}
+
+	public int getConfigurationMask() {
+		return configurationMask;
+	}
+
+	public void setConfigurationMask(int configurationMask) {
+		this.configurationMask = configurationMask;
 	}
 }

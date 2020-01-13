@@ -24,7 +24,9 @@ import javax.imageio.ImageIO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
@@ -288,6 +290,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		} else  {
 			this.solvisState.disconnected();;
 		}
+		AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_IO_ERROR);
 		throw new IOException(e.getMessage());
 	}
 

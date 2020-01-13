@@ -27,6 +27,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
+import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -198,6 +199,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	}
 
 	public boolean isLearned(Solvis solvis) {
+
 		for (ScreenCompare cmp : this.screenCompares) {
 			if (cmp instanceof ScreenGraficDescription) {
 				if (!((ScreenGraficDescription) cmp).isLearned(solvis)) {
@@ -594,16 +596,18 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	 * @param learnScreens
 	 * @throws IOException
 	 */
-	private static void gotoScreenLearning(Solvis solvis, Screen screen, Screen current,
+	public static void gotoScreenLearning(Solvis solvis, Screen screen, Screen current,
 			Collection<LearnScreen> learnScreens, int configurationMask) throws IOException, TerminationException {
+		if (current == null) {
+			String homeId = solvis.getSolvisDescription().getHomeId();
+			if (! homeId.equals(screen.getId())) {
+				logger.warn("Goto screen <" + screen + "> not succesfull, home screen is forced");
+			}
+			solvis.gotoHome();
+			current = solvis.getSolvisDescription().getScreens().get(homeId, solvis.getConfigurationMask());
+		}
 		if (screen == current) {
 			return;
-		}
-		if (current == null) {
-			logger.warn("Goto screen <" + screen + "> not succesfull, home screen is forced");
-			solvis.gotoHome();
-			String homeId = solvis.getSolvisDescription().getHomeId();
-			current = solvis.getSolvisDescription().getScreens().get(homeId, solvis.getConfigurationMask());
 		}
 		List<ScreenTouch> previousScreens = screen.getPreviousScreens(true, configurationMask);
 		boolean found = false;
@@ -652,7 +656,9 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		current = solvis.getCurrentScreen();
 		if (current == null) {
 			current = back;
-			current.learn(solvis, learnScreens, configurationMask);
+			if (learnScreens != null) {
+				current.learn(solvis, learnScreens, configurationMask);
+			}
 		}
 		return back;
 	}

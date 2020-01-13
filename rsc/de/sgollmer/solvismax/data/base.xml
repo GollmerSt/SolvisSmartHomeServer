@@ -5,10 +5,10 @@
 	<tns:ExecutionData timeZone="Europe/Berlin"
 	port="10735" writablePathLinux="/opt/fhem" />
 	<tns:Units>
-		<tns:Unit id="mySolvis" account="account"
-			password="password" url="http://aaa.bbb.ccc.ddd"
-			defaultAverageCount="12" defaultReadMeasurementsIntervall_ms="10000"
-			forcedUpdateIntervall_ms="3600000" bufferedIntervall_ms="60000"
-			delayAfterSwitchingOnEnable="true" />
+		<tns:Unit id="mySolvis" type="SolvisMax" account="account"
+	password="password" url="http://aaa.bbb.ccc.ddd"
+	defaultAverageCount="12" defaultReadMeasurementsIntervall_ms="10000"
+	forcedUpdateIntervall_ms="3600000" bufferedIntervall_ms="60000"
+	delayAfterSwitchingOnEnable="true" />
 	</tns:Units>
 </tns:BaseData>

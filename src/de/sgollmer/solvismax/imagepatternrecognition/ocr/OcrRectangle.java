@@ -166,8 +166,8 @@ public class OcrRectangle extends MyImage {
 	public static void main(String[] args) {
 
 		File parent = new File("testFiles\\images");
-
-		File file = new File(parent, "bildschirmschoner.png");
+		
+		File file = new File(parent, "4 Solar.png");
 
 		BufferedImage bufferedImage = null;
 		try {
@@ -177,9 +177,28 @@ public class OcrRectangle extends MyImage {
 		}
 
 		MyImage myImage = new MyImage(bufferedImage);
+
+		OcrRectangle rectangle = new OcrRectangle(myImage, new Coordinate(170, 30), new Coordinate(235, 40));
+
+		String returnTemperature = rectangle.getString();
+		
+		System.out.println("ReturnTemperature is: " + returnTemperature );
+		
+		//-----------------------------------------------
+
+		file = new File(parent, "bildschirmschoner.png");
+
+		bufferedImage = null;
+		try {
+			bufferedImage = ImageIO.read(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		myImage = new MyImage(bufferedImage);
 		myImage.createHistograms(true);
 		myImage.shrink();
-		OcrRectangle rectangle = new OcrRectangle(myImage, new Coordinate(73, 0), new Coordinate(139, 20));
+		rectangle = new OcrRectangle(myImage, new Coordinate(73, 0), new Coordinate(139, 20));
 
 		String uhrzeit = rectangle.getString();
 

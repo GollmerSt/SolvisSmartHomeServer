@@ -3,31 +3,9 @@
 	targetNamespace="http://www.example.org/control"
 	xmlns:tns="http://www.example.org/control"
 	elementFormDefault="qualified">
-
-
-
 	<annotation>
 		<documentation></documentation>
 	</annotation>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	<complexType name="BaseData">
 		<annotation>
 			<documentation>
@@ -35,13 +13,13 @@
 			</documentation>
 		</annotation>
 		<sequence>
-            <element name="ExecutionData" type="tns:ExecutionData" maxOccurs="1" minOccurs="1"></element>
-            <element name="Units" type="tns:Units" maxOccurs="unbounded"
+			<element name="ExecutionData" type="tns:ExecutionData"
+				maxOccurs="1" minOccurs="1"></element>
+			<element name="Units" type="tns:Units" maxOccurs="unbounded"
 				minOccurs="0">
 			</element>
 		</sequence>
 	</complexType>
-
 	<element name="BaseData" type="tns:BaseData"></element>
 
 
@@ -90,6 +68,14 @@
 	<complexType name="Unit">
 		<sequence></sequence>
 		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="type" use="required">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="SolvisMax"></enumeration>
+					<enumeration value="SolvisBen"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
 		<attribute name="url" type="string" use="optional"></attribute>
 		<attribute name="account" type="string" use="optional"></attribute>
 		<attribute name="password" type="string" use="optional"></attribute>
@@ -105,13 +91,15 @@
 		<attribute name="bufferedIntervall_ms" type="int"
 			use="required">
 		</attribute>
-		<attribute name="delayAfterSwitchingOnEnable" type="boolean" use="required"></attribute>
+		<attribute name="delayAfterSwitchingOnEnable" type="boolean"
+			use="required">
+		</attribute>
 	</complexType>
 
 	<complexType name="ExecutionData">
 		<attribute name="timeZone" type="string" use="required"></attribute>
-        <attribute name="port" type="int" use="required"></attribute>
-        <attribute name="writeablePathWindows" type="string"
+		<attribute name="port" type="int" use="required"></attribute>
+		<attribute name="writeablePathWindows" type="string"
 			use="optional">
 		</attribute>
 		<attribute name="writablePathLinux" type="string"

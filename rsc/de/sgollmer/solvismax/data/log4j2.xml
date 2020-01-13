@@ -56,7 +56,7 @@
 			<Policies>
 				<SizeBasedTriggeringPolicy size="1000 KB" />
 			</Policies>
-			<DefaultRolloverStrategy max="2" />
+			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 
 		<!-- SOLVIS-Error LOG APPENDER -->
@@ -71,13 +71,13 @@
 			</Policies>
 			<ThresholdFilter level="ERROR" onMatch="ACCEPT"
 				onMismatch="DENY" />
-			<DefaultRolloverStrategy max="5" />
+			<DefaultRolloverStrategy max="2" />
 		</RollingFile>
 		<Async name="Async">
-			<appender-ref ref="Solvis" level="debug" />
-			<appender-ref ref="Console"/> <!--  -->level="info"/-->
+			<appender-ref ref="Solvis" level="info" />
+			<appender-ref ref="Console" level="LEARN"/>
+			<appender-ref ref="Solvis-Error" level="error"/>
 			<!-- appender-ref ref="RFC5424" level="info"/ --> <!-- Database logging -->
-			<!--appender-ref ref="Solvis-Error" level="error"/ -->
 		</Async>
 
 	</Appenders>

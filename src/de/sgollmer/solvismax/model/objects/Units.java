@@ -73,6 +73,7 @@ public class Units {
 	public static class Unit implements AccountInfo {
 
 		private final String id;
+		private final String type;
 		private final String url;
 		private final String account;
 		private final String password;
@@ -82,10 +83,11 @@ public class Units {
 		private final int bufferedIntervall_ms;
 		private final boolean delayAfterSwitchingOnEnable;
 
-		public Unit(String id, String url, String account, String password, int defaultAverageCount,
+		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
 				int defaultReadMeasurementsIntervall_ms, int forcedUpdateIntervall_ms, int bufferedIntervall_ms,
 				boolean delayAfterSwitchingOn) {
 			this.id = id;
+			this.type = type;
 			this.url = url;
 			this.account = account;
 			this.password = password;
@@ -100,6 +102,10 @@ public class Units {
 			return id;
 		}
 
+		public String getType() {
+			return type;
+		}
+
 		public String getUrl() {
 			return url;
 		}
@@ -112,6 +118,7 @@ public class Units {
 		public static class Creator extends CreatorByXML<Unit> {
 
 			private String id;
+			private String type;
 			private String url;
 			private String account;
 			private String password;
@@ -119,7 +126,7 @@ public class Units {
 			private int defaultReadMeasurementsIntervall_ms;
 			private int forcedUpdateIntervall_ms;
 			private int bufferedIntervall_ms;
-			private boolean delayAfterSwitchingOnEnable = false ;
+			private boolean delayAfterSwitchingOnEnable = false;
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -130,6 +137,9 @@ public class Units {
 				switch (name.getLocalPart()) {
 					case "id":
 						this.id = value;
+						break;
+					case "type":
+						this.type = value;
 						break;
 					case "url":
 						this.url = value;
@@ -153,16 +163,17 @@ public class Units {
 						this.bufferedIntervall_ms = Integer.parseInt(value);
 						break;
 					case "delayAfterSwitchingOnEnable":
-						this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value) ;
-						break ;
+						this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value);
+						break;
 				}
 
 			}
 
 			@Override
 			public Unit create() throws XmlError, IOException {
-				return new Unit(id, url, account, password, defaultAverageCount, defaultReadMeasurementsIntervall_ms,
-						forcedUpdateIntervall_ms, bufferedIntervall_ms, delayAfterSwitchingOnEnable);
+				return new Unit(id, type, url, account, password, defaultAverageCount,
+						defaultReadMeasurementsIntervall_ms, forcedUpdateIntervall_ms, bufferedIntervall_ms,
+						delayAfterSwitchingOnEnable);
 			}
 
 			@Override

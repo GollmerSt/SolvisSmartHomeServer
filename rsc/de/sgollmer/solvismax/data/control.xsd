@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/control"
 	xmlns:tns="http://www.example.org/control" elementFormDefault="qualified">
-
-
-
     <annotation>
     	<documentation></documentation></annotation>
     <complexType name="Screen">
@@ -81,8 +78,8 @@
     				</documentation>
     			</annotation>
     		</element>
-    		<element name="PreparationRef" type="tns:PreparationRef" maxOccurs="1"
-    			minOccurs="0">
+    		<element name="PreparationRef" type="tns:PreparationRef"
+    			maxOccurs="1" minOccurs="0">
     		</element>
     	</sequence>
     	<attribute name="id" type="string" use="required"></attribute>
@@ -94,11 +91,14 @@
     	<attribute name="alternativePreviousId" type="string"
     		use="optional">
     		<annotation>
-    			<documentation> Wenn der Folgebildschirm nicht eindeutig ist, gibt es auch einen alternativen Vorgänger
-(Beispiel Anlagenmodus). Der Folgebildschirm hängt in solchen Fällen von
-der letzten Useraktion ab. Wichti!!!! Für den Lernmodus muss daher vom
-User-Modus vorher der richtige Bildschirm ausgewählt werden. Im Lernmodus
-werden die ALternativen nicht beachtet!
+    			<documentation>
+    				Wenn der Folgebildschirm nicht eindeutig ist, gibt
+    				es auch einen alternativen Vorgänger (Beispiel
+    				Anlagenmodus). Der Folgebildschirm hängt in solchen
+    				Fällen von der letzten Useraktion ab. Wichti!!!! Für
+    				den Lernmodus muss daher vom User-Modus vorher der
+    				richtige Bildschirm ausgewählt werden. Im Lernmodus
+    				werden die ALternativen nicht beachtet!
     			</documentation>
     		</annotation>
     	</attribute>
@@ -111,8 +111,13 @@ werden die ALternativen nicht beachtet!
     	</attribute>
     	<attribute name="ignoreChanges" type="boolean" use="optional">
     		<annotation>
-    			<documentation>Zur Erkennung von Useraktivitäten, Änderungen auf diesem Screen werden nicht als Useraktivität registriert</documentation>
-    		</annotation></attribute>
+    			<documentation>
+    				Zur Erkennung von Useraktivitäten, Änderungen auf
+    				diesem Screen werden nicht als Useraktivität
+    				registriert
+    			</documentation>
+    		</annotation>
+    	</attribute>
     </complexType>
 
 
@@ -363,7 +368,13 @@ false: Bei fester Grenze
 			<documentation>Root mit der Home-Screen-Definition</documentation>
 		</annotation>
 		<sequence>
-			<element name="Configurations" type="tns:Configurations"
+            <element name="Types">
+				<complexType>
+					<sequence>
+						<element name="Type" type="tns:Type" maxOccurs="unbounded" minOccurs="1"></element>
+					</sequence>
+				</complexType></element>
+            <element name="Configurations" type="tns:Configurations"
 				maxOccurs="1" minOccurs="0">
 			</element>
 			<element name="ScreenSaver" type="tns:ScreenSaver"
@@ -852,18 +863,21 @@ da der user diesen manuell verändert haben könnte.</documentation>
     		<element name="HK2Button" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
     		<element name="HK3Button" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
     	</sequence>
-    	<attribute name="ScreenRef" type="string" use="required"></attribute>
+    	<attribute name="screenRef" type="string" use="required"></attribute>
     </complexType>
 
     <complexType name="Configurations">
     	<sequence>
-    		<element name="HeaterLoops" type="tns:HeaterLoops" maxOccurs="1" minOccurs="1"></element>
+    		<element name="HeaterLoops" type="tns:HeaterLoops"
+    			maxOccurs="1" minOccurs="1">
+    		</element>
+    		<element name="Solar" type="tns:Solar" maxOccurs="1" minOccurs="1"></element>
     	</sequence>
     </complexType>
 
     <complexType name="ConfigurationMask">
-    	<attribute name="andMask" type="hexBinary" use="required"></attribute>
-    	<attribute name="compareMask" type="hexBinary" use="required"></attribute>
+    	<attribute name="andMask" type="tns:U32BitHexInt" use="required"></attribute>
+    	<attribute name="compareMask" type="tns:U32BitHexInt" use="required"></attribute>
     </complexType>
 
     <complexType name="ConfigurationMasks">
@@ -922,4 +936,50 @@ da der user diesen manuell verändert haben könnte.</documentation>
     	</sequence>
     	<attribute name="least" type="int" use="optional"></attribute>
     </complexType>
+
+    <complexType name="Solar">
+        <annotation>
+        	<documentation>Dient der Erkennung einer </documentation>
+        </annotation>
+        <sequence>
+    		<element name="ReturnTemperature" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
+    		<element name="OutgoingTemperature" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
+    	</sequence>
+    	<attribute name="screenRef" type="string" use="required"></attribute>
+    	<attribute name="format" type="string" use="required"></attribute>
+    	<attribute name="maxTemperatureX10" type="int" use="required"></attribute>
+    </complexType>
+
+    <complexType name="Type">
+    	<attribute name="id" use="required">
+    		<simpleType>
+    			<restriction base="string">
+    				<enumeration value="SolvisMax"></enumeration>
+    				<enumeration value="SolvisBen"></enumeration>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="configuration" type="tns:U32BitHexInt" use="required">
+    		<annotation>
+    			<documentation>In der Configuration sind die wesentlichen Besonderheiten der Anlage erfasst.
+Folgende Bits sind aktuell definiert (Bit 0 ist LSB) und ein gesetztes Bit bedeutet::
+
+Bit 0:	Heizkreis 1 vorhanden
+Bit 1:	Heizkreis 2 vorhanden
+Bit 2:	Heizkreis 3 vorhanden (wird aktuell ignoriert)
+Bit 3:	Solar-Kreislauf vorhanden
+
+Bit 24:	SolvisMax
+Bit 25:	SolvisBen</documentation></annotation></attribute>
+    </complexType>
+    
+	<simpleType name="U32BitHexInt">
+	 	<union memberTypes="unsignedInt">
+	    	<simpleType>
+	      	<restriction base="token">
+	        	<pattern value="0x([0-9A-Fa-f]{2})+"/>
+	      	</restriction>
+	    	</simpleType>
+	    </union>
+	</simpleType>
 </schema>

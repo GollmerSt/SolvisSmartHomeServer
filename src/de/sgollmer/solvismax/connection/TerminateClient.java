@@ -25,7 +25,7 @@ public class TerminateClient {
 		try {
 			socket = new Socket("localhost", port);
 		} catch (IOException e) {
-			System.out.println("Server not startetd");
+			System.out.println("Server not started");
 			System.exit(0);
 		}
 
