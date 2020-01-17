@@ -262,6 +262,8 @@ public class Control extends ChannelSource {
 				screen.goTo(solvis);
 				if (this.preparation != null) {
 					finished = this.preparation.learn(solvis);
+				} else {
+					finished = true;
 				}
 				if (finished) {
 					finished = this.strategy.learn(solvis);
@@ -283,7 +285,7 @@ public class Control extends ChannelSource {
 				logger.error(error);
 				throw new LearningError(error);
 			}
-			boolean success = false ;
+			boolean success = false;
 			for (int repeat = 0; repeat < Constants.SET_REPEATS; ++repeat) {
 				success = this.setValue(solvis, new SolvisData(data));
 				if (success) {
