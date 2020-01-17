@@ -38,7 +38,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		this.description = description;
 		this.datas = datas;
 		if (this.description.isAverage()) {
-			this.average = new Average(datas.getAverageCount());
+			this.average = new Average(datas.getAverageCount(), datas.getMeasurementHysteresisFactor());
 		} else {
 			this.average = null;
 		}

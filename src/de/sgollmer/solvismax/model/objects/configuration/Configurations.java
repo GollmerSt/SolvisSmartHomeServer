@@ -19,7 +19,6 @@ import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.ScreenLearnable.LearnScreen;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -36,9 +35,7 @@ public class Configurations {
 
 	public int get(Solvis solvis, Reference<Screen> currentRef) throws IOException {
 		int configurationMask = 0;
-		SolvisDescription description = solvis.getSolvisDescription();
-		String homeId = description.getHomeId();
-		Screen home = description.getScreens().get(homeId, configurationMask);
+		Screen home = solvis.getHomeScreen();
 		Configuration homeConfiguration = null;
 		Collection<LearnScreen> learnConfigurationScreens = new ArrayList<>();
 		for (Iterator<Configuration> it = this.configurations.iterator(); it.hasNext();) {
@@ -54,7 +51,7 @@ public class Configurations {
 		if (homeConfiguration != null) {
 			Collection<LearnScreen> learnHomeScreen = new ArrayList<>();
 			home.createAndAddLearnScreen(null, learnHomeScreen, 0);
-			Screen.gotoScreenLearning(solvis, home, current, learnHomeScreen, 0);
+			home.gotoLearning(solvis, current, learnHomeScreen, 0);
 			home.learn(solvis, learnHomeScreen, 0);
 			configurationMask |= homeConfiguration.getConfiguration(solvis);
 			current = home;
@@ -62,13 +59,13 @@ public class Configurations {
 		for (Configuration configuration : this.configurations) {
 			Screen screen = configuration.getScreen(solvis);
 			if (screen != home) {
-				Screen.gotoScreenLearning(solvis, screen, current, learnConfigurationScreens, 0);
+				screen.gotoLearning(solvis, current, learnConfigurationScreens, 0);
 				screen.learn(solvis, learnConfigurationScreens, 0);
 				configurationMask |= configuration.getConfiguration(solvis);
 				current = screen;
 			}
 		}
-		Screen.gotoScreenLearning(solvis, home, current, learnConfigurationScreens, 0);
+		home.gotoLearning(solvis, current, learnConfigurationScreens, 0);
 		currentRef.set(current);
 		return configurationMask;
 	}

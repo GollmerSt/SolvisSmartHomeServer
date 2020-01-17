@@ -84,7 +84,7 @@ public class Control extends ChannelSource {
 	@Override
 	public boolean getValue(SolvisData destin, Solvis solvis, int timeAfterLastSwitchingOn)
 			throws IOException, TerminationException {
-		solvis.gotoScreen(screen.get(solvis.getConfigurationMask()));
+		this.screen.get(solvis.getConfigurationMask()).goTo(solvis);
 		if (!this.prepare(solvis)) {
 			return false;
 		}
@@ -99,7 +99,7 @@ public class Control extends ChannelSource {
 
 	@Override
 	public boolean setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
-		solvis.gotoScreen(screen.get(solvis.getConfigurationMask()));
+		this.screen.get(solvis.getConfigurationMask()).goTo(solvis);
 		if (!this.prepare(solvis)) {
 			return false;
 		}
@@ -162,7 +162,6 @@ public class Control extends ChannelSource {
 			if (this.preparation == null) {
 				throw new ReferenceError("Preparation of reference < " + this.preparationId + " > not found");
 			}
-			this.preparation.assign(description);
 		}
 
 	}
@@ -246,17 +245,27 @@ public class Control extends ChannelSource {
 
 	@Override
 	public void learn(Solvis solvis) throws IOException, LearningError {
-		if (this.preparation != null) {
-			this.preparation.learn(solvis, this.getScreen(solvis.getConfigurationMask()));
-		}
-
 		if (strategy.mustBeLearned()) {
 			SingleData<?> data = null;
-			solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
-			MyImage saved = solvis.getCurrentImage();
+			Screen screen = this.screen.get(solvis.getConfigurationMask());
+			if (screen == null) {
+				String error = "Learning of <" + this.getDescription().getId()
+						+ "> not possible, rejected. Screen undefined"
+						+ " in the current configuration. Check the control.xml!";
+				logger.error(error);
+				throw new LearningError(error);
+			}
 			boolean finished = false;
+			screen.goTo(solvis);
+			MyImage saved = solvis.getCurrentImage();
 			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
-				finished = this.strategy.learn(solvis);
+				screen.goTo(solvis);
+				if (this.preparation != null) {
+					finished = this.preparation.learn(solvis);
+				}
+				if (finished) {
+					finished = this.strategy.learn(solvis);
+				}
 				if (finished) {
 					data = this.strategy.getValue(saved, this.valueRectangle, solvis);
 					if (data == null) {
@@ -270,12 +279,13 @@ public class Control extends ChannelSource {
 			}
 			if (!finished) {
 				String error = "Learning of <" + this.getDescription().getId()
-						+ "> not possible, rekjected. Check the Xml!";
+						+ "> not possible, rejected. Check the control.xml!";
 				logger.error(error);
 				throw new LearningError(error);
 			}
+			boolean success = false ;
 			for (int repeat = 0; repeat < Constants.SET_REPEATS; ++repeat) {
-				boolean success = this.setValue(solvis, new SolvisData(data));
+				success = this.setValue(solvis, new SolvisData(data));
 				if (success) {
 					break;
 				} else {

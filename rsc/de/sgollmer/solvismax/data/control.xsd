@@ -211,9 +211,11 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 			<documentation>Alle Bildschirm-Definitionen</documentation>
 		</annotation>
 		<sequence>
-			<element name="Screen" type="tns:Screen" maxOccurs="unbounded"
-				minOccurs="0"></element>
+			<element name="Screen" type="tns:Screen"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
 		</sequence>
+		<attribute name="homeId" type="string"></attribute>
 	</complexType>
 
 
@@ -405,7 +407,6 @@ false: Bei fester Grenze
 				maxOccurs="1" minOccurs="1">
 			</element>
 		</sequence>
-		<attribute name="homeId" type="string" use="required"></attribute>
 	</complexType>
 
 	<element name="SolvisDescription" type="tns:SolvisDescription"></element>
@@ -846,7 +847,6 @@ da der user diesen manuell verändert haben könnte.</documentation>
     		</element>
     	</sequence>
     	<attribute name="id" type="string" use="required"></attribute>
-    	<attribute name="clearScreenId" type="string" use="optional"></attribute>
     </complexType>
 
     <complexType name="Preparations">

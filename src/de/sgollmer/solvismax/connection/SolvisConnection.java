@@ -88,7 +88,6 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 //				System.out.println(
 //						"Connect-Timeout: " + uc.getConnectTimeout() + ", Read-Timeout: " + uc.getReadTimeout());
 				InputStream in = urlConnection.getInputStream();
-				// TODO hier scheint es MANCHMAL keinen Timeout zu geben
 				this.setConnected();
 				return in;
 			}

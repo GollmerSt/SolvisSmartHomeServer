@@ -3,9 +3,6 @@
 	targetNamespace="http://www.example.org/control"
 	xmlns:tns="http://www.example.org/control"
 	elementFormDefault="qualified">
-	<annotation>
-		<documentation></documentation>
-	</annotation>
 	<complexType name="BaseData">
 		<annotation>
 			<documentation>
@@ -14,57 +11,20 @@
 		</annotation>
 		<sequence>
 			<element name="ExecutionData" type="tns:ExecutionData"
-				maxOccurs="1" minOccurs="1"></element>
+				maxOccurs="1" minOccurs="1">
+			</element>
 			<element name="Units" type="tns:Units" maxOccurs="unbounded"
 				minOccurs="0">
 			</element>
 		</sequence>
+		<attribute name="DEBUG" type="boolean" use="optional"></attribute>
 	</complexType>
 	<element name="BaseData" type="tns:BaseData"></element>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	<complexType name="Units">
 		<sequence>
 			<element name="Unit" type="tns:Unit"></element>
 		</sequence>
 	</complexType>
-
 	<complexType name="Unit">
 		<sequence></sequence>
 		<attribute name="id" type="string" use="required"></attribute>
@@ -82,8 +42,24 @@
 		<attribute name="defaultAverageCount" type="int"
 			use="required">
 		</attribute>
-		<attribute name="defaultReadMeasurementsIntervall_ms" type="int"
-			use="required">
+		<attribute name="measurementHysteresisFactor" type="int"
+			use="required">	<annotation>
+		<documentation>Hysteriess-Faktor für Messungen, über die ein
+			Mittelwert gebildet wird. Bei 0 führt jede Änderung zu einer
+			Messwertausgabe, bei != null wird abhängig vom Sensorrauschen der
+			Hysteresisfaktor eingestellt.
+			Der Hysteresiswert berechnet sich dann nach: Sensorrauschen *
+			Hysteresisfaktor / Anzahl der Messwerte, über die der Mittelwert
+			gebildet wird.
+			Das Rauschen wird über die Differenzen zwischen zwei Messwerten
+			ermittelt. Wenn Messungen jede 10s erfolgen, hat sich der zu messende
+			Wert nur sehr wenig geändert, so dass der Unterschied ein Maß
+			für das Rauschen darstellt.
+		</documentation>
+	</annotation>
+			</attribute>
+		<attribute name="defaultReadMeasurementsIntervall_ms"
+			type="int" use="required">
 		</attribute>
 		<attribute name="forcedUpdateIntervall_ms" type="int"
 			use="required">
@@ -95,7 +71,6 @@
 			use="required">
 		</attribute>
 	</complexType>
-
 	<complexType name="ExecutionData">
 		<attribute name="timeZone" type="string" use="required"></attribute>
 		<attribute name="port" type="int" use="required"></attribute>

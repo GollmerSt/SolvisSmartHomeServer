@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.model.objects.configuration;
 
 import java.io.IOException;
@@ -92,7 +99,6 @@ public class Solar implements Configuration {
 					this.returnTemperature = (Rectangle) created ;
 					break ;
 			}
-			// TODO Auto-generated method stub
 			
 		}
 		

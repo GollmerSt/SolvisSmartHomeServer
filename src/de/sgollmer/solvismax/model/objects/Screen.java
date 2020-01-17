@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
@@ -216,10 +217,12 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	public static class ScreenTouch {
 		private final Screen screen;
 		private final TouchPoint touchPoint;
+		private final Preparation preparation;
 
-		public ScreenTouch(Screen screen, TouchPoint touchPoint) {
+		public ScreenTouch(Screen screen, TouchPoint touchPoint, Preparation preparation) {
 			this.screen = screen;
 			this.touchPoint = touchPoint;
+			this.preparation = preparation ;
 		}
 
 		public Screen getScreen() {
@@ -228,6 +231,21 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 
 		public TouchPoint getTouchPoint() {
 			return touchPoint;
+		}
+
+		public Preparation getPreparation() {
+			return preparation;
+		}
+		
+		public boolean execute( Solvis solvis ) throws IOException, TerminationException {
+			boolean success = true ;
+			if ( this.preparation != null ) {
+				success = this.preparation.execute(solvis) ;
+			}
+			if ( success ) {
+				solvis.send(this.touchPoint);
+			}
+			return success ;
 		}
 	}
 
@@ -251,6 +269,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 
 		while (previous != null) {
 			TouchPoint touch = current.getTouchPoint();
+			Preparation preparation = current.getPreparation() ;
 
 			Screen altScreen = current.getAlternativePreviousScreen(configurationMask);
 			if (altScreen != null && !learn) {
@@ -266,7 +285,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 					}
 				}
 			}
-			screens.add(new ScreenTouch(previous, touch));
+			screens.add(new ScreenTouch(previous, touch, preparation));
 			current = previous;
 			previous = current.getPreviousScreen(configurationMask);
 		}
@@ -511,22 +530,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 					boolean success = false;
 					for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
 						try {
-							Screen gotoScreen = nextScreen;
-							Preparation preparation = nextScreen.getPreparation();
-							if (preparation != null) {
-								gotoScreen = nextScreen.getPreviousScreen(configurationMask);
-								Screen clearScreen = preparation.getClearScreen(configurationMask);
-								if (clearScreen != null) {
-									Screen.gotoScreenLearning(solvis, clearScreen, current, learnScreens,
-											configurationMask);
-								}
-							}
-							Screen.gotoScreenLearning(solvis, gotoScreen, current, learnScreens, configurationMask);
-							if (preparation != null) {
-								preparation.learn(solvis, gotoScreen);
-								preparation.execute(solvis);
-								Screen.gotoScreenLearning(solvis, nextScreen, current, learnScreens, configurationMask);
-							}
+							nextScreen.gotoLearning(solvis, current, learnScreens, configurationMask);
 							current = nextScreen;
 							Screen cmpScreen = solvis.getCurrentScreen();
 							if (cmpScreen == null || cmpScreen == nextScreen) {
@@ -596,24 +600,23 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	 * @param learnScreens
 	 * @throws IOException
 	 */
-	public static void gotoScreenLearning(Solvis solvis, Screen screen, Screen current,
-			Collection<LearnScreen> learnScreens, int configurationMask) throws IOException, TerminationException {
+	public void gotoLearning(Solvis solvis, Screen current, Collection<LearnScreen> learnScreens, int configurationMask)
+			throws IOException, TerminationException {
 		if (current == null) {
-			String homeId = solvis.getSolvisDescription().getHomeId();
-			if (! homeId.equals(screen.getId())) {
-				logger.warn("Goto screen <" + screen + "> not succesfull, home screen is forced");
+			if (this != solvis.getHomeScreen()) {
+				logger.log(LEARN, "Warning: Goto screen <" + this + "> not succesfull, home screen is forced");
 			}
 			solvis.gotoHome();
-			current = solvis.getSolvisDescription().getScreens().get(homeId, solvis.getConfigurationMask());
+			current = solvis.getHomeScreen();
 		}
-		if (screen == current) {
+		if (this == current) {
 			return;
 		}
-		List<ScreenTouch> previousScreens = screen.getPreviousScreens(true, configurationMask);
-		boolean found = false;
-		while (!found) {
+		List<ScreenTouch> previousScreens = this.getPreviousScreens(true, configurationMask);
+		boolean gone = false;
+		while (!gone) {
 			ScreenTouch foundScreenTouch = null;
-			Screen next = screen;
+			Screen next = this;
 			for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
 				ScreenTouch st = it.next();
 				Screen previous = st.getScreen();
@@ -626,16 +629,29 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 			}
 			if (foundScreenTouch == null) {
 				current = back(solvis, current, learnScreens, configurationMask);
-				if (screen == current) {
-					found = true;
-				}
 			} else {
-				found = true;
-				solvis.send(foundScreenTouch.getTouchPoint());
-				current = solvis.getCurrentScreen();
-				if (current == null) {
-					current = next;
+				Preparation preparation = foundScreenTouch.getPreparation();
+				boolean preparationSuccess = true;
+				if (preparation != null) {
+					preparationSuccess = preparation.learn(solvis);
 				}
+				if (preparationSuccess) {
+					solvis.send(foundScreenTouch.getTouchPoint());
+					current = solvis.getCurrentScreen();
+					if (current == null) {
+						current = next;
+						if (next != this) {
+							logger.log(LEARN, "Warning: Goto with an unlearned Screen, algorithm or control.xml fail?");
+						}
+					}
+				} else {
+					solvis.gotoHome();
+					current = solvis.getHomeScreen();
+					logger.log(LEARN, "Pepartation failed, learning will tried again.");
+				}
+			}
+			if (this == current) {
+				gone = true;
 			}
 		}
 
@@ -735,5 +751,67 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	public ConfigurationMasks getConfigurationMask() {
 		return configurationMasks;
 	}
+
+	public boolean goTo(Solvis solvis) throws IOException, TerminationException {
+
+		if (solvis.getCurrentScreen() == null) {
+			solvis.gotoHome();
+		}
+
+		if (solvis.getCurrentScreen() == this) {
+			return true;
+		}
+
+//		if (this == solvis.getHomeScreen()) {
+//			solvis.gotoHome();
+//			return true;
+//		}
+//
+		List<ScreenTouch> previousScreens = this.getPreviosScreens(solvis.getConfigurationMask());
+
+		boolean gone = false;
+
+		for (int cnt = 0; !gone && cnt < Constants.FAIL_REPEATS; ++cnt) {
+
+			for (int gotoDeepth = 0; !gone
+					&& solvis.getCurrentScreen() != null & gotoDeepth < Constants.MAX_GOTO_DEEPTH; ++gotoDeepth) {
+
+				// && this.getCurrentScreen() != this.homeScreen) {
+				// ListIterator<Screen> it = null;
+				ScreenTouch foundScreenTouch = null;
+				for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
+					ScreenTouch st = it.next();
+					Screen previous = st.getScreen();
+					if (previous == solvis.getCurrentScreen()) {
+						foundScreenTouch = st;
+						break;
+					}
+				}
+
+				if (foundScreenTouch == null) {
+					solvis.sendBack();
+				} else {
+					if ( ! foundScreenTouch.execute(solvis)) {
+						gone = false ;
+						break ;
+					}
+				}
+
+				if (solvis.getCurrentScreen() == this) {
+					gone = true;
+				}
+			}
+			if (!gone) {
+				solvis.gotoHome(); // try it from beginning
+				logger.info("Goto screen <" + this.getId() + "> not succcessful. Will be retried.");
+			}
+		}
+		if (!gone) {
+			logger.error("Screen <" + this.getId() + "> not found.");
+		}
+		return solvis.getCurrentScreen() == this;
+
+	}
+	
 
 }

@@ -97,7 +97,7 @@ public class AllPreparations {
 			@Override
 			public void setAttribute(QName name, String value) {
 				switch (name.getLocalPart()) {
-					case "preparationRef":
+					case "refId":
 						this.preparationId = value;
 				}
 

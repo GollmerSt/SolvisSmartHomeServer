@@ -1,0 +1,17 @@
+Ä N D E R U N G EN
+
+Version 00.01.01
+
+	15.01.2020	Average-Routine geändert. Einzelne Messausreißer konnten die angezeigte Genauigkeit
+	            der Sensoren stark reduzieren. Es wurde daher der Algorithmus geändert und in der Datei
+	            das Attribut "measurementHysteresisFactor" eingeführt.
+	            
+	16.01.2020  Die Erkennung von User-Eingriffen funktionierte nicht mehr. Fixed.
+	
+	17.01.2020	Modus mit mehr als einem Heizkreis übverarbeitet und sowei möglich getestet.
+	
+	
+
+
+Version 00.01.00
+	1. Release

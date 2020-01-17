@@ -24,6 +24,7 @@ public class AllSolvisData {
 
 	private final Map<String, SolvisData> solvisDatas = new HashMap<>();
 	private int averageCount;
+	private int measurementHysteresisFactor;
 	private int readMeasurementInterval;
 	private boolean burnerSynchronisation = true;
 
@@ -78,6 +79,14 @@ public class AllSolvisData {
 	 */
 	public void setAverageCount(int averageCount) {
 		this.averageCount = averageCount;
+	}
+
+	public int getMeasurementHysteresisFactor() {
+		return measurementHysteresisFactor;
+	}
+
+	public void setMeasurementHysteresisFactor(int measurementHysteresisFactor) {
+		this.measurementHysteresisFactor = measurementHysteresisFactor;
 	}
 
 	public boolean isBurnerSynchronisation() {

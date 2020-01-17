@@ -12,6 +12,7 @@ import java.util.Collection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
@@ -38,7 +39,7 @@ public class WatchDog {
 		this.saver = saver;
 		Miscellaneous misc = this.solvis.getSolvisDescription().getMiscellaneous();
 		int releaseBlocking = misc.getReleaseblockingAfterUserChange_ms();
-		if (Constants.DEBUG) {
+		if (BaseData.DEBUG) {
 			releaseBlocking = Constants.DEBUG_USER_ACCESS_TIME;
 		}
 		this.releaseblockingAfterUserChange_ms = releaseBlocking;
@@ -101,7 +102,7 @@ public class WatchDog {
 							if (solvisImage.equals(this.solvis.getCurrentImage())) {
 								finished = true;
 
-							} else if (!solvisImage.equals(this.solvis.getCurrentImage())) {
+							} else {
 
 								Screen screen = solvis.getSolvisDescription().getScreens().getScreen(solvisImage,
 										solvis);
@@ -123,6 +124,8 @@ public class WatchDog {
 											}
 										}
 									}
+								} else {
+									userAcess = UserAcess.DETECTED;
 								}
 							}
 						}

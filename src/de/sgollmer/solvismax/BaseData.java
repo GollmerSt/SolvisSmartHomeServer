@@ -20,6 +20,8 @@ public class BaseData {
 
 	private static final String XML_UNITS = "Units";
 	private static final String XML_EXECUTION_DATA = "ExecutionData";
+	
+	public static boolean DEBUG = false ;
 
 	private final String timeZone;
 
@@ -66,6 +68,11 @@ public class BaseData {
 
 		@Override
 		public void setAttribute(QName name, String value) {
+			switch ( name.getLocalPart() ) {
+				case "DEBUG":
+					DEBUG = Boolean.parseBoolean(value) ;
+					break ;
+			}
 		}
 
 		@Override

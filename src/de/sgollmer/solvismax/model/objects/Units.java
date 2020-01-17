@@ -78,20 +78,22 @@ public class Units {
 		private final String account;
 		private final String password;
 		private final int defaultAverageCount;
+		private final int measurementHysteresisFactor;
 		private final int defaultReadMeasurementsIntervall_ms;
 		private final int forcedUpdateIntervall_ms;
 		private final int bufferedIntervall_ms;
 		private final boolean delayAfterSwitchingOnEnable;
 
 		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
-				int defaultReadMeasurementsIntervall_ms, int forcedUpdateIntervall_ms, int bufferedIntervall_ms,
-				boolean delayAfterSwitchingOn) {
+				int measurementHysteresisFactor, int defaultReadMeasurementsIntervall_ms, int forcedUpdateIntervall_ms,
+				int bufferedIntervall_ms, boolean delayAfterSwitchingOn) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
 			this.account = account;
 			this.password = password;
 			this.defaultAverageCount = defaultAverageCount;
+			this.measurementHysteresisFactor = measurementHysteresisFactor;
 			this.defaultReadMeasurementsIntervall_ms = defaultReadMeasurementsIntervall_ms;
 			this.forcedUpdateIntervall_ms = forcedUpdateIntervall_ms;
 			this.bufferedIntervall_ms = bufferedIntervall_ms;
@@ -123,6 +125,7 @@ public class Units {
 			private String account;
 			private String password;
 			private int defaultAverageCount;
+			private int measurementHysteresisFactor;
 			private int defaultReadMeasurementsIntervall_ms;
 			private int forcedUpdateIntervall_ms;
 			private int bufferedIntervall_ms;
@@ -153,6 +156,9 @@ public class Units {
 					case "defaultAverageCount":
 						this.defaultAverageCount = Integer.parseInt(value);
 						break;
+					case "measurementHysteresisFactor":
+						this.measurementHysteresisFactor = Integer.parseInt(value);
+						break ;
 					case "defaultReadMeasurementsIntervall_ms":
 						this.defaultReadMeasurementsIntervall_ms = Integer.parseInt(value);
 						break;
@@ -171,7 +177,7 @@ public class Units {
 
 			@Override
 			public Unit create() throws XmlError, IOException {
-				return new Unit(id, type, url, account, password, defaultAverageCount,
+				return new Unit(id, type, url, account, password, defaultAverageCount, measurementHysteresisFactor,
 						defaultReadMeasurementsIntervall_ms, forcedUpdateIntervall_ms, bufferedIntervall_ms,
 						delayAfterSwitchingOnEnable);
 			}
@@ -198,6 +204,10 @@ public class Units {
 
 		public int getDefaultAverageCount() {
 			return defaultAverageCount;
+		}
+
+		public int getMeasurementHysteresisFactor() {
+			return measurementHysteresisFactor;
 		}
 
 		public int getDefaultReadMeasurementsIntervall_ms() {

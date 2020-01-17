@@ -32,7 +32,6 @@ public class CommandClock implements CommandI {
 
 	@Override
 	public Screen getScreen(Solvis solvis) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

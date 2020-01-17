@@ -3,12 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/control base.xsd ">
 	<tns:ExecutionData timeZone="Europe/Berlin"
-	port="10735" writablePathLinux="/opt/fhem" />
+		port="10735" writablePathLinux="/opt/fhem" />
 	<tns:Units>
 		<tns:Unit id="mySolvis" type="SolvisMax" account="account"
-	password="password" url="http://aaa.bbb.ccc.ddd"
-	defaultAverageCount="12" defaultReadMeasurementsIntervall_ms="10000"
-	forcedUpdateIntervall_ms="3600000" bufferedIntervall_ms="60000"
-	delayAfterSwitchingOnEnable="true" />
+			password="password" url="http://aaa.bbb.ccc.ddd"
+			defaultAverageCount="12" measurementHysteresisFactor="4"
+			defaultReadMeasurementsIntervall_ms="10000"
+			forcedUpdateIntervall_ms="3600000" bufferedIntervall_ms="60000"
+			delayAfterSwitchingOnEnable="true" />
 	</tns:Units>
 </tns:BaseData>

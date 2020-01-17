@@ -14,27 +14,32 @@ public class Average implements Cloneable {
 	public boolean EDGE_DETECTION = false;
 
 	private final int maxCount;
+	private final int measurementHysteresisFactor ;
 	private int average = 0;
-	private int maxDelta = 0;
+	private int absAverage = 0;
+	private int absCount;
 	private long sum;
 	private int size;
-	private int next;
+	private int lastIdx;
 	private final int[] lastMeasureValues;
 
-	public Average(int maxCount) {
+	public Average(int maxCount, int measurementHysteresisFactor) {
 		this.maxCount = maxCount;
+		this.measurementHysteresisFactor = measurementHysteresisFactor ;
 		this.lastMeasureValues = new int[maxCount];
 		this.clear();
 	}
 
 	public Average(Average average) {
 		this.maxCount = average.maxCount;
+		this.measurementHysteresisFactor = average.measurementHysteresisFactor ;
 		this.lastMeasureValues = Arrays.copyOf(average.lastMeasureValues, average.maxCount);
 		this.average = average.average;
-		this.maxDelta = average.maxDelta;
 		this.sum = average.sum;
 		this.size = average.size;
-		this.next = average.next;
+		this.lastIdx = average.lastIdx;
+		this.absAverage = average.absAverage;
+		this.absCount = average.absCount;
 	}
 
 	public void add(SingleData<?> data) {
@@ -43,29 +48,35 @@ public class Average implements Cloneable {
 			return;
 		}
 
+		value *= 10;
+
 		if (this.size > 0) {
 			int last = this.getLast();
 			int delta = Math.abs(last - value);
-			delta = delta < 0 ? -delta : delta;
-			if (delta > this.maxDelta) {
-				this.maxDelta = delta;
-			}
-			delta = this.average - value;
-			delta = delta < 0 ? -delta : delta;
-			for (int cnt = 0; delta > this.maxDelta && cnt < 4; ++cnt) {
-				this.put(value);
-				delta -= this.maxDelta;
+			this.absAverage += 2 * delta; // Annahme: Messfehler sind statistisch gleichmäßig verteilt
+			++this.absCount;
+			int precision = getPrecision();
+			if (precision > 0) {
+				int deltaLast = Math.abs(this.average - last);
+				int deltaCurrent = Math.abs(this.average - value);
+				if (deltaLast > precision && deltaCurrent > precision) {
+					int cnt = deltaCurrent / precision;
+					while (--cnt >= 0) {
+						this.put(value);
+					}
+				}
 			}
 		}
 
 		this.put(value);
 
 		int newAverage = (int) ((2 * this.sum + this.size) / (2 * this.size));
+		int delta = Math.abs(newAverage - this.average);
 
 		if (this.size > 1) {
-			int delta = Math.abs(newAverage - this.average);
 
-			if (delta > 1 && delta > (2 * this.maxDelta + this.size - 1) / this.size) {
+			if (delta > 10
+					&& delta > (this.measurementHysteresisFactor * this.getPrecision() + this.size - 1) / this.size) {
 				average = newAverage;
 			}
 		} else {
@@ -73,15 +84,23 @@ public class Average implements Cloneable {
 		}
 	}
 
+	private int getPrecision() {
+		return (int) ((this.absAverage + (this.absCount >> 1)) / this.absCount);
+	}
+
 	SingleData<?> getAverage(SingleData<?> singleData) {
 		if (this.maxCount > this.size) {
 			return null;
 		} else {
-			return singleData.create(average);
+			return singleData.create(average > 0 ? (average + 5) / 10 : (average - 5) / 10);
 		}
 	}
 
 	private void put(int value) {
+		int next = this.lastIdx + 1;
+		if (next >= this.maxCount) {
+			next = 0;
+		}
 		if (this.size == this.maxCount) {
 			int first = lastMeasureValues[next];
 			this.sum -= first;
@@ -90,21 +109,18 @@ public class Average implements Cloneable {
 		}
 		this.sum += value;
 		lastMeasureValues[next] = value;
-		++next;
-		if (next >= this.maxCount) {
-			next = 0;
-		}
+		this.lastIdx = next;
 
 	}
 
 	private int getLast() {
-		return this.lastMeasureValues[next - 1 < 0 ? size - 1 : next - 1];
+		return this.lastMeasureValues[lastIdx];
 	}
 
 	public void clear() {
 		this.sum = 0;
 		this.size = 0;
-		this.next = 0;
+		this.lastIdx = -1;
 	}
 
 }

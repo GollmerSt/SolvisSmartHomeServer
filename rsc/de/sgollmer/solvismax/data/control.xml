@@ -2,8 +2,7 @@
 <tns:SolvisDescription
 	xmlns:tns="http://www.example.org/control"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.example.org/control control.xsd "
-	homeId="Home">
+	xsi:schemaLocation="http://www.example.org/control control.xsd ">
 	<tns:Types>
 		<tns:Type id="SolvisMax" configuration="0x01000000" />
 		<tns:Type id="SolvisBen" configuration="0x02000000" />
@@ -45,7 +44,7 @@
 			<tns:Coordinate X="0" Y="0" />
 		</tns:ResetScreenSaver>
 	</tns:ScreenSaver>
-	<tns:Screens>
+	<tns:Screens homeId="Home">
 		<tns:Screen id="Home" backId="" previousId="">
 			<tns:ScreenGrafic exact="true" id="Home">
 				<tns:Field>
@@ -1272,8 +1271,8 @@
 			</tns:ConfigurationMasks>
 			<tns:Control screenId="Home">
 				<tns:Current>
-					<tns:TopLeft X="134" Y="10" />
-					<tns:BottomRight X="155" Y="27" />
+					<tns:TopLeft X="133" Y="8" />
+					<tns:BottomRight X="155" Y="30" />
 				</tns:Current>
 				<tns:TypeMode>
 					<tns:Mode id="Tag">
@@ -1463,8 +1462,8 @@
 			</tns:ConfigurationMasks>
 			<tns:Control screenId="Home">
 				<tns:Current>
-					<tns:TopLeft X="134" Y="40" />
-					<tns:BottomRight X="155" Y="57" />
+					<tns:TopLeft X="133" Y="37" />
+					<tns:BottomRight X="155" Y="58" />
 				</tns:Current>
 				<tns:TypeMode>
 					<tns:Mode id="Tag">
@@ -1565,7 +1564,7 @@
 			<tns:Control screenId="Home">
 				<tns:Current>
 					<tns:TopLeft X="112" Y="40" />
-					<tns:BottomRight X="132" Y="65" />
+					<tns:BottomRight X="132" Y="55" />
 				</tns:Current>
 				<tns:TypeValue format="C#0C" increment="1" least="-5"
 					most="5">
@@ -1627,8 +1626,7 @@
 		</tns:ChannelDescription>
 	</tns:ChannelDescriptions>
 	<tns:Preparations>
-		<tns:Preparation id="Button_HK1"
-			clearScreenId="Warmwasser">
+		<tns:Preparation id="Button_HK1">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="60" Y="15" />
@@ -1640,13 +1638,12 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Preparation>
-		<tns:Preparation id="Button_HK2"
-			clearScreenId="Warmwasser">
+		<tns:Preparation id="Button_HK2">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="60" Y="45" />
 			</tns:TouchPoint>
-			<tns:ScreenGrafic id="Button_HK1">
+			<tns:ScreenGrafic id="Button_HK2">
 				<tns:Field>
 					<tns:TopLeft X="47" Y="32" />
 					<tns:BottomRight X="76" Y="62" />

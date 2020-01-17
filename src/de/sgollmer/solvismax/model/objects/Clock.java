@@ -40,7 +40,7 @@ public class Clock implements Assigner, GraficsLearnable {
 
 	private static final Logger logger = LogManager.getLogger(Clock.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
-	private static final Calendar CALENDAR_2018 ;
+	private static final Calendar CALENDAR_2018;
 
 	private static final String XML_YEAR = "Year";
 	private static final String XML_MONTH = "Month";
@@ -61,9 +61,9 @@ public class Clock implements Assigner, GraficsLearnable {
 	private final TouchPoint ok;
 
 	private OfConfigs<Screen> screen = null;
-	
+
 	static {
-		CALENDAR_2018 = Calendar.getInstance() ;
+		CALENDAR_2018 = Calendar.getInstance();
 		CALENDAR_2018.set(2018, 0, 1, 0, 0, 0);
 		CALENDAR_2018.set(Calendar.MILLISECOND, 0);
 	}
@@ -79,7 +79,7 @@ public class Clock implements Assigner, GraficsLearnable {
 	}
 
 	public boolean set(Solvis solvis) throws IOException, TerminationException {
-		boolean result = solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
+		boolean result = this.screen.get(solvis.getConfigurationMask()).goTo(solvis);
 		if (!result) {
 			return false;
 		}
@@ -394,8 +394,8 @@ public class Clock implements Assigner, GraficsLearnable {
 
 			Calendar solvisDate = (Calendar) data.getSingleData().get();
 			long now = System.currentTimeMillis();
-			if ( now < CALENDAR_2018.getTimeInMillis() ) {
-				return ;
+			if (now < CALENDAR_2018.getTimeInMillis()) {
+				return;
 			}
 
 			int diff = (int) Math.abs(solvisDate.getTimeInMillis() - now);
@@ -410,6 +410,12 @@ public class Clock implements Assigner, GraficsLearnable {
 			Calendar adjustementCalendar = Calendar.getInstance();
 			adjustementCalendar.setTimeInMillis(nextAdjust.solvisAdjustTime);
 			boolean success = false;
+			Screen clockAdjustScreen = screen.get(configurationMask);
+			if (clockAdjustScreen == null) {
+				logger.error("Clock adjust screen not defined in the curren configuratiion. Adjustment fterminated");
+				return false;
+			}
+
 			for (int repeatFail = 0; !success && repeatFail < Constants.FAIL_REPEATS; ++repeatFail) {
 				success = true;
 				if (repeatFail > 0) {
@@ -420,7 +426,7 @@ public class Clock implements Assigner, GraficsLearnable {
 						int offset = part.solvisOrigin - part.calendarOrigin;
 						boolean adjusted = false;
 						for (int repeat = 0; !adjusted && repeat < Constants.SET_REPEATS + 1; ++repeat) {
-							solvis.gotoScreen(screen.get(configurationMask));
+							screen.get(configurationMask).goTo(solvis);
 							Integer solvisData = part.getValue(solvis);
 							if (solvisData == null) {
 								logger.error("Setting of the solvis clock failed, it will be tried again.");
@@ -567,7 +573,14 @@ public class Clock implements Assigner, GraficsLearnable {
 
 	@Override
 	public void learn(Solvis solvis) throws IOException, LearningError {
-		solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
+		Screen screen = this.screen.get(solvis.getConfigurationMask());
+		if (screen == null) {
+			String error = "Learning of the clock screens not possible, rejected."
+					+ "Screens undefined in the current configuration. Check the control.xml!";
+			logger.error(error);
+			throw new LearningError(error);
+		}
+		this.screen.get(solvis.getConfigurationMask()).goTo(solvis);
 		boolean finished = false;
 		for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
 			if (repeat == 1) {

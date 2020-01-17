@@ -38,7 +38,6 @@ public class SolvisDescription {
 	private static final String XML_DURATIONS = "Durations";
 	private static final String XML_MISCELLANEOUS = "Miscellaneous";
 
-	private final String homeId;
 	private final Types types;
 	private final Configurations configurations;
 	private final ScreenSaver saver;
@@ -56,11 +55,10 @@ public class SolvisDescription {
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
-	public SolvisDescription(String homeId, Types types, Configurations configurations, ScreenSaver saver,
+	public SolvisDescription(Types types, Configurations configurations, ScreenSaver saver,
 			AllScreens screens, FallBack fallBack, AllScreenGraficDescriptions screenGrafics,
 			AllChannelDescriptions dataDescriptions, AllPreparations allPreparations, Clock clock,
 			AllDurations durations, Miscellaneous miscellaneous) {
-		this.homeId = homeId;
 		this.types = types;
 		this.configurations = configurations;
 		this.saver = saver;
@@ -105,7 +103,6 @@ public class SolvisDescription {
 	public static class Creator extends BaseCreator<SolvisDescription> {
 
 		private final AllScreenGraficDescriptions screenGrafics;
-		private String homeId;
 		private Types types ;
 		private Configurations configurations;
 		private ScreenSaver saver;
@@ -125,16 +122,11 @@ public class SolvisDescription {
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			switch (name.getLocalPart()) {
-				case "homeId":
-					this.homeId = value;
-			}
-
 		}
 
 		@Override
 		public SolvisDescription create() throws XmlError {
-			return new SolvisDescription(homeId, types, configurations, saver, screens, fallBack, screenGrafics,
+			return new SolvisDescription(types, configurations, saver, screens, fallBack, screenGrafics,
 					dataDescriptions, allPreparations, clock, durations, miscellaneous);
 		}
 
@@ -254,13 +246,6 @@ public class SolvisDescription {
 			}
 		}
 
-	}
-
-	/**
-	 * @return the homeId
-	 */
-	public String getHomeId() {
-		return homeId;
 	}
 
 	/**

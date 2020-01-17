@@ -21,19 +21,16 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class AllScreens implements ScreenLearnable {
 
-	private Map<String, OfConfigs<Screen>> screens = new HashMap<>();
+	private final String homeId;
+	private final Map<String, OfConfigs<Screen>> screens ;
 
-	public void add(Screen screen) throws XmlError {
-		OfConfigs<Screen> screenConf = this.screens.get(screen.getId());
-		if (screenConf == null) {
-			screenConf = new OfConfigs<Screen>();
-			this.screens.put(screen.getId(), screenConf);
-		}
-		screenConf.verifyAndAdd(screen);
+	public AllScreens(String homeId, Map<String, OfConfigs<Screen>> screens) {
+		this.homeId = homeId;
+		this.screens = screens ;
 	}
-	
-	public OfConfigs<Screen> get( String id ) {
-		return this.screens.get(id) ;
+
+	public OfConfigs<Screen> get(String id) {
+		return this.screens.get(id);
 	}
 
 	public Screen get(String id, int configurationMask) {
@@ -64,19 +61,34 @@ public class AllScreens implements ScreenLearnable {
 
 	public static class Creator extends CreatorByXML<AllScreens> {
 
-		private AllScreens allScreens = new AllScreens();
+		private String homeId;
+		private final Map<String, OfConfigs<Screen>> screens = new HashMap<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
+		private void add(Screen screen) throws XmlError {
+			OfConfigs<Screen> screenConf = this.screens.get(screen.getId());
+			if (screenConf == null) {
+				screenConf = new OfConfigs<Screen>();
+				this.screens.put(screen.getId(), screenConf);
+			}
+			screenConf.verifyAndAdd(screen);
+		}
+
 		@Override
 		public void setAttribute(QName name, String value) {
+			switch (name.getLocalPart()) {
+				case "homeId":
+					this.homeId = value;
+					break;
+			}
 		}
 
 		@Override
 		public AllScreens create() throws XmlError {
-			return allScreens;
+			return new AllScreens(homeId, screens);
 		}
 
 		@Override
@@ -86,7 +98,7 @@ public class AllScreens implements ScreenLearnable {
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			allScreens.add((Screen) created);
+			this.add((Screen) created);
 
 		}
 
@@ -96,8 +108,8 @@ public class AllScreens implements ScreenLearnable {
 	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
 			int configurationMask) {
 		for (OfConfigs<Screen> screenConf : screens.values()) {
-			Screen screen = screenConf.get(configurationMask) ;
-			if ( screen != null ) {
+			Screen screen = screenConf.get(configurationMask);
+			if (screen != null) {
 				screen.createAndAddLearnScreen(null, learnScreens, configurationMask);
 			}
 		}
@@ -106,6 +118,10 @@ public class AllScreens implements ScreenLearnable {
 	@Override
 	public void learn(Solvis solvis) {
 
+	}
+
+	public String getHomeId() {
+		return homeId;
 	}
 
 }
