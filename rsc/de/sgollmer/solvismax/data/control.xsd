@@ -372,7 +372,10 @@ false: Bei fester Grenze
 		<sequence>
             <element name="Types">
 				<complexType>
-					<sequence>
+                    <annotation>
+                    	<documentation>Definition der Anlagentypen wie SolvisMax/SolvisBen</documentation>
+                    </annotation>
+                    <sequence>
 						<element name="Type" type="tns:Type" maxOccurs="unbounded" minOccurs="1"></element>
 					</sequence>
 				</complexType></element>
@@ -856,7 +859,10 @@ da der user diesen manuell verändert haben könnte.</documentation>
     </complexType>
 
     <complexType name="HeaterLoops">
-    	<sequence>
+        <annotation>
+        	<documentation>Zur Ermittelung der Heizkreise</documentation>
+        </annotation>
+        <sequence>
     		<element name="HK1Button" type="tns:Rectangle" maxOccurs="1"
     			minOccurs="1">
     		</element>
@@ -867,9 +873,15 @@ da der user diesen manuell verändert haben könnte.</documentation>
     </complexType>
 
     <complexType name="Configurations">
-    	<sequence>
+        <annotation>
+        	<documentation>Beschreibungen um die Anlagenkonfiguration zu ermitteln</documentation>
+        </annotation>
+        <sequence>
     		<element name="HeaterLoops" type="tns:HeaterLoops"
     			maxOccurs="1" minOccurs="1">
+                <annotation>
+                	<documentation>Konfiguration der Heizkreise</documentation>
+                </annotation>
     		</element>
     		<element name="Solar" type="tns:Solar" maxOccurs="1" minOccurs="1"></element>
     	</sequence>
@@ -939,7 +951,7 @@ da der user diesen manuell verändert haben könnte.</documentation>
 
     <complexType name="Solar">
         <annotation>
-        	<documentation>Dient der Erkennung einer </documentation>
+        	<documentation>Zur Ermittlung des Solarkreises</documentation>
         </annotation>
         <sequence>
     		<element name="ReturnTemperature" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
@@ -952,7 +964,10 @@ da der user diesen manuell verändert haben könnte.</documentation>
 
     <complexType name="Type">
     	<attribute name="id" use="required">
-    		<simpleType>
+            <annotation>
+            	<documentation>Identifikation des Anlagentypes, aktuell nur SolvisMax/SolvisBen</documentation>
+            </annotation>
+            <simpleType>
     			<restriction base="string">
     				<enumeration value="SolvisMax"></enumeration>
     				<enumeration value="SolvisBen"></enumeration>

@@ -17,11 +17,17 @@
 				minOccurs="0">
 			</element>
 		</sequence>
-		<attribute name="DEBUG" type="boolean" use="optional"></attribute>
+		<attribute name="DEBUG" type="boolean" use="optional">
+			<annotation>
+				<documentation>Debug-Mode. Nur zur Entwicklung</documentation>
+			</annotation></attribute>
 	</complexType>
 	<element name="BaseData" type="tns:BaseData"></element>
 	<complexType name="Units">
-		<sequence>
+        <annotation>
+        	<documentation>Basis-Daten einer Solvis-Anlage</documentation>
+        </annotation>
+        <sequence>
 			<element name="Unit" type="tns:Unit"></element>
 		</sequence>
 	</complexType>
@@ -72,7 +78,10 @@
 		</attribute>
 	</complexType>
 	<complexType name="ExecutionData">
-		<attribute name="timeZone" type="string" use="required"></attribute>
+        <annotation>
+        	<documentation>Anlagen-unspezifische Basis-Daten</documentation>
+        </annotation>
+        <attribute name="timeZone" type="string" use="required"></attribute>
 		<attribute name="port" type="int" use="required"></attribute>
 		<attribute name="writeablePathWindows" type="string"
 			use="optional">
