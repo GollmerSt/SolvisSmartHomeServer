@@ -41,7 +41,6 @@ import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.data.DateValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.solvismax.objects.Rectangle.Creator;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 

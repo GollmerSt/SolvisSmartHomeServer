@@ -5,13 +5,7 @@ Offene Aufgaben:
      Diese Konfiguration könnte mit in die Backup-Daten gespeichert werden, dadurch könnte schon
      beim Senden der Kanal-Namen zum Cient mitberücksichtigt sein, ohne dass eine Verbindung zur
      Solvis-Anklage vorliegen muss
-     
-5. >1 HK-Problem testen, folgende Aufgaben sind noch erforderlich
-        a) Hier muss noch Launch realisiert werden (wird erst aus dem XML gelesen).
-        b) Auch muss noch die LaunchRef aufgelöst werden
-        c) Testen 
 
-7. Befehle vom Client aus, um den Server zu beenden oder auch neu zu starten
 
 
 
@@ -151,3 +145,9 @@ Erledigt:
 	        at de.sgollmer.solvismax.Main.main(Main.java:81) [SolvisSmartHomeServer.jar:?]
 	^C
 	
+7. Befehle vom Client aus, um den Server zu beenden oder auch neu zu starten
+     
+5. >1 HK-Problem testen, folgende Aufgaben sind noch erforderlich
+        a) Hier muss noch Launch realisiert werden (wird erst aus dem XML gelesen).
+        b) Auch muss noch die LaunchRef aufgelöst werden
+        c) Testen 	

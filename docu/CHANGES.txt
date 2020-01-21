@@ -1,6 +1,16 @@
 Ä N D E R U N G EN
 
-Version 00.01.01
+
+Version 00.10.02
+
+	20.01.2020  Clock-Fine-Tuning implementiert. Man kann die Solvis-Uhr doch genauer einstellen,
+	            wenn man mehrfach auf den OK-Button der Zeieinstellung drückt. Jedes Stellen der
+	            Uhr, bewirkt, dass die zeit kurz "angehalten" wird. Das kann man nutzen, wenn die 
+	            Solvis-Uhr genauer eingestellt werden soll, ist aber mehr eine Spielerei.
+	            
+	21.02.2020	Restart des Servers nun auch vom Client möglich.
+
+Version 00.10.01
 
 	15.01.2020	Average-Routine geändert. Einzelne Messausreißer konnten die angezeigte Genauigkeit
 	            der Sensoren stark reduzieren. Es wurde daher der Algorithmus geändert und in der Datei
@@ -13,5 +23,5 @@ Version 00.01.01
 	
 
 
-Version 00.01.00
+Version 00.10.00
 	1. Release

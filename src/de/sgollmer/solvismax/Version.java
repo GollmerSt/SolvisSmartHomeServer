@@ -26,7 +26,7 @@ public class Version {
     
     @SuppressWarnings("static-method")
 	public String getFormatVersion() {
-    	return "01.01" ;
+    	return "01.02" ;
     }
 
 }
