@@ -21,7 +21,7 @@ public class Version {
     
     @SuppressWarnings("static-method")
 	public String getVersion() {
-    	return "00.01.00" ;
+    	return "00.10.02" ;
     }
     
     @SuppressWarnings("static-method")

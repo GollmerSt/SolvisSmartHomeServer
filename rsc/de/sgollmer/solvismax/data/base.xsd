@@ -32,7 +32,10 @@
 		</sequence>
 	</complexType>
 	<complexType name="Unit">
-		<sequence></sequence>
+        
+        <sequence>
+			<element name="ClockAdjustment" type="tns:ClockAdjustment" maxOccurs="1" minOccurs="0"></element>
+		</sequence>
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="type" use="required">
 			<simpleType>
@@ -89,5 +92,35 @@
 		<attribute name="writablePathLinux" type="string"
 			use="optional">
 		</attribute>
+	</complexType>
+
+	<complexType name="ClockAdjustment">
+		<attribute name="enable" type="boolean" use="required">
+			<annotation>
+				<documentation>Aktivieren des Abgleichs der Solvis-Zeit an die Systemzeit des Servers
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="fineLimitUpper_ms" type="int">
+			<annotation>
+				<documentation>Unterer Limit (i.A. positiv), von dem der Uhren-Feinabgleich erfolgen soll.
+Geht die Solvis-Uhr nach, solte dieser Wert großzügig gewählt werden oder auf den Feinabgleich ganz verzichtet werden</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="fineLimitLower_ms" type="int">
+		<annotation>
+        	<documentation>Unterer Limit (i.A. negativ), von dem der Uhren-Feinabgleich erfolgen soll.
+Geht die Solvis-Uhr nach, solte dieser Wert großzügig gewählt werden oder auf den Feinabgleich ganz verzichtet werden</documentation>
+        </annotation></attribute>
+        <attribute name="aproximatlySetAjust_ms" type="int">
+			<annotation>
+				<documentation>Zeit, um die die Uhr beim Setzen der Uhr "stehen" bleibt. Bei 0 ist das fine adjustment ausgeschaltet
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="burstLength" type="int">
+			<annotation>
+				<documentation>Der Feinabgleich erfolgt in Teilen alle 10 Minuten. Die burstLength ist die max. Anzahl der Stellvorgänge pro Teil.</documentation>
+			</annotation></attribute>
 	</complexType>
 </schema>

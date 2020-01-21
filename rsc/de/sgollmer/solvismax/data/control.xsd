@@ -907,6 +907,9 @@ da der user diesen manuell verändert haben könnte.</documentation>
     		<documentation>Parameter zum Stellen der Uhr</documentation>
     	</annotation>
     	<sequence>
+    		<element name="SecondsScan" type="tns:Rectangle"
+    			maxOccurs="1" minOccurs="1">
+    		</element>
     		<element name="Year" type="tns:DatePart" maxOccurs="1"
     			minOccurs="1">
     		</element>
@@ -932,12 +935,25 @@ da der user diesen manuell verändert haben könnte.</documentation>
     			minOccurs="1">
     		</element>
     	</sequence>
-        <attribute name="channelId" type="string" use="required"></attribute>
-        <attribute name="screenId" type="string" use="required"></attribute>
+    	<attribute name="channelId" type="string" use="required">
+    		<annotation>
+    			<documentation>Id des Channels, der die aktuelle Zeit der Solvis-Uhr wiedergibt.</documentation>
+    		</annotation></attribute>
+    	<attribute name="screenId" type="string" use="required">
+    		<annotation>
+    			<documentation>Id des Screen, wo das Setzen der Zeit erfolgt.</documentation>
+    		</annotation></attribute>
+    	<attribute name="okScreenId" type="string" use="required">
+    		<annotation>
+    			<documentation>Id des Screens, der nach den Druck des OK-Buttons erscheinen soll (dient der Verifikation)</documentation>
+    		</annotation></attribute>
     </complexType>
 
     <complexType name="DatePart">
-    	<sequence>
+        <annotation>
+        	<documentation>Beschreibung des jeweiligen Datums/Zeit-Anteils</documentation>
+        </annotation>
+        <sequence>
     		<element name="Rectangle" type="tns:Rectangle" maxOccurs="1"
     			minOccurs="1">
     		</element>

@@ -18,6 +18,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ScreenLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
 import de.sgollmer.solvismax.model.objects.configuration.Types;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
@@ -46,9 +47,9 @@ public class SolvisDescription {
 	private final AllScreenGraficDescriptions screenGrafics;
 	private final AllChannelDescriptions dataDescriptions;
 	private final AllPreparations allPreparations;
-	private final Clock clock;
+	private final ClockMonitor clock;
 
-	public Clock getClock() {
+	public ClockMonitor getClock() {
 		return clock;
 	}
 
@@ -57,7 +58,7 @@ public class SolvisDescription {
 
 	public SolvisDescription(Types types, Configurations configurations, ScreenSaver saver,
 			AllScreens screens, FallBack fallBack, AllScreenGraficDescriptions screenGrafics,
-			AllChannelDescriptions dataDescriptions, AllPreparations allPreparations, Clock clock,
+			AllChannelDescriptions dataDescriptions, AllPreparations allPreparations, ClockMonitor clock,
 			AllDurations durations, Miscellaneous miscellaneous) {
 		this.types = types;
 		this.configurations = configurations;
@@ -110,7 +111,7 @@ public class SolvisDescription {
 		private FallBack fallBack;
 		private AllChannelDescriptions dataDescriptions;
 		private AllPreparations allPreparations;
-		private Clock clock;
+		private ClockMonitor clock;
 
 		private AllDurations durations;
 		private Miscellaneous miscellaneous;
@@ -151,7 +152,7 @@ public class SolvisDescription {
 				case XML_PREPARATIONS:
 					return new AllPreparations.Creator(id, this);
 				case XML_CLOCK:
-					return new Clock.Creator(id, this);
+					return new ClockMonitor.Creator(id, this);
 				case XML_DURATIONS:
 					return new AllDurations.Creator(id, this);
 				case XML_MISCELLANEOUS:
@@ -191,7 +192,7 @@ public class SolvisDescription {
 					this.allPreparations = (AllPreparations) created;
 					break;
 				case XML_CLOCK:
-					this.clock = (Clock) created;
+					this.clock = (ClockMonitor) created;
 					break;
 				case XML_DURATIONS:
 					this.durations = (AllDurations) created;

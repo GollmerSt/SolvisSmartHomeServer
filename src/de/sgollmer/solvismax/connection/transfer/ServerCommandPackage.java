@@ -14,7 +14,7 @@ public class ServerCommandPackage extends JsonPackage {
 	}
 	
 	public enum ServerCommandEnum{
-		BACKUP, SCREEN_RESTORE_INHIBIT, SCREEN_RESTORE_ENABLE
+		BACKUP, SCREEN_RESTORE_INHIBIT, SCREEN_RESTORE_ENABLE, RESTART
 	}
 	
 	private ServerCommandEnum serverCommandEnum ;

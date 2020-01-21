@@ -30,7 +30,8 @@ import de.sgollmer.solvismax.xml.BaseControlFileReader;
 public class Main {
 
 	public static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
-	
+	private static Logger logger;
+
 	public static void main(String[] args) {
 
 		BaseData baseData = null;
@@ -51,8 +52,9 @@ public class Main {
 			System.err.println("Log4j couldn't initalized");
 		}
 
-		final Logger logger = LogManager.getLogger(Main.class);
-		boolean learn = false ;
+		logger = LogManager.getLogger(Main.class);
+		logger.info("Server started");
+		boolean learn = false;
 
 		for (String arg : args) {
 			Matcher matcher = cmdPattern.matcher(arg);
@@ -61,22 +63,22 @@ public class Main {
 			} else {
 
 				String command = matcher.group(1);
-				//String value = matcher.group(2);
+				String value = null;
+				if (matcher.groupCount() >= 3) {
+					value = matcher.group(3);
+				}
 
 				switch (command) {
 					case "server-terminate":
-						int port = baseData.getPort();
-						TerminateClient client = new TerminateClient(port) ;
-						try {
-							client.connectAndTerminateOtherServer();
-						} catch (IOException e) {
-							e.printStackTrace();
-							System.err.println("Terminate not successfull.");
-						}
-						System.exit(0);
+						logger.info("server-terminate");
+						Main.serverTerminateAndExit(baseData);
 						break;
 					case "server-learn":
-						learn = true ;;
+						learn = true;
+						break;
+					case "server-restart":
+						logger.info("server-restart");
+						Main.serverRestartAndExit(baseData, value);
 						break;
 					default:
 						System.err.println("Unknowwn argument: " + arg);
@@ -84,7 +86,6 @@ public class Main {
 				}
 			}
 		}
-
 
 		ServerSocket serverSocket = null;
 
@@ -106,11 +107,11 @@ public class Main {
 		} finally {
 
 		}
-		
-		if ( learn) {
-			System.exit(0); ;
+
+		if (learn) {
+			System.exit(0);
+			;
 		}
-		
 
 		final Instances instances = tempInstances;
 		final CommandHandler commandHandler = new CommandHandler(instances);
@@ -133,6 +134,51 @@ public class Main {
 		Runtime.getRuntime().addShutdownHook(new Thread(runnable));
 
 		// runnable.run();
+
+	}
+
+	private static void serverRestartAndExit(BaseData baseData, String cmd) {
+		try {
+			long unsuccessfullTime = System.currentTimeMillis() + Constants.MAX_WAIT_TIME_TERMINATING_OTHER_SERVER;
+			ServerSocket serverSocket = null;
+			logger.info("Wait for server termination");
+			while (System.currentTimeMillis() < unsuccessfullTime && serverSocket == null) {
+				try {
+					serverSocket = new ServerSocket(baseData.getPort());
+					serverSocket.close();
+				} catch (IOException e) {
+					serverSocket = null;
+				}
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e1) {
+				}
+
+			}
+			if (serverSocket != null) {
+				logger.info("Server terminated");
+				Restart restart = new Restart();
+				restart.startMainProcess(cmd);
+				System.exit(0);
+			} else {
+				System.err.println("Restart not possible, server still running");
+			}
+		} catch (Throwable e) {
+			logger.info("Unexpected error on restart: " + e.getMessage());
+		}
+	}
+
+	private static void serverTerminateAndExit(BaseData baseData) {
+		int port = baseData.getPort();
+		TerminateClient client = new TerminateClient(port);
+		try {
+			client.connectAndTerminateOtherServer();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Terminate not successfull.");
+			System.exit(1);
+		}
+		System.exit(0);
 
 	}
 

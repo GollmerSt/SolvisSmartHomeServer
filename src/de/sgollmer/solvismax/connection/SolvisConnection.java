@@ -112,13 +112,35 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.calculateMaxResponseTime();
 		return image;
 	}
+	
+	public static class SolvisMeasurements {
+		private final long timeStamp ;
+		private final String hexString ;
+		
+		public SolvisMeasurements( long timeStamp, String hexString ) {
+			this.timeStamp = timeStamp ; 
+			this.hexString = hexString ;
+		}
 
-	public String getMeasurements() throws IOException {
+		public long getTimeStamp() {
+			return timeStamp;
+		}
+
+		public String getHexString() {
+			return hexString;
+		}
+		
+	}
+
+	public SolvisMeasurements getMeasurements() throws IOException {
 		StringBuilder builder = new StringBuilder();
+		long timeStamp = 0;
 		try {
 			synchronized (this) {
 				InputStream in = this.connect("/sc2_val.xml");
 				InputStreamReader reader = new InputStreamReader(in);
+				
+				timeStamp = System.currentTimeMillis() ;
 
 				boolean finished = false;
 				int length = 1024;
@@ -146,7 +168,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.calculateMaxResponseTime();
 		String hexString = builder.toString();
 		// logger.debug("Hex string received from solvis: " + hexString);
-		return hexString;
+		return new SolvisMeasurements(timeStamp, hexString);
 	}
 
 	public enum Button {
@@ -233,7 +255,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			System.out.println("KEIN screensaver");
 		}
 
-		String xml = solvisConnection.getMeasurements();
+		String xml = solvisConnection.getMeasurements().getHexString();
 
 		System.out.println(xml);
 

@@ -47,7 +47,7 @@ public enum Command {
 	/**
 	 * Server: Komplette Datenbeschreibung
 	 */
-	CHANNEL_DESCRIPTIONS,
+	DESCRIPTIONS,
 	/**
 	 * Server: Veränderte Daten, beim Beginn der Übertragung alle Daten
 	 */

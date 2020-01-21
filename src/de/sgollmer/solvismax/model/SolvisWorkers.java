@@ -201,7 +201,7 @@ public class SolvisWorkers {
 
 	}
 
-	private boolean execute(CommandI command) throws IOException, ErrorPowerOn {
+	private boolean execute(CommandI command) throws IOException, TerminationException, ErrorPowerOn {
 		Screen commandScreen = command.getScreen(this.solvis);
 		if (commandScreen != null) {
 			long now = System.currentTimeMillis();

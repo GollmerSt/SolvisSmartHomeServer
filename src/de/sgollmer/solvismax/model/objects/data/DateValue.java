@@ -17,13 +17,19 @@ public class DateValue implements SingleData<Calendar> {
 	private static final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	private final Calendar calendar;
+	private final long timeStamp ;
 
-	public DateValue(Calendar calendar) {
+	public DateValue(Calendar calendar, long timeStamp ) {
 		this.calendar = calendar;
+		this.timeStamp = timeStamp ;
 	}
 
 	public Calendar getCalendar() {
 		return calendar;
+	}
+	
+	public long getTimeStamp() {
+		return timeStamp;
 	}
 
 	@Override

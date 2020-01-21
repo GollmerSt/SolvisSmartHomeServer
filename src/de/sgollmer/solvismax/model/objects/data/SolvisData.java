@@ -88,6 +88,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return this.description.getId();
 	}
 
+	public AllSolvisData getDatas() {
+		return datas;
+	}
+
 	private void setData(SingleData<?> data) {
 		this.setData(data, this);
 	}
@@ -150,8 +154,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return value;
 	}
 
-	public void setDate(Calendar calendar) {
-		this.setData(new DateValue(calendar));
+	public void setDate(Calendar calendar, long timeStamp) {
+		this.setData(new DateValue(calendar, timeStamp ));
 
 	}
 
@@ -222,7 +226,6 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (data.getState() == SolvisState.State.POWER_OFF && this.average != null) {
 			this.average.clear();
 		}
-
 	}
 
 }

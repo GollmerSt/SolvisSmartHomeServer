@@ -10,6 +10,10 @@
 			defaultAverageCount="12" measurementHysteresisFactor="4"
 			defaultReadMeasurementsIntervall_ms="10000"
 			forcedUpdateIntervall_ms="3600000" bufferedIntervall_ms="60000"
-			delayAfterSwitchingOnEnable="true" />
+			delayAfterSwitchingOnEnable="true">
+			<tns:ClockAdjustment enable="true"
+				fineLimitUpper_ms="3000" fineLimitLower_ms="-5000"
+				aproximatlySetAjust_ms="1000" burstLength="0" />  <!-- burstLength = 0: fine tuning disabled -->
+		</tns:Unit>
 	</tns:Units>
 </tns:BaseData>

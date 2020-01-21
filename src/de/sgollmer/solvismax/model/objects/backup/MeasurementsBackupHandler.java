@@ -148,7 +148,6 @@ public class MeasurementsBackupHandler {
 		private final int measurementsBackupTime_ms;
 		private final MeasurementsBackupHandler handler;
 		private boolean abort = false;
-		private boolean aborted = false ;
 
 		public BackupThread(MeasurementsBackupHandler handler, int measurementsBackupTime_ms) {
 			super("BackupThread");
@@ -165,30 +164,24 @@ public class MeasurementsBackupHandler {
 						this.wait(this.measurementsBackupTime_ms);
 					} catch (InterruptedException e) {
 					}
-					try {
-						handler.write();
-					} catch (IOException | XMLStreamException e) {
+					if (!abort) {
+						try {
+							handler.write();
+						} catch (IOException | XMLStreamException e) {
+						}
 					}
 				}
 			}
-			synchronized (this) {
-				aborted = true ;
-				this.notifyAll();
-			}
 		}
 
-		public void abort() {
+		public void writeAndAbort() {
 			synchronized (this) {
 				this.abort = true;
 				this.notifyAll();
 			}
-			while ( !aborted ) {
-				synchronized (this) {
-					try {
-						this.wait( 100 ) ;
-					} catch (InterruptedException e) {
-					}
-				}
+			try {
+				handler.write();
+			} catch (IOException | XMLStreamException e) {
 			}
 		}
 	}
@@ -197,9 +190,9 @@ public class MeasurementsBackupHandler {
 		this.thread.start();
 	}
 
-	public void abort() {
-		this.thread.abort();
-		
+	public void writeAndAbort() {
+		this.thread.writeAndAbort();
+
 	}
 
 	public SystemMeasurements getSystemMeasurements(String id) {

@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import de.sgollmer.solvismax.connection.Distributor;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
+import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -60,7 +61,6 @@ public class Solvis {
 
 	private SolvisWorkers worker;
 
-	private final String id;
 	private final String type;
 	private final int defaultReadMeasurementsIntervall_ms;
 	private int configurationMask = 0;
@@ -68,7 +68,7 @@ public class Solvis {
 	private Screen currentScreen = null;
 	private Screen savedScreen = null;
 	private Screen home = null;
-	private String measureData = null;
+	private SolvisMeasurements measureData = null;
 	private boolean screenSaverActive = false;
 	private final TouchPoint resetSceenSaver;
 	private final SolvisConnection connection;
@@ -78,10 +78,11 @@ public class Solvis {
 	private final Observable<Boolean> abortObservable = new Observable<>();
 	private final String timeZone;
 	private final boolean delayAfterSwitchingOnEnable;
+	private final Unit unit ;
 
 	public Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone) {
-		this.id = unit.getId();
+		this.unit = unit ;
 		this.type = unit.getType();
 		this.defaultReadMeasurementsIntervall_ms = unit.getDefaultReadMeasurementsIntervall_ms();
 		this.solvisDescription = solvisDescription;
@@ -94,7 +95,7 @@ public class Solvis {
 		this.allSolvisData.setReadMeasurementInterval(unit.getDefaultReadMeasurementsIntervall_ms());
 		this.worker = new SolvisWorkers(this);
 		this.backupHandler = measurementsBackupHandler;
-		this.backupHandler.register(this, id);
+		this.backupHandler.register(this, unit.getId());
 		this.distributor = new Distributor(unit.getBufferedIntervall_ms());
 		this.measurementUpdateThread = new MeasurementUpdateThread(unit.getForcedUpdateIntervall_ms());
 		this.timeZone = timeZone;
@@ -150,12 +151,14 @@ public class Solvis {
 		this.currentScreen = null;
 	}
 
-	public String getMeasureData() throws IOException, ErrorPowerOn {
-		String result = null;
+	public SolvisMeasurements getMeasureData() throws IOException, ErrorPowerOn {
+		SolvisMeasurements result = null;
 		synchronized (solvisMeasureObject) {
 			if (this.measureData == null) {
-				this.measureData = this.getConnection().getMeasurements().substring(12);
-				if (this.measureData.substring(0, 6).equals("000000")) {
+				SolvisMeasurements measurements = this.connection.getMeasurements();
+				String hexString = measurements.getHexString();
+				this.measureData = new SolvisMeasurements(measurements.getTimeStamp(), hexString.substring(12));
+				if (hexString.substring(0, 6).equals("000000")) {
 					this.getSolvisState().remoteConnected();
 					throw new ErrorPowerOn("Power on detected");
 				}
@@ -262,7 +265,7 @@ public class Solvis {
 		synchronized (solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().init(this, this.getAllSolvisData());
 		}
-		SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.id);
+		SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.unit.getId());
 		this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 		this.worker.start();
 		this.getSolvisDescription().getChannelDescriptions().initControl(this);
@@ -385,12 +388,12 @@ public class Solvis {
 
 	}
 
-	public String getId() {
-		return id;
-	}
-
 	public String getType() {
 		return type;
+	}
+	
+	public Unit getUnit() {
+		return unit;
 	}
 
 	public void registerObserver(Observer.ObserverI<SolvisData> observer) {
@@ -509,7 +512,7 @@ public class Solvis {
 		while (!connected) {
 			try {
 				this.configurationMask = this.getSolvisDescription().getConfigurations(this, current);
-				//this.configurationMask += 2 ;
+				// this.configurationMask += 2 ;
 				connected = true;
 			} catch (IOException e) {
 				logger.error("Solvis not available. Powered down or wrong IP address. Will try again");

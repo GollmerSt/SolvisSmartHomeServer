@@ -7,37 +7,26 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
-import java.util.Arrays;
+import de.sgollmer.solvismax.helper.Helper.AverageInt;
 
 public class Average implements Cloneable {
 
 	public boolean EDGE_DETECTION = false;
 
-	private final int maxCount;
-	private final int measurementHysteresisFactor ;
+	private final int measurementHysteresisFactor;
 	private int average = 0;
 	private int absAverage = 0;
 	private int absCount;
-	private long sum;
-	private int size;
-	private int lastIdx;
-	private final int[] lastMeasureValues;
+	private AverageInt averageInt;
 
 	public Average(int maxCount, int measurementHysteresisFactor) {
-		this.maxCount = maxCount;
-		this.measurementHysteresisFactor = measurementHysteresisFactor ;
-		this.lastMeasureValues = new int[maxCount];
-		this.clear();
+		this.averageInt = new AverageInt(maxCount);
+		this.measurementHysteresisFactor = measurementHysteresisFactor;
 	}
 
 	public Average(Average average) {
-		this.maxCount = average.maxCount;
-		this.measurementHysteresisFactor = average.measurementHysteresisFactor ;
-		this.lastMeasureValues = Arrays.copyOf(average.lastMeasureValues, average.maxCount);
+		this.measurementHysteresisFactor = average.measurementHysteresisFactor;
 		this.average = average.average;
-		this.sum = average.sum;
-		this.size = average.size;
-		this.lastIdx = average.lastIdx;
 		this.absAverage = average.absAverage;
 		this.absCount = average.absCount;
 	}
@@ -50,8 +39,8 @@ public class Average implements Cloneable {
 
 		value *= 10;
 
-		if (this.size > 0) {
-			int last = this.getLast();
+		if (this.averageInt.size() > 0) {
+			int last = this.averageInt.getLast();
 			int delta = Math.abs(last - value);
 			this.absAverage += 2 * delta; // Annahme: Messfehler sind statistisch gleichmäßig verteilt
 			++this.absCount;
@@ -62,21 +51,22 @@ public class Average implements Cloneable {
 				if (deltaLast > precision && deltaCurrent > precision) {
 					int cnt = deltaCurrent / precision;
 					while (--cnt >= 0) {
-						this.put(value);
+						this.averageInt.put(value);
 					}
 				}
 			}
 		}
 
-		this.put(value);
+		this.averageInt.put(value);
 
-		int newAverage = (int) ((2 * this.sum + this.size) / (2 * this.size));
+		int size = this.averageInt.size();
+
+		int newAverage = this.averageInt.get();
 		int delta = Math.abs(newAverage - this.average);
 
-		if (this.size > 1) {
+		if (size > 1) {
 
-			if (delta > 10
-					&& delta > (this.measurementHysteresisFactor * this.getPrecision() + this.size - 1) / this.size) {
+			if (delta > 10 && delta > (this.measurementHysteresisFactor * this.getPrecision() + size - 1) / size) {
 				average = newAverage;
 			}
 		} else {
@@ -89,38 +79,14 @@ public class Average implements Cloneable {
 	}
 
 	SingleData<?> getAverage(SingleData<?> singleData) {
-		if (this.maxCount > this.size) {
+		if (!this.averageInt.isFilled()) {
 			return null;
 		} else {
 			return singleData.create(average > 0 ? (average + 5) / 10 : (average - 5) / 10);
 		}
 	}
 
-	private void put(int value) {
-		int next = this.lastIdx + 1;
-		if (next >= this.maxCount) {
-			next = 0;
-		}
-		if (this.size == this.maxCount) {
-			int first = lastMeasureValues[next];
-			this.sum -= first;
-		} else {
-			++this.size;
-		}
-		this.sum += value;
-		lastMeasureValues[next] = value;
-		this.lastIdx = next;
-
-	}
-
-	private int getLast() {
-		return this.lastMeasureValues[lastIdx];
-	}
-
 	public void clear() {
-		this.sum = 0;
-		this.size = 0;
-		this.lastIdx = -1;
+		this.averageInt.clear();
 	}
-
 }

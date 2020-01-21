@@ -15,6 +15,7 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.AccountInfo;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.model.objects.clock.ClockAdjustment;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -72,6 +73,8 @@ public class Units {
 
 	public static class Unit implements AccountInfo {
 
+		private static final String XML_CLOCK_ADJUSTMENT = "ClockAdjustment";
+
 		private final String id;
 		private final String type;
 		private final String url;
@@ -83,10 +86,11 @@ public class Units {
 		private final int forcedUpdateIntervall_ms;
 		private final int bufferedIntervall_ms;
 		private final boolean delayAfterSwitchingOnEnable;
+		private final ClockAdjustment clockAdjustment;
 
 		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
 				int measurementHysteresisFactor, int defaultReadMeasurementsIntervall_ms, int forcedUpdateIntervall_ms,
-				int bufferedIntervall_ms, boolean delayAfterSwitchingOn) {
+				int bufferedIntervall_ms, boolean delayAfterSwitchingOn, ClockAdjustment clockAdjustment) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
@@ -98,6 +102,7 @@ public class Units {
 			this.forcedUpdateIntervall_ms = forcedUpdateIntervall_ms;
 			this.bufferedIntervall_ms = bufferedIntervall_ms;
 			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
+			this.clockAdjustment = clockAdjustment;
 		}
 
 		public String getId() {
@@ -117,6 +122,10 @@ public class Units {
 			return account;
 		}
 
+		public ClockAdjustment getClockAdjustment() {
+			return clockAdjustment;
+		}
+
 		public static class Creator extends CreatorByXML<Unit> {
 
 			private String id;
@@ -130,6 +139,7 @@ public class Units {
 			private int forcedUpdateIntervall_ms;
 			private int bufferedIntervall_ms;
 			private boolean delayAfterSwitchingOnEnable = false;
+			private ClockAdjustment clockAdjustment;
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -158,7 +168,7 @@ public class Units {
 						break;
 					case "measurementHysteresisFactor":
 						this.measurementHysteresisFactor = Integer.parseInt(value);
-						break ;
+						break;
 					case "defaultReadMeasurementsIntervall_ms":
 						this.defaultReadMeasurementsIntervall_ms = Integer.parseInt(value);
 						break;
@@ -177,18 +187,32 @@ public class Units {
 
 			@Override
 			public Unit create() throws XmlError, IOException {
+				if ( clockAdjustment == null ) {
+					clockAdjustment = new ClockAdjustment() ;
+				}
 				return new Unit(id, type, url, account, password, defaultAverageCount, measurementHysteresisFactor,
 						defaultReadMeasurementsIntervall_ms, forcedUpdateIntervall_ms, bufferedIntervall_ms,
-						delayAfterSwitchingOnEnable);
+						delayAfterSwitchingOnEnable, clockAdjustment);
+
 			}
 
 			@Override
 			public CreatorByXML<?> getCreator(QName name) {
+				String id = name.getLocalPart();
+				switch (id) {
+					case XML_CLOCK_ADJUSTMENT:
+						return new ClockAdjustment.Creator(id, this.getBaseCreator());
+				}
 				return null;
 			}
 
 			@Override
 			public void created(CreatorByXML<?> creator, Object created) {
+				switch (creator.getId()) {
+					case XML_CLOCK_ADJUSTMENT:
+						this.clockAdjustment = (ClockAdjustment) created;
+						break;
+				}
 			}
 
 		}

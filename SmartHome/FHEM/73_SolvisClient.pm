@@ -7,6 +7,7 @@
 #
 #	Version		Date		Programmer			Subroutine						Description of Change
 #	00.01.00	17.12.2019	SCMP77				All								Initial Release
+#	00.02.00	21.01.2020	SCMP77				All								Initial Release
 
 
 
@@ -51,6 +52,7 @@ use constant CLIENT_VERSION => "00.01.00" ;
 use constant FORMAT_VERSION_REGEXP => "m/01\.../" ;
 
 my %SolvisClient_ChannelDescriptions ;
+my $SolvisClient_ServerCommands = "";
 
 
 
@@ -344,8 +346,8 @@ sub SolvisClient_executeCommand($$) {
 		}
 	} elsif ( $command eq "MEASUREMENTS" ) {
 		SolvisClient_UpdateReadings($this, $receivedData->{MEASUREMENTS}) ;
-	} elsif ( $command eq "CHANNEL_DESCRIPTIONS" ) {
-		SolvisClient_CreateGetSetCommands($this, $receivedData->{CHANNEL_DESCRIPTIONS}) ;
+	} elsif ( $command eq "DESCRIPTIONS" ) {
+		SolvisClient_CreateGetSetServerCommands($this, $receivedData->{DESCRIPTIONS}) ;
 	} elsif ($command eq "CONNECTION_STATE" ) {
 		SolvisClient_InterpreteConnectionState($this, $receivedData->{CONNECTION_STATE}) ;
 	} elsif ($command eq "SOLVIS_STATE" ) {
@@ -453,7 +455,7 @@ sub SolvisClient_Reconnect($) {
 #######################################
 #    Create data for Set and Get commands
 
-sub SolvisClient_CreateGetSetCommands($$) {
+sub SolvisClient_CreateGetSetServerCommands($$) {
 
 	my ($this, $descriptions ) = @_;
 	
@@ -462,31 +464,38 @@ sub SolvisClient_CreateGetSetCommands($$) {
 	foreach my $description( keys(%$descriptions)) {
 		my %descriptionHash = %$descriptions{$description} ;
 		my @keys = keys %descriptionHash ;
-		my $channel = $keys[0] ;
-		SolvisClient_Log $this, 5, "Processing of channel description: ".$channel;
-		my %channelHash = %{$descriptionHash{$channel}} ;
-		$SolvisClient_ChannelDescriptions{$channel} = {} ;
-		$SolvisClient_ChannelDescriptions{$channel}{SET} = $channelHash{Writeable} ;
-		$SolvisClient_ChannelDescriptions{$channel}{GET} = $channelHash{Type} eq "CONTROL" ;
-		SolvisClient_Log $this, 5, "Writeable: ".$channelHash{Writeable};
-		foreach my $keyName ( keys %channelHash ) {
-			if ( $keyName eq "Accuracy") {
-				$SolvisClient_ChannelDescriptions{$channel}{Accuracy} = $channelHash{Accuracy} ;
-			} elsif  ( $keyName eq "Modes") {
-				$SolvisClient_ChannelDescriptions{$channel}{Modes} = {} ;
-				foreach my $mode (@{$channelHash{Modes}}) {
-					$SolvisClient_ChannelDescriptions{$channel}{Modes}{$mode} = 1 ;
+		my $name = $keys[0] ;
+		SolvisClient_Log $this, 5, "Processing of description: ".$name;
+		my %channelHash = %{$descriptionHash{$name}} ;
+		if ( $channelHash{Type} eq "ServerCommand") {
+		    if ( $SolvisClient_ServerCommands ne "" ) {
+				$SolvisClient_ServerCommands .= "," ;
+			}
+			$SolvisClient_ServerCommands .= $name ;
+		} else {
+			$SolvisClient_ChannelDescriptions{$name} = {} ;
+			$SolvisClient_ChannelDescriptions{$name}{SET} = $channelHash{Writeable} ;
+			$SolvisClient_ChannelDescriptions{$name}{GET} = $channelHash{Type} eq "CONTROL" ;
+			SolvisClient_Log $this, 5, "Writeable: ".$channelHash{Writeable};
+			foreach my $keyName ( keys %channelHash ) {
+				if ( $keyName eq "Accuracy") {
+					$SolvisClient_ChannelDescriptions{$name}{Accuracy} = $channelHash{Accuracy} ;
+				} elsif  ( $keyName eq "Modes") {
+					$SolvisClient_ChannelDescriptions{$name}{Modes} = {} ;
+					foreach my $mode (@{$channelHash{Modes}}) {
+						$SolvisClient_ChannelDescriptions{$name}{Modes}{$mode} = 1 ;
+					}
+				} elsif ( $keyName eq "Upper") {
+					$SolvisClient_ChannelDescriptions{$name}{Upper} = $channelHash{Upper} ; ;
+				} elsif ( $keyName eq "Lower") {
+					$SolvisClient_ChannelDescriptions{$name}{Lower} = $channelHash{Lower} ; ;
+				} elsif ( $keyName eq "Step") {
+					$SolvisClient_ChannelDescriptions{$name}{Step} = $channelHash{Step} ; ;
+				} elsif ($keyName eq "IsBoolean") {
+					$SolvisClient_ChannelDescriptions{$name}{IsBoolean} = $channelHash{IsBoolean} ;
+				} elsif ($keyName eq "Unit" ) {
+					$SolvisClient_ChannelDescriptions{$name}{Unit} = $channelHash{Unit} ;
 				}
-			} elsif ( $keyName eq "Upper") {
-				$SolvisClient_ChannelDescriptions{$channel}{Upper} = $channelHash{Upper} ; ;
-			} elsif ( $keyName eq "Lower") {
-				$SolvisClient_ChannelDescriptions{$channel}{Lower} = $channelHash{Lower} ; ;
-			} elsif ( $keyName eq "Step") {
-				$SolvisClient_ChannelDescriptions{$channel}{Step} = $channelHash{Step} ; ;
-			} elsif ($keyName eq "IsBoolean") {
-				$SolvisClient_ChannelDescriptions{$channel}{IsBoolean} = $channelHash{IsBoolean} ;
-			} elsif ($keyName eq "Unit" ) {
-				$SolvisClient_ChannelDescriptions{$channel}{Unit} = $channelHash{Unit} ;
 			}
 		}
 	}
@@ -630,7 +639,7 @@ sub SolvisClient_Set($@) {
 				}
 			}
 		}
-		return "unknown argument $a[1] choose one of " .$params. " ServerCommand:BACKUP,SCREEN_RESTORE_INHIBIT,SCREEN_RESTORE_ENABLE";
+		return "unknown argument $a[1] choose one of " .$params. " ServerCommand:$SolvisClient_ServerCommands";
 	}
 
 	### If not enough arguments have been provided
@@ -907,8 +916,13 @@ sub SolvisClient_DbLog_splitFn($)
 		    <tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
 			  Gegenstück zu dem ServerCommand SCREEN_RESTORE_INHIBIT<BR>
 		    </td></tr>
+		    <tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
+			  Startet den Server neu<BR>
+		    </td></tr>
 	      </table>
 		</ul>
+		    Diese Tabelle gibt nicht unbedingt den aktuellen Stand wieder. Da die Server-Befehle vom Server selber dem Client &uuml;bergebenwerden (bei jeder neuen Verbindung),
+			k&ouml;nnen mehr oder weniger Server-Befehle definiert sein. Maßgebend ist immer die Ausgabe in der Web-Oberfl&auml;che.
       </ul><BR><BR>
       <table>
 	    <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>

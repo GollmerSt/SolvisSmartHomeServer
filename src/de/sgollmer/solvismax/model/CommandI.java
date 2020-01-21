@@ -10,10 +10,11 @@ package de.sgollmer.solvismax.model;
 import java.io.IOException;
 
 import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.objects.Screen;
 
 public interface CommandI {
-	public boolean execute(Solvis solvis) throws IOException, ErrorPowerOn;
+	public boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn;
 
 	public Screen getScreen(Solvis solvis);
 

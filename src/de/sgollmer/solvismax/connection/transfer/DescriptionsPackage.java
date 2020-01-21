@@ -10,10 +10,10 @@ package de.sgollmer.solvismax.connection.transfer;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 
-public class ChannelDescriptionsPackage extends JsonPackage {
+public class DescriptionsPackage extends JsonPackage {
 
-	public ChannelDescriptionsPackage(AllChannelDescriptions descriptions, int configurationMask) {
-		this.command = Command.CHANNEL_DESCRIPTIONS;
+	public DescriptionsPackage(AllChannelDescriptions descriptions, int configurationMask) {
+		this.command = Command.DESCRIPTIONS;
 		this.data = new Frame();
 
 		for (OfConfigs<de.sgollmer.solvismax.model.objects.ChannelDescription> confDescriptions : descriptions.get()) {
@@ -23,6 +23,11 @@ public class ChannelDescriptionsPackage extends JsonPackage {
 				ChannelDescription descr = new ChannelDescription(description);
 				this.data.add(descr);
 			}
+		}
+		
+		for ( ServerCommandPackage.ServerCommandEnum command : ServerCommandPackage.ServerCommandEnum.values()) {
+			ServerCommandDescription descr = new ServerCommandDescription(command.name()) ;
+			this.data.add(descr);
 		}
 
 	}

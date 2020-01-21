@@ -1652,7 +1652,11 @@
 		</tns:Preparation>
 	</tns:Preparations>
 	<tns:Clock channelId="X6.UhrzeitSolvis"
-		screenId="Zeiteinstellung">
+		screenId="Zeiteinstellung" okScreenId="Uhrzeit / Datum">
+		<tns:SecondsScan>
+			<tns:TopLeft X="100" Y="35" />
+			<tns:BottomRight X="115" Y="45" />
+		</tns:SecondsScan>
 		<tns:Year least="2008">
 			<tns:Rectangle>
 				<tns:TopLeft X="101" Y="58" />

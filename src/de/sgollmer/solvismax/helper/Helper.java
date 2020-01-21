@@ -88,5 +88,57 @@ public class Helper {
 
 	}
 
+	public static class AverageInt {
+		
+		int maxSize ;
+		int [] lastMeasureValues;
+		int lastIdx ;
+		int sum;
+		int size;
+		
+		public AverageInt(int maxSize) {
+			this.maxSize = maxSize ;
+			this.lastMeasureValues = new int[this.maxSize] ;
+			this.clear();
+		}
+		public void put(int value) {
+			int next = this.lastIdx + 1;
+			if (next >= this.maxSize) {
+				next = 0;
+			}
+			if (this.size == this.maxSize) {
+				int first = lastMeasureValues[next];
+				this.sum -= first;
+			} else {
+				++this.size;
+			}
+			this.sum += value;
+			lastMeasureValues[next] = value;
+			this.lastIdx = next;
+
+		}
+
+		public int getLast() {
+			return this.lastMeasureValues[lastIdx];
+		}
+
+		public void clear() {
+			this.sum = 0;
+			this.size = 0;
+			this.lastIdx = -1;
+		}
+
+		public int get() {
+			return (2 * this.sum + (this.sum > 0?this.size:-this.size))/(2*this.size);
+		}
+		
+		public int size() {
+			return this.size ;
+		}
+		
+		public boolean isFilled() {
+			return this.size == this.maxSize ;
+		}
+	}
 
 }

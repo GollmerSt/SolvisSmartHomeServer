@@ -20,8 +20,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.Restart;
 import de.sgollmer.solvismax.connection.Server.Client;
-import de.sgollmer.solvismax.connection.transfer.ChannelDescriptionsPackage;
+import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
 import de.sgollmer.solvismax.connection.transfer.Command;
 import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
@@ -113,6 +114,9 @@ public class CommandHandler {
 			case SCREEN_RESTORE_ENABLE:
 				this.screenRestoreInhibit(false, assignments);
 				break;
+			case RESTART:
+				this.restart();
+				break ;
 
 			default:
 				logger.warn("Server command <" + serverCommand.getServerCommand().name()
@@ -162,7 +166,7 @@ public class CommandHandler {
 			this.register(assignments);
 			this.clients.add(assignments);
 
-			ChannelDescriptionsPackage channelDescription = new ChannelDescriptionsPackage(
+			DescriptionsPackage channelDescription = new DescriptionsPackage(
 					this.instances.getSolvisDescription().getChannelDescriptions(), solvis.getConfigurationMask());
 			client.send(channelDescription);
 
@@ -239,6 +243,12 @@ public class CommandHandler {
 		ChannelDescription description = solvis.getChannelDescription(jsonPackage.getId());
 		logger.info("Channel <" + description.getId() + "> will be updated by GET command");
 		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description));
+	}
+	
+	private void restart() {
+		Restart restart = new Restart() ;
+		restart.startRestartProcess();
+		System.exit(0) ;
 	}
 
 	public class ClientAssignments {

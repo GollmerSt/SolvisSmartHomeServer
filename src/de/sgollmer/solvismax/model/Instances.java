@@ -57,7 +57,7 @@ public class Instances {
 	public synchronized Solvis getInstance(ConnectPackage connectPackage)
 			throws IOException, XmlError, XMLStreamException, LearningError {
 		for (Solvis solvis : units) {
-			if (solvis.getId().equals(connectPackage.getId())) {
+			if (solvis.getUnit().getId().equals(connectPackage.getId())) {
 				return solvis;
 			}
 		}
@@ -89,7 +89,7 @@ public class Instances {
 		for (Solvis unit : units) {
 			unit.abort();
 		}
-		this.backupHandler.abort();
+		this.backupHandler.writeAndAbort();
 	}
 
 	public void backupMeasurements() throws IOException, XMLStreamException {
