@@ -13,8 +13,8 @@ import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.CommandI;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor.NextAdjust;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class CommandClock implements CommandI {
 

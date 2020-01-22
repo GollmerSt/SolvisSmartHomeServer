@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
+
 public class AllScreenGraficDescriptions implements Assigner {
 	private final Map<String, ScreenGraficDescription> screenGraficDescriptions = new HashMap<>();
 

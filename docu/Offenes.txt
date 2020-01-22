@@ -7,6 +7,9 @@ Offene Aufgaben:
      Solvis-Anklage vorliegen muss
 
 
+15. "/usr/lib/jvm/java-9-openjdk-armhf/bin/java"  
+    -jar /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar 
+    --server-restart="'/usr/lib/jvm/java-9-openjdk-armhf/bin/java'  -jar /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar "
 
 
 

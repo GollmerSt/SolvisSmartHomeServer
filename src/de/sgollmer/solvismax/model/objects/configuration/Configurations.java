@@ -17,8 +17,8 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Screen;
-import de.sgollmer.solvismax.model.objects.ScreenLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.ScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 

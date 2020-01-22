@@ -14,9 +14,11 @@ import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
 import de.sgollmer.solvismax.connection.TerminateClient;
@@ -30,7 +32,9 @@ import de.sgollmer.solvismax.xml.BaseControlFileReader;
 public class Main {
 
 	public static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
+	
 	private static Logger logger;
+	private static Level LEARN;
 
 	public static void main(String[] args) {
 
@@ -40,20 +44,27 @@ public class Main {
 		} catch (IOException | XmlError | XMLStreamException e) {
 			e.printStackTrace();
 			System.err.println("base.xml couldn't be read.");
-			System.exit(40);
+			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
 		String path = baseData.getWritablePath();
 
+		boolean success = false;
+
 		try {
-			Logger2.createInstance(path);
+			success = Logger2.createInstance(path);
 		} catch (IOException e) {
+			success = false;
 			e.printStackTrace();
+		}
+
+		if (!success) {
 			System.err.println("Log4j couldn't initalized");
 		}
 
 		logger = LogManager.getLogger(Main.class);
 		logger.info("Server started");
+		LEARN = Level.getLevel("LEARN") ;
 		boolean learn = false;
 
 		for (String arg : args) {
@@ -93,24 +104,44 @@ public class Main {
 			serverSocket = new ServerSocket(baseData.getPort());
 		} catch (IOException e) {
 			System.err.println("Port " + baseData.getPort() + " is in use.");
-			System.exit(40);
+			System.exit(ExitCodes.SERVER_PORT_IN_USE);
 		}
 
 		Instances tempInstances = null;
 
 		try {
 			tempInstances = new Instances(baseData);
-		} catch (IOException | XmlError | XMLStreamException | LearningError e) {
-			logger.error("Exception on reading configuration or learning files occured, cause:", e);
+		} catch (IOException | XmlError | XMLStreamException e) {
+			logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
-			System.exit(-1);
-		} finally {
-
+			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
 		if (learn) {
-			System.exit(0);
-			;
+			try {
+				boolean learned = tempInstances.learn();
+				if ( !learned ) {
+					logger.log(LEARN, "Nothing to learn");
+				} else {
+					logger.log(LEARN, "Learning finished");
+				}
+			} catch (IOException | XmlError | XMLStreamException | LearningError e) {
+				logger.error("Exception on reading configuration or learning files occured, cause:", e);
+				e.printStackTrace();
+				System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
+			}
+			System.exit(ExitCodes.OK);
+		}
+
+		try {
+			tempInstances.init();
+		} catch (IOException | XmlError | XMLStreamException  e) {
+			logger.error("Exception on reading configuration occured, cause:", e);
+			e.printStackTrace();
+			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
+		} catch (LearningError e2){
+			logger.error( e2.getMessage() );
+			System.exit(ExitCodes.LEARNING_NECESSARY);
 		}
 
 		final Instances instances = tempInstances;
@@ -137,7 +168,7 @@ public class Main {
 
 	}
 
-	private static void serverRestartAndExit(BaseData baseData, String cmd) {
+	private static void serverRestartAndExit(BaseData baseData, String agentlibOption) {
 		try {
 			long unsuccessfullTime = System.currentTimeMillis() + Constants.MAX_WAIT_TIME_TERMINATING_OTHER_SERVER;
 			ServerSocket serverSocket = null;
@@ -158,8 +189,8 @@ public class Main {
 			if (serverSocket != null) {
 				logger.info("Server terminated");
 				Restart restart = new Restart();
-				restart.startMainProcess(cmd);
-				System.exit(0);
+				restart.startMainProcess(agentlibOption);
+				System.exit(ExitCodes.OK);
 			} else {
 				System.err.println("Restart not possible, server still running");
 			}
@@ -176,9 +207,9 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("Terminate not successfull.");
-			System.exit(1);
+			System.exit(ExitCodes.SERVER_TERMINATION_FAIL);
 		}
-		System.exit(0);
+		System.exit(ExitCodes.OK);
 
 	}
 

@@ -5,9 +5,9 @@
 #
 #                                          CHANGELOG
 #
-#	Version		Date		Programmer			Subroutine						Description of Change
-#	00.01.00	17.12.2019	SCMP77				All								Initial Release
-#	00.02.00	21.01.2020	SCMP77				All								Initial Release
+#	Version		Date		Programmer			Subroutine								Description of Change
+#	00.01.00	17.12.2019	SCMP77				All										Initial Release
+#	00.02.00	21.01.2020	SCMP77				SolvisClient_CreateGetSetServerCommands	Server commands are determined by the server itself
 
 
 
@@ -460,6 +460,7 @@ sub SolvisClient_CreateGetSetServerCommands($$) {
 	my ($this, $descriptions ) = @_;
 	
 	%SolvisClient_ChannelDescriptions = ();
+	$SolvisClient_ServerCommands = "" ;
 
 	foreach my $description( keys(%$descriptions)) {
 		my %descriptionHash = %$descriptions{$description} ;

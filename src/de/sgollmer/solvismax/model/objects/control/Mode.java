@@ -1,18 +1,23 @@
 /************************************************************************
  * 
- * $Id$
+ * $Id: Mode.java 81 2020-01-04 21:05:15Z stefa $
  *
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects;
+package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.TouchPoint;
+import de.sgollmer.solvismax.model.objects.TouchPoint.Creator;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 

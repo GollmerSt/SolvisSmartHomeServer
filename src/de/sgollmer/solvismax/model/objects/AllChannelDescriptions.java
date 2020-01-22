@@ -23,8 +23,9 @@ import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Screen.ScreenTouch;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
+import de.sgollmer.solvismax.model.objects.screen.Screen.ScreenTouch;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 

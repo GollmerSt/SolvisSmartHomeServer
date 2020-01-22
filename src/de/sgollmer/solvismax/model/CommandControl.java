@@ -11,9 +11,9 @@ import java.io.IOException;
 
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
-import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class CommandControl implements CommandI {
 	private final ChannelDescription description;

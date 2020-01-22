@@ -5,7 +5,7 @@
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects;
+package de.sgollmer.solvismax.model.objects.screen;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;

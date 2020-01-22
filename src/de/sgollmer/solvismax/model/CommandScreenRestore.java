@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.model;
 import java.io.IOException;
 
 import de.sgollmer.solvismax.error.ErrorPowerOn;
-import de.sgollmer.solvismax.model.objects.Screen;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class CommandScreenRestore implements CommandI {
 

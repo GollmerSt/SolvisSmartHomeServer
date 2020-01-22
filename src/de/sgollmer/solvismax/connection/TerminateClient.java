@@ -33,7 +33,7 @@ public class TerminateClient {
 			socket = new Socket("localhost", port);
 		} catch (IOException e) {
 			System.out.println("Server not started");
-			System.exit(0);
+			return false;
 		}
 
 		ConnectPackage connectPackage = new ConnectPackage(null);

@@ -22,7 +22,7 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.CommandI.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
-import de.sgollmer.solvismax.model.objects.Screen;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class SolvisWorkers {
 

@@ -13,6 +13,8 @@ import java.util.Collection;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public interface ChannelSourceI extends Assigner, GraficsLearnable {
 

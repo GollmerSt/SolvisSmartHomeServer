@@ -5,7 +5,7 @@
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects;
+package de.sgollmer.solvismax.model.objects.screen;
 
 import java.io.IOException;
 
@@ -15,10 +15,13 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -70,7 +73,7 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 		}
 	}
 
-	boolean isLearned(Solvis solvis) {
+	public boolean isLearned(Solvis solvis) {
 		return solvis.getGrafics().get(this.getId()) != null;
 	}
 
@@ -151,7 +154,7 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 						+ " but didn't match with the previous. Program terminated.";
 				logger.log(LEARN, error);
 				System.err.println(error);
-				System.exit(41);
+				System.exit(ExitCodes.LEARNING_FAILED);
 			}
 		} else {
 			solvis.getGrafics().put(this.id, image);

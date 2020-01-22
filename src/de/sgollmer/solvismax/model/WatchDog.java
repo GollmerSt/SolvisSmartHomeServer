@@ -17,8 +17,8 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
-import de.sgollmer.solvismax.model.objects.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ErrorScreen;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.objects.Rectangle;
 

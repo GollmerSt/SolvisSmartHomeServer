@@ -22,6 +22,7 @@ import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.measure.Measurement;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 

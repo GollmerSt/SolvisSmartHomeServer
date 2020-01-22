@@ -51,6 +51,9 @@ learn: installSolvis
 	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-learn
 	
 
+foreground: installSolvis
+	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar)
+
 $(solvisDir):
 	mkdir $@
 

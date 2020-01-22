@@ -37,8 +37,6 @@ import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
-import de.sgollmer.solvismax.model.objects.Screen;
-import de.sgollmer.solvismax.model.objects.ScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
@@ -46,6 +44,8 @@ import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.ScreenLearnable.LearnScreen;
 
 public class Solvis {
 

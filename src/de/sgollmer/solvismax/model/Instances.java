@@ -36,7 +36,7 @@ public class Instances {
 	private final int xmlHash;
 	private final String writeablePath;
 
-	public Instances(BaseData baseData) throws IOException, XmlError, XMLStreamException, LearningError {
+	public Instances(BaseData baseData) throws IOException, XmlError, XMLStreamException {
 		this.baseData = baseData;
 		this.writeablePath = baseData.getWritablePath();
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
@@ -52,6 +52,29 @@ public class Instances {
 			this.units.add(solvis);
 		}
 		this.backupHandler.start();
+	}
+
+	public boolean learn() throws IOException, LearningError, XMLStreamException {
+		boolean nothingToLearn = true;
+		for (Solvis solvis : this.units) {
+			if (solvis.getGrafics().isEmpty()) {
+				solvis.learning();
+				nothingToLearn = false;
+				new GraficFileHandler(this.writeablePath, this.xmlHash).write(this.graficDatas);
+			}
+		}
+		return !nothingToLearn;
+	}
+
+	public boolean init() throws IOException, XmlError, XMLStreamException, LearningError {
+		for (Solvis solvis : this.units) {
+			if (!solvis.getGrafics().isEmpty()) {
+				solvis.init();
+			} else {
+				throw new LearningError("Learning is necessary");
+			}
+		}
+		return true;
 	}
 
 	public synchronized Solvis getInstance(ConnectPackage connectPackage)
@@ -72,12 +95,6 @@ public class Instances {
 		String timeZone = this.baseData.getTimeZone();
 		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId()), connection,
 				this.backupHandler, timeZone);
-		if (solvis.getGrafics().isEmpty()) {
-			solvis.learning();
-
-			new GraficFileHandler(this.writeablePath, this.xmlHash).write(this.graficDatas);
-		}
-		solvis.init();
 		return solvis;
 	}
 

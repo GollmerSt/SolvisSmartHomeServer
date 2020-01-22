@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.Restart;
 import de.sgollmer.solvismax.connection.Server.Client;
 import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
@@ -88,7 +89,7 @@ public class CommandHandler {
 				break;
 			case TERMINATE:
 				if (this.get(client) == null) {
-					System.exit(0);
+					System.exit(ExitCodes.OK);
 				}
 				break;
 			default:
@@ -248,7 +249,7 @@ public class CommandHandler {
 	private void restart() {
 		Restart restart = new Restart() ;
 		restart.startRestartProcess();
-		System.exit(0) ;
+		System.exit(ExitCodes.OK) ;
 	}
 
 	public class ClientAssignments {

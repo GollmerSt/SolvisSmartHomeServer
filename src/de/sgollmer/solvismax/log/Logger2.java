@@ -30,9 +30,9 @@ public class Logger2 {
 		return LOGGER;
 	}
 
-	public static void createInstance(String pathName) throws IOException {
+	public static boolean createInstance(String pathName) throws IOException {
 		LOGGER = new Logger2(pathName);
-		LOGGER.setConfiguration();
+		return LOGGER.setConfiguration();
 	}
 
 	private static Logger2 LOGGER;
@@ -76,7 +76,7 @@ public class Logger2 {
 
 	}
 
-	public void setConfiguration() throws IOException {
+	public boolean setConfiguration() throws IOException {
 
 		copyFiles();
 
@@ -89,11 +89,12 @@ public class Logger2 {
 				input = new FileInputStream(xml);
 			} catch (FileNotFoundException ex) {
 				System.err.println("Error on reading log4j.xml");
-				System.exit(-1);
+				return false ;
 			}
 		}
 		ConfigurationSource source = new ConfigurationSource(input);
 		Configurator.initialize(null, source);
+		return true ;
 	}
 
 }

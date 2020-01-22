@@ -46,4 +46,14 @@ public class Constants {
 	public static final int AVERAGE_COUNT_SOLVIS_CLOCK_PRECISION_CALCULATION = 10 ;
 
 	public static final int MAX_WAIT_TIME_TERMINATING_OTHER_SERVER = 60000;
+	
+	public static class ExitCodes {
+		public static final int OK = 0 ;
+		public static final int READING_CONFIGURATION_FAIL = 10;
+		public static final int SERVER_PORT_IN_USE = 11;
+		public static final int SERVER_TERMINATION_FAIL = 12;
+		public static final int RESTART_FAILURE = 13;
+		public static final int LEARNING_FAILED = 14;
+		public static final int LEARNING_NECESSARY = 15;
+	}
 }

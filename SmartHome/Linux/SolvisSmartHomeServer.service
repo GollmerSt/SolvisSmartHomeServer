@@ -5,6 +5,7 @@ After=network.target
 
 [Service]
 User=fhem
+RemainAfterExit=yes
 ExecStart=/usr/bin/java -jar /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar
 ExecStop=/usr/bin/java -jar /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar --server-terminate
 
