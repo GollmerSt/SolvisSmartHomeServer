@@ -67,13 +67,13 @@
 		</documentation>
 	</annotation>
 			</attribute>
-		<attribute name="defaultReadMeasurementsIntervall_ms"
+		<attribute name="defaultReadMeasurementsInterval_ms"
 			type="int" use="required">
 		</attribute>
-		<attribute name="forcedUpdateIntervall_ms" type="int"
+		<attribute name="forcedUpdateInterval_ms" type="int"
 			use="required">
 		</attribute>
-		<attribute name="bufferedIntervall_ms" type="int"
+		<attribute name="bufferedInterval_ms" type="int"
 			use="required">
 		</attribute>
 		<attribute name="delayAfterSwitchingOnEnable" type="boolean"

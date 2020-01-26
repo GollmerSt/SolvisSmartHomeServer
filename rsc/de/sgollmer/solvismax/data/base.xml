@@ -8,8 +8,8 @@
 		<tns:Unit id="mySolvis" type="SolvisMax" account="account"
 			password="password" url="http://aaa.bbb.ccc.ddd"
 			defaultAverageCount="12" measurementHysteresisFactor="4"
-			defaultReadMeasurementsIntervall_ms="10000"
-			forcedUpdateIntervall_ms="3600000" bufferedIntervall_ms="60000"
+			defaultReadMeasurementsInterval_ms="10000"
+			forcedUpdateInterval_ms="3600000" bufferedInterval_ms="60000"
 			delayAfterSwitchingOnEnable="true">
 			<tns:ClockAdjustment enable="true"
 				fineLimitUpper_ms="3000" fineLimitLower_ms="-5000"

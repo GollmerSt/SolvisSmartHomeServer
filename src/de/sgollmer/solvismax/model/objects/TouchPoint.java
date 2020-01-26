@@ -17,6 +17,9 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class TouchPoint implements Assigner {
+
+	private static final String XML_COORDINATE = "Coordinate";
+
 	private final Coordinate coordinate;
 	private final String pushTimeId;
 	private final String releaseTimeId;
@@ -59,16 +62,20 @@ public class TouchPoint implements Assigner {
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
-			if ((name.getLocalPart().equals("Coordinate"))) {
-				return new Coordinate.Creator(name.getLocalPart(), this.getBaseCreator());
-			} else {
-				return null;
+			String id = name.getLocalPart();
+			switch (id) {
+				case XML_COORDINATE:
+					return new Coordinate.Creator(name.getLocalPart(), this.getBaseCreator());
 			}
+			return null;
 		}
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			this.coordinate = (Coordinate) created;
+			switch (creator.getId()) {
+				case XML_COORDINATE:
+					this.coordinate = (Coordinate) created;
+			}
 
 		}
 
@@ -97,9 +104,9 @@ public class TouchPoint implements Assigner {
 	public Integer getReleaseTime() {
 		return releaseTime;
 	}
-	
-	public int getSettingTime( Solvis solvis) {
-		return this.pushTime + this.releaseTime + solvis.getMaxResponseTime() ;
+
+	public int getSettingTime(Solvis solvis) {
+		return this.pushTime + this.releaseTime + solvis.getMaxResponseTime();
 	}
 
 }

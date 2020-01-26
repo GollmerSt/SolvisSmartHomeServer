@@ -370,21 +370,28 @@ false: Bei fester Grenze
 			<documentation>Root mit der Home-Screen-Definition</documentation>
 		</annotation>
 		<sequence>
-            <element name="Types">
+			<element name="Types">
 				<complexType>
-                    <annotation>
-                    	<documentation>Definition der Anlagentypen wie SolvisMax/SolvisBen</documentation>
-                    </annotation>
-                    <sequence>
-						<element name="Type" type="tns:Type" maxOccurs="unbounded" minOccurs="1"></element>
+					<annotation>
+						<documentation>
+							Definition der Anlagentypen wie
+							SolvisMax/SolvisBen
+						</documentation>
+					</annotation>
+					<sequence>
+						<element name="Type" type="tns:Type"
+							maxOccurs="unbounded" minOccurs="1">
+						</element>
 					</sequence>
-				</complexType></element>
-            <element name="Configurations" type="tns:Configurations"
+				</complexType>
+			</element>
+			<element name="Configurations" type="tns:Configurations"
 				maxOccurs="1" minOccurs="0">
 			</element>
 			<element name="ScreenSaver" type="tns:ScreenSaver"
 				maxOccurs="1" minOccurs="1">
 			</element>
+			<element name="ErrorDetection" type="tns:ErrorDetection" maxOccurs="1" minOccurs="1"></element>
 			<element name="Screens" type="tns:Screens" maxOccurs="1"
 				minOccurs="1">
 			</element>
@@ -705,7 +712,7 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 				<documentation>Faktor, um aus der Brennerlaufzeit aus dem GUI auf die berechnete Laufzeit zu kommen, normalerweise 3600. Dies wird zur Syynchronisation nach 1h Brennerlaufzeit benötigt.
 Ist der faktor -1, handelt es sich um den Update der Brennerstarts.</documentation>
 			</annotation></attribute>
-		<attribute name="checkIntervallId" type="string" use="optional">
+		<attribute name="checkIntervalId" type="string" use="optional">
 			<annotation>
 				<documentation> Zeit-Intervall, nach dem der berechnete Wert mit dem echten Solvis-Wert verglichen wird und evtl. synchronisiert wird
 				</documentation>
@@ -1013,4 +1020,53 @@ Bit 25:	SolvisBen</documentation></annotation></attribute>
 	    	</simpleType>
 	    </union>
 	</simpleType>
+
+	<complexType name="ErrorDetection">
+		<sequence>
+			<element name="LeftBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>Linker Rahmen der Fehlermeldung</documentation>
+				</annotation></element>
+			<element name="RightBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>Rechter Rahmen der Fehlermeldung</documentation>
+				</annotation></element>
+			<element name="TopBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>Oberer Rahmen der Fehlermeldung</documentation>
+				</annotation></element>
+			<element name="MiddleBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>Mittlerer Rahmen der Fehlermeldung</documentation>
+				</annotation></element>
+			<element name="BottomBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>Unterer Rahmen der Fehlermeldung</documentation>
+				</annotation></element>
+			<element name="HhMm" type="tns:Rectangle" maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>Koordinaten der Zeitanzeige des Home-Bildschirms. Hier ist im Fehlerfall anstelle der Zeit ein runder Button mit einem blinkenden Warnzeichen eingeblendet.
+Daher liefert der Server einen Error-Event, wenn nicht mehr die Uhranzeige eingeblendet ist.</documentation>
+				</annotation></element>
+			<element name="DdMmYy" type="tns:Rectangle" maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>Koordinaten der Datumsanzeige des Home-Bildschirms. Hier ist im Fehlerfall anstelle der Zeit ein runder Button mit einem blinkenden Warnzeichen eingeblendet.
+Daher liefert der Server einen Error-Event, wenn nicht mehr die Uhranzeige eingeblendet ist.</documentation>
+				</annotation></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Range">
+        <annotation>
+        	<documentation>Die Bereichsgrenzen in Prozent</documentation>
+        </annotation>
+        <attribute name="lowerLimit" type="int" use="required">
+			<annotation>
+				<documentation>Relativ mit 1000 multipliziert</documentation>
+			</annotation></attribute>
+		<attribute name="higherLimit" type="int" use="required">
+			<annotation>
+				<documentation>Relativ mit 1000 multipliziert</documentation>
+			</annotation></attribute>
+	</complexType>
 </schema>

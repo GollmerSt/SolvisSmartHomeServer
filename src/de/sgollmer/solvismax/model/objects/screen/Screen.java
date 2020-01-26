@@ -27,14 +27,11 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.AllPreparations;
+import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
-import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
-import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef.Creator;
-import de.sgollmer.solvismax.model.objects.OfConfigs.Element;
 import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -110,7 +107,12 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 
 	@Override
 	public boolean equals(Object obj) {
-		return this.id.equals(obj);
+		if (obj instanceof String) {
+			return this.id.equals(obj);
+		} else if (obj instanceof Screen) {
+			return this.getId().contentEquals(((Screen) obj).getId());
+		}
+		return false ;
 	}
 
 	@Override
@@ -229,7 +231,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		public ScreenTouch(Screen screen, TouchPoint touchPoint, Preparation preparation) {
 			this.screen = screen;
 			this.touchPoint = touchPoint;
-			this.preparation = preparation ;
+			this.preparation = preparation;
 		}
 
 		public Screen getScreen() {
@@ -243,16 +245,16 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		public Preparation getPreparation() {
 			return preparation;
 		}
-		
-		public boolean execute( Solvis solvis ) throws IOException, TerminationException {
-			boolean success = true ;
-			if ( this.preparation != null ) {
-				success = this.preparation.execute(solvis) ;
+
+		public boolean execute(Solvis solvis) throws IOException, TerminationException {
+			boolean success = true;
+			if (this.preparation != null) {
+				success = this.preparation.execute(solvis);
 			}
-			if ( success ) {
+			if (success) {
 				solvis.send(this.touchPoint);
 			}
-			return success ;
+			return success;
 		}
 	}
 
@@ -276,7 +278,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 
 		while (previous != null) {
 			TouchPoint touch = current.getTouchPoint();
-			Preparation preparation = current.getPreparation() ;
+			Preparation preparation = current.getPreparation();
 
 			Screen altScreen = current.getAlternativePreviousScreen(configurationMask);
 			if (altScreen != null && !learn) {
@@ -516,7 +518,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 					success = true;
 					try {
 						learn.getDescription().learn(solvis);
-						solvis.clearCurrentImage();
+						solvis.clearCurrentScreen();
 						it.remove();
 					} catch (IOException e) {
 						logger.log(LEARN, "Screen <" + learn.getScreen().getId()
@@ -539,10 +541,10 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 						try {
 							nextScreen.gotoLearning(solvis, current, learnScreens, configurationMask);
 							current = nextScreen;
-							Screen cmpScreen = solvis.getCurrentScreen();
+							Screen cmpScreen = SolvisScreen.get(solvis.getCurrentScreen());
 							if (cmpScreen == null || cmpScreen == nextScreen) {
 								nextScreen.learn(solvis, learnScreens, configurationMask);
-								current = solvis.getCurrentScreen();
+								current = SolvisScreen.get(solvis.getCurrentScreen());
 								success = current != null;
 							}
 						} catch (IOException e) {
@@ -644,7 +646,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 				}
 				if (preparationSuccess) {
 					solvis.send(foundScreenTouch.getTouchPoint());
-					current = solvis.getCurrentScreen();
+					current = SolvisScreen.get(solvis.getCurrentScreen());
 					if (current == null) {
 						current = next;
 						if (next != this) {
@@ -676,7 +678,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 			int configurationMask) throws IOException {
 		Screen back = current.getBackScreen(configurationMask);
 		solvis.sendBack();
-		current = solvis.getCurrentScreen();
+		current = SolvisScreen.get(solvis.getCurrentScreen());
 		if (current == null) {
 			current = back;
 			if (learnScreens != null) {
@@ -765,7 +767,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 			solvis.gotoHome();
 		}
 
-		if (solvis.getCurrentScreen() == this) {
+		if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
 			return true;
 		}
 
@@ -789,7 +791,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 				for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
 					ScreenTouch st = it.next();
 					Screen previous = st.getScreen();
-					if (previous == solvis.getCurrentScreen()) {
+					if (previous == SolvisScreen.get(solvis.getCurrentScreen())) {
 						foundScreenTouch = st;
 						break;
 					}
@@ -798,13 +800,13 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 				if (foundScreenTouch == null) {
 					solvis.sendBack();
 				} else {
-					if ( ! foundScreenTouch.execute(solvis)) {
-						gone = false ;
-						break ;
+					if (!foundScreenTouch.execute(solvis)) {
+						gone = false;
+						break;
 					}
 				}
 
-				if (solvis.getCurrentScreen() == this) {
+				if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
 					gone = true;
 				}
 			}
@@ -816,9 +818,8 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		if (!gone) {
 			logger.error("Screen <" + this.getId() + "> not found.");
 		}
-		return solvis.getCurrentScreen() == this;
+		return SolvisScreen.get(solvis.getCurrentScreen()) == this;
 
 	}
-	
 
 }

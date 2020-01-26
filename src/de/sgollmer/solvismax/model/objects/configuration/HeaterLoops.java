@@ -24,6 +24,7 @@ import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations.Configuration;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -45,11 +46,11 @@ public class HeaterLoops implements Configuration {
 
 	}
 
-	private int getConfiguration(MyImage image) throws IOException {
+	private int getConfiguration(SolvisScreen screen) throws IOException {
 		int circle = 1;
 		int result = 0;
 		for (Rectangle rectangle : this.buttons) {
-			OcrRectangle ocr = new OcrRectangle(image, rectangle);
+			OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
 			String s = ocr.getString();
 			Matcher m = DIGIT.matcher(s);
 			if (m.matches() && circle == Integer.parseInt(s)) {
@@ -65,7 +66,7 @@ public class HeaterLoops implements Configuration {
 
 	@Override
 	public int getConfiguration(Solvis solvis ) throws IOException {
-		return this.getConfiguration(solvis.getCurrentImage());
+		return this.getConfiguration(solvis.getCurrentScreen());
 	}
 
 	public String getScreenRef() {

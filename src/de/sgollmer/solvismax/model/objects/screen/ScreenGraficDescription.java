@@ -31,6 +31,8 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 	private static final Logger logger = LogManager.getLogger(ScreenGraficDescription.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
+	private static final String XML_FIELD = "Field";
+
 	private final String id;
 	private final boolean exact;
 	private Rectangle rectangle = null;
@@ -121,16 +123,21 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
-			if (name.getLocalPart().equals("Field")) {
-				return new Rectangle.Creator(name.getLocalPart(), this.getBaseCreator());
+			String id = name.getLocalPart();
+			switch (id) {
+				case XML_FIELD:
+					return new Rectangle.Creator(name.getLocalPart(), this.getBaseCreator());
 			}
 			return null;
 		}
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			this.rectangle = (Rectangle) created;
-
+			switch (creator.getId()) {
+				case XML_FIELD:
+					this.rectangle = (Rectangle) created;
+					break;
+			}
 		}
 
 	}
@@ -140,7 +147,7 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 	}
 
 	public void learn(Solvis solvis) throws IOException {
-		MyImage image = solvis.getCurrentImage();
+		MyImage image = solvis.getCurrentScreen().getImage();
 		if (exact) {
 			image = new MyImage(image, rectangle, true);
 		} else {

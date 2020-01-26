@@ -39,11 +39,11 @@ public class Preparation implements Assigner {
 	}
 
 	public boolean execute(Solvis solvis) throws IOException, TerminationException {
-		if (!this.screenGrafic.isElementOf(solvis.getCurrentImage(), solvis)) {
+		if (!this.screenGrafic.isElementOf(solvis.getCurrentScreen().getImage(), solvis)) {
 			return true;
 		} else {
 			solvis.send(touchPoint);
-			return this.screenGrafic.isElementOf(solvis.getCurrentImage(), solvis);
+			return this.screenGrafic.isElementOf(solvis.getCurrentScreen().getImage(), solvis);
 		}
 	}
 

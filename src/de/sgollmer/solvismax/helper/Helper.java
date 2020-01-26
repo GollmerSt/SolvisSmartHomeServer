@@ -129,7 +129,7 @@ public class Helper {
 		}
 
 		public int get() {
-			return (2 * this.sum + (this.sum > 0?this.size:-this.size))/(2*this.size);
+			return (2 * this.sum + (this.sum >= 0?this.size:-this.size))/(2*this.size);
 		}
 		
 		public int size() {

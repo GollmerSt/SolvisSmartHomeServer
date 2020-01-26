@@ -106,7 +106,7 @@ public class Solar implements Configuration {
 
 	@Override
 	public int getConfiguration(Solvis solvis) throws IOException {
-		MyImage image = solvis.getCurrentImage() ;
+		MyImage image = solvis.getCurrentScreen().getImage() ;
 		for ( Rectangle rectangle:this. rectangles) {
 			OcrRectangle ocr = new OcrRectangle(image, rectangle);
 			String scanned = ocr.getString() ;

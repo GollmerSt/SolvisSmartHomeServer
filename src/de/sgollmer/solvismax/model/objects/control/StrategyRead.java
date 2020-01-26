@@ -14,7 +14,6 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Helper.Format;
-import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
@@ -22,6 +21,7 @@ import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -43,8 +43,8 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public IntegerValue getValue(MyImage image, Rectangle rectangle, Solvis solvis) {
-		OcrRectangle ocr = new OcrRectangle(image, rectangle);
+	public IntegerValue getValue(SolvisScreen screen , Rectangle rectangle) {
+		OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
 		String s = ocr.getString();
 		s = format.getString(s);
 		if (s == null) {

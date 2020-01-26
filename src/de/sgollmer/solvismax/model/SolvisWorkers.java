@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.model.CommandI.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class SolvisWorkers {
 
@@ -206,22 +207,23 @@ public class SolvisWorkers {
 		if (commandScreen != null) {
 			long now = System.currentTimeMillis();
 
-			boolean clear ;
+			boolean clear;
 
-			if (this.solvis.getCurrentScreen() != commandScreen || this.commandScreen != commandScreen) {
-				clear = true ;
+			if (SolvisScreen.get(this.solvis.getCurrentScreen()) != commandScreen
+					|| this.commandScreen != commandScreen) {
+				clear = true;
 			} else if (now > timeCommandScreen + Constants.TIME_COMMAND_SCREEN_VALID) {
 				clear = true;
 			} else {
 				boolean isIn = this.commandsOfScreen.contains(command);
 				if (!isIn) {
-					clear = false ;
+					clear = false;
 				} else {
 					clear = true;
 				}
 			}
 			if (clear) {
-				this.solvis.clearCurrentImage();
+				this.solvis.clearCurrentScreen();
 				this.commandScreen = commandScreen;
 				this.timeCommandScreen = now;
 				this.commandsOfScreen.clear();
@@ -285,7 +287,7 @@ public class SolvisWorkers {
 
 		@Override
 		public void run() {
-			int measurementIntervall = solvis.getDefaultReadMeasurementsIntervall_ms();
+			int measurementInterval = solvis.getDefaultReadMeasurementsInterval_ms();
 			this.nextTime = System.currentTimeMillis();
 			while (!abort) {
 
@@ -298,8 +300,8 @@ public class SolvisWorkers {
 				}
 
 				synchronized (this) {
-					long now = System.currentTimeMillis() ;
-					this.nextTime = now - (now-this.nextTime)%measurementIntervall + measurementIntervall ;
+					long now = System.currentTimeMillis();
+					this.nextTime = now - (now - this.nextTime) % measurementInterval + measurementInterval;
 					int waitTime = (int) (this.nextTime - now);
 					try {
 						this.wait(waitTime);

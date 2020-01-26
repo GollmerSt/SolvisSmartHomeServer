@@ -24,6 +24,8 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.XmlWriteable;
 
 public class AllSolvisGrafics implements XmlWriteable {
+	
+	private static final String XML_SYSTEM = "System" ;
 
 	private Collection<SystemGrafics> systems;
 	private int currentControlFileHashCode = 0;
@@ -73,7 +75,7 @@ public class AllSolvisGrafics implements XmlWriteable {
 	@Override
 	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException {
 		for (SystemGrafics system : systems) {
-			writer.writeStartElement("System");
+			writer.writeStartElement(XML_SYSTEM);
 			system.writeXml(writer);
 			writer.writeEndElement();
 		}
@@ -101,7 +103,7 @@ public class AllSolvisGrafics implements XmlWriteable {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case "System":
+				case XML_SYSTEM:
 					return new SystemGrafics.Creator(id, this.getBaseCreator());
 			}
 			return null;
@@ -110,7 +112,7 @@ public class AllSolvisGrafics implements XmlWriteable {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case "System":
+				case XML_SYSTEM:
 					this.systems.add((SystemGrafics) created);
 					break;
 			}

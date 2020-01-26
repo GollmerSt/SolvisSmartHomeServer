@@ -24,6 +24,8 @@ import de.sgollmer.solvismax.xml.XmlWriteable;
 
 public class SystemGrafics implements XmlWriteable {
 
+	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
+
 	private final String id;
 	private int controlFileHashCode;
 	private int configurationMask;
@@ -68,7 +70,7 @@ public class SystemGrafics implements XmlWriteable {
 		writer.writeAttribute("controlFileHashCode", Integer.toString(this.controlFileHashCode));
 		writer.writeAttribute("configurationMask", Integer.toString(this.configurationMask));
 		for (ScreenGraficData data : this.graficDatas.values()) {
-			writer.writeStartElement("ScreenGrafic");
+			writer.writeStartElement(XML_SCREEN_GRAFIC);
 			data.writeXml(writer);
 			writer.writeEndElement();
 		}
@@ -111,7 +113,7 @@ public class SystemGrafics implements XmlWriteable {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case "ScreenGrafic":
+				case XML_SCREEN_GRAFIC:
 					return new ScreenGraficData.Creator(id, this.getBaseCreator());
 			}
 			return null;
@@ -120,7 +122,7 @@ public class SystemGrafics implements XmlWriteable {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case "ScreenGrafic":
+				case XML_SCREEN_GRAFIC:
 					ScreenGraficData data = (ScreenGraficData) created;
 					this.graficDatas.put(data.getId(), data);
 					break;

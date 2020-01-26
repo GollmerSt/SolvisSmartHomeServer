@@ -28,6 +28,8 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Calculation extends ChannelSource {
 
+	private static final String XML_DEPENDENCY = "Dependency";
+
 	private final Strategy<?> strategy;
 	private final Dependencies dependencies;
 
@@ -116,7 +118,7 @@ public class Calculation extends ChannelSource {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case "Dependency":
+				case XML_DEPENDENCY:
 					return new Dependency.Creator(id, this.getBaseCreator());
 			}
 			return null;
@@ -124,10 +126,10 @@ public class Calculation extends ChannelSource {
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			if (creator.getId().equals("Dependency")) {
-				this.dependencies.add((Dependency) created);
+			switch (creator.getId()) {
+				case XML_DEPENDENCY:
+					this.dependencies.add((Dependency) created);
 			}
-
 		}
 
 	}

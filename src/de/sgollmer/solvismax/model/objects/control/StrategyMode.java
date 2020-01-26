@@ -29,6 +29,7 @@ import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -37,6 +38,8 @@ public class StrategyMode implements Strategy {
 
 	private static final Logger logger = LogManager.getLogger(StrategyMode.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
+	
+	private static final String XML_MODE = "Mode" ; 
 
 	private final List<Mode> modes;
 
@@ -50,19 +53,19 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public ModeValue<Mode> getValue(MyImage source, Rectangle rectangle, Solvis solvis) {
-		MyImage image = new MyImage(source, rectangle, true);
+	public ModeValue<Mode> getValue(SolvisScreen source, Rectangle rectangle) {
+		MyImage image = new MyImage(source.getImage(), rectangle, true);
 		Pattern pattern = null;
 		for (Mode mode : this.modes) {
 			ScreenGraficDescription cmp = mode.getGrafic();
 			MyImage current = image;
 			if (!cmp.isExact()) {
 				if (pattern == null) {
-					pattern = new Pattern(source, rectangle);
+					pattern = new Pattern(source.getImage(), rectangle);
 				}
 				current = pattern;
 			}
-			if (cmp.isElementOf(current, solvis, true)) {
+			if (cmp.isElementOf(current, source.getSolvis(), true)) {
 				return new ModeValue<Mode>(mode);
 			}
 		}
@@ -72,7 +75,7 @@ public class StrategyMode implements Strategy {
 	@Override
 	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
 			throws IOException, TerminationException {
-		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
+		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentScreen(), rectangle);
 		if (cmp != null && value.getMode().equals(cmp)) {
 			return true;
 		}
@@ -127,7 +130,7 @@ public class StrategyMode implements Strategy {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case "Mode":
+				case XML_MODE:
 					return new Mode.Creator(id, getBaseCreator());
 			}
 			return null;
@@ -136,7 +139,7 @@ public class StrategyMode implements Strategy {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case "Mode":
+				case XML_MODE:
 					this.modes.add((Mode) created);
 					break;
 			}
@@ -181,8 +184,8 @@ public class StrategyMode implements Strategy {
 			solvis.send(mode.getTouch());
 			ScreenGraficDescription grafic = mode.getGrafic();
 			grafic.learn(solvis);
-			solvis.clearCurrentImage();
-			SingleData<Mode> data = this.getValue(solvis.getCurrentImage(), grafic.getRectangle(), solvis);
+			solvis.clearCurrentScreen();
+			SingleData<Mode> data = this.getValue(solvis.getCurrentScreen(), grafic.getRectangle());
 			if (data == null || !mode.equals(data.get())) {
 				logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
 				successfull = false;
@@ -205,7 +208,7 @@ public class StrategyMode implements Strategy {
 				solvis.getGrafics().remove(mode.getGrafic().getId()) ;
 			}
 		}
-		solvis.clearCurrentImage();
+		solvis.clearCurrentScreen();
 		return successfull;
 	}
 }

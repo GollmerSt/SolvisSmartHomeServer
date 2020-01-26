@@ -69,8 +69,7 @@ public class UpdateStrategies implements Assigner {
 		public abstract void instantiate(Solvis solvis);
 
 		/**
-		 * @param source
-		 *            the source to set
+		 * @param source the source to set
 		 */
 		public void setSource(ChannelSource source) {
 			this.source = source;
@@ -99,7 +98,12 @@ public class UpdateStrategies implements Assigner {
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
-			return StrategyEnum.byXml(id).createCreator(id, getBaseCreator());
+			UpdateCreator<?> creator = StrategyEnum.byXml(id);
+			if (creator != null) {
+				return creator.createCreator(id, getBaseCreator());
+			} else {
+				return null;
+			}
 		}
 
 		@Override

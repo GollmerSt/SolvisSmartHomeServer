@@ -27,10 +27,8 @@ import org.apache.logging.log4j.Logger;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.helper.AbortHelper;
-import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
-import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.objects.Coordinate;
 
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
@@ -93,7 +91,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			}
 		} catch (ConnectException | SocketTimeoutException | NoRouteToHostException e) {
 			this.handleExceptionAndThrow(e);
-			return null ;   //dummy
+			return null; // dummy
 		}
 	}
 
@@ -112,14 +110,14 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.calculateMaxResponseTime();
 		return image;
 	}
-	
+
 	public static class SolvisMeasurements {
-		private final long timeStamp ;
-		private final String hexString ;
-		
-		public SolvisMeasurements( long timeStamp, String hexString ) {
-			this.timeStamp = timeStamp ; 
-			this.hexString = hexString ;
+		private final long timeStamp;
+		private final String hexString;
+
+		public SolvisMeasurements(long timeStamp, String hexString) {
+			this.timeStamp = timeStamp;
+			this.hexString = hexString;
 		}
 
 		public long getTimeStamp() {
@@ -129,7 +127,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		public String getHexString() {
 			return hexString;
 		}
-		
+
 	}
 
 	public SolvisMeasurements getMeasurements() throws IOException {
@@ -139,8 +137,8 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			synchronized (this) {
 				InputStream in = this.connect("/sc2_val.xml");
 				InputStreamReader reader = new InputStreamReader(in);
-				
-				timeStamp = System.currentTimeMillis() ;
+
+				timeStamp = System.currentTimeMillis();
 
 				boolean finished = false;
 				int length = 1024;
@@ -227,53 +225,6 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.calculateMaxResponseTime();
 	}
 
-	public static void main(String[] args) throws IOException {
-
-		ScreenSaver saver = new ScreenSaver(new Coordinate(75, 0), new Coordinate(75, 20), new Coordinate(75, 21),
-				new Coordinate(75, 33), null);
-
-		SolvisConnection solvisConnection = new SolvisConnection("http://192.168.1.40", new AccountInfo() {
-
-			@Override
-			public String getAccount() {
-				return "SGollmer";
-			}
-
-			@Override
-			public char[] createPassword() {
-				return "e5am1kro".toCharArray();
-			}
-		}, 10000, 2000, 1000, 99999999);
-
-		BufferedImage image = solvisConnection.getScreen();
-
-		MyImage myImage = new MyImage(image);
-
-		if (saver.is(myImage)) {
-			System.out.println("Ist screensaver");
-		} else {
-			System.out.println("KEIN screensaver");
-		}
-
-		String xml = solvisConnection.getMeasurements().getHexString();
-
-		System.out.println(xml);
-
-		solvisConnection.sendButton(Button.BACK);
-
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-		}
-
-		solvisConnection.sendTouch(new Coordinate(20, 40));
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-		}
-		solvisConnection.sendRelease();
-	}
-
 	public ConnectionState getConnectionState() {
 		return connectionState;
 	}
@@ -286,14 +237,18 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private void setConnected() {
 		this.errorCount = 0;
 		this.firstTimeout = 0;
-		
+
 		this.solvisState.connected();
 
-		if (this.solvisState.getState() != SolvisState.State.SOLVIS_CONNECTED) {
-			logger.info("Connection to solvis <" + this.urlBase + "> successfull.");
+		switch (this.solvisState.getState()) {
+			case POWER_OFF:
+			case REMOTE_CONNECTED:
+			case SOLVIS_DISCONNECTED:
+				logger.info("Connection to solvis <" + this.urlBase + "> successfull.");
+				break;
 		}
 	}
-	
+
 	private void handleExceptionAndThrow(Throwable e) throws IOException {
 		if (this.urlConnection != null) {
 			try {
@@ -308,8 +263,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		if (this.errorCount >= this.powerOffDetectedAfterIoErrors
 				&& System.currentTimeMillis() > this.firstTimeout + this.powerOffDetectedAfterTimeout_ms) {
 			this.solvisState.powerOff();
-		} else  {
-			this.solvisState.disconnected();;
+		} else {
+			this.solvisState.disconnected();
+			;
 		}
 		AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_IO_ERROR);
 		throw new IOException(e.getMessage());

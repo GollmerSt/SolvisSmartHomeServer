@@ -11,18 +11,18 @@ import java.io.IOException;
 import java.util.List;
 
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Assigner;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 
 public interface Strategy extends Assigner {
 
-	public SingleData<?> getValue(MyImage currentImage, Rectangle valueRectangle, Solvis solvis) throws TerminationException, IOException;
+	public SingleData<?> getValue(SolvisScreen solvisScreen, Rectangle valueRectangl) throws TerminationException, IOException;
 
 	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException, TerminationException;
 

@@ -33,17 +33,17 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 	private final String burnerId;
 	private final String burnerCalcId;
 	private final int factor;
-	private final String checkIntervallId;
-	private final String readIntervallId;
+	private final String checkIntervalId;
+	private final String readIntervalId;
 	private final boolean hourly;
 
-	public HeatingBurner(String burnerId, String burnerCalcId, int factor, String checkIntervallId,
-			String readIntervallId, boolean hourly) {
+	public HeatingBurner(String burnerId, String burnerCalcId, int factor, String checkIntervalId,
+			String readIntervalId, boolean hourly) {
 		this.burnerId = burnerId;
 		this.burnerCalcId = burnerCalcId;
 		this.factor = factor;
-		this.checkIntervallId = checkIntervallId;
-		this.readIntervallId = readIntervallId;
+		this.checkIntervalId = checkIntervalId;
+		this.readIntervalId = readIntervalId;
 		this.hourly = hourly;
 	}
 
@@ -60,15 +60,15 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 		SolvisData toUpdate = allData.checkAndGet(this.source.getDescription().getId());
 
-		int checkIntervall = -1;
-		int readIntervall = -1;
+		int checkInterval = -1;
+		int readInterval = -1;
 
 		if (this.factor >= 0) {
-			checkIntervall = solvis.getDuration(this.checkIntervallId).getTime_ms();
-			readIntervall = solvis.getDuration(this.readIntervallId).getTime_ms();
+			checkInterval = solvis.getDuration(this.checkIntervalId).getTime_ms();
+			readInterval = solvis.getDuration(this.readIntervalId).getTime_ms();
 		}
 
-		new Executable(solvis, toUpdate, burner, burnerRunTime, factor, checkIntervall, readIntervall, hourly);
+		new Executable(solvis, toUpdate, burner, burnerRunTime, factor, checkInterval, readInterval, hourly);
 
 	}
 
@@ -84,8 +84,8 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 		private final SolvisData burner;
 		private final SolvisData burnerCalcValue;
 		private final int factor;
-		private final int checkIntervall;
-		private final int readIntervall;
+		private final int checkInterval;
+		private final int readInterval;
 		private final boolean hourly;
 
 		private long lastCheckTime = -1;
@@ -94,14 +94,14 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 		private boolean screenRestore = true;
 
 		public Executable(Solvis solvis, SolvisData toUpdate, SolvisData burner, SolvisData burnerCalcValue, int factor,
-				int checkIntervall, int readIntervall, boolean hourly) {
+				int checkInterval, int readInterval, boolean hourly) {
 			this.solvis = solvis;
 			this.toUpdate = toUpdate;
 			this.burner = burner;
 			this.burnerCalcValue = burnerCalcValue;
 			this.factor = factor;
-			this.checkIntervall = checkIntervall;
-			this.readIntervall = readIntervall;
+			this.checkInterval = checkInterval;
+			this.readInterval = readInterval;
 			this.hourly = hourly;
 
 			this.burner.registerContinuousObserver(this);
@@ -161,13 +161,13 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 			if (burnerOn || this.lastBurnerState) {
 
-				boolean checkP = this.checkIntervall > 0 && time > this.lastCheckTime + this.checkIntervall; // periodic
+				boolean checkP = this.checkInterval > 0 && time > this.lastCheckTime + this.checkInterval; // periodic
 																												// check
-				boolean checkC = this.readIntervall > 0 && this.syncActive && time > this.lastCheckTime + this.readIntervall;
+				boolean checkC = this.readInterval > 0 && this.syncActive && time > this.lastCheckTime + this.readInterval;
 				checkC |= this.syncActive && !burnerOn && this.lastBurnerState;
 				int nextHour = (currentCalcValue / this.factor + 1) * this.factor ; 
 				checkC |= this.hourly
-						&& currentCalcValue > nextHour - 4 * this.readIntervall/1000;
+						&& currentCalcValue > nextHour - 4 * this.readInterval/1000;
 
 				if (checkC && burnerOn && this.screenRestore) {
 					this.screenRestore = false;
@@ -198,7 +198,7 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 		private String burnerId;
 		private String burnerCalcId;
 		private int factor = -1;
-		private String checkIntervallId;
+		private String checkIntervalId;
 		private String readIntervalId;
 		private boolean hourly = false;
 
@@ -222,8 +222,8 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 				case "factor":
 					this.factor = Integer.parseInt(value);
 					break;
-				case "checkIntervallId":
-					this.checkIntervallId = value;
+				case "checkIntervalId":
+					this.checkIntervalId = value;
 					break;
 				case "readIntervalId":
 					this.readIntervalId = value;
@@ -235,7 +235,7 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 		@Override
 		public HeatingBurner create() throws XmlError {
-			return new HeatingBurner(burnerId, burnerCalcId, factor, checkIntervallId, readIntervalId, hourly);
+			return new HeatingBurner(burnerId, burnerCalcId, factor, checkIntervalId, readIntervalId, hourly);
 		}
 
 		@Override

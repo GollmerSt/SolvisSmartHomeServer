@@ -30,6 +30,7 @@ public class SolvisState extends Observable<SolvisState> {
 		this.error = error;
 		if (last != error) {
 			this.notify(this);
+			logger.info(this.error?"Solvis error detected!":"Solvis error cleared.");
 		}
 	}
 

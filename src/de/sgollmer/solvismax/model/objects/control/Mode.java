@@ -1,6 +1,6 @@
 /************************************************************************
  * 
- * $Id: Mode.java 81 2020-01-04 21:05:15Z stefa $
+ * $Id$
  *
  * 
  ************************************************************************/
@@ -15,13 +15,16 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.objects.Assigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
-import de.sgollmer.solvismax.model.objects.TouchPoint.Creator;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Mode implements Assigner, ModeI {
+	
+	private static final String XML_TOUCH ="Touch" ;
+	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
+	
 	private final String id;
 	private final TouchPoint touch;
 	private final ScreenGraficDescription grafic;
@@ -87,9 +90,9 @@ public class Mode implements Assigner, ModeI {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case "Touch":
+				case XML_TOUCH:
 					return new TouchPoint.Creator(id, this.getBaseCreator());
-				case "ScreenGrafic":
+				case XML_SCREEN_GRAFIC:
 					return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
 			}
 			return null;
@@ -98,10 +101,10 @@ public class Mode implements Assigner, ModeI {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case "Touch":
+				case XML_TOUCH:
 					this.touch = (TouchPoint) created;
 					break;
-				case "ScreenGrafic":
+				case XML_SCREEN_GRAFIC:
 					this.grafic = (ScreenGraficDescription) created;
 					break;
 			}

@@ -7,21 +7,14 @@
 
 package de.sgollmer.solvismax.model.objects.screen;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.regex.Matcher;
 
-import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.model.objects.Assigner;
@@ -33,11 +26,19 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ScreenSaver implements Assigner {
-	private static java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+:\\d+");
-	private java.util.regex.Pattern DATE_PATTERN = java.util.regex.Pattern.compile("\\d+\\.\\d+\\.\\d\\d\\d\\d");
-	
-	private static final Logger logger = LogManager.getLogger(ScreenSaver.class) ;
-			
+
+	private static final java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+:\\d+");
+	private static final java.util.regex.Pattern DATE_PATTERN = java.util.regex.Pattern
+			.compile("\\d+\\.\\d+\\.\\d\\d\\d\\d");
+
+	private static final String XML_RESET_SCREEN_SAVER = "ResetScreenSaver";
+	private static final String XML_TIME_TOP_LEFT = "TimeTopLeft";
+	private static final String XML_TIME_BOTTOM_LEFT = "TimeBottomLeft";
+	private static final String XML_DATE_TOP_LEFT = "DateTopLeft";
+	private static final String XML_DATE_BOTTOM_LEFT = "DateBottomLeft";
+
+	private static final Logger logger = LogManager.getLogger(ScreenSaver.class);
+
 	private final Coordinate timeTopLeft;
 	private final Coordinate timeBottomLeft;
 	private final Coordinate dateTopLeft;
@@ -75,9 +76,6 @@ public class ScreenSaver implements Assigner {
 
 		private int createdIds = 0;
 
-		private Collection<String> names = Arrays.asList("TimeTopLeft", "TimeBottomLeft", "DateTopLeft",
-				"DateBottomLeft");
-
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
@@ -92,29 +90,30 @@ public class ScreenSaver implements Assigner {
 			if (this.createdIds != 31) {
 				throw new XmlError("Some coordinates of ScreenSaver not defined in the xml file");
 			}
-			return new ScreenSaver(this.timeTopLeft, this.timeBottomLeft, this.dateTopLeft, this.dateBottomLeft, this.resetScreenSaver);
+			return new ScreenSaver(this.timeTopLeft, this.timeBottomLeft, this.dateTopLeft, this.dateBottomLeft,
+					this.resetScreenSaver);
 		}
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case "TimeTopLeft":
+				case XML_TIME_TOP_LEFT:
 					this.timeTopLeft = (Coordinate) created;
 					this.createdIds |= 1;
 					break;
-				case "TimeBottomLeft":
+				case XML_TIME_BOTTOM_LEFT:
 					this.timeBottomLeft = (Coordinate) created;
 					this.createdIds |= 2;
 					break;
-				case "DateTopLeft":
+				case XML_DATE_TOP_LEFT:
 					this.dateTopLeft = (Coordinate) created;
 					this.createdIds |= 4;
 					break;
-				case "DateBottomLeft":
+				case XML_DATE_BOTTOM_LEFT:
 					this.dateBottomLeft = (Coordinate) created;
 					this.createdIds |= 8;
 					break;
-				case "ResetScreenSaver":
+				case XML_RESET_SCREEN_SAVER:
 					this.resetScreenSaver = (TouchPoint) created;
 					this.createdIds |= 16;
 					break;
@@ -125,17 +124,21 @@ public class ScreenSaver implements Assigner {
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
-			if (names.contains(id)) {
-				return new Coordinate.Creator(id, this.getBaseCreator());
-			} else if ( id.equals( "ResetScreenSaver")) {
-				return new TouchPoint.Creator(id, this.getBaseCreator()) ;
+			switch (id) {
+				case XML_DATE_BOTTOM_LEFT:
+				case XML_DATE_TOP_LEFT:
+				case XML_TIME_BOTTOM_LEFT:
+				case XML_TIME_TOP_LEFT:
+					return new Coordinate.Creator(id, this.getBaseCreator());
+				case XML_RESET_SCREEN_SAVER:
+					return new TouchPoint.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
 	}
 
-	public boolean is(MyImage image) {
-		Pattern pattern = new Pattern(image);
+	public boolean is(SolvisScreen screen) {
+		Pattern pattern = new Pattern(SolvisScreen.getImage(screen));
 
 		Rectangle timeRectangle = new Rectangle(timeTopLeft,
 				new Coordinate(pattern.getWidth() - 1, timeBottomLeft.getY()));
@@ -150,52 +153,12 @@ public class ScreenSaver implements Assigner {
 				new Coordinate(pattern.getWidth() - 1, dateBottomLeft.getY()));
 		ocrRectangle = new OcrRectangle(pattern, dateRectangle);
 		String date = ocrRectangle.getString();
-		logger.debug( "Screen saver time: "+ time + "  " + date) ;
+		logger.debug("Screen saver time: " + time + "  " + date);
 		m = DATE_PATTERN.matcher(date);
 		if (!m.matches()) {
 			return false;
 		}
 		return true;
-	}
-
-	public static void main(String[] args) {
-		ScreenSaver saver = new ScreenSaver(new Coordinate(75, 0), new Coordinate(75, 20), new Coordinate(75, 21),
-				new Coordinate(75, 33), null);
-
-		File parent = new File("testFiles\\images");
-
-		File file = new File(parent, "Bildschirmschoner2.png");
-
-		BufferedImage bufferedImage = null;
-		try {
-			bufferedImage = ImageIO.read(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		MyImage myImage = new MyImage(bufferedImage);
-
-		if (saver.is(myImage)) {
-			System.out.println(file.getName() + " ist ein Screensaver");
-		} else {
-			System.out.println(file.getName() + " ist KEIN Screensaver");
-		}
-
-		file = new File(parent, "Home.png");
-
-		bufferedImage = null;
-		try {
-			bufferedImage = ImageIO.read(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		myImage = new MyImage(bufferedImage);
-
-		if (saver.is(myImage)) {
-			System.out.println(file.getName() + " ist ein Screensaver");
-		} else {
-			System.out.println(file.getName() + " ist KEIN Screensaver");
-		}
 	}
 
 }

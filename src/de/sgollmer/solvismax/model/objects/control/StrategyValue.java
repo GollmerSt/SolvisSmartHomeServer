@@ -24,6 +24,11 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class StrategyValue extends StrategyRead {
+	
+	private static final String XML_UPPER = "Upper";
+	private static final String XML_LOWER = "Lower";
+
+	
 	private final int increment;
 	private final int least;
 	private final int most;
@@ -51,7 +56,7 @@ public class StrategyValue extends StrategyRead {
 	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) throws IOException, TerminationException {
 		Integer goal = setValue.getInteger();
 
-		IntegerValue data = this.getValue(solvis.getCurrentImage(), rectangle, solvis);
+		IntegerValue data = this.getValue(solvis.getCurrentScreen(), rectangle);
 		if (data == null) {
 			return false;
 		}
@@ -142,8 +147,8 @@ public class StrategyValue extends StrategyRead {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case "Upper":
-				case "Lower":
+				case XML_UPPER:
+				case XML_LOWER:
 					return new TouchPoint.Creator(id, this.getBaseCreator());
 			}
 			return null;
@@ -152,10 +157,10 @@ public class StrategyValue extends StrategyRead {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case "Upper":
+				case XML_UPPER:
 					this.upper = (TouchPoint) created;
 					break;
-				case "Lower":
+				case XML_LOWER:
 					this.lower = (TouchPoint) created;
 					break;
 			}

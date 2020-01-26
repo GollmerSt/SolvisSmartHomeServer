@@ -82,15 +82,15 @@ public class Units {
 		private final String password;
 		private final int defaultAverageCount;
 		private final int measurementHysteresisFactor;
-		private final int defaultReadMeasurementsIntervall_ms;
-		private final int forcedUpdateIntervall_ms;
-		private final int bufferedIntervall_ms;
+		private final int defaultReadMeasurementsInterval_ms;
+		private final int forcedUpdateInterval_ms;
+		private final int bufferedInterval_ms;
 		private final boolean delayAfterSwitchingOnEnable;
 		private final ClockAdjustment clockAdjustment;
 
 		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
-				int measurementHysteresisFactor, int defaultReadMeasurementsIntervall_ms, int forcedUpdateIntervall_ms,
-				int bufferedIntervall_ms, boolean delayAfterSwitchingOn, ClockAdjustment clockAdjustment) {
+				int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms, int forcedUpdateInterval_ms,
+				int bufferedInterval_ms, boolean delayAfterSwitchingOn, ClockAdjustment clockAdjustment) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
@@ -98,9 +98,9 @@ public class Units {
 			this.password = password;
 			this.defaultAverageCount = defaultAverageCount;
 			this.measurementHysteresisFactor = measurementHysteresisFactor;
-			this.defaultReadMeasurementsIntervall_ms = defaultReadMeasurementsIntervall_ms;
-			this.forcedUpdateIntervall_ms = forcedUpdateIntervall_ms;
-			this.bufferedIntervall_ms = bufferedIntervall_ms;
+			this.defaultReadMeasurementsInterval_ms = defaultReadMeasurementsInterval_ms;
+			this.forcedUpdateInterval_ms = forcedUpdateInterval_ms;
+			this.bufferedInterval_ms = bufferedInterval_ms;
 			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
 			this.clockAdjustment = clockAdjustment;
 		}
@@ -135,9 +135,9 @@ public class Units {
 			private String password;
 			private int defaultAverageCount;
 			private int measurementHysteresisFactor;
-			private int defaultReadMeasurementsIntervall_ms;
-			private int forcedUpdateIntervall_ms;
-			private int bufferedIntervall_ms;
+			private int defaultReadMeasurementsInterval_ms;
+			private int forcedUpdateInterval_ms;
+			private int bufferedInterval_ms;
 			private boolean delayAfterSwitchingOnEnable = false;
 			private ClockAdjustment clockAdjustment;
 
@@ -169,14 +169,14 @@ public class Units {
 					case "measurementHysteresisFactor":
 						this.measurementHysteresisFactor = Integer.parseInt(value);
 						break;
-					case "defaultReadMeasurementsIntervall_ms":
-						this.defaultReadMeasurementsIntervall_ms = Integer.parseInt(value);
+					case "defaultReadMeasurementsInterval_ms":
+						this.defaultReadMeasurementsInterval_ms = Integer.parseInt(value);
 						break;
-					case "forcedUpdateIntervall_ms":
-						this.forcedUpdateIntervall_ms = Integer.parseInt(value);
+					case "forcedUpdateInterval_ms":
+						this.forcedUpdateInterval_ms = Integer.parseInt(value);
 						break;
-					case "bufferedIntervall_ms":
-						this.bufferedIntervall_ms = Integer.parseInt(value);
+					case "bufferedInterval_ms":
+						this.bufferedInterval_ms = Integer.parseInt(value);
 						break;
 					case "delayAfterSwitchingOnEnable":
 						this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value);
@@ -191,7 +191,7 @@ public class Units {
 					clockAdjustment = new ClockAdjustment() ;
 				}
 				return new Unit(id, type, url, account, password, defaultAverageCount, measurementHysteresisFactor,
-						defaultReadMeasurementsIntervall_ms, forcedUpdateIntervall_ms, bufferedIntervall_ms,
+						defaultReadMeasurementsInterval_ms, forcedUpdateInterval_ms, bufferedInterval_ms,
 						delayAfterSwitchingOnEnable, clockAdjustment);
 
 			}
@@ -234,16 +234,16 @@ public class Units {
 			return measurementHysteresisFactor;
 		}
 
-		public int getDefaultReadMeasurementsIntervall_ms() {
-			return defaultReadMeasurementsIntervall_ms;
+		public int getDefaultReadMeasurementsInterval_ms() {
+			return defaultReadMeasurementsInterval_ms;
 		}
 
-		public int getForcedUpdateIntervall_ms() {
-			return forcedUpdateIntervall_ms;
+		public int getForcedUpdateInterval_ms() {
+			return forcedUpdateInterval_ms;
 		}
 
-		public int getBufferedIntervall_ms() {
-			return bufferedIntervall_ms;
+		public int getBufferedInterval_ms() {
+			return bufferedInterval_ms;
 		}
 
 		public boolean isDelayAfterSwitchingOnEnable() {

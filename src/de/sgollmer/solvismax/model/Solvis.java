@@ -46,6 +46,7 @@ import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class Solvis {
 
@@ -62,11 +63,10 @@ public class Solvis {
 	private SolvisWorkers worker;
 
 	private final String type;
-	private final int defaultReadMeasurementsIntervall_ms;
+	private final int defaultReadMeasurementsInterval_ms;
 	private int configurationMask = 0;
-	private MyImage currentImage = null;
-	private Screen currentScreen = null;
-	private Screen savedScreen = null;
+	private SolvisScreen currentScreen = null;
+	private SolvisScreen savedScreen = null;
 	private Screen home = null;
 	private SolvisMeasurements measureData = null;
 	private boolean screenSaverActive = false;
@@ -78,13 +78,13 @@ public class Solvis {
 	private final Observable<Boolean> abortObservable = new Observable<>();
 	private final String timeZone;
 	private final boolean delayAfterSwitchingOnEnable;
-	private final Unit unit ;
+	private final Unit unit;
 
 	public Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone) {
-		this.unit = unit ;
+		this.unit = unit;
 		this.type = unit.getType();
-		this.defaultReadMeasurementsIntervall_ms = unit.getDefaultReadMeasurementsIntervall_ms();
+		this.defaultReadMeasurementsInterval_ms = unit.getDefaultReadMeasurementsInterval_ms();
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
 		this.grafics = grafics;
@@ -92,12 +92,12 @@ public class Solvis {
 		this.connection.setSolvisState(this.solvisState);
 		this.allSolvisData.setAverageCount(unit.getDefaultAverageCount());
 		this.allSolvisData.setMeasurementHysteresisFactor(unit.getMeasurementHysteresisFactor());
-		this.allSolvisData.setReadMeasurementInterval(unit.getDefaultReadMeasurementsIntervall_ms());
+		this.allSolvisData.setReadMeasurementInterval(unit.getDefaultReadMeasurementsInterval_ms());
 		this.worker = new SolvisWorkers(this);
 		this.backupHandler = measurementsBackupHandler;
 		this.backupHandler.register(this, unit.getId());
-		this.distributor = new Distributor(unit.getBufferedIntervall_ms());
-		this.measurementUpdateThread = new MeasurementUpdateThread(unit.getForcedUpdateIntervall_ms());
+		this.distributor = new Distributor(unit.getBufferedInterval_ms());
+		this.measurementUpdateThread = new MeasurementUpdateThread(unit.getForcedUpdateInterval_ms());
 		this.timeZone = timeZone;
 		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
 	}
@@ -107,47 +107,32 @@ public class Solvis {
 	private Object solvisMeasureObject = new Object();
 
 	public boolean isCurrentImageValid() {
-		return this.currentImage != null;
+		return this.currentScreen != null;
 	}
 
-	public MyImage getCurrentImage() throws IOException {
+	public SolvisScreen getCurrentScreen() throws IOException {
 		if (this.screenSaverActive) {
 			this.resetSreensaver();
 			this.screenSaverActive = false;
 		}
-		MyImage image = this.currentImage;
-		if (image == null) {
-			this.currentImage = this.getRealImage();
+		if (this.currentScreen == null) {
+			this.currentScreen = this.getRealScreen() ;
 		}
-		return this.currentImage;
+		return this.currentScreen;
 	}
 
-	public MyImage getRealImage() throws IOException {
-		MyImage image = new MyImage(getConnection().getScreen());
-		return image;
-	}
-
-	public Screen getCurrentScreen() throws IOException {
-		if (this.screenSaverActive) {
-			this.resetSreensaver();
-			this.screenSaverActive = false;
-		}
-		Screen screen = this.currentScreen;
-		if (screen == null) {
-			screen = this.solvisDescription.getScreens().getScreen(this.getCurrentImage(), this);
-			this.currentScreen = screen;
-		}
+	public SolvisScreen getRealScreen() throws IOException {
+		SolvisScreen screen = new SolvisScreen(new MyImage( getConnection().getScreen()), this);
 		return screen;
 	}
 
 	public boolean forceCurrentScreen(Screen current) throws IOException {
-		this.clearCurrentImage();
-		this.currentScreen = current;
+		this.getCurrentScreen() ;
+		this.currentScreen.forceScreen(current);
 		return true;
 	}
 
-	public void clearCurrentImage() {
-		this.currentImage = null;
+	public void clearCurrentScreen() {
 		this.currentScreen = null;
 	}
 
@@ -187,13 +172,13 @@ public class Solvis {
 		AbortHelper.getInstance().sleep(point.getPushTime());
 		this.getConnection().sendRelease();
 		AbortHelper.getInstance().sleep(point.getReleaseTime());
-		this.clearCurrentImage();
+		this.clearCurrentScreen();
 	}
 
 	public void sendBack() throws IOException, TerminationException {
 		this.getConnection().sendButton(Button.BACK);
 		AbortHelper.getInstance().sleep(this.solvisDescription.getDurations().get("WindowChange").getTime_ms());
-		this.clearCurrentImage();
+		this.clearCurrentScreen();
 	}
 
 	public void gotoHome() throws IOException {
@@ -301,15 +286,16 @@ public class Solvis {
 	}
 
 	public void saveScreen() throws IOException {
-		if (this.savedScreen == null) {
+		if (SolvisScreen.get( this.savedScreen ) == null) {
 			this.savedScreen = this.getCurrentScreen();
 		}
 
 	}
 
 	public void restoreScreen() throws IOException {
-		if (savedScreen != null) {
-			this.savedScreen.goTo(this);
+		Screen screen = SolvisScreen.get( this.savedScreen ) ;
+		if (screen != null) {
+			screen.goTo(this);
 		}
 		this.savedScreen = null;
 	}
@@ -334,7 +320,7 @@ public class Solvis {
 		}
 		this.screenSaverActive = screenSaverActive;
 	}
-
+	
 	public SystemGrafics getGrafics() {
 		return grafics;
 	}
@@ -391,7 +377,7 @@ public class Solvis {
 	public String getType() {
 		return type;
 	}
-	
+
 	public Unit getUnit() {
 		return unit;
 	}
@@ -418,14 +404,14 @@ public class Solvis {
 
 	private class MeasurementUpdateThread extends Thread {
 
-		private int updateIntervall;
+		private int updateInterval;
 		boolean abort = false;
 		boolean power = false;
 		boolean powerDownInInterval = false;
 
-		public MeasurementUpdateThread(int forcedUpdateIntervall_ms) {
+		public MeasurementUpdateThread(int forcedUpdateInterval_ms) {
 			super("MeasurementUpdateThread");
-			this.updateIntervall = forcedUpdateIntervall_ms;
+			this.updateInterval = forcedUpdateInterval_ms;
 			solvisState.register(new PowerObserver());
 		}
 
@@ -449,7 +435,7 @@ public class Solvis {
 		@Override
 		public void run() {
 
-			while (!abort && updateIntervall != 0) {
+			while (!abort && updateInterval != 0) {
 				Calendar midNight = Calendar.getInstance();
 				long now = midNight.getTimeInMillis();
 				midNight.set(Calendar.HOUR_OF_DAY, 0);
@@ -458,8 +444,8 @@ public class Solvis {
 				midNight.set(Calendar.MILLISECOND, 0);
 
 				long midNightLong = midNight.getTimeInMillis();
-				long nextUpdate = (now - midNightLong) / this.updateIntervall * this.updateIntervall + midNightLong
-						+ this.updateIntervall;
+				long nextUpdate = (now - midNightLong) / this.updateInterval * this.updateInterval + midNightLong
+						+ this.updateInterval;
 				int waitTime = (int) (nextUpdate - now);
 				synchronized (this) {
 					try {
@@ -501,23 +487,29 @@ public class Solvis {
 		return timeZone;
 	}
 
-	public int getDefaultReadMeasurementsIntervall_ms() {
-		return defaultReadMeasurementsIntervall_ms;
+	public int getDefaultReadMeasurementsInterval_ms() {
+		return defaultReadMeasurementsInterval_ms;
 	}
 
 	private void initConfigurationMask(Reference<Screen> current) throws TerminationException {
 		boolean connected = false;
 		this.configurationMask = 0;
-		;
+		long time = -1;
+		long lastErrorOutTime = -1;
 		while (!connected) {
+			time = System.currentTimeMillis();
 			try {
 				this.configurationMask = this.getSolvisDescription().getConfigurations(this, current);
 				// this.configurationMask += 2 ;
 				connected = true;
 			} catch (IOException e) {
-				logger.error("Solvis not available. Powered down or wrong IP address. Will try again");
-				AbortHelper.getInstance().sleep(1000);
+				time = System.currentTimeMillis();
+				if (time - 120000 > lastErrorOutTime) {
+					logger.error("Solvis not available. Powered down or wrong IP address. Will try again");
+					lastErrorOutTime = time;
+				}
 			}
+			AbortHelper.getInstance().sleep(1000);
 		}
 	}
 

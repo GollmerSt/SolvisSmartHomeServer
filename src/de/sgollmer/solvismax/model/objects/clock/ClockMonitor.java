@@ -40,6 +40,7 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -173,12 +174,13 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 					+ 8 * this.screen.get(solvis.getConfigurationMask()).getTouchPoint().getSettingTime(solvis);
 			adjustmentTime = adjustmentTime * Constants.TIME_ADJUSTMENT_PROPOSAL_FACTOR_PERCENT / 100;
 
-			if (realAdjustTime - adjustmentTime <= current) {
-				realAdjustTime = this.calculateNextAdjustmentTime(current, Constants.TIME_ADJUSTMENT_MS_N);
+			startAdjustTime = realAdjustTime - adjustmentTime;
+			if (startAdjustTime <= current) {
+				realAdjustTime = this.calculateNextAdjustmentTime(realAdjustTime, Constants.TIME_ADJUSTMENT_MS_N);
 				rep = 0;
+				startAdjustTime = realAdjustTime - adjustmentTime;
 			}
 			lastStartAdjustTime = startAdjustTime;
-			startAdjustTime = realAdjustTime - adjustmentTime;
 
 			if (earliestStartAdjustTime > startAdjustTime) {
 				earliestStartAdjustTime = startAdjustTime;
@@ -265,7 +267,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			switch (creator.getId()) {
 				case XML_SECONDS_SCAN:
 					this.secondsScan = (Rectangle) created;
-					break ;
+					break;
 				case XML_YEAR:
 					this.dateParts.set(0, (DatePart) created);
 					break;
@@ -389,8 +391,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 		public Integer getValue(Solvis solvis) throws IOException, TerminationException {
 			solvis.send(this.touch);
-			solvis.clearCurrentImage();
-			MyImage image = solvis.getCurrentImage();
+			solvis.clearCurrentScreen();
+			MyImage image = solvis.getCurrentScreen().getImage();
 			Integer solvisData = null;
 			if (this.screenGrafic.isElementOf(image, solvis)) {
 				OcrRectangle ocr = new OcrRectangle(image, this.rectangle);
@@ -410,16 +412,19 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		}
 	}
 
+	private enum AdjustmentType {
+		NONE, NORMAL, FINE
+	}
+
 	public class Executable implements ObserverI<SolvisData> {
 
-		private boolean timeAdjustmentRequestPending = false;
-		private boolean fineAdjustmentRequestPending = false;
+		private AdjustmentType adjustmentTypeRequestPending = AdjustmentType.NONE;
 		private final Solvis solvis;
 		private final ClockAdjustmentThread adjustmentThread;
-		private final ClockData clockData = new ClockData();
 		private final ClockAdjustment clockAdjustment;
 		private final StrategyAdjust strategyAdjust = new StrategyAdjust();
 		private final StrategyFineAdjust strategyFineAdjust = new StrategyFineAdjust();
+		private final AverageInt averageDiff = new AverageInt(10);
 
 		public Executable(Solvis solvis) {
 			this.solvis = solvis;
@@ -447,9 +452,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 				return;
 			}
 			DateValue dateValue = (DateValue) data.getSingleData();
-			this.clockData.current(dateValue);
 
-			if (this.timeAdjustmentRequestPending) {
+			if (this.adjustmentTypeRequestPending != AdjustmentType.NONE) {
 				return;
 			}
 
@@ -461,21 +465,34 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 			int diff = (int) (solvisDate.getTimeInMillis() - timeStamp);
 
+			this.averageDiff.put(diff);
+
+			if (Math.abs(this.averageDiff.get() - diff) > 2000) { // clock was manually adjusted
+				this.averageDiff.clear();
+				this.averageDiff.put(diff);
+			}
+
+			if (!this.averageDiff.isFilled()) {
+				return;
+			}
+
+			diff = this.averageDiff.get();
+
 			if (Math.abs(diff) > 30500) {
-				this.timeAdjustmentRequestPending = true;
-				this.fineAdjustmentRequestPending = false;
+				this.adjustmentTypeRequestPending = AdjustmentType.NORMAL;
 				NextAdjust nextAdjust = calculateNextAdjustTime(dateValue, solvis);
 				this.adjustmentThread.trigger(new CommandClock(strategyAdjust, nextAdjust));
 				return;
 			}
 
-			if (this.fineAdjustmentRequestPending || clockAdjustment.getBurstLength() == 0
-					|| (clockAdjustment.getFineLimitLower_ms() < diff && diff < clockAdjustment.getFineLimitUpper_ms())) {
+			if (this.adjustmentTypeRequestPending == AdjustmentType.NORMAL || clockAdjustment.getBurstLength() == 0
+					|| (clockAdjustment.getFineLimitLower_ms() < diff
+							&& diff < clockAdjustment.getFineLimitUpper_ms())) {
 				return;
 			}
 			int delta = diff;
 			if (delta < 0) {
-				delta = 30001 + delta;
+				delta = 60000 + delta;
 			}
 
 			int fineAdjusts = delta / clockAdjustment.getAproximatlySetAjust_ms();
@@ -488,7 +505,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 					+ 1000;
 			NextAdjust nextAdjust = new NextAdjust(fineAdjusts, startAdjustTime);
 
-			this.fineAdjustmentRequestPending = true;
+			this.adjustmentTypeRequestPending = AdjustmentType.FINE;
 			this.adjustmentThread.trigger(new CommandClock(strategyFineAdjust, nextAdjust));
 		}
 
@@ -558,14 +575,12 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 				if (waitTime > 0) {
 					AbortHelper.getInstance().sleep(waitTime);
 					solvis.send(ok);
-					solvis.clearMeasuredData();
-					Screen screen = solvis.getCurrentScreen();
+					Screen screen = SolvisScreen.get(solvis.getCurrentScreen());
 					if (screen != ClockMonitor.this.okScreen.get(configurationMask)) {
 						success = false;
 					}
 				}
-				timeAdjustmentRequestPending = false;
-				fineAdjustmentRequestPending = false;
+				adjustmentTypeRequestPending = AdjustmentType.NONE;
 
 				if (success) {
 					logger.info("Setting of the solvis clock successful.");
@@ -573,7 +588,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 					logger.error("Setting of the solvis clock not successful.");
 
 				}
-				clockData.clear();
+				averageDiff.clear();
 				return success;
 			}
 
@@ -608,7 +623,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 							logger.info("Fine tuning not successfull, will be repeated");
 							continue;
 						}
-						OcrRectangle ocr = new OcrRectangle(solvis.getCurrentImage(), secondsScan);
+						OcrRectangle ocr = new OcrRectangle(solvis.getCurrentScreen().getImage(), secondsScan);
 						String secondsString = ocr.getString();
 						int seconds;
 						try {
@@ -621,7 +636,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 							AbortHelper.getInstance().sleep((61 - seconds) * 1000);
 						}
 						success = true;
-						preparationSuccessfull = true ;
+						preparationSuccessfull = true;
 					}
 					if (!clockAdjustScreen.goTo(solvis)) {
 						logger.error("Fine tuning not successfull, will be repeated");
@@ -629,21 +644,21 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 						break;
 					}
 					solvis.send(ok);
-					if (solvis.getCurrentScreen() != okScreen) {
+					if (SolvisScreen.get(solvis.getCurrentScreen()) != okScreen) {
 						logger.error("Fine tuning not successfull, will be repeated");
 						success = false;
 						break;
 					}
 				}
-				fineAdjustmentRequestPending = false;
-				clockData.clear();
-				
+				adjustmentTypeRequestPending = AdjustmentType.NONE;
+
 				if (success) {
 					logger.info("Fine adjustment of the solvis clock successful.");
 				} else {
 					logger.error("Fine adjustment of the solvis clock not successful.");
 
 				}
+				averageDiff.clear();
 				return success;
 			}
 		}
@@ -656,8 +671,6 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 			private int waitTime = -1;
 			private CommandClock command = null;
-			// private NextAdjust nextAdjust = null;
-			// private int fineAdjustments = -1 ;
 			private boolean abort = false;
 
 			public ClockAdjustmentThread() {
@@ -711,9 +724,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 								}
 							}
 						}
-					} catch (
-
-					TerminationException e1) {
+					} catch (TerminationException e1) {
 						this.abort = true;
 					} catch (Throwable e) {
 					}
@@ -728,83 +739,6 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			public synchronized void abort() {
 				this.abort = true;
 				this.notifyAll();
-			}
-
-		}
-
-		public class ClockData {
-			private int accumulatedDelta_ms;
-			private long accumulatedInterval_ms;
-			private long startTimeStamp_ms;
-			private long lastTimeStamp_ms;
-			private long lastSolvis_ms;
-			private int startDelta_ms;
-			private AverageInt currentDelta = new AverageInt(
-					Constants.AVERAGE_COUNT_SOLVIS_CLOCK_PRECISION_CALCULATION);
-
-			public ClockData() {
-				this.clear();
-			}
-
-			public void current(DateValue date) {
-				long currentSolvis = date.get().getTimeInMillis();
-				long timeStamp = date.getTimeStamp();
-
-				int delta = (int) (currentSolvis - timeStamp);
-				this.currentDelta.put(delta);
-
-				if (this.startTimeStamp_ms > 0 && Math.abs(delta - this.lastSolvis_ms + this.lastTimeStamp_ms) > 2000) {
-					// clock was adjusted
-					this.accumulate();
-				}
-
-				long last = this.lastTimeStamp_ms;
-
-				if (this.startTimeStamp_ms < 0) {
-					if (currentDelta.isFilled()) {
-						this.startTimeStamp_ms = timeStamp;
-						this.lastTimeStamp_ms = timeStamp;
-						this.startDelta_ms = currentDelta.get();
-						this.lastSolvis_ms = currentSolvis;
-					}
-					return;
-				}
-				this.lastTimeStamp_ms = timeStamp;
-				this.lastSolvis_ms = currentSolvis;
-
-				Calendar lastCal = (Calendar) date.get().clone();
-				lastCal.setTimeInMillis(last);
-
-				Calendar currentCal = (Calendar) lastCal.clone();
-				currentCal.setTimeInMillis(timeStamp);
-
-				if (lastCal.get(Calendar.HOUR_OF_DAY) != currentCal.get(Calendar.HOUR_OF_DAY)) {
-					logger.info("Divergence of solvis clock per day: " + this.getPrecision() + "ms");
-				}
-			}
-
-			public void accumulate() {
-				this.accumulatedDelta_ms += this.currentDelta.get() - this.startDelta_ms;
-				this.accumulatedInterval_ms += lastTimeStamp_ms - startTimeStamp_ms;
-				this.startTimeStamp_ms = -1;
-				this.currentDelta.clear();
-			}
-
-			public int getPrecision() {
-				long accumulatedDelta = this.accumulatedDelta_ms;
-				long accumulatedInterval = this.accumulatedInterval_ms;
-				accumulatedDelta += this.currentDelta.get() - this.startDelta_ms;
-				accumulatedInterval += lastTimeStamp_ms - startTimeStamp_ms;
-
-				return (int) (accumulatedDelta * 24 * 60 * 60 * 1000 / accumulatedInterval);
-			}
-
-			public void clear() {
-				this.accumulatedDelta_ms = 0;
-				this.accumulatedInterval_ms = 0;
-				this.startTimeStamp_ms = -1;
-				;
-				this.currentDelta.clear();
 			}
 
 		}
@@ -841,7 +775,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			finished = true;
 			for (DatePart part : this.dateParts) {
 				solvis.send(part.touch);
-				solvis.clearCurrentImage();
+				solvis.clearCurrentScreen();
 				part.screenGrafic.learn(solvis);
 				if (part.getValue(solvis) == null) {
 					finished = false;

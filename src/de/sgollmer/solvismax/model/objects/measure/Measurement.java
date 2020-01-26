@@ -27,6 +27,9 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Measurement extends ChannelSource {
+
+	private static final String XML_FIELD = "Field";
+
 	private final Strategy type;
 	private final int divisor;
 	private final boolean average;
@@ -198,7 +201,7 @@ public class Measurement extends ChannelSource {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case "Field":
+				case XML_FIELD:
 					return new Field.Creator(id, this.getBaseCreator());
 			}
 			return null;
@@ -206,8 +209,10 @@ public class Measurement extends ChannelSource {
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			if (creator.getId().equals("Field")) {
-				this.fields.add((Field) created);
+			switch ( creator.getId() ) {
+				case XML_FIELD:
+					this.fields.add((Field) created);
+					break ;
 			}
 
 		}

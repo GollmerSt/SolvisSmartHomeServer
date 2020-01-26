@@ -14,12 +14,16 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class Rectangle {
+
+	private static final String XML_TOP_LEFT = "TopLeft";
+	private static final String XML_BOTTOM_RIGHT = "BottomRight";
+
 	private final boolean invertFunction;
 	private final Coordinate topLeft;
 	private final Coordinate bottomRight;
-	
+
 	public Rectangle(Coordinate topLeft, Coordinate bottomRight) {
-		this(false, topLeft, bottomRight) ;
+		this(false, topLeft, bottomRight);
 	}
 
 	public Rectangle(boolean invertFunction, Coordinate topLeft, Coordinate bottomRight) {
@@ -69,8 +73,8 @@ public class Rectangle {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case "TopLeft":
-				case "BottomRight":
+				case XML_TOP_LEFT:
+				case XML_BOTTOM_RIGHT:
 					return new Coordinate.Creator(id, this.getBaseCreator());
 			}
 			return null;
@@ -79,11 +83,12 @@ public class Rectangle {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case "TopLeft":
+				case XML_TOP_LEFT:
 					this.topLeft = (Coordinate) created;
 					break;
-				case "BottomRight":
+				case XML_BOTTOM_RIGHT:
 					this.bottomRight = (Coordinate) created;
+					break;
 			}
 
 		}

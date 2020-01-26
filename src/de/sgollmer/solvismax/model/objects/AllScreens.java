@@ -23,12 +23,14 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class AllScreens implements ScreenLearnable {
 
+	private static final String XML_SCREEN = "Screen";
+
 	private final String homeId;
-	private final Map<String, OfConfigs<Screen>> screens ;
+	private final Map<String, OfConfigs<Screen>> screens;
 
 	public AllScreens(String homeId, Map<String, OfConfigs<Screen>> screens) {
 		this.homeId = homeId;
-		this.screens = screens ;
+		this.screens = screens;
 	}
 
 	public OfConfigs<Screen> get(String id) {
@@ -95,13 +97,21 @@ public class AllScreens implements ScreenLearnable {
 
 		@Override
 		public CreatorByXML<Screen> getCreator(QName name) {
-			return new Screen.Creator(name.getLocalPart(), this.getBaseCreator());
+			String id = name.getLocalPart();
+			switch (id) {
+				case XML_SCREEN:
+					return new Screen.Creator(name.getLocalPart(), this.getBaseCreator());
+			}
+			return null;
 		}
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			this.add((Screen) created);
-
+			switch (creator.getId()) {
+				case XML_SCREEN:
+					this.add((Screen) created);
+					break;
+			}
 		}
 
 	}

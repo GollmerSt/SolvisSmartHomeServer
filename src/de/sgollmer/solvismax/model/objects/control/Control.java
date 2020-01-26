@@ -22,7 +22,6 @@ import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
-import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
@@ -34,6 +33,7 @@ import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.model.update.UpdateStrategies;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -88,7 +88,7 @@ public class Control extends ChannelSource {
 		if (!this.prepare(solvis)) {
 			return false;
 		}
-		SingleData<?> data = this.strategy.getValue(solvis.getCurrentImage(), this.valueRectangle, solvis);
+		SingleData<?> data = this.strategy.getValue(solvis.getCurrentScreen(), this.valueRectangle);
 		if (data == null) {
 			return false;
 		} else {
@@ -257,7 +257,7 @@ public class Control extends ChannelSource {
 			}
 			boolean finished = false;
 			screen.goTo(solvis);
-			MyImage saved = solvis.getCurrentImage();
+			SolvisScreen saved = solvis.getCurrentScreen();
 			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
 				screen.goTo(solvis);
 				if (this.preparation != null) {
@@ -269,7 +269,7 @@ public class Control extends ChannelSource {
 					finished = this.strategy.learn(solvis);
 				}
 				if (finished) {
-					data = this.strategy.getValue(saved, this.valueRectangle, solvis);
+					data = this.strategy.getValue(saved, this.valueRectangle);
 					if (data == null) {
 						finished = false;
 					}

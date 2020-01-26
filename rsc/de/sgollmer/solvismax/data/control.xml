@@ -44,6 +44,21 @@
 			<tns:Coordinate X="0" Y="0" />
 		</tns:ResetScreenSaver>
 	</tns:ScreenSaver>
+	<tns:ErrorDetection>
+		<tns:LeftBorder lowerLimit="51" higherLimit="84" />
+		<tns:RightBorder lowerLimit="906" higherLimit="938" />
+		<tns:TopBorder lowerLimit="92" higherLimit="151" />
+		<tns:MiddleBorder lowerLimit="223" higherLimit="282" />
+		<tns:BottomBorder lowerLimit="810" higherLimit="869" />
+		<tns:HhMm>
+			<tns:TopLeft X="190" Y="62" />
+			<tns:BottomRight X="224" Y="74" />
+		</tns:HhMm>
+		<tns:DdMmYy>
+			<tns:TopLeft X="190" Y="80" />
+			<tns:BottomRight X="238" Y="91" />
+		</tns:DdMmYy>
+	</tns:ErrorDetection>
 	<tns:Screens homeId="Home">
 		<tns:Screen id="Home" backId="" previousId="">
 			<tns:ScreenGrafic exact="true" id="Home">
@@ -1143,7 +1158,7 @@
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A12.Brenner"
 						calculatedId="X2.BrennerLaufzeit_s" factor="3600" hourly="true"
-						checkIntervallId="checkBrenner" readIntervalId="readBrenner" />
+						checkIntervalId="checkBrenner" readIntervalId="readBrenner" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1158,7 +1173,7 @@
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A13.Brenner_S2"
 						calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"
-						checkIntervallId="checkBrenner" readIntervalId="readBrenner"
+						checkIntervalId="checkBrenner" readIntervalId="readBrenner"
 						hourly="true" />
 				</tns:UpdateBy>
 			</tns:Control>
