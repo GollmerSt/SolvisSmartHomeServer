@@ -7,10 +7,6 @@ Offene Aufgaben:
      Solvis-Anklage vorliegen muss
 
 
-15. "/usr/lib/jvm/java-9-openjdk-armhf/bin/java"  
-    -jar /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar 
-    --server-restart="'/usr/lib/jvm/java-9-openjdk-armhf/bin/java'  -jar /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar "
-
 
 
 Erledigt:
@@ -153,4 +149,6 @@ Erledigt:
 5. >1 HK-Problem testen, folgende Aufgaben sind noch erforderlich
         a) Hier muss noch Launch realisiert werden (wird erst aus dem XML gelesen).
         b) Auch muss noch die LaunchRef aufgelöst werden
-        c) Testen 	
+        c) Testen
+        
+15. -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:55438

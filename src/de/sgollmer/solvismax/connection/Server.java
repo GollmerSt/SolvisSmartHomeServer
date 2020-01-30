@@ -14,8 +14,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 
 public class Server {
@@ -32,14 +31,12 @@ public class Server {
 	private ServerSocket serverSocket;
 	private final Collection<Client> connectedClients;
 	private final CommandHandler commandHandler;
-	private ThreadPoolExecutor executor;
 	private final ServerThread serverThread;
 
 	public Server(ServerSocket serverSocket, CommandHandler commandHandler) {
 		this.connectedClients = new ArrayList<>(Constants.MAX_CONNECTIONS);
 		this.serverSocket = serverSocket;
 		this.commandHandler = commandHandler;
-		this.executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(Constants.MAX_CONNECTIONS);
 		this.serverThread = new ServerThread();
 	}
 
@@ -57,9 +54,9 @@ public class Server {
 				try {
 					waitForAvailableSocket();
 					Socket clientSocket = serverSocket.accept();
-					Client client = new Client(clientSocket) ;
+					Client client = new Client(clientSocket);
 					addClient(client);
-					executor.execute(client );
+					client.submit();
 
 				} catch (Throwable e) {
 					synchronized (this) {
@@ -77,14 +74,14 @@ public class Server {
 			}
 
 		}
-		
+
 		public synchronized void abort() {
-			this.abort = true ;
+			this.abort = true;
 			try {
 				serverSocket.close();
 			} catch (IOException e) {
 			}
-			this.notifyAll(); 
+			this.notifyAll();
 		}
 	}
 
@@ -112,17 +109,17 @@ public class Server {
 		}
 	}
 
-	public class Client implements Runnable, ObserverI<JsonPackage> {
+	public class Client extends Helper.Runnable implements Runnable, ObserverI<JsonPackage> {
 
 		private Socket socket;
 
 		public Client(Socket socket) {
+			super("Client");
 			this.socket = socket;
 		}
 
 		@Override
 		public void run() {
-
 			logger.info("Client connected from " + this.socket.getInetAddress().toString());
 
 			try {
@@ -186,7 +183,7 @@ public class Server {
 			} catch (IOException e) {
 			}
 		}
-		
+
 		public synchronized void abort() {
 			try {
 				this.socket.close();
@@ -201,14 +198,14 @@ public class Server {
 		this.serverThread.start();
 	}
 
-	public synchronized void abort() {
-		for ( Iterator<Client > it = connectedClients.iterator(); it.hasNext();) {
-			Client client = it.next() ;
-			client.abort();
-			// it.remove();  // Wird durch client.abort gelöscht
+	public void abort() {
+		synchronized (this.connectedClients) {
+			for (Iterator<Client> it = connectedClients.iterator(); it.hasNext();) {
+				Client client = it.next();
+				client.abort();
+				it.remove(); // Wird durch client.abort gelöscht
+			}
 		}
 		this.serverThread.abort();
-		this.notifyAll();
-		this.executor.shutdown();
 	}
 }

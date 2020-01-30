@@ -126,6 +126,7 @@ if ($@) {
 
 my %SolvisClient_ChannelDescriptions ;
 my $SolvisClient_ServerCommands = "";
+my @SolvisClient_ServerCommand_Array = ();
 
 
 
@@ -545,7 +546,7 @@ sub SolvisClient_CreateGetSetServerCommands($$) {
 		    if ( $SolvisClient_ServerCommands ne "" ) {
 				$SolvisClient_ServerCommands .= "," ;
 			}
-			$SolvisClient_ServerCommands .= $name ;
+			push(@SolvisClient_ServerCommand_Array, $name);
 		} else {
 			$SolvisClient_ChannelDescriptions{$name} = {} ;
 			$SolvisClient_ChannelDescriptions{$name}{SET} = $channelHash{Writeable} ;
@@ -573,6 +574,8 @@ sub SolvisClient_CreateGetSetServerCommands($$) {
 			}
 		}
 	}
+	
+	$SolvisClient_ServerCommands = join(",",sort(@SolvisClient_ServerCommand_Array));
 	
 }
 
@@ -853,7 +856,7 @@ sub SolvisClient_DbLog_splitFn($)
 		ben&ouml;tigt. Sie ist ein Kommunikations-Ger&auml;t, mit einer
 		<a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/remote-mobile.png">Web-Oberfl&auml;che</a>.<BR>
 		<BR>
-		Um das SolvisClient-Modul nutzen zu k&ouml;nnen, muss man mit dem
+		Zur Nutzung des SolvisClient-Moduls, muss man mit dem
 		<a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/Download/konfig-remote.zip">Konfigurations-Programm</a>
 		als erstes die IP-Adresse, den User und das Passwort definieren.<BR>
 		Wahlweise kann der Router die IP-Adresse vorgeben, dann sollte jedoch im Router f&uuml;r die
@@ -990,13 +993,20 @@ sub SolvisClient_DbLog_splitFn($)
 		    <tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
 			  Gegenstück zu dem ServerCommand SCREEN_RESTORE_INHIBIT<BR>
 		    </td></tr>
+		    <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_ENABLE</code>: </td><td align="left" valign="top">
+			  Normalerweise werden die Control-Kommandos in einer optimierten Reihenfolge ausgef&uuml;hrt. Befehle, welche im gleichen Screen Aktionen ausl&ouml;sen, werden zusammen gefasst ausgef&uuml;hrt. Falls eine strikte Einhaltung der Befehls-Sequenz erdorderlich ist,
+			  hann das durch diesen Server-Befehl verhindert werden<BR>
+		    </td></tr>
+		    <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_INHIBIT</code>: </td><td align="left" valign="top">
+			  Gegenstück zu dem ServerCommand COMMAND_OPTIMIZATION_ENABLE<BR>
+		    </td></tr>
 		    <tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
 			  Startet den Server neu<BR>
 		    </td></tr>
 	      </table>
-		</ul>
-		    Diese Tabelle gibt nicht unbedingt den aktuellen Stand wieder. Da die Server-Befehle vom Server selber dem Client &uuml;bergebenwerden (bei jeder neuen Verbindung),
-			k&ouml;nnen mehr oder weniger Server-Befehle definiert sein. Maßgebend ist immer die Ausgabe in der Web-Oberfl&auml;che.
+		</ul><BR>
+		    Diese Tabelle gibt nicht unbedingt den aktuellen Stand wieder. Es k&ouml;nnen mehr oder weniger Server-Befehle definiert sein, da die Server-Befehle vom Server selber dem Client &uuml;bergeben werden (bei jeder neuen Verbindung). Der Server selber bestimmt daher, was
+			der Client anbietet. Maßgebend ist daher immer die Ausgabe in der Web-Oberfl&auml;che.
       </ul><BR><BR>
       <table>
 	    <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>

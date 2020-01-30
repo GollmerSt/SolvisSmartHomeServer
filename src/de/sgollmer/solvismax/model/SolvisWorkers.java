@@ -8,10 +8,11 @@
 package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,9 +55,10 @@ public class SolvisWorkers {
 
 	private class ControlWorkerThread extends Thread {
 
-		private ArrayDeque<CommandI> queue = new ArrayDeque<>();
+		private LinkedList<CommandI> queue = new LinkedList<>();
 		private boolean abort = false;
-		int screenRestoreInhibitCnt = 0;
+		private int screenRestoreInhibitCnt = 0;
+		private int optimazationInhibitCnt = 0;
 
 		public ControlWorkerThread() {
 			super("ControlWorkerThread");
@@ -176,21 +178,36 @@ public class SolvisWorkers {
 
 		public void push(CommandI command) {
 			synchronized (this) {
-				boolean insert = true;
+				boolean add = true;
 
-				for (Iterator<CommandI> it = this.queue.iterator(); it.hasNext();) {
-					CommandI cmp = it.next();
-					Handling handling = command.getHandling(cmp);
-					if (handling.isInQueueInhibt()) {
-						cmp.setInhibit(true);
+				ListIterator<CommandI> itInsert = null;
+
+				if (this.optimazationInhibitCnt == 0) {
+
+					for (ListIterator<CommandI> it = this.queue.listIterator(this.queue.size()); it.hasPrevious();) {
+						CommandI cmp = it.previous();
+						Handling handling = command.getHandling(cmp, solvis);
+						if (handling.mustInhibitInQueue()) {
+							cmp.setInhibit(true);
+						}
+						if (handling.isInhibitAppend()) {
+							add = false;
+						}
+						if (handling.mustInsert()) {
+							if (itInsert == null) {
+								itInsert = this.queue.listIterator(it.nextIndex());
+							}
+						}
 					}
-					if (handling.isAppendInhibit()) {
-						insert = false;
-					}
+				} else {
+					add = true;
 				}
-				if (insert) {
+				if (add) {
 					if (command.first()) {
 						this.queue.addFirst(command);
+					} else if (itInsert != null) {
+						itInsert.next();
+						itInsert.add(command);
 					} else {
 						this.queue.add(command);
 					}
@@ -198,6 +215,17 @@ public class SolvisWorkers {
 					watchDog.bufferNotEmpty();
 				}
 			}
+		}
+
+		public synchronized void commandOptimization(boolean enable) {
+			if (enable) {
+				if (this.optimazationInhibitCnt > 0) {
+					--this.optimazationInhibitCnt;
+				}
+			} else {
+				++this.optimazationInhibitCnt;
+			}
+
 		}
 
 	}
@@ -232,6 +260,11 @@ public class SolvisWorkers {
 		}
 
 		return command.execute(this.solvis);
+
+	}
+
+	public void commandOptimization(boolean enable) {
+		this.controlsThread.commandOptimization(enable);
 
 	}
 
@@ -316,4 +349,5 @@ public class SolvisWorkers {
 			this.notifyAll();
 		}
 	}
+
 }

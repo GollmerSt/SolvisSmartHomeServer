@@ -11,23 +11,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.Restart;
 import de.sgollmer.solvismax.connection.Server.Client;
-import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
 import de.sgollmer.solvismax.connection.transfer.Command;
 import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
+import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
 import de.sgollmer.solvismax.connection.transfer.DisconnectPackage;
 import de.sgollmer.solvismax.connection.transfer.GetPackage;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
@@ -37,6 +34,7 @@ import de.sgollmer.solvismax.connection.transfer.SetPackage;
 import de.sgollmer.solvismax.error.JsonError;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
@@ -52,12 +50,11 @@ public class CommandHandler {
 	private final Collection<ClientAssignments> clients;
 	private final Instances instances;
 	private int nextClientId = Long.hashCode(System.currentTimeMillis());
-	private ThreadPoolExecutor executor;
+	private boolean abort = false;
 
 	public CommandHandler(Instances instances) {
 		this.instances = instances;
 		this.clients = new ArrayList<>();
-		this.executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(Constants.MAX_CONNECTIONS);
 
 	}
 
@@ -115,9 +112,15 @@ public class CommandHandler {
 			case SCREEN_RESTORE_ENABLE:
 				this.screenRestoreInhibit(false, assignments);
 				break;
+			case COMMAND_OPTIMIZATION_INHIBIT:
+				this.optimizationInhibit(true, assignments);
+				break;
+			case COMMAND_OPTIMIZATION_ENABLE:
+				this.optimizationInhibit(false, assignments);
+				break;
 			case RESTART:
 				this.restart();
-				break ;
+				break;
 
 			default:
 				logger.warn("Server command <" + serverCommand.getServerCommand().name()
@@ -127,18 +130,32 @@ public class CommandHandler {
 
 	}
 
-	@SuppressWarnings("static-method")
 	private void screenRestoreInhibit(boolean inhibit, ClientAssignments assignments) {
 		if (assignments != null) {
 			Boolean restoreInhibit = null;
-			if (inhibit && !assignments.screenRestoreInhibit) {
+			if (inhibit && !assignments.getState().isScreenRestoreInhibit()) {
 				restoreInhibit = true;
-			} else if (!inhibit && assignments.screenRestoreInhibit) {
+			} else if (!inhibit && assignments.getState().isScreenRestoreInhibit()) {
 				restoreInhibit = false;
 			}
 			if (restoreInhibit != null) {
-				assignments.screenRestoreInhibit = restoreInhibit;
-				assignments.solvis.execute(new CommandScreenRestore(!restoreInhibit));
+				assignments.getState().setScreenRestoreInhibit(restoreInhibit);
+				assignments.getSolvis().execute(new CommandScreenRestore(!restoreInhibit));
+			}
+		}
+	}
+
+	private void optimizationInhibit(boolean inhibit, ClientAssignments assignments) {
+		if (assignments != null) {
+			Boolean inhibitO = null;
+			if (inhibit && assignments.getState().isOptimizationEnable()) {
+				inhibitO = true;
+			} else if (!inhibit && !assignments.getState().isOptimizationEnable()) {
+				inhibitO = false;
+			}
+			if (inhibitO != null) {
+				assignments.getState().setOptimizationEnable(!inhibitO);
+				assignments.getSolvis().commandOptimization(!inhibitO);
 			}
 		}
 	}
@@ -188,8 +205,8 @@ public class CommandHandler {
 			client.closeDelayed();
 			return true;
 		}
-		Client former = assignments.client;
-		Solvis solvis = assignments.solvis;
+		Client former = assignments.getClient();
+		Solvis solvis = assignments.getSolvis();
 		if (former != null) {
 			former.close();
 			solvis.getDistributor().unregister(former);
@@ -207,7 +224,7 @@ public class CommandHandler {
 	private void disconnect(DisconnectPackage jsonPackage, Client client, boolean shutdown) {
 
 		ClientAssignments assignments = this.get(client);
-		Solvis solvis = assignments.solvis;
+		Solvis solvis = assignments.getSolvis();
 		this.unregister(assignments);
 		client.close();
 		if (shutdown) {
@@ -219,7 +236,7 @@ public class CommandHandler {
 
 	private void set(SetPackage jsonPackage, Client client) {
 		ClientAssignments assignments = this.get(client);
-		Solvis solvis = assignments.solvis;
+		Solvis solvis = assignments.getSolvis();
 		ChannelDescription description = solvis.getChannelDescription(jsonPackage.getId());
 		SingleData<?> singleData = jsonPackage.getSingleData();
 		logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");
@@ -240,47 +257,21 @@ public class CommandHandler {
 
 	private void get(GetPackage jsonPackage, Client client) {
 		ClientAssignments assignments = this.get(client);
-		Solvis solvis = assignments.solvis;
+		Solvis solvis = assignments.getSolvis();
 		ChannelDescription description = solvis.getChannelDescription(jsonPackage.getId());
 		logger.info("Channel <" + description.getId() + "> will be updated by GET command");
 		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description));
 	}
-	
+
 	private void restart() {
-		Restart restart = new Restart() ;
+		Restart restart = new Restart();
 		restart.startRestartProcess();
-		System.exit(ExitCodes.OK) ;
-	}
-
-	public class ClientAssignments {
-		private final int clientId;
-		private final Solvis solvis;
-		private Client client;
-		private boolean screenRestoreInhibit = false;
-		private ClosingThread closingThread = null;
-
-		public ClientAssignments(int clientid, Solvis solvis, Client client) {
-			this.clientId = clientid;
-			this.solvis = solvis;
-			this.client = client;
-		}
-
-		public void reconnect(Client client) {
-			this.abort();
-			this.client = client;
-		}
-
-		public synchronized void abort() {
-			if (this.closingThread != null) {
-				this.closingThread.abort();
-				this.closingThread = null;
-			}
-		}
+		System.exit(ExitCodes.OK);
 	}
 
 	public synchronized ClientAssignments get(Client client) {
 		for (ClientAssignments assignments : this.clients) {
-			if (assignments.client == client) {
+			if (assignments.getClient() == client) {
 				return assignments;
 			}
 		}
@@ -289,7 +280,7 @@ public class CommandHandler {
 
 	public synchronized ClientAssignments get(int clientId) {
 		for (ClientAssignments assignments : this.clients) {
-			if (assignments.clientId == clientId) {
+			if (assignments.getClientId() == clientId) {
 				return assignments;
 			}
 		}
@@ -314,7 +305,7 @@ public class CommandHandler {
 
 	public boolean isSolvisConnected(Solvis solvis) {
 		for (ClientAssignments assignments : this.clients) {
-			if (assignments.solvis == solvis) {
+			if (assignments.getSolvis() == solvis) {
 				return true;
 			}
 		}
@@ -329,28 +320,27 @@ public class CommandHandler {
 
 		ClientAssignments assignments = this.get(client);
 		// this.unregister(client);
-		if (assignments != null) {
-			assignments.solvis.getDistributor().unregister(client);
-			assignments.closingThread = new ClosingThread(assignments);
-			if (this.executor != null) {
-				this.executor.submit(assignments.closingThread);
-			}
-			assignments.client = null;
+		if (!this.abort && assignments != null) {
+			assignments.getSolvis().getDistributor().unregister(client);
+			assignments.setClosingThread(new ClosingThread(assignments));
+			assignments.getClosingThread().submit();
+			assignments.setClient(null);
 		}
 
 	}
 
-	private class ClosingThread implements Runnable {
+	class ClosingThread extends Helper.Runnable implements Runnable {
 		private final ClientAssignments assignments;
 		private boolean abort = false;
 
 		public ClosingThread(ClientAssignments assignments) {
+			super("ClosingThread");
 			this.assignments = assignments;
 		}
 
 		@Override
 		public void run() {
-			int delay = assignments.solvis.getSolvisDescription().getMiscellaneous().getConnectionHoldTime();
+			int delay = assignments.getSolvis().getSolvisDescription().getMiscellaneous().getConnectionHoldTime();
 			synchronized (this) {
 				try {
 					this.wait(delay);
@@ -369,13 +359,10 @@ public class CommandHandler {
 
 	}
 
-	public void abort() {
+	public synchronized void abort() {
+		this.abort = true;
 		for (ClientAssignments assignments : this.clients) {
 			assignments.abort();
-		}
-		if (executor != null) {
-			this.executor.shutdown();
-			this.executor = null;
 		}
 	}
 

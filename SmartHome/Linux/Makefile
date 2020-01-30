@@ -6,8 +6,11 @@ solvisDir = /opt/SolvisSmartHomeServer
 solvisJar = SolvisSmartHomeServer.jar
 baseXml = base
 systemD = /etc/systemd/system
+serviceDebug = DebugSolvisSmartHomeServer
 service = SolvisSmartHomeServer
 java = /usr/bin/java
+javaDebugPort = 0.0.0.0:10736
+javaAgentlib = jdwp=transport=dt_socket,suspend=n,server=y,address=$(javaDebugPort)
 perl = /usr/bin/perl
 account = fhem
 group = dialout
@@ -26,9 +29,19 @@ installService: installSolvis
 	systemctl start $(service)
 
 
+installDebugService: installSolvis
+	systemctl enable $(serviceDebug)
+	systemctl start $(serviceDebug)
+
+
 uninstallService: 
 	systemctl stop $(service)
 	systemctl disable $(service)
+
+
+uninstallDebugService: 
+	systemctl stop $(serviceDebug)
+	systemctl disable $(serviceDebug)
 
 
 installFHEM: $(fhemDir)/FHEM/$(fhemModul)
@@ -42,14 +55,23 @@ uninstallFHEM:
 uninstallSolvis: uninstallService
 	rm $(solvisDir)/$(solvisJar)
 	rm $(systemD)/$(service).service
+	rm $(systemD)/$(serviceDebug).service
+	
 
-
-installSolvis: $(solvisDir)/$(solvisJar) $(solvisDir)/$(baseXml).xml  $(solvisDir)/$(baseXml).xsd $(systemD)/$(service).service
+installSolvis: $(solvisDir)/$(solvisJar) $(solvisDir)/$(baseXml).xml  $(solvisDir)/$(baseXml).xsd $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
 
 
 learn: installSolvis
 	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-learn
+
+
+debugServer: installSolvis
+	sudo -u $(account) $(java) -agentlib:$(javaAgentlib) -jar $(solvisDir)/$(solvisJar)
 	
+
+terminate: installSolvis
+	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-terminate
+
 
 foreground: installSolvis
 	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar)
@@ -83,3 +105,6 @@ $(solvisDir)/$(baseXml).xsd : $(baseXml).xsd
 $(systemD)/$(service).service: $(service).service
 	cp $< $@
 
+
+$(systemD)/$(serviceDebug).service: $(serviceDebug).service
+	cp $< $@

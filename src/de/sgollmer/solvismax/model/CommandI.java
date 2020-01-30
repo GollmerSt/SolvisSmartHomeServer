@@ -25,24 +25,31 @@ public interface CommandI {
 	public Boolean isScreenRestore() ;
 	
 	public static class Handling {
-		public boolean isInQueueInhibt() {
+		private final boolean inQueueInhibt ;
+		private final boolean inhibitAppend ;
+		private final boolean insert ;
+			
+		public Handling(boolean inQueueInhibt, boolean inhibitAppend, boolean insert ) {
+			this.inQueueInhibt = inQueueInhibt ;
+			this.inhibitAppend = inhibitAppend ;
+			this.insert = insert;
+		}
+
+		public boolean mustInhibitInQueue() {
 			return inQueueInhibt;
 		}
 
-		public boolean isAppendInhibit() {
-			return appendInhibit;
+		public boolean isInhibitAppend() {
+			return inhibitAppend;
+		}
+		
+		public boolean mustInsert() {
+			return insert ;
 		}
 
-		private final boolean inQueueInhibt ;
-		private final boolean appendInhibit ;
-			
-		public Handling(boolean inQueueInhibt, boolean appendInhibit ) {
-			this.inQueueInhibt = inQueueInhibt ;
-			this.appendInhibit = appendInhibit ;
-		}
 	}
 	
-	public Handling getHandling( CommandI queueEntry ) ;
+	public Handling getHandling( CommandI queueEntry, Solvis solvis  ) ;
 	
 	public boolean first() ;
 

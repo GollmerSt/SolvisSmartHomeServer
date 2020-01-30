@@ -32,7 +32,6 @@ public class Restart {
 	public static final String SUN_JAVA_COMMAND = "sun.java.command";
 
 	private String java;
-	@SuppressWarnings("unused")
 	private Collection<String> vmArgs = new ArrayList<>();
 	private String vmAgentLib = null;
 	private Collection<String> mainCommand = new ArrayList<>();

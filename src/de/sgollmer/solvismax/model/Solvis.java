@@ -264,6 +264,10 @@ public class Solvis {
 			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData());
 		}
 	}
+	
+	public void commandOptimization( boolean enable ) {
+		this.worker.commandOptimization( enable ) ;
+	}
 
 	public void execute(CommandI command) {
 		this.worker.push(command);

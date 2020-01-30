@@ -45,8 +45,8 @@ public class CommandScreenRestore implements CommandI {
 	}
 
 	@Override
-	public Handling getHandling(CommandI queueEntry) {
-		return new Handling(false, false);
+	public Handling getHandling(CommandI queueEntry, Solvis solvis) {
+		return new Handling(false, false, false);
 	}
 
 	@Override

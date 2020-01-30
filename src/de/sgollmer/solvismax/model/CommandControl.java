@@ -80,18 +80,19 @@ public class CommandControl implements CommandI {
 	}
 
 	@Override
-	public Handling getHandling(CommandI queueEntry) {
+	public Handling getHandling(CommandI queueEntry, Solvis solvis) {
 		if (!(queueEntry instanceof CommandControl)) {
-			return new Handling(false, false);
+			return new Handling(false, false, false);
 		} else {
+			boolean sameScreen = queueEntry.getScreen(solvis) == this.getScreen(solvis);
 			CommandControl qCmp = (CommandControl) queueEntry;
 			if (!this.description.equals(qCmp.description)) {
-				return new Handling(false, false);
+				return new Handling(false, false, sameScreen);
 			} else {
 				if (this.setValue == null) {
-					return new Handling(false, true);
+					return new Handling(false, true, sameScreen);
 				} else {
-					return new Handling(true, false);
+					return new Handling(true, false, sameScreen);
 				}
 			}
 

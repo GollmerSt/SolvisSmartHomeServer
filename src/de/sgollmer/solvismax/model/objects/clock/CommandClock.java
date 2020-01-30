@@ -52,8 +52,8 @@ public class CommandClock implements CommandI {
 	}
 
 	@Override
-	public Handling getHandling(CommandI queueEntry) {
-		return new Handling(false, queueEntry instanceof CommandClock);
+	public Handling getHandling(CommandI queueEntry, Solvis solvis) {
+		return new Handling(false, queueEntry instanceof CommandClock, false);
 	}
 
 	@Override
