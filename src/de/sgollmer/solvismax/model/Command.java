@@ -13,17 +13,20 @@ import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
-public interface CommandI {
-	public boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn;
+public abstract class Command {
+	public abstract boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn;
 
-	public Screen getScreen(Solvis solvis);
+	public Screen getScreen(Solvis solvis) {
+		return null ;
+	}
 
-	public boolean isInhibit();
+	public boolean isInhibit() {
+		return false ;
+	}
 
-	public void setInhibit(boolean inhibit);
-	
-	public Boolean isScreenRestore() ;
-	
+	public void setInhibit(boolean inhibit) {
+	};
+		
 	public static class Handling {
 		private final boolean inQueueInhibt ;
 		private final boolean inhibitAppend ;
@@ -49,8 +52,12 @@ public interface CommandI {
 
 	}
 	
-	public Handling getHandling( CommandI queueEntry, Solvis solvis  ) ;
+	public Handling getHandling( Command queueEntry, Solvis solvis  ) {
+		return new Handling(false, false, false);
+	}
 	
-	public boolean first() ;
+	public boolean first() {
+		return false ;
+	}
 
 }

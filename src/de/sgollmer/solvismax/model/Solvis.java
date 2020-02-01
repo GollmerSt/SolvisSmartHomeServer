@@ -269,7 +269,11 @@ public class Solvis {
 		this.worker.commandOptimization( enable ) ;
 	}
 
-	public void execute(CommandI command) {
+	public void screenRestore( boolean enable ) {
+		this.worker.screenRestore(enable); ;
+	}
+
+	public void execute(Command command) {
 		this.worker.push(command);
 	}
 

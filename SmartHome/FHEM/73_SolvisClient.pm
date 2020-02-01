@@ -43,7 +43,7 @@ use constant MODULE => "SolvisClient";
 
 use constant WATCH_DOG_INTERVAL => 300 ;	#Mindestens alle 5 Minuten muss der Client Daten vom Servere erhalten haben.
 											# Andernfalls wird die Verbindung neu aufgebaut
-use constant RECONNECT_AFTER_DISMISS => 5 ;
+use constant RECONNECT_AFTER_DISMISS => 30 ;
 
 use constant _FALSE_ => 0 ;
 use constant _TRUE_ => 1;
@@ -473,6 +473,8 @@ sub SolvisClient_InterpreteConnectionState($$) {
 
 sub SolvisClient_ReconnectAfterDismiss($) {
 	my ($this) = @_ ;
+
+	DevIo_CloseDev($this) ;
 
 	my $timeStamp = gettimeofday() + RECONNECT_AFTER_DISMISS ;
 	InternalTimer($timeStamp, "SolvisClient_Reconnect", $this );

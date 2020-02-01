@@ -1666,7 +1666,7 @@
 			</tns:ScreenGrafic>
 		</tns:Preparation>
 	</tns:Preparations>
-	<tns:Clock channelId="X6.UhrzeitSolvis"
+	<tns:Clock timeChannelId="X6.UhrzeitSolvis"
 		screenId="Zeiteinstellung" okScreenId="Uhrzeit / Datum">
 		<tns:SecondsScan>
 			<tns:TopLeft X="100" Y="35" />
@@ -1764,6 +1764,8 @@
 			releaseTimeRefId="WindowChange">
 			<tns:Coordinate X="185" Y="70" />
 		</tns:Ok>
+		<tns:DisableClockSetting
+			burnerId="A12.Brenner" hotWaterPumpId="A02.Pumpe_Warmwasser" />
 	</tns:Clock>
 	<tns:Durations>
 		<!-- Standard-Zeit für das Drücken eines Bildschirmbuttons -->

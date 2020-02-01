@@ -78,11 +78,10 @@ public class WatchDog {
 				this.realScreen = this.solvis.getRealScreen();
 				if (this.realScreen.imagesEquals(this.lastScreen)) {
 					// do nothing
+				} else if (this.isScreenSaver()) {
+					userAccess = UserAccess.RESET;
 				} else if (solvis.getSolvisDescription().getErrorScreen().is(this.realScreen)) {
 					this.errorDetected = true;
-					abort = false;
-					userAccess = UserAccess.RESET;
-				} else if (this.isScreenSaver()) {
 					userAccess = UserAccess.RESET;
 				} else {
 					this.errorDetected = false;
@@ -137,7 +136,6 @@ public class WatchDog {
 				}
 
 			} catch (Throwable e) {
-
 			}
 		}
 	}

@@ -941,8 +941,11 @@ da der user diesen manuell verändert haben könnte.</documentation>
     		<element name="Ok" type="tns:TouchPoint" maxOccurs="1"
     			minOccurs="1">
     		</element>
+    		<element name="DisableClockSetting"
+    			type="tns:DisableClockSetting" maxOccurs="1" minOccurs="1">
+    		</element>
     	</sequence>
-    	<attribute name="channelId" type="string" use="required">
+    	<attribute name="timeChannelId" type="string" use="required">
     		<annotation>
     			<documentation>Id des Channels, der die aktuelle Zeit der Solvis-Uhr wiedergibt.</documentation>
     		</annotation></attribute>
@@ -1068,5 +1071,10 @@ Daher liefert der Server einen Error-Event, wenn nicht mehr die Uhranzeige einge
 			<annotation>
 				<documentation>Relativ mit 1000 multipliziert</documentation>
 			</annotation></attribute>
+	</complexType>
+
+	<complexType name="DisableClockSetting">
+		<attribute name="burnerId" type="string" use="required"></attribute>
+		<attribute name="hotWaterPumpId" type="string" use="optional"></attribute>
 	</complexType>
 </schema>

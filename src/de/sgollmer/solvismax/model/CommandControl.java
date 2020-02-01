@@ -15,7 +15,7 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
-public class CommandControl implements CommandI {
+public class CommandControl extends Command {
 	private final ChannelDescription description;
 	private final SingleData<?> setValue;
 	private boolean inhibit = false;
@@ -75,13 +75,8 @@ public class CommandControl implements CommandI {
 	}
 
 	@Override
-	public Boolean isScreenRestore() {
-		return null;
-	}
-
-	@Override
-	public Handling getHandling(CommandI queueEntry, Solvis solvis) {
-		if (!(queueEntry instanceof CommandControl)) {
+	public Handling getHandling(Command queueEntry, Solvis solvis) {
+		if (!(queueEntry instanceof CommandControl) || queueEntry.isInhibit()) {
 			return new Handling(false, false, false);
 		} else {
 			boolean sameScreen = queueEntry.getScreen(solvis) == this.getScreen(solvis);
@@ -99,23 +94,4 @@ public class CommandControl implements CommandI {
 		}
 	}
 
-	@Override
-	public boolean first() {
-		return false;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof CommandControl)) {
-			return false;
-		} else {
-			CommandControl cmp = (CommandControl) obj;
-			return this.description == cmp.description && this.inhibit == cmp.inhibit;
-		}
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
 }
