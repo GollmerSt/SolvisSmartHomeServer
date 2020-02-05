@@ -7,29 +7,36 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
-public class FloatValue implements SingleData<Float> {
-	
-	private final float value ;
-	
-	public FloatValue(float value ) {
-		this.value = value ;
+public class FloatValue extends SingleData<Float> {
+
+	private final float value;
+	private final boolean fastChange;
+
+	public FloatValue(float value, long timeStamp, boolean fastChange) {
+		super(timeStamp);
+		this.value = value;
+		this.fastChange = fastChange;
+	}
+
+	public FloatValue(float value, long timeStamp) {
+		this(value, timeStamp, false);
 	}
 
 	@Override
 	public Integer getInt() {
-		return Math.round( value ) ;
+		return Math.round(value);
 	}
 
 	@Override
-	public SingleData<Float> create(int value) {
-		return new FloatValue(value);
+	public SingleData<Float> create(int value, long timeStamp) {
+		return new FloatValue(value, timeStamp);
 	}
 
 	@Override
 	public String getXmlId() {
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return Float.toString(this.value);
@@ -39,10 +46,15 @@ public class FloatValue implements SingleData<Float> {
 	public String toJson() {
 		return this.toString();
 	}
-	
+
 	@Override
 	public Float get() {
-		return this.value ;
+		return this.value;
+	}
+
+	@Override
+	public boolean isFastChange() {
+		return this.fastChange;
 	}
 
 }

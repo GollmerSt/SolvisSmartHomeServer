@@ -1,0 +1,50 @@
+Sehr geeehrte Damen und Herren,
+
+ich bin Besitzer einer SolvisMax 6 vo 2014 (SÖ-BW mit WWS24). Beim Einstellen der Uhrzeit passiert es sporadisch, dass die Anlage danach für geschätzt 10s nicht reagiert und sie sich danach komplett zurücksetzt, der Mischer fährt in Ruhestellung, die WW-Pumpe geht auf Auto.
+
+Hier scheint ein WatchDog offenbar die fehlende Reaktion des Systems erkannt zu haben und resetet das System.
+
+Die SolvisControl 2 meiner Anlage hat noch die Firmware MA150 N205.
+
+Ist das Problem bei Ihnen schon bekannt und vielleicht in einer neueren Firmware behoben?
+
+Vielen Dank im Voraus für Ihre Bemühungen.
+
+Mit ferundlichen Grüßen
+     Stefan Gollmer
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Sehr geehrter Herr Gollner,
+
+Vielen Dank für Ihre Anfrage, die ich Ihnen so gut als möglich beantworten möchte. 
+
+Vorab sei gesagt: Die Uhrzeit des Zentralreglers funktioniert in der Regel sehr genau und eine Nachstellen oder Einstellen ist in aller Regel nicht erforderlich. 
+Wenn man die Uhrzeit verstellt, kann es passieren, dass Timer unkontrolliert überlaufen und die Funktionen dann neu gestartet werden. Das ist aber kein Fehler, sondern eine Reaktion auf die geänderten Parameter.
+Dass zum Beispiel die Mischer zufahren, hängt mit der Heizkreisfunktion zusammen. Um einen stabilen Grundzustand zu erzeugen, ist das die erste Maßnahme, die nach einem Neustart/Reset erfolgt.
+
+Ein Problem mit der Uhrzeiteinstellung ist uns bis dato nicht bekannt.
+Wie oben bereits gesagt braucht die Uhr in der Regel nicht nachgesellt werden, es sei denn der Regler hat einen defekten Quarz oder Uhrenbaustein.
+Wenn sich hier also ein Uhrendefekt vorliegen sollte und die Uhr nicht stabil läuft (stehen bleibt)  wäre in dem Fall nur Abhilfe durch den Austausch des  Zentralregler zu schaffen.
+
+Eine neue Firmware für den Regler der Baureihe 6 gibt es nicht. Die Version MA 150 ist der letzte Stand. 
+
+Ich hoffe Ihnen mit diesen Zeilen geholfen zu haben. 
+
+
+Mit freundlichen Grüßen
+i. A. Uwe Zimmermann
+Kundendienst
+ 
+Solvis GmbH
+Grotrian-Steinweg-Straße 12
+38112 Braunschweig
+Tel. +49 531 28904-222
+Fax +49 531 28904-349
+mailto:service@solvis.de
+http://www.solvis.de
+Amtsgericht Braunschweig HRB 205577
+USt.-ID Nr.: DE 301989341
+Geschäftsführung: Gabriele Münzer, Markus-Oliver Kube

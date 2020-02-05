@@ -29,7 +29,7 @@ public class ConnectedPackage extends JsonPackage {
 		Element element = new Element();
 		this.data.add(element);
 		element.name = "ClientId";
-		element.value = new SingleValue(new IntegerValue(clientId));
+		element.value = new SingleValue(new IntegerValue(clientId, -1));
 		element = new Element();
 		this.data.add(element);
 		element.name = "ServerVersion";

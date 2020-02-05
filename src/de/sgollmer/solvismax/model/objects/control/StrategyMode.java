@@ -19,12 +19,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -38,8 +40,8 @@ public class StrategyMode implements Strategy {
 
 	private static final Logger logger = LogManager.getLogger(StrategyMode.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
-	
-	private static final String XML_MODE = "Mode" ; 
+
+	private static final String XML_MODE = "Mode";
 
 	private final List<Mode> modes;
 
@@ -66,7 +68,7 @@ public class StrategyMode implements Strategy {
 				current = pattern;
 			}
 			if (cmp.isElementOf(current, source.getSolvis(), true)) {
-				return new ModeValue<Mode>(mode);
+				return new ModeValue<Mode>(mode, System.currentTimeMillis());
 			}
 		}
 		return null;
@@ -74,20 +76,23 @@ public class StrategyMode implements Strategy {
 
 	@Override
 	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
-			throws IOException, TerminationException {
-		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentScreen(), rectangle);
+			throws IOException, TerminationException, TypeError {
+		if (value.getMode() == null) {
+			throw new TypeError("Wrong value type");
+		}
+		ModeI valueMode = value.getMode().get();		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentScreen(), rectangle);
 		if (cmp != null && value.getMode().equals(cmp)) {
 			return true;
 		}
 		Mode mode = null;
 		for (Mode m : modes) {
-			if (value.getMode().equals(new ModeValue<Mode>(m))) {
+			if (valueMode.equals(m)) {
 				mode = m;
 				break;
 			}
 		}
 		if (mode == null) {
-			return false;
+			throw new TypeError("Unknown value");
 		}
 		solvis.send(mode.getTouch());
 		return false;
@@ -203,12 +208,27 @@ public class StrategyMode implements Strategy {
 				}
 			}
 		}
-		if ( !successfull ) {
-			for ( Mode mode: this.getModes() ) {
-				solvis.getGrafics().remove(mode.getGrafic().getId()) ;
+		if (!successfull) {
+			for (Mode mode : this.getModes()) {
+				solvis.getGrafics().remove(mode.getGrafic().getId());
 			}
 		}
 		solvis.clearCurrentScreen();
 		return successfull;
+	}
+
+	@Override
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+		ModeI setMode = null;
+		for (ModeI mode : this.getModes()) {
+			if (mode.getName().equals(singleData.toString())) {
+				setMode = mode;
+				break;
+			}
+		}
+		if (setMode == null) {
+			throw new TypeError("Mode <" + singleData.toString() + "> is unknown");
+		}
+		return new ModeValue<ModeI>(setMode, -1);
 	}
 }

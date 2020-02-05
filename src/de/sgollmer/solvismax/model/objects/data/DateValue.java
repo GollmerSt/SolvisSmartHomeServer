@@ -13,32 +13,27 @@ import java.util.Date;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class DateValue implements SingleData<Calendar> {
+public class DateValue extends SingleData<Calendar> {
 	private static final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	private final Calendar calendar;
-	private final long timeStamp ;
 
 	public DateValue(Calendar calendar, long timeStamp ) {
+		super(timeStamp) ;
 		this.calendar = calendar;
-		this.timeStamp = timeStamp ;
 	}
 
 	public Calendar getCalendar() {
 		return calendar;
 	}
 	
-	public long getTimeStamp() {
-		return timeStamp;
-	}
-
 	@Override
 	public Integer getInt() {
 		return null;
 	}
 
 	@Override
-	public SingleData<Calendar> create(int value) {
+	public SingleData<Calendar> create(int value, long timeStamp) {
 		return null;
 	}
 

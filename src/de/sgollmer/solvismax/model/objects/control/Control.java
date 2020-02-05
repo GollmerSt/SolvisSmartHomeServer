@@ -20,6 +20,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.model.Solvis;
@@ -104,12 +105,18 @@ public class Control extends ChannelSource {
 			return false;
 		}
 		boolean set = false;
-		for (int c = 0; c < Constants.SET_REPEATS + 1 && !set; ++c) {
-			set = this.strategy.setValue(solvis, this.valueRectangle, value);
-			if (!set && c == 1) {
-				logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
-						+ " failed, set will be tried again.");
+		try {
+			for (int c = 0; c < Constants.SET_REPEATS + 1 && !set; ++c) {
+				set = this.strategy.setValue(solvis, this.valueRectangle, value);
+				if (!set && c == 1) {
+					logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
+							+ " failed, set will be tried again.");
+				}
 			}
+		} catch (TypeError e) {
+			logger.error("Setting value <" + value.toString() + "> not defined for <" + this.getDescription().getId()
+					+ ">. Setting ignored");
+			return true ;
 		}
 		if (!set) {
 			logger.error("Setting of <" + this.getDescription().getId() + "> not successfull");
@@ -362,6 +369,11 @@ public class Control extends ChannelSource {
 	@Override
 	public boolean isBoolean() {
 		return false;
+	}
+
+	@Override
+	public SingleData<?> interpretSetData(SingleData<?> singleData)  throws TypeError{
+		return this.strategy.interpretSetData(singleData) ;
 	}
 
 }

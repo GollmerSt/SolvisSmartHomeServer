@@ -109,7 +109,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 			} else {
 				result = Status.OFF;
 			}
-			this.result.setMode(result);
+			this.result.setMode(result, data.getTimeStamp());
 
 		}
 	}

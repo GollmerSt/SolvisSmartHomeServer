@@ -108,7 +108,7 @@ public class RunTime extends Strategy<RunTime> {
 				int result = this.formerRunTime_s + (int) ((time - this.lastStartTime + 500) / 1000);
 
 				if (result - former > 60 || ! burnerOn ) {
-					this.result.setInteger(result, this);
+					this.result.setInteger(result, data.getTimeStamp(), this);
 				}
 				
 				if ( !burnerOn ) {

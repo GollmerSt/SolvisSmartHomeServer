@@ -29,8 +29,9 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	private final AllSolvisData datas;
 
 	private final Average average;
-
 	private SingleData<?> data = null;
+	private long sentTimeStamp = -1;
+	private SingleData<?> sentData = null;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
@@ -52,6 +53,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		} else {
 			this.average = null;
 		}
+		this.sentTimeStamp = data.sentTimeStamp;
+		this.sentData = data.sentData;
 	}
 
 	public SolvisData(SingleData<?> data) {
@@ -96,11 +99,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		this.setData(data, this);
 	}
 
-	private void setData(SingleData<?> data, Object source) {
-		
-		if ( data == null ) {
-			this.data = null ;
-			return ;
+	private synchronized void setData(SingleData<?> data, Object source) {
+
+		if (data == null) {
+			this.data = null;
+			return;
 		}
 
 		if (this.description.isAverage()) {
@@ -108,7 +111,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 			data = this.average.getAverage(data);
 		}
 
-		if ( data != null && !data.equals(this.data)) {
+		if (data != null && !data.equals(this.data)) {
 			this.data = data;
 			this.notify(this, source);
 			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
@@ -125,25 +128,26 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return this.description;
 	}
 
-	public void setInteger(Integer integer, Object source) {
-		this.setData(new IntegerValue(integer), source);
+	public void setInteger(Integer integer, long timeStamp, Object source) {
+		this.setData(new IntegerValue(integer, timeStamp), source);
 	}
 
-	public void setInteger(Integer integer) {
-		this.setData(new IntegerValue(integer));
+	public void setInteger(Integer integer, long timeStamp) {
+		this.setData(new IntegerValue(integer, timeStamp));
 	}
 
 	public Integer getInteger() {
-		if (this.data == null) {
+		SingleData<?> data = this.data;
+		if (data == null) {
 			return null;
-		} else if (this.data instanceof FloatValue) {
-			float f = ((FloatValue) this.data).get();
+		} else if (data instanceof FloatValue) {
+			float f = ((FloatValue) data).get();
 			return Math.round(f);
 
-		} else if ((this.data instanceof IntegerValue)) {
-			return ((IntegerValue) this.data).get();
+		} else if ((data instanceof IntegerValue)) {
+			return ((IntegerValue) data).get();
 		}
-		throw new TypeError("TypeError: Type actual: <" + this.data.getClass() + ">, target: <IntegerValue>");
+		throw new TypeError("TypeError: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
 	}
 
 	public int getInt() {
@@ -155,22 +159,23 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	public void setDate(Calendar calendar, long timeStamp) {
-		this.setData(new DateValue(calendar, timeStamp ));
+		this.setData(new DateValue(calendar, timeStamp));
 
 	}
 
-	public void setBoolean(Boolean bool) {
-		this.setData(new BooleanValue(bool));
+	public void setBoolean(Boolean bool, long timeStamp) {
+		this.setData(new BooleanValue(bool, timeStamp));
 
 	}
 
 	public Boolean getBoolean() {
-		if (this.data == null) {
+		SingleData<?> data = this.data;
+		if (data == null) {
 			return null;
-		} else if (!(this.data instanceof BooleanValue)) {
-			throw new TypeError("TypeError: Type actual: <" + this.data.getClass() + ">, target: <BooleanValue>");
+		} else if (!(data instanceof BooleanValue)) {
+			throw new TypeError("TypeError: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
-		return ((BooleanValue) this.data).get();
+		return ((BooleanValue) data).get();
 	}
 
 	public boolean getBool() {
@@ -181,13 +186,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return bool;
 	}
 
-	public void setMode(ModeI mode) {
-		this.setData(new ModeValue<>(mode));
+	public void setMode(ModeI mode, long timeStamp) {
+		this.setData(new ModeValue<>(mode, timeStamp));
 	}
 
 	public ModeValue<?> getMode() {
-		if (this.data instanceof ModeValue<?>) {
-			return (ModeValue<?>) this.data;
+		SingleData<?> data = this.data;
+		if (data instanceof ModeValue<?>) {
+			return (ModeValue<?>) data;
 		} else {
 			return null;
 		}
@@ -214,8 +220,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	public SingleValue toSingleValue() {
-		if (this.data instanceof IntegerValue) {
-			return new SingleValue(new FloatValue((float) this.getInt() / this.getDescription().getDivisor()));
+		SingleData<?> data = this.data;
+		if (data instanceof IntegerValue) {
+			return new SingleValue(new FloatValue((float) data.getInt() / this.getDescription().getDivisor(),
+					this.data.getTimeStamp()));
 		} else {
 			return new SingleValue(data);
 		}
@@ -226,6 +234,33 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (data.getState() == SolvisState.State.POWER_OFF && this.average != null) {
 			this.average.clear();
 		}
+	}
+
+	public long getTimeStamp() {
+		SingleData<?> data = this.data;
+		if (data != null) {
+			return data.getTimeStamp();
+		} else {
+			return -1;
+		}
+	}
+
+	public SingleData<?> getSentData() {
+		return sentData;
+	}
+
+	public synchronized SingleData<?> setSentData(long sentTimeStamp) {
+		this.sentTimeStamp = sentTimeStamp;
+		this.sentData = this.data;
+		return this.sentData;
+	}
+
+	public long getSentTimeStamp() {
+		return sentTimeStamp;
+	}
+	
+	public boolean isFastChange() {
+		return this.data.isFastChange();
 	}
 
 }

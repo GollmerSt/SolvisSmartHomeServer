@@ -24,7 +24,6 @@ import de.sgollmer.solvismax.model.Command.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
-import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class SolvisWorkers {
 
@@ -111,6 +110,11 @@ public class SolvisWorkers {
 					success = true;
 
 					try {
+						if (command != null && command.getScreen(solvis) == solvis.getCurrentScreen().get()
+								&& !solvis.isScreenSaverActive()
+								&& solvis.getSolvisState().getState() != SolvisState.State.ERROR) {
+							executeWatchDog = true;
+						}
 						if (saveScreen) {
 							SolvisWorkers.this.solvis.saveScreen();
 							saveScreen = false;
@@ -120,6 +124,7 @@ public class SolvisWorkers {
 						}
 						if (executeWatchDog) {
 							watchDog.execute();
+							executeWatchDog = false;
 						}
 						if (command != null && !command.isInhibit()) {
 							success = execute(command);
@@ -235,7 +240,7 @@ public class SolvisWorkers {
 
 			boolean clear;
 
-			if (SolvisScreen.get(this.solvis.getCurrentScreen()) != commandScreen
+			if (this.solvis.getCurrentScreen().get() != commandScreen
 					|| this.commandScreen != commandScreen) {
 				clear = true;
 			} else if (now > timeCommandScreen + Constants.TIME_COMMAND_SCREEN_VALID) {
@@ -270,7 +275,7 @@ public class SolvisWorkers {
 					controlsThread.commandOptimization(true);
 					return true;
 				}
-				
+
 				@Override
 				public String toString() {
 					return "Optimization enable";

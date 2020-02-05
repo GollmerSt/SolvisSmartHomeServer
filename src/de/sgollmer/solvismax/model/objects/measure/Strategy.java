@@ -96,7 +96,7 @@ public enum Strategy {
 					result -= threshold * 2;
 				}
 			}
-			destin.setInteger((int) result);
+			destin.setInteger((int) result, data.getTimeStamp());
 			return true;
 		}
 
@@ -117,7 +117,7 @@ public enum Strategy {
 			}
 			String sub = field.subString(data.getHexString());
 			boolean result = toInt(sub) > 0;
-			destin.setBoolean(result);
+			destin.setBoolean(result, data.getTimeStamp());
 			return true;
 		}
 

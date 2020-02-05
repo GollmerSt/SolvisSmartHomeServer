@@ -33,14 +33,13 @@ import de.sgollmer.solvismax.connection.transfer.ServerCommandPackage;
 import de.sgollmer.solvismax.connection.transfer.SetPackage;
 import de.sgollmer.solvismax.error.JsonError;
 import de.sgollmer.solvismax.error.LearningError;
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
-import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class CommandHandler {
@@ -240,17 +239,10 @@ public class CommandHandler {
 		ChannelDescription description = solvis.getChannelDescription(jsonPackage.getId());
 		SingleData<?> singleData = jsonPackage.getSingleData();
 		logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");
-		if (description.getModes() != null) {
-			ModeI setMode = null;
-			for (ModeI mode : description.getModes()) {
-				if (mode.getName().equals(singleData.toString())) {
-					setMode = mode;
-					break;
-				}
-			}
-			if (setMode == null)
-				throw new JsonError("Unknown mode <" + singleData.toString() + "> in revceived Json package");
-			singleData = new ModeValue<ModeI>(setMode);
+		try {
+			singleData = description.interpretSetData(singleData) ;
+		} catch ( TypeError e ) {
+			throw new JsonError(e.getMessage() + " Located in revceived Json package.");
 		}
 		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData));
 	}

@@ -113,9 +113,9 @@ public class Measurement {
 			final String dataString = text.toString();
 			switch (this.getId()) {
 				case XML_MEASUREMENT_BOOLEAN:
-					return new BooleanValue(Boolean.parseBoolean(dataString));
+					return new BooleanValue(Boolean.parseBoolean(dataString), -1);
 				case XML_MEASUREMENT_INTEGER:
-					return new IntegerValue(Integer.parseInt(dataString));
+					return new IntegerValue(Integer.parseInt(dataString), -1);
 				case XML_MEASUREMENT_MODE:
 					return new ModeValue<ModeI>(new ModeI() {
 
@@ -123,9 +123,9 @@ public class Measurement {
 						public String getName() {
 							return dataString;
 						}
-					});
+					}, -1);
 				case XML_MEASUREMENT_STRING:
-					return new StringData(dataString);
+					return new StringData(dataString, -1);
 			}
 			return null;
 		}

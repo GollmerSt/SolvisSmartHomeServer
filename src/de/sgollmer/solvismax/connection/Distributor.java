@@ -41,14 +41,10 @@ public class Distributor extends Observable<JsonPackage> {
 		}
 
 		@Override
-		public void clear() {
-			this.measurements = new ArrayList<>() ;
-
-		}
-
-		@Override
-		public Collection<SolvisData> get() {
-			return this.measurements;
+		public Collection<SolvisData> cloneAndClear() {
+			Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements);
+			this.measurements.clear();
+			return collection;
 		}
 
 		@Override
@@ -61,18 +57,15 @@ public class Distributor extends Observable<JsonPackage> {
 		private Map<String, SolvisData> measurements = new HashMap<>();
 
 		@Override
-		public Collection<SolvisData> get() {
-			return this.measurements.values();
-		}
-
-		@Override
-		public void clear() {
-			this.measurements = new HashMap<>();
+		public Collection<SolvisData> cloneAndClear() {
+			Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements.values());
+			this.measurements.clear();
+			return collection;
 		}
 
 		@Override
 		public void add(SolvisData data) {
-			this.measurements.put(data.getId(), data) ;
+			this.measurements.put(data.getId(), data);
 		}
 
 		@Override
@@ -105,13 +98,21 @@ public class Distributor extends Observable<JsonPackage> {
 		public void update(SolvisData data, Object source) {
 			synchronized (Distributor.this) {
 
-				if (data.getDescription().isBuffered() && periodicBurstThread != null) {
+				boolean buffered = data.getDescription().isBuffered() && periodicBurstThread != null;
+
+				if (buffered && data.isFastChange() && data.getTimeStamp()
+						- data.getSentTimeStamp() > Constants.FORCE_UPDATE_AFTER_N_INTERVALS * bufferedIntervall_ms) {
+					buffered = false;
+				}
+
+				if (buffered) {
+
 					collectedBufferedMeasurements.add(data);
 
 				} else {
 					collectedMeasurements.add(data);
 					if (!burstUpdate) {
-						sendCollection(collectedMeasurements);
+						sendCollection(collectedMeasurements.cloneAndClear());
 					}
 				}
 			}
@@ -149,17 +150,14 @@ public class Distributor extends Observable<JsonPackage> {
 
 	}
 
-	private void sendCollection(Measurements measurements) {
-		Collection<SolvisData> sendMeasurements = null;
-		synchronized (this) {
-			if (!measurements.isEmpty()) {
-				sendMeasurements = measurements.get();
-				measurements.clear();
+	private void sendCollection(Collection<SolvisData> measurements) {
+		long timeStamp = System.currentTimeMillis();
+		if (!measurements.isEmpty()) {
+			for (SolvisData data : measurements) {
+				data.setSentData(timeStamp);
 			}
-		}
-		if (sendMeasurements != null ) {
 			aliveThread.trigger();
-			MeasurementsPackage sendPackage = new MeasurementsPackage(sendMeasurements);
+			MeasurementsPackage sendPackage = new MeasurementsPackage(measurements);
 			this.notify(sendPackage);
 		}
 	}
@@ -251,7 +249,7 @@ public class Distributor extends Observable<JsonPackage> {
 					}
 				}
 				if (!abort) {
-					sendCollection(collectedBufferedMeasurements);
+					sendCollection(collectedBufferedMeasurements.cloneAndClear());
 				}
 			}
 		}
@@ -264,13 +262,18 @@ public class Distributor extends Observable<JsonPackage> {
 
 	public void setBurstUpdate(boolean burstUpdate) {
 		boolean send = false;
+		Collection<SolvisData> collection = null;
 		synchronized (this) {
 			send = !burstUpdate && this.burstUpdate;
 			this.burstUpdate = burstUpdate;
+			if (send) {
+				collection = this.collectedMeasurements.cloneAndClear();
+			}
 		}
-		if (send ) {
-			sendCollection(this.collectedMeasurements);
+		if (send) {
+			this.sendCollection(collection);
 		}
+
 		String comment = this.burstUpdate ? "started" : "finished";
 		logger.debug("Burst update " + comment);
 	}
@@ -304,8 +307,6 @@ public class Distributor extends Observable<JsonPackage> {
 
 		public boolean isEmpty();
 
-		public void clear();
-
-		public Collection<SolvisData> get();
+		public Collection<SolvisData> cloneAndClear();
 	}
 }

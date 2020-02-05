@@ -10,8 +10,10 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.Collection;
 
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
@@ -21,6 +23,8 @@ public interface ChannelSourceI extends Assigner, GraficsLearnable {
 	public boolean getValue(SolvisData dest, Solvis solvis, int timeAfterLastSwitchingOn) throws IOException;
 
 	public boolean setValue(Solvis solvis, SolvisData value) throws IOException;
+
+	public SingleData<?> interpretSetData(SingleData<?> singleData)  throws TypeError;
 
 	public boolean isWriteable();
 

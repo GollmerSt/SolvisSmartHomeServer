@@ -116,18 +116,18 @@ public class Solvis {
 			this.screenSaverActive = false;
 		}
 		if (this.currentScreen == null) {
-			this.currentScreen = this.getRealScreen() ;
+			this.currentScreen = this.getRealScreen();
 		}
 		return this.currentScreen;
 	}
 
 	public SolvisScreen getRealScreen() throws IOException {
-		SolvisScreen screen = new SolvisScreen(new MyImage( getConnection().getScreen()), this);
+		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()), this);
 		return screen;
 	}
 
 	public boolean forceCurrentScreen(Screen current) throws IOException {
-		this.getCurrentScreen() ;
+		this.getCurrentScreen();
 		this.currentScreen.forceScreen(current);
 		return true;
 	}
@@ -264,13 +264,14 @@ public class Solvis {
 			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData());
 		}
 	}
-	
-	public void commandOptimization( boolean enable ) {
-		this.worker.commandOptimization( enable ) ;
+
+	public void commandOptimization(boolean enable) {
+		this.worker.commandOptimization(enable);
 	}
 
-	public void screenRestore( boolean enable ) {
-		this.worker.screenRestore(enable); ;
+	public void screenRestore(boolean enable) {
+		this.worker.screenRestore(enable);
+		;
 	}
 
 	public void execute(Command command) {
@@ -294,18 +295,20 @@ public class Solvis {
 	}
 
 	public void saveScreen() throws IOException {
-		if (SolvisScreen.get( this.savedScreen ) == null) {
+		Screen current = this.getCurrentScreen().get();
+		if (current != null && !current.equals(SolvisScreen.get(this.savedScreen))) {
+			logger.info("Screen <" + current.getId() + "> saved");
 			this.savedScreen = this.getCurrentScreen();
 		}
 
 	}
 
 	public void restoreScreen() throws IOException {
-		Screen screen = SolvisScreen.get( this.savedScreen ) ;
+		Screen screen = SolvisScreen.get(this.savedScreen);
 		if (screen != null) {
 			screen.goTo(this);
+			logger.info("Screen <" + screen.getId() + "> restored");
 		}
-		this.savedScreen = null;
 	}
 
 	/**
@@ -329,6 +332,10 @@ public class Solvis {
 		this.screenSaverActive = screenSaverActive;
 	}
 	
+	public boolean isScreenSaverActive() {
+		return this.screenSaverActive ;
+	}
+
 	public SystemGrafics getGrafics() {
 		return grafics;
 	}

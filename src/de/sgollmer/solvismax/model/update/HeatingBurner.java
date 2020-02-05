@@ -12,6 +12,7 @@ import javax.xml.namespace.QName;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.CommandScreenRestore;
@@ -116,7 +117,7 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 		}
 
-		private void updateByControl(SolvisData data, Object source ) {
+		private void updateByControl(SolvisData data, Object source) {
 			int controlData = data.getInt();
 			int calcData = this.burnerCalcValue.getInt();
 
@@ -135,15 +136,13 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 						logger.info("Synchronisation  of <" + burnerCalcId + "> activated");
 					}
 				}
-				if (update) {
-				}
 			} else if (calcData != controlData) {
 				update = true;
 			}
 			if (update) {
 				logger.info("Update of <" + burnerCalcId + "> by SolvisConrol data take place, former: " + calcData
 						+ ", new: " + controlData);
-				this.burnerCalcValue.setInteger(controlData);
+				this.burnerCalcValue.setInteger(controlData, data.getTimeStamp());
 			}
 		}
 
@@ -159,28 +158,37 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 			int currentCalcValue = this.burnerCalcValue.getInt();
 
+			boolean screenRestore = true;
+
+			boolean checkP = this.checkInterval > 0 && time > this.lastCheckTime + this.checkInterval; // periodic check
+			boolean checkH = false;
+			boolean checkC = false;
+
 			if (burnerOn || this.lastBurnerState) {
 
-				boolean checkP = this.checkInterval > 0 && time > this.lastCheckTime + this.checkInterval; // periodic
-																												// check
-				boolean checkC = this.readInterval > 0 && this.syncActive && time > this.lastCheckTime + this.readInterval;
+				int checkIntervalHourly_s = Constants.HOURLY_BEARNER_SYNCHRONISATION_READ_INTERVAL_FACTOR
+						* this.readInterval / 1000;
+				int nextHour = ((currentCalcValue - checkIntervalHourly_s / 2) / this.factor + 1) * this.factor;
+				checkH = this.hourly && currentCalcValue > nextHour - checkIntervalHourly_s / 2;
+
+				checkC = this.syncActive && this.readInterval > 0 && time > this.lastCheckTime + this.readInterval;
 				checkC |= this.syncActive && !burnerOn && this.lastBurnerState;
-				int nextHour = (currentCalcValue / this.factor + 1) * this.factor ; 
-				checkC |= this.hourly
-						&& currentCalcValue > nextHour - 4 * this.readInterval/1000;
 
-				if (checkC && burnerOn && this.screenRestore) {
-					this.screenRestore = false;
-					this.solvis.execute(new CommandScreenRestore(this.screenRestore));
-				}
+			}
+			boolean check = checkC || checkP || checkH;
+			if (check) {
 
-				if (checkC || checkP) {
-					this.lastCheckTime = time;
-					this.solvis.execute(new CommandControl(((Control) source).getDescription()));
-					logger.debug("Update of <" + burnerCalcId + "> requested.");
-				}
-			} else if (!this.screenRestore) {
-				this.screenRestore = true;
+				this.lastCheckTime = time;
+				this.solvis.execute(new CommandControl(((Control) source).getDescription()));
+				logger.debug("Update of <" + burnerCalcId + "> requested.");
+			}
+
+			if (checkH || this.syncActive) {
+				screenRestore = burnerOn;
+			}
+
+			if (this.screenRestore != screenRestore) {
+				this.screenRestore = screenRestore;
 				this.solvis.execute(new CommandScreenRestore(this.screenRestore));
 			}
 			this.lastBurnerState = burnerOn;

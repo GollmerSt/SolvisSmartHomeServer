@@ -9,11 +9,12 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class BooleanValue implements SingleData<Boolean> {
+public class BooleanValue extends SingleData<Boolean> {
 
 	boolean value;
 
-	public BooleanValue(boolean value) {
+	public BooleanValue(boolean value, long timeStamp) {
+		super(timeStamp) ;
 		this.value = value;
 	}
 
@@ -28,8 +29,8 @@ public class BooleanValue implements SingleData<Boolean> {
 	}
 
 	@Override
-	public SingleData<Boolean> create(int value) {
-		return new BooleanValue( value > 0 );
+	public SingleData<Boolean> create(int value, long timeStamp) {
+		return new BooleanValue( value > 0, timeStamp );
 	}
 
 	@Override

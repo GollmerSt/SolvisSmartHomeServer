@@ -24,13 +24,15 @@ public class Constants {
 	public static final int SET_REPEATS = 3;
 	public static final int MAX_GOTO_DEEPTH = 10;
 	public static final int LEARNING_RETRIES = 10;
+	
+	public static final int HOURLY_BEARNER_SYNCHRONISATION_READ_INTERVAL_FACTOR = 6;
 
 	public static final int MAX_CONNECTIONS = 50;
 	public static final int RETRY_STARTING_SERVER_TIME = 60000;
 	public static final int WAIT_TIME_AFTER_IO_ERROR = 10000;
 	public static final int ALIVE_TIME = 120000;
-	public static final int WAIT_TIME_BEFORE_SENDING_MS = 100;
-	/**
+	public static final int FORCE_UPDATE_AFTER_N_INTERVALS = 3;
+/**
 	 * Maximum of time, within the screen isn't read again, if no other screen is
 	 * selected
 	 */

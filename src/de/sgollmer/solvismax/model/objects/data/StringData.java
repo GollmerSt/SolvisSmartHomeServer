@@ -9,10 +9,11 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class StringData implements SingleData<String> {
+public class StringData extends SingleData<String> {
 	private final String data ;
 	
-	public StringData( String data ) {
+	public StringData( String data, long timeStamp ) {
+		super(timeStamp) ;
 		this.data = data ;
 	}
 
@@ -42,7 +43,7 @@ public class StringData implements SingleData<String> {
 	}
 
 	@Override
-	public SingleData<String> create(int value) {
+	public SingleData<String> create(int value, long timeStamp) {
 		return null;
 	}
 

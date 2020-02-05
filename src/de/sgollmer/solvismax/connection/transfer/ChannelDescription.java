@@ -23,7 +23,7 @@ public class ChannelDescription extends Element {
 		boolean writeable = description.isWriteable();
 		Element writeableElement = new Element();
 		writeableElement.name = "Writeable";
-		SingleValue sv = new SingleValue(new BooleanValue(writeable));
+		SingleValue sv = new SingleValue(new BooleanValue(writeable, -1));
 		writeableElement.value = sv;
 		frame.add(writeableElement);
 
@@ -46,29 +46,29 @@ public class ChannelDescription extends Element {
 		if (accuracy != null) {
 			Element ac = new Element();
 			ac.name = "Accuracy";
-			ac.value = new SingleValue(new FloatValue(accuracy));
+			ac.value = new SingleValue(new FloatValue(accuracy, -1));
 			frame.add(ac);
 		}
 
 		boolean isBoolean = description.isBoolean();
 		Element ib = new Element();
 		ib.name = "IsBoolean";
-		ib.value = new SingleValue(new BooleanValue(isBoolean));
+		ib.value = new SingleValue(new BooleanValue(isBoolean, -1));
 		frame.add(ib);
 
 		UpperLowerStep upperLowerStep = description.getUpperLowerStep();
 		if (upperLowerStep != null) {
 			Element upper = new Element();
 			upper.name = "Upper";
-			upper.value = new SingleValue(new FloatValue(upperLowerStep.getUpper()));
+			upper.value = new SingleValue(new FloatValue(upperLowerStep.getUpper(), -1));
 			frame.add(upper);
 			Element lower = new Element();
 			lower.name = "Lower";
-			lower.value = new SingleValue(new FloatValue(upperLowerStep.getLower()));
+			lower.value = new SingleValue(new FloatValue(upperLowerStep.getLower(), -1));
 			frame.add(lower);
 			Element step = new Element();
 			step.name = "Step";
-			step.value = new SingleValue(new FloatValue(upperLowerStep.getStep()));
+			step.value = new SingleValue(new FloatValue(upperLowerStep.getStep(), -1));
 			frame.add(step);
 		}
 

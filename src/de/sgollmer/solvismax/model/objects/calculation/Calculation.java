@@ -12,6 +12,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
@@ -21,6 +22,7 @@ import de.sgollmer.solvismax.model.objects.Dependency;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -168,5 +170,10 @@ public class Calculation extends ChannelSource {
 	@Override
 	public boolean isBoolean() {
 		return this.strategy.isBoolean();
+	}
+
+	@Override
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+		return null;
 	}
 }

@@ -14,12 +14,14 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.objects.Field;
@@ -262,6 +264,11 @@ public class Measurement extends ChannelSource {
 
 	public int getDelayAfterSwitchingOn() {
 		return delayAfterSwitchingOn;
+	}
+
+	@Override
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+		return null;
 	}
 
 }

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Assigner;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
@@ -24,7 +25,8 @@ public interface Strategy extends Assigner {
 
 	public SingleData<?> getValue(SolvisScreen solvisScreen, Rectangle valueRectangl) throws TerminationException, IOException;
 
-	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException, TerminationException;
+	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
+			throws IOException, TerminationException, TypeError;
 
 	public boolean isWriteable();
 
@@ -43,5 +45,7 @@ public interface Strategy extends Assigner {
 	public boolean mustBeLearned() ;
 	
 	public boolean learn(Solvis solvis) throws IOException ;
+
+	public SingleData<?> interpretSetData(SingleData<?> singleData)  throws TypeError;
 
 }

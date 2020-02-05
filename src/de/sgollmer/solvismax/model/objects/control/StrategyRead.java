@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Helper.Format;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
@@ -20,6 +21,7 @@ import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
@@ -51,7 +53,7 @@ public class StrategyRead implements Strategy {
 			return null;
 		}
 		Integer i = Integer.parseInt(s);
-		return new IntegerValue(i);
+		return new IntegerValue(i, System.currentTimeMillis());
 	}
 
 	@Override
@@ -144,6 +146,11 @@ public class StrategyRead implements Strategy {
 	@Override
 	public boolean learn(Solvis solvis) {
 		return true;
+	}
+
+	@Override
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+		return null;
 	}
 
 }

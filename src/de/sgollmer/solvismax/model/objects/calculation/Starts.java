@@ -75,7 +75,7 @@ public class Starts extends Strategy<Starts> {
 			if (burnerOn) {
 				int result = this.result.getInt();
 				++result;
-				this.result.setInteger(result);
+				this.result.setInteger(result, data.getTimeStamp());
 			}
 
 		}

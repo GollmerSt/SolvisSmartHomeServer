@@ -14,17 +14,19 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.calculation.Calculation;
 import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.measure.Measurement;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
-import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.Element<ChannelDescription> {
 
@@ -219,5 +221,10 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 	public boolean isBuffered() {
 		return buffered;
+	}
+
+	@Override
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+		return this.channelSource.interpretSetData(singleData) ;
 	}
 }

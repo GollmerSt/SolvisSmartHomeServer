@@ -9,11 +9,12 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class ModeValue<M extends ModeI> implements SingleData<M> {
+public class ModeValue<M extends ModeI> extends SingleData<M> {
 
 	private final M mode;
 
-	public ModeValue(M mode) {
+	public ModeValue(M mode, long timeStamp) {
+		super(timeStamp) ;
 		this.mode = mode;
 	}
 
@@ -28,7 +29,7 @@ public class ModeValue<M extends ModeI> implements SingleData<M> {
 	}
 
 	@Override
-	public SingleData<M> create(int value) {
+	public SingleData<M> create(int value, long timeStamp) {
 		return null;
 	}
 

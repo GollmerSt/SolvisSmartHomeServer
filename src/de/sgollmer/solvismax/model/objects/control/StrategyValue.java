@@ -12,12 +12,14 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -54,8 +56,8 @@ public class StrategyValue extends StrategyRead {
 
 	@Override
 	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) throws IOException, TerminationException {
-		Integer goal = setValue.getInteger();
 
+		Integer goal = setValue.getInteger();
 		IntegerValue data = this.getValue(solvis.getCurrentScreen(), rectangle);
 		if (data == null) {
 			return false;
@@ -179,6 +181,11 @@ public class StrategyValue extends StrategyRead {
 	public UpperLowerStep getUpperLowerStep() {
 		return new UpperLowerStep((float) most / this.getDivisor(), (float) least / this.getDivisor(),
 				(float) increment / this.getDivisor());
+	}
+
+	@Override
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+		return singleData;
 	}
 
 }

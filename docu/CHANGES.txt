@@ -8,40 +8,59 @@ Version 00.10.02
 	            Uhr, bewirkt, dass die Zeit kurz "angehalten" wird. Das kann man nutzen, wenn die 
 	            Solvis-Uhr genauer eingestellt werden soll, ist aber mehr eine Spielerei (Wer benötigt
 	            eine genau gehende Solvis-Anlagen-Uhr, der ein Smarthome-System besitzt?).
+
 	            
 	21.02.2020	Restart des Servers nun auch vom Client möglich.
 				
 				Client-Server-Schnittstelle etwas geändert. Server übergibt bei Herstellung der Verbindung
 				zum Client nun die möglichen Server-Befehle. Daher wurden ebenfalls Änderungen am
 				Client notwendig.
+
 	
 	23.01.2020	Bug beim Setzen der Uhr behoben. Uhr wurde nicht mehr angeglichen, wenn der Server
 	            in einem bestimmten Zeitintervall gestartet wurde und ein Abgleich der Uhr beim Start
 	            notwendig war.
+
 	            
 	25.01.2020	Error-Detection erweitert. Der Status der Solvis-Anlage ist auch dann in dem
 	            Error-Status, wenn auf dem Home-Bildschirm rechts nicht mehr die Uhrzeit mit dem Datum
 	            angezeigt wird, sondern ein Button mit einem Achtung-Zeichen.
+
 	            
 	29.01.2020	Contol-Command-Optimierung deaktivierbar
+
 	
 	30.01.2020	Bug im Uhr-Abgleich behoben. Es wurde nicht beachtet, dass zum Zeitpunkt der Uhreinstellung
 				(Klick auf den OK-Button) gerade der Minutenwechsel der Solvis-Uhr erfolgen kann. In diesem
 				Fall war es möglich, dass die Solvis-Uhr danach um 60s nach ging. Der Einstellzeitpunkt ist
 				nun zum Zeitpunkt hh:mm:05 (nach Solvis-Zeit).
+
 	
 	31.01.2020	In der Statistik des Uhrenabgleichs wurde eine Auffälligkeit erkannt:
-				Die Solvis-Steuerung meiner Anlage scheint einen Bug beim Einstellen der Uhr zu besitzen.
-				Sie stürzt sporadisch beim Einstellen der Uhr ab! Das erfolgt nach Langzeittest mit der
-				Wahrscheinlichkeit von etwa 1:200. In diesem Fall erfolgt ca. 10s keinerlei Reaktion von der
-				SolvisControl. Nach Ablauf dieser Zeit scheint ein Watch-Dog der SolvisControl den Hänger
-				erkannt zu haben, der dann anschließend die komplette Steuerung zurücksetzt. Das hat zur Folge,
-				dass ein laufender Brenner stoppt und der Mischer erstmal auf die Null-Position zurück fährt.
-				Auch behält die Anlage nicht die EInstellung der WW-Pumpe, sieht geht - wie beim Einschalten -
-				auf dem Modus "Auto". Aus Sicherheitsgründen ist das Stellen der Uhr nun abhängig vom Brenner,
-				wenn er läuft, erfolgt kein Einstellen. Auf diese Weise ist der Absturz der SolvisControl
-				ungefährlich, selbst wenn deren Watch-Dog versagt. Auch laufendes WW unterbindet das Stelen der
-				Uhr.
+				Die Solvis-Steuerung kann sporadisch beim Einstellen der Uhr abstürzen! Das erfolgt nach
+				Langzeitbeobachtung mit der Wahrscheinlichkeit von etwa 1:200. In diesem Fall erfolgt ca. 10s
+				keinerlei Reaktion von der SolvisControl. Nach Ablauf dieser Zeit scheint ein Watch-Dog der
+				SolvisControl den Hänger erkannt zu haben, der dann anschließend die komplette Steuerung
+				zurücksetzt. Dieses Verhalten wird letztlich von Solvis bestätigt:
+				  "Wenn man die Uhrzeit verstellt, kann es passieren, dass Timer unkontrolliert überlaufen und
+				   die Funktionen dann neu gestartet werden. Das ist aber kein Fehler, sondern eine Reaktion
+				   auf die geänderten Parameter."
+				Das hat zur Folge, dass ein laufender Brenner stoppt und der Mischer erstmal auf die Null-Position
+				zurück fährt. Auch behält die Anlage nicht die Einstellung der WW-Pumpe, sie geht - wie beim 
+				Einschalten - auf den Modus "Auto". Aus Sicherheitsgründen ist das Stellen der Uhr nun abhängig
+				vom Brenner, wenn er läuft, erfolgt kein Einstellen. Selbst wenn das automatische Rücksetzen der
+				SolvisContriol dann doch mal ausbleiben sollte (was ich nie beobachtet hatte), kann nichts
+				schlimmes passieren. Auch laufendes WW unterbindet das Stellen der Uhr.
+				Wer ganz auf Nummer sicher gehen will deaktiviert das automatische Stellen der Uhr im "base.xml"-File
+
+				
+	04.02.2020	Der Watch-Dog muss auch zwischen den Kommandos ausgeführt werden, welche über das GUI der
+				SolvisControl gehen, andernfalls wird u.U. der Screen-Saver nicht erkannt.
+				
+				Kleiner Bug bei der Synchronisation der Brenner-Laufzeit behoben. Screen blieb im
+				Synchronisationsfall bis zum Ende der Brenner-Laufzeit gelockt, auch wenn die
+				Synchronisation längst abgeschlossen war.
+
 
 Version 00.10.01
 

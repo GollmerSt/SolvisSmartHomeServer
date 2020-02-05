@@ -82,7 +82,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 
 			result = !pump && !mixer;
 
-			this.result.setBoolean(result);
+			this.result.setBoolean(result, data.getTimeStamp());
 
 		}
 

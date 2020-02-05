@@ -11,10 +11,20 @@ import de.sgollmer.solvismax.helper.Helper.AverageInt;
 
 public class Average implements Cloneable {
 
+	private static class Result {
+		private final int value10;
+		private final boolean fastChange;
+
+		public Result(int value10, boolean fastChange) {
+			this.value10 = value10;
+			this.fastChange = fastChange;
+		}
+	}
+
 	public boolean EDGE_DETECTION = false;
 
 	private final int measurementHysteresisFactor;
-	private int average = 0;
+	private Result average = new Result(0, false);
 	private int absAverage = 0;
 	private int absCount;
 	private AverageInt averageInt;
@@ -31,13 +41,14 @@ public class Average implements Cloneable {
 		this.absCount = average.absCount;
 	}
 
-	public void add(SingleData<?> data) {
+	public synchronized void add(SingleData<?> data) {
 		Integer value = data.getInt();
 		if (value == null) {
 			return;
 		}
 
 		value *= 10;
+		boolean fastChange = false;
 
 		if (this.averageInt.size() > 0) {
 			int last = this.averageInt.getLast();
@@ -46,10 +57,11 @@ public class Average implements Cloneable {
 			++this.absCount;
 			int precision = getPrecision();
 			if (precision > 0) {
-				int deltaLast = Math.abs(this.average - last);
-				int deltaCurrent = Math.abs(this.average - value);
+				int deltaLast = Math.abs(this.average.value10 - last);
+				int deltaCurrent = Math.abs(this.average.value10 - value);
 				if (deltaLast > precision && deltaCurrent > precision) {
 					int cnt = deltaCurrent / precision;
+					fastChange = true;
 					while (--cnt >= 0) {
 						this.averageInt.put(value);
 					}
@@ -62,15 +74,16 @@ public class Average implements Cloneable {
 		int size = this.averageInt.size();
 
 		int newAverage = this.averageInt.get();
-		int delta = Math.abs(newAverage - this.average);
+		int delta = Math.abs(newAverage - this.average.value10);
 
 		if (size > 1) {
 
 			if (delta > 10 && delta > (this.measurementHysteresisFactor * this.getPrecision() + size - 1) / size) {
-				average = newAverage;
+				average = new Result(newAverage, fastChange);
 			}
 		} else {
-			this.average = newAverage;
+			this.average = new Result(newAverage, fastChange);
+			;
 		}
 	}
 
@@ -82,7 +95,9 @@ public class Average implements Cloneable {
 		if (!this.averageInt.isFilled()) {
 			return null;
 		} else {
-			return singleData.create(average > 0 ? (average + 5) / 10 : (average - 5) / 10);
+			Result average = this.average ;
+			return singleData.create(average.value10 > 0 ? (average.value10 + 5) / 10 : (average.value10 - 5) / 10,
+					singleData.getTimeStamp(), average.fastChange);
 		}
 	}
 

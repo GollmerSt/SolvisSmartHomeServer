@@ -41,7 +41,6 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
-import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -342,7 +341,9 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 					@Override
 					public void update(Boolean data, Object source) {
-						adjustmentThread.abort();
+						if (adjustmentThread != null) {
+							adjustmentThread.abort();
+						}
 
 					}
 				});
@@ -510,7 +511,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 					if (adjustmentEnable && time < nextAdjust.realAdjustTime - Constants.SETTING_TIME_RANGE_LOWER
 							+ Constants.SETTING_TIME_RANGE_UPPER) {
 						solvis.send(ok);
-						Screen screen = SolvisScreen.get(solvis.getCurrentScreen());
+						Screen screen = solvis.getCurrentScreen().get();
 						if (screen != ClockMonitor.this.okScreen.get(configurationMask)) {
 							success = false;
 						}
@@ -598,7 +599,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 						break;
 					}
 					solvis.send(ok);
-					if (SolvisScreen.get(solvis.getCurrentScreen()) != okScreen) {
+					if (solvis.getCurrentScreen().get() != okScreen) {
 						logger.error("Fine tuning not successfull, will be repeated");
 						success = false;
 						break;
@@ -645,13 +646,6 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 				if (!abort) {
 					solvis.execute(command);
 					this.command = null;
-				}
-			}
-
-			public void trigger() {
-				CommandClock command = this.command;
-				if (command != null) {
-					command.getStrategy().notifyAll();
 				}
 			}
 

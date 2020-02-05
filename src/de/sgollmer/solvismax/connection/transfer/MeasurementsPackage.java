@@ -20,7 +20,7 @@ public class MeasurementsPackage extends JsonPackage {
 		this.data = measurements;
 
 		for (SolvisData data : datas) {
-			if (data.getSingleData() != null) {
+			if (data.getSentData() != null) {
 				
 				Element e = new Measurement(data);
 				measurements.add(e);

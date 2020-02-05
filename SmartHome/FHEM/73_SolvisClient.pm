@@ -592,13 +592,15 @@ sub SolvisClient_UpdateReadings($$) {
 	readingsBeginUpdate($this);
 	
 	foreach my $readingName( keys(%$readings)) {
-		my $value = $readings->{$readingName} ;
-		if ( $SolvisClient_ChannelDescriptions{$readingName}{IsBoolean} != _FALSE_ ) {
-			$value = $value?"on":"off";
+		if ( defined( $readings->{$readingName} )) {
+			my $value = $readings->{$readingName} ;
+			if ( $SolvisClient_ChannelDescriptions{$readingName}{IsBoolean} != _FALSE_ ) {
+				$value = $value?"on":"off";
+			}
+			
+			readingsBulkUpdate($this,$readingName,$value);
 		}
-		readingsBulkUpdate($this,$readingName,$value);
 	}
-
 	readingsEndUpdate($this, 1);
 }
 

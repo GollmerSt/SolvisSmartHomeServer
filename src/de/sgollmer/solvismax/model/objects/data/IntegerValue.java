@@ -9,11 +9,18 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class IntegerValue implements SingleData<Integer> {
+public class IntegerValue extends SingleData<Integer> {
 	private final Integer data;
+	private final boolean fastChange;
 
-	public IntegerValue(Integer value) {
+	public IntegerValue(Integer value, long timeStamp, boolean fastChange) {
+		super(timeStamp);
 		this.data = value;
+		this.fastChange = fastChange;
+	}
+	
+	public  IntegerValue(Integer value, long timeStamp) {
+		this(value, timeStamp, false) ;
 	}
 
 	@Override
@@ -36,8 +43,13 @@ public class IntegerValue implements SingleData<Integer> {
 	}
 
 	@Override
-	public SingleData<Integer> create(int value) {
-		return new IntegerValue(value);
+	public SingleData<Integer> create(int value, long timeStamp,boolean fastChange) {
+		return new IntegerValue(value, timeStamp, fastChange);
+	}
+
+	@Override
+	public SingleData<Integer> create(int value, long timeStamp) {
+		return new IntegerValue(value, timeStamp);
 	}
 
 	@Override
@@ -52,12 +64,18 @@ public class IntegerValue implements SingleData<Integer> {
 
 	@Override
 	public String toJson() {
-		return Integer.toString(this.data) ;
+		return Integer.toString(this.data);
 	}
 
 	@Override
 	public Integer get() {
 		return this.data;
 	}
+
+	@Override
+	public boolean isFastChange() {
+		return this.fastChange;
+	}
+
 
 }

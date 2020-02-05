@@ -29,7 +29,7 @@ public class SingleValue implements Value {
 	}
 
 	public SingleValue(String value) {
-		this.data = new StringData(value);
+		this.data = new StringData(value, -1);
 	}
 
 	public SingleValue(SingleData<?> data) {
@@ -49,19 +49,19 @@ public class SingleValue implements Value {
 		Matcher m = STRING.matcher(sub);
 		if (m.matches()) {
 			group = m.group(1);
-			this.data = new StringData(group);
+			this.data = new StringData(group, -1);
 			position += group.length() + 2;
 		} else {
 			m = FLOAT.matcher(sub);
 			if (m.matches()) {
 				group = m.group(1);
-				this.data = new FloatValue(Float.parseFloat(group));
+				this.data = new FloatValue(Float.parseFloat(group), -1);
 				position += group.length();
 			} else {
 				m = BOOLEAN.matcher(sub);
 				if (m.matches()) {
 					group = m.group(1);
-					this.data = new BooleanValue(Boolean.parseBoolean(group));
+					this.data = new BooleanValue(Boolean.parseBoolean(group), -1);
 					position += group.length();
 				} else {
 					m = NULL.matcher(sub);

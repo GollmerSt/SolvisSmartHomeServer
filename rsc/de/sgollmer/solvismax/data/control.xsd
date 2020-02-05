@@ -714,7 +714,10 @@ Ist der faktor -1, handelt es sich um den Update der Brennerstarts.</documentati
 			</annotation></attribute>
 		<attribute name="checkIntervalId" type="string" use="optional">
 			<annotation>
-				<documentation> Zeit-Intervall, nach dem der berechnete Wert mit dem echten Solvis-Wert verglichen wird und evtl. synchronisiert wird
+				<documentation> Zeit-Intervall, nach dem der berechnete Wert mit dem echten Solvis-Wert verglichen wird und evtl. synchronisiert wird.
+Zu beachten:
+Diese Synchronisationsart ist nur einen Stichprobe und kann so nur Abweichungen von mehr als 1h erkennen.
+Genauerer Synchronisation erhält man über hourly.
 				</documentation>
 			</annotation>
 		</attribute>
