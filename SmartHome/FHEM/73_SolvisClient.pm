@@ -537,6 +537,7 @@ sub SolvisClient_CreateGetSetServerCommands($$) {
 	
 	%SolvisClient_ChannelDescriptions = ();
 	$SolvisClient_ServerCommands = "" ;
+	@SolvisClient_ServerCommand_Array = ();
 
 	foreach my $description( keys(%$descriptions)) {
 		my %descriptionHash = %$descriptions{$description} ;
