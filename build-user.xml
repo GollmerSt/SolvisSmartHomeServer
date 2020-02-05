@@ -139,7 +139,7 @@
 			<fileset file="${dist.dir}/${dist.base}.jar" casesensitive="yes" />
 			<fileset file="${fhem.pm}" casesensitive="yes" />
 			<fileset file="${linux.systemd}" casesensitive="yes" />
-			<fileset file="${linux.systemD}" casesensitive="yes" />
+			<fileset file="${linux.systemdD}" casesensitive="yes" />
 			<fileset file="${pubBase}.xml" casesensitive="yes" />
 			<fileset file="${pubBase}.xsd" casesensitive="yes" />
 			<fileset file="${makefile}" casesensitive="yes" />
