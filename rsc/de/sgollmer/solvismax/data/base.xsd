@@ -32,9 +32,11 @@
 		</sequence>
 	</complexType>
 	<complexType name="Unit">
-        
-        <sequence>
-			<element name="ClockAdjustment" type="tns:ClockAdjustment" maxOccurs="1" minOccurs="0"></element>
+
+		<sequence>
+			<element name="ClockAdjustment" type="tns:ClockAdjustment"
+				maxOccurs="1" minOccurs="0">
+			</element>
 		</sequence>
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="type" use="required">
@@ -45,6 +47,7 @@
 				</restriction>
 			</simpleType>
 		</attribute>
+		<attribute name="fwLth2_21_02A" type="boolean"></attribute>
 		<attribute name="url" type="string" use="optional"></attribute>
 		<attribute name="account" type="string" use="optional"></attribute>
 		<attribute name="password" type="string" use="optional"></attribute>
@@ -52,23 +55,26 @@
 			use="required">
 		</attribute>
 		<attribute name="measurementHysteresisFactor" type="int"
-			use="required">	<annotation>
-		<documentation>Hysteriess-Faktor für Messungen, über die ein
-			Mittelwert gebildet wird. Bei 0 führt jede Änderung zu einer
-			Messwertausgabe, bei != null wird abhängig vom Sensorrauschen der
-			Hysteresisfaktor eingestellt.
-			Der Hysteresiswert berechnet sich dann nach: Sensorrauschen *
-			Hysteresisfaktor / Anzahl der Messwerte, über die der Mittelwert
-			gebildet wird.
-			Das Rauschen wird über die Differenzen zwischen zwei Messwerten
-			ermittelt. Wenn Messungen jede 10s erfolgen, hat sich der zu messende
-			Wert nur sehr wenig geändert, so dass der Unterschied ein Maß
-			für das Rauschen darstellt.
-		</documentation>
-	</annotation>
-			</attribute>
-		<attribute name="defaultReadMeasurementsInterval_ms"
-			type="int" use="required">
+			use="required">
+			<annotation>
+				<documentation>
+					Hysteriess-Faktor für Messungen, über die ein
+					Mittelwert gebildet wird. Bei 0 führt jede Änderung
+					zu einer Messwertausgabe, bei != null wird abhängig
+					vom Sensorrauschen der Hysteresisfaktor eingestellt.
+					Der Hysteresiswert berechnet sich dann nach:
+					Sensorrauschen * Hysteresisfaktor / Anzahl der
+					Messwerte, über die der Mittelwert gebildet wird.
+					Das Rauschen wird über die Differenzen zwischen zwei
+					Messwerten ermittelt. Wenn Messungen jede 10s
+					erfolgen, hat sich der zu messende Wert nur sehr
+					wenig geändert, so dass der Unterschied ein Maß für
+					das Rauschen darstellt.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="defaultReadMeasurementsInterval_ms" type="int"
+			use="required">
 		</attribute>
 		<attribute name="forcedUpdateInterval_ms" type="int"
 			use="required">

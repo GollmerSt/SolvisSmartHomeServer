@@ -5,7 +5,7 @@
 	<tns:ExecutionData timeZone="Europe/Berlin"
 		port="10735" writablePathLinux="/opt/fhem" />
 	<tns:Units>
-		<tns:Unit id="mySolvis" type="SolvisMax" account="account"
+		<tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true" account="account"
 			password="password" url="http://aaa.bbb.ccc.ddd"
 			defaultAverageCount="12" measurementHysteresisFactor="4"
 			defaultReadMeasurementsInterval_ms="10000"

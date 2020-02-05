@@ -87,10 +87,12 @@ public class Units {
 		private final int bufferedInterval_ms;
 		private final boolean delayAfterSwitchingOnEnable;
 		private final ClockAdjustment clockAdjustment;
+		private final boolean fwLth2_21_02A;
 
 		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
 				int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms, int forcedUpdateInterval_ms,
-				int bufferedInterval_ms, boolean delayAfterSwitchingOn, ClockAdjustment clockAdjustment) {
+				int bufferedInterval_ms, boolean delayAfterSwitchingOn, ClockAdjustment clockAdjustment,
+				boolean fwLth2_21_02A) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
@@ -103,6 +105,7 @@ public class Units {
 			this.bufferedInterval_ms = bufferedInterval_ms;
 			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
 			this.clockAdjustment = clockAdjustment;
+			this.fwLth2_21_02A = fwLth2_21_02A;
 		}
 
 		public String getId() {
@@ -140,6 +143,7 @@ public class Units {
 			private int bufferedInterval_ms;
 			private boolean delayAfterSwitchingOnEnable = false;
 			private ClockAdjustment clockAdjustment;
+			private boolean fwLth2_21_02A = false;
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -181,18 +185,21 @@ public class Units {
 					case "delayAfterSwitchingOnEnable":
 						this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value);
 						break;
+					case "fwLth2_21_02A":
+						this.fwLth2_21_02A = Boolean.parseBoolean(value);
+						break;
 				}
 
 			}
 
 			@Override
 			public Unit create() throws XmlError, IOException {
-				if ( clockAdjustment == null ) {
-					clockAdjustment = new ClockAdjustment() ;
+				if (clockAdjustment == null) {
+					clockAdjustment = new ClockAdjustment();
 				}
 				return new Unit(id, type, url, account, password, defaultAverageCount, measurementHysteresisFactor,
 						defaultReadMeasurementsInterval_ms, forcedUpdateInterval_ms, bufferedInterval_ms,
-						delayAfterSwitchingOnEnable, clockAdjustment);
+						delayAfterSwitchingOnEnable, clockAdjustment, fwLth2_21_02A);
 
 			}
 
@@ -248,6 +255,10 @@ public class Units {
 
 		public boolean isDelayAfterSwitchingOnEnable() {
 			return delayAfterSwitchingOnEnable;
+		}
+
+		public boolean isFwLth2_21_02A() {
+			return fwLth2_21_02A;
 		}
 
 	}

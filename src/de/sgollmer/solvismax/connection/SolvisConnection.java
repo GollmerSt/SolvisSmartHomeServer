@@ -34,6 +34,7 @@ import de.sgollmer.solvismax.objects.Coordinate;
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	private static final Logger logger = LogManager.getLogger(SolvisConnection.class);
+	private static final Coordinate RELEASE_COORDINATE = new Coordinate(260, 260);
 
 	private final String urlBase;
 	private final AccountInfo accountInfo;
@@ -41,6 +42,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private final int readTimeout;
 	private final int powerOffDetectedAfterIoErrors;
 	private final int powerOffDetectedAfterTimeout_ms;
+	private final boolean fwLth2_21_02A;
 	private SolvisState solvisState;
 	private Integer maxResponseTime = null;
 	private int errorCount = 0;;
@@ -52,7 +54,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private ConnectionState connectionState = new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE);
 
 	public SolvisConnection(String urlBase, AccountInfo accountInfo, int connectionTimeout, int readTimeout,
-			int powerOffDetectedAfterIoErrors, int powerOffDetectedAfterTimeout_ms) {
+			int powerOffDetectedAfterIoErrors, int powerOffDetectedAfterTimeout_ms, boolean fwLth2_21_02A) {
 		this.urlBase = urlBase;
 		this.accountInfo = accountInfo;
 		this.connectionTimeout = connectionTimeout;
@@ -60,6 +62,8 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.powerOffDetectedAfterIoErrors = powerOffDetectedAfterIoErrors;
 		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
 		this.solvisState = null;
+		this.fwLth2_21_02A = fwLth2_21_02A;
+
 	}
 
 	private class MyAuthenticator extends Authenticator {
@@ -201,28 +205,26 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		int x = coord.getX() * 2;
 		int y = coord.getY() * 2;
 		String touchString = "/Touch.CGI?x=" + x + "&y=" + y;
-		try {
-			synchronized (this) {
-				InputStream in = this.connect(touchString);
+		InputStream in = null;
+		synchronized (this) {
+			try {
+				in = this.connect(touchString);
 				in.close();
+			} catch (IOException e) {
+				if (this.fwLth2_21_02A) {
+					if (in != null) {
+						in.close();
+					}
+				} else {
+					this.handleExceptionAndThrow(e);
+				}
 			}
-		} catch (IOException e) {
-			this.handleExceptionAndThrow(e);
 		}
 		this.calculateMaxResponseTime();
 	}
 
 	public void sendRelease() throws IOException {
-		String touchString = "/Touch.CGI?x=510&y=510";
-		try {
-			synchronized (this) {
-				InputStream in = this.connect(touchString);
-				in.close();
-			}
-		} catch (IOException e) {
-			this.handleExceptionAndThrow(e);
-		}
-		this.calculateMaxResponseTime();
+		this.sendTouch(RELEASE_COORDINATE);
 	}
 
 	public ConnectionState getConnectionState() {
