@@ -61,6 +61,11 @@ Version 00.10.02
 				Synchronisationsfall bis zum Ende der Brenner-Laufzeit gelockt, auch wenn die
 				Synchronisation längst abgeschlossen war.
 
+				
+	05.02.2020	Bei SolvisRemote-Firmware < 2.21.02A gibt es einen IOException, welche ignoriert werden muss.
+				Die base.xml daher um das Attribut "fwLth2_21_02A" ergänzt, das auf true gesetzt werden muss,
+				wenn die SolvisRemote mit einer älteren FW geflasht ist.
+
 
 Version 00.10.01
 
