@@ -121,9 +121,7 @@ public class Main {
 			try {
 				boolean learned = tempInstances.learn();
 				if ( !learned ) {
-					logger.log(LEARN, "Nothing to learn");
-				} else {
-					logger.log(LEARN, "Learning finished");
+					logger.log(LEARN, "Nothing to learn!");
 				}
 			} catch (IOException | XmlError | XMLStreamException | LearningError e) {
 				logger.error("Exception on reading configuration or learning files occured, cause:", e);

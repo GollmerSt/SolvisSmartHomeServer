@@ -350,6 +350,7 @@
 		</tns:Screen>
 		<!-- WICHTIG: Vor Learning muss unbedingt Anlagenstatus Warmwasser ausgewählt 
 			worden sein -->
+		<!-- SolvisMax-Definitionen für Anlagenstatus-->
 		<tns:Screen id="Anlagenstatus WW" backId="Sonstiges 1"
 			previousId="Sonstiges 1" alternativePreviousId="Anlagenstatus HK"
 			ignoreChanges="true">
@@ -416,6 +417,29 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
+		<tns:Screen id="Anlagenstatus Solar" backId="Sonstiges 1"
+			previousId="Anlagenstatus HK" alternativePreviousId="Sonstiges 1"
+			ignoreChanges="true">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x03000008"
+					compareMask="0x01000008" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="230" Y="120" />
+			</tns:TouchPoint>
+			<tns:AlternativeTouchPoint
+				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="85" />
+			</tns:AlternativeTouchPoint>
+			<tns:ScreenGrafic id="Anlagenstatus Solar">
+				<tns:Field>
+					<tns:TopLeft X="195" Y="12" />
+					<tns:BottomRight X="239" Y="50" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<!-- SolvisBen-Definitionen für Anlagenstatus-->
 		<tns:Screen id="Anlagenstatus WW" backId="Sonstiges 1"
 			previousId="Sonstiges 1" alternativePreviousId="Anlagenstatus HK"
 			ignoreChanges="true">
@@ -507,8 +531,8 @@
 		<tns:Screen id="Tagestemperatur_HK1" backId="Home"
 			previousId="Home">
 			<tns:ConfigurationMasks>
-				<tns:ConfigurationMask andMask="07"
-					compareMask="01" />
+				<tns:ConfigurationMask andMask="0x07"
+					compareMask="0x01" />
 			</tns:ConfigurationMasks>
 			<tns:TouchPoint pushTimeRefId="Lang"
 				releaseTimeRefId="WindowChange">

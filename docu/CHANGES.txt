@@ -1,6 +1,17 @@
 Ä N D E R U N G EN
 
 
+Version 00.10.03
+
+	06.02.2020	control.xml korrigiert. Bei der Konfiguration SolvisMax + Solarmodul war der
+				Bildschirm des Solar-Anlagenstatus nicht definiert
+	            
+				Bei fehlenden Definition eines Bildschirmreferenz kam es zu einer Null-Pointer-
+				Exception. Es erscheint nun eine sinnvolle Fehlermeldung.
+	
+	
+
+
 Version 00.10.02
 
 	20.01.2020  Clock-Fine-Tuning implementiert. Man kann die Solvis-Uhr doch genauer einstellen,
@@ -65,6 +76,8 @@ Version 00.10.02
 	05.02.2020	Bei SolvisRemote-Firmware < 2.21.02A gibt es einen IOException, welche ignoriert werden muss.
 				Die base.xml daher um das Attribut "fwLth2_21_02A" ergänzt, das auf true gesetzt werden muss,
 				wenn die SolvisRemote mit einer älteren FW geflasht ist.
+
+
 
 
 Version 00.10.01

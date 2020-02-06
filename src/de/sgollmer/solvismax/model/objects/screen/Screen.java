@@ -22,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.ReferenceError;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
@@ -112,7 +113,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		} else if (obj instanceof Screen) {
 			return this.getId().contentEquals(((Screen) obj).getId());
 		}
-		return false ;
+		return false;
 	}
 
 	@Override
@@ -579,6 +580,13 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 					current = previous;
 					currentTouch = previousTouch;
 				}
+				if ( current == null ) {
+					String message = 
+					"The follower to the screen <" + this.getId()
+					+ "> is missing, please check the <control.xml> file";
+					logger.error(message);
+					throw new LearningError(message) ;
+				}
 			}
 			solvis.send(currentTouch);
 		}
@@ -626,6 +634,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		while (!gone) {
 			ScreenTouch foundScreenTouch = null;
 			Screen next = this;
+			// check, if current screen is one of the previous screens of the learning screen
 			for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
 				ScreenTouch st = it.next();
 				Screen previous = st.getScreen();
@@ -637,6 +646,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 				}
 			}
 			if (foundScreenTouch == null) {
+				// if not, one screen back
 				current = back(solvis, current, learnScreens, configurationMask);
 			} else {
 				Preparation preparation = foundScreenTouch.getPreparation();

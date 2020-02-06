@@ -247,6 +247,7 @@ public class Solvis {
 
 	public void init() throws IOException, XmlError, XMLStreamException {
 		this.configurationMask = this.getGrafics().getConfigurationMask();
+		
 		synchronized (solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().init(this, this.getAllSolvisData());
 		}
@@ -349,7 +350,7 @@ public class Solvis {
 		this.getGrafics().clear();
 		logger.log(LEARN, "Learning started.");
 		this.initConfigurationMask(currentRef);
-		logger.info("Configuration mask: " + Integer.toHexString(this.configurationMask));
+		logger.log(LEARN, "Configuration mask: 0x" + Integer.toHexString(this.configurationMask));
 		this.getGrafics().setConfigurationMask(configurationMask);
 		Screen home = this.getHomeScreen();
 		if (home == null) {
@@ -374,6 +375,7 @@ public class Solvis {
 		}
 		this.solvisDescription.getClock().learn(this);
 		this.solvisDescription.getChannelDescriptions().learn(this);
+		this.getHomeScreen().goTo(this);
 		logger.log(LEARN, "Learning finished.");
 	}
 
@@ -515,7 +517,7 @@ public class Solvis {
 			time = System.currentTimeMillis();
 			try {
 				this.configurationMask = this.getSolvisDescription().getConfigurations(this, current);
-				// this.configurationMask += 2 ;
+//				this.configurationMask = 0x01000009 ;
 				connected = true;
 			} catch (IOException e) {
 				time = System.currentTimeMillis();

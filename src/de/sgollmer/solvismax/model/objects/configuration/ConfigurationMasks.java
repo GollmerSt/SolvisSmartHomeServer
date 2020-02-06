@@ -102,6 +102,11 @@ public class ConfigurationMasks {
 			int andMask = this.andMask & mask.andMask;
 			return 0 != ((this.cmpMask ^ mask.cmpMask) & andMask);
 		}
+		
+		@Override
+		public String toString() {
+			return "And-Mask: " + Integer.toString(andMask, 16) + ", Cmp-Mask: " + Integer.toString(cmpMask, 16) ;
+		}
 
 		public static class Creator extends CreatorByXML<ConfigurationMask> {
 
