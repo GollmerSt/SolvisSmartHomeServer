@@ -57,11 +57,9 @@ public class Instances {
 	public boolean learn() throws IOException, LearningError, XMLStreamException {
 		boolean nothingToLearn = true;
 		for (Solvis solvis : this.units) {
-			if (solvis.getGrafics().isEmpty()) {
 				solvis.learning();
 				nothingToLearn = false;
 				new GraficFileHandler(this.writeablePath, this.xmlHash).write(this.graficDatas);
-			}
 		}
 		return !nothingToLearn;
 	}

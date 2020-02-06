@@ -4,7 +4,6 @@ fhemModul = 73_SolvisClient.pm
 fhemCommand = ./contrib/commandref_join.pl -noWarnings
 solvisDir = /opt/SolvisSmartHomeServer
 solvisJar = SolvisSmartHomeServer.jar
-solvisGrafics = graficData.xml
 baseXml = base
 systemD = /etc/systemd/system
 serviceDebug = DebugSolvisSmartHomeServer
@@ -63,7 +62,6 @@ installSolvis: $(solvisDir)/$(solvisJar) $(solvisDir)/$(baseXml).xml  $(solvisDi
 
 
 learn: installSolvis
-	sudo -u $(account) rm $(solvisGrafics)
 	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-learn
 
 
