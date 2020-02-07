@@ -1,6 +1,15 @@
 Ä N D E R U N G EN
 
 
+Version 00.10.04
+
+	07.02.2020	Einige Info-Messages zum besseren Debuggen der Colmmand-Queue eingeführt
+	            
+				Bei Brenner-Laufzeit-Synchronisation war Screen-Restore invertiert.
+	
+	
+
+
 Version 00.10.03
 
 	06.02.2020	control.xml korrigiert. Bei der Konfiguration SolvisMax + Solarmodul war der
