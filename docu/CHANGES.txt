@@ -1,6 +1,17 @@
 Ä N D E R U N G EN
 
 
+
+
+Version 00.10.05
+
+	07.02.2020	Bei Brenner-Laufzeit-Synchronisation war Screen-Restore invertiert.
+				Bei einem moduliertem Gasbrenner gibt es keinen "C03.LaufzeitAnforderung2".
+				Der fehlende Wert wird ignoriert und durch 0 ersetzt.
+	
+	
+
+
 Version 00.10.04
 
 	07.02.2020	Einige Info-Messages zum besseren Debuggen der Colmmand-Queue eingeführt

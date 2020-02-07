@@ -484,29 +484,45 @@ false: Bei fester Grenze
 
 
 	<complexType name="Read">
-        <annotation>
-        	<documentation>Definitionen für einen vom Bildschirm zu erkennenden Wertes
-</documentation>
-        </annotation>
-        <attribute name="format" type="string" use="required">
+		<annotation>
+			<documentation>
+				Definitionen für einen vom Bildschirm zu erkennenden
+				Wertes
+			</documentation>
+		</annotation>
+		<attribute name="optional" type="boolean" use="optional">
 			<annotation>
-				<documentation>Der Format-String dient zur Extraktion der Daten aus einem String
-
-Er besteht aus folgenden zeichen:
-
-  C:	beliebiges Zeichen, wird ignoriert
-  0:	Ziffer oder +/-, muss vorhanden sein, wird übernommen
-  #:  Ziffer oder +/- optional, wird übernommen
-  </documentation>
+				<documentation>Wenn das Feld nicht in allen Konfigurationen vorhanden ist, kann das nicht vorhandensein durch setzen von optional auf "true" werden.
+Das ist z.B. für C03.LaufzeitAnforderung2 erforderlich, da diese bei modulierten Gasbrennern nicht vorhanden ist.</documentation>
 			</annotation></attribute>
+		<attribute name="format" type="string" use="required">
+			<annotation>
+				<documentation>
+					Der Format-String dient zur Extraktion der Daten aus
+					einem String
+
+					Er besteht aus folgenden zeichen:
+
+					C: beliebiges Zeichen, wird ignoriert 0: Ziffer oder
+					+/-, muss vorhanden sein, wird übernommen #: Ziffer
+					oder +/- optional, wird übernommen
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="unit" type="string">
 			<annotation>
-				<documentation>Einheit des vom Bildschirm gelesenen Wertes</documentation>
-			</annotation></attribute>
+				<documentation>
+					Einheit des vom Bildschirm gelesenen Wertes
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="divisor" type="int">
 			<annotation>
-				<documentation>Divisor des Wertes (normalerweise 1)</documentation>
-			</annotation></attribute>
+				<documentation>
+					Divisor des Wertes (normalerweise 1)
+				</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
 
 	<complexType name="ScreenSaver">

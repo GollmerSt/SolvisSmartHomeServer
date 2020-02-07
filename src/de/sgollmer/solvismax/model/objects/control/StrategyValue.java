@@ -40,7 +40,7 @@ public class StrategyValue extends StrategyRead {
 
 	public StrategyValue(int increment, String format, int divisor, String unit, int least, int most,
 			boolean wrapAround, TouchPoint upper, TouchPoint lower) {
-		super(format, divisor, unit);
+		super(false, format, divisor, unit);
 		this.increment = increment;
 		this.least = least;
 		this.most = most;

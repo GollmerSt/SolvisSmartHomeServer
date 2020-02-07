@@ -1193,7 +1193,7 @@
 					<tns:TopLeft X="145" Y="105" />
 					<tns:BottomRight X="200" Y="117" />
 				</tns:Current>
-				<tns:TypeRead format="######0C" unit="h" />
+				<tns:TypeRead optional="true" format="######0C" unit="h" />
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A13.Brenner_S2"
 						calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"

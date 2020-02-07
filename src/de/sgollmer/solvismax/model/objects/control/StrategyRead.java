@@ -29,11 +29,13 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class StrategyRead implements Strategy {
+	private final boolean optional;
 	private final Format format;
 	private final int divisor;
 	private final String unit;
 
-	public StrategyRead(String format, int divisor, String unit) {
+	public StrategyRead(boolean optional, String format, int divisor, String unit) {
+		this.optional = optional;
 		this.format = new Format(format);
 		this.divisor = divisor;
 		this.unit = unit;
@@ -45,14 +47,20 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public IntegerValue getValue(SolvisScreen screen , Rectangle rectangle) {
+	public IntegerValue getValue(SolvisScreen screen, Rectangle rectangle) {
 		OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
 		String s = ocr.getString();
 		s = format.getString(s);
+		Integer i;
 		if (s == null) {
-			return null;
+			if (this.optional) {
+				i = 0;
+			} else {
+				return null;
+			}
+		} else {
+			i = Integer.parseInt(s);
 		}
-		Integer i = Integer.parseInt(s);
 		return new IntegerValue(i, System.currentTimeMillis());
 	}
 
@@ -73,6 +81,7 @@ public class StrategyRead implements Strategy {
 
 	public static class Creator extends CreatorByXML<StrategyRead> {
 
+		private boolean optional = false;
 		private String format;
 		private int divisor = 1;
 		private String unit;
@@ -84,6 +93,9 @@ public class StrategyRead implements Strategy {
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
+				case "optional":
+					this.optional = Boolean.parseBoolean(value);
+					break;
 				case "format":
 					this.format = value;
 					break;
@@ -99,7 +111,7 @@ public class StrategyRead implements Strategy {
 
 		@Override
 		public StrategyRead create() throws XmlError {
-			return new StrategyRead(format, divisor, unit);
+			return new StrategyRead(optional, format, divisor, unit);
 		}
 
 		@Override
