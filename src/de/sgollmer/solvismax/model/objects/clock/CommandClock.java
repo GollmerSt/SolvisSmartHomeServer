@@ -49,5 +49,9 @@ public class CommandClock extends Command {
 		return strategy;
 	}
 
+	@Override
+	public String toString() {
+		return "Setting of Clock";
+	}
 	
 }

@@ -127,7 +127,10 @@ public class SolvisWorkers {
 							executeWatchDog = false;
 						}
 						if (command != null && !command.isInhibit()) {
+							logger.info("Command <" + command.toString() + "> will be executed");
 							success = execute(command);
+							logger.info("Command <" + command.toString() + "> executed "
+									+ (success ? "" : "not " + "successfull"));
 						}
 					} catch (IOException | ErrorPowerOn e) {
 						success = false;
@@ -200,11 +203,15 @@ public class SolvisWorkers {
 				if (add) {
 					if (command.first()) {
 						this.queue.addFirst(command);
+						logger.info(
+								"Command <" + command.toString() + "> was added to the beginning of the command queue");
 					} else if (itInsert != null) {
 						itInsert.next();
 						itInsert.add(command);
+						logger.info("Command <" + command.toString() + "> was inserted in the command queue");
 					} else {
 						this.queue.add(command);
+						logger.info("Command <" + command.toString() + "> was added to the end of the command queue");
 					}
 					this.notifyAll();
 					watchDog.bufferNotEmpty();
@@ -240,8 +247,7 @@ public class SolvisWorkers {
 
 			boolean clear;
 
-			if (this.solvis.getCurrentScreen().get() != commandScreen
-					|| this.commandScreen != commandScreen) {
+			if (this.solvis.getCurrentScreen().get() != commandScreen || this.commandScreen != commandScreen) {
 				clear = true;
 			} else if (now > timeCommandScreen + Constants.TIME_COMMAND_SCREEN_VALID) {
 				clear = true;

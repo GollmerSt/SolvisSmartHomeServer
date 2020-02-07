@@ -184,7 +184,7 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 			}
 
 			if (checkH || this.syncActive) {
-				screenRestore = burnerOn;
+				screenRestore = !burnerOn;
 			}
 
 			if (this.screenRestore != screenRestore) {

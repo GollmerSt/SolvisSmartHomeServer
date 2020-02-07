@@ -444,12 +444,18 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			@Override
 			public boolean execute(NextAdjust nextAdjust) throws IOException {
 				int configurationMask = solvis.getConfigurationMask();
-				Calendar adjustementCalendar = Calendar.getInstance();
-				adjustementCalendar.setTimeInMillis(nextAdjust.solvisAdjustTime);
+				Calendar adjustmentCalendar = Calendar.getInstance();
+				long now = adjustmentCalendar.getTimeInMillis() ;
+				if ( now > nextAdjust.realAdjustTime) {
+					adjustmentTypeRequestPending = AdjustmentType.NONE;
+					return false ;
+				}
+				adjustmentCalendar.setTimeInMillis(nextAdjust.solvisAdjustTime);
 				boolean success = false;
 				Screen clockAdjustScreen = screen.get(configurationMask);
 				if (clockAdjustScreen == null) {
 					logger.error("Clock adjust screen not defined in the current configuration. Adjustment terminated");
+					adjustmentTypeRequestPending = AdjustmentType.NONE;
 					return false;
 				}
 
@@ -469,7 +475,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 									logger.error("Setting of the solvis clock failed, it will be tried again.");
 									throw new HelperError();
 								} else {
-									int diff = adjustementCalendar.get(part.calendarInt) + offset - solvisData;
+									int diff = adjustmentCalendar.get(part.calendarInt) + offset - solvisData;
 									int steps;
 									TouchPoint touchPoint;
 									if (diff != 0) {

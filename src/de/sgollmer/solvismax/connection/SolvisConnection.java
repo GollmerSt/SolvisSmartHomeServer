@@ -212,8 +212,11 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				in.close();
 			} catch (IOException e) {
 				if (this.fwLth2_21_02A) {
-					if (in != null) {
-						in.close();
+					if (this.urlConnection != null) {
+						try {
+							this.urlConnection.disconnect();
+						} catch (Throwable e1) {
+						}
 					}
 				} else {
 					this.handleExceptionAndThrow(e);

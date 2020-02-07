@@ -940,7 +940,7 @@
 		<tns:ChannelDescription
 			id="S17.Durchfluss_Solarpanel" buffered="true">
 			<tns:Measurement type="unsigned" average="true"
-				dynamic="true">
+				dynamic="true" unit="l/h">
 				<tns:Field position="82" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>

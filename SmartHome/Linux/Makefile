@@ -32,6 +32,14 @@ installService: installSolvis
 installDebugService: installSolvis
 	systemctl enable $(serviceDebug)
 	systemctl start $(serviceDebug)
+	
+	
+stopService:
+	systemctl stop $(service)
+
+
+stopDebugService:
+	systemctl stop $(serviceDebug)
 
 
 uninstallService: 
@@ -52,13 +60,21 @@ uninstallFHEM:
 	cd $(fhemDir);sudo -u $(account) $(perl) $(fhemCommand)
 
 
-uninstallSolvis: uninstallService
+uninstallSolvis: uninstallService uninstallDebugService
 	rm $(solvisDir)/$(solvisJar)
 	rm $(systemD)/$(service).service
 	rm $(systemD)/$(serviceDebug).service
 	
 
 installSolvis: $(solvisDir)/$(solvisJar) $(solvisDir)/$(baseXml).xml  $(solvisDir)/$(baseXml).xsd $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
+
+
+update: stopService install
+	systemctl start $(service)
+
+
+updateDebug: stopDebugService install
+	systemctl start $(serviceDebug)
 
 
 learn: installSolvis

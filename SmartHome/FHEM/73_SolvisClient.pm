@@ -8,6 +8,7 @@
 #	Version		Date		Programmer			Subroutine								Description of Change
 #	00.01.00	17.12.2019	SCMP77				All										Initial Release
 #	00.02.00	21.01.2020	SCMP77				SolvisClient_CreateGetSetServerCommands	Server commands are determined by the server itself
+#	00.02.01	06.02.2020	SCMP77				SolvisClient_InterpreteConnectionState	Updated to current messages
 
 
 
@@ -451,7 +452,7 @@ sub SolvisClient_InterpreteConnectionState($$) {
 	}
 	
 	
-	SolvisClient_Log $this, 3, "Connection status: $stateString";
+	SolvisClient_Log $this, 5, "Connection status: $stateString";
 	
 	
 	if ( $stateString eq "CLIENT_UNKNOWN") {
@@ -461,12 +462,14 @@ sub SolvisClient_InterpreteConnectionState($$) {
 	} elsif ( $stateString eq "CONNECTION_NOT_POSSIBLE") {
 		SolvisClient_Log $this, 3, "Connection not possible: $message";
 		SolvisClient_ReconnectAfterDismiss($this);
-	} elsif ( $stateString eq "CONNECTED") {
-		# TODO
-	} elsif ( $stateString eq "DISCONNECTED") {
-		# TODO
-	} elsif ( $stateString eq "ALLIVE" ) {
-		SolvisClient_Log $this, 3, "Alive received";
+	} elsif ( $stateString eq "ALIVE" ) {
+		SolvisClient_Log $this, 4, "Alive received";
+	} elsif ( $stateString eq "USER_ACCESS_DETECTED" ) {
+		SolvisClient_Log $this, 3, "User access detected";
+	} elsif ( $stateString eq "USER_ACCESS_FINISHED") {
+		SolvisClient_Log $this, 3, "User access finished";
+	} else {
+		SolvisClient_Log $this, 3, "Connection status: $stateString";
 	}
 	return undef ;
 }

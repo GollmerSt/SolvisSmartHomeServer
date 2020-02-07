@@ -48,11 +48,6 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public String toString() {
-		return "Id: " + description.getId();
-	}
-
-	@Override
 	public Screen getScreen(Solvis solvis) {
 		return this.getDescription().getScreen(solvis.getConfigurationMask());
 	}
@@ -91,6 +86,15 @@ public class CommandControl extends Command {
 				}
 			}
 
+		}
+	}
+
+	@Override
+	public String toString() {
+		if (this.setValue != null) {
+			return "Id: " + this.description.getId() + ", set value: " + this.setValue.toString();
+		} else {
+			return "Id: " + this.description.getId();
 		}
 	}
 
