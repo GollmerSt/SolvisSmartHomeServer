@@ -24,6 +24,8 @@ public class Constants {
 	public static final int SET_REPEATS = 3;
 	public static final int MAX_GOTO_DEEPTH = 10;
 	public static final int LEARNING_RETRIES = 10;
+	public static final int COMMAND_TO_QUEUE_END_AFTER_N_FAILURES = 3 ;
+	public static final int COMMAND_IGNORED_AFTER_N_FAILURES = 10;
 	
 	public static final int HOURLY_BEARNER_SYNCHRONISATION_READ_INTERVAL_FACTOR = 6;
 

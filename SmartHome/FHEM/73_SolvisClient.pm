@@ -1015,7 +1015,7 @@ sub SolvisClient_DbLog_splitFn($)
 		</ul><BR>
 		    Diese Tabelle gibt nicht unbedingt den aktuellen Stand wieder. Es k&ouml;nnen mehr oder weniger Server-Befehle definiert sein, da die Server-Befehle vom Server selber dem Client &uuml;bergeben werden (bei jeder neuen Verbindung). Der Server selber bestimmt daher, was
 			der Client anbietet. Maßgebend ist daher immer die Ausgabe in der Web-Oberfl&auml;che.
-      </ul><BR><BR>
+      </ul><BR><BR><BR>
       <table>
 	    <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>
 	    <tr><td>
@@ -1089,9 +1089,31 @@ sub SolvisClient_DbLog_splitFn($)
 				  Der Name des Wertes, welcher gesetzt werden soll. Aktuell nur "SolvisName" m&ouml;glich</code>"<BR></td></tr>
 			  <tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
 				  Ein g&uuml;ltiger Wert.<BR></td></tr>
-	      </table><BR>
+	      </table><BR><BR>
 	    </ul>
       </ul>
+
+      <table>
+	    <tr><td><a name="SolvisClientState"></a><b>state</b></td></tr>
+	    <tr><td>
+	      <ul>
+		      Das spezielle Reading "state" kann folgende Werte annehmen:<BR>
+            <ul>
+		      <ul>
+	            <table>
+				    <tr><td align="right" valign="top"><code>disconnected</code> : </td><td align="left" valign="top">Server ist nicht mit FHEM verbunden.</td></tr>
+				    <tr><td align="right" valign="top"><code>opened</code> : </td><td align="left" valign="top">Die Verbindung zum Server wird aufgebaut.</td></tr>
+				    <tr><td align="right" valign="top"><code>SOLVIS_DISCONNECTED</code> : </td><td align="left" valign="top">Die Verbindung zum Server hergestellt, jedoch keine zur SolvisRemote</td></tr>
+				    <tr><td align="right" valign="top"><code>REMOTE_CONNECTED</code> : </td><td align="left" valign="top">Die Verbindung zum Server und SolvisRemote hergestellt. Keine Verbindung zur Heizungsanlage.</td></tr>
+				    <tr><td align="right" valign="top"><code>SOLVIS_CONNECTED</code> : </td><td align="left" valign="top">Alle Verbindungen hergestellt.</td></tr>
+				    <tr><td align="right" valign="top"><code>POWER_OFF</code> : </td><td align="left" valign="top">Solvis-Anlage ist offenbar ausgeschaltet.</td></tr>
+				    <tr><td align="right" valign="top"><code>ERROR</code> : </td><td align="left" valign="top">SolvisControl zeigt eine Fehlermeldung an.</td></tr>
+	            </table>
+              </ul>
+		    </ul><BR>
+		  </ul>
+	    </td></tr>
+      </table>
 	</td></tr>
   </table>
 </ul>

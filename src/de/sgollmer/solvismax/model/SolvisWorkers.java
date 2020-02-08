@@ -127,9 +127,9 @@ public class SolvisWorkers {
 							executeWatchDog = false;
 						}
 						if (command != null && !command.isInhibit()) {
-							logger.info("Command <" + command.toString() + "> will be executed");
+							logger.debug("Command <" + command.toString() + "> will be executed");
 							success = execute(command);
-							logger.info("Command <" + command.toString() + "> executed "
+							logger.debug("Command <" + command.toString() + "> executed "
 									+ (success ? "" : "not " + "successfull"));
 						}
 					} catch (IOException | ErrorPowerOn e) {
@@ -144,8 +144,19 @@ public class SolvisWorkers {
 					success = false;
 				}
 				synchronized (this) {
-					if (success) {
-						if (command != null) {
+					boolean remove = success;
+					boolean insertAtTheEnd = false;
+					if (command != null) {
+						if (!success) {
+							command.incrementFailCount();
+							if (command.getFailCount() >= Constants.COMMAND_TO_QUEUE_END_AFTER_N_FAILURES) {
+								remove = true;
+								if (command.getFailCount() < Constants.COMMAND_IGNORED_AFTER_N_FAILURES) {
+									insertAtTheEnd = true;
+								}
+							}
+						}
+						if (remove) {
 							boolean deleted = false;
 							for (Iterator<Command> it = queue.iterator(); it.hasNext() && !deleted;) {
 								Command cmp = it.next();
@@ -155,7 +166,11 @@ public class SolvisWorkers {
 								}
 							}
 						}
-					} else {
+						if (insertAtTheEnd) {
+							queue.add(command); // Shift command at the end of the queue on too many errors
+						}
+					}
+					if (!success) {
 						try {
 							this.wait(unsuccessfullWaitTime);
 							if (solvis.getSolvisState().getState() == SolvisState.State.SOLVIS_CONNECTED) {
@@ -203,15 +218,15 @@ public class SolvisWorkers {
 				if (add) {
 					if (command.first()) {
 						this.queue.addFirst(command);
-						logger.info(
+						logger.debug(
 								"Command <" + command.toString() + "> was added to the beginning of the command queue");
 					} else if (itInsert != null) {
 						itInsert.next();
 						itInsert.add(command);
-						logger.info("Command <" + command.toString() + "> was inserted in the command queue");
+						logger.debug("Command <" + command.toString() + "> was inserted in the command queue");
 					} else {
 						this.queue.add(command);
-						logger.info("Command <" + command.toString() + "> was added to the end of the command queue");
+						logger.debug("Command <" + command.toString() + "> was added to the end of the command queue");
 					}
 					this.notifyAll();
 					watchDog.bufferNotEmpty();
@@ -238,6 +253,7 @@ public class SolvisWorkers {
 				++this.screenRestoreInhibitCnt;
 			}
 		}
+
 	}
 
 	private boolean execute(Command command) throws IOException, TerminationException, ErrorPowerOn {

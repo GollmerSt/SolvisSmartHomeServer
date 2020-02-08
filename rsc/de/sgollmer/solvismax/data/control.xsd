@@ -175,7 +175,6 @@ false: Schwarz-Weiß reicht aus
 Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links nach rechts, die Y-Koordinate von oben nach unten
 			</documentation>
 		</annotation>
-		<sequence></sequence>
 		<attribute name="X" type="int" use="required"></attribute>
 		<attribute name="Y" type="int" use="required"></attribute>
 	</complexType>

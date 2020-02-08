@@ -14,6 +14,9 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public abstract class Command {
+	
+	private int failCount = 0 ;
+	
 	public abstract boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn;
 
 	public Screen getScreen(Solvis solvis) {
@@ -60,4 +63,11 @@ public abstract class Command {
 		return false ;
 	}
 
+	public int getFailCount() {
+		return failCount ;
+	}
+	
+	public void incrementFailCount() {
+		++this.failCount ;
+	}
 }

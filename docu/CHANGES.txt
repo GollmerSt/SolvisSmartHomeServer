@@ -1,6 +1,17 @@
 Ä N D E R U N G EN
 
+Version 00.10.06
 
+	08.02.2020	Bewirkt ein Control-Command mehr als 2 Fehler, wird er an das Ende der Queue
+				geschoben und eine Fehlermeldung wird in den Log geschrieben. Bei 10 Fehlern
+				wird er aus der Queue entfernt. Auf diese Weise wird verhindert, dass ein
+				 nichtausführbarer Befehl die Command-Queue blockiert.
+				
+				Debug-Meldungen von Info auf Debug gesetzt.
+				
+				Den SolvisClient noch um die Beschreibung der verschiedenen state-Werte ergänzt.  
+	
+	
 
 
 Version 00.10.05
