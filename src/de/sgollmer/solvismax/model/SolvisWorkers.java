@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.model.Command.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
@@ -371,22 +372,29 @@ public class SolvisWorkers {
 			while (!abort) {
 
 				try {
-					solvis.measure();
-					solvis.getSolvisState().connected();
-				} catch (IOException e1) {
-				} catch (ErrorPowerOn e2) {
-					solvis.getSolvisState().remoteConnected();
+
+					try {
+						solvis.measure();
+						solvis.getSolvisState().connected();
+					} catch (IOException e1) {
+					} catch (ErrorPowerOn e2) {
+						solvis.getSolvisState().remoteConnected();
+					}
+
+					synchronized (this) {
+						long now = System.currentTimeMillis();
+						this.nextTime = now - (now - this.nextTime) % measurementInterval + measurementInterval;
+						int waitTime = (int) (this.nextTime - now);
+						try {
+							this.wait(waitTime);
+						} catch (InterruptedException e) {
+						}
+					}
+				} catch (Throwable e) {
+					logger.error("Error was thrown in measurements worker thread. Cause: ", e);
+					AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
 				}
 
-				synchronized (this) {
-					long now = System.currentTimeMillis();
-					this.nextTime = now - (now - this.nextTime) % measurementInterval + measurementInterval;
-					int waitTime = (int) (this.nextTime - now);
-					try {
-						this.wait(waitTime);
-					} catch (InterruptedException e) {
-					}
-				}
 			}
 		}
 

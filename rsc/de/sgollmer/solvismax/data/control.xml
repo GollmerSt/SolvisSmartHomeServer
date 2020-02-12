@@ -892,9 +892,9 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S11.Zirkulationsdurchfluss">
+			id="S11.ZirkulationRuecklauftemperatur">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="l/m">
+				divisor="10" dynamic="true" unit="°C">
 				<tns:Field position="54" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -933,7 +933,7 @@
 		<tns:ChannelDescription
 			id="S18.Durchfluss_Warmwasserzirkulation">
 			<tns:Measurement type="unsigned" average="true"
-				divisor="10" dynamic="true">
+				dynamic="true" unit="l/h">
 				<tns:Field position="78" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>

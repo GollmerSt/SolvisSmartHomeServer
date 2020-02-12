@@ -245,8 +245,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		}
 	}
 
-	public SingleData<?> getSentData() {
-		return sentData;
+	public synchronized SingleData<?> getSentData() {
+		if (this.sentData != null) {
+			return this.sentData;
+		} else {
+			return this.data;
+		}
 	}
 
 	public synchronized SingleData<?> setSentData(long sentTimeStamp) {
@@ -258,7 +262,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	public long getSentTimeStamp() {
 		return sentTimeStamp;
 	}
-	
+
 	public boolean isFastChange() {
 		return this.data.isFastChange();
 	}

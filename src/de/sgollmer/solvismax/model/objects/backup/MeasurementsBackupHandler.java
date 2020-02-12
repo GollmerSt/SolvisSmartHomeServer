@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.xml.XmlStreamReader;
@@ -159,18 +160,24 @@ public class MeasurementsBackupHandler {
 		@Override
 		public void run() {
 			while (!abort) {
-				synchronized (this) {
-					try {
-						this.wait(this.measurementsBackupTime_ms);
-					} catch (InterruptedException e) {
-					}
-					if (!abort) {
+				try {
+					synchronized (this) {
 						try {
-							handler.write();
-						} catch (IOException | XMLStreamException e) {
+							this.wait(this.measurementsBackupTime_ms);
+						} catch (InterruptedException e) {
+						}
+						if (!abort) {
+							try {
+								handler.write();
+							} catch (IOException | XMLStreamException e) {
+							}
 						}
 					}
+				} catch (Throwable e) {
+					logger.error("Error was thrown in backup thread. Cause: ", e);
+					AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
 				}
+
 			}
 		}
 

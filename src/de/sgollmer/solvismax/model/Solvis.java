@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 //import org.apache.logging.slf4j.Log4jLogger;
 //import org.slf4j.LoggerFactory;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.Distributor;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
@@ -247,7 +248,7 @@ public class Solvis {
 
 	public void init() throws IOException, XmlError, XMLStreamException {
 		this.configurationMask = this.getGrafics().getConfigurationMask();
-		
+
 		synchronized (solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().init(this, this.getAllSolvisData());
 		}
@@ -332,9 +333,9 @@ public class Solvis {
 		}
 		this.screenSaverActive = screenSaverActive;
 	}
-	
+
 	public boolean isScreenSaverActive() {
-		return this.screenSaverActive ;
+		return this.screenSaverActive;
 	}
 
 	public SystemGrafics getGrafics() {
@@ -453,29 +454,36 @@ public class Solvis {
 		public void run() {
 
 			while (!abort && updateInterval != 0) {
-				Calendar midNight = Calendar.getInstance();
-				long now = midNight.getTimeInMillis();
-				midNight.set(Calendar.HOUR_OF_DAY, 0);
-				midNight.set(Calendar.MINUTE, 0);
-				midNight.set(Calendar.SECOND, 0);
-				midNight.set(Calendar.MILLISECOND, 0);
 
-				long midNightLong = midNight.getTimeInMillis();
-				long nextUpdate = (now - midNightLong) / this.updateInterval * this.updateInterval + midNightLong
-						+ this.updateInterval;
-				int waitTime = (int) (nextUpdate - now);
-				synchronized (this) {
-					try {
-						this.wait(waitTime);
-					} catch (InterruptedException e) {
+				try {
+
+					Calendar midNight = Calendar.getInstance();
+					long now = midNight.getTimeInMillis();
+					midNight.set(Calendar.HOUR_OF_DAY, 0);
+					midNight.set(Calendar.MINUTE, 0);
+					midNight.set(Calendar.SECOND, 0);
+					midNight.set(Calendar.MILLISECOND, 0);
+
+					long midNightLong = midNight.getTimeInMillis();
+					long nextUpdate = (now - midNightLong) / this.updateInterval * this.updateInterval + midNightLong
+							+ this.updateInterval;
+					int waitTime = (int) (nextUpdate - now);
+					synchronized (this) {
+						try {
+							this.wait(waitTime);
+						} catch (InterruptedException e) {
+						}
 					}
-				}
-				if (!abort && !powerDownInInterval) {
-					distributor.notify(getAllSolvisData().getMeasurementsPackage());
-				}
+					if (!abort && !powerDownInInterval) {
+						distributor.notify(getAllSolvisData().getMeasurementsPackage());
+					}
 
-				if (!power) {
-					powerDownInInterval = true;
+					if (!power) {
+						powerDownInInterval = true;
+					}
+				} catch (Throwable e) {
+					logger.error("Error was thrown in measurement update thread. Cause: ", e);
+					AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
 				}
 			}
 		}

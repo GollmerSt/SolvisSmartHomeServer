@@ -1,5 +1,15 @@
 Ä N D E R U N G EN
 
+Version 00.10.07
+
+	11.02.2020	Die berecnneten Werte (Xx...) wurden erst dann zum Client geschickt, wenn sie sich nach dem Neustart
+				des Servers einmal verändert hatten.
+				
+				Kanal S11 korrigiert. Name und Einheit geändert
+	
+	
+
+
 Version 00.10.06
 
 	08.02.2020	Bewirkt ein Control-Command mehr als 2 Fehler, wird er an das Ende der Queue

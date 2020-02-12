@@ -20,6 +20,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
@@ -190,20 +191,24 @@ public class Distributor extends Observable<JsonPackage> {
 		public void run() {
 
 			while (!abort) {
-				boolean sendAlive = false;
-				synchronized (this) {
-					try {
-						this.wait(Constants.ALIVE_TIME);
-					} catch (InterruptedException e) {
+				try {
+					boolean sendAlive = false;
+					synchronized (this) {
+						try {
+							this.wait(Constants.ALIVE_TIME);
+						} catch (InterruptedException e) {
+						}
+						if (!triggered) {
+							sendAlive = true;
+						} else {
+							triggered = false;
+						}
 					}
-					if (!triggered) {
-						sendAlive = true;
-					} else {
-						triggered = false;
+					if (sendAlive) {
+						Distributor.this.notify(new ConnectionState(ConnectionStatus.ALIVE, "").createJsonPackage());
 					}
-				}
-				if (sendAlive) {
-					Distributor.this.notify(new ConnectionState(ConnectionStatus.ALIVE, "").createJsonPackage());
+				} catch (Throwable e) {
+					logger.error("Error was thrown in alive thread. Cause: ", e);
 				}
 			}
 		}
@@ -232,25 +237,31 @@ public class Distributor extends Observable<JsonPackage> {
 		@Override
 		public void run() {
 			while (!abort) {
-				synchronized (this) {
-					Calendar midNight = Calendar.getInstance();
-					long now = midNight.getTimeInMillis();
-					midNight.set(Calendar.HOUR_OF_DAY, 0);
-					midNight.set(Calendar.MINUTE, 0);
-					midNight.set(Calendar.SECOND, 0);
-					midNight.set(Calendar.MILLISECOND, 200);
+				try {
+					synchronized (this) {
+						Calendar midNight = Calendar.getInstance();
+						long now = midNight.getTimeInMillis();
+						midNight.set(Calendar.HOUR_OF_DAY, 0);
+						midNight.set(Calendar.MINUTE, 0);
+						midNight.set(Calendar.SECOND, 0);
+						midNight.set(Calendar.MILLISECOND, 200);
 
-					long nextBurst = (now - midNight.getTimeInMillis()) / bufferedIntervall_ms * bufferedIntervall_ms
-							+ midNight.getTimeInMillis() + bufferedIntervall_ms;
+						long nextBurst = (now - midNight.getTimeInMillis()) / bufferedIntervall_ms
+								* bufferedIntervall_ms + midNight.getTimeInMillis() + bufferedIntervall_ms;
 
-					try {
-						this.wait(nextBurst - now);
-					} catch (InterruptedException e) {
+						try {
+							this.wait(nextBurst - now);
+						} catch (InterruptedException e) {
+						}
 					}
+					if (!abort) {
+						sendCollection(collectedBufferedMeasurements.cloneAndClear());
+					}
+				} catch (Throwable e) {
+					logger.error("Error was thrown in periodic burst thread. Cause: ", e);
+					AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
 				}
-				if (!abort) {
-					sendCollection(collectedBufferedMeasurements.cloneAndClear());
-				}
+
 			}
 		}
 
