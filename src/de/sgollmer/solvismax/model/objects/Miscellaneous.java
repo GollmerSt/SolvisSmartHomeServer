@@ -21,20 +21,23 @@ public class Miscellaneous {
 	private final int powerOffDetectedAfterIoErrors;
 	private final int powerOffDetectedAfterTimeout_ms;
 	private final int unsuccessfullWaitTime_ms;
-	private final int releaseblockingAfterUserChange_ms;
+	private final int releaseBlockingAfterUserAccess_ms;
+	private final int releaseBlockingAfterServiceAccess_ms;
 	private final int watchDogTime_ms;
 	private final int connectionHoldTime_ms;
 	private final int solvisConnectionTimeout_ms;
 	private final int solvisReadTimeout_ms;
 
 	public Miscellaneous(int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors,
-			int powerOffDetectedAfterTimeout_ms, int unsuccessfullWaitTime_ms, int releaseblockingAfterUserChange_ms,
-			int watchDogTime_ms, int connectionHoldTime_ms, int solvisConnectionTimeout_ms, int solvisReadTimeout_ms) {
+			int powerOffDetectedAfterTimeout_ms, int unsuccessfullWaitTime_ms, int releaseBlockingAfterUserAccess_ms,
+			int releaseBlockingAfterServiceAccess_ms, int watchDogTime_ms, int connectionHoldTime_ms,
+			int solvisConnectionTimeout_ms, int solvisReadTimeout_ms) {
 		this.measurementsBackupTime_ms = measurementsBackupTime_ms;
 		this.powerOffDetectedAfterIoErrors = powerOffDetectedAfterIoErrors;
 		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
 		this.unsuccessfullWaitTime_ms = unsuccessfullWaitTime_ms;
-		this.releaseblockingAfterUserChange_ms = releaseblockingAfterUserChange_ms;
+		this.releaseBlockingAfterUserAccess_ms = releaseBlockingAfterUserAccess_ms;
+		this.releaseBlockingAfterServiceAccess_ms = releaseBlockingAfterServiceAccess_ms;
 		this.watchDogTime_ms = watchDogTime_ms;
 		this.connectionHoldTime_ms = connectionHoldTime_ms;
 		this.solvisConnectionTimeout_ms = solvisConnectionTimeout_ms;
@@ -49,8 +52,8 @@ public class Miscellaneous {
 		return unsuccessfullWaitTime_ms;
 	}
 
-	public int getReleaseblockingAfterUserChange_ms() {
-		return releaseblockingAfterUserChange_ms;
+	public int getReleaseBlockingAfterUserAccess_ms() {
+		return releaseBlockingAfterUserAccess_ms;
 	}
 
 	public int getWatchDogTime_ms() {
@@ -67,7 +70,8 @@ public class Miscellaneous {
 		private int powerOffDetectedAfterIoErrors;
 		private int powerOffDetectedAfterTimeout_ms;
 		private int unsuccessfullWaitTime_ms;
-		private int releaseblockingAfterUserChange_ms;
+		private int releaseBlockingAfterUserAccess_ms;
+		private int releaseBlockingAfterServiceAccess_ms;
 		private int watchDogTime_ms;
 		private int connectionHoldTime_ms;
 		private int solvisConnectionTimeout_ms;
@@ -92,8 +96,11 @@ public class Miscellaneous {
 				case "unsuccessfullWaitTime_ms":
 					this.unsuccessfullWaitTime_ms = Integer.parseInt(value);
 					break;
-				case "releaseblockingAfterUserChange_ms":
-					this.releaseblockingAfterUserChange_ms = Integer.parseInt(value);
+				case "releaseBlockingAfterUserAccess_ms":
+					this.releaseBlockingAfterUserAccess_ms = Integer.parseInt(value);
+					break;
+				case "releaseBlockingAfterServiceAccess_ms":
+					this.releaseBlockingAfterServiceAccess_ms = Integer.parseInt(value);
 					break;
 				case "watchDogTime_ms":
 					this.watchDogTime_ms = Integer.parseInt(value);
@@ -114,8 +121,9 @@ public class Miscellaneous {
 		@Override
 		public Miscellaneous create() throws XmlError, IOException {
 			return new Miscellaneous(measurementsBackupTime_ms, powerOffDetectedAfterIoErrors,
-					powerOffDetectedAfterTimeout_ms, unsuccessfullWaitTime_ms, releaseblockingAfterUserChange_ms,
-					watchDogTime_ms, connectionHoldTime_ms, solvisConnectionTimeout_ms, solvisReadTimeout_ms);
+					powerOffDetectedAfterTimeout_ms, unsuccessfullWaitTime_ms, releaseBlockingAfterUserAccess_ms,
+					releaseBlockingAfterServiceAccess_ms, watchDogTime_ms, connectionHoldTime_ms,
+					solvisConnectionTimeout_ms, solvisReadTimeout_ms);
 		}
 
 		@Override
@@ -144,6 +152,10 @@ public class Miscellaneous {
 
 	public int getPowerOffDetectedAfterTimeout_ms() {
 		return powerOffDetectedAfterTimeout_ms;
+	}
+
+	public int getReleaseBlockingAfterServiceAccess_ms() {
+		return releaseBlockingAfterServiceAccess_ms;
 	}
 
 }

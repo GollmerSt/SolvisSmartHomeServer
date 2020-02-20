@@ -85,7 +85,7 @@ public class Control extends ChannelSource {
 	@Override
 	public boolean getValue(SolvisData destin, Solvis solvis, int timeAfterLastSwitchingOn)
 			throws IOException, TerminationException {
-		this.screen.get(solvis.getConfigurationMask()).goTo(solvis);
+		this.screen.get(solvis).goTo(solvis);
 		if (!this.prepare(solvis)) {
 			return false;
 		}
@@ -99,16 +99,16 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
-		this.screen.get(solvis.getConfigurationMask()).goTo(solvis);
+	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+		this.screen.get(solvis).goTo(solvis);
 		if (!this.prepare(solvis)) {
-			return false;
+			return null;
 		}
-		boolean set = false;
+		SingleData<?> setValue = null;
 		try {
-			for (int c = 0; c < Constants.SET_REPEATS + 1 && !set; ++c) {
-				set = this.strategy.setValue(solvis, this.valueRectangle, value);
-				if (!set && c == 1) {
+			for (int c = 0; c < Constants.SET_REPEATS + 1 && setValue == null; ++c) {
+				setValue = this.strategy.setValue(solvis, this.valueRectangle, value);
+				if (setValue == null && c == 1) {
 					logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
 							+ " failed, set will be tried again.");
 				}
@@ -116,14 +116,14 @@ public class Control extends ChannelSource {
 		} catch (TypeError e) {
 			logger.error("Setting value <" + value.toString() + "> not defined for <" + this.getDescription().getId()
 					+ ">. Setting ignored");
-			return true ;
+			return null;
 		}
-		if (!set) {
+		if (setValue == null) {
 			logger.error("Setting of <" + this.getDescription().getId() + "> not successfull");
 		} else {
 			logger.info("Channel <" + description.getId() + "> is set to " + value.toString() + ">.");
 		}
-		return set;
+		return setValue;
 	}
 
 	@Override
@@ -162,7 +162,9 @@ public class Control extends ChannelSource {
 			throw new ReferenceError("Screen of reference < " + this.screenId + " > not found");
 		}
 
-		this.strategy.assign(description);
+		if (this.strategy != null) {
+			this.strategy.assign(description);
+		}
 
 		if (preparationId != null) {
 			this.preparation = description.getPreparations().get(preparationId);
@@ -254,7 +256,7 @@ public class Control extends ChannelSource {
 	public void learn(Solvis solvis) throws IOException, LearningError {
 		if (strategy.mustBeLearned()) {
 			SingleData<?> data = null;
-			Screen screen = this.screen.get(solvis.getConfigurationMask());
+			Screen screen = this.screen.get(solvis);
 			if (screen == null) {
 				String error = "Learning of <" + this.getDescription().getId()
 						+ "> not possible, rejected. Screen undefined"
@@ -294,7 +296,7 @@ public class Control extends ChannelSource {
 			}
 			boolean success = false;
 			for (int repeat = 0; repeat < Constants.SET_REPEATS; ++repeat) {
-				success = this.setValue(solvis, new SolvisData(data));
+				success = this.setValue(solvis, new SolvisData(data)) != null;
 				if (success) {
 					break;
 				} else {
@@ -372,8 +374,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData)  throws TypeError{
-		return this.strategy.interpretSetData(singleData) ;
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+		return this.strategy.interpretSetData(singleData);
 	}
 
 }

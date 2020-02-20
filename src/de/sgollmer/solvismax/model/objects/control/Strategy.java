@@ -25,7 +25,7 @@ public interface Strategy extends Assigner {
 
 	public SingleData<?> getValue(SolvisScreen solvisScreen, Rectangle valueRectangl) throws TerminationException, IOException;
 
-	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
+	public SingleData<?> setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
 			throws IOException, TerminationException, TypeError;
 
 	public boolean isWriteable();

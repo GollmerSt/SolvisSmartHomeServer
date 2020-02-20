@@ -7,10 +7,10 @@
 
 package de.sgollmer.solvismax.model.objects;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
@@ -131,8 +131,8 @@ public class AllSolvisData {
 		}
 	}
 	
-	public synchronized MeasurementsPackage getMeasurementsPackage() {
-		return new MeasurementsPackage(this.solvisDatas.values()) ;
+	public synchronized Collection< SolvisData > getMeasurements() {
+		return this.solvisDatas.values() ;
 	}
 
 	public void registerObserver(ObserverI<SolvisData> observer) {

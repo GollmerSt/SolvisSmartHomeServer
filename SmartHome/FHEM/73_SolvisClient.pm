@@ -9,6 +9,7 @@
 #	00.01.00	17.12.2019	SCMP77				All										Initial Release
 #	00.02.00	21.01.2020	SCMP77				SolvisClient_CreateGetSetServerCommands	Server commands are determined by the server itself
 #	00.02.01	06.02.2020	SCMP77				SolvisClient_InterpreteConnectionState	Updated to current messages
+#	00.02.02	13.02.2020	SCMP77				SolvisClient_InterpreteConnectionState	Attribut enable gui commands addes
 
 
 
@@ -51,6 +52,11 @@ use constant _TRUE_ => 1;
 
 use constant CLIENT_VERSION => "00.01.00" ;
 use constant FORMAT_VERSION_REGEXP => "m/01\.../" ;
+
+use constant _DISABLE_GUI_ => 0 ;
+use constant _ENABLE_GUI_ => 1 ;
+use constant _UPDATE_GUI_ => 2 ;
+
 
 
 # try to use JSON::MaybeXS wrapper
@@ -165,13 +171,10 @@ sub SolvisClient_Initialize($) {
 	$this->{SetFn}			= "SolvisClient_Set";
 	$this->{GetFn}			= "SolvisClient_Get";
 	$this->{NotifyFn}       = "SolvisClient_Notify";
-#	$this->{AttrFn}			= "SolvisClient_Attr";
+	$this->{AttrFn}			= "SolvisClient_Attr";
 	$this->{AttrList}		=
 							  "SolvisName ".
-#							  "Average ".
-#							  "Interval ".
-#							  "PowerOn ".
-#							  "FirmwareLth2.21.02A ".
+							  "GuiCommandsEnabled:TRUE,FALSE ".
 							  $readingFnAttributes;
 	$this->{DbLog_splitFn}	= "SolvisClient_DbLog_splitFn";
 
@@ -193,6 +196,7 @@ sub SolvisClient_Define($$) {  #define heizung SolvisClient 192.168.1.40 SGollme
 	my $url  = $args[2];
 	my $name = $this->{NAME};
 	
+	
 	$this->{DeviceName}  = $url;	#Für DevIO, Name fest vorgegeben
 	
 	if( $init_done ) {
@@ -200,14 +204,33 @@ sub SolvisClient_Define($$) {  #define heizung SolvisClient 192.168.1.40 SGollme
 	} else {
 		$this->{NOTIFYDEV} = "global";
 	}
+	
+	$this->{helper}{GuiEnabled} = undef ;
 		
 	return undef;
 } # end SolvisClient_Define
 
 
 
-sub SolvisClient_Notify($$)
-{
+#####################################
+#      Attribute
+sub SolvisClient_Attr(@) {
+	my ($cmd,$name,$aName,$aVal) = @_ ;
+	
+	my $this = $defs{$name} ;
+	
+	if ( $aName eq "GuiCommandsEnabled" ) {
+	    if ( defined $aVal && $aVal ne 'TRUE' && $aVal ne 'FALSE' ) {
+			return 'Unknown value '.$aVal.' for '.$aName.', choose one of TRUE FALSE';
+		}
+	}
+	
+	return undef ;
+} # end SolvisClient_Attr
+
+
+# Try connection if FHEM is initalized or configuration was rereaded
+sub SolvisClient_Notify($$) {
 	my ($this, $eventObject) = @_;
 	my $ownName = $this->{NAME}; # own name
 	
@@ -220,6 +243,7 @@ sub SolvisClient_Notify($$)
 
 	if($devName eq "global" && grep(m/^INITIALIZED|REREADCFG$/, @{$events}))
 	{
+		$this->{helper}{GuiEnabled} = undef ;
 		 my $result = SolvisClient_Connect( $this, 0 );
 		$this->{NOTIFYDEV} = "";
 	}
@@ -332,6 +356,8 @@ sub SolvisClient_SendReconnectionData($) {
 sub SolvisClient_Ready($) {
 	my ($this) = @_;
 
+	$this->{helper}{GuiEnabled} = undef ;
+
     if($this->{STATE} eq "disconnected") {
 		SolvisClient_Log $this, 4, "Reconnection try";
 		SolvisClient_Connect($this, 1) ; # reopen
@@ -409,26 +435,62 @@ sub SolvisClient_executeCommand($$) {
 	SolvisClient_Log $this, 4, "Command detected: ".$command;
 	
 	if ( $command eq "CONNECTED" ) {
-		$this->{CLIENT_ID} = $receivedData->{CONNECTED}->{ClientId} ;
-		if ( defined ($receivedData->{CONNECTED}->{ServerVersion}) ) {
-			$this->{SERVER_VERSION} = $receivedData->{CONNECTED}->{ServerVersion} ;
-			my $formatVersion = $receivedData->{CONNECTED}->{FormatVersion} ;
-			if ( ! $formatVersion =~ FORMAT_VERSION_REGEXP ) {
-				SolvisClient_Log $this, 3, "Format version $formatVersion of client is depricated, use a newer client, if available." ;
-				$this->{INFO} = "Format version is depricated" ;
-			}
-			Log3 $this, 3, MODULE.", Server version: $this->{SERVER_VERSION}" ;
-		}
+		SolvisClient_Connected($this, $receivedData) ;
+		SolvisClient_EnableGui( $this ) ;
 	} elsif ( $command eq "MEASUREMENTS" ) {
 		SolvisClient_UpdateReadings($this, $receivedData->{MEASUREMENTS}) ;
+		SolvisClient_EnableGui( $this ) ;
 	} elsif ( $command eq "DESCRIPTIONS" ) {
 		SolvisClient_CreateGetSetServerCommands($this, $receivedData->{DESCRIPTIONS}) ;
+		SolvisClient_EnableGui( $this ) ;
 	} elsif ($command eq "CONNECTION_STATE" ) {
 		SolvisClient_InterpreteConnectionState($this, $receivedData->{CONNECTION_STATE}) ;
 	} elsif ($command eq "SOLVIS_STATE" ) {
 		SolvisClient_InterpreteSolvisState($this, $receivedData->{SOLVIS_STATE}) ;
+		SolvisClient_EnableGui( $this ) ;
 	}
 }
+
+
+##########################################
+#
+#     Connected with the server
+
+sub SolvisClient_Connected($$) {
+
+	my ($this, $receivedData ) = @_;
+	my $name = $this->{NAME} ;
+
+	$this->{CLIENT_ID} = $receivedData->{CONNECTED}->{ClientId} ;
+	if ( defined ($receivedData->{CONNECTED}->{ServerVersion}) ) {
+		$this->{SERVER_VERSION} = $receivedData->{CONNECTED}->{ServerVersion} ;
+		my $formatVersion = $receivedData->{CONNECTED}->{FormatVersion} ;
+		if ( ! $formatVersion =~ FORMAT_VERSION_REGEXP ) {
+			SolvisClient_Log $this, 3, "Format version $formatVersion of client is depricated, use a newer client, if available." ;
+			$this->{INFO} = "Format version is depricated" ;
+		}
+		Log3 $this, 3, MODULE.", Server version: $this->{SERVER_VERSION}" ;
+	}
+	
+}
+
+sub SolvisClient_EnableGui($) {
+
+	my ($this ) = @_;
+	
+	my $attrVal = AttrVal($this->{NAME}, 'GuiCommandsEnabled', 'TRUE');
+	my $enabled = $attrVal eq 'TRUE' ;
+	
+	if (!defined($this->{helper}{GuiEnabled}) || $this->{helper}{GuiEnabled} != $enabled ) {
+		my $command = $enabled?'GUI_COMMANDS_ENABLE':'GUI_COMMANDS_DISABLE' ;
+
+		SolvisClient_SendServerCommand($this, $command) ;
+		
+		$this->{helper}{GuiEnabled} = $enabled ;
+		SolvisClient_Log $this, 3, "Command <$command> is sent to server" ;
+	}
+}
+
 
 ##########################################
 #
@@ -456,10 +518,12 @@ sub SolvisClient_InterpreteConnectionState($$) {
 	
 	
 	if ( $stateString eq "CLIENT_UNKNOWN") {
+		$this->{helper}{GuiEnabled} = undef ;
 		$this->{CLIENT_ID} = undef ;
 		SolvisClient_Log $this, 3, "Client unknown: $message";
 		SolvisClient_ReconnectAfterDismiss($this);
 	} elsif ( $stateString eq "CONNECTION_NOT_POSSIBLE") {
+		$this->{helper}{GuiEnabled} = undef ;
 		SolvisClient_Log $this, 3, "Connection not possible: $message";
 		SolvisClient_ReconnectAfterDismiss($this);
 	} elsif ( $stateString eq "ALIVE" ) {
@@ -478,6 +542,7 @@ sub SolvisClient_ReconnectAfterDismiss($) {
 	my ($this) = @_ ;
 
 	DevIo_CloseDev($this) ;
+	$this->{helper}{GuiEnabled} = undef ;
 
 	my $timeStamp = gettimeofday() + RECONNECT_AFTER_DISMISS ;
 	InternalTimer($timeStamp, "SolvisClient_Reconnect", $this );
@@ -522,6 +587,8 @@ sub SolvisClient_Reconnect($) {
 
 	my ($this) = @_;
 	
+	$this->{helper}{GuiEnabled} = undef ;
+	
 	SolvisClient_Log $this, 3, "Retry reconnection";
 	DevIo_CloseDev($this) ;
 	SolvisClient_Connect($this,0);
@@ -549,10 +616,9 @@ sub SolvisClient_CreateGetSetServerCommands($$) {
 		SolvisClient_Log $this, 5, "Processing of description: ".$name;
 		my %channelHash = %{$descriptionHash{$name}} ;
 		if ( $channelHash{Type} eq "ServerCommand") {
-		    if ( $SolvisClient_ServerCommands ne "" ) {
-				$SolvisClient_ServerCommands .= "," ;
+		    if ( $name ne 'GUI_COMMANDS_DISABLE' && $name ne 'GUI_COMMANDS_ENABLE' ) {
+				push(@SolvisClient_ServerCommand_Array, $name);
 			}
-			push(@SolvisClient_ServerCommand_Array, $name);
 		} else {
 			$SolvisClient_ChannelDescriptions{$name} = {} ;
 			$SolvisClient_ChannelDescriptions{$name}{SET} = $channelHash{Writeable} ;
@@ -1070,6 +1136,7 @@ sub SolvisClient_DbLog_splitFn($)
 		      <ul>
 	            <table>
 				    <tr><td align="right" valign="top"><code>SolvisName</code> : </td><td align="left" valign="top">Name der Id der Unit des Servers (in base.xml definiert). Wenn das Attribut nicht definiert ist, muss der FHEM-Gerätename identisch mit der Id der Unit des base.xml des Servers sein.</td></tr>
+				    <tr><td align="right" valign="top"><code>GuiCommandsEnabled</code> : </td><td align="left" valign="top">TRUE/FALSE: Gui-Befehle sind enabled/disabled. Im Service-Fall empfiehlt es sich dieses Atrribut auf FALSE zu setzen, damit der Service nicht von dem SolvisSmartHomeServer irritiert wird. Default: TRUE</td></tr>
 	            </table>
               </ul>
 		    </ul><BR>
@@ -1086,7 +1153,7 @@ sub SolvisClient_DbLog_splitFn($)
 			  <tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> : </td><td align="left" valign="top">
 				  Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
 			  <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
-				  Der Name des Wertes, welcher gesetzt werden soll. Aktuell nur "SolvisName" m&ouml;glich</code>"<BR></td></tr>
+				  Der Name des Wertes, welcher gesetzt werden soll.<BR></td></tr>
 			  <tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
 				  Ein g&uuml;ltiger Wert.<BR></td></tr>
 	      </table><BR><BR>

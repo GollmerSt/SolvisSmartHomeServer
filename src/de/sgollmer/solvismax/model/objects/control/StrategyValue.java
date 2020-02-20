@@ -26,11 +26,10 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class StrategyValue extends StrategyRead {
-	
+
 	private static final String XML_UPPER = "Upper";
 	private static final String XML_LOWER = "Lower";
 
-	
 	private final int increment;
 	private final int least;
 	private final int most;
@@ -55,18 +54,21 @@ public class StrategyValue extends StrategyRead {
 	}
 
 	@Override
-	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue) throws IOException, TerminationException {
+	public SingleData<?> setValue(Solvis solvis, Rectangle rectangle, SolvisData setValue)
+			throws IOException, TerminationException {
 
 		Integer goal = setValue.getInteger();
 		IntegerValue data = this.getValue(solvis.getCurrentScreen(), rectangle);
 		if (data == null) {
-			return false;
+			return null;
+		} else if (data.get() == null) {
+			return data;
 		}
 		int current = data.get();
 		int value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment)) / (2 * this.increment);
 
 		if (current == value) {
-			return true;
+			return data;
 		}
 
 		int[] dist = new int[3];
@@ -96,7 +98,7 @@ public class StrategyValue extends StrategyRead {
 			solvis.send(point);
 		}
 
-		return false;
+		return null;
 	}
 
 	public static class Creator extends CreatorByXML<StrategyValue> {
@@ -173,8 +175,12 @@ public class StrategyValue extends StrategyRead {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		this.upper.assign(description);
-		this.lower.assign(description);
+		if (this.upper != null) {
+			this.upper.assign(description);
+		}
+		if (this.lower != null) {
+			this.lower.assign(description);
+		}
 	}
 
 	@Override

@@ -22,6 +22,7 @@ import javax.xml.stream.XMLStreamWriter;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
+import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.XmlWriteable;
@@ -86,7 +87,7 @@ public class ScreenGraficData implements XmlWriteable {
 			byte[] bytes = Base64.getDecoder().decode(this.base64.toString());
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 			BufferedImage image = ImageIO.read(bis);
-			this.image = new MyImage(image);
+			this.image = new MyImage(image, new Coordinate(0,0));
 			if ( this.isPattern ) {
 				this.image = new Pattern( this.image ) ;
 			}

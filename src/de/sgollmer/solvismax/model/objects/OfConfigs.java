@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.model.Solvis;
 
 public class OfConfigs<E extends OfConfigs.Element<E>> {
 	private final Collection<E> elements = new ArrayList<>(1);
@@ -35,6 +36,10 @@ public class OfConfigs<E extends OfConfigs.Element<E>> {
 			}
 		}
 		return null;
+	}
+	
+	public E get(Solvis  solvis) {
+		return this.get( solvis.getConfigurationMask()) ;
 	}
 
 	public void assign(SolvisDescription description) {

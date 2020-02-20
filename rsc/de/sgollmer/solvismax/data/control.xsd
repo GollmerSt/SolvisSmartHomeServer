@@ -390,7 +390,10 @@ false: Bei fester Grenze
 			<element name="ScreenSaver" type="tns:ScreenSaver"
 				maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="ErrorDetection" type="tns:ErrorDetection" maxOccurs="1" minOccurs="1"></element>
+			<element name="ErrorDetection" type="tns:ErrorDetection"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="Service" type="tns:Service"></element>
 			<element name="Screens" type="tns:Screens" maxOccurs="1"
 				minOccurs="1">
 			</element>
@@ -774,14 +777,24 @@ da der user diesen manuell verändert haben könnte.</documentation>
 		<attribute name="powerOffDetectedAfterIoErrors" type="int"
 			use="required">
 			<annotation>
-				<documentation>Anzahl der IO-Fehler, nachdem ein Power-Off der Solvis-Anlage erkannt wurde. Zusätzlich muss die "powerOffDetectedAfterTimeout_ms"-Zeit abgelaufen ist
+				<documentation>
+					Anzahl der IO-Fehler, nachdem ein Power-Off der
+					Solvis-Anlage erkannt wurde. Zusätzlich muss die
+					"powerOffDetectedAfterTimeout_ms"-Zeit abgelaufen
+					ist
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="powerOffDetectedAfterTimeout_ms" type="int" use="required">
+		<attribute name="powerOffDetectedAfterTimeout_ms" type="int"
+			use="required">
 			<annotation>
-				<documentation>Zeit ohne Reaktion der Solvis-Anlage, bis ein Power-Off erkannt wird. Zusätzlich müssen noch "powerOffDetectedAfterIoErrors" erfüllt sein</documentation>
-			</annotation></attribute>
+				<documentation>
+					Zeit ohne Reaktion der Solvis-Anlage, bis ein
+					Power-Off erkannt wird. Zusätzlich müssen noch
+					"powerOffDetectedAfterIoErrors" erfüllt sein
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="measurementsBackupTime_ms" type="int"
 			use="required">
 		</attribute>
@@ -793,7 +806,7 @@ da der user diesen manuell verändert haben könnte.</documentation>
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="releaseblockingAfterUserChange_ms" type="int"
+		<attribute name="releaseBlockingAfterUserAccess_ms" type="int"
 			use="required">
 			<annotation>
 				<documentation>
@@ -804,6 +817,7 @@ da der user diesen manuell verändert haben könnte.</documentation>
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="releaseBlockingAfterServiceAccess_ms" type="int"></attribute>
 		<attribute name="watchDogTime_ms" type="int" use="required">
 			<annotation>
 				<documentation>
@@ -902,14 +916,24 @@ da der user diesen manuell verändert haben könnte.</documentation>
         	<documentation>Beschreibungen um die Anlagenkonfiguration zu ermitteln</documentation>
         </annotation>
         <sequence>
-    		<element name="HeaterLoops" type="tns:HeaterLoops"
-    			maxOccurs="1" minOccurs="1">
-                <annotation>
-                	<documentation>Konfiguration der Heizkreise</documentation>
-                </annotation>
-    		</element>
-    		<element name="Solar" type="tns:Solar" maxOccurs="1" minOccurs="1"></element>
-    	</sequence>
+            <element name="ReferencePoint" type="tns:Coordinate">
+        		<annotation>
+        			<documentation>Der Origin des Solvis-Bildschirms kann von Anlage zu Anlage unterschiedlich sein. Das ist abhängig von der Montagetoleranz, welche über die Kalibrierung des TouchScreen dann ausgeglichen wird.
+Der in der Web-Oberfläche dargestellte Bildschirm kann durch dies Kalibrierung einen leichten Versatz aufweisen. Diser Versatz muss ermittelt werden und
+erfolgt mittels der Erkennung des Ende des Striches zwischen dem Wasser und dem Solar-Button auf dem Home-Screen.</documentation>
+        		</annotation></element>
+            <element name="HeaterLoops" type="tns:HeaterLoops"
+        		maxOccurs="1" minOccurs="1">
+        		<annotation>
+        			<documentation>
+        				Konfiguration der Heizkreise
+        			</documentation>
+        		</annotation>
+        	</element>
+        	<element name="Solar" type="tns:Solar" maxOccurs="1"
+        		minOccurs="1">
+        	</element>
+        </sequence>
     </complexType>
 
     <complexType name="ConfigurationMask">
@@ -1094,5 +1118,11 @@ Daher liefert der Server einen Error-Event, wenn nicht mehr die Uhranzeige einge
 	<complexType name="DisableClockSetting">
 		<attribute name="burnerId" type="string" use="required"></attribute>
 		<attribute name="hotWaterPumpId" type="string" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="Service">
+		<sequence>
+			<element name="ServiceScreen" type="tns:ScreenRef" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
 	</complexType>
 </schema>

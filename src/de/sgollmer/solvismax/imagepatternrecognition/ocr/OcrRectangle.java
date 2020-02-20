@@ -176,7 +176,7 @@ public class OcrRectangle extends MyImage {
 			e.printStackTrace();
 		}
 
-		MyImage myImage = new MyImage(bufferedImage);
+		MyImage myImage = new MyImage(bufferedImage, new Coordinate(0,0));
 
 		OcrRectangle rectangle = new OcrRectangle(myImage, new Coordinate(170, 30), new Coordinate(235, 40));
 
@@ -195,7 +195,7 @@ public class OcrRectangle extends MyImage {
 			e.printStackTrace();
 		}
 
-		myImage = new MyImage(bufferedImage);
+		myImage = new MyImage(bufferedImage, new Coordinate(0,0));
 		myImage.createHistograms(true);
 		myImage.shrink();
 		rectangle = new OcrRectangle(myImage, new Coordinate(73, 0), new Coordinate(139, 20));
@@ -216,7 +216,7 @@ public class OcrRectangle extends MyImage {
 			e.printStackTrace();
 		}
 
-		myImage = new MyImage(bufferedImage);
+		myImage = new MyImage(bufferedImage, new Coordinate(0,0));
 
 		rectangle = new OcrRectangle(myImage, new Coordinate(82, 10), new Coordinate(155, 47));
 
@@ -245,7 +245,7 @@ public class OcrRectangle extends MyImage {
 			e.printStackTrace();
 		}
 
-		myImage = new MyImage(bufferedImage);
+		myImage = new MyImage(bufferedImage, new Coordinate(0,0));
 
 		rectangle = new OcrRectangle(myImage, new Coordinate(162, 0), new Coordinate(200, 14));
 
@@ -267,7 +267,7 @@ public class OcrRectangle extends MyImage {
 			e.printStackTrace();
 		}
 
-		myImage = new MyImage(bufferedImage);
+		myImage = new MyImage(bufferedImage, new Coordinate(0,0));
 
 		rectangle = new OcrRectangle(myImage, new Coordinate(55, 30), new Coordinate(110, 60));
 
@@ -285,7 +285,7 @@ public class OcrRectangle extends MyImage {
 			e.printStackTrace();
 		}
 
-		myImage = new MyImage(bufferedImage);
+		myImage = new MyImage(bufferedImage, new Coordinate(0,0));
 
 		rectangle = new OcrRectangle(myImage, new Coordinate(145, 75), new Coordinate(200, 88));
 
@@ -304,7 +304,7 @@ public class OcrRectangle extends MyImage {
 			e.printStackTrace();
 		}
 
-		myImage = new MyImage(bufferedImage);
+		myImage = new MyImage(bufferedImage, new Coordinate(0,0));
 
 		rectangle = new OcrRectangle(myImage);
 

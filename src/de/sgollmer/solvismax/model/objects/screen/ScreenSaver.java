@@ -56,7 +56,9 @@ public class ScreenSaver implements Assigner {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		this.resetScreenSaver.assign(description);
+		if (resetScreenSaver != null) {
+			this.resetScreenSaver.assign(description);
+		}
 	}
 
 	/**

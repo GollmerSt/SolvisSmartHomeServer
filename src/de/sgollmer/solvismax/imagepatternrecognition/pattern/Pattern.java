@@ -21,8 +21,8 @@ public class Pattern extends MyImage {
 
 	private Integer hashCode = null;
 
-	public Pattern(BufferedImage image) {
-		super(image);
+	public Pattern(BufferedImage image, Coordinate origin) {
+		super(image, origin);
 		processing();
 	}
 
@@ -98,7 +98,7 @@ public class Pattern extends MyImage {
 			e.printStackTrace();
 		}
 
-		MyImage myImage = new MyImage(bufferedImage);
+		MyImage myImage = new MyImage(bufferedImage, new Coordinate(0,0));
 
 		Pattern curentSolvisMode = new Pattern(myImage, new Coordinate(106, 48), new Coordinate(137, 72));
 
@@ -110,7 +110,7 @@ public class Pattern extends MyImage {
 			e.printStackTrace();
 		}
 
-		Pattern standby = new Pattern(bufferedImage);
+		Pattern standby = new Pattern(bufferedImage, new Coordinate(0,0));
 
 		file = new File(parent, "day.png");
 
@@ -120,7 +120,7 @@ public class Pattern extends MyImage {
 			e.printStackTrace();
 		}
 
-		Pattern day = new Pattern(bufferedImage);
+		Pattern day = new Pattern(bufferedImage, new Coordinate(0,0));
 
 		file = new File(parent, "night.png");
 
@@ -130,7 +130,7 @@ public class Pattern extends MyImage {
 			e.printStackTrace();
 		}
 
-		Pattern night = new Pattern(bufferedImage);
+		Pattern night = new Pattern(bufferedImage, new Coordinate(0,0));
 
 		Pattern[] modes = new Pattern[] { day, night, standby };
 

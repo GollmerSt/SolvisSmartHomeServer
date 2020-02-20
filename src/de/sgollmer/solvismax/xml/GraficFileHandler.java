@@ -29,10 +29,9 @@ public class GraficFileHandler {
 	private static final String NAME_XML_GRAFICSFILE = "graficData.xml";
 
 	private final File parent;
-	private final int currentControllFileHashCode ;
 
 
-	public GraficFileHandler(String pathName, int controllFileHashCode) {
+	public GraficFileHandler(String pathName) {
 		File parent;
 
 		if (pathName == null) {
@@ -46,7 +45,6 @@ public class GraficFileHandler {
 		pathName += File.separator + Constants.RESOURCE_DESTINATION_PATH;
 		parent = new File(pathName);
 		this.parent = parent;
-		this.currentControllFileHashCode = controllFileHashCode ;
 	}
 
 	private void copyFiles() throws IOException {
@@ -77,7 +75,6 @@ public class GraficFileHandler {
 		
 		if ( ! xml.exists() ) {
 			AllSolvisGrafics grafics = new AllSolvisGrafics() ;
-			grafics.setCurrentControlFileHashCode(this.currentControllFileHashCode);
 			return grafics ;
 		}
 
@@ -88,7 +85,6 @@ public class GraficFileHandler {
 		String rootId = "SolvisGrafics" ;
 				
 		AllSolvisGrafics result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName()).getTree() ;
-		result.setCurrentControlFileHashCode(this.currentControllFileHashCode);
 
 		return result ;
 	}

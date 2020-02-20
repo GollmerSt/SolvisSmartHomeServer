@@ -219,11 +219,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return this.data;
 	}
 
-	public SingleValue toSingleValue() {
-		SingleData<?> data = this.data;
+//	public SingleValue toSingleValue() {
+//		return this.toSingleValue(this.data);
+//	}
+
+	public SingleValue toSingleValue(SingleData<?> data) {
 		if (data instanceof IntegerValue) {
-			return new SingleValue(new FloatValue((float) data.getInt() / this.getDescription().getDivisor(),
-					this.data.getTimeStamp()));
+			return new SingleValue(
+					new FloatValue((float) data.getInt() / this.getDescription().getDivisor(), data.getTimeStamp()));
 		} else {
 			return new SingleValue(data);
 		}

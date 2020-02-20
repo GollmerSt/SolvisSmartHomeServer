@@ -118,8 +118,8 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public boolean setValue(Solvis solvis, SolvisData value) {
-		return false;
+	public SingleData<?> setValue(Solvis solvis, SolvisData value) {
+		return null;
 	}
 
 	@Override

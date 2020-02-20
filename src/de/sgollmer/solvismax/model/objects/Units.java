@@ -21,7 +21,18 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Units {
 
+	// private static final Logger logger =
+	// LogManager.getLogger(SolvisConnection.class);
+
 	private static final String XML_UNITS_UNIT = "Unit";
+	private static final String XML_FEATURES = "Features";
+	private static final String XML_CLOCK_TUNING = "ClockTuning";
+	private static final String XML_CLOCK_FINE_TUNING = "ClockFineTuning";
+	private static final String XML_HEATING_BURNER_TIME_SYNC = "HeatingBurnerTimeSynchronisation";
+	private static final String XML_UPDATE_AFTER_USER_ACCESS = "UpdateAfterUserAccess";
+	private static final String XML_DETECT_SERVICE_ACCESS = "DetectServiceAccess";
+	private static final String XMl_POWEROFF_IS_SERVICE_ACCESS = "PowerOffIsServiceAccess";
+	private static final String XML_ONLY_MEASUREMENT = "OnlyMeasurements";
 
 	private final Collection<Unit> units;
 
@@ -88,11 +99,12 @@ public class Units {
 		private final boolean delayAfterSwitchingOnEnable;
 		private final ClockAdjustment clockAdjustment;
 		private final boolean fwLth2_21_02A;
+		private final Features features;
 
 		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
 				int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms, int forcedUpdateInterval_ms,
-				int bufferedInterval_ms, boolean delayAfterSwitchingOn, ClockAdjustment clockAdjustment,
-				boolean fwLth2_21_02A) {
+				int bufferedInterval_ms, boolean delayAfterSwitchingOn, boolean fwLth2_21_02A,
+				ClockAdjustment clockAdjustment, Features features) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
@@ -106,6 +118,7 @@ public class Units {
 			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
 			this.clockAdjustment = clockAdjustment;
 			this.fwLth2_21_02A = fwLth2_21_02A;
+			this.features = features;
 		}
 
 		public String getId() {
@@ -129,6 +142,10 @@ public class Units {
 			return clockAdjustment;
 		}
 
+		public Features getFeatures() {
+			return features;
+		}
+
 		public static class Creator extends CreatorByXML<Unit> {
 
 			private String id;
@@ -142,8 +159,9 @@ public class Units {
 			private int forcedUpdateInterval_ms;
 			private int bufferedInterval_ms;
 			private boolean delayAfterSwitchingOnEnable = false;
-			private ClockAdjustment clockAdjustment;
 			private boolean fwLth2_21_02A = false;
+			private ClockAdjustment clockAdjustment;
+			private Features features;
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -199,7 +217,7 @@ public class Units {
 				}
 				return new Unit(id, type, url, account, password, defaultAverageCount, measurementHysteresisFactor,
 						defaultReadMeasurementsInterval_ms, forcedUpdateInterval_ms, bufferedInterval_ms,
-						delayAfterSwitchingOnEnable, clockAdjustment, fwLth2_21_02A);
+						delayAfterSwitchingOnEnable, fwLth2_21_02A, clockAdjustment, features);
 
 			}
 
@@ -209,6 +227,8 @@ public class Units {
 				switch (id) {
 					case XML_CLOCK_ADJUSTMENT:
 						return new ClockAdjustment.Creator(id, this.getBaseCreator());
+					case XML_FEATURES:
+						return new Features.Creator(id, getBaseCreator());
 				}
 				return null;
 			}
@@ -218,6 +238,9 @@ public class Units {
 				switch (creator.getId()) {
 					case XML_CLOCK_ADJUSTMENT:
 						this.clockAdjustment = (ClockAdjustment) created;
+						break;
+					case XML_FEATURES:
+						this.features = (Features) created;
 						break;
 				}
 			}
@@ -261,5 +284,130 @@ public class Units {
 			return fwLth2_21_02A;
 		}
 
+	}
+
+	public static class Features {
+
+		private final boolean clockTuning;
+		private final boolean clockFineTuning;
+		private final boolean heatingBurnerTimeSynchronisation;
+		private final boolean updateAfterUserAccess;
+		private final boolean detectServiceAccess;
+		private final boolean powerOffIsServiceAccess;
+		private final boolean onlyMeasurements;
+
+		public Features(boolean clockTuning, boolean clockFineTuning, boolean heatingBurnerTimeSynchronisation,
+				boolean updateAfterUserAccess, boolean detectServiceAccess, boolean powerOffIsServiceAccess,
+				boolean onlyMeasurements) {
+			this.clockTuning = clockTuning;
+			this.clockFineTuning = clockFineTuning;
+			this.heatingBurnerTimeSynchronisation = heatingBurnerTimeSynchronisation;
+			this.updateAfterUserAccess = updateAfterUserAccess;
+			this.detectServiceAccess = detectServiceAccess;
+			this.powerOffIsServiceAccess = powerOffIsServiceAccess;
+			this.onlyMeasurements = onlyMeasurements;
+		}
+
+		public boolean isClockTuning() {
+			return clockTuning;
+		}
+
+		public boolean isClockFineTuning() {
+			return clockFineTuning;
+		}
+
+		public boolean isHeatingBurnerTimeSynchronisation() {
+			return heatingBurnerTimeSynchronisation;
+		}
+
+		public boolean isUpdateAfterUserAccess() {
+			return updateAfterUserAccess;
+		}
+
+		public boolean isOnlyMeasurements() {
+			return onlyMeasurements;
+		}
+
+		public boolean isDetectServiceAccess() {
+			return detectServiceAccess;
+		}
+
+		public boolean isPowerOffIsServiceAccess() {
+			return powerOffIsServiceAccess;
+		}
+
+		public static class Creator extends CreatorByXML<Features> {
+
+			private boolean clockTuning;
+			private boolean clockFineTuning;
+			private boolean heatingBurnerTimeSynchronisation;
+			private boolean updateAfterUserAccess;
+			private boolean detectServiceAccess;
+			private boolean powerOffIsServiceAccess;
+			private boolean onlyMeasurements;
+
+			public Creator(String id, BaseCreator<?> creator) {
+				super(id, creator);
+			}
+
+			@Override
+			public void setAttribute(QName name, String value) {
+			}
+
+			@Override
+			public Features create() throws XmlError, IOException {
+				return new Features(clockTuning, clockFineTuning, heatingBurnerTimeSynchronisation,
+						updateAfterUserAccess, detectServiceAccess, powerOffIsServiceAccess, onlyMeasurements);
+			}
+
+			@Override
+			public CreatorByXML<?> getCreator(QName name) {
+				String id = name.getLocalPart();
+				switch (id) {
+					case XML_CLOCK_TUNING:
+					case XML_CLOCK_FINE_TUNING:
+					case XML_HEATING_BURNER_TIME_SYNC:
+					case XML_UPDATE_AFTER_USER_ACCESS:
+					case XML_DETECT_SERVICE_ACCESS:
+					case XMl_POWEROFF_IS_SERVICE_ACCESS:
+					case XML_ONLY_MEASUREMENT:
+						return new StringElement.Creator(id, getBaseCreator());
+				}
+				return null;
+			}
+
+			@Override
+			public void created(CreatorByXML<?> creator, Object created) {
+				if (created instanceof StringElement) {
+					boolean bool = Boolean.parseBoolean(((StringElement) created).toString());
+					switch (creator.getId()) {
+						case XML_CLOCK_TUNING:
+							this.clockTuning = bool;
+							break;
+						case XML_CLOCK_FINE_TUNING:
+							this.clockFineTuning = bool;
+							break;
+						case XML_HEATING_BURNER_TIME_SYNC:
+							this.heatingBurnerTimeSynchronisation = bool;
+							break;
+						case XML_UPDATE_AFTER_USER_ACCESS:
+							this.updateAfterUserAccess = bool;
+							break;
+						case XML_DETECT_SERVICE_ACCESS:
+							this.detectServiceAccess = bool;
+							break;
+						case XMl_POWEROFF_IS_SERVICE_ACCESS:
+							this.powerOffIsServiceAccess = bool;
+							break;
+						case XML_ONLY_MEASUREMENT:
+							this.onlyMeasurements = bool;
+							break;
+					}
+				} else {
+					System.err.println("Check <" + creator.getId() + "> in the base.xml file, wrong value format ");
+				}
+			}
+
+		}
 	}
 }

@@ -110,7 +110,7 @@ public class Main {
 		Instances tempInstances = null;
 
 		try {
-			tempInstances = new Instances(baseData);
+			tempInstances = new Instances(baseData, learn);
 		} catch (IOException | XmlError | XMLStreamException e) {
 			logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
@@ -145,8 +145,6 @@ public class Main {
 		final Instances instances = tempInstances;
 		final CommandHandler commandHandler = new CommandHandler(instances);
 		Server server = new Server(serverSocket, commandHandler);
-		server.start();
-
 		Runnable runnable = new Runnable() {
 
 			@Override
@@ -162,7 +160,11 @@ public class Main {
 
 		Runtime.getRuntime().addShutdownHook(new Thread(runnable));
 
-		// runnable.run();
+		instances.initialized();
+		server.start();
+
+
+		//runnable.run();
 
 	}
 

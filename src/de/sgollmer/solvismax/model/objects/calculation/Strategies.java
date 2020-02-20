@@ -12,6 +12,7 @@ import java.util.Collection;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Assigner;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public enum Strategies {
@@ -52,8 +53,8 @@ public enum Strategies {
 		public abstract boolean isWriteable();
 
 		@SuppressWarnings("static-method")
-		public boolean setValue(Solvis solvis, SolvisData value) {
-			return true; // i.g. is directly set via solvis data
+		public SingleData<?> setValue(Solvis solvis, SolvisData value) {
+			return null; // i.g. is directly set via solvis data
 		}
 
 		@SuppressWarnings("static-method")

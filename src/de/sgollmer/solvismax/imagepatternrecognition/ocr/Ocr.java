@@ -27,8 +27,8 @@ public class Ocr extends MyImage {
 	private Maxima[] maximaX = new Maxima[] { new Maxima(0, 0), new Maxima(0, 0) };
 	private Maxima[] maximaY = new Maxima[] { new Maxima(0, 0), new Maxima(0, 0) };
 
-	public Ocr(BufferedImage image) {
-		super(image);
+	public Ocr(BufferedImage image, Coordinate origin) {
+		super(image, origin);
 		this.processing(false);
 	}
 
@@ -458,7 +458,7 @@ public class Ocr extends MyImage {
 				e.printStackTrace();
 			}
 
-			Ocr ocr = new Ocr(image);
+			Ocr ocr = new Ocr(image, new Coordinate(0,0));
 
 			char c = ocr.toChar();
 

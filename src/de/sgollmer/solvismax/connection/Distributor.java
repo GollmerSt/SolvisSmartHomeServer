@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
+import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
@@ -77,7 +78,7 @@ public class Distributor extends Observable<JsonPackage> {
 	private final SolvisDataObserver solvisDataObserver = new SolvisDataObserver();
 	private final ConnectionStateObserver connectionStateObserver = new ConnectionStateObserver();
 	private final SolvisStateObserver solvisStateObserver = new SolvisStateObserver();
-	private final UserAccessObserver userAccessObserver = new UserAccessObserver();
+	private final HumanAccessObserver humanAccessObserver = new HumanAccessObserver();
 	private final AliveThread aliveThread = new AliveThread();
 	private final PeriodicBurstThread periodicBurstThread;
 	private final int bufferedIntervall_ms;
@@ -139,19 +140,21 @@ public class Distributor extends Observable<JsonPackage> {
 
 	}
 
-	private class UserAccessObserver implements Observer.ObserverI<Boolean> {
+	private class HumanAccessObserver implements Observer.ObserverI<HumanAccess> {
 
 		@Override
-		public void update(Boolean data, Object source) {
-			ConnectionStatus status = data ? ConnectionStatus.USER_ACCESS_DETECTED
-					: ConnectionStatus.USER_ACCESS_FINISHED;
-			Distributor.this.notify(new ConnectionState(status).createJsonPackage());
+		public void update(HumanAccess data, Object source) {
+			ConnectionStatus status = data.getConnectionStatus();
+			try {
+				Distributor.this.notify(new ConnectionState(status).createJsonPackage());
+			} catch (Throwable e) {
+			}
 
 		}
 
 	}
 
-	private void sendCollection(Collection<SolvisData> measurements) {
+	public void sendCollection(Collection<SolvisData> measurements) {
 		long timeStamp = System.currentTimeMillis();
 		if (!measurements.isEmpty()) {
 			for (SolvisData data : measurements) {
@@ -293,8 +296,8 @@ public class Distributor extends Observable<JsonPackage> {
 		return solvisStateObserver;
 	}
 
-	public UserAccessObserver getUserAccessObserver() {
-		return userAccessObserver;
+	public HumanAccessObserver getUserAccessObserver() {
+		return humanAccessObserver;
 	}
 
 	public void register(Solvis solvis) {
@@ -309,7 +312,7 @@ public class Distributor extends Observable<JsonPackage> {
 		solvis.getAllSolvisData().registerObserver(this.getSolvisDataObserver());
 		solvis.getConnection().register(this.getConnectionStateObserver());
 		solvis.getSolvisState().register(this.getSolvisStateObserver());
-		solvis.registerScreenChangedByUserObserver(userAccessObserver);
+		solvis.registerScreenChangedByHumanObserver(humanAccessObserver);
 		this.aliveThread.start();
 	}
 

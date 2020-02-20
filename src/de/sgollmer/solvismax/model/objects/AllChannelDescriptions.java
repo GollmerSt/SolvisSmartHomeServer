@@ -109,7 +109,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 	@Override
 	public void learn(Solvis solvis) throws IOException {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
-			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
+			ChannelDescription description = descriptions.get(solvis);
 			if (description != null && description instanceof GraficsLearnable) {
 				description.learn(solvis);
 			}
@@ -122,7 +122,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		solvis.getDistributor().setBurstUpdate(true);
 		int timeAfterLastSwitchingOn = solvis.getTimeAfterLastSwitchingOn();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
-			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
+			ChannelDescription description = descriptions.get(solvis);
 			if (description != null && description.getType() == ChannelSourceI.Type.MEASUREMENT) {
 				description.getValue(solvis, timeAfterLastSwitchingOn);
 			}
@@ -133,7 +133,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 	public void init(Solvis solvis, AllSolvisData datas) throws IOException {
 
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
-			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
+			ChannelDescription description = descriptions.get(solvis);
 			if (description != null) {
 				SolvisData data = datas.get(description);
 				if (description.isAverage()) {
@@ -143,7 +143,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		}
 
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
-			ChannelDescription description = descriptions.get(solvis.getConfigurationMask());
+			ChannelDescription description = descriptions.get(solvis);
 			if (description != null) {
 				description.instantiate(solvis);
 			}
@@ -154,7 +154,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		final int configurationMask = solvis.getConfigurationMask();
 		List<ChannelDescription> descriptions = new ArrayList<>();
 		for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
-			ChannelDescription description = confDescriptions.get(solvis.getConfigurationMask());
+			ChannelDescription description = confDescriptions.get(solvis);
 			if (description != null && description.getType() == ChannelSourceI.Type.CONTROL
 					&& description.isInConfiguration(configurationMask)) {
 				descriptions.add(description);

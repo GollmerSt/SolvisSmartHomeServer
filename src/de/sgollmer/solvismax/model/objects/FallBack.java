@@ -23,7 +23,7 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class FallBack {
+public class FallBack implements Assigner {
 	
 	private static final Logger logger = LogManager.getLogger(FallBack.class) ;
 
@@ -32,7 +32,7 @@ public class FallBack {
 
 	private final Collection<FallBackObject> sequence;
 
-	private interface FallBackObject {
+	private interface FallBackObject extends Assigner {
 		public void execute(Solvis solvis) throws IOException;
 	}
 
@@ -46,6 +46,13 @@ public class FallBack {
 		}
 	}
 
+	@Override
+	public void assign(SolvisDescription description) {
+		for (FallBackObject obj : this.sequence) {
+			obj.assign(description);
+		}
+		
+	}
 	public static class Creator extends CreatorByXML<FallBack> {
 
 		private Collection<FallBackObject> sequence = new ArrayList<>();
@@ -90,29 +97,25 @@ public class FallBack {
 
 	}
 
-	public static class ScreenRef implements FallBackObject {
-		private final String id;
-
+	public static class ScreenRef extends de.sgollmer.solvismax.model.objects.screen.ScreenRef implements FallBackObject {
 		public ScreenRef(String id) {
-			this.id = id;
+			super( id ) ;
 		}
 
-		public static class Creator extends CreatorByXML<ScreenRef> {
-
-			private String id;
+		@Override
+		public void execute(Solvis solvis) throws IOException, TerminationException {
+			Screen screen = this.getScreen().getIfSingle();
+			
+			if ( screen == null ) {
+				logger.error( "The screen < " + this.getId() +  "> is not possible in the FallBack Element of the XML, because it's not unique over all configurations. Ignored");
+			}
+			
+			solvis.send(screen.getTouchPoint());
+		}
+		public static class Creator extends de.sgollmer.solvismax.model.objects.screen.ScreenRef.Creator {
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
-			}
-
-			@Override
-			public void setAttribute(QName name, String value) {
-				switch (name.getLocalPart()) {
-					case "id":
-						this.id = value;
-						break;
-				}
-
 			}
 
 			@Override
@@ -120,27 +123,8 @@ public class FallBack {
 				return new ScreenRef(id);
 			}
 
-			@Override
-			public CreatorByXML<?> getCreator(QName name) {
-				return null;
-			}
-
-			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
-			}
-
 		}
 
-		@Override
-		public void execute(Solvis solvis) throws IOException, TerminationException {
-			Screen screen = solvis.getSolvisDescription().getScreens().get(id).getIfSingle();
-			
-			if ( screen == null ) {
-				logger.error( "The screen < " + id +  "> is not possible in the FallBack Element of the XML, because it's not unique over all configurations. Ignored");
-			}
-			
-			solvis.send(screen.getTouchPoint());
-		}
 	}
 
 	public static class Back implements FallBackObject {
@@ -177,6 +161,11 @@ public class FallBack {
 
 		}
 
+		@Override
+		public void assign(SolvisDescription description) {
+		}
+
 	}
+
 
 }

@@ -43,7 +43,8 @@ public class SolvisDescription {
 	private static final String XML_MISCELLANEOUS = "Miscellaneous";
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
 	private static final String XML_ERROR_DETECTION = "ErrorDetection";
-	
+	private static final String XML_SERVICE = "Service";
+
 	private final Types types;
 	private final Configurations configurations;
 	private final ScreenSaver saver;
@@ -54,6 +55,7 @@ public class SolvisDescription {
 	private final AllPreparations allPreparations;
 	private final ClockMonitor clock;
 	private final ErrorDetection errorScreen;
+	private final Service service;
 
 	public ClockMonitor getClock() {
 		return clock;
@@ -65,7 +67,7 @@ public class SolvisDescription {
 	public SolvisDescription(Types types, Configurations configurations, ScreenSaver saver, AllScreens screens,
 			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
 			AllPreparations allPreparations, ClockMonitor clock, AllDurations durations, Miscellaneous miscellaneous,
-			ErrorDetection errorScreen) {
+			ErrorDetection errorScreen, Service service) {
 		this.types = types;
 		this.configurations = configurations;
 		this.saver = saver;
@@ -78,16 +80,33 @@ public class SolvisDescription {
 		this.durations = durations;
 		this.miscellaneous = miscellaneous;
 		this.errorScreen = errorScreen;
+		this.service = service;
 
 		this.process();
 	}
 
 	private void process() {
-		this.saver.assign(this);
-		this.screens.assign(this);
-		this.screenGrafics.assign(this);
-		this.dataDescriptions.assign(this);
-		this.clock.assign(this);
+		if (this.saver != null) {
+			this.saver.assign(this);
+		}
+		if (this.screens != null) {
+			this.screens.assign(this);
+		}
+		if (this.screenGrafics != null) {
+			this.screenGrafics.assign(this);
+		}
+		if (this.dataDescriptions != null) {
+			this.dataDescriptions.assign(this);
+		}
+		if (this.clock != null) {
+			this.clock.assign(this);
+		}
+		if (this.fallBack != null) {
+			this.fallBack.assign(this);
+		}
+		if (this.service != null) {
+			this.service.assign(this);
+		}
 	}
 
 	public Collection<LearnScreen> getLearnScreens(int configurationMask) {
@@ -119,6 +138,7 @@ public class SolvisDescription {
 		private AllPreparations allPreparations;
 		private ClockMonitor clock;
 		private ErrorDetection errorDetection;
+		private Service service;
 
 		private AllDurations durations;
 		private Miscellaneous miscellaneous;
@@ -135,7 +155,7 @@ public class SolvisDescription {
 		@Override
 		public SolvisDescription create() throws XmlError {
 			return new SolvisDescription(types, configurations, saver, screens, fallBack, screenGrafics,
-					dataDescriptions, allPreparations, clock, durations, miscellaneous, errorDetection);
+					dataDescriptions, allPreparations, clock, durations, miscellaneous, errorDetection, service);
 		}
 
 		@Override
@@ -166,6 +186,8 @@ public class SolvisDescription {
 					return new Miscellaneous.Creator(id, this);
 				case XML_ERROR_DETECTION:
 					return new ErrorDetection.Creator(id, this);
+				case XML_SERVICE:
+					return new Service.Creator(id, this);
 			}
 			return null;
 		}
@@ -210,8 +232,10 @@ public class SolvisDescription {
 					this.miscellaneous = (Miscellaneous) created;
 					break;
 				case XML_ERROR_DETECTION:
-					this.errorDetection = (ErrorDetection) created ;
-					break ;
+					this.errorDetection = (ErrorDetection) created;
+					break;
+				case XML_SERVICE:
+					this.service = (Service) created;
 			}
 
 		}
@@ -318,4 +342,9 @@ public class SolvisDescription {
 	public ErrorDetection getErrorScreen() {
 		return this.errorScreen;
 	}
+
+	public Service getService() {
+		return service;
+	}
+
 }

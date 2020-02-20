@@ -8,6 +8,7 @@
 		<tns:Type id="SolvisBen" configuration="0x02000000" />
 	</tns:Types>
 	<tns:Configurations>
+		<tns:ReferencePoint X="45" Y="51" />
 		<tns:HeaterLoops screenRef="Home">
 			<tns:HK1Button>
 				<tns:TopLeft X="55" Y="10" />
@@ -59,6 +60,11 @@
 			<tns:BottomRight X="238" Y="91" />
 		</tns:DdMmYy>
 	</tns:ErrorDetection>
+	<tns:Service>
+		<tns:ServiceScreen id="Schornsteinfeger" />
+		<tns:ServiceScreen id="Nutzerauswahl"/>
+		<tns:ServiceScreen id="Nutzerauswahl Code"/>
+	</tns:Service>
 	<tns:Screens homeId="Home">
 		<tns:Screen id="Home" backId="" previousId="">
 			<tns:ScreenGrafic exact="true" id="Home">
@@ -159,6 +165,19 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
+		<tns:Screen id="Schornsteinfeger" backId="Sonstiges 1"
+			previousId="Sonstiges 1">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="20" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic id="Schornsteinfeger">
+				<tns:Field>
+					<tns:TopLeft X="20" Y="2" />
+					<tns:BottomRight X="190" Y="15" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
 		<tns:Screen id="Heizkreise" backId="Sonstiges 1"
 			previousId="Sonstiges 1">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -181,7 +200,7 @@
 			<tns:ScreenOcr value="11/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -195,7 +214,7 @@
 			<tns:ScreenOcr value="12/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -209,7 +228,7 @@
 			<tns:ScreenOcr value="13/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -223,7 +242,7 @@
 			<tns:ScreenOcr value="15/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -241,7 +260,7 @@
 			<tns:ScreenOcr value="14/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -263,7 +282,7 @@
 			<tns:ScreenOcr value="21/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -281,7 +300,7 @@
 			<tns:ScreenOcr value="22/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -299,7 +318,7 @@
 			<tns:ScreenOcr value="23/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -317,7 +336,7 @@
 			<tns:ScreenOcr value="25/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -339,7 +358,7 @@
 			<tns:ScreenOcr value="24/5">
 				<tns:Field>
 					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="15" />
+					<tns:BottomRight X="198" Y="13" />
 				</tns:Field>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
@@ -350,7 +369,7 @@
 		</tns:Screen>
 		<!-- WICHTIG: Vor Learning muss unbedingt Anlagenstatus Warmwasser ausgewählt 
 			worden sein -->
-		<!-- SolvisMax-Definitionen für Anlagenstatus-->
+		<!-- SolvisMax-Definitionen für Anlagenstatus -->
 		<tns:Screen id="Anlagenstatus WW" backId="Sonstiges 1"
 			previousId="Sonstiges 1" alternativePreviousId="Anlagenstatus HK"
 			ignoreChanges="true">
@@ -439,7 +458,7 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<!-- SolvisBen-Definitionen für Anlagenstatus-->
+		<!-- SolvisBen-Definitionen für Anlagenstatus -->
 		<tns:Screen id="Anlagenstatus WW" backId="Sonstiges 1"
 			previousId="Sonstiges 1" alternativePreviousId="Anlagenstatus HK"
 			ignoreChanges="true">
@@ -715,6 +734,32 @@
 				<tns:Field>
 					<tns:TopLeft X="65" Y="55" />
 					<tns:BottomRight X="105" Y="60" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen id="Nutzerauswahl" backId="Sonstiges 2"
+			previousId="Sonstiges 2">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="65" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic id="Nutzerauswahl">
+				<tns:Field>
+					<tns:TopLeft X="30" Y="2" />
+					<tns:BottomRight X="205" Y="15" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen id="Nutzerauswahl Code" backId="Nutzerauswahl"
+			previousId="Nutzerauswahl">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="75" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic id="Nutzerauswahl Code">
+				<tns:Field>
+					<tns:TopLeft X="55" Y="2" />
+					<tns:BottomRight X="200" Y="15" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
@@ -1193,7 +1238,8 @@
 					<tns:TopLeft X="145" Y="105" />
 					<tns:BottomRight X="200" Y="117" />
 				</tns:Current>
-				<tns:TypeRead optional="true" format="######0C" unit="h" />
+				<tns:TypeRead optional="true" format="######0C"
+					unit="h" />
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A13.Brenner_S2"
 						calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"
@@ -1468,7 +1514,7 @@
 					<tns:BottomRight X="185" Y="87" />
 				</tns:Current>
 				<tns:TypeValue format="#0C" increment="10" least="0"
-					most="90" unit="%" wrapAround="true">
+					most="90" unit="%" wrapAround="true" optional="true">
 					<tns:Upper pushTimeRefId="Standard"
 						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="200" Y="80" />
@@ -1634,7 +1680,7 @@
 					<tns:BottomRight X="185" Y="87" />
 				</tns:Current>
 				<tns:TypeValue format="#0C" increment="10" least="10"
-					most="90" unit="%" wrapAround="true">
+					most="90" unit="%" wrapAround="true" optional="true">
 					<tns:Upper pushTimeRefId="Standard"
 						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="200" Y="80" />
@@ -1812,8 +1858,9 @@
 	<tns:Miscellaneous powerOffDetectedAfterIoErrors="3"
 		powerOffDetectedAfterTimeout_ms="120000"
 		measurementsBackupTime_ms="3600000"
-		releaseblockingAfterUserChange_ms="300000"
-		unsuccessfullWaitTime_ms="10000" watchDogTime_ms="60000"
+		releaseBlockingAfterUserAccess_ms="300000"
+		releaseBlockingAfterServiceAccess_ms = "3600000"
+		unsuccessfullWaitTime_ms="10000" watchDogTime_ms="30000"
 		connectionHoldTime_ms="300000" solvisConnectionTimeout_ms="10000"
 		solvisReadTimeout_ms="2000" />
 </tns:SolvisDescription>

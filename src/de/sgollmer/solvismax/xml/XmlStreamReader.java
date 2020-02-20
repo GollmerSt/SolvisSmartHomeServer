@@ -45,12 +45,17 @@ public class XmlStreamReader<D> {
 		private int hash = 61;
 
 		private void put(Object obj) {
-			this.hash = 397 * this.hash + 43 * obj.hashCode();
+			this.hash = 397 * this.hash + 43 * obj.hashCode();		
 		}
 	}
 
 	public Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId)
 			throws IOException, XmlError, XMLStreamException {
+		return this.read(inputStream, rootId, rootCreator, streamId, false ) ;
+	}
+
+	public Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId,
+			boolean hashOnly) throws IOException, XmlError, XMLStreamException {
 
 		final HashContainer hash = new HashContainer();
 
@@ -76,11 +81,11 @@ public class XmlStreamReader<D> {
 					QName name = ev.asStartElement().getName();
 					hash.put(name);
 					String localName = name.getLocalPart();
-					if (localName.equals(rootId)) {
-						destination = this.create(rootCreator, reader, ev, streamId, hash);
+					if (localName.equals(rootId) || hashOnly) {
+						destination = this.create(rootCreator, reader, ev, streamId, hash, hashOnly);
 					} else {
 						NullCreator nullCreator = new NullCreator(localName, rootCreator);
-						this.create(nullCreator, reader, ev, streamId, hash);
+						this.create(nullCreator, reader, ev, streamId, hash, hashOnly);
 					}
 					break;
 			}
@@ -93,7 +98,7 @@ public class XmlStreamReader<D> {
 	}
 
 	private <T> T create(CreatorByXML<T> creator, XMLEventReader reader, XMLEvent startEvent, String streamId,
-			HashContainer hash) throws XmlError, IOException {
+			HashContainer hash, boolean hashOnly) throws XmlError, IOException {
 
 		for (@SuppressWarnings("unchecked")
 		Iterator<Attribute> it = startEvent.asStartElement().getAttributes(); it.hasNext();) {
@@ -122,10 +127,10 @@ public class XmlStreamReader<D> {
 						QName name = ev.asStartElement().getName();
 						hash.put(name);
 						CreatorByXML<?> child = creator.getCreator(name);
-						if (child == null) {
+						if (child == null || hashOnly) {
 							child = new NullCreator(name.getLocalPart(), creator.getBaseCreator());
 						}
-						creator.created(child, this.create(child, reader, ev, streamId, hash));
+						creator.created(child, this.create(child, reader, ev, streamId, hash, hashOnly));
 						break;
 					case XMLStreamConstants.CHARACTERS:
 						String text = ev.asCharacters().getData();

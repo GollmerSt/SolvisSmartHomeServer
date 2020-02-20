@@ -25,6 +25,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations.Configuration;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
+import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -138,7 +139,7 @@ public class HeaterLoops implements Configuration {
 		BufferedImage bufferedImage = null;
 		bufferedImage = ImageIO.read(file);
 
-		return new MyImage(bufferedImage);
+		return new MyImage(bufferedImage, new Coordinate(0,0));
 	}
 
 	@Override

@@ -17,6 +17,7 @@ public class Constants {
 	public static final String LOG4J_CONFIG_FILE = "log4j2.xml";
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
 	public static final String RESOURCE_PATH = "data";
+	public static final int REFERENCE_POINT_SEARCH_RANGE = 10 ;
 	/**
 	 * Max. number of tries, to get to the necessarry screen
 	 */
@@ -56,6 +57,7 @@ public class Constants {
 	public static final int AVERAGE_COUNT_SOLVIS_CLOCK_PRECISION_CALCULATION = 10;
 
 	public static final int MAX_WAIT_TIME_TERMINATING_OTHER_SERVER = 60000;
+	public static final int NUMBER_OF_CONTROL_FILE_DUPLICATES = 3;
 
 	public static class ExitCodes {
 		public static final int OK = 0;

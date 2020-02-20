@@ -61,9 +61,10 @@ public class CommandControl extends Command {
 		} else {
 			SolvisData clone = data.clone();
 			clone.setSingleData(this.getSetValue());
-			success = this.getDescription().setValue(solvis, clone);
-			if (success) {
-				data.setSingleData(this.getSetValue());
+			SingleData<?> setData = this.getDescription().setValue(solvis, clone);
+			if (setData != null) {
+				data.setSingleData(setData);
+				success = true ;
 			}
 		}
 		return success;

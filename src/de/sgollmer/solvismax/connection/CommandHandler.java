@@ -28,6 +28,7 @@ import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
 import de.sgollmer.solvismax.connection.transfer.DisconnectPackage;
 import de.sgollmer.solvismax.connection.transfer.GetPackage;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
+import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.connection.transfer.ReconnectPackage;
 import de.sgollmer.solvismax.connection.transfer.ServerCommandPackage;
 import de.sgollmer.solvismax.connection.transfer.SetPackage;
@@ -36,7 +37,6 @@ import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Helper;
-import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -59,7 +59,9 @@ public class CommandHandler {
 
 	public boolean commandFromClient(JsonPackage jsonPackage, Client client) throws IOException {
 		Command command = jsonPackage.getCommand();
-		logger.info("Command <" + command.name() + "> received");
+		if (command != Command.SERVER_COMMAND) {
+			logger.info("Command <" + command.name() + "> received");
+		}
 		boolean abortConnection = false;
 		switch (command) {
 			case CONNECT:
@@ -97,6 +99,7 @@ public class CommandHandler {
 
 	private void executSeverCommand(ServerCommandPackage serverCommand, Client client) throws IOException {
 		ClientAssignments assignments = this.get(client);
+		logger.info("Server-Command <" + serverCommand.getServerCommand().name() + "> received");
 		switch (serverCommand.getServerCommand()) {
 			case BACKUP:
 				try {
@@ -106,57 +109,35 @@ public class CommandHandler {
 				}
 				break;
 			case SCREEN_RESTORE_INHIBIT:
-				this.screenRestoreInhibit(true, assignments);
+				assignments.screenRestoreInhibit(true);
 				break;
 			case SCREEN_RESTORE_ENABLE:
-				this.screenRestoreInhibit(false, assignments);
+				assignments.screenRestoreInhibit(false);
 				break;
 			case COMMAND_OPTIMIZATION_INHIBIT:
-				this.optimizationInhibit(true, assignments);
+				assignments.optimizationInhibit(true);
 				break;
 			case COMMAND_OPTIMIZATION_ENABLE:
-				this.optimizationInhibit(false, assignments);
+				assignments.optimizationInhibit(false);
 				break;
 			case RESTART:
 				this.restart();
 				break;
-
+			case GUI_COMMANDS_DISABLE:
+				assignments.enableGuiCommands(false);
+				break;
+			case GUI_COMMANDS_ENABLE:
+				assignments.enableGuiCommands(true);
+				break;
+			case SERVICE_RESET:
+				assignments.serviceReset();
+				break;
 			default:
 				logger.warn("Server command <" + serverCommand.getServerCommand().name()
 						+ ">unknown, old version of SolvisSmartHomeServer?");
 				break;
 		}
 
-	}
-
-	private void screenRestoreInhibit(boolean inhibit, ClientAssignments assignments) {
-		if (assignments != null) {
-			Boolean restoreInhibit = null;
-			if (inhibit && !assignments.getState().isScreenRestoreInhibit()) {
-				restoreInhibit = true;
-			} else if (!inhibit && assignments.getState().isScreenRestoreInhibit()) {
-				restoreInhibit = false;
-			}
-			if (restoreInhibit != null) {
-				assignments.getState().setScreenRestoreInhibit(restoreInhibit);
-				assignments.getSolvis().execute(new CommandScreenRestore(!restoreInhibit));
-			}
-		}
-	}
-
-	private void optimizationInhibit(boolean inhibit, ClientAssignments assignments) {
-		if (assignments != null) {
-			Boolean inhibitO = null;
-			if (inhibit && assignments.getState().isOptimizationEnable()) {
-				inhibitO = true;
-			} else if (!inhibit && !assignments.getState().isOptimizationEnable()) {
-				inhibitO = false;
-			}
-			if (inhibitO != null) {
-				assignments.getState().setOptimizationEnable(!inhibitO);
-				assignments.getSolvis().commandOptimization(!inhibitO);
-			}
-		}
 	}
 
 	private boolean connect(ConnectPackage jsonPackage, Client client) {
@@ -187,7 +168,7 @@ public class CommandHandler {
 					this.instances.getSolvisDescription().getChannelDescriptions(), solvis.getConfigurationMask());
 			client.send(channelDescription);
 
-			client.send(solvis.getAllSolvisData().getMeasurementsPackage());
+			client.send(new MeasurementsPackage(solvis.getAllSolvisData().getMeasurements()));
 			client.send(solvis.getSolvisState().getPackage());
 		} else {
 			client.send(new ConnectedPackage(clientId));
@@ -214,7 +195,7 @@ public class CommandHandler {
 		assignments.reconnect(client);
 		solvis.getDistributor().register(client);
 
-		client.send(solvis.getAllSolvisData().getMeasurementsPackage());
+		client.send(new MeasurementsPackage(solvis.getAllSolvisData().getMeasurements()));
 		client.send(solvis.getSolvisState().getPackage());
 
 		return false;
@@ -240,8 +221,8 @@ public class CommandHandler {
 		SingleData<?> singleData = jsonPackage.getSingleData();
 		logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");
 		try {
-			singleData = description.interpretSetData(singleData) ;
-		} catch ( TypeError e ) {
+			singleData = description.interpretSetData(singleData);
+		} catch (TypeError e) {
 			throw new JsonError(e.getMessage() + " Located in revceived Json package.");
 		}
 		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData));
@@ -287,7 +268,7 @@ public class CommandHandler {
 		for (Iterator<ClientAssignments> it = this.clients.iterator(); it.hasNext();) {
 			ClientAssignments assignmentsC = it.next();
 			if (assignmentsC == assignments) {
-				this.screenRestoreInhibit(false, assignments);
+				assignments.clientClosed();
 				it.remove();
 				return assignments;
 			}

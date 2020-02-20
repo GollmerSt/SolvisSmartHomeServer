@@ -75,14 +75,15 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
+	public SingleData<?> setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
 			throws IOException, TerminationException, TypeError {
 		if (value.getMode() == null) {
 			throw new TypeError("Wrong value type");
 		}
-		ModeI valueMode = value.getMode().get();		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentScreen(), rectangle);
+		ModeI valueMode = value.getMode().get();
+		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentScreen(), rectangle);
 		if (cmp != null && value.getMode().equals(cmp)) {
-			return true;
+			return cmp;
 		}
 		Mode mode = null;
 		for (Mode m : modes) {
@@ -95,7 +96,7 @@ public class StrategyMode implements Strategy {
 			throw new TypeError("Unknown value");
 		}
 		solvis.send(mode.getTouch());
-		return false;
+		return null;
 	}
 
 	@Override

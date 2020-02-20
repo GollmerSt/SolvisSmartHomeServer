@@ -5,15 +5,24 @@
 	<tns:ExecutionData timeZone="Europe/Berlin"
 		port="10735" writablePathLinux="/opt/fhem" />
 	<tns:Units>
-		<tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true" account="account"
-			password="password" url="http://aaa.bbb.ccc.ddd"
+		<tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true"
+			account="account" password="password" url="http://aaa.bbb.ccc.ddd"
 			defaultAverageCount="12" measurementHysteresisFactor="4"
 			defaultReadMeasurementsInterval_ms="10000"
 			forcedUpdateInterval_ms="3600000" bufferedInterval_ms="60000"
 			delayAfterSwitchingOnEnable="true">
 			<tns:ClockAdjustment enable="true"
 				fineLimitUpper_ms="3000" fineLimitLower_ms="-5000"
-				aproximatlySetAjust_ms="1000" burstLength="0" />  <!-- burstLength = 0: fine tuning disabled -->
+				aproximatlySetAjust_ms="1000" burstLength="3" />
+			<tns:Features>
+				<tns:ClockTuning>false</tns:ClockTuning>
+				<tns:ClockFineTuning>false</tns:ClockFineTuning>
+				<tns:HeatingBurnerTimeSynchronisation>false</tns:HeatingBurnerTimeSynchronisation>
+				<tns:UpdateAfterUserAccess>false</tns:UpdateAfterUserAccess>
+				<tns:DetectServiceAccess>false</tns:DetectServiceAccess>
+				<tns:PowerOffIsServiceAccess>false</tns:PowerOffIsServiceAccess>
+				<tns:OnlyMeasurements>true</tns:OnlyMeasurements>	<!-- true: GUI controlling disabled -->
+			</tns:Features>
 		</tns:Unit>
 	</tns:Units>
 </tns:BaseData>

@@ -556,6 +556,11 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 							}
 						}
 					}
+					if ( ! success ) {
+						String message = "Learning of screen <" + this.getId() + "> not possible. Learning terminated.";
+						logger.error(message);
+						throw new LearningError(message) ;
+					}
 				}
 				// this.gotoScreen(solvis, this, current, learnObjects);
 				// current = this;
@@ -621,7 +626,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 			throws IOException, TerminationException {
 		if (current == null) {
 			if (this != solvis.getHomeScreen()) {
-				logger.log(LEARN, "Warning: Goto screen <" + this + "> not succesfull, home screen is forced");
+				logger.log(LEARN, "Warning: Goto screen <" + this + "> not successfull, home screen is forced");
 			}
 			solvis.gotoHome();
 			current = solvis.getHomeScreen();

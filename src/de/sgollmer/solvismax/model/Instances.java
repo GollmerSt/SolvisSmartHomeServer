@@ -21,11 +21,12 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.xml.ControlFileReader;
+import de.sgollmer.solvismax.xml.ControlFileReader.Hashes;
 import de.sgollmer.solvismax.xml.GraficFileHandler;
-import de.sgollmer.solvismax.xml.XmlStreamReader.Result;
 
 public class Instances {
 	private Collection<Solvis> units = new ArrayList<>();
@@ -33,33 +34,38 @@ public class Instances {
 	private final BaseData baseData;
 	private final MeasurementsBackupHandler backupHandler;
 	private final AllSolvisGrafics graficDatas;
-	private final int xmlHash;
+	private final Hashes xmlHash;
 	private final String writeablePath;
 
-	public Instances(BaseData baseData) throws IOException, XmlError, XMLStreamException {
+	public Instances(BaseData baseData, boolean learn) throws IOException, XmlError, XMLStreamException {
 		this.baseData = baseData;
 		this.writeablePath = baseData.getWritablePath();
+		this.graficDatas = new GraficFileHandler(this.writeablePath).read();
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
-		Result<SolvisDescription> result = reader.read();
-		this.solvisDescription = result.getTree();
-		this.xmlHash = result.getHash();
+		ControlFileReader.Result result = reader.read(graficDatas.getControlResourceHashCode(), learn);
+		this.solvisDescription = result.getSolvisDescription();
+		this.xmlHash = result.getHashes();
 		this.backupHandler = new MeasurementsBackupHandler(this.writeablePath,
 				solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
-		this.graficDatas = new GraficFileHandler(this.writeablePath, this.xmlHash).read();
 
 		for (Unit xmlUnit : baseData.getUnits().getUnits()) {
 			Solvis solvis = this.createSolvisInstance(xmlUnit);
 			this.units.add(solvis);
 		}
+	}
+	
+	public void initialized() {
 		this.backupHandler.start();
 	}
 
 	public boolean learn() throws IOException, LearningError, XMLStreamException {
 		boolean nothingToLearn = true;
 		for (Solvis solvis : this.units) {
+				SystemGrafics systemGrafics = this.graficDatas.get(solvis.getUnit().getId(), this.xmlHash) ;
+				systemGrafics.setControlFileHashCode(this.xmlHash.getFileHash()) ;
 				solvis.learning();
 				nothingToLearn = false;
-				new GraficFileHandler(this.writeablePath, this.xmlHash).write(this.graficDatas);
+				new GraficFileHandler(this.writeablePath).write(this.graficDatas);
 		}
 		return !nothingToLearn;
 	}
@@ -91,7 +97,7 @@ public class Instances {
 				misc.getSolvisReadTimeout_ms(), misc.getPowerOffDetectedAfterIoErrors(),
 				misc.getPowerOffDetectedAfterTimeout_ms(), unit.isFwLth2_21_02A());
 		String timeZone = this.baseData.getTimeZone();
-		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId()), connection,
+		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId(), this.xmlHash), connection,
 				this.backupHandler, timeZone);
 		return solvis;
 	}

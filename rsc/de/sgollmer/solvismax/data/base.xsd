@@ -37,6 +37,7 @@
 			<element name="ClockAdjustment" type="tns:ClockAdjustment"
 				maxOccurs="1" minOccurs="0">
 			</element>
+			<element name="Features" type="tns:Features" maxOccurs="1" minOccurs="1"></element>
 		</sequence>
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="type" use="required">
@@ -128,5 +129,39 @@ Geht die Solvis-Uhr nach, solte dieser Wert großzügig gewählt werden oder auf
 			<annotation>
 				<documentation>Der Feinabgleich erfolgt in Teilen alle 10 Minuten. Die burstLength ist die max. Anzahl der Stellvorgänge pro Teil.</documentation>
 			</annotation></attribute>
+	</complexType>
+
+	<complexType name="Features">
+		<annotation>
+			<documentation>
+				Abgleich der Uhr 1/2-Minuten genau Abgleich der Uhr
+				2s-genau Synchronisation der Softwarezähler für
+				Brennerlaufzeit und Brennerstarts Erneutes Auslesen des
+				aktuellen Standes der Anlage nach einem Userzugriff
+				Steuerung über FHEM
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="ClockTuning" type="boolean" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="ClockFineTuning" type="boolean" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="HeatingBurnerTimeSynchronisation"
+				type="boolean" maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="UpdateAfterUserAccess" type="boolean"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="DetectServiceAccess" type="boolean"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="PowerOffIsServiceAccess" type="boolean" maxOccurs="1" minOccurs="1"></element>
+			<element name="OnlyMeasurements" type="boolean"
+				maxOccurs="1" minOccurs="1">
+			</element>
+		</sequence>
+
 	</complexType>
 </schema>

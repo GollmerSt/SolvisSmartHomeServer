@@ -21,10 +21,10 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Mode implements Assigner, ModeI {
-	
-	private static final String XML_TOUCH ="Touch" ;
+
+	private static final String XML_TOUCH = "Touch";
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
-	
+
 	private final String id;
 	private final TouchPoint touch;
 	private final ScreenGraficDescription grafic;
@@ -58,7 +58,9 @@ public class Mode implements Assigner, ModeI {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		this.touch.assign(description);
+		if (this.touch != null) {
+			this.touch.assign(description);
+		}
 
 	}
 

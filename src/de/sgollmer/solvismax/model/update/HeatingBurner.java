@@ -152,6 +152,9 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 				return;
 			}
 
+			if (!this.solvis.getUnit().getFeatures().isHeatingBurnerTimeSynchronisation()) {
+				return;
+			}
 			long time = System.currentTimeMillis();
 
 			boolean burnerOn = data.getBool();

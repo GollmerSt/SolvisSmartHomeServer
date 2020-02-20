@@ -98,7 +98,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 	}
 
 	public boolean set(Solvis solvis) throws IOException, TerminationException {
-		boolean result = this.screen.get(solvis.getConfigurationMask()).goTo(solvis);
+		boolean result = this.screen.get(solvis).goTo(solvis);
 		if (!result) {
 			return false;
 		}
@@ -110,9 +110,15 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 	public void assign(SolvisDescription description) {
 		this.screen = description.getScreens().get(screenId);
 		this.okScreen = description.getScreens().get(okScreenId);
-		this.upper.assign(description);
-		this.lower.assign(description);
-		this.ok.assign(description);
+		if (this.upper != null) {
+			this.upper.assign(description);
+		}
+		if (this.lower != null) {
+			this.lower.assign(description);
+		}
+		if (this.ok != null) {
+			this.ok.assign(description);
+		}
 		for (DatePart part : this.dateParts) {
 			part.assign(description);
 		}
@@ -189,7 +195,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 				adjustmentTime += diff * singleSettingTime + part.touch.getSettingTime(solvis);
 			}
 			adjustmentTime = adjustmentTime + this.ok.getSettingTime(solvis) + solvis.getMaxResponseTime()
-					+ 8 * this.screen.get(solvis.getConfigurationMask()).getTouchPoint().getSettingTime(solvis);
+					+ 8 * this.screen.get(solvis).getTouchPoint().getSettingTime(solvis);
 			adjustmentTime = adjustmentTime * Constants.TIME_ADJUSTMENT_PROPOSAL_FACTOR_PERCENT / 100;
 
 			startAdjustTime = realAdjustTime - adjustmentTime;
@@ -355,6 +361,9 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 		@Override
 		public void update(SolvisData data, Object source) {
+			if (!this.solvis.getUnit().getFeatures().isClockTuning()) {
+				return;
+			}
 			String channelId = data.getId();
 			String burnerId = disableClockSetting.getBurnerId();
 			String hotWaterPumpId = disableClockSetting.getHotWaterPumpId();
@@ -403,8 +412,9 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 					return;
 				}
 
-				if (this.adjustmentTypeRequestPending == AdjustmentType.NORMAL || clockAdjustment.getBurstLength() == 0
-						|| (clockAdjustment.getFineLimitLower_ms() < diff
+				if (!this.solvis.getUnit().getFeatures().isClockFineTuning()
+						|| this.adjustmentTypeRequestPending == AdjustmentType.NORMAL
+						|| clockAdjustment.getBurstLength() == 0 || (clockAdjustment.getFineLimitLower_ms() < diff
 								&& diff < clockAdjustment.getFineLimitUpper_ms())) {
 					return;
 				}
@@ -445,10 +455,10 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			public boolean execute(NextAdjust nextAdjust) throws IOException {
 				int configurationMask = solvis.getConfigurationMask();
 				Calendar adjustmentCalendar = Calendar.getInstance();
-				long now = adjustmentCalendar.getTimeInMillis() ;
-				if ( now > nextAdjust.realAdjustTime) {
+				long now = adjustmentCalendar.getTimeInMillis();
+				if (now > nextAdjust.realAdjustTime) {
 					adjustmentTypeRequestPending = AdjustmentType.NONE;
-					return false ;
+					return false;
 				}
 				adjustmentCalendar.setTimeInMillis(nextAdjust.solvisAdjustTime);
 				boolean success = false;
@@ -678,14 +688,14 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 	@Override
 	public void learn(Solvis solvis) throws IOException, LearningError {
-		Screen screen = this.screen.get(solvis.getConfigurationMask());
+		Screen screen = this.screen.get(solvis);
 		if (screen == null) {
 			String error = "Learning of the clock screens not possible, rejected."
 					+ "Screens undefined in the current configuration. Check the control.xml!";
 			logger.error(error);
 			throw new LearningError(error);
 		}
-		this.screen.get(solvis.getConfigurationMask()).goTo(solvis);
+		this.screen.get(solvis).goTo(solvis);
 		boolean finished = false;
 		for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
 			if (repeat == 1) {
@@ -727,8 +737,12 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		}
 
 		public void assign(SolvisDescription description) {
-			this.touch.assign(description);
-			this.screenGrafic.assign(description);
+			if (this.touch != null) {
+				this.touch.assign(description);
+			}
+			if (this.screenGrafic != null) {
+				this.screenGrafic.assign(description);
+			}
 
 		}
 

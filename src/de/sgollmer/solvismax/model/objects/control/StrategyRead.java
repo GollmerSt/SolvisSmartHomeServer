@@ -54,7 +54,7 @@ public class StrategyRead implements Strategy {
 		Integer i;
 		if (s == null) {
 			if (this.optional) {
-				i = 0;
+				i = null;
 			} else {
 				return null;
 			}
@@ -65,8 +65,8 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public boolean setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException {
-		return true;
+	public SingleData<?> setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException {
+		return null;
 	}
 
 	@Override

@@ -53,7 +53,8 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 		return this.id;
 	}
 
-	public boolean getValue(Solvis solvis, int timeAfterLastSwitchingOn) throws IOException, ErrorPowerOn, TerminationException {
+	public boolean getValue(Solvis solvis, int timeAfterLastSwitchingOn)
+			throws IOException, ErrorPowerOn, TerminationException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
 		return this.getValue(data, solvis, timeAfterLastSwitchingOn);
 	}
@@ -65,7 +66,7 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	}
 
 	@Override
-	public boolean setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
 		return this.channelSource.setValue(solvis, value);
 	}
 
@@ -101,7 +102,9 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 	@Override
 	public void assign(SolvisDescription description) {
-		this.channelSource.assign(description);
+		if (channelSource != null) {
+			this.channelSource.assign(description);
+		}
 
 	}
 
@@ -225,6 +228,6 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 	@Override
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
-		return this.channelSource.interpretSetData(singleData) ;
+		return this.channelSource.interpretSetData(singleData);
 	}
 }

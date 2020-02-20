@@ -22,7 +22,7 @@ public interface ChannelSourceI extends Assigner, GraficsLearnable {
 
 	public boolean getValue(SolvisData dest, Solvis solvis, int timeAfterLastSwitchingOn) throws IOException;
 
-	public boolean setValue(Solvis solvis, SolvisData value) throws IOException;
+	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException;
 
 	public SingleData<?> interpretSetData(SingleData<?> singleData)  throws TypeError;
 

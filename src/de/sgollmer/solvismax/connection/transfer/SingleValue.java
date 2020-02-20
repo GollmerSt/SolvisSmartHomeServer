@@ -82,6 +82,6 @@ public class SingleValue implements Value {
 	 * @return the data
 	 */
 	public SingleData<?> getData() {
-		return data;
+		return this.data;
 	}
 }

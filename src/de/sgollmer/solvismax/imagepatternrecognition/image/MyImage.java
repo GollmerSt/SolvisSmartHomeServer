@@ -7,7 +7,14 @@
 
 package de.sgollmer.solvismax.imagepatternrecognition.image;
 
+import java.awt.Color;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.MultiPixelPackedSampleModel;
+import java.awt.image.Raster;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +24,12 @@ import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
 
 public class MyImage {
+
+	private static final int WHITE = Color.WHITE.getRGB();
+
+	private interface StrategyOffset {
+		public int getRgb(int x, int y);
+	}
 
 	private final BufferedImage image;
 	protected Coordinate origin;
@@ -29,12 +42,41 @@ public class MyImage {
 
 	protected List<Integer> histogramX = null;
 	protected List<Integer> histogramY = null;
+	private final StrategyOffset strategyOffset;
 
 	private boolean autoInvert;
 
-	public MyImage(BufferedImage image) {
+	private class StrategyOffset0 implements StrategyOffset {
+
+		@Override
+		public int getRgb(int x, int y) {
+			return image.getRGB(x + origin.getX(), y + origin.getY());
+		}
+
+	}
+
+	private class StrategyOffsetNe0 implements StrategyOffset {
+
+		@Override
+		public int getRgb(int x, int y) {
+			int xx = x + origin.getX();
+			int yy = y + origin.getY();
+			if (xx >= 0 && yy >= 0 && xx < image.getWidth() && yy < image.getHeight()) {
+				return image.getRGB(xx, yy);
+			} else {
+				return WHITE;
+			}
+		}
+	}
+
+	public MyImage(BufferedImage image, Coordinate origin) {
 		this.image = image;
-		this.origin = new Coordinate(0, 0);
+		this.origin = origin;
+		if (origin.getX() == 0 && origin.getY() == 0) {
+			this.strategyOffset = new StrategyOffset0();
+		} else {
+			this.strategyOffset = new StrategyOffsetNe0();
+		}
 		this.maxRel = new Coordinate(image.getWidth(), image.getHeight());
 		this.autoInvert = false;
 		this.meta = new ImageMeta(this);
@@ -43,6 +85,11 @@ public class MyImage {
 
 	public MyImage(MyImage image) {
 		this.image = image.image;
+		if ( image.strategyOffset instanceof StrategyOffset0 ) {
+			this.strategyOffset = new StrategyOffset0();
+		} else {
+			this.strategyOffset = new StrategyOffsetNe0();
+		}
 		this.origin = image.origin;
 		this.maxRel = image.maxRel;
 		if (image.histogramX != null) {
@@ -72,6 +119,11 @@ public class MyImage {
 	public MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta,
 			Collection<Rectangle> ignoreRectangles) {
 		this.image = image.image;
+		if ( image.strategyOffset instanceof StrategyOffset0 ) {
+			this.strategyOffset = new StrategyOffset0();
+		} else {
+			this.strategyOffset = new StrategyOffsetNe0();
+		}
 		if (topLeft == null) {
 			topLeft = image.origin;
 		}
@@ -113,7 +165,15 @@ public class MyImage {
 	}
 
 	public BufferedImage createBufferdImage() {
-		return this.image.getSubimage(this.origin.getX(), this.origin.getY(), this.maxRel.getX(), this.maxRel.getY());
+		SampleModel sm = new MultiPixelPackedSampleModel(DataBuffer.TYPE_BYTE, this.getWidth(), this.getHeight(), 4);
+		WritableRaster raster = Raster.createWritableRaster(sm, new Point( 0, 0 ) );
+		BufferedImage image = new BufferedImage(this.image.getColorModel(), raster, false, null) ;
+		for (int x = 0; x < this.getWidth(); ++x) {
+			for (int y = 0; y < this.getHeight(); ++y) {
+				image.setRGB(x, y, this.getRGB(x, y));
+			}
+		}
+		return image;
 	}
 
 	public boolean isIn(Coordinate coord) {
@@ -124,8 +184,8 @@ public class MyImage {
 		return x >= 0 && y >= 0 && x < maxRel.getX() && y < maxRel.getY();
 	}
 
-	int getRGB(int x, int y) {
-		return this.image.getRGB(x + origin.getX(), y + this.origin.getY());
+	public int getRGB(int x, int y) {
+		return strategyOffset.getRgb(x, y);
 	}
 
 	public boolean isActive(Coordinate coord) {
@@ -134,7 +194,7 @@ public class MyImage {
 
 	public boolean isActive(int x, int y) {
 		if (this.isIn(x, y)) {
-			return this.meta.isActive(image.getRGB(x + origin.getX(), y + this.origin.getY()));
+			return this.meta.isActive(this.getRGB(x, y));
 		} else {
 			return false;
 		}
@@ -146,7 +206,7 @@ public class MyImage {
 
 	public boolean isLight(int x, int y) {
 		if (this.isIn(x, y)) {
-			return this.meta.isLight(image.getRGB(x + origin.getX(), y + this.origin.getY()));
+			return this.meta.isLight(this.getRGB(x, y));
 		} else {
 			return !this.meta.isInvert();
 		}
@@ -296,7 +356,7 @@ public class MyImage {
 			this.hashCode = 269;
 			for (int x = 0; x < this.getWidth(); ++x) {
 				for (int y = 0; y < this.getHeight(); ++y) {
-					int brighness = ImageHelper.getBrightness(this.image.getRGB(x + origin.getX(), y + origin.getY()));
+					int brighness = ImageHelper.getBrightness(this.getRGB(x, y));
 					this.hashCode = this.hashCode * 643 + brighness * 193;
 				}
 			}
@@ -325,9 +385,8 @@ public class MyImage {
 		for (int x = 0; x < this.getWidth(); ++x) {
 			for (int y = 0; y < this.getHeight(); ++y) {
 				if (!ignoreEnable || !this.toIgnore(x, y)) {
-					int brighness1 = ImageHelper.getBrightness(this.image.getRGB(x + origin.getX(), y + origin.getY()));
-					int brighness2 = ImageHelper
-							.getBrightness(i.image.getRGB(x + i.origin.getX(), y + i.origin.getY()));
+					int brighness1 = ImageHelper.getBrightness(this.getRGB(x, y));
+					int brighness2 = ImageHelper.getBrightness(i.getRGB(x, y));
 					if (brighness1 != brighness2) {
 						return false;
 					}

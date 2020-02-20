@@ -6,7 +6,39 @@ Version 00.10.07
 				des Servers einmal verändert hatten.
 				
 				Kanal S11 korrigiert. Name und Einheit geändert
-	
+				
+				
+	14.02.2020	Synchronisations-Problem zwischen stündlichem und sofortigem Update der Fhem-Daten gefixt.
+				Führte sporadisch zu Null-Pointer-Exceptions.
+				
+				Server-Befehle GUI_COMMANDS_ENABLE/GUI_COMMANDS_DISABLE eingeführt, um sicher zu stellen, dass
+				im Wartungsfall der Anlage der Server nicht für den Service-Mitarbeiter Unerklärbares ausführt.
+				
+	17.02.2020	Das Web-GUI der SolvisControl ist abhängig von der TouchScreen-Kalibrierung! Das kann sich in
+				leichten Versatz, im ungünstigsten Fall durch Artefakte am Rande äußern. Da sowohl die Verschiebung
+				als auch die Artefakte die Erkennung stören kann, wird nun in der Learningphase dieser Versatz
+				aus dem Home-Screen ermittelt und entsprechend korrigiert. Dazu wird das rechte Aufeinandertreffen
+				der Linien zwischen den Wasser- und Solarbuttons des Home-Screen hergenommen.
+				
+	18.02.2020	Neues Features:
+				Service-User-Zugriffe werden nun über die Bildschirme "Schornsteinfeger", "Nutzerauswahl",
+				"Nutzerauswahl Codeeingabe" erkannt. Die GUI-Befehle sind unterdrückt, solange die SolvisControl
+				diese Bildschirme anzeigt. Außerdem hat das zur Folge, dass nun jeder weitere erkannte Nutzer-
+				Eingriff eine Sperrung der GUI-Befehle für eine Stunde bewirkt (sonst 5 Minuten). Erst wenn diese
+				Stunde überschritten ist, ist der Server im normalen Mode. Will man letztere Zeit verringern,
+				kann man den Server über den Fhem-Client mit dem Server-Command "SERVICE_RESET" wieder in den
+				normalen Zustand bringen.
+				
+				Der User kann nun über die base.xml bestimmen, welche GUI-Feature des Servers aktiviert sein sollen.
+				Die base.xml wurde dazu um ein "Feature"-Element erweitert. Die im Paket mitgelieferte base.xml hat
+				sämtliche GUI Features deaktiviert! Auf diese Weise greift der Server erstmal nicht aktiv in die Bedienung
+				ein. Der User bestimmt, was er freischalten will.
+				
+				Fhem-Client um das Attribut "GuiCommandsEnabled" ergänzt. Ist dieses Attribut auf FALSE, werden sämtliche
+				Kommandos verhindert, welche das GUI der SolvisControl benötigen. Nur Messwerte werden aufgezeichnet.
+				TRUE lassen die Kommandos wieder zu. Der Hintergrund ist der, dass Service-Mitarbeiter nicht durch diese
+				Automatiken irritiert werden und einen Defekt der Anlage vermuten. SET/GET-Kommandos, welche in dieser Zeit
+				erfolgen, werden zwischengepuffert und ausgeführt, wenn das Attribut wieder auf TRUE gesetzt wurde.
 	
 
 

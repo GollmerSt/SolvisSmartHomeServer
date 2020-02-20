@@ -32,6 +32,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Duration;
@@ -103,12 +104,16 @@ public class Solvis {
 		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
 	}
 
-	private Observer.Observable<Boolean> screenChangedByUserObserable = new Observable<>();
+	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
 
 	private Object solvisMeasureObject = new Object();
 
 	public boolean isCurrentImageValid() {
 		return this.currentScreen != null;
+	}
+
+	public void setCurrentCreen(SolvisScreen screen) {
+		this.currentScreen = screen;
 	}
 
 	public SolvisScreen getCurrentScreen() throws IOException {
@@ -123,7 +128,8 @@ public class Solvis {
 	}
 
 	public SolvisScreen getRealScreen() throws IOException {
-		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()), this);
+		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen(), this.grafics.getOrigin()),
+				this);
 		return screen;
 	}
 
@@ -270,6 +276,11 @@ public class Solvis {
 	public void commandOptimization(boolean enable) {
 		this.worker.commandOptimization(enable);
 	}
+	
+	public void commandEnable(boolean enable) {
+		this.worker.commandEnable(enable);
+	}
+
 
 	public void screenRestore(boolean enable) {
 		this.worker.screenRestore(enable);
@@ -288,12 +299,12 @@ public class Solvis {
 		return this.solvisDescription.getDurations().get(id);
 	}
 
-	public void registerScreenChangedByUserObserver(ObserverI<Boolean> observer) {
-		this.screenChangedByUserObserable.register(observer);
+	public void registerScreenChangedByHumanObserver(ObserverI<HumanAccess> observer) {
+		this.screenChangedByHumanObserable.register(observer);
 	}
 
-	public void notifyScreenChangedByUserObserver(boolean userChanged) throws Throwable {
-		this.screenChangedByUserObserable.notify(userChanged);
+	public void notifyScreenChangedByHumanObserver(HumanAccess humanAccess) {
+		this.screenChangedByHumanObserable.notify(humanAccess);
 	}
 
 	public void saveScreen() throws IOException {
@@ -351,6 +362,7 @@ public class Solvis {
 		this.getGrafics().clear();
 		logger.log(LEARN, "Learning started.");
 		this.initConfigurationMask(currentRef);
+		logger.log(LEARN, "Origin of solvis display: " + this.getGrafics().getOrigin());
 		logger.log(LEARN, "Configuration mask: 0x" + Integer.toHexString(this.configurationMask));
 		this.getGrafics().setConfigurationMask(configurationMask);
 		Screen home = this.getHomeScreen();
@@ -475,7 +487,7 @@ public class Solvis {
 						}
 					}
 					if (!abort && !powerDownInInterval) {
-						distributor.notify(getAllSolvisData().getMeasurementsPackage());
+						distributor.sendCollection(getAllSolvisData().getMeasurements());
 					}
 
 					if (!power) {
@@ -533,8 +545,8 @@ public class Solvis {
 					logger.error("Solvis not available. Powered down or wrong IP address. Will try again");
 					lastErrorOutTime = time;
 				}
+				AbortHelper.getInstance().sleep(1000);
 			}
-			AbortHelper.getInstance().sleep(1000);
 		}
 	}
 
@@ -555,6 +567,10 @@ public class Solvis {
 			this.home = this.solvisDescription.getScreens().get(homeId, this.getConfigurationMask());
 		}
 		return this.home;
+	}
+
+	public void serviceReset() {
+		this.worker.serviceReset();
 	}
 
 }

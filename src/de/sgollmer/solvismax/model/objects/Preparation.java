@@ -126,8 +126,10 @@ public class Preparation implements Assigner {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		this.touchPoint.assign(description);
-		
+		if (touchPoint != null) {
+			this.touchPoint.assign(description);
+		}
+
 	}
 
 }
