@@ -1,28 +1,38 @@
 /************************************************************************
  * 
- * $Id$
+ * $Id: ErrorDetection.java 104 2020-01-26 16:25:33Z stefa_000 $
  *
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects.screen;
+package de.sgollmer.solvismax.model.objects;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 
 import javax.xml.namespace.QName;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
+import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Range;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ErrorDetection {
+
+	private static final Logger logger = LogManager.getLogger(Solvis.class);
 
 	private static final String XML_LEFT_BORDER = "LeftBorder";
 	private static final String XML_RIGHT_BORDER = "RightBorder";
@@ -31,6 +41,7 @@ public class ErrorDetection {
 	private static final String XML_BOTTOM_BORDER = "BottomBorder";
 	private static final String XML_HH_MM = "HhMm";
 	private static final String XML_DD_MM_YY = "DdMmYy";
+	private static final String XML_ERROR_CONDITION = "ErrorCondition";
 
 	private static final java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+:\\d+");
 	private static final java.util.regex.Pattern DATE_PATTERN = java.util.regex.Pattern.compile("\\d+\\.\\d+\\.\\d\\d");
@@ -42,9 +53,10 @@ public class ErrorDetection {
 	private final Range bottomBorder;
 	private final Rectangle hhMm;
 	private final Rectangle ddMmYy;
+	private final Collection<ErrorCondition> errorConditions;
 
 	public ErrorDetection(Range leftBorder, Range rightBorder, Range topBorder, Range middleBorder, Range bottomBorder,
-			Rectangle hhMm, Rectangle ddMmYy) {
+			Rectangle hhMm, Rectangle ddMmYy, Collection<ErrorCondition> errorConditions) {
 		this.leftBorder = leftBorder;
 		this.rightBorder = rightBorder;
 		this.topBorder = topBorder;
@@ -52,11 +64,12 @@ public class ErrorDetection {
 		this.bottomBorder = bottomBorder;
 		this.hhMm = hhMm;
 		this.ddMmYy = ddMmYy;
+		this.errorConditions = errorConditions;
 	}
 
 	public boolean is(SolvisScreen screen) {
-		
-		MyImage image = screen.getImage() ;
+
+		MyImage image = screen.getImage();
 
 		image.createHistograms(false);
 
@@ -147,6 +160,7 @@ public class ErrorDetection {
 		private Range bottomBorder;
 		private Rectangle hhMm;
 		private Rectangle ddMmYy;
+		private final Collection<ErrorCondition> errorConditions = new ArrayList<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -158,7 +172,8 @@ public class ErrorDetection {
 
 		@Override
 		public ErrorDetection create() throws XmlError, IOException {
-			return new ErrorDetection(leftBorder, rightBorder, topBorder, middleBorder, bottomBorder, hhMm, ddMmYy);
+			return new ErrorDetection(leftBorder, rightBorder, topBorder, middleBorder, bottomBorder, hhMm, ddMmYy,
+					errorConditions);
 		}
 
 		@Override
@@ -174,6 +189,8 @@ public class ErrorDetection {
 				case XML_HH_MM:
 				case XML_DD_MM_YY:
 					return new Rectangle.Creator(id, getBaseCreator());
+				case XML_ERROR_CONDITION:
+					return new ErrorCondition.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -202,7 +219,100 @@ public class ErrorDetection {
 				case XML_DD_MM_YY:
 					this.ddMmYy = (Rectangle) created;
 					break;
+				case XML_ERROR_CONDITION:
+					this.errorConditions.add((ErrorCondition) created);
 			}
+		}
+
+	}
+
+	private static class ErrorCondition {
+		private final String channelId;
+		private final boolean errorValue;
+
+		public ErrorCondition(String channelId, boolean errorValue) {
+			this.channelId = channelId;
+			this.errorValue = errorValue;
+		}
+
+		public String getChannelId() {
+			return channelId;
+		}
+
+		public boolean getErrorValue() {
+			return errorValue;
+		}
+
+		public static class Creator extends CreatorByXML<ErrorCondition> {
+			private String channelId;
+			private boolean value;
+
+			public Creator(String id, BaseCreator<?> creator) {
+				super(id, creator);
+				// TODO Auto-generated constructor stub
+			}
+
+			@Override
+			public void setAttribute(QName name, String value) {
+				switch (name.getLocalPart()) {
+					case "channelId":
+						this.channelId = value;
+						break;
+					case "value":
+						this.value = Boolean.parseBoolean(value);
+						break;
+				}
+
+			}
+
+			@Override
+			public ErrorCondition create() throws XmlError, IOException {
+				return new ErrorCondition(channelId, value);
+			}
+
+			@Override
+			public CreatorByXML<?> getCreator(QName name) {
+				return null;
+			}
+
+			@Override
+			public void created(CreatorByXML<?> creator, Object created) {
+			}
+		}
+	}
+
+	public void instantiate(Solvis solvis) {
+		Execute execute = new Execute(solvis);
+		solvis.registerObserver(execute);
+	}
+
+	private class Execute implements ObserverI<SolvisData> {
+		
+		private Collection< SolvisData > errorSpecificDatas = new ArrayList<>();
+		
+		public Execute( Solvis solvis) {
+			for ( ErrorCondition condition : errorConditions ) {
+				String name = condition.getChannelId() ;
+				SolvisData data = solvis.getAllSolvisData().get(name) ;
+				if ( data == null ) {
+					logger.error( "Channel Id <" + name + "> is missing. Check the control.xml file");
+					return ;
+				}
+				this.errorSpecificDatas.add( data);
+				data.registerContinuousObserver(this);
+			}
+		}
+
+		@Override
+		public void update(SolvisData data, Object source) {
+			for (ErrorCondition condition : errorConditions) {
+				String channelId = condition.getChannelId();
+				boolean error = channelId.equals(data.getDescription().getId())
+						&& data.getBool() == condition.getErrorValue();
+				data.getDatas().getSolvis().getSolvisState().error(error, channelId);
+
+			}
+
 		}
 
 	}

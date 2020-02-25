@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tns:BaseData xmlns:tns="http://www.example.org/control"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.example.org/control base.xsd ">
-	<tns:ExecutionData timeZone="Europe/Berlin"
-		port="10735" writablePathLinux="/opt/fhem" />
-	<tns:Units>
-		<tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true"
-			account="account" password="password" url="http://aaa.bbb.ccc.ddd"
-			defaultAverageCount="12" measurementHysteresisFactor="4"
-			defaultReadMeasurementsInterval_ms="10000"
-			forcedUpdateInterval_ms="3600000" bufferedInterval_ms="60000"
-			delayAfterSwitchingOnEnable="true">
-			<tns:ClockAdjustment enable="true"
-				fineLimitUpper_ms="3000" fineLimitLower_ms="-5000"
-				aproximatlySetAjust_ms="1000" burstLength="3" />
-			<tns:Features>
-				<tns:ClockTuning>false</tns:ClockTuning>
-				<tns:ClockFineTuning>false</tns:ClockFineTuning>
-				<tns:HeatingBurnerTimeSynchronisation>false</tns:HeatingBurnerTimeSynchronisation>
-				<tns:UpdateAfterUserAccess>false</tns:UpdateAfterUserAccess>
-				<tns:DetectServiceAccess>false</tns:DetectServiceAccess>
-				<tns:PowerOffIsServiceAccess>false</tns:PowerOffIsServiceAccess>
-				<tns:OnlyMeasurements>true</tns:OnlyMeasurements>	<!-- true: GUI controlling disabled -->
-			</tns:Features>
-		</tns:Unit>
-	</tns:Units>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.example.org/control base.xsd ">
+    <tns:ExecutionData timeZone="Europe/Berlin"
+        port="10735" writablePathLinux="/opt/fhem" />
+    <tns:Units>
+        <tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true"
+            account="account" password="password" url="http://aaa.bbb.ccc.ddd"
+            defaultAverageCount="12" measurementHysteresisFactor="4"
+            defaultReadMeasurementsInterval_ms="10000"
+            forcedUpdateInterval_ms="3600000" bufferedInterval_ms="60000"
+            watchDogTime_ms="30000" delayAfterSwitchingOnEnable="true">
+            <tns:ClockAdjustment enable="true"
+                fineLimitUpper_ms="3000" fineLimitLower_ms="-5000"
+                aproximatlySetAjust_ms="1000" burstLength="3" />
+            <tns:Features>
+                <tns:ClockTuning>false</tns:ClockTuning>
+                    <!--  Die Uhr wird automatisch eingestellt, Genauigkeit +- 31s  -->
+                <tns:ClockFineTuning>false</tns:ClockFineTuning>
+                    <!--  Die Uhr wird zusätzlich fein abgeglichen, Genauigkeit -5s/+3s  -->
+                <tns:HeatingBurnerTimeSynchronisation>false</tns:HeatingBurnerTimeSynchronisation>
+                    <!--  Synchronisation der minutengenauen Brennerlaufzeiten 
+                          mit den stündlichen der SolvisControl  -->
+                <tns:UpdateAfterUserAccess>false</tns:UpdateAfterUserAccess>
+                    <!--  Nach jedem Userzugriff werden automatisch der Zustand der Anlage abgefragt  -->
+                <tns:DetectServiceAccess>false</tns:DetectServiceAccess>
+                    <!--  Es werden die Service-Screens "Schornsteinfeger", "Nutzerauswahl", "Nutzerauswahl-Code"
+                          besonders behandlt, werden diese erkannt, sind sämtliche Gui-Actionen für 1h
+                          deaktiviert. Jeder Anwender-Eingriff in diser Zeit triggert die Stunde erneut.  -->
+                <tns:PowerOffIsServiceAccess>false</tns:PowerOffIsServiceAccess>
+                    <!--  Wird ein Power-Off der Anlage erkannt, wird der wie ein Zugriff auf die
+                          Service-Screens behandelt (siehe vorheriges Element) -->
+                 <tns:OnlyMeasurements>true</tns:OnlyMeasurements>   <!-- true: GUI controlling disabled -->
+                    <!--  Bei true werden sämtliche Gui-Aktivitäten verhindert. Das Modul verhält sich so
+                          wie das bisherige, ein aktiver Eingriff vom Server auf die SolvisControl erfolgt nicht:  -->
+            </tns:Features>
+        </tns:Unit>
+    </tns:Units>
 </tns:BaseData>

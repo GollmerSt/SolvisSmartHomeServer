@@ -74,11 +74,11 @@ public class SolvisWorkers {
 			boolean saveScreen = false;
 			boolean restoreScreen = false;
 			boolean executeWatchDog = false;
-			boolean stateChanged = false ;
+			boolean stateChanged = false;
 
 			Miscellaneous misc = solvis.getSolvisDescription().getMiscellaneous();
 			int unsuccessfullWaitTime = misc.getUnsuccessfullWaitTime_ms();
-			int watchDogTime = misc.getWatchDogTime_ms();
+			int watchDogTime = solvis.getUnit().getWatchDogTime_ms();
 
 			synchronized (this) {
 				this.notifyAll();
@@ -89,7 +89,7 @@ public class SolvisWorkers {
 				Command command = null;
 				if (solvis.getSolvisState().getState() == SolvisState.State.SOLVIS_CONNECTED) {
 					synchronized (this) {
-						if (this.queue.isEmpty() || this.commandDisableCount > 0 || ! controlEnable) {
+						if (this.queue.isEmpty() || this.commandDisableCount > 0 || !controlEnable) {
 							if (!queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
 								restoreScreen = true;
 								queueWasEmpty = true;
@@ -117,10 +117,10 @@ public class SolvisWorkers {
 					try {
 						if (command != null && command.getScreen(solvis) == solvis.getCurrentScreen().get()
 								&& !solvis.isScreenSaverActive()
-								&& solvis.getSolvisState().getState() != SolvisState.State.ERROR | stateChanged ) {
+								&& solvis.getSolvisState().getState() != SolvisState.State.ERROR | stateChanged) {
 							executeWatchDog = true;
 						}
-						stateChanged = false ;
+						stateChanged = false;
 						if (saveScreen) {
 							SolvisWorkers.this.solvis.saveScreen();
 							saveScreen = false;
@@ -148,7 +148,7 @@ public class SolvisWorkers {
 					}
 				} else {
 					success = false;
-					stateChanged = true ;
+					stateChanged = true;
 				}
 				synchronized (this) {
 					boolean remove = success;
@@ -200,7 +200,7 @@ public class SolvisWorkers {
 
 		public void push(Command command) {
 			if (!controlEnable) {
-				return ;
+				return;
 			}
 			synchronized (this) {
 
@@ -432,8 +432,8 @@ public class SolvisWorkers {
 	}
 
 	public void serviceReset() {
-		this.watchDog.serviceReset() ;
-		
+		this.watchDog.serviceReset();
+
 	}
 
 }

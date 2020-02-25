@@ -9,8 +9,6 @@ package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Iterator;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -47,7 +45,6 @@ import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
-import de.sgollmer.solvismax.model.objects.screen.ScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class Solvis {
@@ -128,7 +125,7 @@ public class Solvis {
 	}
 
 	public SolvisScreen getRealScreen() throws IOException {
-		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen(), this.grafics.getOrigin()),
+		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()),
 				this);
 		return screen;
 	}
@@ -192,79 +189,19 @@ public class Solvis {
 		this.solvisDescription.getFallBack().execute(this);
 	}
 
-//	public boolean gotoScreen(Screen screen) throws IOException, TerminationException {
-//		if (screen == null) {
-//			return false;
-//		}
-//		if (this.getCurrentScreen() == null) {
-//			this.gotoHome();
-//		}
-//
-//		if (this.getCurrentScreen() == screen) {
-//			return true;
-//		}
-//
-//		if (screen == this.getSolvisDescription().getScreens().ge) {
-//			this.gotoHome();
-//			return true;
-//		}
-//
-//		List<ScreenTouch> previousScreens = screen.getPreviosScreens(this.getConfigurationMask());
-//
-//		boolean gone = false;
-//
-//		for (int cnt = 0; !gone && cnt < Constants.FAIL_REPEATS; ++cnt) {
-//
-//			for (int gotoDeepth = 0; !gone
-//					&& this.getCurrentScreen() != null & gotoDeepth < Constants.MAX_GOTO_DEEPTH; ++gotoDeepth) {
-//
-//				// && this.getCurrentScreen() != this.homeScreen) {
-//				// ListIterator<Screen> it = null;
-//				ScreenTouch foundScreenTouch = null;
-//				for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
-//					ScreenTouch st = it.next();
-//					Screen previous = st.getScreen();
-//					if (previous == this.getCurrentScreen()) {
-//						foundScreenTouch = st;
-//						break;
-//					}
-//				}
-//
-//				if (foundScreenTouch == null) {
-//					this.sendBack();
-//				} else {
-//					this.send(foundScreenTouch.getTouchPoint());
-//				}
-//
-//				if (this.getCurrentScreen() == screen) {
-//					gone = true;
-//				}
-//			}
-//			if (!gone) {
-//				this.gotoHome(); // try it from beginning
-//				logger.info("Goto screen <" + screen.getId() + "> not succcessful. Will be retried.");
-//			}
-//		}
-//		if (!gone) {
-//			logger.error("Screen <" + screen.getId() + "> not found.");
-//		}
-//		return this.getCurrentScreen() == screen;
-//
-//	}
-
 	public void init() throws IOException, XmlError, XMLStreamException {
 		this.configurationMask = this.getGrafics().getConfigurationMask();
 
 		synchronized (solvisMeasureObject) {
-			this.getSolvisDescription().getChannelDescriptions().init(this, this.getAllSolvisData());
+			this.getSolvisDescription().getChannelDescriptions().init(this);
 		}
 		SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.unit.getId());
 		this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 		this.worker.start();
 		this.getSolvisDescription().getChannelDescriptions().initControl(this);
 		this.getDistributor().register(this);
+		this.getSolvisDescription().instantiate(this);
 		this.measurementUpdateThread.start();
-		this.getSolvisDescription().getClock().instantiate(this);
 	}
 
 	public void measure() throws IOException, ErrorPowerOn {
@@ -362,7 +299,6 @@ public class Solvis {
 		this.getGrafics().clear();
 		logger.log(LEARN, "Learning started.");
 		this.initConfigurationMask(currentRef);
-		logger.log(LEARN, "Origin of solvis display: " + this.getGrafics().getOrigin());
 		logger.log(LEARN, "Configuration mask: 0x" + Integer.toHexString(this.configurationMask));
 		this.getGrafics().setConfigurationMask(configurationMask);
 		Screen home = this.getHomeScreen();
@@ -376,16 +312,7 @@ public class Solvis {
 		} else {
 			home.goTo(this);
 		}
-		Collection<LearnScreen> learnScreens = this.solvisDescription.getLearnScreens(this.getConfigurationMask());
-		while (learnScreens.size() > 0) {
-			home.learn(this, learnScreens, this.getConfigurationMask());
-			for (Iterator<LearnScreen> it = learnScreens.iterator(); it.hasNext();) {
-				if (it.next().getScreen().isLearned(this)) {
-					it.remove();
-				}
-			}
-			this.gotoHome();
-		}
+		Screen.learnScreens(this);
 		this.solvisDescription.getClock().learn(this);
 		this.solvisDescription.getChannelDescriptions().learn(this);
 		this.getHomeScreen().goTo(this);

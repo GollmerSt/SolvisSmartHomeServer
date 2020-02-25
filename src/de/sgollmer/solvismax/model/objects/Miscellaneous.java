@@ -23,22 +23,20 @@ public class Miscellaneous {
 	private final int unsuccessfullWaitTime_ms;
 	private final int releaseBlockingAfterUserAccess_ms;
 	private final int releaseBlockingAfterServiceAccess_ms;
-	private final int watchDogTime_ms;
 	private final int connectionHoldTime_ms;
 	private final int solvisConnectionTimeout_ms;
 	private final int solvisReadTimeout_ms;
 
 	public Miscellaneous(int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors,
 			int powerOffDetectedAfterTimeout_ms, int unsuccessfullWaitTime_ms, int releaseBlockingAfterUserAccess_ms,
-			int releaseBlockingAfterServiceAccess_ms, int watchDogTime_ms, int connectionHoldTime_ms,
-			int solvisConnectionTimeout_ms, int solvisReadTimeout_ms) {
+			int releaseBlockingAfterServiceAccess_ms, int connectionHoldTime_ms, int solvisConnectionTimeout_ms,
+			int solvisReadTimeout_ms) {
 		this.measurementsBackupTime_ms = measurementsBackupTime_ms;
 		this.powerOffDetectedAfterIoErrors = powerOffDetectedAfterIoErrors;
 		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
 		this.unsuccessfullWaitTime_ms = unsuccessfullWaitTime_ms;
 		this.releaseBlockingAfterUserAccess_ms = releaseBlockingAfterUserAccess_ms;
 		this.releaseBlockingAfterServiceAccess_ms = releaseBlockingAfterServiceAccess_ms;
-		this.watchDogTime_ms = watchDogTime_ms;
 		this.connectionHoldTime_ms = connectionHoldTime_ms;
 		this.solvisConnectionTimeout_ms = solvisConnectionTimeout_ms;
 		this.solvisReadTimeout_ms = solvisReadTimeout_ms;
@@ -56,10 +54,6 @@ public class Miscellaneous {
 		return releaseBlockingAfterUserAccess_ms;
 	}
 
-	public int getWatchDogTime_ms() {
-		return watchDogTime_ms;
-	}
-
 	public int getMeasurementsBackupTime_ms() {
 		return measurementsBackupTime_ms;
 	}
@@ -72,7 +66,6 @@ public class Miscellaneous {
 		private int unsuccessfullWaitTime_ms;
 		private int releaseBlockingAfterUserAccess_ms;
 		private int releaseBlockingAfterServiceAccess_ms;
-		private int watchDogTime_ms;
 		private int connectionHoldTime_ms;
 		private int solvisConnectionTimeout_ms;
 		private int solvisReadTimeout_ms;
@@ -102,9 +95,6 @@ public class Miscellaneous {
 				case "releaseBlockingAfterServiceAccess_ms":
 					this.releaseBlockingAfterServiceAccess_ms = Integer.parseInt(value);
 					break;
-				case "watchDogTime_ms":
-					this.watchDogTime_ms = Integer.parseInt(value);
-					break;
 				case "connectionHoldTime_ms":
 					this.connectionHoldTime_ms = Integer.parseInt(value);
 					break;
@@ -122,8 +112,8 @@ public class Miscellaneous {
 		public Miscellaneous create() throws XmlError, IOException {
 			return new Miscellaneous(measurementsBackupTime_ms, powerOffDetectedAfterIoErrors,
 					powerOffDetectedAfterTimeout_ms, unsuccessfullWaitTime_ms, releaseBlockingAfterUserAccess_ms,
-					releaseBlockingAfterServiceAccess_ms, watchDogTime_ms, connectionHoldTime_ms,
-					solvisConnectionTimeout_ms, solvisReadTimeout_ms);
+					releaseBlockingAfterServiceAccess_ms, connectionHoldTime_ms, solvisConnectionTimeout_ms,
+					solvisReadTimeout_ms);
 		}
 
 		@Override

@@ -17,19 +17,23 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 
 public class GraficFileHandler {
-	
+
+	private static final Logger logger = LogManager.getLogger(Solvis.class);
 	private static final String NAME_XSD_GRAFICSFILE = "graficData.xsd";
 	private static final String NAME_XML_GRAFICSFILE = "graficData.xml";
 
 	private final File parent;
-
 
 	public GraficFileHandler(String pathName) {
 		File parent;
@@ -65,42 +69,47 @@ public class GraficFileHandler {
 
 	}
 
-
-
 	public AllSolvisGrafics read() throws IOException, XmlError, XMLStreamException {
-		
-		this.copyFiles(); 
+
+		this.copyFiles();
 
 		File xml = new File(this.parent, NAME_XML_GRAFICSFILE);
-		
-		if ( ! xml.exists() ) {
-			AllSolvisGrafics grafics = new AllSolvisGrafics() ;
-			return grafics ;
+
+		if (!xml.exists()) {
+			AllSolvisGrafics grafics = new AllSolvisGrafics();
+			return grafics;
 		}
 
 		InputStream source = new FileInputStream(xml);
-		
-		XmlStreamReader<AllSolvisGrafics> reader = new XmlStreamReader<>() ;
-		
-		String rootId = "SolvisGrafics" ;
-				
-		AllSolvisGrafics result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName()).getTree() ;
 
-		return result ;
+		XmlStreamReader<AllSolvisGrafics> reader = new XmlStreamReader<>();
+
+		String rootId = "SolvisGrafics";
+
+		AllSolvisGrafics result;
+
+		try {
+
+			result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName()).getTree();
+
+		} catch (IOException | XmlError | XMLStreamException e) {
+			logger.error("Warning: Read error on graficx.xml file. A new one will be created.");
+			result = new AllSolvisGrafics();
+		}
+
+		return result;
 	}
 
-	public void write( AllSolvisGrafics grafics ) throws IOException, XMLStreamException {
+	public void write(AllSolvisGrafics grafics) throws IOException, XMLStreamException {
 		this.copyFiles();
-		
-		File output = new File(parent, NAME_XML_GRAFICSFILE) ;
-		
+
+		File output = new File(parent, NAME_XML_GRAFICSFILE);
+
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
-		XMLStreamWriter writer = factory.createXMLStreamWriter( new FileOutputStream(
-				output ) );
+		XMLStreamWriter writer = factory.createXMLStreamWriter(new FileOutputStream(output));
 		writer.writeStartDocument();
 		writer.writeStartElement("SolvisGrafics");
 		grafics.writeXml(writer);
-		writer.writeEndElement();
 		writer.writeEndDocument();
 		writer.flush();
 		writer.close();

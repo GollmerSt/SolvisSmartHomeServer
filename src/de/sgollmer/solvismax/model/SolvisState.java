@@ -7,6 +7,9 @@
 
 package de.sgollmer.solvismax.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,19 +21,26 @@ public class SolvisState extends Observable<SolvisState> {
 	private static final Logger logger = LogManager.getLogger(SolvisState.class);
 
 	private State state = State.UNDEFINED;
-	private boolean error = false;
+	private int errorCnt = 0;
 	private long timeOfLastSwitchingOn = -1;
+	private Map<String, Boolean> errorStates = new HashMap<>();
 
 	public enum State {
 		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, SOLVIS_DISCONNECTED, ERROR, UNDEFINED
 	}
 
-	public void error(boolean error) {
-		boolean last = this.error;
-		this.error = error;
+	public void error(boolean error, String errorName) {
+		Boolean last = errorStates.get(errorName);
+		if (last == null) {
+			last = false;
+		}
 		if (last != error) {
+			errorStates.put(errorName, error);
+			this.errorCnt += error ? 1 : -1;
 			this.notify(this);
-			logger.info(this.error?"Solvis error detected!":"Solvis error cleared.");
+			logger.info(error ? "Solvis error <" + errorName + "> detected!"
+					: "Solvis error  <" + errorName + "> cleared.");
+			logger.info(errorCnt > 0 ? "Solvis error!" : "Solvis error cleared.");
 		}
 	}
 
@@ -51,10 +61,10 @@ public class SolvisState extends Observable<SolvisState> {
 	}
 
 	public State getState() {
-		if (error) {
+		if (errorCnt > 0) {
 			return State.ERROR;
-		} else if ( this.state == State.UNDEFINED ){
-			return State.POWER_OFF ;
+		} else if (this.state == State.UNDEFINED) {
+			return State.POWER_OFF;
 		} else {
 			return state;
 		}
@@ -82,6 +92,5 @@ public class SolvisState extends Observable<SolvisState> {
 	public long getTimeOfLastSwitchingOn() {
 		return timeOfLastSwitchingOn;
 	}
-
 
 }

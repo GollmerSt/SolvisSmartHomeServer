@@ -7,7 +7,6 @@
 
 package de.sgollmer.solvismax.imagepatternrecognition.image;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
@@ -25,12 +24,6 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public class MyImage {
 
-	private static final int WHITE = Color.WHITE.getRGB();
-
-	private interface StrategyOffset {
-		public int getRgb(int x, int y);
-	}
-
 	private final BufferedImage image;
 	protected Coordinate origin;
 	protected Coordinate maxRel; // Zeigt auf 1. Pixel auﬂerhalb, relativ
@@ -42,41 +35,12 @@ public class MyImage {
 
 	protected List<Integer> histogramX = null;
 	protected List<Integer> histogramY = null;
-	private final StrategyOffset strategyOffset;
 
 	private boolean autoInvert;
 
-	private class StrategyOffset0 implements StrategyOffset {
-
-		@Override
-		public int getRgb(int x, int y) {
-			return image.getRGB(x + origin.getX(), y + origin.getY());
-		}
-
-	}
-
-	private class StrategyOffsetNe0 implements StrategyOffset {
-
-		@Override
-		public int getRgb(int x, int y) {
-			int xx = x + origin.getX();
-			int yy = y + origin.getY();
-			if (xx >= 0 && yy >= 0 && xx < image.getWidth() && yy < image.getHeight()) {
-				return image.getRGB(xx, yy);
-			} else {
-				return WHITE;
-			}
-		}
-	}
-
-	public MyImage(BufferedImage image, Coordinate origin) {
+	public MyImage(BufferedImage image) {
 		this.image = image;
-		this.origin = origin;
-		if (origin.getX() == 0 && origin.getY() == 0) {
-			this.strategyOffset = new StrategyOffset0();
-		} else {
-			this.strategyOffset = new StrategyOffsetNe0();
-		}
+		this.origin = new Coordinate(0, 0);
 		this.maxRel = new Coordinate(image.getWidth(), image.getHeight());
 		this.autoInvert = false;
 		this.meta = new ImageMeta(this);
@@ -85,11 +49,6 @@ public class MyImage {
 
 	public MyImage(MyImage image) {
 		this.image = image.image;
-		if ( image.strategyOffset instanceof StrategyOffset0 ) {
-			this.strategyOffset = new StrategyOffset0();
-		} else {
-			this.strategyOffset = new StrategyOffsetNe0();
-		}
 		this.origin = image.origin;
 		this.maxRel = image.maxRel;
 		if (image.histogramX != null) {
@@ -119,11 +78,6 @@ public class MyImage {
 	public MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta,
 			Collection<Rectangle> ignoreRectangles) {
 		this.image = image.image;
-		if ( image.strategyOffset instanceof StrategyOffset0 ) {
-			this.strategyOffset = new StrategyOffset0();
-		} else {
-			this.strategyOffset = new StrategyOffsetNe0();
-		}
 		if (topLeft == null) {
 			topLeft = image.origin;
 		}
@@ -131,7 +85,7 @@ public class MyImage {
 			bottomRight = image.origin.add(image.maxRel).decrement();
 		}
 		if (!image.isIn(topLeft) || !image.isIn(bottomRight)) {
-			throw new ErrorNotInRange("UpperLeft or lowerRigh not within the image");
+			throw new ErrorNotInRange("UpperLeft or lowerRight not within the image");
 		}
 		if (ignoreRectangles != null) {
 			this.ignoreRectangles = new ArrayList<>();
@@ -166,8 +120,8 @@ public class MyImage {
 
 	public BufferedImage createBufferdImage() {
 		SampleModel sm = new MultiPixelPackedSampleModel(DataBuffer.TYPE_BYTE, this.getWidth(), this.getHeight(), 4);
-		WritableRaster raster = Raster.createWritableRaster(sm, new Point( 0, 0 ) );
-		BufferedImage image = new BufferedImage(this.image.getColorModel(), raster, false, null) ;
+		WritableRaster raster = Raster.createWritableRaster(sm, new Point(0, 0));
+		BufferedImage image = new BufferedImage(this.image.getColorModel(), raster, false, null);
 		for (int x = 0; x < this.getWidth(); ++x) {
 			for (int y = 0; y < this.getHeight(); ++y) {
 				image.setRGB(x, y, this.getRGB(x, y));
@@ -185,7 +139,7 @@ public class MyImage {
 	}
 
 	public int getRGB(int x, int y) {
-		return strategyOffset.getRgb(x, y);
+		return image.getRGB(x + origin.getX(), y + origin.getY());
 	}
 
 	public boolean isActive(Coordinate coord) {
@@ -406,6 +360,10 @@ public class MyImage {
 			}
 		}
 		return false;
+	}
+	
+	public String getDebugInfo() {
+		return "Origin: "+ this.origin + ", max: " + this.maxRel ;
 	}
 
 }

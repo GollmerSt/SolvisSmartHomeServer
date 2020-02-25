@@ -118,11 +118,12 @@ public class AllScreens implements ScreenLearnable {
 
 	@Override
 	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
-			int configurationMask) {
+			Solvis solvis) {
+		int configurationMask = solvis.getConfigurationMask();
 		for (OfConfigs<Screen> screenConf : screens.values()) {
 			Screen screen = screenConf.get(configurationMask);
 			if (screen != null) {
-				screen.createAndAddLearnScreen(null, learnScreens, configurationMask);
+				screen.createAndAddLearnScreen(null, learnScreens, solvis);
 			}
 		}
 	}

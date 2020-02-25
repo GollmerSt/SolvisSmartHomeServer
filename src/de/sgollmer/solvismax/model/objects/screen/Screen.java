@@ -490,16 +490,26 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
-			int configurationMask) {
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens, Solvis solvis) {
 		for (ScreenCompare cmp : this.screenCompares) {
 			if (cmp instanceof ScreenGraficDescription) {
 				ScreenGraficDescription description = (ScreenGraficDescription) cmp;
-				LearnScreen learn = new LearnScreen();
-				learn.setScreen(this);
-				learn.setDescription(description);
-				learnScreens.add(learn);
+				if (!description.isLearned(solvis)) {
+					LearnScreen learn = new LearnScreen();
+					learn.setScreen(this);
+					learn.setDescription(description);
+					learnScreens.add(learn);
+				}
 			}
+		}
+	}
+
+	public static void learnScreens(Solvis solvis) throws IOException {
+		Collection<LearnScreen> learnScreens = solvis.getSolvisDescription().getLearnScreens(solvis);
+		while (learnScreens.size() > 0) {
+			solvis.getHomeScreen().learn(solvis, learnScreens, solvis.getConfigurationMask());
+			ScreenLearnable.clean(learnScreens, null, solvis);
+			solvis.gotoHome();
 		}
 	}
 
@@ -508,45 +518,49 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 
 		// Seach all LearnScreens object of current screen and learn the
 		// ScreenGrafic
-		Iterator<LearnScreen> it = learnScreens.iterator();
-		for (; it.hasNext();) {
-			LearnScreen learn = it.next();
-			if (learn.getScreen().isLearned(solvis)) {
-				it.remove();
-			} else if (learn.getScreen() == this) {
-				boolean success = false;
-				for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
-					success = true;
-					try {
+		boolean success = false;
+		for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
+			try {
+				for (Iterator<LearnScreen> it = learnScreens.iterator(); it.hasNext();) {
+					LearnScreen learn = it.next();
+					if (learn.getScreen() == this) {
+						success = true;
 						learn.getDescription().learn(solvis);
 						solvis.clearCurrentScreen();
-						it.remove();
-					} catch (IOException e) {
-						logger.log(LEARN, "Screen <" + learn.getScreen().getId()
-								+ "> not learned in case of IOEexception, will be tried again.");
-						success = false;
-						if (cnt <= 0) {
-							throw e;
-						}
 					}
 				}
+			} catch (IOException e) {
+				logger.log(LEARN,
+						"Screen <" + this.getId() + "> not learned in case of IOEexception, will be tried again.");
+				success = false;
+				if (cnt <= 0) {
+					throw e;
+				}
+			}
+			if (success) {
+				success = this.goTo(solvis);
 			}
 		}
+
+		ScreenLearnable.clean(learnScreens, null, solvis);
 
 		if (learnScreens.size() > 0) { // Yes
 			Screen current = this;
 			for (Screen nextScreen : this.getNextScreen(configurationMask)) {
 				if (nextScreen.isToBeLearning(solvis, learnScreens, configurationMask)) {
-					boolean success = false;
+					success = false;
 					for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
 						try {
-							nextScreen.gotoLearning(solvis, current, learnScreens, configurationMask);
+							nextScreen.gotoLearning(solvis, current, learnScreens);
 							current = nextScreen;
 							Screen cmpScreen = solvis.getCurrentScreen().get();
 							if (cmpScreen == null || cmpScreen == nextScreen) {
 								nextScreen.learn(solvis, learnScreens, configurationMask);
 								current = solvis.getCurrentScreen().get();
-								success = current != null;
+								if (current != null) {
+									success = true;
+									;
+								}
 							}
 						} catch (IOException e) {
 							logger.log(LEARN, "Screen <" + this.getId()
@@ -556,10 +570,10 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 							}
 						}
 					}
-					if ( ! success ) {
+					if (!success) {
 						String message = "Learning of screen <" + this.getId() + "> not possible. Learning terminated.";
 						logger.error(message);
-						throw new LearningError(message) ;
+						throw new LearningError(message);
 					}
 				}
 				// this.gotoScreen(solvis, this, current, learnObjects);
@@ -585,12 +599,11 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 					current = previous;
 					currentTouch = previousTouch;
 				}
-				if ( current == null ) {
-					String message = 
-					"The follower to the screen <" + this.getId()
-					+ "> is missing, please check the <control.xml> file";
+				if (current == null) {
+					String message = "The follower to the screen <" + this.getId()
+							+ "> is missing, please check the <control.xml> file";
 					logger.error(message);
-					throw new LearningError(message) ;
+					throw new LearningError(message);
 				}
 			}
 			solvis.send(currentTouch);
@@ -622,7 +635,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	 * @param learnScreens
 	 * @throws IOException
 	 */
-	public void gotoLearning(Solvis solvis, Screen current, Collection<LearnScreen> learnScreens, int configurationMask)
+	public void gotoLearning(Solvis solvis, Screen current, Collection<LearnScreen> learnScreens)
 			throws IOException, TerminationException {
 		if (current == null) {
 			if (this != solvis.getHomeScreen()) {
@@ -634,12 +647,13 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		if (this == current) {
 			return;
 		}
-		List<ScreenTouch> previousScreens = this.getPreviousScreens(true, configurationMask);
+		List<ScreenTouch> previousScreens = this.getPreviousScreens(true, solvis.getConfigurationMask());
 		boolean gone = false;
 		while (!gone) {
 			ScreenTouch foundScreenTouch = null;
 			Screen next = this;
-			// check, if current screen is one of the previous screens of the learning screen
+			// check, if current screen is one of the previous screens of the learning
+			// screen
 			for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
 				ScreenTouch st = it.next();
 				Screen previous = st.getScreen();
@@ -652,7 +666,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 			}
 			if (foundScreenTouch == null) {
 				// if not, one screen back
-				current = back(solvis, current, learnScreens, configurationMask);
+				current = back(solvis, current, learnScreens);
 			} else {
 				Preparation preparation = foundScreenTouch.getPreparation();
 				boolean preparationSuccess = true;
@@ -689,8 +703,8 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	 * @param learnScreens
 	 * @throws IOException
 	 */
-	private static Screen back(Solvis solvis, Screen current, Collection<LearnScreen> learnScreens,
-			int configurationMask) throws IOException {
+	private static Screen back(Solvis solvis, Screen current, Collection<LearnScreen> learnScreens) throws IOException {
+		int configurationMask = solvis.getConfigurationMask();
 		Screen back = current.getBackScreen(configurationMask);
 		solvis.sendBack();
 		current = solvis.getCurrentScreen().get();

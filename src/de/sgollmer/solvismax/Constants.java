@@ -17,7 +17,7 @@ public class Constants {
 	public static final String LOG4J_CONFIG_FILE = "log4j2.xml";
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
 	public static final String RESOURCE_PATH = "data";
-	public static final int REFERENCE_POINT_SEARCH_RANGE = 10 ;
+	public static final int SCREEN_SAVER_IGNORED_FRAME_SIZE = 3 ;
 	/**
 	 * Max. number of tries, to get to the necessarry screen
 	 */

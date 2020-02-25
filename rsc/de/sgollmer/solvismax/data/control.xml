@@ -35,11 +35,11 @@
 			</tns:OutgoingTemperature>
 		</tns:Solar>
 	</tns:Configurations>
-	<tns:ScreenSaver>
-		<tns:TimeTopLeft X="75" Y="0" />
-		<tns:TimeBottomLeft X="75" Y="20" />
-		<tns:DateTopLeft X="75" Y="21" />
-		<tns:DateBottomLeft X="75" Y="33" />
+	<tns:ScreenSaver timeHeight="18">
+		<tns:TimeDateRectangle>
+			<tns:TopLeft X="75" Y="0" />
+			<tns:BottomRight X="135" Y="32" />
+		</tns:TimeDateRectangle>
 		<tns:ResetScreenSaver pushTimeRefId="Standard"
 			releaseTimeRefId="WindowChange">
 			<tns:Coordinate X="0" Y="0" />
@@ -59,11 +59,13 @@
 			<tns:TopLeft X="190" Y="80" />
 			<tns:BottomRight X="238" Y="91" />
 		</tns:DdMmYy>
+		<tns:ErrorCondition channelId="A14.Entstoerung"
+			value="true" />
 	</tns:ErrorDetection>
 	<tns:Service>
 		<tns:ServiceScreen id="Schornsteinfeger" />
-		<tns:ServiceScreen id="Nutzerauswahl"/>
-		<tns:ServiceScreen id="Nutzerauswahl Code"/>
+		<tns:ServiceScreen id="Sonstiges_Nutzerauswahl" />
+		<tns:ServiceScreen id="Nutzerauswahl" />
 	</tns:Service>
 	<tns:Screens homeId="Home">
 		<tns:Screen id="Home" backId="" previousId="">
@@ -737,26 +739,26 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen id="Nutzerauswahl" backId="Sonstiges 2"
-			previousId="Sonstiges 2">
+		<tns:Screen id="Sonstiges_Nutzerauswahl"
+			backId="Sonstiges 2" previousId="Sonstiges 2">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="65" />
 			</tns:TouchPoint>
-			<tns:ScreenGrafic id="Nutzerauswahl">
+			<tns:ScreenGrafic id="Sonstiges_Nutzerauswahl">
 				<tns:Field>
 					<tns:TopLeft X="30" Y="2" />
 					<tns:BottomRight X="205" Y="15" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen id="Nutzerauswahl Code" backId="Nutzerauswahl"
-			previousId="Nutzerauswahl">
+		<tns:Screen id="Nutzerauswahl"
+			backId="Sonstiges_Nutzerauswahl" previousId="Sonstiges_Nutzerauswahl">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="75" />
 			</tns:TouchPoint>
-			<tns:ScreenGrafic id="Nutzerauswahl Code">
+			<tns:ScreenGrafic id="Nutzerauswahl">
 				<tns:Field>
 					<tns:TopLeft X="55" Y="2" />
 					<tns:BottomRight X="200" Y="15" />
@@ -1859,8 +1861,7 @@
 		powerOffDetectedAfterTimeout_ms="120000"
 		measurementsBackupTime_ms="3600000"
 		releaseBlockingAfterUserAccess_ms="300000"
-		releaseBlockingAfterServiceAccess_ms = "3600000"
-		unsuccessfullWaitTime_ms="10000" watchDogTime_ms="30000"
-		connectionHoldTime_ms="300000" solvisConnectionTimeout_ms="10000"
-		solvisReadTimeout_ms="2000" />
+		releaseBlockingAfterServiceAccess_ms="3600000"
+		unsuccessfullWaitTime_ms="10000" connectionHoldTime_ms="300000"
+		solvisConnectionTimeout_ms="10000" solvisReadTimeout_ms="2000" />
 </tns:SolvisDescription>

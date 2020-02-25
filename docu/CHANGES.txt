@@ -40,7 +40,26 @@ Version 00.10.07
 				Automatiken irritiert werden und einen Defekt der Anlage vermuten. SET/GET-Kommandos, welche in dieser Zeit
 				erfolgen, werden zwischengepuffert und ausgeführt, wenn das Attribut wieder auf TRUE gesetzt wurde.
 	
-
+	22.02.2020	Die Ermittelung des Origins wurde wieder ausgebaut, da die Berücksichtigung der Kalibrierung in der SolvisControl
+				nicht auf allen Bildschirmen berücksichtigt wird. So sind die Bilder des Anlagenstatus unabhängig
+				von der Kalibrierung. Rein theoretisch hätte man das berücksichtigen können, aber da es sich bei der
+				Touchscrenn-Kalibrierung es sich nur um wenige Pixel handelt, welche das Bild verschoben sein kann, muss
+				dieser Einfluss grundsätzlich bei der Definition der Abmessungen der Grafiken beachtet werden.
+				Die Bildschirmschoner-Erkennung wurde angepasst, die äußeren 3 Pixels werden nicht berücksichtigt.
+				
+	25.02.2020	Im Fehler-Status der Solvis-Anlage wurde auch noch zusätzlich der Kanal "A14.Entstoerung" berücksichtigt.
+				Ist dieser gesetzt, geht der Status der Anlage ebenfalls auf Fehler.
+				Über die control.xml können noch weitere Kanäle hinzugefügt werden, es müssen entsprechend noch
+				weitere ErrorCondition-Elemente hinzugefügt werden.
+				
+				Die control.xml (im "writablePath", definiert im base.xml), der wird nun nicht mehr bei jedem
+				Start des Servers überschrieben. Erst wenn in einem Update eine aktualisierte conttrol.xml
+				existiert, wird einen evtl. vorhandene editierte "control.xml" in "control.xml.1" umbenannt.
+				Es werden dabei immer die letzten 3 editierten "control.xml"-Dateien gesichert. Es handelt sich
+				dabei um "control.xml.1", "control.xml.2" und "control.xml.3".
+				Nur wenn die "control.xml" editiert wurde oder die graphics.xml nicht vorhanden ist, erfolgt
+				dieser Vorgang.
+	
 
 Version 00.10.06
 

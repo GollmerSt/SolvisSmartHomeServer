@@ -72,7 +72,7 @@ public class WatchDog {
 		this.releaseBlockingAfterUserChange_ms = BaseData.DEBUG ? Constants.DEBUG_USER_ACCESS_TIME
 				: misc.getReleaseBlockingAfterUserAccess_ms();
 		this.releaseBlockingAfterServiceAccess_ms = misc.getReleaseBlockingAfterServiceAccess_ms();
-		this.watchDogTime = misc.getWatchDogTime_ms();
+		this.watchDogTime = this.solvis.getUnit().getWatchDogTime_ms();
 		this.solvis.registerAbortObserver(new ObserverI<Boolean>() {
 
 			@Override
@@ -145,7 +145,7 @@ public class WatchDog {
 					// do nothing
 				} else if (this.isScreenSaver()) {
 					event = Event.SCREENSAVER;
-				} else if (solvis.getSolvisDescription().getErrorScreen().is(this.realScreen)) {
+				} else if (solvis.getSolvisDescription().getErrorDetection().is(this.realScreen)) {
 					this.errorDetected = true;
 					event = Event.ERROR;
 				} else {
@@ -162,7 +162,7 @@ public class WatchDog {
 
 				abort = !this.humanAccess.mustWait() && !errorDetected;
 
-				solvis.getSolvisState().error(errorDetected);
+				solvis.getSolvisState().error(errorDetected, "Error screen");
 
 				synchronized (this) {
 					if (!abort) {
@@ -194,6 +194,7 @@ public class WatchDog {
 					finished = false;
 					realScreen = null; // read image again
 					this.screenSaverActive = false;
+					logger.info(this.saver.getDebugInfo());
 				} else {
 					this.solvis.setScreenSaverActive(false);
 				}

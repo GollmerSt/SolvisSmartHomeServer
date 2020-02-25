@@ -130,8 +130,8 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		solvis.getDistributor().setBurstUpdate(false);
 	}
 
-	public void init(Solvis solvis, AllSolvisData datas) throws IOException {
-
+	public void init(Solvis solvis) throws IOException {
+		AllSolvisData datas = solvis.getAllSolvisData();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
 			if (description != null) {

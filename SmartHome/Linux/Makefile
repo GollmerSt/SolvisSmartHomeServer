@@ -34,21 +34,16 @@ installDebugService: installSolvis
 	systemctl start $(serviceDebug)
 	
 	
-stopService:
-	systemctl stop $(service)
+stopServices:
+	-systemctl stop $(service)
+	-systemctl stop $(serviceDebug)
 
 
-stopDebugService:
-	systemctl stop $(serviceDebug)
-
-
-uninstallService: 
-	systemctl stop $(service)
+uninstallService: stopServices
 	systemctl disable $(service)
 
 
-uninstallDebugService: 
-	systemctl stop $(serviceDebug)
+uninstallDebugService: stopService
 	systemctl disable $(serviceDebug)
 
 
@@ -69,28 +64,37 @@ uninstallSolvis: uninstallService uninstallDebugService
 installSolvis: $(solvisDir)/$(solvisJar) $(solvisDir)/$(baseXml).xml  $(solvisDir)/$(baseXml).xsd $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
 
 
-update: stopService install
+update: stopServices install
 	systemctl start $(service)
 
 
-updateDebug: stopDebugService install
+updateDebug: stopServices install
 	systemctl start $(serviceDebug)
 
 
-learn: installSolvis
+learn: stopServices installSolvis
 	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-learn
+	systemctl start $(service)
 
 
-debugServer: installSolvis
+learnDebug: stopServices installSolvis
+	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-learn
+	systemctl start $(serviceDebug)
+
+
+debugServer: stopServices installSolvis
 	sudo -u $(account) $(java) -agentlib:$(javaAgentlib) -jar $(solvisDir)/$(solvisJar)
 	
 
-terminate: installSolvis
+terminate: stopServices installSolvis
 	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-terminate
 
 
-foreground: installSolvis
+foreground: stopServices installSolvis
 	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar)
+
+
+
 
 $(solvisDir):
 	mkdir $@

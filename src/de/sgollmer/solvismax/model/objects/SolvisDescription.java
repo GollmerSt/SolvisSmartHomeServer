@@ -20,7 +20,6 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
 import de.sgollmer.solvismax.model.objects.configuration.Types;
-import de.sgollmer.solvismax.model.objects.screen.ErrorDetection;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
@@ -54,7 +53,7 @@ public class SolvisDescription {
 	private final AllChannelDescriptions dataDescriptions;
 	private final AllPreparations allPreparations;
 	private final ClockMonitor clock;
-	private final ErrorDetection errorScreen;
+	private final ErrorDetection errorDetection;
 	private final Service service;
 
 	public ClockMonitor getClock() {
@@ -67,7 +66,7 @@ public class SolvisDescription {
 	public SolvisDescription(Types types, Configurations configurations, ScreenSaver saver, AllScreens screens,
 			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
 			AllPreparations allPreparations, ClockMonitor clock, AllDurations durations, Miscellaneous miscellaneous,
-			ErrorDetection errorScreen, Service service) {
+			ErrorDetection errorDetection, Service service) {
 		this.types = types;
 		this.configurations = configurations;
 		this.saver = saver;
@@ -79,7 +78,7 @@ public class SolvisDescription {
 		this.clock = clock;
 		this.durations = durations;
 		this.miscellaneous = miscellaneous;
-		this.errorScreen = errorScreen;
+		this.errorDetection = errorDetection;
 		this.service = service;
 
 		this.process();
@@ -109,10 +108,9 @@ public class SolvisDescription {
 		}
 	}
 
-	public Collection<LearnScreen> getLearnScreens(int configurationMask) {
-
+	public Collection<LearnScreen> getLearnScreens(Solvis solvis) {
 		Collection<LearnScreen> learnScreens = new ArrayList<>();
-		this.screens.createAndAddLearnScreen(null, learnScreens, configurationMask);
+		this.screens.createAndAddLearnScreen(null, learnScreens, solvis);
 		for (Iterator<LearnScreen> itOuter = learnScreens.iterator(); itOuter.hasNext();) {
 			LearnScreen outer = itOuter.next();
 			for (Iterator<LearnScreen> itInner = itOuter; itInner.hasNext();) {
@@ -339,12 +337,17 @@ public class SolvisDescription {
 		return allPreparations;
 	}
 
-	public ErrorDetection getErrorScreen() {
-		return this.errorScreen;
+	public ErrorDetection getErrorDetection() {
+		return this.errorDetection;
 	}
 
 	public Service getService() {
 		return service;
+	}
+	
+	public void instantiate( Solvis solvis ) {
+		this.clock.instantiate(solvis);
+		this.errorDetection.instantiate(solvis);
 	}
 
 }

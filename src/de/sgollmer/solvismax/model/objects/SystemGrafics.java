@@ -18,32 +18,28 @@ import javax.xml.stream.XMLStreamWriter;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficData;
-import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.XmlWriteable;
 
 public class SystemGrafics implements XmlWriteable {
 
-	private static final String XML_ORIGIN = "Origin";
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
 
 	private final String id;
 	private int controlFileHashCode;
 	private int configurationMask;
-	private Coordinate origin;
 	private final Map<String, ScreenGraficData> graficDatas;
 
 	public SystemGrafics(String id, int controllFileHashCode) {
-		this(id, controllFileHashCode, 0, null, new HashMap<>());
+		this(id, controllFileHashCode, 0, new HashMap<>());
 	}
 
-	private SystemGrafics(String id, int controllFileHashCode, int configurationMask, Coordinate origin,
+	private SystemGrafics(String id, int controllFileHashCode, int configurationMask,
 			Map<String, ScreenGraficData> graficDatas) {
 		this.id = id;
 		this.controlFileHashCode = controllFileHashCode;
 		this.configurationMask = configurationMask;
-		this.origin = origin;
 		this.graficDatas = graficDatas;
 	}
 
@@ -73,9 +69,6 @@ public class SystemGrafics implements XmlWriteable {
 		writer.writeAttribute("id", this.id);
 		writer.writeAttribute("controlFileHashCode", Integer.toString(this.controlFileHashCode));
 		writer.writeAttribute("configurationMask", Integer.toString(this.configurationMask));
-		writer.writeStartElement(XML_ORIGIN);
-		this.origin.writeXml(writer);
-		writer.writeEndElement();
 		for (ScreenGraficData data : this.graficDatas.values()) {
 			writer.writeStartElement(XML_SCREEN_GRAFIC);
 			data.writeXml(writer);
@@ -89,7 +82,6 @@ public class SystemGrafics implements XmlWriteable {
 		private String id;
 		private int controlFileHashCode;
 		private int configurationMask;
-		private Coordinate origin;
 		private final Map<String, ScreenGraficData> graficDatas = new HashMap<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -114,15 +106,13 @@ public class SystemGrafics implements XmlWriteable {
 		@Override
 		public SystemGrafics create() throws XmlError, IOException {
 
-			return new SystemGrafics(id, controlFileHashCode, configurationMask, origin, graficDatas);
+			return new SystemGrafics(id, controlFileHashCode, configurationMask, graficDatas);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_ORIGIN:
-					return new Coordinate.Creator(id, getBaseCreator());
 				case XML_SCREEN_GRAFIC:
 					return new ScreenGraficData.Creator(id, this.getBaseCreator());
 			}
@@ -132,9 +122,6 @@ public class SystemGrafics implements XmlWriteable {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_ORIGIN:
-					this.origin = (Coordinate) created;
-					break;
 				case XML_SCREEN_GRAFIC:
 					ScreenGraficData data = (ScreenGraficData) created;
 					this.graficDatas.put(data.getId(), data);
@@ -170,11 +157,4 @@ public class SystemGrafics implements XmlWriteable {
 		this.configurationMask = configurationMask;
 	}
 
-	public Coordinate getOrigin() {
-		return this.origin;
-	}
-
-	public void setOrigin(Coordinate origin) {
-		this.origin = origin;
-	}
 }

@@ -144,7 +144,7 @@ public class FileHelper {
 			String sourceName = source.getName();
 			String destName = sourceName + '.' + i;
 			if (i > 1) {
-				sourceName += '.' + (i - 1);
+				sourceName += '.' + Integer.toString(i - 1);
 			}
 			File s = new File( source.getParent(), sourceName ) ;
 			File d = new File( source.getParent(), destName ) ;

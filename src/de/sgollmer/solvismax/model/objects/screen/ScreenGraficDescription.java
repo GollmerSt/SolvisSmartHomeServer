@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
@@ -157,16 +156,13 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 
 		if (grafic != null) {
 			if (!grafic.getImage().equals(image)) {
-				String error = "Error: The screen grafic <" + this.getId() + "> was tried to learn again,"
-						+ " but didn't match with the previous. Program terminated.";
-				logger.log(LEARN, error);
-				System.err.println(error);
-				System.exit(ExitCodes.LEARNING_FAILED);
+				String warning = "Warning: The screen grafic <" + this.getId() + "> was tried to learn again,"
+						+ " but didn't match with the previous.";
+				logger.log(LEARN, warning);
 			}
-		} else {
-			solvis.getGrafics().put(this.id, image);
-			logger.log(LEARN, "Screen grafic <" + this.getId() + "> learned.");
 		}
+		solvis.getGrafics().put(this.id, image);
+		logger.log(LEARN, "Screen grafic <" + this.getId() + "> learned.");
 	}
 
 	public void setRectangle(Rectangle rectangle) {

@@ -114,7 +114,7 @@
     			<documentation>
     				Zur Erkennung von Useraktivitäten, Änderungen auf
     				diesem Screen werden nicht als Useraktivität
-    				registriert
+    				registriert. Default: false
     			</documentation>
     		</annotation>
     	</attribute>
@@ -528,16 +528,20 @@ Das ist z.B. für C03.LaufzeitAnforderung2 erforderlich, da diese bei modulierte
 	</complexType>
 
 	<complexType name="ScreenSaver">
-        <annotation>
-        	<documentation>Daten für die Screen-Saver-Erkennung</documentation>
-        </annotation>
-        <sequence>
-			<element name="TimeTopLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
-			<element name="TimeBottomLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
-			<element name="DateTopLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
-			<element name="DateBottomLeft" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
-			<element name="ResetScreenSaver" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+		<annotation>
+			<documentation>
+				Daten für die Screen-Saver-Erkennung
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="TimeDateRectangle" type="tns:Rectangle"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="ResetScreenSaver" type="tns:TouchPoint"
+				maxOccurs="1" minOccurs="1">
+			</element>
 		</sequence>
+		<attribute name="timeHeight" type="int" use="required"></attribute>
 	</complexType>
 
 
@@ -818,14 +822,6 @@ da der user diesen manuell verändert haben könnte.</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="releaseBlockingAfterServiceAccess_ms" type="int"></attribute>
-		<attribute name="watchDogTime_ms" type="int" use="required">
-			<annotation>
-				<documentation>
-					Zeitintervall nach dem immer der WatchDog aufgerufen
-					wird, wenn die Command-Queue leer ist.
-				</documentation>
-			</annotation>
-		</attribute>
 		<attribute name="connectionHoldTime_ms" type="int"
 			use="required">
 			<annotation>
@@ -1068,36 +1064,73 @@ Bit 25:	SolvisBen</documentation></annotation></attribute>
 
 	<complexType name="ErrorDetection">
 		<sequence>
-			<element name="LeftBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+			<element name="LeftBorder" type="tns:Range" maxOccurs="1"
+				minOccurs="1">
 				<annotation>
-					<documentation>Linker Rahmen der Fehlermeldung</documentation>
-				</annotation></element>
-			<element name="RightBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+					<documentation>
+						Linker Rahmen der Fehlermeldung
+					</documentation>
+				</annotation>
+			</element>
+			<element name="RightBorder" type="tns:Range" maxOccurs="1"
+				minOccurs="1">
 				<annotation>
-					<documentation>Rechter Rahmen der Fehlermeldung</documentation>
-				</annotation></element>
-			<element name="TopBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+					<documentation>
+						Rechter Rahmen der Fehlermeldung
+					</documentation>
+				</annotation>
+			</element>
+			<element name="TopBorder" type="tns:Range" maxOccurs="1"
+				minOccurs="1">
 				<annotation>
-					<documentation>Oberer Rahmen der Fehlermeldung</documentation>
-				</annotation></element>
-			<element name="MiddleBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+					<documentation>
+						Oberer Rahmen der Fehlermeldung
+					</documentation>
+				</annotation>
+			</element>
+			<element name="MiddleBorder" type="tns:Range" maxOccurs="1"
+				minOccurs="1">
 				<annotation>
-					<documentation>Mittlerer Rahmen der Fehlermeldung</documentation>
-				</annotation></element>
-			<element name="BottomBorder" type="tns:Range" maxOccurs="1" minOccurs="1">
+					<documentation>
+						Mittlerer Rahmen der Fehlermeldung
+					</documentation>
+				</annotation>
+			</element>
+			<element name="BottomBorder" type="tns:Range" maxOccurs="1"
+				minOccurs="1">
 				<annotation>
-					<documentation>Unterer Rahmen der Fehlermeldung</documentation>
-				</annotation></element>
-			<element name="HhMm" type="tns:Rectangle" maxOccurs="1" minOccurs="1">
+					<documentation>
+						Unterer Rahmen der Fehlermeldung
+					</documentation>
+				</annotation>
+			</element>
+			<element name="HhMm" type="tns:Rectangle" maxOccurs="1"
+				minOccurs="1">
 				<annotation>
-					<documentation>Koordinaten der Zeitanzeige des Home-Bildschirms. Hier ist im Fehlerfall anstelle der Zeit ein runder Button mit einem blinkenden Warnzeichen eingeblendet.
-Daher liefert der Server einen Error-Event, wenn nicht mehr die Uhranzeige eingeblendet ist.</documentation>
-				</annotation></element>
-			<element name="DdMmYy" type="tns:Rectangle" maxOccurs="1" minOccurs="1">
+					<documentation>
+						Koordinaten der Zeitanzeige des
+						Home-Bildschirms. Hier ist im Fehlerfall
+						anstelle der Zeit ein runder Button mit einem
+						blinkenden Warnzeichen eingeblendet. Daher
+						liefert der Server einen Error-Event, wenn nicht
+						mehr die Uhranzeige eingeblendet ist.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="DdMmYy" type="tns:Rectangle" maxOccurs="1"
+				minOccurs="1">
 				<annotation>
-					<documentation>Koordinaten der Datumsanzeige des Home-Bildschirms. Hier ist im Fehlerfall anstelle der Zeit ein runder Button mit einem blinkenden Warnzeichen eingeblendet.
-Daher liefert der Server einen Error-Event, wenn nicht mehr die Uhranzeige eingeblendet ist.</documentation>
-				</annotation></element>
+					<documentation>
+						Koordinaten der Datumsanzeige des
+						Home-Bildschirms. Hier ist im Fehlerfall
+						anstelle der Zeit ein runder Button mit einem
+						blinkenden Warnzeichen eingeblendet. Daher
+						liefert der Server einen Error-Event, wenn nicht
+						mehr die Uhranzeige eingeblendet ist.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="ErrorCondition" type="tns:ErrorCondition" maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
@@ -1124,5 +1157,10 @@ Daher liefert der Server einen Error-Event, wenn nicht mehr die Uhranzeige einge
 		<sequence>
 			<element name="ServiceScreen" type="tns:ScreenRef" maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
+	</complexType>
+
+	<complexType name="ErrorCondition">
+		<attribute name="channelId" type="string" use="required"></attribute>
+		<attribute name="value" type="boolean" use="required"></attribute>
 	</complexType>
 </schema>

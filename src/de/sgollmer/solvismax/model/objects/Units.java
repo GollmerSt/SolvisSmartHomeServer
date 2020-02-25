@@ -96,6 +96,7 @@ public class Units {
 		private final int defaultReadMeasurementsInterval_ms;
 		private final int forcedUpdateInterval_ms;
 		private final int bufferedInterval_ms;
+		private final int watchDogTime_ms;
 		private final boolean delayAfterSwitchingOnEnable;
 		private final ClockAdjustment clockAdjustment;
 		private final boolean fwLth2_21_02A;
@@ -103,7 +104,7 @@ public class Units {
 
 		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
 				int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms, int forcedUpdateInterval_ms,
-				int bufferedInterval_ms, boolean delayAfterSwitchingOn, boolean fwLth2_21_02A,
+				int bufferedInterval_ms, int watchDogTime_ms, boolean delayAfterSwitchingOn, boolean fwLth2_21_02A,
 				ClockAdjustment clockAdjustment, Features features) {
 			this.id = id;
 			this.type = type;
@@ -115,6 +116,7 @@ public class Units {
 			this.defaultReadMeasurementsInterval_ms = defaultReadMeasurementsInterval_ms;
 			this.forcedUpdateInterval_ms = forcedUpdateInterval_ms;
 			this.bufferedInterval_ms = bufferedInterval_ms;
+			this.watchDogTime_ms = watchDogTime_ms;
 			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
 			this.clockAdjustment = clockAdjustment;
 			this.fwLth2_21_02A = fwLth2_21_02A;
@@ -146,6 +148,10 @@ public class Units {
 			return features;
 		}
 
+		public int getWatchDogTime_ms() {
+			return watchDogTime_ms;
+		}
+
 		public static class Creator extends CreatorByXML<Unit> {
 
 			private String id;
@@ -158,6 +164,7 @@ public class Units {
 			private int defaultReadMeasurementsInterval_ms;
 			private int forcedUpdateInterval_ms;
 			private int bufferedInterval_ms;
+			private int watchDogTime_ms;
 			private boolean delayAfterSwitchingOnEnable = false;
 			private boolean fwLth2_21_02A = false;
 			private ClockAdjustment clockAdjustment;
@@ -200,6 +207,9 @@ public class Units {
 					case "bufferedInterval_ms":
 						this.bufferedInterval_ms = Integer.parseInt(value);
 						break;
+					case "watchDogTime_ms":
+						this.watchDogTime_ms = Integer.parseInt(value);
+						break;
 					case "delayAfterSwitchingOnEnable":
 						this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value);
 						break;
@@ -217,7 +227,7 @@ public class Units {
 				}
 				return new Unit(id, type, url, account, password, defaultAverageCount, measurementHysteresisFactor,
 						defaultReadMeasurementsInterval_ms, forcedUpdateInterval_ms, bufferedInterval_ms,
-						delayAfterSwitchingOnEnable, fwLth2_21_02A, clockAdjustment, features);
+						watchDogTime_ms, delayAfterSwitchingOnEnable, fwLth2_21_02A, clockAdjustment, features);
 
 			}
 
