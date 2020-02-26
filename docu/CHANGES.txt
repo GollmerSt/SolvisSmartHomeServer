@@ -1,6 +1,6 @@
 Ä N D E R U N G EN
 
-Version 00.10.07
+Version 00.11.01
 
 	11.02.2020	Die berecnneten Werte (Xx...) wurden erst dann zum Client geschickt, wenn sie sich nach dem Neustart
 				des Servers einmal verändert hatten.
