@@ -56,7 +56,7 @@ public class WatchDog {
 				case REMOTE_CONNECTED:
 					synchronized (WatchDog.this) {
 						humanAccess = HumanAccess.SERVICE;
-						serviceScreenDetected = true ;
+						serviceScreenDetected = true;
 						humanAccessChanged();
 					}
 			}
@@ -194,9 +194,11 @@ public class WatchDog {
 					finished = false;
 					realScreen = null; // read image again
 					this.screenSaverActive = false;
-					logger.info(this.saver.getDebugInfo());
 				} else {
 					this.solvis.setScreenSaverActive(false);
+					if (!this.saver.getDebugInfo().isEmpty()) {
+						logger.info(this.saver.getDebugInfo());
+					}
 				}
 			}
 			if (!finished) {

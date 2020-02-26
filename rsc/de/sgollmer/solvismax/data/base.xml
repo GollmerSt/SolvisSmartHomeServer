@@ -13,27 +13,27 @@
             watchDogTime_ms="30000" delayAfterSwitchingOnEnable="true">
             <tns:ClockAdjustment enable="true"
                 fineLimitUpper_ms="3000" fineLimitLower_ms="-5000"
-                aproximatlySetAjust_ms="1000" burstLength="3" />
+                aproximatlySetAjust_ms="1000" burstLength="0" />
             <tns:Features>
                 <tns:ClockTuning>false</tns:ClockTuning>
                     <!--  Die Uhr wird automatisch eingestellt, Genauigkeit +- 31s  -->
                 <tns:ClockFineTuning>false</tns:ClockFineTuning>
                     <!--  Die Uhr wird zusätzlich fein abgeglichen, Genauigkeit -5s/+3s  -->
                 <tns:HeatingBurnerTimeSynchronisation>false</tns:HeatingBurnerTimeSynchronisation>
-                    <!--  Synchronisation der minutengenauen Brennerlaufzeiten 
+                    <!--  Synchronisation der sekundengenauen Brennerlaufzeiten 
                           mit den stündlichen der SolvisControl  -->
                 <tns:UpdateAfterUserAccess>false</tns:UpdateAfterUserAccess>
                     <!--  Nach jedem Userzugriff werden automatisch der Zustand der Anlage abgefragt  -->
                 <tns:DetectServiceAccess>false</tns:DetectServiceAccess>
                     <!--  Es werden die Service-Screens "Schornsteinfeger", "Nutzerauswahl", "Nutzerauswahl-Code"
                           besonders behandlt, werden diese erkannt, sind sämtliche Gui-Actionen für 1h
-                          deaktiviert. Jeder Anwender-Eingriff in diser Zeit triggert die Stunde erneut.  -->
+                          deaktiviert. Jeder Anwender-Eingriff in dieser Zeit triggert die Stunde erneut.  -->
                 <tns:PowerOffIsServiceAccess>false</tns:PowerOffIsServiceAccess>
                     <!--  Wird ein Power-Off der Anlage erkannt, wird der wie ein Zugriff auf die
                           Service-Screens behandelt (siehe vorheriges Element) -->
                  <tns:OnlyMeasurements>true</tns:OnlyMeasurements>   <!-- true: GUI controlling disabled -->
                     <!--  Bei true werden sämtliche Gui-Aktivitäten verhindert. Das Modul verhält sich so
-                          wie das bisherige, ein aktiver Eingriff vom Server auf die SolvisControl erfolgt nicht:  -->
+                          wie das bisherige, ein aktiver Eingriff vom Server auf die SolvisControl erfolgt nicht.  -->
             </tns:Features>
         </tns:Unit>
     </tns:Units>
