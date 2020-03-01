@@ -45,24 +45,22 @@
 	<complexType name="Unit">
 
 		<sequence>
+			<element name="ClockAdjustment" type="tns:ClockAdjustment"
+				maxOccurs="1" minOccurs="0">
+			</element>
 			<element name="Features" type="tns:Features" maxOccurs="1"
 				minOccurs="1">
 			</element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
-				<documentation>
-					Identifikation der Solvis-Anlage
-				</documentation>
-			</annotation>
-		</attribute>
+				<documentation>Identifikation der Solvis-Anlage</documentation>
+			</annotation></attribute>
 		<attribute name="type" use="required">
-			<annotation>
-				<documentation>
-					Typ der Anlage (Max oder Ben)
-				</documentation>
-			</annotation>
-			<simpleType>
+            <annotation>
+            	<documentation>Typ der Anlage (Max oder Ben)</documentation>
+            </annotation>
+            <simpleType>
 				<restriction base="string">
 					<enumeration value="SolvisMax"></enumeration>
 					<enumeration value="SolvisBen"></enumeration>
@@ -71,40 +69,25 @@
 		</attribute>
 		<attribute name="fwLth2_21_02A" type="boolean" use="optional">
 			<annotation>
-				<documentation>
-					Zu setzen, wenn Remote-Firmware älter als
-					1714SP4110-2_21_02A
-				</documentation>
-			</annotation>
-		</attribute>
+				<documentation>Zu setzen, wenn Remote-Firmware älter als 1714SP4110-2_21_02A</documentation>
+			</annotation></attribute>
 		<attribute name="url" type="string" use="optional">
 			<annotation>
-				<documentation>
-					Url-Pfad der Solvis-Anlage
-				</documentation>
-			</annotation>
-		</attribute>
+				<documentation>Url-Pfad der Solvis-Anlage</documentation>
+			</annotation></attribute>
 		<attribute name="account" type="string" use="optional">
 			<annotation>
 				<documentation>Account der Solvis-Anlage</documentation>
-			</annotation>
-		</attribute>
+			</annotation></attribute>
 		<attribute name="password" type="string" use="optional">
 			<annotation>
-				<documentation>
-					Password der Solvis-Anlage
-				</documentation>
-			</annotation>
-		</attribute>
+				<documentation>Password der Solvis-Anlage</documentation>
+			</annotation></attribute>
 		<attribute name="defaultAverageCount" type="int"
 			use="required">
-			<annotation>
-				<documentation>
-					Anzahl der Werte über den analoge Messwerte
-					gemittelt werden (Kesseölthemperaturen, Außen, Innen
-					etc.)
-				</documentation>
-			</annotation>
+            <annotation>
+            	<documentation>Anzahl der Werte über den analoge Messwerte gemittelt werden (Kesseölthemperaturen, Außen, Innen etc.)</documentation>
+            </annotation>
 		</attribute>
 		<attribute name="measurementHysteresisFactor" type="int"
 			use="required">
@@ -127,58 +110,34 @@
 		</attribute>
 		<attribute name="defaultReadMeasurementsInterval_ms" type="int"
 			use="required">
-			<annotation>
-				<documentation>
-					Messintervall nach dem die Kanäle immer wieder
-					abgefragt werden
-				</documentation>
-			</annotation>
+            <annotation>
+            	<documentation>Messintervall nach dem die Kanäle immer wieder abgefragt werden</documentation>
+            </annotation>
 		</attribute>
 		<attribute name="forcedUpdateInterval_ms" type="int"
 			use="required">
-			<annotation>
-				<documentation>
-					Update intervall, nach dessen Ablauf sämtliche
-					Messdaten zum Client übertragen werden. 0: nie
-				</documentation>
-			</annotation>
+            <annotation>
+            	<documentation>Update intervall, nach dessen Ablauf sämtliche Messdaten zum Client übertragen werden. 0: nie</documentation>
+            </annotation>
 		</attribute>
-        <attribute name="doubleUpdateInterval_ms" type="int"></attribute>
-        <attribute name="bufferedInterval_ms" type="int"
+		<attribute name="bufferedInterval_ms" type="int"
 			use="required">
-			<annotation>
-				<documentation>
-					Zyklus, nach dem die Messdaten (nur veränderte) zum
-					Client gesendet werden. Nur wenn über eine längere
-					Zeit vorher keinen Änderung erfolgte und ein
-					stärkerer Anstieg/Abfall erkannt wird, wird der
-					Messwert früher geschickt. Dadurch folgen trotz
-					seltener Stützpunkte recht gut den wirklichen
-					Werten.
-				</documentation>
-			</annotation>
+            <annotation>
+            	<documentation>Zyklus, nach dem die Messdaten (nur veränderte) zum Client gesendet werden. Nur wenn über eine längere Zeit vorher keinen Änderung erfolgte
+und ein stärkerer Anstieg/Abfall erkannt wird, wird der Messwert früher geschickt. Dadurch folgen trotz seltener Stützpunkte recht gut den wirklichen
+Werten.</documentation>
+            </annotation>
 		</attribute>
 		<attribute name="watchDogTime_ms" type="int" use="required">
 			<annotation>
-				<documentation>
-					Periode, in der immer der Bildschirm auf Änderungen
-					geprüft wird. Bildschirmschoner, Fehlerbildschirme,
-					Anwender- und Server Zugriffe werden dabei erkannt.
-				</documentation>
-			</annotation>
-		</attribute>
+				<documentation>Periode, in der immer der Bildschirm auf Änderungen geprüft wird. Bildschirmschoner, Fehlerbildschirme, Anwender- und Server Zugriffe werden dabei erkannt.</documentation>
+			</annotation></attribute>
 		<attribute name="delayAfterSwitchingOnEnable" type="boolean"
 			use="required">
-			<annotation>
-				<documentation>
-					Einige Sensoren benötigen nach einem Power-On der
-					Anlage relatic viel Zeit, bis sie die richtigen
-					Werte anzeigen. Um Diagramme nicht zu verfälschen,
-					liefern bei delayAfterSwitchingOnEnable = true die
-					Sensoren verzögert die Daten (bestimmbar durch
-					control.xml) an den Client.
-				</documentation>
-			</annotation>
+            <annotation>
+            	<documentation>Einige Sensoren benötigen nach einem Power-On der Anlage relatic viel Zeit, bis sie die richtigen Werte anzeigen.
+Um Diagramme nicht zu verfälschen, liefern bei delayAfterSwitchingOnEnable = true die Sensoren verzögert die Daten (bestimmbar durch control.xml) an den Client.</documentation>
+            </annotation>
 		</attribute>
 	</complexType>
 	<complexType name="ExecutionData">
@@ -207,6 +166,38 @@
 		</attribute>
 	</complexType>
 
+	<complexType name="ClockAdjustment">
+        <annotation>
+        	<documentation>Element, das die Art ders Abgleichs der Solvis-Uhr bestimmt</documentation>
+        </annotation>
+        <attribute name="enable" type="boolean" use="required">
+			<annotation>
+				<documentation>Aktivieren des Abgleichs der Solvis-Zeit an die Systemzeit des Servers
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="fineLimitUpper_ms" type="int">
+			<annotation>
+				<documentation>Unterer Limit (i.A. positiv), von dem der Uhren-Feinabgleich erfolgen soll.
+Geht die Solvis-Uhr nach, solte dieser Wert großzügig gewählt werden oder auf den Feinabgleich ganz verzichtet werden</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="fineLimitLower_ms" type="int">
+		<annotation>
+        	<documentation>Unterer Limit (i.A. negativ), von dem der Uhren-Feinabgleich erfolgen soll.
+Geht die Solvis-Uhr nach, solte dieser Wert großzügig gewählt werden oder auf den Feinabgleich ganz verzichtet werden</documentation>
+        </annotation></attribute>
+        <attribute name="aproximatlySetAjust_ms" type="int">
+			<annotation>
+				<documentation>Zeit, um die die Uhr beim Setzen der Uhr "stehen" bleibt. Bei 0 ist das fine adjustment ausgeschaltet
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="burstLength" type="int">
+			<annotation>
+				<documentation>Der Feinabgleich erfolgt in Teilen alle 10 Minuten. Die burstLength ist die max. Anzahl der Stellvorgänge pro Teil.</documentation>
+			</annotation></attribute>
+	</complexType>
 
 	<complexType name="Features">
 		<annotation>
@@ -223,6 +214,12 @@
 				minOccurs="1">
                 <annotation>
                 	<documentation>Die Solvis-Uhr wird +-31s genau eingestellt</documentation>
+                </annotation>
+			</element>
+			<element name="ClockFineTuning" type="boolean" maxOccurs="1"
+				minOccurs="1">
+                <annotation>
+                	<documentation>Die Solvis-Uhr wird deutlich genauer eingestellt. Die Grenzen werdendurch fineLimitUpper_ms und fineLimitLower_ms bestimmt.</documentation>
                 </annotation>
 			</element>
 			<element name="HeatingBurnerTimeSynchronisation"

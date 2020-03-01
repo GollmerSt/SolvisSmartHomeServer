@@ -182,7 +182,7 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 			if (check) {
 
 				this.lastCheckTime = time;
-				this.solvis.execute(new CommandControl(((Control) source).getDescription()));
+				this.solvis.execute(new CommandControl(((Control) source).getDescription(), this.solvis));
 				logger.debug("Update of <" + burnerCalcId + "> requested.");
 			}
 

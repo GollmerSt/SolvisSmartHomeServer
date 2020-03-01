@@ -1,25 +1,8 @@
 Ä N D E R U N G EN
 
-Version 00.11.02
-
-	29.02.2020	Fine-Tuning der Solvis-Uhr entfernt. Da das Setzen der Uhr sporadisch zu Abstürzen der Solvis-Uhr
-				führt und an meiner Anlage die Solvis-Anlage sich danach nicht mehr in den vorherigen Zustand befand
-				(Timer-Betrieb anstelle von Tag), wurde dies jetzt deaktiviert. Ddurch entfallen im base.xml das Element
-				"ClockAdjustment" komplett sowie das Feature "ClockFineTuning".
-				
-	01.03.2020	Command-Queue weiter optimiert. Es werden jetzt immer alle definierten Werte eines Screens ausgelesen, auch
-				wenn nur einer ausgelesen bzw. verändert wird.
-				
-				Parameter "doubleUpdateInterval_ms" in der base.xml eingeführt. Mit diesem Parameter bewirkt man
-				symetrisch um den Zeitpunkt, zu dem forcedUpdateInterval_ms wirkt, ein Senden von zwei Messungspaketen, eines zum
-				im Abstand von "doubleUpdateInterval_ms". Setzt man das forcedUpdateInterval auf 1h, so erreicht man  in FHEM in Diagrammen auch bei maximaler
-				bei FHEM-Diagrammen auch bei Vergrößerungen durchgehende Linien.
-				
-				
-
 Version 00.11.01
 
-	11.02.2020	Die berechneten Werte (Xx...) wurden erst dann zum Client geschickt, wenn sie sich nach dem Neustart
+	11.02.2020	Die berecnneten Werte (Xx...) wurden erst dann zum Client geschickt, wenn sie sich nach dem Neustart
 				des Servers einmal verändert hatten.
 				
 				Kanal S11 korrigiert. Name und Einheit geändert

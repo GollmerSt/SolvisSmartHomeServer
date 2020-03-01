@@ -25,6 +25,7 @@ import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.Screen.ScreenTouch;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -209,8 +210,22 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 			}
 		});
 		for (ChannelDescription description : descriptions) {
-			solvis.execute(new CommandControl(description));
+			solvis.execute(new CommandControl(description, solvis));
 		}
 
+	}
+
+	public Collection<ChannelDescription> getChannelDescriptions(Screen screen, Solvis solvis) {
+		Collection<ChannelDescription> result = new ArrayList<>();
+		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
+			ChannelDescription description = descriptionsC.get(solvis);
+			if (description != null) {
+				Screen channelScreen = descriptionsC.get(solvis).getScreen(solvis.getConfigurationMask());
+				if (channelScreen != null && screen == channelScreen) {
+					result.add(description);
+				}
+			}
+		}
+		return result;
 	}
 }

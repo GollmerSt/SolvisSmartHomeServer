@@ -27,6 +27,7 @@ import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class Distributor extends Observable<JsonPackage> {
@@ -84,8 +85,8 @@ public class Distributor extends Observable<JsonPackage> {
 	private final int bufferedIntervall_ms;
 	private boolean burstUpdate = false;
 
-	public Distributor(int bufferedIntervall_ms) {
-		this.bufferedIntervall_ms = bufferedIntervall_ms;
+	public Distributor(Unit unit) {
+		this.bufferedIntervall_ms = unit.getBufferedInterval_ms();
 		if (bufferedIntervall_ms > 0) {
 			this.periodicBurstThread = new PeriodicBurstThread();
 			this.periodicBurstThread.start();

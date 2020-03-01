@@ -215,6 +215,8 @@ public class SolvisWorkers {
 						Handling handling = command.getHandling(cmp, solvis);
 						if (handling.mustInhibitInQueue()) {
 							cmp.setInhibit(true);
+							logger.debug(
+									"Command <" + cmp.toString() + "> was inhibited.");
 						}
 						if (handling.isInhibitAppend()) {
 							add = false;
@@ -232,14 +234,14 @@ public class SolvisWorkers {
 					if (command.first()) {
 						this.queue.addFirst(command);
 						logger.debug(
-								"Command <" + command.toString() + "> was added to the beginning of the command queue");
+								"Command <" + command.toString() + "> was added to the beginning of the command queue.");
 					} else if (itInsert != null) {
 						itInsert.next();
 						itInsert.add(command);
-						logger.debug("Command <" + command.toString() + "> was inserted in the command queue");
+						logger.debug("Command <" + command.toString() + "> was inserted in the command queue.");
 					} else {
 						this.queue.add(command);
-						logger.debug("Command <" + command.toString() + "> was added to the end of the command queue");
+						logger.debug("Command <" + command.toString() + "> was added to the end of the command queue.");
 					}
 					this.notifyAll();
 					watchDog.bufferNotEmpty();

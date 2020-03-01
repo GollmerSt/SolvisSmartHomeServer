@@ -47,7 +47,7 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 			if (this.lastHumanAccess != HumanAccess.NONE && humanAccess != this.lastHumanAccess ) {
 				ChannelSourceI channelSource = ByScreenChange.this.source;
 				if (channelSource instanceof Control) {
-					solvis.execute(new CommandControl(((Control) channelSource).getDescription()));
+					solvis.execute(new CommandControl(((Control) channelSource).getDescription(), this.solvis));
 				}
 			}
 			this.lastHumanAccess = humanAccess ;

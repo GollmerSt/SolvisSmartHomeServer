@@ -225,7 +225,7 @@ public class CommandHandler {
 		} catch (TypeError e) {
 			throw new JsonError(e.getMessage() + " Located in revceived Json package.");
 		}
-		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData));
+		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData, solvis));
 	}
 
 	private void get(GetPackage jsonPackage, Client client) {
@@ -233,7 +233,7 @@ public class CommandHandler {
 		Solvis solvis = assignments.getSolvis();
 		ChannelDescription description = solvis.getChannelDescription(jsonPackage.getId());
 		logger.info("Channel <" + description.getId() + "> will be updated by GET command");
-		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description));
+		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, solvis));
 	}
 
 	private void restart() {

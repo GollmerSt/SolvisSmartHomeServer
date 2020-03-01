@@ -14,31 +14,46 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public abstract class Command {
-	
-	private int failCount = 0 ;
-	
+
+	private int failCount = 0;
+
 	public abstract boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn;
 
 	public Screen getScreen(Solvis solvis) {
-		return null ;
+		return null;
 	}
 
 	public boolean isInhibit() {
-		return false ;
+		return false;
 	}
 
 	public void setInhibit(boolean inhibit) {
 	};
-		
+
 	public static class Handling {
-		private final boolean inQueueInhibt ;
-		private final boolean inhibitAppend ;
-		private final boolean insert ;
-			
-		public Handling(boolean inQueueInhibt, boolean inhibitAppend, boolean insert ) {
-			this.inQueueInhibt = inQueueInhibt ;
-			this.inhibitAppend = inhibitAppend ;
+		private final boolean inQueueInhibt;
+		private final boolean inhibitAppend;
+		private final boolean insert;
+		private final boolean same;
+		
+		/**
+		 * 
+		 * @param inQueueInhibit		True: The Execution of the command within the queue isn't necessary,
+		 * 									  because the effect of new command is overwriting the effect of
+		 * 									  the old one.
+		 * @param inhibitAppend			True: New command is ignored, because he is redundant
+		 * @param insert				True: The new command must inserted after queue command
+		 */
+
+		public Handling(boolean inQueueInhibit, boolean inhibitAppend, boolean insert) {
+			this(inQueueInhibit, inhibitAppend, insert, false);
+		}
+
+		public Handling(boolean inQueueInhibt, boolean inhibitAppend, boolean insert, boolean same) {
+			this.inQueueInhibt = inQueueInhibt;
+			this.inhibitAppend = inhibitAppend;
 			this.insert = insert;
+			this.same = same;
 		}
 
 		public boolean mustInhibitInQueue() {
@@ -48,26 +63,30 @@ public abstract class Command {
 		public boolean isInhibitAppend() {
 			return inhibitAppend;
 		}
-		
+
 		public boolean mustInsert() {
-			return insert ;
+			return insert;
 		}
 
+		public boolean isSame() {
+			return same;
+		}
+		
 	}
-	
-	public Handling getHandling( Command queueEntry, Solvis solvis  ) {
+
+	public Handling getHandling(Command queueEntry, Solvis solvis) {
 		return new Handling(false, false, false);
 	}
-	
+
 	public boolean first() {
-		return false ;
+		return false;
 	}
 
 	public int getFailCount() {
-		return failCount ;
+		return failCount;
 	}
-	
+
 	public void incrementFailCount() {
-		++this.failCount ;
+		++this.failCount;
 	}
 }

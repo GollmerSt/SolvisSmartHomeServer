@@ -67,7 +67,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 	private final String timeChannelId;
 	private final String screenId;
 	private final String okScreenId;
-	private final Rectangle secondsScan;
+//	private final Rectangle secondsScan;
 	private final List<DatePart> dateParts;
 	private final TouchPoint upper;
 	private final TouchPoint lower;
@@ -93,7 +93,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		this.upper = upper;
 		this.lower = lower;
 		this.ok = ok;
-		this.secondsScan = secondsScan;
+//		this.secondsScan = secondsScan;
 		this.disableClockSetting = disableClockSetting;
 	}
 
@@ -128,20 +128,20 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		private final long solvisAdjustTime;
 		private final long realAdjustTime;
 		private final long startAdjustTime;
-		private final int fineAdjusts;
+//		private final int fineAdjusts;
 
 		public NextAdjust(long solvisAdjustTime, long realAdjustTime, long startAdjustTime) {
 			this.solvisAdjustTime = solvisAdjustTime;
 			this.realAdjustTime = realAdjustTime;
 			this.startAdjustTime = startAdjustTime;
-			this.fineAdjusts = -1;
+//			this.fineAdjusts = -1;
 		}
 
 		public NextAdjust(int fineAdjusts, long startAdjustTime) {
 			this.solvisAdjustTime = -1;
 			this.realAdjustTime = -1;
 			this.startAdjustTime = startAdjustTime;
-			this.fineAdjusts = fineAdjusts;
+//			this.fineAdjusts = fineAdjusts;
 		}
 
 		public long getStartAdjustTime() {
@@ -210,10 +210,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 	public void instantiate(Solvis solvis) {
 
-		if (solvis.getUnit().getClockAdjustment().isEnable()) {
-			Executable executable = new Executable(solvis);
-			solvis.registerObserver(executable);
-		}
+		Executable executable = new Executable(solvis);
+		solvis.registerObserver(executable);
 	}
 
 	public static class Creator extends CreatorByXML<ClockMonitor> {
@@ -331,9 +329,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		private AdjustmentType adjustmentTypeRequestPending = AdjustmentType.NONE;
 		private final Solvis solvis;
 		private ClockAdjustmentThread adjustmentThread = null;
-		private final ClockAdjustment clockAdjustment;
 		private final StrategyAdjust strategyAdjust = new StrategyAdjust();
-		private final StrategyFineAdjust strategyFineAdjust = new StrategyFineAdjust();
+//		private final StrategyFineAdjust strategyFineAdjust = new StrategyFineAdjust();
 		private final AverageInt averageDiff = new AverageInt(30);
 		private boolean burner = false;
 		private boolean hotWaterPump = false;
@@ -341,22 +338,17 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 		public Executable(Solvis solvis) {
 			this.solvis = solvis;
-			this.clockAdjustment = solvis.getUnit().getClockAdjustment();
-			if (this.clockAdjustment.isEnable()) {
-				solvis.registerAbortObserver(new ObserverI<Boolean>() {
+			solvis.registerAbortObserver(new ObserverI<Boolean>() {
 
-					@Override
-					public void update(Boolean data, Object source) {
-						if (adjustmentThread != null) {
-							adjustmentThread.abort();
-						}
-
+				@Override
+				public void update(Boolean data, Object source) {
+					if (adjustmentThread != null) {
+						adjustmentThread.abort();
 					}
-				});
-			} else {
-				this.adjustmentThread = null;
 
-			}
+				}
+			});
+
 		}
 
 		@Override
@@ -412,28 +404,28 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 					return;
 				}
 
-				if (!this.solvis.getUnit().getFeatures().isClockFineTuning()
-						|| this.adjustmentTypeRequestPending == AdjustmentType.NORMAL
-						|| clockAdjustment.getBurstLength() == 0 || (clockAdjustment.getFineLimitLower_ms() < diff
-								&& diff < clockAdjustment.getFineLimitUpper_ms())) {
-					return;
-				}
-				int delta = diff;
-				if (delta < 0) {
-					delta = 60000 + delta;
-				}
-
-				int fineAdjusts = delta / clockAdjustment.getAproximatlySetAjust_ms();
-				fineAdjusts = fineAdjusts == 0 ? 1 : fineAdjusts;
-				int burstLength = clockAdjustment.getBurstLength();
-				fineAdjusts = fineAdjusts > burstLength ? burstLength : fineAdjusts;
-
-				long current = System.currentTimeMillis();
-				long startAdjustTime = calculateNextAdjustmentTime(current, Constants.TIME_FINE_ADJUSTMENT_MS_N);
-				NextAdjust nextAdjust = new NextAdjust(fineAdjusts, startAdjustTime);
-
-				this.adjustmentTypeRequestPending = AdjustmentType.FINE;
-				this.sheduleAdjustment(strategyFineAdjust, nextAdjust);
+//				if (!this.solvis.getUnit().getFeatures().isClockFineTuning()
+//						|| this.adjustmentTypeRequestPending == AdjustmentType.NORMAL
+//						|| clockAdjustment.getBurstLength() == 0 || (clockAdjustment.getFineLimitLower_ms() < diff
+//								&& diff < clockAdjustment.getFineLimitUpper_ms())) {
+//					return;
+//				}
+//				int delta = diff;
+//				if (delta < 0) {
+//					delta = 60000 + delta;
+//				}
+//
+//				int fineAdjusts = delta / clockAdjustment.getAproximatlySetAjust_ms();
+//				fineAdjusts = fineAdjusts == 0 ? 1 : fineAdjusts;
+//				int burstLength = clockAdjustment.getBurstLength();
+//				fineAdjusts = fineAdjusts > burstLength ? burstLength : fineAdjusts;
+//
+//				long current = System.currentTimeMillis();
+//				long startAdjustTime = calculateNextAdjustmentTime(current, Constants.TIME_FINE_ADJUSTMENT_MS_N);
+//				NextAdjust nextAdjust = new NextAdjust(fineAdjusts, startAdjustTime);
+//
+//				this.adjustmentTypeRequestPending = AdjustmentType.FINE;
+//				this.sheduleAdjustment(strategyFineAdjust, nextAdjust);
 			}
 		}
 
@@ -547,93 +539,93 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			}
 		}
 
-		private class StrategyFineAdjust implements AdjustStrategy {
-
-			@Override
-			public boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException {
-
-				int configurationMask = solvis.getConfigurationMask();
-
-				Screen clockAdjustScreen = screen.get(configurationMask);
-				Screen okScreen = ClockMonitor.this.okScreen.get(configurationMask);
-
-				if (clockAdjustScreen == null) {
-					logger.error(
-							"Clock adjust screen not defined in the current configuratiion. Adjustment terminated");
-					return false;
-				}
-
-				int fineAdjusts = nextAdjust.fineAdjusts;
-
-				boolean success = true;
-
-				for (; fineAdjusts > 0; --fineAdjusts) {
-
-					boolean preparationSuccessfull = false;
-					for (int repeat = 0; !preparationSuccessfull && repeat < Constants.SET_REPEATS; ++repeat) {
-						success = false;
-						if (!okScreen.goTo(solvis)) {
-							logger.info("Fine tuning not successfull, will be repeated");
-							continue;
-						}
-						int secondsFormer = -1;
-						int seconds = -1;
-						boolean finished = false;
-						for (int repSec = 0; !finished && repSec < Constants.SET_REPEATS + 2; ++repSec) {
-							secondsFormer = seconds;
-							OcrRectangle ocr = new OcrRectangle(solvis.getCurrentScreen().getImage(), secondsScan);
-							String secondsString = ocr.getString();
-							solvis.clearCurrentScreen();
-							try {
-								seconds = Integer.parseInt(secondsString);
-							} catch (NumberFormatException e) {
-								seconds = -1;
-							}
-							if (seconds >= 0 && secondsFormer == seconds) {
-								finished = true;
-							} else {
-								AbortHelper.getInstance().sleep(100);
-							}
-						}
-						if (!finished) {
-							logger.info("Fine tuning not successfull, will be repeated");
-							continue;
-						}
-						if (seconds > 45) {
-							AbortHelper.getInstance().sleep((61 - seconds) * 1000);
-						}
-						success = true;
-						preparationSuccessfull = true;
-					}
-					if (!clockAdjustScreen.goTo(solvis)) {
-						logger.error("Fine tuning not successfull, will be repeated");
-						success = false;
-						break;
-					}
-					if (!adjustmentEnable) {
-						success = false;
-						break;
-					}
-					solvis.send(ok);
-					if (solvis.getCurrentScreen().get() != okScreen) {
-						logger.error("Fine tuning not successfull, will be repeated");
-						success = false;
-						break;
-					}
-				}
-				adjustmentTypeRequestPending = AdjustmentType.NONE;
-
-				if (success) {
-					logger.info("Fine adjustment of the solvis clock successful.");
-				} else {
-					logger.error("Fine adjustment of the solvis clock not successful.");
-
-				}
-				averageDiff.clear();
-				return success;
-			}
-
-		}
+//		private class StrategyFineAdjust implements AdjustStrategy {
+//
+//			@Override
+//			public boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException {
+//
+//				int configurationMask = solvis.getConfigurationMask();
+//
+//				Screen clockAdjustScreen = screen.get(configurationMask);
+//				Screen okScreen = ClockMonitor.this.okScreen.get(configurationMask);
+//
+//				if (clockAdjustScreen == null) {
+//					logger.error(
+//							"Clock adjust screen not defined in the current configuratiion. Adjustment terminated");
+//					return false;
+//				}
+//
+//				int fineAdjusts = nextAdjust.fineAdjusts;
+//
+//				boolean success = true;
+//
+//				for (; fineAdjusts > 0; --fineAdjusts) {
+//
+//					boolean preparationSuccessfull = false;
+//					for (int repeat = 0; !preparationSuccessfull && repeat < Constants.SET_REPEATS; ++repeat) {
+//						success = false;
+//						if (!okScreen.goTo(solvis)) {
+//							logger.info("Fine tuning not successfull, will be repeated");
+//							continue;
+//						}
+//						int secondsFormer = -1;
+//						int seconds = -1;
+//						boolean finished = false;
+//						for (int repSec = 0; !finished && repSec < Constants.SET_REPEATS + 2; ++repSec) {
+//							secondsFormer = seconds;
+//							OcrRectangle ocr = new OcrRectangle(solvis.getCurrentScreen().getImage(), secondsScan);
+//							String secondsString = ocr.getString();
+//							solvis.clearCurrentScreen();
+//							try {
+//								seconds = Integer.parseInt(secondsString);
+//							} catch (NumberFormatException e) {
+//								seconds = -1;
+//							}
+//							if (seconds >= 0 && secondsFormer == seconds) {
+//								finished = true;
+//							} else {
+//								AbortHelper.getInstance().sleep(100);
+//							}
+//						}
+//						if (!finished) {
+//							logger.info("Fine tuning not successfull, will be repeated");
+//							continue;
+//						}
+//						if (seconds > 45) {
+//							AbortHelper.getInstance().sleep((61 - seconds) * 1000);
+//						}
+//						success = true;
+//						preparationSuccessfull = true;
+//					}
+//					if (!clockAdjustScreen.goTo(solvis)) {
+//						logger.error("Fine tuning not successfull, will be repeated");
+//						success = false;
+//						break;
+//					}
+//					if (!adjustmentEnable) {
+//						success = false;
+//						break;
+//					}
+//					solvis.send(ok);
+//					if (solvis.getCurrentScreen().get() != okScreen) {
+//						logger.error("Fine tuning not successfull, will be repeated");
+//						success = false;
+//						break;
+//					}
+//				}
+//				adjustmentTypeRequestPending = AdjustmentType.NONE;
+//
+//				if (success) {
+//					logger.info("Fine adjustment of the solvis clock successful.");
+//				} else {
+//					logger.error("Fine adjustment of the solvis clock not successful.");
+//
+//				}
+//				averageDiff.clear();
+//				return success;
+//			}
+//
+//		}
 
 		private class ClockAdjustmentThread extends Helper.Runnable {
 

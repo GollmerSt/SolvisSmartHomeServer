@@ -15,7 +15,6 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.AccountInfo;
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.model.objects.clock.ClockAdjustment;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -27,7 +26,6 @@ public class Units {
 	private static final String XML_UNITS_UNIT = "Unit";
 	private static final String XML_FEATURES = "Features";
 	private static final String XML_CLOCK_TUNING = "ClockTuning";
-	private static final String XML_CLOCK_FINE_TUNING = "ClockFineTuning";
 	private static final String XML_HEATING_BURNER_TIME_SYNC = "HeatingBurnerTimeSynchronisation";
 	private static final String XML_UPDATE_AFTER_USER_ACCESS = "UpdateAfterUserAccess";
 	private static final String XML_DETECT_SERVICE_ACCESS = "DetectServiceAccess";
@@ -84,8 +82,6 @@ public class Units {
 
 	public static class Unit implements AccountInfo {
 
-		private static final String XML_CLOCK_ADJUSTMENT = "ClockAdjustment";
-
 		private final String id;
 		private final String type;
 		private final String url;
@@ -95,17 +91,18 @@ public class Units {
 		private final int measurementHysteresisFactor;
 		private final int defaultReadMeasurementsInterval_ms;
 		private final int forcedUpdateInterval_ms;
+		private final int doubleUpdateInterval_ms;
 		private final int bufferedInterval_ms;
 		private final int watchDogTime_ms;
 		private final boolean delayAfterSwitchingOnEnable;
-		private final ClockAdjustment clockAdjustment;
 		private final boolean fwLth2_21_02A;
 		private final Features features;
 
 		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
 				int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms, int forcedUpdateInterval_ms,
-				int bufferedInterval_ms, int watchDogTime_ms, boolean delayAfterSwitchingOn, boolean fwLth2_21_02A,
-				ClockAdjustment clockAdjustment, Features features) {
+				int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
+				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A,
+				Features features) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
@@ -115,10 +112,10 @@ public class Units {
 			this.measurementHysteresisFactor = measurementHysteresisFactor;
 			this.defaultReadMeasurementsInterval_ms = defaultReadMeasurementsInterval_ms;
 			this.forcedUpdateInterval_ms = forcedUpdateInterval_ms;
+			this.doubleUpdateInterval_ms = doubleUpdateInterval_ms;
 			this.bufferedInterval_ms = bufferedInterval_ms;
 			this.watchDogTime_ms = watchDogTime_ms;
 			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
-			this.clockAdjustment = clockAdjustment;
 			this.fwLth2_21_02A = fwLth2_21_02A;
 			this.features = features;
 		}
@@ -140,10 +137,6 @@ public class Units {
 			return account;
 		}
 
-		public ClockAdjustment getClockAdjustment() {
-			return clockAdjustment;
-		}
-
 		public Features getFeatures() {
 			return features;
 		}
@@ -163,11 +156,11 @@ public class Units {
 			private int measurementHysteresisFactor;
 			private int defaultReadMeasurementsInterval_ms;
 			private int forcedUpdateInterval_ms;
+			private int doubleUpdateInterval_ms = 0 ;
 			private int bufferedInterval_ms;
 			private int watchDogTime_ms;
 			private boolean delayAfterSwitchingOnEnable = false;
 			private boolean fwLth2_21_02A = false;
-			private ClockAdjustment clockAdjustment;
 			private Features features;
 
 			public Creator(String id, BaseCreator<?> creator) {
@@ -204,6 +197,9 @@ public class Units {
 					case "forcedUpdateInterval_ms":
 						this.forcedUpdateInterval_ms = Integer.parseInt(value);
 						break;
+					case "doubleUpdateInterval_ms":
+						this.doubleUpdateInterval_ms = Integer.parseInt(value);
+						break;
 					case "bufferedInterval_ms":
 						this.bufferedInterval_ms = Integer.parseInt(value);
 						break;
@@ -222,12 +218,9 @@ public class Units {
 
 			@Override
 			public Unit create() throws XmlError, IOException {
-				if (clockAdjustment == null) {
-					clockAdjustment = new ClockAdjustment();
-				}
 				return new Unit(id, type, url, account, password, defaultAverageCount, measurementHysteresisFactor,
-						defaultReadMeasurementsInterval_ms, forcedUpdateInterval_ms, bufferedInterval_ms,
-						watchDogTime_ms, delayAfterSwitchingOnEnable, fwLth2_21_02A, clockAdjustment, features);
+						defaultReadMeasurementsInterval_ms, forcedUpdateInterval_ms, doubleUpdateInterval_ms,
+						bufferedInterval_ms, watchDogTime_ms, delayAfterSwitchingOnEnable, fwLth2_21_02A, features);
 
 			}
 
@@ -235,8 +228,6 @@ public class Units {
 			public CreatorByXML<?> getCreator(QName name) {
 				String id = name.getLocalPart();
 				switch (id) {
-					case XML_CLOCK_ADJUSTMENT:
-						return new ClockAdjustment.Creator(id, this.getBaseCreator());
 					case XML_FEATURES:
 						return new Features.Creator(id, getBaseCreator());
 				}
@@ -246,9 +237,6 @@ public class Units {
 			@Override
 			public void created(CreatorByXML<?> creator, Object created) {
 				switch (creator.getId()) {
-					case XML_CLOCK_ADJUSTMENT:
-						this.clockAdjustment = (ClockAdjustment) created;
-						break;
 					case XML_FEATURES:
 						this.features = (Features) created;
 						break;
@@ -294,23 +282,25 @@ public class Units {
 			return fwLth2_21_02A;
 		}
 
+		public int getDoubleUpdateInterval_ms() {
+			return doubleUpdateInterval_ms;
+		}
+
 	}
 
 	public static class Features {
 
 		private final boolean clockTuning;
-		private final boolean clockFineTuning;
 		private final boolean heatingBurnerTimeSynchronisation;
 		private final boolean updateAfterUserAccess;
 		private final boolean detectServiceAccess;
 		private final boolean powerOffIsServiceAccess;
 		private final boolean onlyMeasurements;
 
-		public Features(boolean clockTuning, boolean clockFineTuning, boolean heatingBurnerTimeSynchronisation,
+		public Features(boolean clockTuning, boolean heatingBurnerTimeSynchronisation,
 				boolean updateAfterUserAccess, boolean detectServiceAccess, boolean powerOffIsServiceAccess,
 				boolean onlyMeasurements) {
 			this.clockTuning = clockTuning;
-			this.clockFineTuning = clockFineTuning;
 			this.heatingBurnerTimeSynchronisation = heatingBurnerTimeSynchronisation;
 			this.updateAfterUserAccess = updateAfterUserAccess;
 			this.detectServiceAccess = detectServiceAccess;
@@ -320,10 +310,6 @@ public class Units {
 
 		public boolean isClockTuning() {
 			return clockTuning;
-		}
-
-		public boolean isClockFineTuning() {
-			return clockFineTuning;
 		}
 
 		public boolean isHeatingBurnerTimeSynchronisation() {
@@ -349,7 +335,6 @@ public class Units {
 		public static class Creator extends CreatorByXML<Features> {
 
 			private boolean clockTuning;
-			private boolean clockFineTuning;
 			private boolean heatingBurnerTimeSynchronisation;
 			private boolean updateAfterUserAccess;
 			private boolean detectServiceAccess;
@@ -366,7 +351,7 @@ public class Units {
 
 			@Override
 			public Features create() throws XmlError, IOException {
-				return new Features(clockTuning, clockFineTuning, heatingBurnerTimeSynchronisation,
+				return new Features(clockTuning, heatingBurnerTimeSynchronisation,
 						updateAfterUserAccess, detectServiceAccess, powerOffIsServiceAccess, onlyMeasurements);
 			}
 
@@ -375,7 +360,6 @@ public class Units {
 				String id = name.getLocalPart();
 				switch (id) {
 					case XML_CLOCK_TUNING:
-					case XML_CLOCK_FINE_TUNING:
 					case XML_HEATING_BURNER_TIME_SYNC:
 					case XML_UPDATE_AFTER_USER_ACCESS:
 					case XML_DETECT_SERVICE_ACCESS:
@@ -393,9 +377,6 @@ public class Units {
 					switch (creator.getId()) {
 						case XML_CLOCK_TUNING:
 							this.clockTuning = bool;
-							break;
-						case XML_CLOCK_FINE_TUNING:
-							this.clockFineTuning = bool;
 							break;
 						case XML_HEATING_BURNER_TIME_SYNC:
 							this.heatingBurnerTimeSynchronisation = bool;

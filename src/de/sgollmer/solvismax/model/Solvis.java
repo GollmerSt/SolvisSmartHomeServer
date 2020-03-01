@@ -95,8 +95,8 @@ public class Solvis {
 		this.worker = new SolvisWorkers(this);
 		this.backupHandler = measurementsBackupHandler;
 		this.backupHandler.register(this, unit.getId());
-		this.distributor = new Distributor(unit.getBufferedInterval_ms());
-		this.measurementUpdateThread = new MeasurementUpdateThread(unit.getForcedUpdateInterval_ms());
+		this.distributor = new Distributor(unit);
+		this.measurementUpdateThread = new MeasurementUpdateThread(unit);
 		this.timeZone = timeZone;
 		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
 	}
@@ -125,8 +125,7 @@ public class Solvis {
 	}
 
 	public SolvisScreen getRealScreen() throws IOException {
-		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()),
-				this);
+		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()), this);
 		return screen;
 	}
 
@@ -213,11 +212,10 @@ public class Solvis {
 	public void commandOptimization(boolean enable) {
 		this.worker.commandOptimization(enable);
 	}
-	
+
 	public void commandEnable(boolean enable) {
 		this.worker.commandEnable(enable);
 	}
-
 
 	public void screenRestore(boolean enable) {
 		this.worker.screenRestore(enable);
@@ -362,13 +360,15 @@ public class Solvis {
 	private class MeasurementUpdateThread extends Thread {
 
 		private int updateInterval;
+		private int doubleUpdateInterval;
 		boolean abort = false;
 		boolean power = false;
 		boolean powerDownInInterval = false;
 
-		public MeasurementUpdateThread(int forcedUpdateInterval_ms) {
+		public MeasurementUpdateThread(Unit unit) {
 			super("MeasurementUpdateThread");
-			this.updateInterval = forcedUpdateInterval_ms;
+			this.updateInterval = unit.getForcedUpdateInterval_ms();
+			this.doubleUpdateInterval = unit.getDoubleUpdateInterval_ms();
 			solvisState.register(new PowerObserver());
 		}
 
@@ -397,7 +397,8 @@ public class Solvis {
 				try {
 
 					Calendar midNight = Calendar.getInstance();
-					long now = midNight.getTimeInMillis();
+					long now = System.currentTimeMillis();
+					midNight.setTimeInMillis(now - doubleUpdateInterval / 2);
 					midNight.set(Calendar.HOUR_OF_DAY, 0);
 					midNight.set(Calendar.MINUTE, 0);
 					midNight.set(Calendar.SECOND, 0);
@@ -405,20 +406,28 @@ public class Solvis {
 
 					long midNightLong = midNight.getTimeInMillis();
 					long nextUpdate = (now - midNightLong) / this.updateInterval * this.updateInterval + midNightLong
-							+ this.updateInterval;
-					int waitTime = (int) (nextUpdate - now);
-					synchronized (this) {
-						try {
-							this.wait(waitTime);
-						} catch (InterruptedException e) {
-						}
-					}
-					if (!abort && !powerDownInInterval) {
-						distributor.sendCollection(getAllSolvisData().getMeasurements());
-					}
+							+ this.updateInterval - doubleUpdateInterval / 2;
 
-					if (!power) {
-						powerDownInInterval = true;
+					int[] waitTimes = new int[2];
+					waitTimes[0] = (int) (nextUpdate - now);
+					waitTimes[1] = doubleUpdateInterval;
+
+					for (int waitTime : waitTimes) {
+						if (waitTime > 0) {
+							synchronized (this) {
+								try {
+									this.wait(waitTime);
+								} catch (InterruptedException e) {
+								}
+							}
+							if (!abort && !powerDownInInterval) {
+								distributor.sendCollection(getAllSolvisData().getMeasurements());
+							}
+
+							if (!power) {
+								powerDownInInterval = true;
+							}
+						}
 					}
 				} catch (Throwable e) {
 					logger.error("Error was thrown in measurement update thread. Cause: ", e);
@@ -469,12 +478,24 @@ public class Solvis {
 			} catch (IOException e) {
 				time = System.currentTimeMillis();
 				if (time - 120000 > lastErrorOutTime) {
-					logger.error("Solvis not available. Powered down or wrong IP address. Will try again");
-					lastErrorOutTime = time;
+					String message = e.getMessage();
+					if (message.contains("timed")) {
+						logger.error("Solvis not available. Powered down or wrong IP address. Will try again.");
+					} else if (message.contains("too many")) {
+						logger.error(
+								"Solvis not available. The password or account name may not be correct. Will try again.");
+					} else {
+						logger.error(
+								"Solvis not available. Powered down or wrong IP address. Will try again. Java-Error-Message:\n",
+								e);
+					}
 				}
-				AbortHelper.getInstance().sleep(1000);
+				lastErrorOutTime = time;
 			}
+			AbortHelper.getInstance().sleep(1000);
+
 		}
+
 	}
 
 	public int getTimeAfterLastSwitchingOn() {
