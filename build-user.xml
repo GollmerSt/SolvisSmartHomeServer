@@ -19,7 +19,7 @@
 	<property name="linux.systemd" value="SmartHome/Linux/SolvisSmartHomeServer.service" />
 	<property name="linux.systemdD" value="SmartHome/Linux/DebugSolvisSmartHomeServer.service" />
 	<property name="pubBase" value="${bin.dir}/de/sgollmer/solvismax/data/base" />
-	<property name="myBase.xml" value="E:/Netz/Eigene Dateien/Programmierung/Extensions/base.xml" />
+	<property name="myBase.xml" value="${env.EIGENE_DATEIEN}/Programmierung/Extensions/base.xml" />
 	<property name="lib.dir" value="lib" />
 	<property name="dist.base" value="SolvisSmartHomeServer" />
 	<path id="SolvisMax.classpath">

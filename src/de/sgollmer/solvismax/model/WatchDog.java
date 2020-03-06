@@ -145,6 +145,7 @@ public class WatchDog {
 					// do nothing
 				} else if (this.isScreenSaver()) {
 					event = Event.SCREENSAVER;
+					event = this.checkHumanAccess() ? Event.CHANGED : Event.SCREENSAVER;
 				} else if (solvis.getSolvisDescription().getErrorDetection().is(this.realScreen)) {
 					this.errorDetected = true;
 					event = Event.ERROR;

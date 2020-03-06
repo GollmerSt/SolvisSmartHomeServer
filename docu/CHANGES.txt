@@ -15,6 +15,10 @@ Version 00.11.02
 				im Abstand von "doubleUpdateInterval_ms". Setzt man das forcedUpdateInterval auf 1h, so erreicht man  in FHEM in Diagrammen auch bei maximaler
 				bei FHEM-Diagrammen auch bei Vergrößerungen durchgehende Linien.
 				
+	6.03.2020	Der Service-Access wurde nicht automatisch nach 1h zurückgesetzt, da bei der Anzeige des Bildschirmschoners
+				(was nach 1h immer der Fall ist) der Service-Access-Mode durch ein Bug nicht verlassen werden konnte.
+				
+				
 				
 
 Version 00.11.01
