@@ -1,5 +1,9 @@
 Ä N D E R U N G EN
 
+Version 01.00.01
+
+	15.03.2020	control.xsd erweiter für Modbus
+
 Version 00.11.02
 
 	29.02.2020	Fine-Tuning der Solvis-Uhr entfernt. Da das Setzen der Uhr sporadisch zu Abstürzen der Solvis-Uhr
