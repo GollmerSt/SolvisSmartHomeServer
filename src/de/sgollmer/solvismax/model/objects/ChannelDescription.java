@@ -37,13 +37,15 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 	private final String id;
 	private final boolean buffered;
+	private final String unit;
 	private final ConfigurationMasks configurationMasks;
 	private final ChannelSource channelSource;
 
-	public ChannelDescription(String id, boolean buffered, ConfigurationMasks configurationMasks,
+	public ChannelDescription(String id, boolean buffered, String unit, ConfigurationMasks configurationMasks,
 			ChannelSource channelSource) {
 		this.id = id;
 		this.buffered = buffered;
+		this.unit = unit;
 		this.configurationMasks = configurationMasks;
 		this.channelSource = channelSource;
 	}
@@ -87,7 +89,12 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 	@Override
 	public String getUnit() {
-		return this.channelSource.getUnit();
+		if (this.channelSource.getUnit() != null) {
+			return this.channelSource.getUnit();
+		} else {
+			return this.unit;
+		}
+
 	}
 
 	@Override
@@ -118,6 +125,7 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 		private String id;
 		private boolean buffered;
+		private String unit = null;
 		private ConfigurationMasks configurationMasks;
 		private ChannelSource channelSource;
 
@@ -134,13 +142,16 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 				case "buffered":
 					this.buffered = Boolean.parseBoolean(value);
 					break;
+				case "unit":
+					this.unit = value;
 			}
 
 		}
 
 		@Override
 		public ChannelDescription create() throws XmlError {
-			ChannelDescription description = new ChannelDescription(id, buffered, configurationMasks, channelSource);
+			ChannelDescription description = new ChannelDescription(id, buffered, unit, configurationMasks,
+					channelSource);
 			channelSource.setDescription(description);
 			return description;
 		}

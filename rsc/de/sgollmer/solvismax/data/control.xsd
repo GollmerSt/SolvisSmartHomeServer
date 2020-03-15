@@ -234,7 +234,7 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 				</annotation>
 			</element>
 			<choice>
-				<element name="TypeValue" type="tns:Value" maxOccurs="1"
+				<element name="TypeValue" type="tns:GuiValue" maxOccurs="1"
 					minOccurs="1">
 					<annotation>
 						<documentation>
@@ -245,7 +245,7 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeRead" type="tns:Read" maxOccurs="1"
+				<element name="TypeRead" type="tns:GuiRead" maxOccurs="1"
 					minOccurs="1">
 					<annotation>
 						<documentation>
@@ -255,7 +255,7 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeMode" type="tns:TypeMode"
+				<element name="TypeMode" type="tns:GuiMode"
 					maxOccurs="unbounded" minOccurs="1">
 					<annotation>
 						<documentation>
@@ -292,45 +292,55 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 		</sequence>
 	</complexType-->
 
-	<complexType name="Value">
+	<complexType name="GuiValue">
 		<annotation>
-			<documentation>Defintionen zur Modifikation eines Wertes über das Solvis-Gui (Berührungspunkte für Aufwärts-/Abwärtszählen, Increments etc.)
+			<documentation>
+				Defintionen zur Modifikation eines Wertes über das
+				Solvis-Gui (Berührungspunkte für
+				Aufwärts-/Abwärtszählen, Increments etc.)
 			</documentation>
 		</annotation>
 		<complexContent>
-			<extension base="tns:Read">
+			<extension base="tns:Value">
 				<sequence>
-					<element name="Upper" type="tns:TouchPoint" maxOccurs="1" minOccurs="1">
+					<element name="Upper" type="tns:TouchPoint"
+						maxOccurs="1" minOccurs="1">
 						<annotation>
-							<documentation>Berührungspunkt-Definition um den Wert zu erhöhen</documentation>
-						</annotation></element>
-					<element name="Lower" type="tns:TouchPoint" maxOccurs="1" minOccurs="1">
+							<documentation>
+								Berührungspunkt-Definition um den Wert
+								zu erhöhen
+							</documentation>
+						</annotation>
+					</element>
+					<element name="Lower" type="tns:TouchPoint"
+						maxOccurs="1" minOccurs="1">
 						<annotation>
-							<documentation>Berührungspunkt-Definition um den Wert zu erniedrigen</documentation>
-						</annotation></element>
+							<documentation>
+								Berührungspunkt-Definition um den Wert
+								zu erniedrigen
+							</documentation>
+						</annotation>
+					</element>
 				</sequence>
-				<attribute name="increment" type="int" use="required">
+				<attribute name="format" type="string">
 					<annotation>
-						<documentation>Wert um den der Parameter bei einem Bildschirmdruck erhöht/erniedigt wird
-						</documentation>
-					</annotation>
-				</attribute>
-				<attribute name="least" type="int" use="required">
-					<annotation>
-						<documentation>kleinster Wert des Parameters
-						</documentation>
-					</annotation>
-				</attribute>
-				<attribute name="most" type="int" use="required">
-					<annotation>
-						<documentation>größter Wert des Parameters
-						</documentation>
-					</annotation>
-				</attribute>
+						<documentation>
+							Der Format-String dient zur Extraktion der
+							Daten aus einem String
+
+							Er besteht aus folgenden zeichen:
+
+							C: beliebiges Zeichen, wird ignoriert 0:
+							Ziffer oder +/-, muss vorhanden sein, wird
+							übernommen #: Ziffer oder +/- optional, wird
+							übernommen
+						</documentation></annotation></attribute>
 				<attribute name="wrapAround" type="boolean">
 					<annotation>
-						<documentation>true:  Wenn nach kleinstem Wert des größte eingestellt wird (z.B. Raumeinfluss)
-false: Bei fester Grenze
+						<documentation>
+							true: Wenn nach kleinstem Wert des größte
+							eingestellt wird (z.B. Raumeinfluss) false:
+							Bei fester Grenze
 						</documentation>
 					</annotation>
 				</attribute>
@@ -369,20 +379,7 @@ false: Bei fester Grenze
 			<documentation>Root mit der Home-Screen-Definition</documentation>
 		</annotation>
 		<sequence>
-			<element name="Types">
-				<complexType>
-					<annotation>
-						<documentation>
-							Definition der Anlagentypen wie
-							SolvisMax/SolvisBen
-						</documentation>
-					</annotation>
-					<sequence>
-						<element name="Type" type="tns:Type"
-							maxOccurs="unbounded" minOccurs="1">
-						</element>
-					</sequence>
-				</complexType>
+			<element name="Types" type="tns:SolvisType">
 			</element>
 			<element name="Configurations" type="tns:Configurations"
 				maxOccurs="1" minOccurs="0">
@@ -480,51 +477,47 @@ false: Bei fester Grenze
 				</annotation>
 			</element>
 		</sequence>
-		<attribute name="pushTimeRefId" type="string" use="required"></attribute>
-		<attribute name="releaseTimeRefId" type="string" use="required"></attribute>
+		<attribute name="pushTimeRefId" type="string" use="required">
+			<annotation>
+				<documentation>Referenz auf die Zeit, die der Button gedrückt wird</documentation>
+			</annotation></attribute>
+		<attribute name="releaseTimeRefId" type="string" use="required">
+			<annotation>
+				<documentation>Referenz auf die Zeit, wie lange gewartet wird, nachdem der Button losgelassen wurde.</documentation>
+			</annotation></attribute>
 	</complexType>
 
 
-	<complexType name="Read">
+	<complexType name="GuiRead">
 		<annotation>
 			<documentation>
 				Definitionen für einen vom Bildschirm zu erkennenden
 				Wertes
 			</documentation>
 		</annotation>
-		<attribute name="optional" type="boolean" use="optional">
-			<annotation>
-				<documentation>Wenn das Feld nicht in allen Konfigurationen vorhanden ist, kann das nicht vorhandensein durch setzen von optional auf "true" werden.
-Das ist z.B. für C03.LaufzeitAnforderung2 erforderlich, da diese bei modulierten Gasbrennern nicht vorhanden ist.</documentation>
-			</annotation></attribute>
-		<attribute name="format" type="string" use="required">
-			<annotation>
-				<documentation>
-					Der Format-String dient zur Extraktion der Daten aus
-					einem String
+		<complexContent>
+			<extension base="tns:Read">
 
-					Er besteht aus folgenden zeichen:
+				<attribute name="format" type="string" use="required">
+					<annotation>
+						<documentation>
+							Der Format-String dient zur Extraktion der
+							Daten aus einem String
 
-					C: beliebiges Zeichen, wird ignoriert 0: Ziffer oder
-					+/-, muss vorhanden sein, wird übernommen #: Ziffer
-					oder +/- optional, wird übernommen
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="unit" type="string">
-			<annotation>
-				<documentation>
-					Einheit des vom Bildschirm gelesenen Wertes
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="divisor" type="int">
-			<annotation>
-				<documentation>
-					Divisor des Wertes (normalerweise 1)
-				</documentation>
-			</annotation>
-		</attribute>
+							Er besteht aus folgenden zeichen:
+
+							C: beliebiges Zeichen, wird ignoriert 0:
+							Ziffer oder +/-, muss vorhanden sein, wird
+							übernommen #: Ziffer oder +/- optional, wird
+							übernommen
+						</documentation>
+					</annotation>
+				</attribute>
+
+
+
+			</extension>
+		</complexContent>
 	</complexType>
 
 	<complexType name="ScreenSaver">
@@ -592,11 +585,6 @@ Das ist z.B. für C03.LaufzeitAnforderung2 erforderlich, da diese bei modulierte
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="unit" type="string">
-			<annotation>
-				<documentation>Einheit</documentation>
-			</annotation>
-		</attribute>
 		<attribute name="delayAfterSwitchingOn_ms" type="int" use="optional">
 			<annotation>
 				<documentation>Einige  Sensoren der Solvis-Anlage benötigen nach dem Einschalten eine gewise Zeit, bis sie die richtigen Messwerte anzeigen. Mir dem Setzen dieses Wertes wird bewirkt, dass die Weitergabe der Messergebnisse dieses Sensors erst spätererfolgt.</documentation>
@@ -660,17 +648,19 @@ Das ist z.B. für C03.LaufzeitAnforderung2 erforderlich, da diese bei modulierte
 				<element name="Calculation" type="tns:Calculation"
 					maxOccurs="1" minOccurs="1">
 				</element>
-				<element name="Control" type="tns:Control" maxOccurs="1"
-					minOccurs="1">
-				</element>
-				<element name="Measurement" type="tns:Measurement"
-					maxOccurs="1" minOccurs="1">
-				</element>
+				<sequence>
+					<element name="Modbus" type="tns:Modbus" maxOccurs="1" minOccurs="0"></element>
+					<choice maxOccurs="1" minOccurs="0"><element name="Measurement" type="tns:Measurement" maxOccurs="1" minOccurs="1">
+					</element><element name="Control" type="tns:Control" maxOccurs="1" minOccurs="1">
+					</element></choice>
+				</sequence>
+				
 			</choice>
 		</sequence>
 
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="buffered" type="boolean" use="optional"></attribute>
+		<attribute name="unit" type="string" use="optional"></attribute>
 	</complexType>
 
 
@@ -768,7 +758,7 @@ da der user diesen manuell verändert haben könnte.</documentation>
 	</complexType>
 
 
-	<complexType name="TypeMode">
+	<complexType name="GuiMode">
 		<sequence>
 			<element name="Mode" type="tns:Mode" maxOccurs="unbounded" minOccurs="1"></element>
 		</sequence>
@@ -1163,4 +1153,72 @@ Bit 25:	SolvisBen</documentation></annotation></attribute>
 		<attribute name="channelId" type="string" use="required"></attribute>
 		<attribute name="value" type="boolean" use="required"></attribute>
 	</complexType>
+
+	<complexType name="Modbus">
+        <choice>
+			<element name="TypeRead" type="tns:Read"></element>
+			<element name="TypeValue" type="string"></element>
+			<element name="TypeMode" type="string"></element>
+		</choice>
+		<attribute name="address" type="int" use="required"></attribute>
+	</complexType>
+
+	<complexType name="Read">
+        <attribute name="optional" type="boolean" use="optional">
+        	<annotation>
+        		<documentation>							Wenn das Feld nicht in allen Konfigurationen
+							vorhanden ist, kann das nicht vorhandensein
+							durch setzen von optional auf &quot;true&quot; werden.
+							Das ist z.B. für C03.LaufzeitAnforderung2
+							erforderlich, da diese bei modulierten
+							Gasbrennern nicht vorhanden ist.
+						</documentation></annotation></attribute>
+        <attribute name="divisor" type="int" use="optional">
+        	<annotation>
+        		<documentation>Divisor des Wertes (normalerweise 1)</documentation></annotation></attribute>
+	</complexType>
+	<complexType name="SolvisType">
+    	<annotation></annotation>
+    	<sequence>
+    		<element minOccurs="1" maxOccurs="unbounded" name="Type"
+    			type="tns:Type">
+    		</element>
+    	</sequence>
+    </complexType>
+	<complexType name="Value">
+		<annotation>
+			<documentation>
+				Defintionen zur Modifikation eines Wertes über das
+				Solvis-Gui (Berührungspunkte für
+				Aufwärts-/Abwärtszählen, Increments etc.)
+			</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="tns:Read">
+				<attribute name="increment" type="int" use="required">
+					<annotation>
+						<documentation>
+							Wert um den der Parameter bei einem
+							Bildschirmdruck erhöht/erniedigt wird
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="least" type="int" use="required">
+					<annotation>
+						<documentation>
+							kleinster Wert des Parameters
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="most" type="int" use="required">
+					<annotation>
+						<documentation>
+							größter Wert des Parameters
+						</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
 </schema>

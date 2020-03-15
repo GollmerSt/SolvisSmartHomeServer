@@ -36,7 +36,6 @@ public class Measurement extends ChannelSource {
 	private final int divisor;
 	private final boolean average;
 	private final boolean dynamic;
-	private final String unit;
 	private final int delayAfterSwitchingOn;
 	private final Collection<Field> fields;
 
@@ -95,13 +94,12 @@ public class Measurement extends ChannelSource {
 	// 130B0F Datum 15.11.2019
 	// 49AB00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-	public Measurement(Strategy type, int divisor, boolean average, boolean dynamic, String unit,
+	public Measurement(Strategy type, int divisor, boolean average, boolean dynamic,
 			int delayAfterSwitchingOn, Collection<Field> fields) {
 		this.type = type;
 		this.divisor = divisor;
 		this.average = average;
 		this.dynamic = dynamic;
-		this.unit = unit;
 		this.delayAfterSwitchingOn = delayAfterSwitchingOn;
 		this.fields = fields;
 	}
@@ -137,14 +135,6 @@ public class Measurement extends ChannelSource {
 		return this.divisor;
 	}
 
-	@Override
-	public String getUnit() {
-		if (this.type.isNumeric() && !this.unit.isEmpty()) {
-			return this.unit;
-		}
-		return null;
-	}
-
 	public boolean isDynamic() {
 		return dynamic;
 	}
@@ -160,7 +150,6 @@ public class Measurement extends ChannelSource {
 		private int divisor = 1;
 		private boolean average = false;
 		private boolean dynamic = false;
-		private String unit = "";
 		private int delayAfterSwitchingOn = -1;
 		private final Collection<Field> fields = new ArrayList<>(2);
 
@@ -184,9 +173,6 @@ public class Measurement extends ChannelSource {
 				case "dynamic":
 					this.dynamic = Boolean.parseBoolean(value);
 					break;
-				case "unit":
-					this.unit = value;
-					break;
 				case "delayAfterSwitchingOn_ms":
 					this.delayAfterSwitchingOn = Integer.parseInt(value);
 					break;
@@ -196,7 +182,7 @@ public class Measurement extends ChannelSource {
 
 		@Override
 		public Measurement create() throws XmlError {
-			return new Measurement(type, divisor, average, dynamic, unit, delayAfterSwitchingOn, fields);
+			return new Measurement(type, divisor, average, dynamic, delayAfterSwitchingOn, fields);
 		}
 
 		@Override
@@ -268,6 +254,11 @@ public class Measurement extends ChannelSource {
 
 	@Override
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+		return null;
+	}
+
+	@Override
+	public String getUnit() {
 		return null;
 	}
 

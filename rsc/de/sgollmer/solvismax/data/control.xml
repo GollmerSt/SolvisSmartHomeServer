@@ -864,40 +864,37 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S01.Warmwasserpuffer" buffered="true">
+			id="S01.Warmwasserpuffer" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C"
-				delayAfterSwitchingOn_ms="600000">
+				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="14" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S02.Warmwassertemperatur" buffered="true">
+			id="S02.Warmwassertemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true">
 				<tns:Field position="18" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S03.Speicherreferenztemperatur" buffered="true">
+			id="S03.Speicherreferenztemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C"
-				delayAfterSwitchingOn_ms="600000">
+				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="22" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S04.Heizungspuffertemperatur_oben" buffered="true">
+			id="S04.Heizungspuffertemperatur_oben" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C"
-				delayAfterSwitchingOn_ms="600000">
+				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="26" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S05.Solarvorlauftemperatur" buffered="true">
+			id="S05.Solarvorlauftemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true">
 				<tns:Field position="30" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -916,46 +913,44 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S08.Solarkollektortemperatur" buffered="true">
+			id="S08.Solarkollektortemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true">
 				<tns:Field position="42" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S09.Heizungspuffertemperatur_unten" buffered="true">
+			id="S09.Heizungspuffertemperatur_unten" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C"
-				delayAfterSwitchingOn_ms="600000">
+				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="46" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S10.Aussentemperatur" buffered="true">
+			id="S10.Aussentemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C"
-				delayAfterSwitchingOn_ms="900000">
+				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="900000">
 				<tns:Field position="50" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S11.ZirkulationRuecklauftemperatur">
+			id="S11.ZirkulationRuecklauftemperatur" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true">
 				<tns:Field position="54" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S12.Vorlauftemperatur_HK1" buffered="true">
+			id="S12.Vorlauftemperatur_HK1" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true">
 				<tns:Field position="58" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S13.Vorlauftemperatur_HK2" buffered="true">
+			id="S13.Vorlauftemperatur_HK2" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true">
 				<tns:Field position="62" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -978,16 +973,16 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S18.Durchfluss_Warmwasserzirkulation">
+			id="S18.Durchfluss_Warmwasserzirkulation" unit="l/h">
 			<tns:Measurement type="unsigned" average="true"
-				dynamic="true" unit="l/h">
+				dynamic="true">
 				<tns:Field position="78" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S17.Durchfluss_Solarpanel" buffered="true">
+			id="S17.Durchfluss_Solarpanel" buffered="true" unit="l/h">
 			<tns:Measurement type="unsigned" average="true"
-				dynamic="true" unit="l/h">
+				dynamic="true">
 				<tns:Field position="82" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1027,24 +1022,23 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="RF1.Raumfuehler_HK1" buffered="true">
+			id="RF1.Raumfuehler_HK1" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C"
-				delayAfterSwitchingOn_ms="1500000">
+				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="1500000">
 				<tns:Field position="106" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="RF2.Raumfuehler_HK2" buffered="true">
+			id="RF2.Raumfuehler_HK2" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true">
 				<tns:Field position="110" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="RF3.Raumfuehler_HK3" buffered="true">
+			id="RF3.Raumfuehler_HK3" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" unit="°C">
+				divisor="10" dynamic="true">
 				<tns:Field position="114" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1123,9 +1117,8 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="SE.Solarertrag_kWh"
-			buffered="true">
-			<tns:Measurement type="unsigned" dynamic="true"
-				unit="kWh">
+			buffered="true" unit="kWh">
+			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="162" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1140,9 +1133,8 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="SL.Solarleistung_kW" buffered="true">
-			<tns:Measurement type="unsigned" dynamic="true"
-				unit="kW">
+			id="SL.Solarleistung_kW" buffered="true" unit="kW">
+			<tns:Measurement type="unsigned" dynamic="true">
 				<tns:Field position="196" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1219,13 +1211,13 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C02.LaufzeitBrenner">
+			id="C02.LaufzeitBrenner" unit="h">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="48" />
 					<tns:BottomRight X="200" Y="60" />
 				</tns:Current>
-				<tns:TypeRead format="######0C" unit="h" />
+				<tns:TypeRead format="######0C" />
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A12.Brenner"
 						calculatedId="X2.BrennerLaufzeit_s" factor="3600" hourly="true"
@@ -1234,14 +1226,13 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C03.LaufzeitAnforderung2">
+			id="C03.LaufzeitAnforderung2" unit="h">
 			<tns:Control screenId="Zaehlfunktion">
 				<tns:Current>
 					<tns:TopLeft X="145" Y="105" />
 					<tns:BottomRight X="200" Y="117" />
 				</tns:Current>
-				<tns:TypeRead optional="true" format="######0C"
-					unit="h" />
+				<tns:TypeRead optional="true" format="######0C" />
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A13.Brenner_S2"
 						calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"
@@ -1283,14 +1274,14 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C05.WassertemperaturSoll">
+			id="C05.WassertemperaturSoll" unit="°C">
 			<tns:Control screenId="Warmwasser">
 				<tns:Current>
 					<tns:TopLeft X="115" Y="10" />
 					<tns:BottomRight X="190" Y="38" />
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="10"
-					most="65" unit="°C">
+					most="65">
 					<tns:Upper pushTimeRefId="Standard"
 						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="20" />
@@ -1398,7 +1389,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C07.Tagestemperatur_HK1">
+			id="C07.Tagestemperatur_HK1" unit="°C">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
@@ -1409,7 +1400,7 @@
 					<tns:BottomRight X="110" Y="60" />
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
-					most="30" wrapAround="true" unit="°C">
+					most="30" wrapAround="true">
 					<tns:Upper pushTimeRefId="Standard"
 						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
@@ -1425,7 +1416,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C08.Nachttemperatur_HK1">
+			id="C08.Nachttemperatur_HK1" unit="°C">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x01"
 					compareMask="0x01" />
@@ -1436,7 +1427,7 @@
 					<tns:BottomRight X="110" Y="60" />
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
-					most="30" wrapAround="true" unit="°C">
+					most="30" wrapAround="true">
 					<tns:Upper pushTimeRefId="Standard"
 						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
@@ -1509,14 +1500,14 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C10.Raumeinfluss_HK1">
+			id="C10.Raumeinfluss_HK1" unit="%">
 			<tns:Control screenId="Heizkreis1 4_5">
 				<tns:Current>
 					<tns:TopLeft X="160" Y="75" />
 					<tns:BottomRight X="185" Y="87" />
 				</tns:Current>
 				<tns:TypeValue format="#0C" increment="10" least="0"
-					most="90" unit="%" wrapAround="true" optional="true">
+					most="90" wrapAround="true" optional="true">
 					<tns:Upper pushTimeRefId="Standard"
 						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="200" Y="80" />
@@ -1532,13 +1523,13 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C11.Vorlauf_Soll_HK1">
+			id="C11.Vorlauf_Soll_HK1" unit="°C">
 			<tns:Control screenId="Heizkreis1 4_5">
 				<tns:Current>
 					<tns:TopLeft X="155" Y="45" />
 					<tns:BottomRight X="190" Y="60" />
 				</tns:Current>
-				<tns:TypeRead format="#0CC" unit="°C" />
+				<tns:TypeRead format="#0CC" />
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1589,7 +1580,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C13.Tagestemperatur_HK2">
+			id="C13.Tagestemperatur_HK2" unit="°C">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -1600,7 +1591,7 @@
 					<tns:BottomRight X="110" Y="60" />
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
-					most="30" wrapAround="true" unit="°C">
+					most="30" wrapAround="true">
 					<tns:Upper pushTimeRefId="Standard"
 						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
@@ -1616,7 +1607,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C14.Nachttemperatur_HK2">
+			id="C14.Nachttemperatur_HK2" unit="°C">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -1627,7 +1618,7 @@
 					<tns:BottomRight X="110" Y="60" />
 				</tns:Current>
 				<tns:TypeValue format="#0CC" increment="1" least="0"
-					most="30" wrapAround="true" unit="°C">
+					most="30" wrapAround="true">
 					<tns:Upper pushTimeRefId="Standard"
 						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="225" Y="15" />
@@ -1671,7 +1662,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C16.Raumeinfluss_HK2">
+			id="C16.Raumeinfluss_HK2" unit="%">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -1682,7 +1673,7 @@
 					<tns:BottomRight X="185" Y="87" />
 				</tns:Current>
 				<tns:TypeValue format="#0C" increment="10" least="10"
-					most="90" unit="%" wrapAround="true" optional="true">
+					most="90" wrapAround="true" optional="true">
 					<tns:Upper pushTimeRefId="Standard"
 						releaseTimeRefId="ValueChange">
 						<tns:Coordinate X="200" Y="80" />
@@ -1698,7 +1689,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C17.Vorlauf_Soll_HK2">
+			id="C17.Vorlauf_Soll_HK2" unit="°C">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -1708,7 +1699,7 @@
 					<tns:TopLeft X="155" Y="45" />
 					<tns:BottomRight X="190" Y="60" />
 				</tns:Current>
-				<tns:TypeRead format="#0CC" unit="°C" />
+				<tns:TypeRead format="#0CC" />
 			</tns:Control>
 		</tns:ChannelDescription>
 	</tns:ChannelDescriptions>

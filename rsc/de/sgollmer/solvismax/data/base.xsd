@@ -77,6 +77,12 @@
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="modbus" type="boolean" use="optional">
+			<annotation>
+				<documentation>Bei SolviControl-Steuerungen der Version >= MA205 ist der Zugriff auf den Modbus möglich, so dass die ganze GUI-Bedienung nicht erforderlich ist.
+Wird modbus auf true gesetzt, erfolgt das Setzen und Auslesen der Anlageparameter nicht mehr über das GUI sondern über Modbus.
+</documentation>
+			</annotation></attribute>
 		<attribute name="url" type="string" use="optional">
 			<annotation>
 				<documentation>
@@ -143,8 +149,8 @@
 				</documentation>
 			</annotation>
 		</attribute>
-        <attribute name="doubleUpdateInterval_ms" type="int"></attribute>
-        <attribute name="bufferedInterval_ms" type="int"
+		<attribute name="doubleUpdateInterval_ms" type="int"></attribute>
+		<attribute name="bufferedInterval_ms" type="int"
 			use="required">
 			<annotation>
 				<documentation>
