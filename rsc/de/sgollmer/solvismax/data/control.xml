@@ -3,10 +3,10 @@
 	xmlns:tns="http://www.example.org/control"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/control control.xsd ">
-	<tns:Types>
+	<tns:SolvisTypes>
 		<tns:Type id="SolvisMax" configuration="0x01000000" />
 		<tns:Type id="SolvisBen" configuration="0x02000000" />
-	</tns:Types>
+	</tns:SolvisTypes>
 	<tns:Configurations>
 		<tns:ReferencePoint X="45" Y="51" />
 		<tns:HeaterLoops screenRef="Home">
@@ -1148,7 +1148,7 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X2.BrennerLaufzeit_s" buffered="true">
+			id="X2.BrennerLaufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
 				<tns:UpdateBy>
@@ -1164,7 +1164,7 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X4.BrennerStufe2Laufzeit_s" buffered="true">
+			id="X4.BrennerStufe2Laufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
 				<tns:UpdateBy>
@@ -1198,12 +1198,17 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C01.StartsBrenner">
-			<tns:Control screenId="Zaehlfunktion">
-				<tns:Current>
-					<tns:TopLeft X="145" Y="75" />
-					<tns:BottomRight X="200" Y="88" />
-				</tns:Current>
-				<tns:TypeRead format="#######0" />
+			<tns:Control>
+				<tns:ModbusAccess address="0x8301" type="Input" />
+				<tns:GuiAccess screenId="Zaehlfunktion">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="75" />
+						<tns:BottomRight X="200" Y="88" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="#######0" />
+				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A12.Brenner"
 						calculatedId="X1.BrennerStarts" />
@@ -1212,12 +1217,17 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C02.LaufzeitBrenner" unit="h">
-			<tns:Control screenId="Zaehlfunktion">
-				<tns:Current>
-					<tns:TopLeft X="145" Y="48" />
-					<tns:BottomRight X="200" Y="60" />
-				</tns:Current>
-				<tns:TypeRead format="######0C" />
+			<tns:Control>
+				<tns:ModbusAccess address="0x8300" type="Input" />
+				<tns:GuiAccess screenId="Zaehlfunktion">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="48" />
+						<tns:BottomRight X="200" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="######0C" />
+				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A12.Brenner"
 						calculatedId="X2.BrennerLaufzeit_s" factor="3600" hourly="true"
@@ -1227,12 +1237,17 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C03.LaufzeitAnforderung2" unit="h">
-			<tns:Control screenId="Zaehlfunktion">
-				<tns:Current>
-					<tns:TopLeft X="145" Y="105" />
-					<tns:BottomRight X="200" Y="117" />
-				</tns:Current>
-				<tns:TypeRead optional="true" format="######0C" />
+			<tns:Control>
+				<tns:ModbusAccess address="0x8302" type="Input" />
+				<tns:GuiAccess screenId="Zaehlfunktion">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="105" />
+						<tns:BottomRight X="200" Y="117" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead optional="true">
+					<tns:GuiRead format="######0C" />
+				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:HeatingBurner burnerId="A13.Brenner_S2"
 						calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"
@@ -1243,54 +1258,71 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C04.WarmwasserPumpe">
-			<tns:Control screenId="Warmwasser">
-				<tns:Current>
-					<tns:TopLeft X="50" Y="30" />
-					<tns:BottomRight X="80" Y="70" />
-				</tns:Current>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0806" type="Holding" />
+				<tns:GuiAccess screenId="Warmwasser">
+					<tns:CurrentValue>
+						<tns:TopLeft X="50" Y="30" />
+						<tns:BottomRight X="80" Y="70" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
 				<tns:TypeMode>
-					<tns:Mode id="aus">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="65" Y="75" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="WWPumpeAus" exact="true" />
-					</tns:Mode>
-					<tns:Mode id="an">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="65" Y="25" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="WWPumpeAn" exact="true" />
-					</tns:Mode>
-					<tns:Mode id="auto">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="75" Y="50" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="WWPumpeAuto" exact="true" />
-					</tns:Mode>
+					<tns:ModeEntry id="aus">
+						<tns:ModbusValue>99999</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="65" Y="75" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="WWPumpeAus" exact="true" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="an">
+						<tns:ModbusValue>99999</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="65" Y="25" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="WWPumpeAn" exact="true" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="auto">
+						<tns:ModbusValue>99999</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="75" Y="50" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="WWPumpeAuto" exact="true" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
 				</tns:TypeMode>
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C05.WassertemperaturSoll" unit="°C">
-			<tns:Control screenId="Warmwasser">
-				<tns:Current>
-					<tns:TopLeft X="115" Y="10" />
-					<tns:BottomRight X="190" Y="38" />
-				</tns:Current>
-				<tns:TypeValue format="#0CC" increment="1" least="10"
-					most="65">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="20" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="50" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0901" type="Holding" />
+				<tns:GuiAccess screenId="Warmwasser">
+					<tns:CurrentValue>
+						<tns:TopLeft X="115" Y="10" />
+						<tns:BottomRight X="190" Y="38" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="65"
+					least="10">
+					<tns:GuiModification format="#0CC">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="20" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="50" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1299,40 +1331,55 @@
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="Home">
-				<tns:Current>
-					<tns:TopLeft X="110" Y="50" />
-					<tns:BottomRight X="135" Y="70" />
-				</tns:Current>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0B02" type="Holding" />
+				<tns:GuiAccess screenId="Home">
+					<tns:CurrentValue>
+						<tns:TopLeft X="110" Y="50" />
+						<tns:BottomRight X="135" Y="70" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
 				<tns:TypeMode>
-					<tns:Mode id="Tag">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="95" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeTag" />
-					</tns:Mode>
-					<tns:Mode id="Nacht">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="125" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeNacht" />
-					</tns:Mode>
-					<tns:Mode id="Standby">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="160" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeStandby" />
-					</tns:Mode>
-					<tns:Mode id="Timer">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="60" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeTimer" />
-					</tns:Mode>
+					<tns:ModeEntry id="Tag">
+						<tns:ModbusValue>3</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="95" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeTag" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Nacht">
+						<tns:ModbusValue>4</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="125" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeNacht" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Standby">
+						<tns:ModbusValue>5</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="160" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeStandby" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Timer">
+						<tns:ModbusValue>2</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="60" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeTimer" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
 				</tns:TypeMode>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
@@ -1347,45 +1394,60 @@
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="Home">
-				<tns:Current>
-					<tns:TopLeft X="133" Y="8" />
-					<tns:BottomRight X="155" Y="30" />
-				</tns:Current>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0B02" type="Holding" />
+				<tns:GuiAccess screenId="Home">
+					<tns:CurrentValue>
+						<tns:TopLeft X="133" Y="8" />
+						<tns:BottomRight X="155" Y="30" />
+					</tns:CurrentValue>
+					<tns:PreparationRef refId="Button_HK1" />
+				</tns:GuiAccess>
 				<tns:TypeMode>
-					<tns:Mode id="Tag">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="WindowChange">
-							<tns:Coordinate X="95" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeTag" />
-					</tns:Mode>
-					<tns:Mode id="Nacht">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="WindowChange">
-							<tns:Coordinate X="125" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeNacht" />
-					</tns:Mode>
-					<tns:Mode id="Standby">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="WindowChange">
-							<tns:Coordinate X="160" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeStandby" />
-					</tns:Mode>
-					<tns:Mode id="Timer">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="WindowChange">
-							<tns:Coordinate X="60" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeTimer" />
-					</tns:Mode>
+					<tns:ModeEntry id="Tag">
+						<tns:ModbusValue>3</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="95" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeTag" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Nacht">
+						<tns:ModbusValue>4</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="125" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeNacht" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Standby">
+						<tns:ModbusValue>5</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="160" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeStandby" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Timer">
+						<tns:ModbusValue>2</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="60" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeTimer" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
 				</tns:TypeMode>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
-				<tns:PreparationRef refId="Button_HK1" />
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1394,22 +1456,28 @@
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="TagestemperaturSelected_HK1">
-				<tns:Current>
-					<tns:TopLeft X="55" Y="30" />
-					<tns:BottomRight X="110" Y="60" />
-				</tns:Current>
-				<tns:TypeValue format="#0CC" increment="1" least="0"
-					most="30" wrapAround="true">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="15" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="80" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0B04" type="Holding" />
+				<tns:GuiAccess screenId="TagestemperaturSelected_HK1">
+					<tns:CurrentValue>
+						<tns:TopLeft X="55" Y="30" />
+						<tns:BottomRight X="110" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="30"
+					least="0">
+					<tns:GuiModification format="#0CC"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="15" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
@@ -1421,22 +1489,28 @@
 				<tns:ConfigurationMask andMask="0x01"
 					compareMask="0x01" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="NachttemperaturSelected_HK1">
-				<tns:Current>
-					<tns:TopLeft X="55" Y="30" />
-					<tns:BottomRight X="110" Y="60" />
-				</tns:Current>
-				<tns:TypeValue format="#0CC" increment="1" least="0"
-					most="30" wrapAround="true">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="15" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="80" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0B05" type="Holding" />
+				<tns:GuiAccess screenId="NachttemperaturSelected_HK1">
+					<tns:CurrentValue>
+						<tns:TopLeft X="55" Y="30" />
+						<tns:BottomRight X="110" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="30"
+					least="0">
+					<tns:GuiModification format="#0CC"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="15" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
@@ -1448,22 +1522,28 @@
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="Home">
-				<tns:Current>
-					<tns:TopLeft X="80" Y="50" />
-					<tns:BottomRight X="105" Y="75" />
-				</tns:Current>
-				<tns:TypeValue format="C#0C" increment="1" least="-5"
-					most="5">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="220" Y="20" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="220" Y="50" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control>
+				<tns:ModbusAccess address="0x7fffffff"
+					type="Holding" />
+				<tns:GuiAccess screenId="Home">
+					<tns:CurrentValue>
+						<tns:TopLeft X="80" Y="50" />
+						<tns:BottomRight X="105" Y="75" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="5"
+					least="-5">
+					<tns:GuiModification format="C#0C">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="20" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="50" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
@@ -1477,46 +1557,55 @@
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="Home">
-				<tns:Current>
-					<tns:TopLeft X="112" Y="10" />
-					<tns:BottomRight X="132" Y="25" />
-				</tns:Current>
-				<tns:TypeValue format="C#0C" increment="1" least="-5"
-					most="5">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="220" Y="20" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="220" Y="50" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control>
+				<tns:GuiAccess screenId="Home">
+					<tns:CurrentValue>
+						<tns:TopLeft X="112" Y="10" />
+						<tns:BottomRight X="132" Y="25" />
+					</tns:CurrentValue>
+					<tns:PreparationRef refId="Button_HK1" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="5"
+					least="-5">
+					<tns:GuiModification format="C#0C">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="20" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="50" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
-				<tns:PreparationRef refId="Button_HK1" />
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C10.Raumeinfluss_HK1" unit="%">
-			<tns:Control screenId="Heizkreis1 4_5">
-				<tns:Current>
-					<tns:TopLeft X="160" Y="75" />
-					<tns:BottomRight X="185" Y="87" />
-				</tns:Current>
-				<tns:TypeValue format="#0C" increment="10" least="0"
-					most="90" wrapAround="true" optional="true">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="200" Y="80" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="145" Y="80" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control optional="true">
+				<tns:GuiAccess screenId="Heizkreis1 4_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="160" Y="75" />
+						<tns:BottomRight X="185" Y="87" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="10" most="90"
+					least="0">
+					<tns:GuiModification format="#0C"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="200" Y="80" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
@@ -1524,12 +1613,16 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C11.Vorlauf_Soll_HK1" unit="°C">
-			<tns:Control screenId="Heizkreis1 4_5">
-				<tns:Current>
-					<tns:TopLeft X="155" Y="45" />
-					<tns:BottomRight X="190" Y="60" />
-				</tns:Current>
-				<tns:TypeRead format="#0CC" />
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis1 4_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="45" />
+						<tns:BottomRight X="190" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="#0CC" />
+				</tns:TypeRead>
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1538,45 +1631,60 @@
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="Home">
-				<tns:Current>
-					<tns:TopLeft X="133" Y="37" />
-					<tns:BottomRight X="155" Y="58" />
-				</tns:Current>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0C02" type="Holding" />
+				<tns:GuiAccess screenId="Home">
+					<tns:CurrentValue>
+						<tns:TopLeft X="133" Y="37" />
+						<tns:BottomRight X="155" Y="58" />
+					</tns:CurrentValue>
+					<tns:PreparationRef refId="Button_HK2" />
+				</tns:GuiAccess>
 				<tns:TypeMode>
-					<tns:Mode id="Tag">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="95" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeTag" />
-					</tns:Mode>
-					<tns:Mode id="Nacht">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="125" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeNacht" />
-					</tns:Mode>
-					<tns:Mode id="Standby">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="160" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeStandby" />
-					</tns:Mode>
-					<tns:Mode id="Timer">
-						<tns:Touch pushTimeRefId="Standard"
-							releaseTimeRefId="ValueChange">
-							<tns:Coordinate X="60" Y="110" />
-						</tns:Touch>
-						<tns:ScreenGrafic id="ModeTimer" />
-					</tns:Mode>
+					<tns:ModeEntry id="Tag">
+						<tns:ModbusValue>3</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="95" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeTag" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Nacht">
+						<tns:ModbusValue>4</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="125" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeNacht" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Standby">
+						<tns:ModbusValue>5</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="160" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeStandby" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Timer">
+						<tns:ModbusValue>2</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ValueChange">
+								<tns:Coordinate X="60" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeTimer" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
 				</tns:TypeMode>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
-				<tns:PreparationRef refId="Button_HK2" />
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1585,22 +1693,28 @@
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="TagestemperaturSelected_HK2">
-				<tns:Current>
-					<tns:TopLeft X="55" Y="30" />
-					<tns:BottomRight X="110" Y="60" />
-				</tns:Current>
-				<tns:TypeValue format="#0CC" increment="1" least="0"
-					most="30" wrapAround="true">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="15" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="80" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0C04" type="Holding" />
+				<tns:GuiAccess screenId="TagestemperaturSelected_HK2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="55" Y="30" />
+						<tns:BottomRight X="110" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="30"
+					least="0">
+					<tns:GuiModification format="#0CC"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="15" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
@@ -1612,22 +1726,28 @@
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="NachttemperaturSelected_HK2">
-				<tns:Current>
-					<tns:TopLeft X="55" Y="30" />
-					<tns:BottomRight X="110" Y="60" />
-				</tns:Current>
-				<tns:TypeValue format="#0CC" increment="1" least="0"
-					most="30" wrapAround="true">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="15" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="225" Y="80" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0C05" type="Holding" />
+				<tns:GuiAccess screenId="NachttemperaturSelected_HK2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="55" Y="30" />
+						<tns:BottomRight X="110" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="30"
+					least="0">
+					<tns:GuiModification format="#0CC"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="15" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
@@ -1639,26 +1759,30 @@
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="Home">
-				<tns:Current>
-					<tns:TopLeft X="112" Y="40" />
-					<tns:BottomRight X="132" Y="55" />
-				</tns:Current>
-				<tns:TypeValue format="C#0C" increment="1" least="-5"
-					most="5">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="220" Y="20" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="220" Y="50" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control>
+				<tns:GuiAccess screenId="Home">
+					<tns:CurrentValue>
+						<tns:TopLeft X="112" Y="40" />
+						<tns:BottomRight X="132" Y="55" />
+					</tns:CurrentValue>
+					<tns:PreparationRef refId="Button_HK2" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="5"
+					least="-5">
+					<tns:GuiModification format="C#0C">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="20" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="50" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
-				<tns:PreparationRef refId="Button_HK2" />
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1667,22 +1791,27 @@
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="Heizkreis2 4_5">
-				<tns:Current>
-					<tns:TopLeft X="160" Y="75" />
-					<tns:BottomRight X="185" Y="87" />
-				</tns:Current>
-				<tns:TypeValue format="#0C" increment="10" least="10"
-					most="90" wrapAround="true" optional="true">
-					<tns:Upper pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="200" Y="80" />
-					</tns:Upper>
-					<tns:Lower pushTimeRefId="Standard"
-						releaseTimeRefId="ValueChange">
-						<tns:Coordinate X="145" Y="80" />
-					</tns:Lower>
-				</tns:TypeValue>
+			<tns:Control optional="true">
+				<tns:GuiAccess screenId="Heizkreis2 4_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="160" Y="75" />
+						<tns:BottomRight X="185" Y="87" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="10" most="90"
+					least="10">
+					<tns:GuiModification format="#0C"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="200" Y="80" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:ScreenChange />
 				</tns:UpdateBy>
@@ -1694,12 +1823,16 @@
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
 			</tns:ConfigurationMasks>
-			<tns:Control screenId="Heizkreis2 4_5">
-				<tns:Current>
-					<tns:TopLeft X="155" Y="45" />
-					<tns:BottomRight X="190" Y="60" />
-				</tns:Current>
-				<tns:TypeRead format="#0CC" />
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis2 4_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="45" />
+						<tns:BottomRight X="190" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="#0CC" />
+				</tns:TypeRead>
 			</tns:Control>
 		</tns:ChannelDescription>
 	</tns:ChannelDescriptions>
@@ -1731,10 +1864,7 @@
 	</tns:Preparations>
 	<tns:Clock timeChannelId="X6.UhrzeitSolvis"
 		screenId="Zeiteinstellung" okScreenId="Uhrzeit / Datum">
-		<tns:SecondsScan>
-			<tns:TopLeft X="100" Y="35" />
-			<tns:BottomRight X="115" Y="45" />
-		</tns:SecondsScan>
+		<tns:ModbusWrite address="0x8000" type="Holding"/>
 		<tns:Year least="2008">
 			<tns:Rectangle>
 				<tns:TopLeft X="101" Y="58" />

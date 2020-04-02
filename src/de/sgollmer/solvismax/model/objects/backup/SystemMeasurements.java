@@ -38,7 +38,7 @@ public class SystemMeasurements {
 	}
 
 	public Collection<Measurement> getMeasurements() {
-		return measurements;
+		return this.measurements;
 	}
 
 	public void add(Measurement measurement) {
@@ -102,11 +102,11 @@ public class SystemMeasurements {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public Solvis getOwner() {
-		return owner;
+		return this.owner;
 	}
 
 	public void setOwner(Solvis owner) {

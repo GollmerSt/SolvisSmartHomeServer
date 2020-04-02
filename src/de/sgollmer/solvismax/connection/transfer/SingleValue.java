@@ -38,7 +38,7 @@ public class SingleValue implements Value {
 
 	@Override
 	public void addTo(StringBuilder builder) {
-		builder.append(data.toJson());
+		builder.append(this.data.toJson());
 
 	}
 

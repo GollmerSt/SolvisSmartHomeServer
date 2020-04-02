@@ -15,12 +15,11 @@ public abstract class ChannelSource implements ChannelSourceI {
 	 * @return the description
 	 */
 	public ChannelDescription getDescription() {
-		return description;
+		return this.description;
 	}
 
 	/**
-	 * @param description
-	 *            the description to set
+	 * @param description the description to set
 	 */
 	public void setDescription(ChannelDescription description) {
 		this.description = description;

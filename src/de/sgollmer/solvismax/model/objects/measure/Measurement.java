@@ -94,8 +94,8 @@ public class Measurement extends ChannelSource {
 	// 130B0F Datum 15.11.2019
 	// 49AB00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-	public Measurement(Strategy type, int divisor, boolean average, boolean dynamic,
-			int delayAfterSwitchingOn, Collection<Field> fields) {
+	public Measurement(Strategy type, int divisor, boolean average, boolean dynamic, int delayAfterSwitchingOn,
+			Collection<Field> fields) {
 		this.type = type;
 		this.divisor = divisor;
 		this.average = average;
@@ -111,7 +111,7 @@ public class Measurement extends ChannelSource {
 			dest.setSingleData(null);
 			return true;
 		} else {
-			return type.get(dest, this.fields, solvis.getMeasureData());
+			return this.type.get(dest, this.fields, solvis.getMeasureData());
 		}
 	}
 
@@ -136,7 +136,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	public boolean isDynamic() {
-		return dynamic;
+		return this.dynamic;
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class Measurement extends ChannelSource {
 			String id = name.getLocalPart();
 			switch (id) {
 				case "type":
-					type = Strategy.valueOf(value.toUpperCase());
+					this.type = Strategy.valueOf(value.toUpperCase());
 					break;
 				case "divisor":
 					this.divisor = Integer.parseInt(value);
@@ -182,7 +182,8 @@ public class Measurement extends ChannelSource {
 
 		@Override
 		public Measurement create() throws XmlError {
-			return new Measurement(type, divisor, average, dynamic, delayAfterSwitchingOn, fields);
+			return new Measurement(this.type, this.divisor, this.average, this.dynamic, this.delayAfterSwitchingOn,
+					this.fields);
 		}
 
 		@Override
@@ -197,10 +198,10 @@ public class Measurement extends ChannelSource {
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			switch ( creator.getId() ) {
+			switch (creator.getId()) {
 				case XML_FIELD:
 					this.fields.add((Field) created);
-					break ;
+					break;
 			}
 
 		}
@@ -249,7 +250,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	public int getDelayAfterSwitchingOn() {
-		return delayAfterSwitchingOn;
+		return this.delayAfterSwitchingOn;
 	}
 
 	@Override
@@ -258,8 +259,8 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public String getUnit() {
-		return null;
+	public boolean isModbus(Solvis solvis) {
+		return false;
 	}
 
 }

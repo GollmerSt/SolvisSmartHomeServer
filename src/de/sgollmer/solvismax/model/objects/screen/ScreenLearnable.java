@@ -24,8 +24,7 @@ public interface ScreenLearnable extends GraficsLearnable {
 		}
 	}
 
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
-			Solvis solvis);
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens, Solvis solvis);
 
 	public static class LearnScreen implements Cloneable {
 		private Screen screen;
@@ -41,7 +40,7 @@ public interface ScreenLearnable extends GraficsLearnable {
 		}
 
 		public Screen getScreen() {
-			return screen;
+			return this.screen;
 		}
 
 		public void setScreen(Screen screen) {
@@ -49,7 +48,7 @@ public interface ScreenLearnable extends GraficsLearnable {
 		}
 
 		public ScreenGraficDescription getDescription() {
-			return description;
+			return this.description;
 		}
 
 		public void setDescription(ScreenGraficDescription description) {

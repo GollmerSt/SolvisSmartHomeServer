@@ -131,15 +131,16 @@ public class MyImage {
 	}
 
 	public boolean isIn(Coordinate coord) {
-		return coord.getX() >= 0 && coord.getY() >= 0 && coord.getX() < maxRel.getX() && coord.getY() < maxRel.getY();
+		return coord.getX() >= 0 && coord.getY() >= 0 && coord.getX() < this.maxRel.getX()
+				&& coord.getY() < this.maxRel.getY();
 	}
 
 	public boolean isIn(int x, int y) {
-		return x >= 0 && y >= 0 && x < maxRel.getX() && y < maxRel.getY();
+		return x >= 0 && y >= 0 && x < this.maxRel.getX() && y < this.maxRel.getY();
 	}
 
 	public int getRGB(int x, int y) {
-		return image.getRGB(x + origin.getX(), y + origin.getY());
+		return this.image.getRGB(x + this.origin.getX(), y + this.origin.getY());
 	}
 
 	public boolean isActive(Coordinate coord) {
@@ -176,11 +177,11 @@ public class MyImage {
 		this.histogramY = new ArrayList<Integer>(this.getHeight());
 
 		for (int x = 0; x < this.getWidth(); ++x) {
-			histogramX.add(0);
+			this.histogramX.add(0);
 		}
 
 		for (int y = 0; y < this.getHeight(); ++y) {
-			histogramY.add(0);
+			this.histogramY.add(0);
 		}
 
 		if (autoInvert) {
@@ -272,14 +273,14 @@ public class MyImage {
 	 * @return the histogramX
 	 */
 	public List<Integer> getHistogramX() {
-		return histogramX;
+		return this.histogramX;
 	}
 
 	/**
 	 * @return the histogramY
 	 */
 	public List<Integer> getHistogramY() {
-		return histogramY;
+		return this.histogramY;
 	}
 
 	public class WrongFormatError extends Error {
@@ -361,9 +362,9 @@ public class MyImage {
 		}
 		return false;
 	}
-	
+
 	public String getDebugInfo() {
-		return "Origin: "+ this.origin + ", max: " + this.maxRel ;
+		return "Origin: " + this.origin + ", max: " + this.maxRel;
 	}
 
 }

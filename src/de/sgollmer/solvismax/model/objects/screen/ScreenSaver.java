@@ -29,7 +29,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ScreenSaver implements Assigner {
 
-	private static final boolean DEBUG = false ;
+	private static final boolean DEBUG = false;
 
 	private static final java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+:\\d+");
 	private static final java.util.regex.Pattern DATE_PATTERN = java.util.regex.Pattern
@@ -39,7 +39,7 @@ public class ScreenSaver implements Assigner {
 	private static final String XML_TIME_DATA_RECTANGLE = "TimeDateRectangle";
 
 	private static final Logger logger = LogManager.getLogger(ScreenSaver.class);
-	
+
 	private String debugInfo = "";
 
 	private final int timeHeight;
@@ -54,7 +54,7 @@ public class ScreenSaver implements Assigner {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		if (resetScreenSaver != null) {
+		if (this.resetScreenSaver != null) {
 			this.resetScreenSaver.assign(description);
 		}
 	}
@@ -63,7 +63,7 @@ public class ScreenSaver implements Assigner {
 	 * @return the resetScreenSaver
 	 */
 	public TouchPoint getResetScreenSaver() {
-		return resetScreenSaver;
+		return this.resetScreenSaver;
 	}
 
 	public static class Creator extends CreatorByXML<ScreenSaver> {
@@ -71,7 +71,7 @@ public class ScreenSaver implements Assigner {
 		private int timeHeight;
 		private Rectangle timeDateRectangle;
 		private TouchPoint resetScreenSaver = null;
-		
+
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
@@ -129,62 +129,61 @@ public class ScreenSaver implements Assigner {
 
 		Pattern pattern = new Pattern(original, new Coordinate(fs, fs),
 				new Coordinate(original.getWidth() - 2 * fs, original.getHeight() - 2 * fs));
-		
-		if ( ! pattern.isIn(this.timeDateRectangle.getBottomRight())) {
-			if ( DEBUG ) {
-				this.debugInfo = "Not in <timeDateRectangle>. " + pattern.getDebugInfo() ;
+
+		if (!pattern.isIn(this.timeDateRectangle.getBottomRight())) {
+			if (DEBUG) {
+				this.debugInfo = "Not in <timeDateRectangle>. " + pattern.getDebugInfo();
 			}
-			return false ;
+			return false;
 		}
 
-		Pattern timeDatePattern = new Pattern(pattern,this.timeDateRectangle);
-		
+		Pattern timeDatePattern = new Pattern(pattern, this.timeDateRectangle);
+
 		Rectangle timeRectangle = new Rectangle(new Coordinate(0, 0),
-				new Coordinate(timeDatePattern.getWidth() - 1, this.timeHeight ));
-		
-		if ( ! timeDatePattern.isIn(timeRectangle.getBottomRight())) {
-			if ( DEBUG ) {
-				this.debugInfo = "Not in <timeRectangle>. " + pattern.getDebugInfo() ;
+				new Coordinate(timeDatePattern.getWidth() - 1, this.timeHeight));
+
+		if (!timeDatePattern.isIn(timeRectangle.getBottomRight())) {
+			if (DEBUG) {
+				this.debugInfo = "Not in <timeRectangle>. " + pattern.getDebugInfo();
 			}
-			return false ;
+			return false;
 		}
-		
-		
+
 		OcrRectangle ocrRectangle = new OcrRectangle(timeDatePattern, timeRectangle);
 		String time = ocrRectangle.getString();
 		Matcher m = TIME_PATTERN.matcher(time);
 		if (!m.matches()) {
-			if ( DEBUG ) {
-				this.debugInfo = pattern.getDebugInfo() + ", time = " + time ;
+			if (DEBUG) {
+				this.debugInfo = pattern.getDebugInfo() + ", time = " + time;
 			}
 			return false;
 		}
 
 		Rectangle dateRectangle = new Rectangle(new Coordinate(0, this.timeHeight),
-				new Coordinate(timeDatePattern.getWidth() - 1, timeDatePattern.getHeight()-1));
-		
-		if ( ! timeDatePattern.isIn(dateRectangle.getBottomRight())) {
-			if ( DEBUG ) {
-				this.debugInfo = "Not in <dateRectangle>. " + pattern.getDebugInfo() ;
+				new Coordinate(timeDatePattern.getWidth() - 1, timeDatePattern.getHeight() - 1));
+
+		if (!timeDatePattern.isIn(dateRectangle.getBottomRight())) {
+			if (DEBUG) {
+				this.debugInfo = "Not in <dateRectangle>. " + pattern.getDebugInfo();
 			}
-			return false ;
+			return false;
 		}
-		
+
 		ocrRectangle = new OcrRectangle(timeDatePattern, dateRectangle);
 		String date = ocrRectangle.getString();
 		logger.debug("Screen saver time: " + time + "  " + date);
 		m = DATE_PATTERN.matcher(date);
 		if (!m.matches()) {
-			if ( DEBUG ) {
-				this.debugInfo = pattern.getDebugInfo() + ", date = " + date ;
+			if (DEBUG) {
+				this.debugInfo = pattern.getDebugInfo() + ", date = " + date;
 			}
 			return false;
 		}
 		return true;
 	}
-	
+
 	public String getDebugInfo() {
-		return debugInfo;
+		return this.debugInfo;
 	}
 
 }

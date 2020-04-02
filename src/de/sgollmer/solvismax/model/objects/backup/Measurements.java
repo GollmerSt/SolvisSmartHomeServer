@@ -99,6 +99,6 @@ public class Measurements {
 	 * @return the systemMeasurements
 	 */
 	public Collection<SystemMeasurements> getSystemMeasurements() {
-		return systemMeasurements;
+		return this.systemMeasurements;
 	}
 }

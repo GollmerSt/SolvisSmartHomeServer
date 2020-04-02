@@ -14,30 +14,30 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class Field {
-	private final int position ;
-	private final int length ;
-	
-	public Field( int position, int length ) {
-		this.position = position ;
-		this.length = length ;
+	private final int position;
+	private final int length;
+
+	public Field(int position, int length) {
+		this.position = position;
+		this.length = length;
 	}
 
 	public int getPosition() {
-		return position;
+		return this.position;
 	}
 
 	public int getLength() {
-		return length;
+		return this.length;
 	}
-	
-	public String subString( String data ) {
-		return data.substring(position, position + length ) ;
+
+	public String subString(String data) {
+		return data.substring(this.position, this.position + this.length);
 	}
-	
+
 	public static class Creator extends CreatorByXML<Field> {
 
-		private int position ;
-		private int length ;
+		private int position;
+		private int length;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -45,19 +45,19 @@ public class Field {
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			switch( name.getLocalPart()) {
+			switch (name.getLocalPart()) {
 				case "position":
-					this.position = Integer.parseInt(value) ;
-					break ;
+					this.position = Integer.parseInt(value);
+					break;
 				case "length":
-					this.length = Integer.parseInt(value) ;
+					this.length = Integer.parseInt(value);
 			}
-			
+
 		}
 
 		@Override
 		public Field create() throws XmlError {
-			return new Field(position, length);
+			return new Field(this.position, this.length);
 		}
 
 		@Override
@@ -68,7 +68,7 @@ public class Field {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 		}
-		
+
 	}
 
 }

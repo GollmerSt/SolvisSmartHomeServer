@@ -25,6 +25,6 @@ public class GetPackage extends JsonPackage {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 }

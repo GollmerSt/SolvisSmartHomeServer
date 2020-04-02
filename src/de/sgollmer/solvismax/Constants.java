@@ -17,7 +17,7 @@ public class Constants {
 	public static final String LOG4J_CONFIG_FILE = "log4j2.xml";
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
 	public static final String RESOURCE_PATH = "data";
-	public static final int SCREEN_SAVER_IGNORED_FRAME_SIZE = 3 ;
+	public static final int SCREEN_SAVER_IGNORED_FRAME_SIZE = 3;
 	/**
 	 * Max. number of tries, to get to the necessarry screen
 	 */
@@ -25,9 +25,9 @@ public class Constants {
 	public static final int SET_REPEATS = 3;
 	public static final int MAX_GOTO_DEEPTH = 10;
 	public static final int LEARNING_RETRIES = 10;
-	public static final int COMMAND_TO_QUEUE_END_AFTER_N_FAILURES = 3 ;
+	public static final int COMMAND_TO_QUEUE_END_AFTER_N_FAILURES = 3;
 	public static final int COMMAND_IGNORED_AFTER_N_FAILURES = 10;
-	
+
 	public static final int HOURLY_BEARNER_SYNCHRONISATION_READ_INTERVAL_FACTOR = 6;
 
 	public static final int MAX_CONNECTIONS = 50;
@@ -35,8 +35,8 @@ public class Constants {
 	public static final int WAIT_TIME_AFTER_IO_ERROR = 10000;
 	public static final int ALIVE_TIME = 120000;
 	public static final int FORCE_UPDATE_AFTER_N_INTERVALS = 3;
-	public static final int WAIT_TIME_AFTER_THROWABLE = 300000 ;
-/**
+	public static final int WAIT_TIME_AFTER_THROWABLE = 300000;
+	/**
 	 * Maximum of time, within the screen isn't read again, if no other screen is
 	 * selected
 	 */
@@ -58,6 +58,8 @@ public class Constants {
 
 	public static final int MAX_WAIT_TIME_TERMINATING_OTHER_SERVER = 60000;
 	public static final int NUMBER_OF_CONTROL_FILE_DUPLICATES = 3;
+
+	public static final int MODBUS_SLAVE_ID = 1;
 
 	public static class ExitCodes {
 		public static final int OK = 0;

@@ -31,7 +31,7 @@ public class ClientAssignments {
 	}
 
 	public Client getClient() {
-		return client;
+		return this.client;
 	}
 
 	public void setClient(Client client) {
@@ -39,11 +39,11 @@ public class ClientAssignments {
 	}
 
 	public State getState() {
-		return state;
+		return this.state;
 	}
 
 	public ClosingThread getClosingThread() {
-		return closingThread;
+		return this.closingThread;
 	}
 
 	public void setClosingThread(ClosingThread closingThread) {
@@ -51,11 +51,11 @@ public class ClientAssignments {
 	}
 
 	public int getClientId() {
-		return clientId;
+		return this.clientId;
 	}
 
 	public Solvis getSolvis() {
-		return solvis;
+		return this.solvis;
 	}
 
 	public static class State {
@@ -64,7 +64,7 @@ public class ClientAssignments {
 		private boolean commandEnable = true;
 
 		public boolean isScreenRestoreInhibit() {
-			return screenRestoreInhibit;
+			return this.screenRestoreInhibit;
 		}
 
 		public void setScreenRestoreInhibit(boolean screenRestoreInhibit) {
@@ -72,7 +72,7 @@ public class ClientAssignments {
 		}
 
 		public boolean isOptimizationEnable() {
-			return optimizationEnable;
+			return this.optimizationEnable;
 		}
 
 		public void setOptimizationEnable(boolean optimizationEnable) {
@@ -80,7 +80,7 @@ public class ClientAssignments {
 		}
 
 		public boolean isCommandEnable() {
-			return commandEnable;
+			return this.commandEnable;
 		}
 
 		public void setCommandEnable(boolean commandEnable) {

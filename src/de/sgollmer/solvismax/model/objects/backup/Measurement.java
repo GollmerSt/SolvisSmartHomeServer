@@ -42,7 +42,7 @@ public class Measurement {
 	 * @return the data
 	 */
 	public SingleData<?> getData() {
-		return data;
+		return this.data;
 	}
 
 	public static class Creator extends CreatorByXML<Measurement> {
@@ -66,7 +66,7 @@ public class Measurement {
 
 		@Override
 		public Measurement create() throws XmlError, IOException {
-			return new Measurement(id, data);
+			return new Measurement(this.id, this.data);
 		}
 
 		@Override
@@ -110,7 +110,7 @@ public class Measurement {
 
 		@Override
 		public SingleData<?> create() throws XmlError, IOException {
-			final String dataString = text.toString();
+			final String dataString = this.text.toString();
 			switch (this.getId()) {
 				case XML_MEASUREMENT_BOOLEAN:
 					return new BooleanValue(Boolean.parseBoolean(dataString), -1);
@@ -150,7 +150,7 @@ public class Measurement {
 
 		writer.writeAttribute("id", this.id);
 		writer.writeStartElement(this.data.getXmlId());
-		writer.writeCharacters(data.toString());
+		writer.writeCharacters(this.data.toString());
 		writer.writeEndElement();
 
 	}
@@ -159,7 +159,7 @@ public class Measurement {
 	 * @return the id
 	 */
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 }

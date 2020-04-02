@@ -69,7 +69,7 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 			readInterval = solvis.getDuration(this.readIntervalId).getTime_ms();
 		}
 
-		new Executable(solvis, toUpdate, burner, burnerRunTime, factor, checkInterval, readInterval, hourly);
+		new Executable(solvis, toUpdate, burner, burnerRunTime, this.factor, checkInterval, readInterval, this.hourly);
 
 	}
 
@@ -123,32 +123,32 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 			boolean update = false;
 
-			if (factor > 0) {
+			if (this.factor > 0) {
 				controlData *= this.factor;
-				if (syncActive) {
+				if (this.syncActive) {
 					this.syncActive = false;
 					update = true;
-					logger.info("Synchronisation  of <" + burnerCalcId + "> finished");
+					logger.info("Synchronisation  of <" + HeatingBurner.this.burnerCalcId + "> finished");
 				} else if (controlData > calcData || controlData + this.factor < calcData) {
 					update = true;
 					if (controlData > calcData + 0.1 * this.factor || controlData + this.factor < calcData) {
 						this.syncActive = true;
-						logger.info("Synchronisation  of <" + burnerCalcId + "> activated");
+						logger.info("Synchronisation  of <" + HeatingBurner.this.burnerCalcId + "> activated");
 					}
 				}
 			} else if (calcData != controlData) {
 				update = true;
 			}
 			if (update) {
-				logger.info("Update of <" + burnerCalcId + "> by SolvisConrol data take place, former: " + calcData
-						+ ", new: " + controlData);
+				logger.info("Update of <" + HeatingBurner.this.burnerCalcId
+						+ "> by SolvisConrol data take place, former: " + calcData + ", new: " + controlData);
 				this.burnerCalcValue.setInteger(controlData, data.getTimeStamp());
 			}
 		}
 
 		private void updateByMeasurement(SolvisData data) {
 
-			if (!(source instanceof Control)) {
+			if (!(HeatingBurner.this.source instanceof Control)) {
 				return;
 			}
 
@@ -182,8 +182,9 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 			if (check) {
 
 				this.lastCheckTime = time;
-				this.solvis.execute(new CommandControl(((Control) source).getDescription(), this.solvis));
-				logger.debug("Update of <" + burnerCalcId + "> requested.");
+				this.solvis.execute(
+						new CommandControl(((Control) HeatingBurner.this.source).getDescription(), this.solvis));
+				logger.debug("Update of <" + HeatingBurner.this.burnerCalcId + "> requested.");
 			}
 
 			if (checkH || this.syncActive) {
@@ -246,7 +247,8 @@ public class HeatingBurner extends Strategy<HeatingBurner> {
 
 		@Override
 		public HeatingBurner create() throws XmlError {
-			return new HeatingBurner(burnerId, burnerCalcId, factor, checkIntervalId, readIntervalId, hourly);
+			return new HeatingBurner(this.burnerId, this.burnerCalcId, this.factor, this.checkIntervalId,
+					this.readIntervalId, this.hourly);
 		}
 
 		@Override

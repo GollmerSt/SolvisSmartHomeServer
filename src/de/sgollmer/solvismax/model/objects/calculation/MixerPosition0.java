@@ -32,11 +32,6 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	public String getUnit() {
-		return null;
-	}
-
-	@Override
 	public boolean isWriteable() {
 		return false;
 	}
@@ -71,8 +66,8 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		}
 
 		@Override
-		public void update(SolvisData data, Object source ) {
-			if (result == null || pumpOn == null || mixerClosing == null) {
+		public void update(SolvisData data, Object source) {
+			if (this.result == null || this.pumpOn == null || this.mixerClosing == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
 
@@ -90,7 +85,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		
+
 	}
 
 	@Override

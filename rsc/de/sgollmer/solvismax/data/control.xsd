@@ -1,149 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/control"
-	xmlns:tns="http://www.example.org/control" elementFormDefault="qualified">
-    <annotation>
-    	<documentation></documentation></annotation>
-    <complexType name="Screen">
-    	<annotation>
-    		<documentation>Bildschirm-Definition</documentation>
-    	</annotation>
-    	<sequence>
-    		<element name="ConfigurationMasks"
-    			type="tns:ConfigurationMasks" maxOccurs="1" minOccurs="0">
-    		</element>
-    		<element name="TouchPoint" type="tns:TouchPoint"
-    			maxOccurs="1" minOccurs="0">
-    			<annotation>
-    				<documentation>
-    					Bildschirmpunkt des Vorgänger-Bildschirms
-    					(previousId), der gedrückt werden muss, um auf
-    					den vorliegenden zu gelangen. Können auch
-    					mehrere sein (z.B. Main-Bildschirm Auswahl des
-    					Heizkreises)
-    				</documentation>
-    			</annotation>
-    		</element>
-    		<element name="AlternativeTouchPoint" type="tns:TouchPoint"
-    			maxOccurs="1" minOccurs="0">
-    		</element>
-    		<element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="1"
-    			minOccurs="0">
-    			<annotation>
-    				<documentation>
-    					Wenn sich der Bildschirm aus erkennbaren Zeichen
-    					bestimmt werden kann
-    				</documentation>
-    			</annotation>
-    		</element>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.example.org/control"
+	xmlns:tns="http://www.example.org/control"
+	elementFormDefault="qualified">
+	<annotation>
+		<documentation></documentation>
+	</annotation>
+	<complexType name="Screen">
+		<annotation>
+			<documentation>Bildschirm-Definition</documentation>
+		</annotation>
+		<sequence>
+			<element name="ConfigurationMasks" maxOccurs="1"
+				minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="ConfigurationMask"
+							type="tns:ConfigurationMask" maxOccurs="unbounded" minOccurs="0">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="TouchPoint" type="tns:TouchPoint"
+				maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>
+						Bildschirmpunkt des Vorgänger-Bildschirms
+						(previousId), der gedrückt werden muss, um auf
+						den vorliegenden zu
+						gelangen. Können auch
+						mehrere sein (z.B. Main-Bildschirm Auswahl
+						des
+						Heizkreises)
+					</documentation>
+				</annotation>
+			</element>
+			<element name="AlternativeTouchPoint" type="tns:TouchPoint"
+				maxOccurs="1" minOccurs="0">
+			</element>
+			<element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="1"
+				minOccurs="0">
+				<annotation>
+					<documentation>
+						Wenn sich der Bildschirm aus erkennbaren Zeichen
+						bestimmt werden kann
+					</documentation>
+				</annotation>
+			</element>
 
-    		<element name="ScreenGraficRef" type="tns:ScreenGraficRef"
-    			maxOccurs="1" minOccurs="0">
-    			<annotation>
-    				<documentation>
-    					Wenn sich der Bildschirm aus einem
-    					Bildschirmbereich bestimmt werden kann, die
-    					Definition erfolgt über eine Refenzierung
-    				</documentation>
-    			</annotation>
-    		</element>
-    		<element name="ScreenGrafic" type="tns:ScreenGrafic"
-    			maxOccurs="1" minOccurs="0">
-    			<annotation>
-    				<documentation>
-    					Wenn sich der Bildschirm aus einem
-    					Bildschirmbereich bestimmt werden kann
-    				</documentation>
-    			</annotation>
-    		</element>
-    		<element name="IgnoreRectangle" type="tns:Rectangle"
-    			maxOccurs="unbounded" minOccurs="0">
-    			<annotation>
-    				<documentation>
-    					Zur Erkennung von Useraktivitäten, Änderungen
-    					innerhalb dieser Rechtecke werden nicht als
-    					Useraktivität registriert Dient der Untersuchung
-    					von Usereingriffen. Im Ruhezustand wird jede
-    					Minute untersucht, ob der Bildschirminhalt sich
-    					geändert hat. Da auf einigen Bildschirmen
-    					ständig sich ändernde Werte angezeigt werden
-    					(Uhrzeit, Istwerte oder Anlegenstatus) können
-    					bestimmte Teile des Bildschirms mit Hilfe der
-    					"IgnoreRectangle" beim Vergleich ausgeblendt
-    					werden. Achtung: Im rectangle-Element gibt es
-    					auch noch das "invertFunction"-Attribut, damit
-    					kann ein bestimmter Bereich doch wieder zum
-    					Vergleich herangezogen werden, auch wenn er
-    					durch die anderen Ingnorerectangles maskiert
-    					ist. Ist etwas unsauber gelöst.
-    				</documentation>
-    			</annotation>
-    		</element>
-    		<element name="PreparationRef" type="tns:PreparationRef"
-    			maxOccurs="1" minOccurs="0">
-    		</element>
-    	</sequence>
-    	<attribute name="id" type="string" use="required"></attribute>
-    	<attribute name="previousId" type="string" use="required">
-    		<annotation>
-    			<documentation>Vorgänger-Bildschirm</documentation>
-    		</annotation>
-    	</attribute>
-    	<attribute name="alternativePreviousId" type="string"
-    		use="optional">
-    		<annotation>
-    			<documentation>
-    				Wenn der Folgebildschirm nicht eindeutig ist, gibt
-    				es auch einen alternativen Vorgänger (Beispiel
-    				Anlagenmodus). Der Folgebildschirm hängt in solchen
-    				Fällen von der letzten Useraktion ab. Wichti!!!! Für
-    				den Lernmodus muss daher vom User-Modus vorher der
-    				richtige Bildschirm ausgewählt werden. Im Lernmodus
-    				werden die ALternativen nicht beachtet!
-    			</documentation>
-    		</annotation>
-    	</attribute>
-    	<attribute name="backId" type="string" use="required">
-    		<annotation>
-    			<documentation>
-    				Bildschirm nach Druck auf die Back-Taste
-    			</documentation>
-    		</annotation>
-    	</attribute>
-    	<attribute name="ignoreChanges" type="boolean" use="optional">
-    		<annotation>
-    			<documentation>
-    				Zur Erkennung von Useraktivitäten, Änderungen auf
-    				diesem Screen werden nicht als Useraktivität
-    				registriert. Default: false
-    			</documentation>
-    		</annotation>
-    	</attribute>
-    </complexType>
+			<element name="ScreenGraficRef" type="tns:ScreenGraficRef"
+				maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>
+						Wenn sich der Bildschirm aus einem
+						Bildschirmbereich
+						bestimmt werden kann, die
+						Definition erfolgt über eine Refenzierung
+					</documentation>
+				</annotation>
+			</element>
+			<element name="ScreenGrafic" type="tns:ScreenGrafic"
+				maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>
+						Wenn sich der Bildschirm aus einem
+						Bildschirmbereich
+						bestimmt werden kann
+					</documentation>
+				</annotation>
+			</element>
+			<element name="IgnoreRectangle" type="tns:Rectangle"
+				maxOccurs="unbounded" minOccurs="0">
+				<annotation>
+					<documentation>
+						Zur Erkennung von Useraktivitäten, Änderungen
+						innerhalb dieser Rechtecke werden nicht als
+						Useraktivität
+						registriert Dient der Untersuchung
+						von Usereingriffen. Im
+						Ruhezustand wird jede
+						Minute untersucht, ob der Bildschirminhalt
+						sich
+						geändert hat. Da auf einigen Bildschirmen
+						ständig sich ändernde
+						Werte angezeigt werden
+						(Uhrzeit, Istwerte oder Anlegenstatus)
+						können
+						bestimmte Teile des Bildschirms mit Hilfe der
+						"IgnoreRectangle" beim Vergleich ausgeblendt
+						werden. Achtung: Im
+						rectangle-Element gibt es
+						auch noch das "invertFunction"-Attribut,
+						damit
+						kann ein bestimmter Bereich doch wieder zum
+						Vergleich
+						herangezogen werden, auch wenn er
+						durch die anderen
+						Ingnorerectangles maskiert
+						ist. Ist etwas unsauber gelöst.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="PreparationRef" type="tns:PreparationRef"
+				maxOccurs="1" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="previousId" type="string" use="required">
+			<annotation>
+				<documentation>Vorgänger-Bildschirm</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="alternativePreviousId" type="string"
+			use="optional">
+			<annotation>
+				<documentation>
+					Wenn der Folgebildschirm nicht eindeutig ist, gibt
+					es
+					auch einen alternativen Vorgänger (Beispiel
+					Anlagenmodus). Der
+					Folgebildschirm hängt in solchen
+					Fällen von der letzten Useraktion
+					ab. Wichti!!!! Für
+					den Lernmodus muss daher vom User-Modus vorher
+					der
+					richtige Bildschirm ausgewählt werden. Im Lernmodus
+					werden die
+					ALternativen nicht beachtet!
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="backId" type="string" use="required">
+			<annotation>
+				<documentation>
+					Bildschirm nach Druck auf die Back-Taste
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="ignoreChanges" type="boolean"
+			use="optional">
+			<annotation>
+				<documentation>
+					Zur Erkennung von Useraktivitäten, Änderungen auf
+					diesem Screen werden nicht als Useraktivität
+					registriert. Default:
+					false
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
 
 
-    <complexType name="ScreenGrafic">
+	<complexType name="ScreenGrafic">
 		<annotation>
 			<documentation>Daten des zu vergleichende Bildschirmbereich
 			</documentation>
 		</annotation>
 		<sequence>
-			<element name="Field" type="tns:Rectangle" maxOccurs="1" minOccurs="0">
+			<element name="Field" type="tns:Rectangle" maxOccurs="1"
+				minOccurs="0">
 				<annotation>
-					<documentation>Zu vergleichende Bildschirmbereich. Die Bereichangabe ist optional, wenn sie aus dem übergeorneten Element (z.B. Control-Element) geholt werden kann.</documentation>
+					<documentation>Zu vergleichende Bildschirmbereich. Die
+						Bereichangabe ist optional, wenn sie aus dem übergeorneten Element
+						(z.B. Control-Element) geholt werden kann.
+					</documentation>
 				</annotation>
 			</element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
 				<documentation>Die id muss über alle ScreenGrafic-Elemente eindeutig
-sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="exact" type="boolean">
 			<annotation>
 				<documentation>true: Wenn auch Grauwerte verglichen werden sollen
-false: Schwarz-Weiß reicht aus
+					false: Schwarz-Weiß reicht aus
 				</documentation>
 			</annotation>
 		</attribute>
@@ -151,7 +185,9 @@ false: Schwarz-Weiß reicht aus
 
 	<complexType name="ScreenOcr">
 		<annotation>
-			<documentation>Die zu erkennenden Zeichen, über die der angezeigte Bildschirm bestimmt werden kann</documentation>
+			<documentation>Die zu erkennenden Zeichen, über die der angezeigte
+				Bildschirm bestimmt werden kann
+			</documentation>
 		</annotation>
 		<sequence>
 			<element name="Field" type="tns:Rectangle">
@@ -172,7 +208,8 @@ false: Schwarz-Weiß reicht aus
 	<complexType name="Coordinate">
 		<annotation>
 			<documentation>Koordinaten eines Punktes auf dem Bildschirm.
-Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links nach rechts, die Y-Koordinate von oben nach unten
+				Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft
+				von links nach rechts, die Y-Koordinate von oben nach unten
 			</documentation>
 		</annotation>
 		<attribute name="X" type="int" use="required"></attribute>
@@ -221,21 +258,23 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 
 	<complexType name="Control">
 		<annotation>
-			<documentation>Einstell-Parameter der Anlage (Tages-Temperatur, Raumeinfluss, Betriebsart)
+			<documentation>
+				Einstell-Parameter der Anlage (Tages-Temperatur,
+				Raumeinfluss, Betriebsart)
 			</documentation>
 		</annotation>
 		<sequence>
-			<element name="Current" type="tns:Rectangle" maxOccurs="1"
-				minOccurs="1">
-				<annotation>
-					<documentation>
-						Feld mit aktuellem Wert
-					</documentation>
-				</annotation>
-			</element>
+			<sequence>
+				<element name="ModbusAccess" type="tns:ModbusAccess"
+					maxOccurs="1" minOccurs="0">
+				</element>
+				<element name="GuiAccess" type="tns:GuiAccess" maxOccurs="1"
+					minOccurs="0">
+				</element>
+			</sequence>
 			<choice>
-				<element name="TypeValue" type="tns:GuiValue" maxOccurs="1"
-					minOccurs="1">
+				<element name="TypeReadWrite" type="tns:ReadWrite"
+					maxOccurs="1" minOccurs="1">
 					<annotation>
 						<documentation>
 							Definitionen, wenn
@@ -245,130 +284,96 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeRead" type="tns:GuiRead" maxOccurs="1"
+				<element name="TypeRead" type="tns:Read" maxOccurs="1"
 					minOccurs="1">
 					<annotation>
 						<documentation>
 							Definitionen, wenn
-							derSolvis-Anlagenparameter nur ein
+							derSolvis-Anlagenparameter nur
+							ein
 							auszulesender Wert (z. B. Brennerstarts) ist
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeMode" type="tns:GuiMode"
-					maxOccurs="unbounded" minOccurs="1">
+				<element name="TypeMode" type="tns:Mode" maxOccurs="1"
+					minOccurs="1">
 					<annotation>
 						<documentation>
 							Definitionen, wenn Solvis-Anlagenparameter
-							ein einzustellender Modus (z.B. Betriebsart)
+							ein
+							einzustellender Modus (z.B. Betriebsart)
 							ist
 						</documentation>
 					</annotation>
 				</element>
 			</choice>
 
-            <element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1" minOccurs="0">
-				</element>
-            <element name="PreparationRef" type="tns:PreparationRef" maxOccurs="1"
-            	minOccurs="0">
-            </element>
+			<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1"
+				minOccurs="0">
+			</element>
 		</sequence>
-		<attribute name="screenId" type="string" use="required">
+
+		<attribute name="optional" type="boolean" use="optional">
 			<annotation>
-				<documentation>Name des Bildschirms, über das der Anlagenparameter ausgelesen/eingestellt werden kann
+				<documentation>Wenn das Feld nicht in allen Konfigurationen
+					vorhanden ist, kann das nicht vorhandensein
+					durch setzen von optional auf
+					&amp;amp;quot;true&amp;amp;quot; werden. Das ist
+					z.B. für C03.LaufzeitAnforderung2
+					erforderlich, da diese bei modulierten
+					Gasbrennern nicht vorhanden ist.
 				</documentation>
 			</annotation>
 		</attribute>
 	</complexType>
 
-	<!-- >complexType name="Mode">
+	<!-- >complexType name="Mode"> <annotation> <documentation>Definitionen 
+		der Betriebsarten um die aktulle Betriebsart zu ermmitteln/einzustellen (z.B. 
+		Tag/Nacht/Standby) </documentation> </annotation> <sequence> <element name="Mode" 
+		type="tns:Mode" maxOccurs="unbounded" minOccurs="0"></element> </sequence> 
+		</complexType -->
+
+
+	<complexType name="ModeEntry">
 		<annotation>
-			<documentation>Definitionen der Betriebsarten um die aktulle Betriebsart zu ermmitteln/einzustellen (z.B. Tag/Nacht/Standby)
-			</documentation>
+			<documentation>Definition um ein Status zu ermitteln/verändern
+				(Betriebsstatus, z.B. Standby)</documentation>
 		</annotation>
 		<sequence>
-			<element name="Mode" type="tns:Mode" maxOccurs="unbounded"
-				minOccurs="0"></element>
-		</sequence>
-	</complexType-->
-
-	<complexType name="GuiValue">
-		<annotation>
-			<documentation>
-				Defintionen zur Modifikation eines Wertes über das
-				Solvis-Gui (Berührungspunkte für
-				Aufwärts-/Abwärtszählen, Increments etc.)
-			</documentation>
-		</annotation>
-		<complexContent>
-			<extension base="tns:Value">
-				<sequence>
-					<element name="Upper" type="tns:TouchPoint"
-						maxOccurs="1" minOccurs="1">
-						<annotation>
-							<documentation>
-								Berührungspunkt-Definition um den Wert
-								zu erhöhen
-							</documentation>
-						</annotation>
-					</element>
-					<element name="Lower" type="tns:TouchPoint"
-						maxOccurs="1" minOccurs="1">
-						<annotation>
-							<documentation>
-								Berührungspunkt-Definition um den Wert
-								zu erniedrigen
-							</documentation>
-						</annotation>
-					</element>
-				</sequence>
-				<attribute name="format" type="string">
-					<annotation>
-						<documentation>
-							Der Format-String dient zur Extraktion der
-							Daten aus einem String
-
-							Er besteht aus folgenden zeichen:
-
-							C: beliebiges Zeichen, wird ignoriert 0:
-							Ziffer oder +/-, muss vorhanden sein, wird
-							übernommen #: Ziffer oder +/- optional, wird
-							übernommen
-						</documentation></annotation></attribute>
-				<attribute name="wrapAround" type="boolean">
-					<annotation>
-						<documentation>
-							true: Wenn nach kleinstem Wert des größte
-							eingestellt wird (z.B. Raumeinfluss) false:
-							Bei fester Grenze
-						</documentation>
-					</annotation>
-				</attribute>
-			</extension>
-		</complexContent>
-	</complexType>
-
-	<complexType name="Mode">
-		<annotation>
-			<documentation>Definition um ein Stus zu ermitteln/verändern (Betriebsstatus, z.B. Standby)</documentation>
-		</annotation>
-		<sequence>
-			<element name="Touch" type="tns:TouchPoint" maxOccurs="1" minOccurs="1">
-				<annotation>
-					<documentation>Zu drückender Punkt auf dem Bildschirm um den Modus zu wählen</documentation>
-				</annotation>
+            <element name="ModbusValue" type="int" maxOccurs="1" minOccurs="0"></element>
+            <element name="GuiSet" maxOccurs="1" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="Touch" type="tns:TouchPoint"
+							maxOccurs="1" minOccurs="1">
+							<annotation>
+								<documentation>
+									Zu drückender Punkt auf dem
+									Bildschirm um den Modus zu wählen
+								</documentation>
+							</annotation>
+						</element>
+						<element name="ScreenGrafic"
+							type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1">
+							<annotation>
+								<documentation>
+									Bildschirmgrafik, welche den Modus
+									bestimmt. Hier müssen nicht die
+									Koordinaten der Grafik eingegeben
+									werden.
+								</documentation>
+							</annotation>
+						</element>
+					</sequence>
+				</complexType>
 			</element>
-			<element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1">
-				<annotation>
-					<documentation>Bildschirmgrafik, welche den Modus bestimmt. Hier müssen nicht die Koordinaten der Grafik eingegeben werden.
-					</documentation>
-				</annotation>
-			</element>
+
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
 				<documentation>Modus-Name</documentation>
-			</annotation></attribute>
+			</annotation>
+		</attribute>
 	</complexType>
 
 
@@ -379,7 +384,12 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 			<documentation>Root mit der Home-Screen-Definition</documentation>
 		</annotation>
 		<sequence>
-			<element name="Types" type="tns:SolvisType">
+			<element name="SolvisTypes">
+				<complexType>
+					<sequence>
+						<element name="Type" type="tns:Type" maxOccurs="unbounded" minOccurs="1"></element>
+					</sequence>
+				</complexType>
 			</element>
 			<element name="Configurations" type="tns:Configurations"
 				maxOccurs="1" minOccurs="0">
@@ -394,23 +404,49 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 			<element name="Screens" type="tns:Screens" maxOccurs="1"
 				minOccurs="1">
 			</element>
-			<element name="ScreenGrafics" type="tns:ScreenGrafics"
-				maxOccurs="1" minOccurs="1">
+			<element name="ScreenGrafics" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="ScreenGrafic"
+							type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0">
+						</element>
+					</sequence>
+				</complexType>
 			</element>
 			<element name="FallBack" type="tns:FallBack" maxOccurs="1"
 				minOccurs="1">
 			</element>
-			<element name="ChannelDescriptions"
-				type="tns:ChannelDescriptions" maxOccurs="1" minOccurs="1">
+			<element name="ChannelDescriptions" maxOccurs="1"
+				minOccurs="1">
+				<complexType>
+                    <annotation>
+                    	<documentation>Alle Definitionen der Solvis-Kanäle</documentation>
+                    </annotation>
+                    <sequence>
+						<element name="ChannelDescription"
+							type="tns:ChannelDescription" maxOccurs="unbounded" minOccurs="0">
+						</element>
+					</sequence>
+				</complexType>
 			</element>
-			<element name="Preparations" type="tns:Preparations"
-				maxOccurs="1" minOccurs="0">
+			<element name="Preparations" maxOccurs="1" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="Preparation"
+							type="tns:Preparation" maxOccurs="unbounded" minOccurs="0">
+						</element>
+					</sequence>
+				</complexType>
 			</element>
 			<element name="Clock" type="tns:Clock" maxOccurs="1"
 				minOccurs="1">
 			</element>
-			<element name="Durations" type="tns:Durations" maxOccurs="1"
-				minOccurs="1">
+			<element name="Durations" maxOccurs="unbounded" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="Duration" type="tns:Duration" maxOccurs="unbounded" minOccurs="0"></element>
+					</sequence>
+				</complexType>
 			</element>
 			<element name="Miscellaneous" type="tns:Miscellaneous"
 				maxOccurs="1" minOccurs="1">
@@ -421,43 +457,22 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 	<element name="SolvisDescription" type="tns:SolvisDescription"></element>
 
 
-	<complexType name="ScreenGrafics">
-		<annotation>
-			<documentation>Menge aller Bildschirmbereichs-Grafiken (enthält nicht die Images)
-			</documentation>
-		</annotation>
-		<sequence>
-			<element name="ScreenGrafic" type="tns:ScreenGrafic"
-				maxOccurs="unbounded" minOccurs="0"></element>
-		</sequence>
-	</complexType>
 
 
 	<complexType name="ScreenGraficRef">
 		<annotation>
-			<documentation>Referenz auf die Daten des zu vergleichende Bildschirmbereichs
+			<documentation>Referenz auf die Daten des zu vergleichende
+				Bildschirmbereichs
 			</documentation>
 		</annotation>
 		<attribute name="refId" type="string" use="required"></attribute>
 	</complexType>
 
-	<complexType name="Durations">
-		<annotation>
-			<documentation>Menge aller Zeiten</documentation>
-		</annotation>
-		<sequence>
-			<element name="Duration" type="tns:Duration" maxOccurs="unbounded"
-				minOccurs="0">
-				<annotation>
-					<documentation>Sämtliche Dauern. Dadurch können die Tastendrücke zentral angepasst werden</documentation>
-				</annotation>
-			</element>
-		</sequence>
-	</complexType>
 
 	<complexType name="Duration">
 		<annotation>
-			<documentation>Dauer allgemein, meist für Länge eines Druckes auf dem Bildschirm
+			<documentation>Dauer allgemein, meist für Länge eines Druckes auf dem
+				Bildschirm
 			</documentation>
 		</annotation>
 		<attribute name="id" type="string" use="required"></attribute>
@@ -467,10 +482,12 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 
 	<complexType name="TouchPoint">
 		<annotation>
-			<documentation>Definitionen zum Berühren eines bestimmten Punktes auf dem Bildschirm (Koordinaten, Länge etc.)</documentation>
+			<documentation>Definitionen zum Berühren eines bestimmten Punktes auf
+				dem Bildschirm (Koordinaten, Länge etc.)</documentation>
 		</annotation>
 		<sequence>
-			<element name="Coordinate" type="tns:Coordinate" maxOccurs="1" minOccurs="1">
+			<element name="Coordinate" type="tns:Coordinate"
+				maxOccurs="1" minOccurs="1">
 				<annotation>
 					<documentation>Zu drückender Punkt auf dem Bildschirm
 					</documentation>
@@ -479,46 +496,20 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 		</sequence>
 		<attribute name="pushTimeRefId" type="string" use="required">
 			<annotation>
-				<documentation>Referenz auf die Zeit, die der Button gedrückt wird</documentation>
-			</annotation></attribute>
-		<attribute name="releaseTimeRefId" type="string" use="required">
+				<documentation>Referenz auf die Zeit, die der Button gedrückt wird
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="releaseTimeRefId" type="string"
+			use="required">
 			<annotation>
-				<documentation>Referenz auf die Zeit, wie lange gewartet wird, nachdem der Button losgelassen wurde.</documentation>
-			</annotation></attribute>
+				<documentation>Referenz auf die Zeit, wie lange gewartet wird,
+					nachdem der Button losgelassen wurde.</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
 
 
-	<complexType name="GuiRead">
-		<annotation>
-			<documentation>
-				Definitionen für einen vom Bildschirm zu erkennenden
-				Wertes
-			</documentation>
-		</annotation>
-		<complexContent>
-			<extension base="tns:Read">
-
-				<attribute name="format" type="string" use="required">
-					<annotation>
-						<documentation>
-							Der Format-String dient zur Extraktion der
-							Daten aus einem String
-
-							Er besteht aus folgenden zeichen:
-
-							C: beliebiges Zeichen, wird ignoriert 0:
-							Ziffer oder +/-, muss vorhanden sein, wird
-							übernommen #: Ziffer oder +/- optional, wird
-							übernommen
-						</documentation>
-					</annotation>
-				</attribute>
-
-
-
-			</extension>
-		</complexContent>
-	</complexType>
 
 	<complexType name="ScreenSaver">
 		<annotation>
@@ -541,7 +532,8 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 	<complexType name="Measurement">
 		<annotation>
 			<documentation>
-				Definition für das Auslesen eines Solvis-Datums aus dem
+				Definition für das Auslesen eines Solvis-Datums aus
+				dem
 				Solvis-XML Hex-String. Auslesbar über
 				http://192.168.1.40/sc2_val.xml.
 			</documentation>
@@ -585,40 +577,48 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="delayAfterSwitchingOn_ms" type="int" use="optional">
+		<attribute name="delayAfterSwitchingOn_ms" type="int"
+			use="optional">
 			<annotation>
-				<documentation>Einige  Sensoren der Solvis-Anlage benötigen nach dem Einschalten eine gewise Zeit, bis sie die richtigen Messwerte anzeigen. Mir dem Setzen dieses Wertes wird bewirkt, dass die Weitergabe der Messergebnisse dieses Sensors erst spätererfolgt.</documentation>
-			</annotation></attribute>
+				<documentation>Einige Sensoren der Solvis-Anlage benötigen nach dem
+					Einschalten eine gewise Zeit, bis sie die richtigen Messwerte
+					anzeigen. Mir dem Setzen dieses Wertes wird bewirkt, dass die
+					Weitergabe der Messergebnisse dieses Sensors erst spätererfolgt.
+				</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
 
 
 
 
 	<complexType name="Calculation">
-        <annotation>
-        	<documentation>Notwendigen Definitionen zur Berechnung für eine aus den Daten zu berechnender Wert</documentation>
-        </annotation>
-        <sequence>
-        	<element name="Dependency" type="tns:Dependency"
-        		maxOccurs="unbounded" minOccurs="0">
-        		<annotation>
-        			<documentation>
-        				Abhängigkeiten von Solvis-Messungen (Brenner
-        				an/aus etc.)
-        			</documentation>
-        		</annotation>
-        	</element>
-        	<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1"
-        		minOccurs="0">
-        	</element>
-        </sequence>
+		<annotation>
+			<documentation>Notwendigen Definitionen zur Berechnung für eine aus
+				den Daten zu berechnender Wert</documentation>
+		</annotation>
+		<sequence>
+			<element name="Dependency" type="tns:Dependency"
+				maxOccurs="unbounded" minOccurs="0">
+				<annotation>
+					<documentation>
+						Abhängigkeiten von Solvis-Messungen (Brenner
+						an/aus etc.)
+					</documentation>
+				</annotation>
+			</element>
+			<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1"
+				minOccurs="0">
+			</element>
+		</sequence>
 
-        <attribute name="strategy" use="required">
+		<attribute name="strategy" use="required">
 			<simpleType>
-                <annotation>
-                	<documentation>Berechnungsart des zu berechnendesn Wertes</documentation>
-                </annotation>
-                <restriction base="string">
+				<annotation>
+					<documentation>Berechnungsart des zu berechnendesn Wertes
+					</documentation>
+				</annotation>
+				<restriction base="string">
 					<enumeration value="runtime"></enumeration>
 					<enumeration value="starts"></enumeration>
 					<enumeration value="burnerStatus"></enumeration>
@@ -639,8 +639,15 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 			</documentation>
 		</annotation>
 		<sequence>
-			<element name="ConfigurationMasks"
-				type="tns:ConfigurationMasks" maxOccurs="1" minOccurs="0">
+			<element name="ConfigurationMasks" maxOccurs="1"
+				minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="ConfigurationMask"
+							type="tns:ConfigurationMask" maxOccurs="unbounded" minOccurs="1">
+						</element>
+					</sequence>
+				</complexType>
 			</element>
 
 
@@ -649,12 +656,18 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 					maxOccurs="1" minOccurs="1">
 				</element>
 				<sequence>
-					<element name="Modbus" type="tns:Modbus" maxOccurs="1" minOccurs="0"></element>
-					<choice maxOccurs="1" minOccurs="0"><element name="Measurement" type="tns:Measurement" maxOccurs="1" minOccurs="1">
-					</element><element name="Control" type="tns:Control" maxOccurs="1" minOccurs="1">
-					</element></choice>
+					<element name="Modbus" type="tns:Modbus" maxOccurs="1"
+						minOccurs="0"></element>
+					<choice maxOccurs="1" minOccurs="0">
+						<element name="Measurement" type="tns:Measurement"
+							maxOccurs="1" minOccurs="1">
+						</element>
+						<element name="Control" type="tns:Control" maxOccurs="1"
+							minOccurs="1">
+						</element>
+					</choice>
 				</sequence>
-				
+
 			</choice>
 		</sequence>
 
@@ -667,30 +680,25 @@ Referenzpunkt ist im Bildschirm oben links, die X-Koordinate läuft von links na
 
 
 	<complexType name="Dependency">
-        <annotation>
-        	<documentation>Abhängigkeit zu einem Solvis-Datums von andern</documentation>
-        </annotation>
-        <sequence></sequence>
+		<annotation>
+			<documentation>Abhängigkeit zu einem Solvis-Datums von andern
+			</documentation>
+		</annotation>
+		<sequence></sequence>
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="dataId" type="string" use="required"></attribute>
 	</complexType>
 
-	<complexType name="ChannelDescriptions">
-        <annotation>
-        	<documentation>Alle Definitionen der Solvis-Daten</documentation>
-        </annotation>
-        <sequence>
-			<element name="ChannelDescription" type="tns:ChannelDescription" maxOccurs="unbounded" minOccurs="0"></element>
-		</sequence>
-	</complexType>
 
 
 	<complexType name="Field">
-        <annotation>
-        	<documentation>Bereichs-Definition eines Sovis-Datum in dem Solvis-XML Hex-String.
-Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
-        </annotation>
-        <sequence></sequence>
+		<annotation>
+			<documentation>Bereichs-Definition eines Sovis-Datum in dem
+				Solvis-XML Hex-String.
+				Auslesbar über http://192.168.1.40/sc2_val.xml.
+			</documentation>
+		</annotation>
+		<sequence></sequence>
 		<attribute name="position" type="int" use="required"></attribute>
 		<attribute name="length" type="int" use="required"></attribute>
 	</complexType>
@@ -699,13 +707,15 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 
 	<complexType name="HeatingBurner">
 		<annotation>
-			<documentation>Defintionen zum Abgleich der berechneten Brennerdaten mit den Solvis-Daten (z.B. Laufzeiten, Brennerstarts)
+			<documentation>Defintionen zum Abgleich der berechneten Brennerdaten
+				mit den Solvis-Daten (z.B. Laufzeiten, Brennerstarts)
 			</documentation>
 		</annotation>
 
 		<attribute name="burnerId" type="string" use="required">
 			<annotation>
-				<documentation>Brenner-Name der Solvis-XML-Definitionen A12.Brenner oder A13.Brenner_S2)
+				<documentation>Brenner-Name der Solvis-XML-Definitionen A12.Brenner
+					oder A13.Brenner_S2)
 				</documentation>
 			</annotation>
 		</attribute>
@@ -713,7 +723,8 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 
 		<attribute name="calculatedId" type="string" use="required">
 			<annotation>
-				<documentation>berechnente Brennerstufen-Laufzeit, die zur Ermittelung des Stundenwechsels (hourly) hergenommen wird
+				<documentation>berechnente Brennerstufen-Laufzeit, die zur
+					Ermittelung des Stundenwechsels (hourly) hergenommen wird
 				</documentation>
 			</annotation>
 		</attribute>
@@ -721,46 +732,63 @@ Auslesbar über http://192.168.1.40/sc2_val.xml.</documentation>
 
 		<attribute name="factor" type="int">
 			<annotation>
-				<documentation>Faktor, um aus der Brennerlaufzeit aus dem GUI auf die berechnete Laufzeit zu kommen, normalerweise 3600. Dies wird zur Syynchronisation nach 1h Brennerlaufzeit benötigt.
-Ist der faktor -1, handelt es sich um den Update der Brennerstarts.</documentation>
-			</annotation></attribute>
-		<attribute name="checkIntervalId" type="string" use="optional">
-			<annotation>
-				<documentation> Zeit-Intervall, nach dem der berechnete Wert mit dem echten Solvis-Wert verglichen wird und evtl. synchronisiert wird.
-Zu beachten:
-Diese Synchronisationsart ist nur einen Stichprobe und kann so nur Abweichungen von mehr als 1h erkennen.
-Genauerer Synchronisation erhält man über hourly.
+				<documentation>Faktor, um aus der Brennerlaufzeit aus dem GUI auf
+					die berechnete Laufzeit zu kommen, normalerweise 3600. Dies wird
+					zur Syynchronisation nach 1h Brennerlaufzeit benötigt.
+					Ist der faktor -1, handelt es sich um den Update der Brennerstarts.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="readIntervalId" type="string" use="optional">
+		<attribute name="checkIntervalId" type="string"
+			use="optional">
 			<annotation>
-				<documentation>Zeit-Intervall, nach deren Ablauf immer die Brennerlaufzeit aus dem GUI ermittelt wird, wenn die Synchronisation gestartet ist.
+				<documentation> Zeit-Intervall, nach dem der berechnete Wert mit dem
+					echten Solvis-Wert verglichen wird und evtl. synchronisiert wird.
+					Zu beachten:
+					Diese Synchronisationsart ist nur einen Stichprobe und kann so nur
+					Abweichungen von mehr als 1h erkennen.
+					Genauerer Synchronisation erhält man über hourly.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="readIntervalId" type="string"
+			use="optional">
+			<annotation>
+				<documentation>Zeit-Intervall, nach deren Ablauf immer die
+					Brennerlaufzeit aus dem GUI ermittelt wird, wenn die
+					Synchronisation gestartet ist.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="hourly" type="boolean">
 			<annotation>
-				<documentation>Wenn der Wert nach jeder Stund der Brennerlaufzeit kontrolliert werden soll. Dazu wird der berechnete Wert (z.B. X2.BrennerLaufzeit_s) genutzt.
-Kurz bevor der Brenner 1 h gelaufen ist, wird die Überprüfung aktiviert und so der Stellenwechsel genau detektiert wird.
-Die Überwachung wird dann mit dem Erkennen des Zeitwechsels wieder bis zur nächsten Stunde deaktiviert.
+				<documentation>Wenn der Wert nach jeder Stund der Brennerlaufzeit
+					kontrolliert werden soll. Dazu wird der berechnete Wert (z.B.
+					X2.BrennerLaufzeit_s) genutzt.
+					Kurz bevor der Brenner 1 h gelaufen ist, wird die Überprüfung aktiviert
+					und so der Stellenwechsel genau detektiert wird.
+					Die Überwachung wird dann mit dem Erkennen des Zeitwechsels wieder bis
+					zur nächsten Stunde deaktiviert.
 				</documentation>
 			</annotation>
 		</attribute>
 	</complexType>
 
 	<complexType name="ScreenChange">
-        <annotation>
-        	<documentation>Definiert die Abhängigkeit der Definition von einer Bildschirmänderung.
-Greift der User an der Solvis-Console ein, wird dieser Wert neu ermittelt,
-da der user diesen manuell verändert haben könnte.</documentation>
-        </annotation>
+		<annotation>
+			<documentation>Definiert die Abhängigkeit der Definition von einer
+				Bildschirmänderung.
+				Greift der User an der Solvis-Console ein, wird dieser Wert neu ermittelt,
+				da der user diesen manuell verändert haben könnte.
+			</documentation>
+		</annotation>
 	</complexType>
 
 
-	<complexType name="GuiMode">
+	<complexType name="Mode">
 		<sequence>
-			<element name="Mode" type="tns:Mode" maxOccurs="unbounded" minOccurs="1"></element>
+			<element name="ModeEntry" type="tns:ModeEntry" maxOccurs="unbounded"
+				minOccurs="1"></element>
 		</sequence>
 	</complexType>
 
@@ -800,25 +828,29 @@ da der user diesen manuell verändert haben könnte.</documentation>
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="releaseBlockingAfterUserAccess_ms" type="int"
-			use="required">
+		<attribute name="releaseBlockingAfterUserAccess_ms"
+			type="int" use="required">
 			<annotation>
 				<documentation>
 					Zeitintervall, das nach einem Usereingriff vergehen
 					muss, bis die Werte upgedated werden. In dieser zeit
-					werden keien Werte vom GUI abgerufen, damit die
-					Eingabe des Users nicht gestört wird.
+					werden keien
+					Werte vom GUI abgerufen, damit die
+					Eingabe des Users nicht gestört
+					wird.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="releaseBlockingAfterServiceAccess_ms" type="int"></attribute>
+		<attribute name="releaseBlockingAfterServiceAccess_ms"
+			type="int"></attribute>
 		<attribute name="connectionHoldTime_ms" type="int"
 			use="required">
 			<annotation>
 				<documentation>
 					Wird eine Verbindung zum Client unterbrochen, kann
 					innerhalb dieser Zeit eine Verbindung
-					wiederhergestellt werden, ohne dass clienbezogene
+					wiederhergestellt werden, ohne
+					dass clienbezogene
 					Einstellungen im Server verloren gehen
 				</documentation>
 			</annotation>
@@ -832,13 +864,16 @@ da der user diesen manuell verändert haben könnte.</documentation>
 	</complexType>
 
 	<complexType name="UpdateBy">
-        <annotation>
-        	<documentation>Faktor, um von der Brennerlaufzeit aus dem GUI auf die berechnete Laufzeit zu kommen, normalerweise 3600.</documentation>
-        </annotation>
-        <sequence>
-			<element name="HeatingBurner" type="tns:HeatingBurner" maxOccurs="1" minOccurs="0">
+		<annotation>
+			<documentation>Faktor, um von der Brennerlaufzeit aus dem GUI auf die
+				berechnete Laufzeit zu kommen, normalerweise 3600.</documentation>
+		</annotation>
+		<sequence>
+			<element name="HeatingBurner" type="tns:HeatingBurner"
+				maxOccurs="1" minOccurs="0">
 			</element>
-			<element name="ScreenChange" type="tns:ScreenChange" maxOccurs="1" minOccurs="0"></element>
+			<element name="ScreenChange" type="tns:ScreenChange"
+				maxOccurs="1" minOccurs="0"></element>
 			<element name="SolvisHeatingData"
 				type="tns:SolvisHeatingData" maxOccurs="1" minOccurs="0">
 			</element>
@@ -853,203 +888,223 @@ da der user diesen manuell verändert haben könnte.</documentation>
 
 
 	<complexType name="FallBack">
-        <sequence>
-            <choice maxOccurs="unbounded" minOccurs="0"><element name="Back" type="tns:Back"></element>
-            	<element name="ScreenRef" type="tns:ScreenRef"></element></choice>
+		<sequence>
+			<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="Back" type="tns:Back"></element>
+				<element name="ScreenRef" type="tns:ScreenRef"></element>
+			</choice>
 		</sequence>
 	</complexType>
-	
-    <complexType name="Back"></complexType>
 
-    <complexType name="ScreenRef">
-    	<attribute name="id" type="string" use="required"></attribute>
-    </complexType>
+	<complexType name="Back"></complexType>
 
-    <complexType name="Preparation">
-    	<sequence>
-    		<element name="TouchPoint" type="tns:TouchPoint"
-    			maxOccurs="1" minOccurs="1">
-    		</element>
-    		<element name="ScreenGrafic" type="tns:ScreenGrafic"
-    			maxOccurs="1" minOccurs="1">
-    		</element>
-    	</sequence>
-    	<attribute name="id" type="string" use="required"></attribute>
-    </complexType>
+	<complexType name="ScreenRef">
+		<attribute name="id" type="string" use="required"></attribute>
+	</complexType>
 
-    <complexType name="Preparations">
-    	<sequence>
-    		<element name="Preparation" type="tns:Preparation" maxOccurs="unbounded" minOccurs="0"></element>
-    	</sequence>
-    </complexType>
+	<complexType name="Preparation">
+		<sequence>
+			<element name="TouchPoint" type="tns:TouchPoint"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="ScreenGrafic" type="tns:ScreenGrafic"
+				maxOccurs="1" minOccurs="1">
+			</element>
+		</sequence>
+		<attribute name="id" type="string" use="required"></attribute>
+	</complexType>
 
-    <complexType name="HeaterLoops">
-        <annotation>
-        	<documentation>Zur Ermittelung der Heizkreise</documentation>
-        </annotation>
-        <sequence>
-    		<element name="HK1Button" type="tns:Rectangle" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="HK2Button" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
-    		<element name="HK3Button" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
-    	</sequence>
-    	<attribute name="screenRef" type="string" use="required"></attribute>
-    </complexType>
 
-    <complexType name="Configurations">
-        <annotation>
-        	<documentation>Beschreibungen um die Anlagenkonfiguration zu ermitteln</documentation>
-        </annotation>
-        <sequence>
-            <element name="ReferencePoint" type="tns:Coordinate">
-        		<annotation>
-        			<documentation>Der Origin des Solvis-Bildschirms kann von Anlage zu Anlage unterschiedlich sein. Das ist abhängig von der Montagetoleranz, welche über die Kalibrierung des TouchScreen dann ausgeglichen wird.
-Der in der Web-Oberfläche dargestellte Bildschirm kann durch dies Kalibrierung einen leichten Versatz aufweisen. Diser Versatz muss ermittelt werden und
-erfolgt mittels der Erkennung des Ende des Striches zwischen dem Wasser und dem Solar-Button auf dem Home-Screen.</documentation>
-        		</annotation></element>
-            <element name="HeaterLoops" type="tns:HeaterLoops"
-        		maxOccurs="1" minOccurs="1">
-        		<annotation>
-        			<documentation>
-        				Konfiguration der Heizkreise
-        			</documentation>
-        		</annotation>
-        	</element>
-        	<element name="Solar" type="tns:Solar" maxOccurs="1"
-        		minOccurs="1">
-        	</element>
-        </sequence>
-    </complexType>
+	<complexType name="HeaterLoops">
+		<annotation>
+			<documentation>Zur Ermittelung der Heizkreise</documentation>
+		</annotation>
+		<sequence>
+			<element name="HK1Button" type="tns:Rectangle" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="HK2Button" type="tns:Rectangle" maxOccurs="1"
+				minOccurs="1"></element>
+			<element name="HK3Button" type="tns:Rectangle" maxOccurs="1"
+				minOccurs="1"></element>
+		</sequence>
+		<attribute name="screenRef" type="string" use="required"></attribute>
+	</complexType>
 
-    <complexType name="ConfigurationMask">
-    	<attribute name="andMask" type="tns:U32BitHexInt" use="required"></attribute>
-    	<attribute name="compareMask" type="tns:U32BitHexInt" use="required"></attribute>
-    </complexType>
+	<complexType name="Configurations">
+		<annotation>
+			<documentation>Beschreibungen um die Anlagenkonfiguration zu
+				ermitteln</documentation>
+		</annotation>
+		<sequence>
+			<element name="ReferencePoint" type="tns:Coordinate">
+				<annotation>
+					<documentation>Der Origin des Solvis-Bildschirms kann von Anlage zu
+						Anlage unterschiedlich sein. Das ist abhängig von der
+						Montagetoleranz, welche über die Kalibrierung des TouchScreen dann
+						ausgeglichen wird.
+						Der in der Web-Oberfläche dargestellte Bildschirm kann durch dies
+						Kalibrierung einen leichten Versatz aufweisen. Diser Versatz muss
+						ermittelt werden und
+						erfolgt mittels der Erkennung des Ende des Striches zwischen dem Wasser
+						und dem Solar-Button auf dem Home-Screen.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="HeaterLoops" type="tns:HeaterLoops"
+				maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>
+						Konfiguration der Heizkreise
+					</documentation>
+				</annotation>
+			</element>
+			<element name="Solar" type="tns:Solar" maxOccurs="1"
+				minOccurs="1">
+			</element>
+		</sequence>
+	</complexType>
 
-    <complexType name="ConfigurationMasks">
-    	<sequence>
-    		<element name="ConfigurationMask" type="tns:ConfigurationMask" maxOccurs="unbounded" minOccurs="0"></element>
-    	</sequence>
-    </complexType>
+	<complexType name="ConfigurationMask">
+		<attribute name="andMask" type="tns:UnNBytesHexInt"
+			use="required"></attribute>
+		<attribute name="compareMask" type="tns:UnNBytesHexInt"
+			use="required"></attribute>
+	</complexType>
 
-    <complexType name="PreparationRef">
-    	<attribute name="refId" type="string" use="required"></attribute>
-    </complexType>
 
-    <complexType name="Clock">
-    	<annotation>
-    		<documentation>Parameter zum Stellen der Uhr</documentation>
-    	</annotation>
-    	<sequence>
-    		<element name="SecondsScan" type="tns:Rectangle"
-    			maxOccurs="1" minOccurs="1">
-    		</element>
-    		<element name="Year" type="tns:DatePart" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="Month" type="tns:DatePart" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="Day" type="tns:DatePart" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="Hour" type="tns:DatePart" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="Minute" type="tns:DatePart" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="Upper" type="tns:TouchPoint" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="Lower" type="tns:TouchPoint" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="Ok" type="tns:TouchPoint" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="DisableClockSetting"
-    			type="tns:DisableClockSetting" maxOccurs="1" minOccurs="1">
-    		</element>
-    	</sequence>
-    	<attribute name="timeChannelId" type="string" use="required">
-    		<annotation>
-    			<documentation>Id des Channels, der die aktuelle Zeit der Solvis-Uhr wiedergibt.</documentation>
-    		</annotation></attribute>
-    	<attribute name="screenId" type="string" use="required">
-    		<annotation>
-    			<documentation>Id des Screen, wo das Setzen der Zeit erfolgt.</documentation>
-    		</annotation></attribute>
-    	<attribute name="okScreenId" type="string" use="required">
-    		<annotation>
-    			<documentation>Id des Screens, der nach den Druck des OK-Buttons erscheinen soll (dient der Verifikation)</documentation>
-    		</annotation></attribute>
-    </complexType>
+	<complexType name="PreparationRef">
+		<attribute name="refId" type="string" use="required"></attribute>
+	</complexType>
 
-    <complexType name="DatePart">
-        <annotation>
-        	<documentation>Beschreibung des jeweiligen Datums/Zeit-Anteils</documentation>
-        </annotation>
-        <sequence>
-    		<element name="Rectangle" type="tns:Rectangle" maxOccurs="1"
-    			minOccurs="1">
-    		</element>
-    		<element name="Touch" type="tns:TouchPoint"></element>
-    		<element name="ScreenGrafic" type="tns:ScreenGrafic"
-    			maxOccurs="1" minOccurs="1">
-    		</element>
-    	</sequence>
-    	<attribute name="least" type="int" use="optional"></attribute>
-    </complexType>
+	<complexType name="Clock">
+		<annotation>
+			<documentation>Parameter zum Stellen der Uhr</documentation>
+		</annotation>
+		<sequence>
+			<element name="ModbusWrite" type="tns:ModbusAccess" maxOccurs="1" minOccurs="1"></element>
+			<element name="Year" type="tns:DatePart" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="Month" type="tns:DatePart" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="Day" type="tns:DatePart" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="Hour" type="tns:DatePart" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="Minute" type="tns:DatePart" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="Upper" type="tns:TouchPoint" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="Lower" type="tns:TouchPoint" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="Ok" type="tns:TouchPoint" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="DisableClockSetting"
+				type="tns:DisableClockSetting" maxOccurs="1" minOccurs="1">
+			</element>
+		</sequence>
+		<attribute name="timeChannelId" type="string" use="required">
+			<annotation>
+				<documentation>Id des Channels, der die aktuelle Zeit der Solvis-Uhr
+					wiedergibt.</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="screenId" type="string" use="required">
+			<annotation>
+				<documentation>Id des Screen, wo das Setzen der Zeit erfolgt.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="okScreenId" type="string" use="required">
+			<annotation>
+				<documentation>Id des Screens, der nach den Druck des OK-Buttons
+					erscheinen soll (dient der Verifikation)</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
 
-    <complexType name="Solar">
-        <annotation>
-        	<documentation>Zur Ermittlung des Solarkreises</documentation>
-        </annotation>
-        <sequence>
-    		<element name="ReturnTemperature" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
-    		<element name="OutgoingTemperature" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
-    	</sequence>
-    	<attribute name="screenRef" type="string" use="required"></attribute>
-    	<attribute name="format" type="string" use="required"></attribute>
-    	<attribute name="maxTemperatureX10" type="int" use="required"></attribute>
-    </complexType>
+	<complexType name="DatePart">
+		<annotation>
+			<documentation>Beschreibung des jeweiligen Datums/Zeit-Anteils
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="Rectangle" type="tns:Rectangle" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="Touch" type="tns:TouchPoint"></element>
+			<element name="ScreenGrafic" type="tns:ScreenGrafic"
+				maxOccurs="1" minOccurs="1">
+			</element>
+		</sequence>
+		<attribute name="least" type="int" use="optional"></attribute>
+	</complexType>
 
-    <complexType name="Type">
-    	<attribute name="id" use="required">
-            <annotation>
-            	<documentation>Identifikation des Anlagentypes, aktuell nur SolvisMax/SolvisBen</documentation>
-            </annotation>
-            <simpleType>
-    			<restriction base="string">
-    				<enumeration value="SolvisMax"></enumeration>
-    				<enumeration value="SolvisBen"></enumeration>
-    			</restriction>
-    		</simpleType>
-    	</attribute>
-    	<attribute name="configuration" type="tns:U32BitHexInt" use="required">
-    		<annotation>
-    			<documentation>In der Configuration sind die wesentlichen Besonderheiten der Anlage erfasst.
-Folgende Bits sind aktuell definiert (Bit 0 ist LSB) und ein gesetztes Bit bedeutet::
+	<complexType name="Solar">
+		<annotation>
+			<documentation>Zur Ermittlung des Solarkreises</documentation>
+		</annotation>
+		<sequence>
+			<element name="ReturnTemperature" type="tns:Rectangle"
+				maxOccurs="1" minOccurs="1"></element>
+			<element name="OutgoingTemperature" type="tns:Rectangle"
+				maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+		<attribute name="screenRef" type="string" use="required"></attribute>
+		<attribute name="format" type="string" use="required"></attribute>
+		<attribute name="maxTemperatureX10" type="int"
+			use="required"></attribute>
+	</complexType>
 
-Bit 0:	Heizkreis 1 vorhanden
-Bit 1:	Heizkreis 2 vorhanden
-Bit 2:	Heizkreis 3 vorhanden (wird aktuell ignoriert)
-Bit 3:	Solar-Kreislauf vorhanden
+	<complexType name="Type">
+		<attribute name="id" use="required">
+			<annotation>
+				<documentation>Identifikation des Anlagentypes, aktuell nur
+					SolvisMax/SolvisBen</documentation>
+			</annotation>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="SolvisMax"></enumeration>
+					<enumeration value="SolvisBen"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="configuration" type="tns:UnNBytesHexInt"
+			use="required">
+			<annotation>
+				<documentation>In der Configuration sind die wesentlichen
+					Besonderheiten der Anlage erfasst.
+					Folgende Bits sind aktuell definiert (Bit 0 ist LSB) und ein gesetztes Bit
+					bedeutet::
 
-Bit 24:	SolvisMax
-Bit 25:	SolvisBen</documentation></annotation></attribute>
-    </complexType>
-    
-	<simpleType name="U32BitHexInt">
-	 	<union memberTypes="unsignedInt">
-	    	<simpleType>
-	      	<restriction base="token">
-	        	<pattern value="0x([0-9A-Fa-f]{2})+"/>
-	      	</restriction>
-	    	</simpleType>
-	    </union>
+					Bit 0: Heizkreis 1 vorhanden
+					Bit 1: Heizkreis 2 vorhanden
+					Bit 2: Heizkreis 3 vorhanden (wird aktuell ignoriert)
+					Bit 3: Solar-Kreislauf vorhanden
+
+					Bit 24: SolvisMax
+					Bit 25: SolvisBen
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+	<simpleType name="UnNBytesHexInt">
+		<union memberTypes="unsignedInt">
+			<simpleType>
+				<restriction base="token">
+					<pattern value="0x([0-9A-Fa-f]{2})+" />
+				</restriction>
+			</simpleType>
+		</union>
 	</simpleType>
 
 	<complexType name="ErrorDetection">
@@ -1099,10 +1154,13 @@ Bit 25:	SolvisBen</documentation></annotation></attribute>
 				<annotation>
 					<documentation>
 						Koordinaten der Zeitanzeige des
-						Home-Bildschirms. Hier ist im Fehlerfall
-						anstelle der Zeit ein runder Button mit einem
+						Home-Bildschirms.
+						Hier ist im Fehlerfall
+						anstelle der Zeit ein runder Button mit
+						einem
 						blinkenden Warnzeichen eingeblendet. Daher
-						liefert der Server einen Error-Event, wenn nicht
+						liefert der Server
+						einen Error-Event, wenn nicht
 						mehr die Uhranzeige eingeblendet ist.
 					</documentation>
 				</annotation>
@@ -1112,40 +1170,48 @@ Bit 25:	SolvisBen</documentation></annotation></attribute>
 				<annotation>
 					<documentation>
 						Koordinaten der Datumsanzeige des
-						Home-Bildschirms. Hier ist im Fehlerfall
-						anstelle der Zeit ein runder Button mit einem
+						Home-Bildschirms.
+						Hier ist im Fehlerfall
+						anstelle der Zeit ein runder Button mit
+						einem
 						blinkenden Warnzeichen eingeblendet. Daher
-						liefert der Server einen Error-Event, wenn nicht
+						liefert der Server
+						einen Error-Event, wenn nicht
 						mehr die Uhranzeige eingeblendet ist.
 					</documentation>
 				</annotation>
 			</element>
-			<element name="ErrorCondition" type="tns:ErrorCondition" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="ErrorCondition" type="tns:ErrorCondition"
+				maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
 	<complexType name="Range">
-        <annotation>
-        	<documentation>Die Bereichsgrenzen in Prozent</documentation>
-        </annotation>
-        <attribute name="lowerLimit" type="int" use="required">
+		<annotation>
+			<documentation>Die Bereichsgrenzen in Prozent</documentation>
+		</annotation>
+		<attribute name="lowerLimit" type="int" use="required">
 			<annotation>
 				<documentation>Relativ mit 1000 multipliziert</documentation>
-			</annotation></attribute>
+			</annotation>
+		</attribute>
 		<attribute name="higherLimit" type="int" use="required">
 			<annotation>
 				<documentation>Relativ mit 1000 multipliziert</documentation>
-			</annotation></attribute>
+			</annotation>
+		</attribute>
 	</complexType>
 
 	<complexType name="DisableClockSetting">
 		<attribute name="burnerId" type="string" use="required"></attribute>
-		<attribute name="hotWaterPumpId" type="string" use="optional"></attribute>
+		<attribute name="hotWaterPumpId" type="string"
+			use="optional"></attribute>
 	</complexType>
 
 	<complexType name="Service">
 		<sequence>
-			<element name="ServiceScreen" type="tns:ScreenRef" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="ServiceScreen" type="tns:ScreenRef"
+				maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
@@ -1155,7 +1221,7 @@ Bit 25:	SolvisBen</documentation></annotation></attribute>
 	</complexType>
 
 	<complexType name="Modbus">
-        <choice>
+		<choice>
 			<element name="TypeRead" type="tns:Read"></element>
 			<element name="TypeValue" type="string"></element>
 			<element name="TypeMode" type="string"></element>
@@ -1164,61 +1230,189 @@ Bit 25:	SolvisBen</documentation></annotation></attribute>
 	</complexType>
 
 	<complexType name="Read">
-        <attribute name="optional" type="boolean" use="optional">
-        	<annotation>
-        		<documentation>							Wenn das Feld nicht in allen Konfigurationen
-							vorhanden ist, kann das nicht vorhandensein
-							durch setzen von optional auf &quot;true&quot; werden.
-							Das ist z.B. für C03.LaufzeitAnforderung2
-							erforderlich, da diese bei modulierten
-							Gasbrennern nicht vorhanden ist.
-						</documentation></annotation></attribute>
-        <attribute name="divisor" type="int" use="optional">
-        	<annotation>
-        		<documentation>Divisor des Wertes (normalerweise 1)</documentation></annotation></attribute>
+		<sequence>
+			<element name="GuiRead" type="tns:GuiRead"
+				maxOccurs="1" minOccurs="0"></element>
+		</sequence>
+		<attribute name="optional" type="boolean" use="optional">
+			<annotation>
+				<documentation>
+					Wenn das Feld nicht in allen Konfigurationen
+					vorhanden ist, kann das nicht vorhandensein durch
+					setzen von
+					optional auf &quot;true&quot; werden. Das
+					ist z.B. für
+					C03.LaufzeitAnforderung2 erforderlich,
+					da diese bei modulierten
+					Gasbrennern nicht vorhanden
+					ist.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="divisor" type="int" use="optional">
+			<annotation>
+				<documentation>
+					Divisor des Wertes (normalerweise 1)
+				</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
-	<complexType name="SolvisType">
-    	<annotation></annotation>
-    	<sequence>
-    		<element minOccurs="1" maxOccurs="unbounded" name="Type"
-    			type="tns:Type">
-    		</element>
-    	</sequence>
-    </complexType>
-	<complexType name="Value">
+	<complexType name="ReadWrite">
 		<annotation>
 			<documentation>
 				Defintionen zur Modifikation eines Wertes über das
 				Solvis-Gui (Berührungspunkte für
-				Aufwärts-/Abwärtszählen, Increments etc.)
+				Aufwärts-/Abwärtszählen, Increments
+				etc.)
 			</documentation>
 		</annotation>
-		<complexContent>
-			<extension base="tns:Read">
-				<attribute name="increment" type="int" use="required">
-					<annotation>
-						<documentation>
-							Wert um den der Parameter bei einem
-							Bildschirmdruck erhöht/erniedigt wird
-						</documentation>
-					</annotation>
-				</attribute>
-				<attribute name="least" type="int" use="required">
-					<annotation>
-						<documentation>
-							kleinster Wert des Parameters
-						</documentation>
-					</annotation>
-				</attribute>
-				<attribute name="most" type="int" use="required">
-					<annotation>
-						<documentation>
-							größter Wert des Parameters
-						</documentation>
-					</annotation>
-				</attribute>
-			</extension>
-		</complexContent>
+		<sequence>
+			<element name="GuiModification" type="tns:GuiModification"
+				maxOccurs="1" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="optional" type="boolean">
+			<annotation>
+				<documentation>
+					Wenn das Feld nicht in allen Konfigurationen
+					vorhanden ist, kann das nicht vorhandensein
+					durch setzen von optional auf
+					&amp;quot;true&amp;quot; werden. Das ist
+					z.B. für C03.LaufzeitAnforderung2
+					erforderlich, da diese bei modulierten
+					Gasbrennern nicht vorhanden ist.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="divisor" type="int">
+			<annotation>
+				<documentation>Divisor des Wertes (normalerweise 1)</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="increment" type="int" use="required">
+			<annotation>
+				<documentation>
+					Wert um den der Parameter bei einem
+					Bildschirmdruck erhöht/erniedigt wird
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="least" type="int" use="required">
+			<annotation>
+				<documentation>
+					kleinster Wert des Parameters
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="most" type="int" use="required">
+			<annotation>
+				<documentation>
+					größter Wert des Parameters
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+
+	<complexType name="GuiAccess">
+		<sequence>
+			<element name="CurrentValue" type="tns:Rectangle"
+				maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>Feld-Koordinaten mit aktuellem Wert
+					</documentation>
+				</annotation>
+			</element>
+			<element name="PreparationRef" type="tns:PreparationRef"
+				maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>Referenz auf die spezielle GUI-Vorbereitung, z.b.
+						Auswahl des Heizkreises</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="screenId" type="string" use="required">
+			<annotation>
+				<documentation>Name des Bildschirms, über das der Anlagenparameter
+					ausgelesen/eingestellt werden kann
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+	<complexType name="ModbusAccess">
+		<attribute name="address" type="tns:UnNBytesHexInt" use="required">
+			<annotation>
+				<documentation>Adresse des Modbus-Registers
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="type" use="required">
+			<annotation>
+				<documentation>Zugriffstyp</documentation>
+			</annotation>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="Input"></enumeration>
+					<enumeration value="Holding"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
+	</complexType>
+
+	<complexType name="GuiRead">
+		<attribute name="format" type="string" use="required">
+			<annotation>
+				<documentation> Der Format-String dient zur Extraktion der
+					Daten aus einem String
+
+					Er besteht aus folgenden zeichen:
+
+					C: beliebiges Zeichen, wird ignoriert 0:
+					Ziffer oder +/-, muss vorhanden sein, wird
+					übernommen #: Ziffer oder +/- optional, wird
+					übernommen
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+	<complexType name="GuiModification">
+		<sequence>
+			<element name="Upper" type="tns:TouchPoint" maxOccurs="1"
+				minOccurs="1">
+				<annotation>
+					<documentation>
+						Berührungspunkt-Definition um den Wert zu
+						erhöhen
+					</documentation>
+				</annotation>
+			</element>
+			<element name="Lower" type="tns:TouchPoint" maxOccurs="1"
+				minOccurs="1">
+				<annotation>
+					<documentation>
+						Berührungspunkt-Definition um den Wert zu
+						erniedrigen
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="format" type="string" use="required">
+			<annotation>
+				<documentation>
+					Der Format-String dient zur Extraktion der Daten aus
+					einem String
+
+					Er besteht aus folgenden zeichen:
+
+					C: beliebiges Zeichen, wird ignoriert 0: Ziffer oder
+					+/-, muss vorhanden sein, wird übernommen #: Ziffer
+					oder +/- optional, wird übernommen
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="wrapAround" type="boolean"></attribute>
 	</complexType>
 
 </schema>

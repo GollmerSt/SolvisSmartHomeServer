@@ -34,7 +34,7 @@ public class Observer<D> {
 			if (this.observers != null) {
 				Collection<ObserverI<D>> copy;
 				synchronized (this) {
-					copy = new ArrayList<>(observers);
+					copy = new ArrayList<>(this.observers);
 				}
 				for (ObserverI<D> observer : copy) {
 					observer.update(data, source);

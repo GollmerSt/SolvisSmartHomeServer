@@ -92,7 +92,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	public AllSolvisData getDatas() {
-		return datas;
+		return this.datas;
 	}
 
 	private void setData(SingleData<?> data) {
@@ -263,7 +263,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	public long getSentTimeStamp() {
-		return sentTimeStamp;
+		return this.sentTimeStamp;
 	}
 
 	public boolean isFastChange() {

@@ -32,8 +32,8 @@ public class JsonPackage {
 	public Frame getFrame() {
 		Frame result = new Frame();
 		Element element = new Element();
-		element.name = command.toString();
-		element.value = data;
+		element.name = this.command.toString();
+		element.value = this.data;
 		result.add(element);
 		return result;
 	}
@@ -87,6 +87,6 @@ public class JsonPackage {
 	}
 
 	public Command getCommand() {
-		return command;
+		return this.command;
 	}
 }

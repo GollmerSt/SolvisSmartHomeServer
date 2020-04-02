@@ -30,17 +30,17 @@ public class SolvisState extends Observable<SolvisState> {
 	}
 
 	public void error(boolean error, String errorName) {
-		Boolean last = errorStates.get(errorName);
+		Boolean last = this.errorStates.get(errorName);
 		if (last == null) {
 			last = false;
 		}
 		if (last != error) {
-			errorStates.put(errorName, error);
+			this.errorStates.put(errorName, error);
 			this.errorCnt += error ? 1 : -1;
 			this.notify(this);
 			logger.info(error ? "Solvis error <" + errorName + "> detected!"
 					: "Solvis error  <" + errorName + "> cleared.");
-			logger.info(errorCnt > 0 ? "Solvis error!" : "Solvis error cleared.");
+			logger.info(this.errorCnt > 0 ? "Solvis error!" : "Solvis error cleared.");
 		}
 	}
 
@@ -61,12 +61,12 @@ public class SolvisState extends Observable<SolvisState> {
 	}
 
 	public State getState() {
-		if (errorCnt > 0) {
+		if (this.errorCnt > 0) {
 			return State.ERROR;
 		} else if (this.state == State.UNDEFINED) {
 			return State.POWER_OFF;
 		} else {
-			return state;
+			return this.state;
 		}
 	}
 
@@ -90,7 +90,7 @@ public class SolvisState extends Observable<SolvisState> {
 	}
 
 	public long getTimeOfLastSwitchingOn() {
-		return timeOfLastSwitchingOn;
+		return this.timeOfLastSwitchingOn;
 	}
 
 }

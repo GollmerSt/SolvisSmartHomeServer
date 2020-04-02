@@ -23,10 +23,10 @@ public class BaseControlFileReader {
 	private static final String NAME_XML_BASEFILE = "base.xml";
 	private static final String XML_ROOT_ID = "BaseData";
 
-	private final File parent ;
+	private final File parent;
 
 	public BaseControlFileReader() {
-		parent = FileHelper.getJarDir(BaseControlFileReader.class);
+		this.parent = FileHelper.getJarDir(BaseControlFileReader.class);
 	}
 
 	public XmlStreamReader.Result<BaseData> read() throws IOException, XmlError, XMLStreamException {

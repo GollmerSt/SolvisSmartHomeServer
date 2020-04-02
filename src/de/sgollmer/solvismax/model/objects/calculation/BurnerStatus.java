@@ -47,13 +47,8 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 		@Override
 		public String getName() {
-			return name;
+			return this.name;
 		}
-	}
-
-	@Override
-	public String getUnit() {
-		return null;
 	}
 
 	@Override
@@ -93,14 +88,14 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 		@Override
 		public void update(SolvisData data, Object source ) {
-			if (result == null || burnerLevel1On == null || burnerLevel2On == null) {
+			if (this.result == null || this.burnerLevel1On == null || this.burnerLevel2On == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
 
 			Status result = null;
 
-			boolean level1 = burnerLevel1On.getBool();
-			boolean level2 = burnerLevel2On.getBool();
+			boolean level1 = this.burnerLevel1On.getBool();
+			boolean level2 = this.burnerLevel2On.getBool();
 
 			if (level2) {
 				result = Status.LEVEL2;

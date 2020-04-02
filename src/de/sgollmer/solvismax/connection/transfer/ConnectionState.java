@@ -29,19 +29,19 @@ public class ConnectionState {
 		Element element = new Element();
 		frame.add(element);
 		element.setName("State");
-		element.setValue(new SingleValue(status.name()));
-		if (message != null) {
+		element.setValue(new SingleValue(this.status.name()));
+		if (this.message != null) {
 			element = new Element();
 			frame.add(element);
 			element.setName("Message");
-			element.setValue(new SingleValue(message));
+			element.setValue(new SingleValue(this.message));
 		}
 		return new JsonPackage(Command.CONNECTION_STATE, frame);
 
 	}
 
 	public ConnectionStatus getStatus() {
-		return status;
+		return this.status;
 	}
 
 }

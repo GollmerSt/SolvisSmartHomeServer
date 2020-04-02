@@ -76,9 +76,9 @@ public class SolvisWorkers {
 			boolean executeWatchDog = false;
 			boolean stateChanged = false;
 
-			Miscellaneous misc = solvis.getSolvisDescription().getMiscellaneous();
+			Miscellaneous misc = SolvisWorkers.this.solvis.getSolvisDescription().getMiscellaneous();
 			int unsuccessfullWaitTime = misc.getUnsuccessfullWaitTime_ms();
-			int watchDogTime = solvis.getUnit().getWatchDogTime_ms();
+			int watchDogTime = SolvisWorkers.this.solvis.getUnit().getWatchDogTime_ms();
 
 			synchronized (this) {
 				this.notifyAll();
@@ -87,9 +87,9 @@ public class SolvisWorkers {
 			while (!this.abort) {
 				boolean success;
 				Command command = null;
-				if (solvis.getSolvisState().getState() == SolvisState.State.SOLVIS_CONNECTED) {
+				if (SolvisWorkers.this.solvis.getSolvisState().getState() == SolvisState.State.SOLVIS_CONNECTED) {
 					synchronized (this) {
-						if (this.queue.isEmpty() || this.commandDisableCount > 0 || !controlEnable) {
+						if (this.queue.isEmpty() || this.commandDisableCount > 0 || !SolvisWorkers.this.controlEnable) {
 							if (!queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
 								restoreScreen = true;
 								queueWasEmpty = true;
@@ -102,7 +102,7 @@ public class SolvisWorkers {
 							}
 
 						} else {
-							if (queueWasEmpty && screenRestoreInhibitCnt == 0) {
+							if (queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
 								saveScreen = true;
 							}
 							queueWasEmpty = false;
@@ -115,9 +115,12 @@ public class SolvisWorkers {
 					success = true;
 
 					try {
-						if (command != null && command.getScreen(solvis) == solvis.getCurrentScreen().get()
-								&& !solvis.isScreenSaverActive()
-								&& solvis.getSolvisState().getState() != SolvisState.State.ERROR | stateChanged) {
+						if (command != null
+								&& command.getScreen(SolvisWorkers.this.solvis) == SolvisWorkers.this.solvis
+										.getCurrentScreen().get()
+								&& !SolvisWorkers.this.solvis.isScreenSaverActive()
+								&& SolvisWorkers.this.solvis.getSolvisState().getState() != SolvisState.State.ERROR
+										| stateChanged) {
 							executeWatchDog = true;
 						}
 						stateChanged = false;
@@ -129,7 +132,7 @@ public class SolvisWorkers {
 							restoreScreen = false;
 						}
 						if (executeWatchDog) {
-							watchDog.execute();
+							SolvisWorkers.this.watchDog.execute();
 							executeWatchDog = false;
 						}
 						if (command != null && !command.isInhibit()) {
@@ -167,7 +170,7 @@ public class SolvisWorkers {
 						}
 						if (remove) {
 							boolean deleted = false;
-							for (Iterator<Command> it = queue.iterator(); it.hasNext() && !deleted;) {
+							for (Iterator<Command> it = this.queue.iterator(); it.hasNext() && !deleted;) {
 								Command cmp = it.next();
 								if (command == cmp) {
 									it.remove();
@@ -176,14 +179,15 @@ public class SolvisWorkers {
 							}
 						}
 						if (insertAtTheEnd) {
-							queue.add(command); // Shift command at the end of the queue on too many errors
+							this.queue.add(command); // Shift command at the end of the queue on too many errors
 						}
 					}
 					if (!success) {
 						try {
 							this.wait(unsuccessfullWaitTime);
-							if (solvis.getSolvisState().getState() == SolvisState.State.SOLVIS_CONNECTED) {
-								watchDog.execute();
+							if (SolvisWorkers.this.solvis.getSolvisState()
+									.getState() == SolvisState.State.SOLVIS_CONNECTED) {
+								SolvisWorkers.this.watchDog.execute();
 								executeWatchDog = false;
 							}
 						} catch (InterruptedException e) {
@@ -199,7 +203,7 @@ public class SolvisWorkers {
 		}
 
 		public void push(Command command) {
-			if (!controlEnable) {
+			if (!SolvisWorkers.this.controlEnable) {
 				return;
 			}
 			synchronized (this) {
@@ -212,11 +216,10 @@ public class SolvisWorkers {
 
 					for (ListIterator<Command> it = this.queue.listIterator(this.queue.size()); it.hasPrevious();) {
 						Command cmp = it.previous();
-						Handling handling = command.getHandling(cmp, solvis);
+						Handling handling = command.getHandling(cmp, SolvisWorkers.this.solvis);
 						if (handling.mustInhibitInQueue()) {
 							cmp.setInhibit(true);
-							logger.debug(
-									"Command <" + cmp.toString() + "> was inhibited.");
+							logger.debug("Command <" + cmp.toString() + "> was inhibited.");
 						}
 						if (handling.isInhibitAppend()) {
 							add = false;
@@ -233,8 +236,8 @@ public class SolvisWorkers {
 				if (add) {
 					if (command.first()) {
 						this.queue.addFirst(command);
-						logger.debug(
-								"Command <" + command.toString() + "> was added to the beginning of the command queue.");
+						logger.debug("Command <" + command.toString()
+								+ "> was added to the beginning of the command queue.");
 					} else if (itInsert != null) {
 						itInsert.next();
 						itInsert.add(command);
@@ -244,7 +247,7 @@ public class SolvisWorkers {
 						logger.debug("Command <" + command.toString() + "> was added to the end of the command queue.");
 					}
 					this.notifyAll();
-					watchDog.bufferNotEmpty();
+					SolvisWorkers.this.watchDog.bufferNotEmpty();
 				}
 			}
 		}
@@ -282,35 +285,38 @@ public class SolvisWorkers {
 	}
 
 	private boolean execute(Command command) throws IOException, TerminationException, ErrorPowerOn {
-		Screen commandScreen = command.getScreen(this.solvis);
-		if (commandScreen != null) {
-			long now = System.currentTimeMillis();
+		if (!command.isModbus(this.solvis) || command.isWriting()) {
+			Screen commandScreen = command.getScreen(this.solvis);
+			if (commandScreen != null) {
+				long now = System.currentTimeMillis();
 
-			boolean clear;
+				boolean clear;
 
-			if (this.solvis.getCurrentScreen().get() != commandScreen || this.commandScreen != commandScreen) {
-				clear = true;
-			} else if (now > timeCommandScreen + Constants.TIME_COMMAND_SCREEN_VALID) {
-				clear = true;
-			} else {
-				boolean isIn = this.commandsOfScreen.contains(command);
-				if (!isIn) {
-					clear = false;
-				} else {
+				if (this.solvis.getCurrentScreen().get() != commandScreen || this.commandScreen != commandScreen) {
 					clear = true;
+				} else if (now > this.timeCommandScreen + Constants.TIME_COMMAND_SCREEN_VALID) {
+					clear = true;
+				} else {
+					boolean isIn = this.commandsOfScreen.contains(command);
+					if (!isIn) {
+						clear = false;
+					} else {
+						clear = true;
+					}
 				}
+				if (clear) {
+					this.solvis.clearCurrentScreen();
+					this.commandScreen = commandScreen;
+					this.timeCommandScreen = now;
+					this.commandsOfScreen.clear();
+				}
+				this.commandsOfScreen.add(command);
 			}
-			if (clear) {
-				this.solvis.clearCurrentScreen();
-				this.commandScreen = commandScreen;
-				this.timeCommandScreen = now;
-				this.commandsOfScreen.clear();
-			}
-			this.commandsOfScreen.add(command);
+
+			return command.execute(this.solvis);
+		} else {
+			return true;
 		}
-
-		return command.execute(this.solvis);
-
 	}
 
 	public void commandOptimization(boolean enable) {
@@ -319,13 +325,27 @@ public class SolvisWorkers {
 
 				@Override
 				public boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn {
-					controlsThread.commandOptimization(true);
+					SolvisWorkers.this.controlsThread.commandOptimization(true);
 					return true;
 				}
 
 				@Override
 				public String toString() {
 					return "Optimization enable";
+				}
+
+				@Override
+				public boolean isModbus(Solvis solvis) {
+					return false;
+				}
+
+				@Override
+				public boolean isWriting() {
+					return false;
+				}
+
+				@Override
+				public void notExecuted() {
 				}
 
 			});
@@ -345,7 +365,7 @@ public class SolvisWorkers {
 	}
 
 	public void push(Command command) {
-		if (controlsThread == null) {
+		if (this.controlsThread == null) {
 			return;
 		}
 		this.controlsThread.push(command);
@@ -353,11 +373,11 @@ public class SolvisWorkers {
 
 	public void abort() {
 		synchronized (this) {
-			if (controlsThread != null) {
-				controlsThread.abort();
+			if (this.controlsThread != null) {
+				this.controlsThread.abort();
 				this.controlsThread = null;
 			}
-			if (measurementsThread != null) {
+			if (this.measurementsThread != null) {
 				this.measurementsThread.abort();
 				this.measurementsThread = null;
 			}
@@ -396,18 +416,18 @@ public class SolvisWorkers {
 
 		@Override
 		public void run() {
-			int measurementInterval = solvis.getDefaultReadMeasurementsInterval_ms();
+			int measurementInterval = SolvisWorkers.this.solvis.getDefaultReadMeasurementsInterval_ms();
 			this.nextTime = System.currentTimeMillis();
-			while (!abort) {
+			while (!this.abort) {
 
 				try {
 
 					try {
-						solvis.measure();
-						solvis.getSolvisState().connected();
+						SolvisWorkers.this.solvis.measure();
+						SolvisWorkers.this.solvis.getSolvisState().connected();
 					} catch (IOException e1) {
 					} catch (ErrorPowerOn e2) {
-						solvis.getSolvisState().remoteConnected();
+						SolvisWorkers.this.solvis.getSolvisState().remoteConnected();
 					}
 
 					synchronized (this) {

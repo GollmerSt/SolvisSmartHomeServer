@@ -14,13 +14,13 @@ public class BooleanValue extends SingleData<Boolean> {
 	boolean value;
 
 	public BooleanValue(boolean value, long timeStamp) {
-		super(timeStamp) ;
+		super(timeStamp);
 		this.value = value;
 	}
 
 	@Override
 	public Boolean get() {
-		return value;
+		return this.value;
 	}
 
 	@Override
@@ -30,25 +30,25 @@ public class BooleanValue extends SingleData<Boolean> {
 
 	@Override
 	public SingleData<Boolean> create(int value, long timeStamp) {
-		return new BooleanValue( value > 0, timeStamp );
+		return new BooleanValue(value > 0, timeStamp);
 	}
 
 	@Override
 	public String toString() {
-		return Boolean.toString(value) ;
+		return Boolean.toString(this.value);
 	}
-	
+
 	@Override
-	public boolean equals( Object obj ) {
-		if ( obj instanceof BooleanValue ) {
-			return this.value == ((BooleanValue)obj).value ;
+	public boolean equals(Object obj) {
+		if (obj instanceof BooleanValue) {
+			return this.value == ((BooleanValue) obj).value;
 		}
-		return false ;
+		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return value?179:72;
+		return this.value ? 179 : 72;
 	}
 
 	@Override
@@ -60,7 +60,5 @@ public class BooleanValue extends SingleData<Boolean> {
 	public String toJson() {
 		return Boolean.toString(this.value);
 	}
-	
-	
 
 }

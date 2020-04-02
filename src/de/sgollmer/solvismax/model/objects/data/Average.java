@@ -79,7 +79,7 @@ public class Average implements Cloneable {
 		if (size > 1) {
 
 			if (delta > 10 && delta > (this.measurementHysteresisFactor * this.getPrecision() + size - 1) / size) {
-				average = new Result(newAverage, fastChange);
+				this.average = new Result(newAverage, fastChange);
 			}
 		} else {
 			this.average = new Result(newAverage, fastChange);
@@ -95,7 +95,7 @@ public class Average implements Cloneable {
 		if (!this.averageInt.isFilled()) {
 			return null;
 		} else {
-			Result average = this.average ;
+			Result average = this.average;
 			return singleData.create(average.value10 > 0 ? (average.value10 + 5) / 10 : (average.value10 - 5) / 10,
 					singleData.getTimeStamp(), average.fastChange);
 		}

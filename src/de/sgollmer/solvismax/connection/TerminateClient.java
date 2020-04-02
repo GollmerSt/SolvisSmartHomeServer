@@ -30,7 +30,7 @@ public class TerminateClient {
 	public boolean connectAndTerminateOtherServer() throws UnknownHostException, IOException {
 		Socket socket = null;
 		try {
-			socket = new Socket("localhost", port);
+			socket = new Socket("localhost", this.port);
 		} catch (IOException e) {
 			System.out.println("Server not started");
 			return false;

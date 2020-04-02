@@ -94,7 +94,7 @@ public class Configurations {
 
 		@Override
 		public Configurations create() throws XmlError, IOException {
-			return new Configurations(configurations);
+			return new Configurations(this.configurations);
 		}
 
 		@Override

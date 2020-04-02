@@ -30,4 +30,8 @@ public class CommandScreenRestore extends Command {
 		return "Screen restore is switched " + (this.enable ? "on." : "off.");
 
 	}
+
+	@Override
+	public void notExecuted() {
+	}
 }

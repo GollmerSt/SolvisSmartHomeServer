@@ -59,7 +59,7 @@ public class StringData extends SingleData<String> {
 
 	@Override
 	public String get() {
-		return data;
+		return this.data;
 	}
 	
 }

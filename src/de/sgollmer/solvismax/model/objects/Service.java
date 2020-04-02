@@ -46,7 +46,7 @@ public class Service implements Assigner {
 
 		@Override
 		public Service create() throws XmlError, IOException {
-			return new Service(serviceScreenRefs);
+			return new Service(this.serviceScreenRefs);
 		}
 
 		@Override

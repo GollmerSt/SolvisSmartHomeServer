@@ -49,7 +49,7 @@ public class OfConfigs<E extends OfConfigs.Element<E>> {
 	}
 
 	public Collection<E> getElements() {
-		return elements;
+		return this.elements;
 	}
 	
 	public E getIfSingle() {
@@ -68,6 +68,6 @@ public class OfConfigs<E extends OfConfigs.Element<E>> {
 	}
 	
 	public int size() {
-		return elements.size() ;
+		return this.elements.size() ;
 	}
 }

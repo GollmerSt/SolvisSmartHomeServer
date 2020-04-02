@@ -32,11 +32,6 @@ public class RunTime extends Strategy<RunTime> {
 	}
 
 	@Override
-	public String getUnit() {
-		return "s";
-	}
-
-	@Override
 	public boolean isWriteable() {
 		return false;
 	}
@@ -71,13 +66,13 @@ public class RunTime extends Strategy<RunTime> {
 
 		@Override
 		public void update(SolvisData data, Object source ) {
-			if (result == null || burnerOn == null) {
+			if (this.result == null || this.burnerOn == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
 			
 			Boolean burnerOn = null ;
 
-			if ( data.getDescription() == result.getDescription() ) {
+			if ( data.getDescription() == this.result.getDescription() ) {
 				if ( source != this ) {
 					burnerOn = this.burnerOn.getBool() ;
 					this.lastStartTime = -1 ;

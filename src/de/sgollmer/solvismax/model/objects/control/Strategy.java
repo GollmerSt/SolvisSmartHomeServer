@@ -23,17 +23,15 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public interface Strategy extends Assigner {
 
-	public SingleData<?> getValue(SolvisScreen solvisScreen, Rectangle valueRectangl) throws TerminationException, IOException;
+	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, ControlAccess controlAccess) throws TerminationException, IOException;
 
-	public SingleData<?> setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
+	public SingleData<?> setValue(Solvis solvis, ControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeError;
 
 	public boolean isWriteable();
 
 	public Integer getDivisor() ;
 	
-	public String getUnit() ;
-
 	public Float getAccuracy();
 
 	public List<? extends ModeI> getModes();
@@ -44,8 +42,10 @@ public interface Strategy extends Assigner {
 	
 	public boolean mustBeLearned() ;
 	
-	public boolean learn(Solvis solvis) throws IOException ;
+	public boolean learn(Solvis solvis, ControlAccess controlAccess) throws IOException ;
 
 	public SingleData<?> interpretSetData(SingleData<?> singleData)  throws TypeError;
+	
+	public boolean isXmlValid( boolean modbus) ;
 
 }

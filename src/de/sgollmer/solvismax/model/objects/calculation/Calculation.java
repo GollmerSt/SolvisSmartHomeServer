@@ -70,11 +70,6 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public String getUnit() {
-		return this.strategy.getUnit();
-	}
-
-	@Override
 	public Float getAccuracy() {
 		return this.strategy.getAccuracy();
 
@@ -89,7 +84,7 @@ public class Calculation extends ChannelSource {
 	 * @return the dependencies
 	 */
 	public Dependencies getDependencies() {
-		return dependencies;
+		return this.dependencies;
 	}
 
 	public static class Creator extends CreatorByXML<Calculation> {
@@ -113,7 +108,7 @@ public class Calculation extends ChannelSource {
 
 		@Override
 		public Calculation create() throws XmlError {
-			return new Calculation(strategy, dependencies);
+			return new Calculation(this.strategy, this.dependencies);
 		}
 
 		@Override
@@ -177,5 +172,10 @@ public class Calculation extends ChannelSource {
 	@Override
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
 		return null;
+	}
+
+	@Override
+	public boolean isModbus(Solvis solvis) {
+		return false;
 	}
 }

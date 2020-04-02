@@ -3,6 +3,17 @@
 Version 01.00.01
 
 	15.03.2020	control.xsd erweiter für Modbus
+	
+	24.03.2020	Fhem-Client: Umgestellt auf FHEM::MaxClient-Package, FHEM::Meta-Support
+	
+				Synchronisations-Fehler gefixt: Wenn zwei Clients gleichzeitig versuchen sich
+				mit dem Server zu verbinden, konnte es zu einem fehlerhaften Zustand des Servers
+				führen, so dass anschließend keine Verbindungen mehr möglich waren.
+				
+	26.03.2020	Clock-Adjustment funktionierte bei einer Differenz von mehr als 19h nicht mehr
+	
+	02.04.2020	Die Gui-Steuerung funktionierte nach Power-Off nicht mehr, wenn das Feature
+				PowerOffIsServiceAccess aktiviert war. 
 
 Version 00.11.02
 

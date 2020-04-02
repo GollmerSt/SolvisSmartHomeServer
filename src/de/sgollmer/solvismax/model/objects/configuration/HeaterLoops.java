@@ -55,22 +55,22 @@ public class HeaterLoops implements Configuration {
 			Matcher m = DIGIT.matcher(s);
 			if (m.matches() && circle == Integer.parseInt(s)) {
 				result |= 1 << (circle - 1);
-				++circle ;
+				++circle;
 			}
 		}
-		if ( result == 0 ) {
-			result = 1 ;
+		if (result == 0) {
+			result = 1;
 		}
 		return result;
 	}
 
 	@Override
-	public int getConfiguration(Solvis solvis ) throws IOException {
+	public int getConfiguration(Solvis solvis) throws IOException {
 		return this.getConfiguration(solvis.getCurrentScreen());
 	}
 
 	public String getScreenRef() {
-		return screenRef;
+		return this.screenRef;
 	}
 
 	public static class Creator extends CreatorByXML<HeaterLoops> {
@@ -95,7 +95,7 @@ public class HeaterLoops implements Configuration {
 
 		@Override
 		public HeaterLoops create() throws XmlError, IOException {
-			return new HeaterLoops(screenRef, hk1, hk2, hk3);
+			return new HeaterLoops(this.screenRef, this.hk1, this.hk2, this.hk3);
 		}
 
 		@Override
@@ -143,7 +143,7 @@ public class HeaterLoops implements Configuration {
 
 	@Override
 	public Screen getScreen(Solvis solvis) {
-		return solvis.getSolvisDescription().getScreens().get(this.getScreenRef(), 0) ;
+		return solvis.getSolvisDescription().getScreens().get(this.getScreenRef(), 0);
 	}
 
 }

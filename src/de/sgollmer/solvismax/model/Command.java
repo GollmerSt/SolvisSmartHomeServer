@@ -18,6 +18,8 @@ public abstract class Command {
 	private int failCount = 0;
 
 	public abstract boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn;
+	
+	public abstract void notExecuted() ;
 
 	public Screen getScreen(Solvis solvis) {
 		return null;
@@ -57,19 +59,19 @@ public abstract class Command {
 		}
 
 		public boolean mustInhibitInQueue() {
-			return inQueueInhibt;
+			return this.inQueueInhibt;
 		}
 
 		public boolean isInhibitAppend() {
-			return inhibitAppend;
+			return this.inhibitAppend;
 		}
 
 		public boolean mustInsert() {
-			return insert;
+			return this.insert;
 		}
 
 		public boolean isSame() {
-			return same;
+			return this.same;
 		}
 		
 	}
@@ -83,10 +85,18 @@ public abstract class Command {
 	}
 
 	public int getFailCount() {
-		return failCount;
+		return this.failCount;
 	}
 
 	public void incrementFailCount() {
 		++this.failCount;
+	}
+	
+	public boolean isModbus(Solvis solvis) {
+		return false ;
+	}
+	
+	public boolean isWriting() {
+		return false ;
 	}
 }

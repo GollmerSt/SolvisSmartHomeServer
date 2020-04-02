@@ -44,7 +44,7 @@ public class SystemGrafics implements XmlWriteable {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public void clear() {
@@ -106,7 +106,7 @@ public class SystemGrafics implements XmlWriteable {
 		@Override
 		public SystemGrafics create() throws XmlError, IOException {
 
-			return new SystemGrafics(id, controlFileHashCode, configurationMask, graficDatas);
+			return new SystemGrafics(this.id, this.controlFileHashCode, this.configurationMask, this.graficDatas);
 		}
 
 		@Override
@@ -139,7 +139,7 @@ public class SystemGrafics implements XmlWriteable {
 	 * @return the controlFileHashCode
 	 */
 	public int getControlFileHashCode() {
-		return controlFileHashCode;
+		return this.controlFileHashCode;
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class SystemGrafics implements XmlWriteable {
 	}
 
 	public int getConfigurationMask() {
-		return configurationMask;
+		return this.configurationMask;
 	}
 
 	public void setConfigurationMask(int configurationMask) {

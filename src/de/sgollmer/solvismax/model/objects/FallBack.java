@@ -67,7 +67,7 @@ public class FallBack implements Assigner {
 
 		@Override
 		public FallBack create() throws XmlError, IOException {
-			return new FallBack(sequence);
+			return new FallBack(this.sequence);
 		}
 
 		@Override
@@ -120,7 +120,7 @@ public class FallBack implements Assigner {
 
 			@Override
 			public ScreenRef create() throws XmlError, IOException {
-				return new ScreenRef(id);
+				return new ScreenRef(this.id);
 			}
 
 		}

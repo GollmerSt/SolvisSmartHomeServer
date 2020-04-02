@@ -73,10 +73,10 @@ public class ErrorDetection {
 
 		image.createHistograms(false);
 
-		int tresholdX = this.getTreshold(bottomBorder, topBorder) * image.getHeight() / 1000;// image.getHeight()
-																								// * 7 / 10;
-		int tresholdY = this.getTreshold(rightBorder, leftBorder) * image.getWidth() / 1000;// image.getWidth()
-																							// * 85 / 100;
+		int tresholdX = this.getTreshold(this.bottomBorder, this.topBorder) * image.getHeight() / 1000;// image.getHeight()
+		// * 7 / 10;
+		int tresholdY = this.getTreshold(this.rightBorder, this.leftBorder) * image.getWidth() / 1000;// image.getWidth()
+		// * 85 / 100;
 
 		List<Integer> maxX = new ArrayList<>();
 
@@ -109,23 +109,23 @@ public class ErrorDetection {
 		int mask = 0;
 
 		for (int x : maxX) {
-			if (leftBorder.getLower() * image.getWidth() / 1000 < x
-					&& x < leftBorder.getHigher() * image.getWidth() / 1000)
+			if (this.leftBorder.getLower() * image.getWidth() / 1000 < x
+					&& x < this.leftBorder.getHigher() * image.getWidth() / 1000)
 				mask |= 0x01;
-			if (rightBorder.getLower() * image.getWidth() / 1000 < x
-					&& x < rightBorder.getHigher() * image.getWidth() / 1000)
+			if (this.rightBorder.getLower() * image.getWidth() / 1000 < x
+					&& x < this.rightBorder.getHigher() * image.getWidth() / 1000)
 				mask |= 0x02;
 		}
 
 		for (int y : maxY) {
-			if (topBorder.getLower() * image.getHeight() / 1000 < y
-					&& y < topBorder.getHigher() * image.getHeight() / 1000)
+			if (this.topBorder.getLower() * image.getHeight() / 1000 < y
+					&& y < this.topBorder.getHigher() * image.getHeight() / 1000)
 				mask |= 0x04;
-			if (middleBorder.getLower() * image.getHeight() / 1000 < y
-					&& y < middleBorder.getHigher() * image.getHeight() / 1000)
+			if (this.middleBorder.getLower() * image.getHeight() / 1000 < y
+					&& y < this.middleBorder.getHigher() * image.getHeight() / 1000)
 				mask |= 0x08;
-			if (bottomBorder.getLower() * image.getHeight() / 1000 < y
-					&& y < bottomBorder.getHigher() * image.getWidth() / 1000)
+			if (this.bottomBorder.getLower() * image.getHeight() / 1000 < y
+					&& y < this.bottomBorder.getHigher() * image.getWidth() / 1000)
 				mask |= 0x10;
 		}
 
@@ -172,8 +172,8 @@ public class ErrorDetection {
 
 		@Override
 		public ErrorDetection create() throws XmlError, IOException {
-			return new ErrorDetection(leftBorder, rightBorder, topBorder, middleBorder, bottomBorder, hhMm, ddMmYy,
-					errorConditions);
+			return new ErrorDetection(this.leftBorder, this.rightBorder, this.topBorder, this.middleBorder,
+					this.bottomBorder, this.hhMm, this.ddMmYy, this.errorConditions);
 		}
 
 		@Override
@@ -236,11 +236,11 @@ public class ErrorDetection {
 		}
 
 		public String getChannelId() {
-			return channelId;
+			return this.channelId;
 		}
 
 		public boolean getErrorValue() {
-			return errorValue;
+			return this.errorValue;
 		}
 
 		public static class Creator extends CreatorByXML<ErrorCondition> {
@@ -267,7 +267,7 @@ public class ErrorDetection {
 
 			@Override
 			public ErrorCondition create() throws XmlError, IOException {
-				return new ErrorCondition(channelId, value);
+				return new ErrorCondition(this.channelId, this.value);
 			}
 
 			@Override
@@ -287,25 +287,25 @@ public class ErrorDetection {
 	}
 
 	private class Execute implements ObserverI<SolvisData> {
-		
-		private Collection< SolvisData > errorSpecificDatas = new ArrayList<>();
-		
-		public Execute( Solvis solvis) {
-			for ( ErrorCondition condition : errorConditions ) {
-				String name = condition.getChannelId() ;
-				SolvisData data = solvis.getAllSolvisData().get(name) ;
-				if ( data == null ) {
-					logger.error( "Channel Id <" + name + "> is missing. Check the control.xml file");
-					return ;
+
+		private Collection<SolvisData> errorSpecificDatas = new ArrayList<>();
+
+		public Execute(Solvis solvis) {
+			for (ErrorCondition condition : ErrorDetection.this.errorConditions) {
+				String name = condition.getChannelId();
+				SolvisData data = solvis.getAllSolvisData().get(name);
+				if (data == null) {
+					logger.error("Channel Id <" + name + "> is missing. Check the control.xml file");
+					return;
 				}
-				this.errorSpecificDatas.add( data);
+				this.errorSpecificDatas.add(data);
 				data.registerContinuousObserver(this);
 			}
 		}
 
 		@Override
 		public void update(SolvisData data, Object source) {
-			for (ErrorCondition condition : errorConditions) {
+			for (ErrorCondition condition : ErrorDetection.this.errorConditions) {
 				String channelId = condition.getChannelId();
 				boolean error = channelId.equals(data.getDescription().getId())
 						&& data.getBool() == condition.getErrorValue();

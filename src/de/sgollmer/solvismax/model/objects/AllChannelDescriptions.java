@@ -60,7 +60,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		for (OfConfigs<ChannelDescription> channelConf : descriptions.values()) {
+		for (OfConfigs<ChannelDescription> channelConf : this.descriptions.values()) {
 			channelConf.assign(description);
 		}
 	}
@@ -84,7 +84,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 
 		@Override
 		public AllChannelDescriptions create() throws XmlError {
-			return descriptions;
+			return this.descriptions;
 		}
 
 		@Override
@@ -124,8 +124,12 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		int timeAfterLastSwitchingOn = solvis.getTimeAfterLastSwitchingOn();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
-			if (description != null && description.getType() == ChannelSourceI.Type.MEASUREMENT) {
-				description.getValue(solvis, timeAfterLastSwitchingOn);
+			if (description != null) {
+				if (description.getType() == ChannelSourceI.Type.MEASUREMENT) {
+					description.getValue(solvis, timeAfterLastSwitchingOn);
+				} else if ( description.isModbus(solvis)) {
+					description.getValue( solvis, timeAfterLastSwitchingOn);
+				}
 			}
 		}
 		solvis.getDistributor().setBurstUpdate(false);
@@ -157,7 +161,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
 			ChannelDescription description = confDescriptions.get(solvis);
 			if (description != null && description.getType() == ChannelSourceI.Type.CONTROL
-					&& description.isInConfiguration(configurationMask)) {
+					&& description.isInConfiguration(configurationMask) && ! description.isModbus(solvis)) {
 				descriptions.add(description);
 			}
 		}

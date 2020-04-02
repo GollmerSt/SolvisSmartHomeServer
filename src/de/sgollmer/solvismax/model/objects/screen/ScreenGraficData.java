@@ -36,7 +36,7 @@ public class ScreenGraficData implements XmlWriteable {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class ScreenGraficData implements XmlWriteable {
 	 * @return the image
 	 */
 	public MyImage getImage() {
-		return image;
+		return this.image;
 	}
 
 	public static class Creator extends CreatorByXML<ScreenGraficData> {
@@ -87,8 +87,8 @@ public class ScreenGraficData implements XmlWriteable {
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 			BufferedImage image = ImageIO.read(bis);
 			this.image = new MyImage(image);
-			if ( this.isPattern ) {
-				this.image = new Pattern( this.image ) ;
+			if (this.isPattern) {
+				this.image = new Pattern(this.image);
 			}
 			return new ScreenGraficData(this.id, this.image);
 		}

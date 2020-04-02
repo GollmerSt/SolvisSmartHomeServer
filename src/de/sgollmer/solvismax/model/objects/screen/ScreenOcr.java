@@ -20,9 +20,9 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ScreenOcr implements ScreenCompare {
-	
+
 	private static final String XML_FIELD = "Field";
-	
+
 	private final Rectangle rectangle;
 	private final String value;
 
@@ -35,14 +35,14 @@ public class ScreenOcr implements ScreenCompare {
 	 * @return the rectangle
 	 */
 	public Rectangle getRectangle() {
-		return rectangle;
+		return this.rectangle;
 	}
 
 	/**
 	 * @return the value
 	 */
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class ScreenOcr implements ScreenCompare {
 		private String value;
 
 		public Creator(String id, BaseCreator<?> creator) {
-			super(id, creator );
+			super(id, creator);
 		}
 
 		@Override
@@ -72,7 +72,7 @@ public class ScreenOcr implements ScreenCompare {
 
 		@Override
 		public ScreenOcr create() throws XmlError, IOException {
-			return new ScreenOcr(rectangle, value);
+			return new ScreenOcr(this.rectangle, this.value);
 		}
 
 		@Override
@@ -89,8 +89,8 @@ public class ScreenOcr implements ScreenCompare {
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
 				case XML_FIELD:
-					this.rectangle = (Rectangle) created ;
-					break ;
+					this.rectangle = (Rectangle) created;
+					break;
 			}
 		}
 

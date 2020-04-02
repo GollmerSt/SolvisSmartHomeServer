@@ -16,9 +16,11 @@ import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Helper.Format;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
+import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -29,16 +31,17 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class StrategyRead implements Strategy {
-	private final boolean optional;
-	private final Format format;
-	private final int divisor;
-	private final String unit;
 
-	public StrategyRead(boolean optional, String format, int divisor, String unit) {
+	private static final String XML_GUI_READ = "GuiRead";
+
+	protected final boolean optional;
+	protected final int divisor;
+	private final GuiRead guiRead;
+
+	public StrategyRead(boolean optional, int divisor, GuiRead guiRead) {
 		this.optional = optional;
-		this.format = new Format(format);
 		this.divisor = divisor;
-		this.unit = unit;
+		this.guiRead = guiRead;
 	}
 
 	@Override
@@ -47,25 +50,30 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public IntegerValue getValue(SolvisScreen screen, Rectangle rectangle) {
-		OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
-		String s = ocr.getString();
-		s = format.getString(s);
+	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, ControlAccess controlAccess) throws IOException {
 		Integer i;
-		if (s == null) {
-			if (this.optional) {
-				i = null;
+		if (controlAccess instanceof GuiAccess) {
+			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
+			OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
+			String s = ocr.getString();
+			s = this.guiRead.format.getString(s);
+			if (s == null) {
+				if (this.optional) {
+					i = null;
+				} else {
+					return null;
+				}
 			} else {
-				return null;
+				i = Integer.parseInt(s);
 			}
 		} else {
-			i = Integer.parseInt(s);
+			i = solvis.readUnsignedShortModbusData((ModbusAccess) controlAccess);
 		}
 		return new IntegerValue(i, System.currentTimeMillis());
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, Rectangle rectangle, SolvisData value) throws IOException {
+	public SingleData<?> setValue(Solvis solvis, ControlAccess controlAccess, SolvisData value) throws IOException {
 		return null;
 	}
 
@@ -74,17 +82,11 @@ public class StrategyRead implements Strategy {
 		return this.divisor;
 	}
 
-	@Override
-	public String getUnit() {
-		return this.unit;
-	}
-
 	public static class Creator extends CreatorByXML<StrategyRead> {
 
 		private boolean optional = false;
-		private String format;
 		private int divisor = 1;
-		private String unit;
+		private GuiRead guiRead = null;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -96,12 +98,6 @@ public class StrategyRead implements Strategy {
 				case "optional":
 					this.optional = Boolean.parseBoolean(value);
 					break;
-				case "format":
-					this.format = value;
-					break;
-				case "unit":
-					this.unit = value;
-					break;
 				case "divisor":
 					this.divisor = Integer.parseInt(value);
 					break;
@@ -111,24 +107,32 @@ public class StrategyRead implements Strategy {
 
 		@Override
 		public StrategyRead create() throws XmlError {
-			return new StrategyRead(optional, format, divisor, unit);
+			return new StrategyRead(this.optional, this.divisor, this.guiRead);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
+			String id = name.getLocalPart();
+			switch (id) {
+				case XML_GUI_READ:
+					return new GuiRead.Creator(id, getBaseCreator());
+			}
 			return null;
 		}
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-
+			switch (creator.getId()) {
+				case XML_GUI_READ:
+					this.guiRead = (GuiRead) created;
+					break;
+			}
 		}
 
 	}
 
 	@Override
 	public void assign(SolvisDescription description) {
-
 	}
 
 	@Override
@@ -156,13 +160,64 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis) {
+	public boolean learn(Solvis solvis, ControlAccess controlAccess) {
 		return true;
 	}
 
 	@Override
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
 		return null;
+	}
+
+	public static class GuiRead {
+		protected final Format format;
+
+		public GuiRead(String format) {
+			this.format = new Format(format);
+		}
+
+		public Format getFormat() {
+			return this.format;
+		}
+
+		public static class Creator extends CreatorByXML<GuiRead> {
+			private String format;
+
+			public Creator(String id, BaseCreator<?> creator) {
+				super(id, creator);
+			}
+
+			@Override
+			public void setAttribute(QName name, String value) {
+				switch (name.getLocalPart()) {
+					case "format":
+						this.format = value;
+						break;
+				}
+
+			}
+
+			@Override
+			public GuiRead create() throws XmlError, IOException {
+				return new GuiRead(this.format);
+			}
+
+			@Override
+			public CreatorByXML<?> getCreator(QName name) {
+				return null;
+			}
+
+			@Override
+			public void created(CreatorByXML<?> creator, Object created) {
+			}
+
+		}
+
+	}
+
+	@Override
+	public boolean isXmlValid(boolean modbus) {
+		return true;
 	}
 
 }

@@ -24,7 +24,7 @@ public class DateValue extends SingleData<Calendar> {
 	}
 
 	public Calendar getCalendar() {
-		return calendar;
+		return this.calendar;
 	}
 	
 	@Override

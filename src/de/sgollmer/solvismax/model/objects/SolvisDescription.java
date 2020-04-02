@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
-import de.sgollmer.solvismax.model.objects.configuration.Types;
+import de.sgollmer.solvismax.model.objects.configuration.SolvisTypes;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
@@ -29,7 +29,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class SolvisDescription {
 
-	private static final String XML_TYPES = "Types";
+	private static final String XML_SOLVIS_TYPES = "SolvisTypes";
 	private static final String XML_CONFIGURATIONS = "Configurations";
 	private static final String XML_SCREEN_SAVER = "ScreenSaver";
 	private static final String XML_SCREENS = "Screens";
@@ -44,7 +44,7 @@ public class SolvisDescription {
 	private static final String XML_ERROR_DETECTION = "ErrorDetection";
 	private static final String XML_SERVICE = "Service";
 
-	private final Types types;
+	private final SolvisTypes types;
 	private final Configurations configurations;
 	private final ScreenSaver saver;
 	private final AllScreens screens;
@@ -57,13 +57,13 @@ public class SolvisDescription {
 	private final Service service;
 
 	public ClockMonitor getClock() {
-		return clock;
+		return this.clock;
 	}
 
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
-	public SolvisDescription(Types types, Configurations configurations, ScreenSaver saver, AllScreens screens,
+	public SolvisDescription(SolvisTypes types, Configurations configurations, ScreenSaver saver, AllScreens screens,
 			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
 			AllPreparations allPreparations, ClockMonitor clock, AllDurations durations, Miscellaneous miscellaneous,
 			ErrorDetection errorDetection, Service service) {
@@ -127,7 +127,7 @@ public class SolvisDescription {
 	public static class Creator extends BaseCreator<SolvisDescription> {
 
 		private final AllScreenGraficDescriptions screenGrafics;
-		private Types types;
+		private SolvisTypes types;
 		private Configurations configurations;
 		private ScreenSaver saver;
 		private AllScreens screens;
@@ -152,16 +152,17 @@ public class SolvisDescription {
 
 		@Override
 		public SolvisDescription create() throws XmlError {
-			return new SolvisDescription(types, configurations, saver, screens, fallBack, screenGrafics,
-					dataDescriptions, allPreparations, clock, durations, miscellaneous, errorDetection, service);
+			return new SolvisDescription(this.types, this.configurations, this.saver, this.screens, this.fallBack,
+					this.screenGrafics, this.dataDescriptions, this.allPreparations, this.clock, this.durations,
+					this.miscellaneous, this.errorDetection, this.service);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_TYPES:
-					return new Types.Creator(id, getBaseCreator());
+				case XML_SOLVIS_TYPES:
+					return new SolvisTypes.Creator(id, getBaseCreator());
 				case XML_CONFIGURATIONS:
 					return new Configurations.Creator(id, this);
 				case XML_SCREEN_SAVER:
@@ -193,8 +194,8 @@ public class SolvisDescription {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_TYPES:
-					this.types = (Types) created;
+				case XML_SOLVIS_TYPES:
+					this.types = (SolvisTypes) created;
 					break;
 				case XML_CONFIGURATIONS:
 					this.configurations = (Configurations) created;
@@ -242,7 +243,7 @@ public class SolvisDescription {
 		 * @return the screenGrafics
 		 */
 		public AllScreenGraficDescriptions getScreenGraficDescriptions() {
-			return screenGrafics;
+			return this.screenGrafics;
 		}
 	}
 
@@ -261,7 +262,7 @@ public class SolvisDescription {
 
 		@Override
 		public Collection<ScreenGraficDescription> create() throws XmlError {
-			return grafics;
+			return this.grafics;
 		}
 
 		@Override
@@ -289,43 +290,43 @@ public class SolvisDescription {
 	 * @return the saver
 	 */
 	public ScreenSaver getSaver() {
-		return saver;
+		return this.saver;
 	}
 
 	/**
 	 * @return the screens
 	 */
 	public AllScreens getScreens() {
-		return screens;
+		return this.screens;
 	}
 
 	/**
 	 * @return the screenGrafics
 	 */
 	public AllScreenGraficDescriptions getScreenGrafics() {
-		return screenGrafics;
+		return this.screenGrafics;
 	}
 
 	/**
 	 * @return the dataDescriptions
 	 */
 	public AllChannelDescriptions getChannelDescriptions() {
-		return dataDescriptions;
+		return this.dataDescriptions;
 	}
 
 	/**
 	 * @return the durations
 	 */
 	public AllDurations getDurations() {
-		return durations;
+		return this.durations;
 	}
 
 	public Miscellaneous getMiscellaneous() {
-		return miscellaneous;
+		return this.miscellaneous;
 	}
 
 	public FallBack getFallBack() {
-		return fallBack;
+		return this.fallBack;
 	}
 
 	public int getConfigurations(Solvis solvis, Reference<Screen> current) throws IOException {
@@ -334,7 +335,7 @@ public class SolvisDescription {
 	}
 
 	public AllPreparations getPreparations() {
-		return allPreparations;
+		return this.allPreparations;
 	}
 
 	public ErrorDetection getErrorDetection() {
@@ -342,10 +343,10 @@ public class SolvisDescription {
 	}
 
 	public Service getService() {
-		return service;
+		return this.service;
 	}
-	
-	public void instantiate( Solvis solvis ) {
+
+	public void instantiate(Solvis solvis) {
 		this.clock.instantiate(solvis);
 		this.errorDetection.instantiate(solvis);
 	}

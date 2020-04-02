@@ -37,7 +37,7 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 	private Rectangle rectangle = null;
 
 	public Rectangle getRectangle() {
-		return rectangle;
+		return this.rectangle;
 	}
 
 	private ScreenGraficDescription(String id, boolean exact, Rectangle rectangle) {
@@ -82,14 +82,14 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 	 * @return the exact
 	 */
 	public boolean isExact() {
-		return exact;
+		return this.exact;
 	}
 
 	/**
 	 * @return the id
 	 */
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public static class Creator extends CreatorByXML<ScreenGraficDescription> {
@@ -117,7 +117,7 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 
 		@Override
 		public ScreenGraficDescription create() throws XmlError {
-			return new ScreenGraficDescription(id, exact, rectangle);
+			return new ScreenGraficDescription(this.id, this.exact, this.rectangle);
 		}
 
 		@Override
@@ -147,10 +147,10 @@ public class ScreenGraficDescription implements ScreenCompare, Assigner {
 
 	public void learn(Solvis solvis) throws IOException {
 		MyImage image = solvis.getCurrentScreen().getImage();
-		if (exact) {
-			image = new MyImage(image, rectangle, true);
+		if (this.exact) {
+			image = new MyImage(image, this.rectangle, true);
 		} else {
-			image = new Pattern(image, rectangle);
+			image = new Pattern(image, this.rectangle);
 		}
 		ScreenGraficData grafic = solvis.getGrafics().get(this.getId());
 

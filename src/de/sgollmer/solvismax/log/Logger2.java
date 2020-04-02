@@ -59,12 +59,12 @@ public class Logger2 {
 
 		boolean success = true;
 
-		if (!parent.exists()) {
-			success = parent.mkdir();
+		if (!this.parent.exists()) {
+			success = this.parent.mkdir();
 		}
 
 		if (!success) {
-			throw new FileError("Error on creating directory <" + parent.getAbsolutePath() + ">");
+			throw new FileError("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
 		}
 
 		File xml = new File(this.parent, Constants.LOG4J_CONFIG_FILE);
@@ -89,12 +89,12 @@ public class Logger2 {
 				input = new FileInputStream(xml);
 			} catch (FileNotFoundException ex) {
 				System.err.println("Error on reading log4j.xml");
-				return false ;
+				return false;
 			}
 		}
 		ConfigurationSource source = new ConfigurationSource(input);
 		Configurator.initialize(null, source);
-		return true ;
+		return true;
 	}
 
 }

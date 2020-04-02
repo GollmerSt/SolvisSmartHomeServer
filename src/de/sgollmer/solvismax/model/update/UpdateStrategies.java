@@ -49,7 +49,7 @@ public class UpdateStrategies implements Assigner {
 		}
 
 		public CreatorByXML<?> getStrategy() {
-			return creator;
+			return this.creator;
 		}
 
 		public static UpdateCreator<?> byXml(String xmlId) {
@@ -92,7 +92,7 @@ public class UpdateStrategies implements Assigner {
 
 		@Override
 		public UpdateStrategies create() throws XmlError, IOException {
-			return new UpdateStrategies(updateStrategies);
+			return new UpdateStrategies(this.updateStrategies);
 		}
 
 		@Override

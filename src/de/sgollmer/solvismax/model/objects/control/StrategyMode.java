@@ -23,9 +23,11 @@ import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
+import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.ModeI;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -41,11 +43,11 @@ public class StrategyMode implements Strategy {
 	private static final Logger logger = LogManager.getLogger(StrategyMode.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
-	private static final String XML_MODE = "Mode";
+	private static final String XML_MODE_ENTRY = "ModeEntry";
 
-	private final List<Mode> modes;
+	private final List<ModeEntry> modes;
 
-	public StrategyMode(List<Mode> modes) {
+	public StrategyMode(List<ModeEntry> modes) {
 		this.modes = modes;
 	}
 
@@ -55,38 +57,51 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public ModeValue<Mode> getValue(SolvisScreen source, Rectangle rectangle) {
-		MyImage image = new MyImage(source.getImage(), rectangle, true);
-		Pattern pattern = null;
-		for (Mode mode : this.modes) {
-			ScreenGraficDescription cmp = mode.getGrafic();
-			MyImage current = image;
-			if (!cmp.isExact()) {
-				if (pattern == null) {
-					pattern = new Pattern(source.getImage(), rectangle);
+	public ModeValue<ModeEntry> getValue(SolvisScreen source, Solvis solvis, ControlAccess controlAccess)
+			throws IOException {
+		if (controlAccess instanceof GuiAccess) {
+			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
+			MyImage image = new MyImage(source.getImage(), rectangle, true);
+			Pattern pattern = null;
+			for (ModeEntry mode : this.modes) {
+				ScreenGraficDescription cmp = mode.getGuiSet().getGrafic();
+				MyImage current = image;
+				if (!cmp.isExact()) {
+					if (pattern == null) {
+						pattern = new Pattern(source.getImage(), rectangle);
+					}
+					current = pattern;
 				}
-				current = pattern;
+				if (cmp.isElementOf(current, source.getSolvis(), true)) {
+					return new ModeValue<ModeEntry>(mode, System.currentTimeMillis());
+				}
 			}
-			if (cmp.isElementOf(current, source.getSolvis(), true)) {
-				return new ModeValue<Mode>(mode, System.currentTimeMillis());
+			return null;
+		} else {
+			int num = solvis.readUnsignedShortModbusData((ModbusAccess) controlAccess);
+			for (ModeEntry mode : this.modes) {
+				if (mode.getModbusValue() == num) {
+					return new ModeValue<ModeEntry>(mode, System.currentTimeMillis());
+				}
 			}
+			logger.error("Error: Unknown modbus mode value <" + num + ">. Check the control.xml");
+			return null;
 		}
-		return null;
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, Rectangle rectangle, SolvisData value)
+	public SingleData<?> setValue(Solvis solvis, ControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeError {
 		if (value.getMode() == null) {
 			throw new TypeError("Wrong value type");
 		}
 		ModeI valueMode = value.getMode().get();
-		ModeValue<Mode> cmp = this.getValue(solvis.getCurrentScreen(), rectangle);
+		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess);
 		if (cmp != null && value.getMode().equals(cmp)) {
 			return cmp;
 		}
-		Mode mode = null;
-		for (Mode m : modes) {
+		ModeEntry mode = null;
+		for (ModeEntry m : this.modes) {
 			if (valueMode.equals(m)) {
 				mode = m;
 				break;
@@ -95,12 +110,16 @@ public class StrategyMode implements Strategy {
 		if (mode == null) {
 			throw new TypeError("Unknown value");
 		}
-		solvis.send(mode.getTouch());
+		if (!controlAccess.isModbus()) {
+			solvis.send(mode.getGuiSet().getTouch());
+		} else {
+			solvis.writeUnsignedShortModbusData((ModbusAccess) controlAccess, mode.getModbusValue());
+		}
 		return null;
 	}
 
 	@Override
-	public List<Mode> getModes() {
+	public List<ModeEntry> getModes() {
 		return this.modes;
 	}
 
@@ -109,14 +128,9 @@ public class StrategyMode implements Strategy {
 		return null;
 	}
 
-	@Override
-	public String getUnit() {
-		return null;
-	}
-
 	public static class Creator extends CreatorByXML<StrategyMode> {
 
-		private final List<Mode> modes = new ArrayList<>(5);
+		private final List<ModeEntry> modes = new ArrayList<>(5);
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -136,8 +150,8 @@ public class StrategyMode implements Strategy {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_MODE:
-					return new Mode.Creator(id, getBaseCreator());
+				case XML_MODE_ENTRY:
+					return new ModeEntry.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -145,8 +159,8 @@ public class StrategyMode implements Strategy {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_MODE:
-					this.modes.add((Mode) created);
+				case XML_MODE_ENTRY:
+					this.modes.add((ModeEntry) created);
 					break;
 			}
 
@@ -156,7 +170,7 @@ public class StrategyMode implements Strategy {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		for (Mode mode : this.modes) {
+		for (ModeEntry mode : this.modes) {
 			mode.assign(description);
 		}
 	}
@@ -173,8 +187,9 @@ public class StrategyMode implements Strategy {
 
 	@Override
 	public void setCurrentRectangle(Rectangle rectangle) {
-		for (Mode mode : this.modes) {
-			mode.getGrafic().setRectangle(rectangle);
+		for (ModeEntry mode : this.modes) {
+			if (mode.getGuiSet().getGrafic() != null)
+				mode.getGuiSet().getGrafic().setRectangle(rectangle);
 		}
 	}
 
@@ -184,25 +199,25 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis) throws IOException {
+	public boolean learn(Solvis solvis, ControlAccess controlAccess) throws IOException {
 		boolean successfull = true;
-		for (Mode mode : this.getModes()) {
-			solvis.send(mode.getTouch());
-			ScreenGraficDescription grafic = mode.getGrafic();
+		for (ModeEntry mode : this.getModes()) {
+			solvis.send(mode.getGuiSet().getTouch());
+			ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
 			grafic.learn(solvis);
 			solvis.clearCurrentScreen();
-			SingleData<Mode> data = this.getValue(solvis.getCurrentScreen(), grafic.getRectangle());
+			SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess);
 			if (data == null || !mode.equals(data.get())) {
 				logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
 				successfull = false;
 				break;
 			}
 		}
-		for (ListIterator<Mode> itO = this.getModes().listIterator(); itO.hasNext();) {
-			Mode modeO = itO.next();
-			for (ListIterator<Mode> itI = this.getModes().listIterator(itO.nextIndex()); itI.hasNext();) {
-				Mode modeI = itI.next();
-				if (modeO.getGrafic().equals(modeI.getGrafic())) {
+		for (ListIterator<ModeEntry> itO = this.getModes().listIterator(); itO.hasNext();) {
+			ModeEntry modeO = itO.next();
+			for (ListIterator<ModeEntry> itI = this.getModes().listIterator(itO.nextIndex()); itI.hasNext();) {
+				ModeEntry modeI = itI.next();
+				if (modeO.getGuiSet().getGrafic().equals(modeI.getGuiSet().getGrafic())) {
 					logger.log(LEARN,
 							"Learning of <" + modeI.getId() + "> not successfull (not unique), will be retried");
 					break;
@@ -210,8 +225,8 @@ public class StrategyMode implements Strategy {
 			}
 		}
 		if (!successfull) {
-			for (Mode mode : this.getModes()) {
-				solvis.getGrafics().remove(mode.getGrafic().getId());
+			for (ModeEntry mode : this.getModes()) {
+				solvis.getGrafics().remove(mode.getGuiSet().getGrafic().getId());
 			}
 		}
 		solvis.clearCurrentScreen();
@@ -231,5 +246,14 @@ public class StrategyMode implements Strategy {
 			throw new TypeError("Mode <" + singleData.toString() + "> is unknown");
 		}
 		return new ModeValue<ModeI>(setMode, -1);
+	}
+
+	@Override
+	public boolean isXmlValid(boolean modbus) {
+		boolean result = true;
+		for (ModeEntry entry : this.modes) {
+			result &= entry.isXmlValid(modbus);
+		}
+		return result;
 	}
 }

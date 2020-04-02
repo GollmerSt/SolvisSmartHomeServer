@@ -24,7 +24,7 @@ public interface ChannelSourceI extends Assigner, GraficsLearnable {
 
 	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException;
 
-	public SingleData<?> interpretSetData(SingleData<?> singleData)  throws TypeError;
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError;
 
 	public boolean isWriteable();
 
@@ -32,49 +32,48 @@ public interface ChannelSourceI extends Assigner, GraficsLearnable {
 
 	public Integer getDivisor();
 
-	public String getUnit();
-	
-	public Float getAccuracy() ;
-	
-	public boolean isBoolean() ;
+	public Float getAccuracy();
+
+	public boolean isBoolean();
 
 	public void instantiate(Solvis solvis);
-	
-	public Type getType() ;
-	
+
+	public Type getType();
+
 	public enum Type {
 		CONTROL, CALCULATION, MEASUREMENT
 	}
-	
-	public Collection< ? extends ModeI > getModes() ;
-	
-	public Screen getScreen( int configurationMask ) ;
-	
-	public UpperLowerStep getUpperLowerStep() ;
 
-	public static class UpperLowerStep{
-		private final float upper ;
-		private final float lower ;
-		private final float step ;
-		
-		public UpperLowerStep( float upper, float lower, float step ) {
-			this.upper = upper ;
-			this.lower = lower ;
-			this.step = step ;
+	public Collection<? extends ModeI> getModes();
+
+	public Screen getScreen(int configurationMask);
+
+	public UpperLowerStep getUpperLowerStep();
+
+	public boolean isModbus(Solvis solvis);
+
+	public static class UpperLowerStep {
+		private final float upper;
+		private final float lower;
+		private final float step;
+
+		public UpperLowerStep(float upper, float lower, float step) {
+			this.upper = upper;
+			this.lower = lower;
+			this.step = step;
 		}
 
 		public float getUpper() {
-			return upper;
+			return this.upper;
 		}
 
 		public float getLower() {
-			return lower;
+			return this.lower;
 		}
 
 		public float getStep() {
-			return step;
+			return this.step;
 		}
 	}
-
 
 }

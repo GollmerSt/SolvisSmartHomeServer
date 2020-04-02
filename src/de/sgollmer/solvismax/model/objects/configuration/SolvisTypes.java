@@ -17,17 +17,16 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Types {
+public class SolvisTypes {
 
 	private static final String XML_TYPE = "Type";
 	private final Collection<Type> types;
 
-
-	public Types(Collection<Type> types) {
+	public SolvisTypes(Collection<Type> types) {
 		this.types = types;
 	}
 
-	public static class Creator extends CreatorByXML<Types> {
+	public static class Creator extends CreatorByXML<SolvisTypes> {
 
 		private Collection<Type> types = new ArrayList<>();
 
@@ -40,8 +39,8 @@ public class Types {
 		}
 
 		@Override
-		public Types create() throws XmlError, IOException {
-			return new Types(types);
+		public SolvisTypes create() throws XmlError, IOException {
+			return new SolvisTypes(this.types);
 		}
 
 		@Override
@@ -91,8 +90,8 @@ public class Types {
 						this.id = value;
 						break;
 					case "configuration":
-						if ( value.startsWith("0x")) {
-							value = value.substring(2) ;
+						if (value.startsWith("0x")) {
+							value = value.substring(2);
 						}
 						this.configuration = Integer.parseInt(value, 16);
 						break;
@@ -101,7 +100,7 @@ public class Types {
 
 			@Override
 			public Type create() throws XmlError, IOException {
-				return new Type(id, configuration);
+				return new Type(this.id, this.configuration);
 			}
 
 			@Override

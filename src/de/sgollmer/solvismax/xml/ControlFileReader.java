@@ -57,12 +57,12 @@ public class ControlFileReader {
 
 		boolean success = true;
 
-		if (!parent.exists()) {
-			success = parent.mkdir();
+		if (!this.parent.exists()) {
+			success = this.parent.mkdir();
 		}
 
 		if (!success) {
-			throw new FileError("Error on creating directory <" + parent.getAbsolutePath() + ">");
+			throw new FileError("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
 		}
 
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
@@ -88,11 +88,11 @@ public class ControlFileReader {
 		}
 
 		public Hashes getHashes() {
-			return hashes;
+			return this.hashes;
 		}
 
 		public SolvisDescription getSolvisDescription() {
-			return solvisDescription;
+			return this.solvisDescription;
 		}
 
 	}
@@ -107,11 +107,11 @@ public class ControlFileReader {
 		}
 
 		public int getResourceHash() {
-			return resourceHash;
+			return this.resourceHash;
 		}
 
 		public int getFileHash() {
-			return fileHash;
+			return this.fileHash;
 		}
 
 	}

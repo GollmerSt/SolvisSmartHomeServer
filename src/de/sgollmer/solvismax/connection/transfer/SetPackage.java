@@ -13,29 +13,29 @@ public class SetPackage extends JsonPackage {
 	public SetPackage() {
 		this.command = Command.SET;
 	}
-	
-	private String id = null ;
-	private SingleData<?> singleData = null ;
-	
+
+	private String id = null;
+	private SingleData<?> singleData = null;
+
 	@Override
 	public void finish() {
-		Frame f = this.data ;
+		Frame f = this.data;
 		if (f.size() > 0) {
-			Element e = f.get(0) ;
-			this.id = e.name ;
-			if (e.value instanceof SingleValue ) {
-				this.singleData = ((SingleValue)e.value).getData() ;
+			Element e = f.get(0);
+			this.id = e.name;
+			if (e.value instanceof SingleValue) {
+				this.singleData = ((SingleValue) e.value).getData();
 			}
 		}
-		this.data = null ;
+		this.data = null;
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public SingleData<?> getSingleData() {
-		return singleData;
+		return this.singleData;
 	}
-	
+
 }

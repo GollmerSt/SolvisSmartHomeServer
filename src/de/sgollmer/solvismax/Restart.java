@@ -74,8 +74,8 @@ public class Restart {
 		cmd.add(this.java);
 		cmd.addAll(this.vmArgs);
 		cmd.addAll(this.mainCommand);
-		if (vmAgentLib != null) {
-			cmd.add("--server-restart=" + vmAgentLib);
+		if (this.vmAgentLib != null) {
+			cmd.add("--server-restart=" + this.vmAgentLib);
 		} else {
 			cmd.add("--server-restart");
 		}

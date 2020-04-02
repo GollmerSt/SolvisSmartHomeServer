@@ -16,7 +16,7 @@ public abstract class SingleData<T> {
 	}
 
 	public long getTimeStamp() {
-		return timeStamp;
+		return this.timeStamp;
 	}
 
 	// public SingleData average( Collection< SingleData > values ) ;

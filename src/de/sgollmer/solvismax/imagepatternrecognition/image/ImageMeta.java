@@ -45,31 +45,31 @@ public class ImageMeta {
 	 * @return the averageBrightness
 	 */
 	public int getAverageBrightness() {
-		return averageBrightness;
+		return this.averageBrightness;
 	}
 
 	/**
 	 * @return the treshold
 	 */
 	public int getTreshold() {
-		return treshold;
+		return this.treshold;
 	}
 
 	public boolean isActive(int rgb) {
-			int brightness = ImageHelper.getBrightness(rgb);
-			return (brightness < this.treshold) != this.invert;
+		int brightness = ImageHelper.getBrightness(rgb);
+		return (brightness < this.treshold) != this.invert;
 	}
 
 	public boolean isLight(int rgb) {
-			int brightness = ImageHelper.getBrightness(rgb);
-			return brightness > this.treshold;
+		int brightness = ImageHelper.getBrightness(rgb);
+		return brightness > this.treshold;
 	}
 
 	/**
 	 * @return the invert
 	 */
 	public boolean isInvert() {
-		return invert;
+		return this.invert;
 	}
 
 }

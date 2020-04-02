@@ -43,19 +43,19 @@ public class Miscellaneous {
 	}
 
 	public int getPowerOffDetectedAfterIoErrors() {
-		return powerOffDetectedAfterIoErrors;
+		return this.powerOffDetectedAfterIoErrors;
 	}
 
 	public int getUnsuccessfullWaitTime_ms() {
-		return unsuccessfullWaitTime_ms;
+		return this.unsuccessfullWaitTime_ms;
 	}
 
 	public int getReleaseBlockingAfterUserAccess_ms() {
-		return releaseBlockingAfterUserAccess_ms;
+		return this.releaseBlockingAfterUserAccess_ms;
 	}
 
 	public int getMeasurementsBackupTime_ms() {
-		return measurementsBackupTime_ms;
+		return this.measurementsBackupTime_ms;
 	}
 
 	public static class Creator extends CreatorByXML<Miscellaneous> {
@@ -110,10 +110,10 @@ public class Miscellaneous {
 
 		@Override
 		public Miscellaneous create() throws XmlError, IOException {
-			return new Miscellaneous(measurementsBackupTime_ms, powerOffDetectedAfterIoErrors,
-					powerOffDetectedAfterTimeout_ms, unsuccessfullWaitTime_ms, releaseBlockingAfterUserAccess_ms,
-					releaseBlockingAfterServiceAccess_ms, connectionHoldTime_ms, solvisConnectionTimeout_ms,
-					solvisReadTimeout_ms);
+			return new Miscellaneous(this.measurementsBackupTime_ms, this.powerOffDetectedAfterIoErrors,
+					this.powerOffDetectedAfterTimeout_ms, this.unsuccessfullWaitTime_ms,
+					this.releaseBlockingAfterUserAccess_ms, this.releaseBlockingAfterServiceAccess_ms,
+					this.connectionHoldTime_ms, this.solvisConnectionTimeout_ms, this.solvisReadTimeout_ms);
 		}
 
 		@Override
@@ -133,19 +133,19 @@ public class Miscellaneous {
 	}
 
 	public int getSolvisReadTimeout_ms() {
-		return solvisReadTimeout_ms;
+		return this.solvisReadTimeout_ms;
 	}
 
 	public int getSolvisConnectionTimeout_ms() {
-		return solvisConnectionTimeout_ms;
+		return this.solvisConnectionTimeout_ms;
 	}
 
 	public int getPowerOffDetectedAfterTimeout_ms() {
-		return powerOffDetectedAfterTimeout_ms;
+		return this.powerOffDetectedAfterTimeout_ms;
 	}
 
 	public int getReleaseBlockingAfterServiceAccess_ms() {
-		return releaseBlockingAfterServiceAccess_ms;
+		return this.releaseBlockingAfterServiceAccess_ms;
 	}
 
 }

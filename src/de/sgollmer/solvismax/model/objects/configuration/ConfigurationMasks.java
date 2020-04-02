@@ -61,7 +61,7 @@ public class ConfigurationMasks {
 
 		@Override
 		public ConfigurationMasks create() throws XmlError, IOException {
-			return new ConfigurationMasks(masks);
+			return new ConfigurationMasks(this.masks);
 		}
 
 		@Override
@@ -102,10 +102,11 @@ public class ConfigurationMasks {
 			int andMask = this.andMask & mask.andMask;
 			return 0 != ((this.cmpMask ^ mask.cmpMask) & andMask);
 		}
-		
+
 		@Override
 		public String toString() {
-			return "And-Mask: " + Integer.toString(andMask, 16) + ", Cmp-Mask: " + Integer.toString(cmpMask, 16) ;
+			return "And-Mask: " + Integer.toString(this.andMask, 16) + ", Cmp-Mask: "
+					+ Integer.toString(this.cmpMask, 16);
 		}
 
 		public static class Creator extends CreatorByXML<ConfigurationMask> {
@@ -121,25 +122,18 @@ public class ConfigurationMasks {
 			public void setAttribute(QName name, String value) {
 				switch (name.getLocalPart()) {
 					case "andMask":
-						this.andMask = toInt(value);
+						this.andMask = Integer.decode(value);
 						break;
 					case "compareMask":
-						this.cmpMask = toInt(value);
+						this.cmpMask = Integer.decode(value);
 						break;
 				}
 
-			}
-
-			private int toInt(String hexValue) {
-				if (hexValue.startsWith("0x")) {
-					hexValue = hexValue.substring(2);
-				}
-				return Integer.parseInt(hexValue, 16);
 			}
 
 			@Override
 			public ConfigurationMask create() throws XmlError, IOException {
-				return new ConfigurationMask(andMask, cmpMask);
+				return new ConfigurationMask(this.andMask, this.cmpMask);
 			}
 
 			@Override

@@ -36,14 +36,14 @@ public class Rectangle {
 	 * @return the topLeft
 	 */
 	public Coordinate getTopLeft() {
-		return topLeft;
+		return this.topLeft;
 	}
 
 	/**
 	 * @return the bottomRight
 	 */
 	public Coordinate getBottomRight() {
-		return bottomRight;
+		return this.bottomRight;
 	}
 
 	public static class Creator extends CreatorByXML<Rectangle> {
@@ -66,7 +66,7 @@ public class Rectangle {
 
 		@Override
 		public Rectangle create() throws XmlError {
-			return new Rectangle(invertFunction, topLeft, bottomRight);
+			return new Rectangle(this.invertFunction, this.topLeft, this.bottomRight);
 		}
 
 		@Override
@@ -109,7 +109,7 @@ public class Rectangle {
 	}
 
 	public boolean isInvertFunction() {
-		return invertFunction;
+		return this.invertFunction;
 	}
 
 }

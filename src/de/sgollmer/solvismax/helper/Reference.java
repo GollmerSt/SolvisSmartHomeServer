@@ -7,22 +7,22 @@
 
 package de.sgollmer.solvismax.helper;
 
-public class Reference< T> {
-	private T object ;
-	
-	public Reference( T object) {
-		this.object = object ;
+public class Reference<T> {
+	private T object;
+
+	public Reference(T object) {
+		this.object = object;
 	}
-	
+
 	public Reference() {
-		this.object = null ;
+		this.object = null;
 	}
-	
+
 	public T get() {
-		return object ;
+		return this.object;
 	}
-	
-	public void set( T object ) {
-		this.object = object ;
+
+	public void set(T object) {
+		this.object = object;
 	}
 }

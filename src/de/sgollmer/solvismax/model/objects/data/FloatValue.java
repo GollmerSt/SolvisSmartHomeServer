@@ -24,7 +24,7 @@ public class FloatValue extends SingleData<Float> {
 
 	@Override
 	public Integer getInt() {
-		return Math.round(value);
+		return Math.round(this.value);
 	}
 
 	@Override

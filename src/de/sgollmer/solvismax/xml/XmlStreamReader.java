@@ -33,11 +33,11 @@ public class XmlStreamReader<D> {
 		}
 
 		public T getTree() {
-			return tree;
+			return this.tree;
 		}
 
 		public int getHash() {
-			return hash;
+			return this.hash;
 		}
 	}
 
@@ -45,13 +45,13 @@ public class XmlStreamReader<D> {
 		private int hash = 61;
 
 		private void put(Object obj) {
-			this.hash = 397 * this.hash + 43 * obj.hashCode();		
+			this.hash = 397 * this.hash + 43 * obj.hashCode();
 		}
 	}
 
 	public Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId)
 			throws IOException, XmlError, XMLStreamException {
-		return this.read(inputStream, rootId, rootCreator, streamId, false ) ;
+		return this.read(inputStream, rootId, rootCreator, streamId, false);
 	}
 
 	public Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId,

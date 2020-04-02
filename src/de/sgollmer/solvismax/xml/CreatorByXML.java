@@ -54,7 +54,7 @@ public abstract class CreatorByXML<T> {
 	public abstract CreatorByXML<?> getCreator(QName name);
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	/**
@@ -66,7 +66,7 @@ public abstract class CreatorByXML<T> {
 	public abstract void created(CreatorByXML<?> creator, Object created);
 
 	public BaseCreator<?> getBaseCreator() {
-		return creator;
+		return this.creator;
 	}
 
 	public void addCharacters(String data) {
@@ -83,7 +83,7 @@ public abstract class CreatorByXML<T> {
 
 		@Override
 		public String toString() {
-			return element;
+			return this.element;
 		}
 
 		public static class Creator extends CreatorByXML<StringElement> {
@@ -100,7 +100,7 @@ public abstract class CreatorByXML<T> {
 
 			@Override
 			public StringElement create() throws XmlError, IOException {
-				return new StringElement(builder.toString());
+				return new StringElement(this.builder.toString());
 			}
 
 			@Override

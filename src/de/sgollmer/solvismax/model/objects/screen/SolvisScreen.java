@@ -23,14 +23,14 @@ public class SolvisScreen {
 
 	public Screen get() {
 		if (this.screen == null && !this.scanned) {
-			this.screen = solvis.getSolvisDescription().getScreens().getScreen(this.image, solvis);
+			this.screen = this.solvis.getSolvisDescription().getScreens().getScreen(this.image, this.solvis);
 			this.scanned = true;
 		}
 		return this.screen;
 	}
 
 	public Solvis getSolvis() {
-		return solvis;
+		return this.solvis;
 	}
 
 	public MyImage getImage() {
@@ -39,25 +39,25 @@ public class SolvisScreen {
 
 	public void forceScreen(Screen screen) {
 		this.screen = screen;
-		this.scanned = true ;
+		this.scanned = true;
 	}
-	
-	public static Screen get( SolvisScreen screen ) {
-		if ( screen ==null ) {
-			return null ;
+
+	public static Screen get(SolvisScreen screen) {
+		if (screen == null) {
+			return null;
 		}
 		return screen.get();
 	}
-	
-	public static MyImage getImage( SolvisScreen screen ) {
-		if ( screen ==null ) {
-			return null ;
+
+	public static MyImage getImage(SolvisScreen screen) {
+		if (screen == null) {
+			return null;
 		}
 		return screen.getImage();
 	}
-	
-	public boolean imagesEquals( SolvisScreen screen) {
-		return this.image.equals(SolvisScreen.getImage(screen)) ;
+
+	public boolean imagesEquals(SolvisScreen screen) {
+		return this.image.equals(SolvisScreen.getImage(screen));
 	}
 
 }

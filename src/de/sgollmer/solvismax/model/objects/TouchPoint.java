@@ -57,7 +57,7 @@ public class TouchPoint implements Assigner {
 
 		@Override
 		public TouchPoint create() throws XmlError {
-			return new TouchPoint(coordinate, pushTimeId, releaseTimeId);
+			return new TouchPoint(this.coordinate, this.pushTimeId, this.releaseTimeId);
 		}
 
 		@Override
@@ -83,8 +83,8 @@ public class TouchPoint implements Assigner {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		Duration pushTimeDuration = description.getDurations().get(pushTimeId);
-		Duration releaseTimeDuration = description.getDurations().get(releaseTimeId);
+		Duration pushTimeDuration = description.getDurations().get(this.pushTimeId);
+		Duration releaseTimeDuration = description.getDurations().get(this.releaseTimeId);
 
 		if (pushTimeDuration == null || releaseTimeDuration == null) {
 			throw new AssignmentError("Duration time not found");
@@ -94,15 +94,15 @@ public class TouchPoint implements Assigner {
 	}
 
 	public Coordinate getCoordinate() {
-		return coordinate;
+		return this.coordinate;
 	}
 
 	public Integer getPushTime() {
-		return pushTime;
+		return this.pushTime;
 	}
 
 	public Integer getReleaseTime() {
-		return releaseTime;
+		return this.releaseTime;
 	}
 
 	public int getSettingTime(Solvis solvis) {

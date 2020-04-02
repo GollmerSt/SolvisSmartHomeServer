@@ -55,12 +55,12 @@ public class GraficFileHandler {
 
 		boolean success = true;
 
-		if (!parent.exists()) {
-			success = parent.mkdir();
+		if (!this.parent.exists()) {
+			success = this.parent.mkdir();
 		}
 
 		if (!success) {
-			throw new FileError("Error on creating directory <" + parent.getAbsolutePath() + ">");
+			throw new FileError("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
 		}
 
 		File xsd = new File(this.parent, NAME_XSD_GRAFICSFILE);
@@ -103,7 +103,7 @@ public class GraficFileHandler {
 	public void write(AllSolvisGrafics grafics) throws IOException, XMLStreamException {
 		this.copyFiles();
 
-		File output = new File(parent, NAME_XML_GRAFICSFILE);
+		File output = new File(this.parent, NAME_XML_GRAFICSFILE);
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		XMLStreamWriter writer = factory.createXMLStreamWriter(new FileOutputStream(output));

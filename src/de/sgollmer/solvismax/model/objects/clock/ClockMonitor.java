@@ -30,6 +30,7 @@ import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.helper.Helper.AverageInt;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
+import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Assigner;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
@@ -51,7 +52,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 	private static final Level LEARN = Level.getLevel("LEARN");
 	private static final Calendar CALENDAR_2018;
 
-	private static final String XML_SECONDS_SCAN = "SecondsScan";
+	private static final String XML_MODBUS_WRITE = "ModbusWrite";
+//	private static final String XML_SECONDS_SCAN = "SecondsScan";
 	private static final String XML_YEAR = "Year";
 	private static final String XML_MONTH = "Month";
 	private static final String XML_DAY = "Day";
@@ -64,6 +66,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
+	private final ModbusAccess modbusWrite;
 	private final String timeChannelId;
 	private final String screenId;
 	private final String okScreenId;
@@ -83,9 +86,10 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		CALENDAR_2018.set(Calendar.MILLISECOND, 0);
 	}
 
-	public ClockMonitor(String timeChannelId, String screenId, String okScreenId, Rectangle secondsScan,
-			List<DatePart> dateParts, TouchPoint upper, TouchPoint lower, TouchPoint ok,
+	public ClockMonitor(ModbusAccess modbusWrite, String timeChannelId, String screenId, String okScreenId,
+			Rectangle secondsScan, List<DatePart> dateParts, TouchPoint upper, TouchPoint lower, TouchPoint ok,
 			DisableClockSetting disableClockSetting) {
+		this.modbusWrite = modbusWrite;
 		this.timeChannelId = timeChannelId;
 		this.screenId = screenId;
 		this.okScreenId = okScreenId;
@@ -108,8 +112,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		this.screen = description.getScreens().get(screenId);
-		this.okScreen = description.getScreens().get(okScreenId);
+		this.screen = description.getScreens().get(this.screenId);
+		this.okScreen = description.getScreens().get(this.okScreenId);
 		if (this.upper != null) {
 			this.upper.assign(description);
 		}
@@ -145,7 +149,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		}
 
 		public long getStartAdjustTime() {
-			return startAdjustTime;
+			return this.startAdjustTime;
 		}
 
 		@Override
@@ -162,6 +166,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 	interface AdjustStrategy {
 		public boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException;
+
+		public void notExecuted();
 	}
 
 	private NextAdjust calculateNextAdjustTime(DateValue dateValue, Solvis solvis) {
@@ -216,6 +222,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 	public static class Creator extends CreatorByXML<ClockMonitor> {
 
+		private ModbusAccess modbusWrite;
 		private String timeChannelId;
 		private String screenId;
 		private String okScreenId;
@@ -251,16 +258,18 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 		@Override
 		public ClockMonitor create() throws XmlError, IOException {
-			return new ClockMonitor(timeChannelId, screenId, okScreenId, secondsScan, dateParts, upper, lower, ok,
-					disableClockSetting);
+			return new ClockMonitor(this.modbusWrite, this.timeChannelId, this.screenId, this.okScreenId,
+					this.secondsScan, this.dateParts, this.upper, this.lower, this.ok, this.disableClockSetting);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_SECONDS_SCAN:
-					return new Rectangle.Creator(id, getBaseCreator());
+				case XML_MODBUS_WRITE:
+					return new ModbusAccess.Creator(id, getBaseCreator());
+//				case XML_SECONDS_SCAN:
+//					return new Rectangle.Creator(id, getBaseCreator());
 				case XML_YEAR:
 					return new DatePart.Creator(id, getBaseCreator(), Calendar.YEAR, 0, 0);
 				case XML_MONTH:
@@ -272,9 +281,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 				case XML_MINUTE:
 					return new DatePart.Creator(id, getBaseCreator(), Calendar.MINUTE, 0, 0);
 				case XML_UPPER:
-					return new TouchPoint.Creator(id, getBaseCreator());
 				case XML_LOWER:
-					return new TouchPoint.Creator(id, getBaseCreator());
 				case XML_OK:
 					return new TouchPoint.Creator(id, getBaseCreator());
 				case XML_DISABLE_CLOCK_SETTING:
@@ -286,9 +293,12 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_SECONDS_SCAN:
-					this.secondsScan = (Rectangle) created;
+				case XML_MODBUS_WRITE:
+					this.modbusWrite = (ModbusAccess) created;
 					break;
+//				case XML_SECONDS_SCAN:
+//					this.secondsScan = (Rectangle) created;
+//					break;
 				case XML_YEAR:
 					this.dateParts.set(0, (DatePart) created);
 					break;
@@ -342,8 +352,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 				@Override
 				public void update(Boolean data, Object source) {
-					if (adjustmentThread != null) {
-						adjustmentThread.abort();
+					if (Executable.this.adjustmentThread != null) {
+						Executable.this.adjustmentThread.abort();
 					}
 
 				}
@@ -357,8 +367,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 				return;
 			}
 			String channelId = data.getId();
-			String burnerId = disableClockSetting.getBurnerId();
-			String hotWaterPumpId = disableClockSetting.getHotWaterPumpId();
+			String burnerId = ClockMonitor.this.disableClockSetting.getBurnerId();
+			String hotWaterPumpId = ClockMonitor.this.disableClockSetting.getHotWaterPumpId();
 			boolean helper = false;
 			if (burnerId.equals(channelId) || helper) {
 				this.burner = helper || data.getBool();
@@ -366,7 +376,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			} else if (hotWaterPumpId != null && hotWaterPumpId.equals(channelId)) {
 				this.hotWaterPump = data.getBool();
 				this.adjustementDisableHandling();
-			} else if (data.getId().equals(timeChannelId)) {
+			} else if (data.getId().equals(ClockMonitor.this.timeChannelId)) {
 				DateValue dateValue = (DateValue) data.getSingleData();
 
 				if (this.adjustmentTypeRequestPending != AdjustmentType.NONE) {
@@ -375,18 +385,35 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 				Calendar solvisDate = dateValue.get();
 				long timeStamp = dateValue.getTimeStamp();
+
 				if (timeStamp < CALENDAR_2018.getTimeInMillis()) {
+					return;
+				}
+
+				Calendar checkSeasonChange = (Calendar) solvisDate.clone();
+				checkSeasonChange.setTimeInMillis(timeStamp);
+				int hour = checkSeasonChange.get(Calendar.HOUR_OF_DAY);
+				checkSeasonChange.add(Calendar.HOUR_OF_DAY, 2);
+				int seasonDiff = checkSeasonChange.get(Calendar.HOUR_OF_DAY) - hour;
+				seasonDiff = seasonDiff < 0 ? seasonDiff + 24 : seasonDiff;
+				if (seasonDiff != 2) {
 					return;
 				}
 
 				int diff = (int) (solvisDate.getTimeInMillis() - timeStamp);
 
-				this.averageDiff.put(diff);
+				// logger.info( "SolvisDate: " + solvisDate.getTimeInMillis() + ", timeStamp: "
+				// + timeStamp + ", diff: " + diff);
 
-				if (Math.abs(this.averageDiff.get() - diff) > 2000) { // clock was manually adjusted
+				if (this.averageDiff.size() > 0 && Math.abs(this.averageDiff.get() - diff) > 2000) { // clock was
+																										// manually
+																										// adjusted
+					// logger.info( "Fehler erkannt");
 					this.averageDiff.clear();
 					this.averageDiff.put(diff);
 				}
+
+				this.averageDiff.put(diff);
 
 				if (!this.averageDiff.isFilled()) {
 					return;
@@ -395,12 +422,22 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 				diff = this.averageDiff.get();
 
 				if (Math.abs(diff) > 30500) {
-					this.adjustmentTypeRequestPending = AdjustmentType.NORMAL;
-					NextAdjust nextAdjust = calculateNextAdjustTime(dateValue, solvis);
-					if (this.adjustmentThread != null) {
-						this.adjustmentThread.abort();
+					if (this.solvis.getUnit().isModbus()) {
+						long now = System.currentTimeMillis();
+						try {
+							this.solvis.writeUnsignedIntegerModbusData(ClockMonitor.this.modbusWrite, now / 1000L);
+							logger.info("Setting of the clock via modbus successfull");
+						} catch (IOException e) {
+							logger.error("Setting of the clock via modbus not successfull");
+						}
+					} else {
+						this.adjustmentTypeRequestPending = AdjustmentType.NORMAL;
+						NextAdjust nextAdjust = calculateNextAdjustTime(dateValue, this.solvis);
+						if (this.adjustmentThread != null) {
+							this.adjustmentThread.abort();
+						}
+						this.sheduleAdjustment(this.strategyAdjust, nextAdjust);
 					}
-					this.sheduleAdjustment(strategyAdjust, nextAdjust);
 					return;
 				}
 
@@ -445,34 +482,34 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 			@Override
 			public boolean execute(NextAdjust nextAdjust) throws IOException {
-				int configurationMask = solvis.getConfigurationMask();
+				int configurationMask = Executable.this.solvis.getConfigurationMask();
 				Calendar adjustmentCalendar = Calendar.getInstance();
 				long now = adjustmentCalendar.getTimeInMillis();
 				if (now > nextAdjust.realAdjustTime) {
-					adjustmentTypeRequestPending = AdjustmentType.NONE;
+					Executable.this.adjustmentTypeRequestPending = AdjustmentType.NONE;
 					return false;
 				}
 				adjustmentCalendar.setTimeInMillis(nextAdjust.solvisAdjustTime);
 				boolean success = false;
-				Screen clockAdjustScreen = screen.get(configurationMask);
+				Screen clockAdjustScreen = ClockMonitor.this.screen.get(configurationMask);
 				if (clockAdjustScreen == null) {
 					logger.error("Clock adjust screen not defined in the current configuration. Adjustment terminated");
-					adjustmentTypeRequestPending = AdjustmentType.NONE;
+					Executable.this.adjustmentTypeRequestPending = AdjustmentType.NONE;
 					return false;
 				}
 
 				for (int repeatFail = 0; !success && repeatFail < Constants.FAIL_REPEATS; ++repeatFail) {
 					success = true;
 					if (repeatFail > 0) {
-						solvis.gotoHome();
+						Executable.this.solvis.gotoHome();
 					}
 					try {
-						for (DatePart part : dateParts) {
+						for (DatePart part : ClockMonitor.this.dateParts) {
 							int offset = part.solvisOrigin - part.calendarOrigin;
 							boolean adjusted = false;
 							for (int repeat = 0; !adjusted && repeat < Constants.SET_REPEATS + 1; ++repeat) {
-								screen.get(configurationMask).goTo(solvis);
-								Integer solvisData = part.getValue(solvis);
+								ClockMonitor.this.screen.get(configurationMask).goTo(Executable.this.solvis);
+								Integer solvisData = part.getValue(Executable.this.solvis);
 								if (solvisData == null) {
 									logger.error("Setting of the solvis clock failed, it will be tried again.");
 									throw new HelperError();
@@ -486,13 +523,13 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 										}
 										if (diff > 0) {
 											steps = diff;
-											touchPoint = upper;
+											touchPoint = ClockMonitor.this.upper;
 										} else {
 											steps = -diff;
-											touchPoint = lower;
+											touchPoint = ClockMonitor.this.lower;
 										}
 										for (int cnt = 0; cnt < steps; ++cnt) {
-											solvis.send(touchPoint);
+											Executable.this.solvis.send(touchPoint);
 										}
 									} else {
 										adjusted = true;
@@ -516,18 +553,18 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 					}
 
 					time = System.currentTimeMillis();
-					if (adjustmentEnable && time < nextAdjust.realAdjustTime - Constants.SETTING_TIME_RANGE_LOWER
-							+ Constants.SETTING_TIME_RANGE_UPPER) {
-						solvis.send(ok);
-						Screen screen = solvis.getCurrentScreen().get();
+					if (Executable.this.adjustmentEnable && time < nextAdjust.realAdjustTime
+							- Constants.SETTING_TIME_RANGE_LOWER + Constants.SETTING_TIME_RANGE_UPPER) {
+						Executable.this.solvis.send(ClockMonitor.this.ok);
+						Screen screen = Executable.this.solvis.getCurrentScreen().get();
 						if (screen != ClockMonitor.this.okScreen.get(configurationMask)) {
 							success = false;
 						}
-						averageDiff.clear();
+						Executable.this.averageDiff.clear();
 					} else {
 						success = false;
 					}
-					adjustmentTypeRequestPending = AdjustmentType.NONE;
+					Executable.this.adjustmentTypeRequestPending = AdjustmentType.NONE;
 
 					if (success) {
 						logger.info("Setting of the solvis clock successful.");
@@ -536,6 +573,11 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 					}
 				}
 				return success;
+			}
+
+			@Override
+			public void notExecuted() {
+				Executable.this.adjustmentTypeRequestPending = AdjustmentType.NONE;
 			}
 		}
 
@@ -651,8 +693,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 						}
 					}
 				}
-				if (!abort) {
-					solvis.execute(command);
+				if (!this.abort) {
+					Executable.this.solvis.execute(this.command);
 					this.command = null;
 				}
 			}
@@ -725,7 +767,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		private final int calendarInt;
 
 		public int getCalendarInt() {
-			return calendarInt;
+			return this.calendarInt;
 		}
 
 		public void assign(SolvisDescription description) {
@@ -773,7 +815,8 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 			@Override
 			public DatePart create() throws XmlError, IOException {
-				return new DatePart(rectangle, touch, screenGrafic, calendarInt, calendarOrigin, solvisOrigin);
+				return new DatePart(this.rectangle, this.touch, this.screenGrafic, this.calendarInt,
+						this.calendarOrigin, this.solvisOrigin);
 			}
 
 			@Override
@@ -841,11 +884,11 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		}
 
 		public String getBurnerId() {
-			return burnerId;
+			return this.burnerId;
 		}
 
 		public String getHotWaterPumpId() {
-			return hotWaterPumpId;
+			return this.hotWaterPumpId;
 		}
 
 		public static class Creator extends CreatorByXML<DisableClockSetting> {
@@ -872,7 +915,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 			@Override
 			public DisableClockSetting create() throws XmlError, IOException {
-				return new DisableClockSetting(burnerId, hotWaterPumpId);
+				return new DisableClockSetting(this.burnerId, this.hotWaterPumpId);
 			}
 
 			@Override

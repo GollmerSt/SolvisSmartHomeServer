@@ -20,7 +20,7 @@ public class ScreenRef implements Assigner {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public static class Creator extends CreatorByXML<ScreenRef> {
@@ -43,7 +43,7 @@ public class ScreenRef implements Assigner {
 
 		@Override
 		public ScreenRef create() throws XmlError, IOException {
-			return new ScreenRef(id);
+			return new ScreenRef(this.id);
 		}
 
 		@Override
@@ -64,7 +64,7 @@ public class ScreenRef implements Assigner {
 	}
 
 	public OfConfigs<Screen> getScreen() {
-		return screen;
+		return this.screen;
 	}
 
 }

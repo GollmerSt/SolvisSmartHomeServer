@@ -20,7 +20,7 @@ public class Helper {
 
 		public Format(String format) {
 			this.origin = format.length() - 1;
-			for (int pos = origin; pos >= 0; --pos) {
+			for (int pos = this.origin; pos >= 0; --pos) {
 				FormatChar fc = FormatChar.create(format, pos);
 				if (fc != null) {
 					this.formatChars.add(FormatChar.create(format, pos));
@@ -95,7 +95,7 @@ public class Helper {
 		int maxSize;
 		int[] lastMeasureValues;
 		int lastIdx;
-		int sum;
+		long sum;
 		int size;
 
 		public AverageInt(int maxSize) {
@@ -110,19 +110,19 @@ public class Helper {
 				next = 0;
 			}
 			if (this.size == this.maxSize) {
-				int first = lastMeasureValues[next];
+				int first = this.lastMeasureValues[next];
 				this.sum -= first;
 			} else {
 				++this.size;
 			}
 			this.sum += value;
-			lastMeasureValues[next] = value;
+			this.lastMeasureValues[next] = value;
 			this.lastIdx = next;
 
 		}
 
 		public int getLast() {
-			return this.lastMeasureValues[lastIdx];
+			return this.lastMeasureValues[this.lastIdx];
 		}
 
 		public void clear() {
@@ -132,7 +132,7 @@ public class Helper {
 		}
 
 		public int get() {
-			return (2 * this.sum + (this.sum >= 0 ? this.size : -this.size)) / (2 * this.size);
+			return (int) ((2 * this.sum + (this.sum >= 0L ? this.size : -this.size)) / (2 * this.size));
 		}
 
 		public int size() {
@@ -157,11 +157,11 @@ public class Helper {
 		}
 
 		@Override
-		public abstract void run() ;
-		
+		public abstract void run();
+
 		public void submit() {
 			EXECUTOR.submit(new java.lang.Runnable() {
-				
+
 				@Override
 				public void run() {
 					setThreadName();
@@ -170,7 +170,7 @@ public class Helper {
 				}
 			});
 		}
-		
+
 		private void setThreadName() {
 			Thread thread = Thread.currentThread();
 			String threadName = thread.getName();

@@ -50,7 +50,7 @@ public class AllSolvisData {
 		synchronized (this) {
 			data = this.solvisDatas.get(id);
 			if (data == null) {
-				ChannelDescription description = solvis.getChannelDescription(id);
+				ChannelDescription description = this.solvis.getChannelDescription(id);
 				data = new SolvisData(description, this);
 				this.solvisDatas.put(id, data);
 			}
@@ -70,19 +70,18 @@ public class AllSolvisData {
 	 * @return the averageCount
 	 */
 	public int getAverageCount() {
-		return averageCount;
+		return this.averageCount;
 	}
 
 	/**
-	 * @param averageCount
-	 *            the averageCount to set
+	 * @param averageCount the averageCount to set
 	 */
 	public void setAverageCount(int averageCount) {
 		this.averageCount = averageCount;
 	}
 
 	public int getMeasurementHysteresisFactor() {
-		return measurementHysteresisFactor;
+		return this.measurementHysteresisFactor;
 	}
 
 	public void setMeasurementHysteresisFactor(int measurementHysteresisFactor) {
@@ -90,7 +89,7 @@ public class AllSolvisData {
 	}
 
 	public boolean isBurnerSynchronisation() {
-		return burnerSynchronisation;
+		return this.burnerSynchronisation;
 	}
 
 	public void setBurnerSynchronisation(boolean burnerSynchronisation) {
@@ -101,19 +100,19 @@ public class AllSolvisData {
 	 * @return the solvis
 	 */
 	public Solvis getSolvis() {
-		return solvis;
+		return this.solvis;
 	}
 
 	public int getReadMeasurementInterval() {
-		return readMeasurementInterval;
+		return this.readMeasurementInterval;
 	}
 
 	public void setReadMeasurementInterval(int readMeasurementInterval) {
 		this.readMeasurementInterval = readMeasurementInterval;
 	}
 
-	public synchronized void backupSpecialMeasurements( SystemMeasurements systemMeasurements ) {
-		systemMeasurements.clear() ;
+	public synchronized void backupSpecialMeasurements(SystemMeasurements systemMeasurements) {
+		systemMeasurements.clear();
 		for (SolvisData data : this.solvisDatas.values()) {
 			if (data.getDescription().getType() == ChannelSourceI.Type.CALCULATION) {
 				SingleData<?> sd = data.getSingleData();
@@ -123,16 +122,16 @@ public class AllSolvisData {
 			}
 		}
 	}
-	
-	public synchronized void restoreSpecialMeasurements( SystemMeasurements backup ) {
-		for ( Measurement measurement : backup.getMeasurements() ) {
-			SolvisData data = this.get(measurement.getId() );
+
+	public synchronized void restoreSpecialMeasurements(SystemMeasurements backup) {
+		for (Measurement measurement : backup.getMeasurements()) {
+			SolvisData data = this.get(measurement.getId());
 			data.setSingleData(measurement.getData());
 		}
 	}
-	
-	public synchronized Collection< SolvisData > getMeasurements() {
-		return this.solvisDatas.values() ;
+
+	public synchronized Collection<SolvisData> getMeasurements() {
+		return this.solvisDatas.values();
 	}
 
 	public void registerObserver(ObserverI<SolvisData> observer) {

@@ -83,7 +83,7 @@ public class CommandHandler {
 				this.set((SetPackage) jsonPackage, client);
 				break;
 			case SERVER_COMMAND:
-				this.executSeverCommand((ServerCommandPackage) jsonPackage, client);
+				this.executeServerCommand((ServerCommandPackage) jsonPackage, client);
 				break;
 			case TERMINATE:
 				if (this.get(client) == null) {
@@ -97,7 +97,7 @@ public class CommandHandler {
 		return abortConnection;
 	}
 
-	private void executSeverCommand(ServerCommandPackage serverCommand, Client client) throws IOException {
+	private void executeServerCommand(ServerCommandPackage serverCommand, Client client) throws IOException {
 		ClientAssignments assignments = this.get(client);
 		logger.info("Server-Command <" + serverCommand.getServerCommand().name() + "> received");
 		switch (serverCommand.getServerCommand()) {
@@ -159,11 +159,12 @@ public class CommandHandler {
 				return true;
 			}
 			solvis.getDistributor().register(client);
-			client.send(new ConnectedPackage(clientId));
 			ClientAssignments assignments = new ClientAssignments(clientId, solvis, client);
-			this.register(assignments);
-			this.clients.add(assignments);
-
+			synchronized (this) {
+				this.register(assignments);
+				this.clients.add(assignments);
+			}
+			client.send(new ConnectedPackage(clientId));
 			DescriptionsPackage channelDescription = new DescriptionsPackage(
 					this.instances.getSolvisDescription().getChannelDescriptions(), solvis.getConfigurationMask());
 			client.send(channelDescription);
@@ -276,7 +277,7 @@ public class CommandHandler {
 		return null;
 	}
 
-	public boolean isSolvisConnected(Solvis solvis) {
+	public synchronized boolean isSolvisConnected(Solvis solvis) {
 		for (ClientAssignments assignments : this.clients) {
 			if (assignments.getSolvis() == solvis) {
 				return true;
@@ -313,14 +314,14 @@ public class CommandHandler {
 
 		@Override
 		public void run() {
-			int delay = assignments.getSolvis().getSolvisDescription().getMiscellaneous().getConnectionHoldTime();
+			int delay = this.assignments.getSolvis().getSolvisDescription().getMiscellaneous().getConnectionHoldTime();
 			synchronized (this) {
 				try {
 					this.wait(delay);
 				} catch (InterruptedException e) {
 				}
-				if (!abort) {
-					unregister(assignments);
+				if (!this.abort) {
+					unregister(this.assignments);
 				}
 			}
 		}

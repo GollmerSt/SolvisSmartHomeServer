@@ -80,14 +80,14 @@ public class Coordinate implements Cloneable {
 	 * @return the x
 	 */
 	public int getX() {
-		return x;
+		return this.x;
 	}
 
 	/**
 	 * @return the y
 	 */
 	public int getY() {
-		return y;
+		return this.y;
 	}
 
 	public Coordinate add(Coordinate coord) {

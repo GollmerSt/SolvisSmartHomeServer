@@ -31,11 +31,6 @@ public class Starts extends Strategy<Starts> {
 	}
 
 	@Override
-	public String getUnit() {
-		return null;
-	}
-
-	@Override
 	public boolean isWriteable() {
 		return false;
 	}
@@ -66,7 +61,7 @@ public class Starts extends Strategy<Starts> {
 
 		@Override
 		public void update(SolvisData data, Object source ) {
-			if (result == null || burnerOn == null) {
+			if (this.result == null || this.burnerOn == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
 

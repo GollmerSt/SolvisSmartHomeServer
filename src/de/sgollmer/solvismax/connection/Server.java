@@ -50,10 +50,10 @@ public class Server {
 
 		@Override
 		public void run() {
-			while (!abort) {
+			while (!this.abort) {
 				try {
 					waitForAvailableSocket();
-					Socket clientSocket = serverSocket.accept();
+					Socket clientSocket = Server.this.serverSocket.accept();
 					Client client = new Client(clientSocket);
 					addClient(client);
 					client.submit();
@@ -62,7 +62,7 @@ public class Server {
 					synchronized (this) {
 
 					}
-					if (!abort) {
+					if (!this.abort) {
 						e.printStackTrace();
 						logger.error("Unexpected termination of server", e);
 						try {
@@ -78,7 +78,7 @@ public class Server {
 		public synchronized void abort() {
 			this.abort = true;
 			try {
-				serverSocket.close();
+				Server.this.serverSocket.close();
 			} catch (IOException e) {
 			}
 			this.notifyAll();
@@ -129,11 +129,11 @@ public class Server {
 
 				while (!abortConnection) {
 					JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(in);
-					abortConnection = commandHandler.commandFromClient(jsonPackage, this);
+					abortConnection = Server.this.commandHandler.commandFromClient(jsonPackage, this);
 				}
 
 			} catch (Throwable e) {
-				logger.debug("Client connection closed. cause:", e);
+				logger.info("Client connection closed. cause:", e);
 			}
 			this.close();
 		}
@@ -144,7 +144,7 @@ public class Server {
 					jsonPackage.send(this.socket.getOutputStream());
 				}
 			} catch (IOException e) {
-				logger.debug("IOException occured. Cause:", e);
+				logger.info("IOException occured. Cause:", e);
 				/**
 				 * Im Falle einer fehlerhaften Datenübertragung wird die Verbindung getrennt.
 				 * Der Client sollte sie wieder aufbauen, falls er noch existiert
@@ -158,7 +158,7 @@ public class Server {
 			logger.info("Client disconnected");
 			try {
 				removeClient(this);
-				commandHandler.clientClosed(this);
+				Server.this.commandHandler.clientClosed(this);
 				if (this.socket != null)
 					this.socket.close();
 				this.socket = null;
@@ -200,7 +200,7 @@ public class Server {
 
 	public void abort() {
 		synchronized (this.connectedClients) {
-			for (Iterator<Client> it = connectedClients.iterator(); it.hasNext();) {
+			for (Iterator<Client> it = this.connectedClients.iterator(); it.hasNext();) {
 				Client client = it.next();
 				client.abort();
 				it.remove(); // Wird durch client.abort gelöscht

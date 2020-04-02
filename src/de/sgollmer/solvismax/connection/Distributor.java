@@ -52,7 +52,7 @@ public class Distributor extends Observable<JsonPackage> {
 
 		@Override
 		public boolean isEmpty() {
-			return measurements.isEmpty();
+			return this.measurements.isEmpty();
 		}
 	};
 	private Measurements collectedBufferedMeasurements = new Measurements() {
@@ -73,7 +73,7 @@ public class Distributor extends Observable<JsonPackage> {
 
 		@Override
 		public boolean isEmpty() {
-			return measurements.isEmpty();
+			return this.measurements.isEmpty();
 		}
 	};
 	private final SolvisDataObserver solvisDataObserver = new SolvisDataObserver();
@@ -87,7 +87,7 @@ public class Distributor extends Observable<JsonPackage> {
 
 	public Distributor(Unit unit) {
 		this.bufferedIntervall_ms = unit.getBufferedInterval_ms();
-		if (bufferedIntervall_ms > 0) {
+		if (this.bufferedIntervall_ms > 0) {
 			this.periodicBurstThread = new PeriodicBurstThread();
 			this.periodicBurstThread.start();
 		} else {
@@ -101,21 +101,22 @@ public class Distributor extends Observable<JsonPackage> {
 		public void update(SolvisData data, Object source) {
 			synchronized (Distributor.this) {
 
-				boolean buffered = data.getDescription().isBuffered() && periodicBurstThread != null;
+				boolean buffered = data.getDescription().isBuffered() && Distributor.this.periodicBurstThread != null;
 
-				if (buffered && data.isFastChange() && data.getTimeStamp()
-						- data.getSentTimeStamp() > Constants.FORCE_UPDATE_AFTER_N_INTERVALS * bufferedIntervall_ms) {
+				if (buffered && data.isFastChange()
+						&& data.getTimeStamp() - data.getSentTimeStamp() > Constants.FORCE_UPDATE_AFTER_N_INTERVALS
+								* Distributor.this.bufferedIntervall_ms) {
 					buffered = false;
 				}
 
 				if (buffered) {
 
-					collectedBufferedMeasurements.add(data);
+					Distributor.this.collectedBufferedMeasurements.add(data);
 
 				} else {
-					collectedMeasurements.add(data);
-					if (!burstUpdate) {
-						sendCollection(collectedMeasurements.cloneAndClear());
+					Distributor.this.collectedMeasurements.add(data);
+					if (!Distributor.this.burstUpdate) {
+						sendCollection(Distributor.this.collectedMeasurements.cloneAndClear());
 					}
 				}
 			}
@@ -161,7 +162,7 @@ public class Distributor extends Observable<JsonPackage> {
 			for (SolvisData data : measurements) {
 				data.setSentData(timeStamp);
 			}
-			aliveThread.trigger();
+			this.aliveThread.trigger();
 			MeasurementsPackage sendPackage = new MeasurementsPackage(measurements);
 			this.notify(sendPackage);
 		}
@@ -194,7 +195,7 @@ public class Distributor extends Observable<JsonPackage> {
 		@Override
 		public void run() {
 
-			while (!abort) {
+			while (!this.abort) {
 				try {
 					boolean sendAlive = false;
 					synchronized (this) {
@@ -202,10 +203,10 @@ public class Distributor extends Observable<JsonPackage> {
 							this.wait(Constants.ALIVE_TIME);
 						} catch (InterruptedException e) {
 						}
-						if (!triggered) {
+						if (!this.triggered) {
 							sendAlive = true;
 						} else {
-							triggered = false;
+							this.triggered = false;
 						}
 					}
 					if (sendAlive) {
@@ -240,7 +241,7 @@ public class Distributor extends Observable<JsonPackage> {
 
 		@Override
 		public void run() {
-			while (!abort) {
+			while (!this.abort) {
 				try {
 					synchronized (this) {
 						Calendar midNight = Calendar.getInstance();
@@ -250,16 +251,17 @@ public class Distributor extends Observable<JsonPackage> {
 						midNight.set(Calendar.SECOND, 0);
 						midNight.set(Calendar.MILLISECOND, 200);
 
-						long nextBurst = (now - midNight.getTimeInMillis()) / bufferedIntervall_ms
-								* bufferedIntervall_ms + midNight.getTimeInMillis() + bufferedIntervall_ms;
+						long nextBurst = (now - midNight.getTimeInMillis()) / Distributor.this.bufferedIntervall_ms
+								* Distributor.this.bufferedIntervall_ms + midNight.getTimeInMillis()
+								+ Distributor.this.bufferedIntervall_ms;
 
 						try {
 							this.wait(nextBurst - now);
 						} catch (InterruptedException e) {
 						}
 					}
-					if (!abort) {
-						sendCollection(collectedBufferedMeasurements.cloneAndClear());
+					if (!this.abort) {
+						sendCollection(Distributor.this.collectedBufferedMeasurements.cloneAndClear());
 					}
 				} catch (Throwable e) {
 					logger.error("Error was thrown in periodic burst thread. Cause: ", e);
@@ -294,11 +296,11 @@ public class Distributor extends Observable<JsonPackage> {
 	}
 
 	public SolvisStateObserver getSolvisStateObserver() {
-		return solvisStateObserver;
+		return this.solvisStateObserver;
 	}
 
 	public HumanAccessObserver getUserAccessObserver() {
-		return humanAccessObserver;
+		return this.humanAccessObserver;
 	}
 
 	public void register(Solvis solvis) {
@@ -313,7 +315,7 @@ public class Distributor extends Observable<JsonPackage> {
 		solvis.getAllSolvisData().registerObserver(this.getSolvisDataObserver());
 		solvis.getConnection().register(this.getConnectionStateObserver());
 		solvis.getSolvisState().register(this.getSolvisStateObserver());
-		solvis.registerScreenChangedByHumanObserver(humanAccessObserver);
+		solvis.registerScreenChangedByHumanObserver(this.humanAccessObserver);
 		this.aliveThread.start();
 	}
 

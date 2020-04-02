@@ -30,6 +30,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -141,7 +142,7 @@ public class Solvis {
 
 	public SolvisMeasurements getMeasureData() throws IOException, ErrorPowerOn {
 		SolvisMeasurements result = null;
-		synchronized (solvisMeasureObject) {
+		synchronized (this.solvisMeasureObject) {
 			if (this.measureData == null) {
 				SolvisMeasurements measurements = this.connection.getMeasurements();
 				String hexString = measurements.getHexString();
@@ -157,14 +158,41 @@ public class Solvis {
 	}
 
 	public void clearMeasuredData() {
-		synchronized (solvisMeasureObject) {
+		synchronized (this.solvisMeasureObject) {
 			this.measureData = null;
 		}
 	}
 
+	public Integer readUnsignedShortModbusData(ModbusAccess access) throws IOException {
+		int[] result = this.connection.readModbus(access, 1);
+		if (result == null) {
+			return null;
+		} else {
+			return result[0];
+		}
+	}
+
+	public boolean writeUnsignedShortModbusData(ModbusAccess access, int data) throws IOException {
+		return this.connection.writeModbus(access, new int[] { data });
+	}
+
+	public Long readUnsignedIntegerModbusData(ModbusAccess access) throws IOException {
+		int[] result = this.connection.readModbus(access, 2);
+		if (result == null) {
+			return null;
+		} else {
+			return (long) result[0] << 16L | (long) result[1];
+		}
+	}
+
+	public boolean writeUnsignedIntegerModbusData(ModbusAccess access, long data) throws IOException {
+		int [] writeData = new int[] {(int) (data >> 16L), (int)(data & 0xffffL)} ;
+		return this.connection.writeModbus(access, writeData);
+	}
+
 	public void resetSreensaver() throws IOException, TerminationException {
 		this.setScreenSaverActive(false);
-		this.send(resetSceenSaver);
+		this.send(this.resetSceenSaver);
 	}
 
 	public void send(TouchPoint point) throws IOException, TerminationException {
@@ -191,7 +219,7 @@ public class Solvis {
 	public void init() throws IOException, XmlError, XMLStreamException {
 		this.configurationMask = this.getGrafics().getConfigurationMask();
 
-		synchronized (solvisMeasureObject) {
+		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().init(this);
 		}
 		SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.unit.getId());
@@ -204,7 +232,7 @@ public class Solvis {
 	}
 
 	public void measure() throws IOException, ErrorPowerOn {
-		synchronized (solvisMeasureObject) {
+		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData());
 		}
 	}
@@ -263,7 +291,7 @@ public class Solvis {
 	 * @return the allSolvisData
 	 */
 	public AllSolvisData getAllSolvisData() {
-		return allSolvisData;
+		return this.allSolvisData;
 	}
 
 	/**
@@ -285,7 +313,7 @@ public class Solvis {
 	}
 
 	public SystemGrafics getGrafics() {
-		return grafics;
+		return this.grafics;
 	}
 
 	public void setGrafics(SystemGrafics grafics) {
@@ -298,7 +326,7 @@ public class Solvis {
 		logger.log(LEARN, "Learning started.");
 		this.initConfigurationMask(currentRef);
 		logger.log(LEARN, "Configuration mask: 0x" + Integer.toHexString(this.configurationMask));
-		this.getGrafics().setConfigurationMask(configurationMask);
+		this.getGrafics().setConfigurationMask(this.configurationMask);
 		Screen home = this.getHomeScreen();
 		if (home == null) {
 			throw new AssertionError("Assign error: Screen description of <"
@@ -321,7 +349,7 @@ public class Solvis {
 	 * @return the solvisDescription
 	 */
 	public SolvisDescription getSolvisDescription() {
-		return solvisDescription;
+		return this.solvisDescription;
 	}
 
 	public void backupMeasurements(SystemMeasurements system) {
@@ -330,11 +358,11 @@ public class Solvis {
 	}
 
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
 	public Unit getUnit() {
-		return unit;
+		return this.unit;
 	}
 
 	public void registerObserver(Observer.ObserverI<SolvisData> observer) {
@@ -342,11 +370,11 @@ public class Solvis {
 	}
 
 	public Distributor getDistributor() {
-		return distributor;
+		return this.distributor;
 	}
 
 	public SolvisState getSolvisState() {
-		return solvisState;
+		return this.solvisState;
 	}
 
 	public int getConfigurationMask() {
@@ -354,7 +382,7 @@ public class Solvis {
 	}
 
 	public SolvisConnection getConnection() {
-		return connection;
+		return this.connection;
 	}
 
 	private class MeasurementUpdateThread extends Thread {
@@ -369,7 +397,7 @@ public class Solvis {
 			super("MeasurementUpdateThread");
 			this.updateInterval = unit.getForcedUpdateInterval_ms();
 			this.doubleUpdateInterval = unit.getDoubleUpdateInterval_ms();
-			solvisState.register(new PowerObserver());
+			Solvis.this.solvisState.register(new PowerObserver());
 		}
 
 		private class PowerObserver implements ObserverI<SolvisState> {
@@ -378,11 +406,11 @@ public class Solvis {
 			public void update(SolvisState data, Object source) {
 				switch (data.getState()) {
 					case SOLVIS_CONNECTED:
-						power = true;
-						powerDownInInterval = false;
+						MeasurementUpdateThread.this.power = true;
+						MeasurementUpdateThread.this.powerDownInInterval = false;
 						break;
 					case POWER_OFF:
-						power = false;
+						MeasurementUpdateThread.this.power = false;
 				}
 
 			}
@@ -392,13 +420,13 @@ public class Solvis {
 		@Override
 		public void run() {
 
-			while (!abort && updateInterval != 0) {
+			while (!this.abort && this.updateInterval != 0) {
 
 				try {
 
 					Calendar midNight = Calendar.getInstance();
 					long now = System.currentTimeMillis();
-					midNight.setTimeInMillis(now - doubleUpdateInterval / 2);
+					midNight.setTimeInMillis(now - this.doubleUpdateInterval / 2);
 					midNight.set(Calendar.HOUR_OF_DAY, 0);
 					midNight.set(Calendar.MINUTE, 0);
 					midNight.set(Calendar.SECOND, 0);
@@ -406,11 +434,11 @@ public class Solvis {
 
 					long midNightLong = midNight.getTimeInMillis();
 					long nextUpdate = (now - midNightLong) / this.updateInterval * this.updateInterval + midNightLong
-							+ this.updateInterval - doubleUpdateInterval / 2;
+							+ this.updateInterval - this.doubleUpdateInterval / 2;
 
 					int[] waitTimes = new int[2];
 					waitTimes[0] = (int) (nextUpdate - now);
-					waitTimes[1] = doubleUpdateInterval;
+					waitTimes[1] = this.doubleUpdateInterval;
 
 					for (int waitTime : waitTimes) {
 						if (waitTime > 0) {
@@ -420,12 +448,12 @@ public class Solvis {
 								} catch (InterruptedException e) {
 								}
 							}
-							if (!abort && !powerDownInInterval) {
-								distributor.sendCollection(getAllSolvisData().getMeasurements());
+							if (!this.abort && !this.powerDownInInterval) {
+								Solvis.this.distributor.sendCollection(getAllSolvisData().getMeasurements());
 							}
 
-							if (!power) {
-								powerDownInInterval = true;
+							if (!this.power) {
+								this.powerDownInInterval = true;
 							}
 						}
 					}
@@ -457,11 +485,11 @@ public class Solvis {
 	}
 
 	public String getTimeZone() {
-		return timeZone;
+		return this.timeZone;
 	}
 
 	public int getDefaultReadMeasurementsInterval_ms() {
-		return defaultReadMeasurementsInterval_ms;
+		return this.defaultReadMeasurementsInterval_ms;
 	}
 
 	private void initConfigurationMask(Reference<Screen> current) throws TerminationException {

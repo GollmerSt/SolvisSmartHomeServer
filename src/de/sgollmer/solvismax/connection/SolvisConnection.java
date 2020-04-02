@@ -17,19 +17,29 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.NoRouteToHostException;
 import java.net.PasswordAuthentication;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.intelligt.modbus.jlibmodbus.Modbus;
+import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
+import com.intelligt.modbus.jlibmodbus.master.ModbusMaster;
+import com.intelligt.modbus.jlibmodbus.master.ModbusMasterFactory;
+import com.intelligt.modbus.jlibmodbus.tcp.TcpParameters;
+
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
+import de.sgollmer.solvismax.error.ModbusError;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -50,6 +60,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private Integer maxResponseTime = null;
 	private int errorCount = 0;;
 	private long firstTimeout = 0;
+	private ModbusMaster modbusMaster = null;
 
 	private long connectTime = -1;
 	private HttpURLConnection urlConnection = null;
@@ -66,7 +77,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
 		this.solvisState = null;
 		this.fwLth2_21_02A = fwLth2_21_02A;
-		
+
 		CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
 
 	}
@@ -79,7 +90,8 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			// getRequestingURL(), getRequestingHost(),
 			// getRequestingSite(), getRequestingPort() );
 
-			return new PasswordAuthentication(accountInfo.getAccount(), accountInfo.createPassword());
+			return new PasswordAuthentication(SolvisConnection.this.accountInfo.getAccount(),
+					SolvisConnection.this.accountInfo.createPassword());
 		}
 	}
 
@@ -87,14 +99,14 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		try {
 			this.connectTime = System.currentTimeMillis();
 			Authenticator.setDefault(new MyAuthenticator());
-			URL url = new URL(this.urlBase + suffix);
+			URL url = new URL("http://" + this.urlBase + suffix);
 			synchronized (this) {
-				urlConnection = (HttpURLConnection) url.openConnection();
-				urlConnection.setConnectTimeout(this.connectionTimeout);
-				urlConnection.setReadTimeout(this.readTimeout);
+				this.urlConnection = (HttpURLConnection) url.openConnection();
+				this.urlConnection.setConnectTimeout(this.connectionTimeout);
+				this.urlConnection.setReadTimeout(this.readTimeout);
 //				System.out.println(
 //						"Connect-Timeout: " + uc.getConnectTimeout() + ", Read-Timeout: " + uc.getReadTimeout());
-				InputStream in = urlConnection.getInputStream();
+				InputStream in = this.urlConnection.getInputStream();
 				this.setConnected();
 				return in;
 			}
@@ -130,11 +142,11 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 
 		public long getTimeStamp() {
-			return timeStamp;
+			return this.timeStamp;
 		}
 
 		public String getHexString() {
-			return hexString;
+			return this.hexString;
 		}
 
 	}
@@ -188,7 +200,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 
 		public String getButtonUrl() {
-			return buttonUrl;
+			return this.buttonUrl;
 		}
 	}
 
@@ -236,7 +248,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	}
 
 	public ConnectionState getConnectionState() {
-		return connectionState;
+		return this.connectionState;
 	}
 
 	public void setConnectionState(ConnectionState connectionState) {
@@ -283,7 +295,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	private void calculateMaxResponseTime() {
 
-		int connectionTime = (int) (System.currentTimeMillis() - connectTime);
+		int connectionTime = (int) (System.currentTimeMillis() - this.connectTime);
 		if (this.maxResponseTime == null || connectionTime < this.maxResponseTime * 2) {
 			this.maxResponseTime = connectionTime;
 		}
@@ -293,12 +305,72 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		if (this.maxResponseTime == null) {
 			return 0;
 		} else {
-			return maxResponseTime;
+			return this.maxResponseTime;
 		}
 	}
 
 	public void setSolvisState(SolvisState solvisState) {
 		this.solvisState = solvisState;
+	}
+
+	private boolean modbusConnect() throws UnknownHostException, ModbusIOException {
+
+		if (this.modbusMaster == null) {
+
+			TcpParameters tcpParameters = new TcpParameters();
+
+			// tcp parameters have already set by default as in example
+			tcpParameters.setHost(InetAddress.getByName(this.urlBase));
+			tcpParameters.setKeepAlive(true);
+			tcpParameters.setPort(Modbus.TCP_PORT);
+
+			this.modbusMaster = ModbusMasterFactory.createModbusMasterTCP(tcpParameters);
+		}
+		if (!this.modbusMaster.isConnected()) {
+			this.modbusMaster.connect();
+		}
+
+		return this.modbusMaster.isConnected();
+	}
+
+	public int[] readModbus(ModbusAccess modbusAccess, int quantity) throws IOException {
+		try {
+			if (this.modbusConnect()) {
+				int[] registers = null;
+				switch (modbusAccess.getType()) {
+					case HOLDING:
+						registers = this.modbusMaster.readHoldingRegisters(Constants.MODBUS_SLAVE_ID,
+								modbusAccess.getAddress(), quantity);
+						break;
+					case INPUT:
+						registers = this.modbusMaster.readInputRegisters(Constants.MODBUS_SLAVE_ID,
+								modbusAccess.getAddress(), quantity);
+						break;
+				}
+				return registers;
+			}
+		} catch (Throwable e) {
+			throw new ModbusError("Modbus error " + e.getClass() + ":" + e.getMessage(), e);
+		}
+		return null;
+	}
+
+	public boolean writeModbus(ModbusAccess modbusAccess, int[] datas) throws IOException {
+		try {
+			if (this.modbusConnect()) {
+				switch (modbusAccess.getType()) {
+					case HOLDING:
+						this.modbusMaster.writeMultipleRegisters(Constants.MODBUS_SLAVE_ID, modbusAccess.getAddress(),
+								datas);
+						return true;
+					case INPUT:
+						return false;
+				}
+			}
+			return false;
+		} catch (Throwable e) {
+			throw new ModbusError("Modbus error " + e.getClass() + ":" + e.getMessage(), e);
+		}
 	}
 
 }

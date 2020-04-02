@@ -39,7 +39,7 @@ public class Units {
 	}
 
 	public Collection<Unit> getUnits() {
-		return units;
+		return this.units;
 	}
 
 	public static class Creator extends CreatorByXML<Units> {
@@ -56,7 +56,7 @@ public class Units {
 
 		@Override
 		public Units create() throws XmlError, IOException {
-			return new Units(units);
+			return new Units(this.units);
 		}
 
 		@Override
@@ -96,13 +96,13 @@ public class Units {
 		private final int watchDogTime_ms;
 		private final boolean delayAfterSwitchingOnEnable;
 		private final boolean fwLth2_21_02A;
+		private final boolean modbus;
 		private final Features features;
 
 		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
 				int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms, int forcedUpdateInterval_ms,
 				int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
-				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A,
-				Features features) {
+				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, boolean modbus, Features features) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
@@ -117,32 +117,33 @@ public class Units {
 			this.watchDogTime_ms = watchDogTime_ms;
 			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
 			this.fwLth2_21_02A = fwLth2_21_02A;
+			this.modbus = modbus;
 			this.features = features;
 		}
 
 		public String getId() {
-			return id;
+			return this.id;
 		}
 
 		public String getType() {
-			return type;
+			return this.type;
 		}
 
 		public String getUrl() {
-			return url;
+			return this.url;
 		}
 
 		@Override
 		public String getAccount() {
-			return account;
+			return this.account;
 		}
 
 		public Features getFeatures() {
-			return features;
+			return this.features;
 		}
 
 		public int getWatchDogTime_ms() {
-			return watchDogTime_ms;
+			return this.watchDogTime_ms;
 		}
 
 		public static class Creator extends CreatorByXML<Unit> {
@@ -156,11 +157,12 @@ public class Units {
 			private int measurementHysteresisFactor;
 			private int defaultReadMeasurementsInterval_ms;
 			private int forcedUpdateInterval_ms;
-			private int doubleUpdateInterval_ms = 0 ;
+			private int doubleUpdateInterval_ms = 0;
 			private int bufferedInterval_ms;
 			private int watchDogTime_ms;
 			private boolean delayAfterSwitchingOnEnable = false;
 			private boolean fwLth2_21_02A = false;
+			private boolean modbus = false;
 			private Features features;
 
 			public Creator(String id, BaseCreator<?> creator) {
@@ -212,15 +214,20 @@ public class Units {
 					case "fwLth2_21_02A":
 						this.fwLth2_21_02A = Boolean.parseBoolean(value);
 						break;
+					case "modbus":
+						this.modbus = Boolean.parseBoolean(value);
+						break;
 				}
 
 			}
 
 			@Override
 			public Unit create() throws XmlError, IOException {
-				return new Unit(id, type, url, account, password, defaultAverageCount, measurementHysteresisFactor,
-						defaultReadMeasurementsInterval_ms, forcedUpdateInterval_ms, doubleUpdateInterval_ms,
-						bufferedInterval_ms, watchDogTime_ms, delayAfterSwitchingOnEnable, fwLth2_21_02A, features);
+				return new Unit(this.id, this.type, this.url, this.account, this.password, this.defaultAverageCount,
+						this.measurementHysteresisFactor, this.defaultReadMeasurementsInterval_ms,
+						this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
+						this.watchDogTime_ms, this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.modbus,
+						this.features);
 
 			}
 
@@ -251,39 +258,43 @@ public class Units {
 		}
 
 		public String getPassword() {
-			return password;
+			return this.password;
 		}
 
 		public int getDefaultAverageCount() {
-			return defaultAverageCount;
+			return this.defaultAverageCount;
 		}
 
 		public int getMeasurementHysteresisFactor() {
-			return measurementHysteresisFactor;
+			return this.measurementHysteresisFactor;
 		}
 
 		public int getDefaultReadMeasurementsInterval_ms() {
-			return defaultReadMeasurementsInterval_ms;
+			return this.defaultReadMeasurementsInterval_ms;
 		}
 
 		public int getForcedUpdateInterval_ms() {
-			return forcedUpdateInterval_ms;
+			return this.forcedUpdateInterval_ms;
 		}
 
 		public int getBufferedInterval_ms() {
-			return bufferedInterval_ms;
+			return this.bufferedInterval_ms;
 		}
 
 		public boolean isDelayAfterSwitchingOnEnable() {
-			return delayAfterSwitchingOnEnable;
+			return this.delayAfterSwitchingOnEnable;
 		}
 
 		public boolean isFwLth2_21_02A() {
-			return fwLth2_21_02A;
+			return this.fwLth2_21_02A;
 		}
 
 		public int getDoubleUpdateInterval_ms() {
-			return doubleUpdateInterval_ms;
+			return this.doubleUpdateInterval_ms;
+		}
+
+		public boolean isModbus() {
+			return this.modbus;
 		}
 
 	}
@@ -297,9 +308,8 @@ public class Units {
 		private final boolean powerOffIsServiceAccess;
 		private final boolean onlyMeasurements;
 
-		public Features(boolean clockTuning, boolean heatingBurnerTimeSynchronisation,
-				boolean updateAfterUserAccess, boolean detectServiceAccess, boolean powerOffIsServiceAccess,
-				boolean onlyMeasurements) {
+		public Features(boolean clockTuning, boolean heatingBurnerTimeSynchronisation, boolean updateAfterUserAccess,
+				boolean detectServiceAccess, boolean powerOffIsServiceAccess, boolean onlyMeasurements) {
 			this.clockTuning = clockTuning;
 			this.heatingBurnerTimeSynchronisation = heatingBurnerTimeSynchronisation;
 			this.updateAfterUserAccess = updateAfterUserAccess;
@@ -309,27 +319,27 @@ public class Units {
 		}
 
 		public boolean isClockTuning() {
-			return clockTuning;
+			return this.clockTuning;
 		}
 
 		public boolean isHeatingBurnerTimeSynchronisation() {
-			return heatingBurnerTimeSynchronisation;
+			return this.heatingBurnerTimeSynchronisation;
 		}
 
 		public boolean isUpdateAfterUserAccess() {
-			return updateAfterUserAccess;
+			return this.updateAfterUserAccess;
 		}
 
 		public boolean isOnlyMeasurements() {
-			return onlyMeasurements;
+			return this.onlyMeasurements;
 		}
 
 		public boolean isDetectServiceAccess() {
-			return detectServiceAccess;
+			return this.detectServiceAccess;
 		}
 
 		public boolean isPowerOffIsServiceAccess() {
-			return powerOffIsServiceAccess;
+			return this.powerOffIsServiceAccess;
 		}
 
 		public static class Creator extends CreatorByXML<Features> {
@@ -351,8 +361,8 @@ public class Units {
 
 			@Override
 			public Features create() throws XmlError, IOException {
-				return new Features(clockTuning, heatingBurnerTimeSynchronisation,
-						updateAfterUserAccess, detectServiceAccess, powerOffIsServiceAccess, onlyMeasurements);
+				return new Features(this.clockTuning, this.heatingBurnerTimeSynchronisation, this.updateAfterUserAccess,
+						this.detectServiceAccess, this.powerOffIsServiceAccess, this.onlyMeasurements);
 			}
 
 			@Override

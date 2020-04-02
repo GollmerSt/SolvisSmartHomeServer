@@ -35,14 +35,14 @@ public class Preparation implements Assigner {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public boolean execute(Solvis solvis) throws IOException, TerminationException {
 		if (!this.screenGrafic.isElementOf(solvis.getCurrentScreen().getImage(), solvis)) {
 			return true;
 		} else {
-			solvis.send(touchPoint);
+			solvis.send(this.touchPoint);
 			return this.screenGrafic.isElementOf(solvis.getCurrentScreen().getImage(), solvis);
 		}
 	}
@@ -60,7 +60,7 @@ public class Preparation implements Assigner {
 		if (!this.isLearned(solvis)) {
 			solvis.send(this.touchPoint);
 			solvis.send(this.touchPoint);
-			screenGrafic.learn(solvis);
+			this.screenGrafic.learn(solvis);
 			return true;
 		} else {
 			boolean result = false;
@@ -92,7 +92,7 @@ public class Preparation implements Assigner {
 
 		@Override
 		public Preparation create() throws XmlError, IOException {
-			return new Preparation(id, touchPoint, screenGrafic);
+			return new Preparation(this.id, this.touchPoint, this.screenGrafic);
 		}
 
 		@Override
@@ -126,7 +126,7 @@ public class Preparation implements Assigner {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		if (touchPoint != null) {
+		if (this.touchPoint != null) {
 			this.touchPoint.assign(description);
 		}
 

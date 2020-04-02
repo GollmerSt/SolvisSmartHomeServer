@@ -32,6 +32,11 @@ public class CommandClock extends Command {
 	}
 
 	@Override
+	public void notExecuted() {
+		this.strategy.notExecuted();
+	}
+
+	@Override
 	public Handling getHandling(Command queueEntry, Solvis solvis) {
 		return new Handling(false, queueEntry instanceof CommandClock, false);
 	}
@@ -42,16 +47,16 @@ public class CommandClock extends Command {
 	}
 
 	public NextAdjust getNextAdjust() {
-		return nextAdjust;
+		return this.nextAdjust;
 	}
 
 	public ClockMonitor.AdjustStrategy getStrategy() {
-		return strategy;
+		return this.strategy;
 	}
 
 	@Override
 	public String toString() {
 		return "Setting of Clock";
 	}
-	
+
 }

@@ -50,7 +50,7 @@ public class AllPreparations {
 
 		@Override
 		public AllPreparations create() throws XmlError, IOException {
-			return new AllPreparations(preparations);
+			return new AllPreparations(this.preparations);
 		}
 
 		@Override
@@ -83,7 +83,7 @@ public class AllPreparations {
 		}
 
 		public String getPreparationId() {
-			return preparationId;
+			return this.preparationId;
 		}
 
 		public static class Creator extends CreatorByXML<PreparationRef> {
@@ -105,7 +105,7 @@ public class AllPreparations {
 
 			@Override
 			public PreparationRef create() throws XmlError, IOException {
-				return new PreparationRef(preparationId);
+				return new PreparationRef(this.preparationId);
 			}
 
 			@Override

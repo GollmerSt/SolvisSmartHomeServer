@@ -15,7 +15,7 @@ public class ConnectedPackage extends JsonPackage {
 	private int clientId;
 
 	public int getClientId() {
-		return clientId;
+		return this.clientId;
 	}
 	
 	public ConnectedPackage() {

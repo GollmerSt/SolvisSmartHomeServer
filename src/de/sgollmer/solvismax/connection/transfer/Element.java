@@ -17,10 +17,10 @@ public class Element {
 		builder.append('"');
 		builder.append(this.name);
 		builder.append("\":");
-		if (value == null) {
+		if (this.value == null) {
 			builder.append("null");
 		} else {
-			value.addTo(builder);
+			this.value.addTo(builder);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class Element {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -87,7 +87,7 @@ public class Element {
 	}
 
 	public Value getValue() {
-		return value;
+		return this.value;
 	}
 
 	public void setValue(Value value) {

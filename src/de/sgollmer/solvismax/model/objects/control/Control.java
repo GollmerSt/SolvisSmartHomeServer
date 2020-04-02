@@ -23,8 +23,10 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
+import de.sgollmer.solvismax.model.objects.Assigner;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
@@ -45,51 +47,44 @@ public class Control extends ChannelSource {
 	private static final Logger logger = LogManager.getLogger(Control.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
-	private static final String XML_CONTROL_CURRENT = "Current";
-	private static final String XML_CONTROL_TYPE_VALUE = "TypeValue";
+	private static final String XML_CONTROL_CURRENT = "CurrentValue";
+	private static final String XML_PREPARATION_REF = "PreparationRef";
+
+	private static final String XML_GUI_ACCESS = "GuiAccess";
+	private static final String XML_MODBUS_ACCESS = "ModbusAccess";
+	private static final String XML_CONTROL_TYPE_READ_WRITE = "TypeReadWrite";
 	private static final String XML_CONTROL_TYPE_READ = "TypeRead";
 	private static final String XML_CONTROL_TYPE_MODE = "TypeMode";
 	private static final String XML_UPDATE_BY = "UpdateBy";
-	private static final String XML_PREPARATION_REF = "PreparationRef";
 
-	private final String screenId;
-	private final Rectangle valueRectangle;
+	private final GuiAccess guiAccess;
+	private final ModbusAccess modbusAccess;
+
 	private final Strategy strategy;
 	private final UpdateStrategies updateStrategies;
-	private final String preparationId;
-	private Preparation preparation = null;
 
-	private OfConfigs<Screen> screen = null;
-
-	public Control(String screenId, Rectangle current, Strategy strategy, UpdateStrategies updateStrategies,
-			String preparationId) {
-		this.screenId = screenId;
-		this.valueRectangle = current;
+	public Control(GuiAccess guiAccess, ModbusAccess modbusAccess, Strategy strategy,
+			UpdateStrategies updateStrategies) {
+		this.guiAccess = guiAccess;
+		this.modbusAccess = modbusAccess;
 		this.strategy = strategy;
-		this.strategy.setCurrentRectangle(current);
+		if (strategy != null) {
+			this.strategy.setCurrentRectangle(guiAccess != null ? guiAccess.valueRectangle : null);
+		}
 		this.updateStrategies = updateStrategies;
 		if (this.updateStrategies != null) {
 			this.updateStrategies.setSource(this);
-		}
-		this.preparationId = preparationId;
-	}
-
-	private boolean prepare(Solvis solvis) throws IOException, TerminationException {
-		if (this.preparation == null) {
-			return true;
-		} else {
-			return this.preparation.execute(solvis);
 		}
 	}
 
 	@Override
 	public boolean getValue(SolvisData destin, Solvis solvis, int timeAfterLastSwitchingOn)
 			throws IOException, TerminationException {
-		this.screen.get(solvis).goTo(solvis);
-		if (!this.prepare(solvis)) {
+		ControlAccess controlAccess = this.getControlAccess(solvis);
+		if (!this.guiPrepare(solvis, controlAccess)) {
 			return false;
 		}
-		SingleData<?> data = this.strategy.getValue(solvis.getCurrentScreen(), this.valueRectangle);
+		SingleData<?> data = this.strategy.getValue(solvis.getCurrentScreen(), solvis, this.getControlAccess(solvis));
 		if (data == null) {
 			return false;
 		} else {
@@ -100,14 +95,14 @@ public class Control extends ChannelSource {
 
 	@Override
 	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
-		this.screen.get(solvis).goTo(solvis);
-		if (!this.prepare(solvis)) {
+		ControlAccess controlAccess = this.getControlAccess(solvis);
+		if (!this.guiPrepare(solvis, controlAccess)) {
 			return null;
 		}
 		SingleData<?> setValue = null;
 		try {
 			for (int c = 0; c < Constants.SET_REPEATS + 1 && setValue == null; ++c) {
-				setValue = this.strategy.setValue(solvis, this.valueRectangle, value);
+				setValue = this.strategy.setValue(solvis, this.getControlAccess(solvis), value);
 				if (setValue == null && c == 1) {
 					logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
 							+ " failed, set will be tried again.");
@@ -121,9 +116,19 @@ public class Control extends ChannelSource {
 		if (setValue == null) {
 			logger.error("Setting of <" + this.getDescription().getId() + "> not successfull");
 		} else {
-			logger.info("Channel <" + description.getId() + "> is set to " + value.toString() + ">.");
+			logger.info("Channel <" + this.description.getId() + "> is set to " + value.toString() + ">.");
 		}
 		return setValue;
+	}
+
+	private boolean guiPrepare(Solvis solvis, ControlAccess controlAccess) throws IOException, TerminationException {
+		if (!controlAccess.isModbus()) {
+			this.guiAccess.getScreen().get(solvis).goTo(solvis);
+			if (!this.guiAccess.prepare(solvis)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -142,11 +147,6 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public String getUnit() {
-		return this.strategy.getUnit();
-	}
-
-	@Override
 	public Float getAccuracy() {
 		return this.strategy.getAccuracy();
 	}
@@ -154,23 +154,16 @@ public class Control extends ChannelSource {
 	@Override
 	public void assign(SolvisDescription description) throws ReferenceError {
 
-		if (updateStrategies != null) {
+		if (this.updateStrategies != null) {
 			this.updateStrategies.assign(description);
-		}
-		this.screen = description.getScreens().get(screenId);
-		if (this.screen == null) {
-			throw new ReferenceError("Screen of reference < " + this.screenId + " > not found");
 		}
 
 		if (this.strategy != null) {
 			this.strategy.assign(description);
 		}
 
-		if (preparationId != null) {
-			this.preparation = description.getPreparations().get(preparationId);
-			if (this.preparation == null) {
-				throw new ReferenceError("Preparation of reference < " + this.preparationId + " > not found");
-			}
+		if (this.guiAccess != null) {
+			this.guiAccess.assign(description);
 		}
 
 	}
@@ -185,11 +178,10 @@ public class Control extends ChannelSource {
 
 	public static class Creator extends CreatorByXML<Control> {
 
-		private String screenId;
-		private Rectangle current;
+		private GuiAccess guiAccess;
+		private ModbusAccess modbusAccess;
 		private Strategy strategy;
 		private UpdateStrategies updateStrategies = null;
-		private String preparationId = null;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -197,35 +189,39 @@ public class Control extends ChannelSource {
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			switch (name.getLocalPart()) {
-				case "screenId":
-					this.screenId = value;
-					break;
-			}
-
 		}
 
 		@Override
 		public Control create() throws XmlError {
-			return new Control(screenId, current, strategy, updateStrategies, preparationId);
+			if (this.modbusAccess != null && this.modbusAccess.isModbus()) {
+				if (!this.strategy.isXmlValid(true)) {
+					throw new XmlError("Missing modbus value definitions");
+				}
+			}
+			if (this.guiAccess != null) {
+				if (!this.strategy.isXmlValid(false)) {
+					throw new XmlError("Missing gui value definitions");
+				}
+			}
+			return new Control(this.guiAccess, this.modbusAccess, this.strategy, this.updateStrategies);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_CONTROL_CURRENT:
-					return new Rectangle.Creator(id, this.getBaseCreator());
-				case XML_CONTROL_TYPE_VALUE:
-					return new StrategyValue.Creator(id, this.getBaseCreator());
+				case XML_GUI_ACCESS:
+					return new GuiAccess.Creator(id, getBaseCreator());
+				case XML_MODBUS_ACCESS:
+					return new ModbusAccess.Creator(id, getBaseCreator());
+				case XML_CONTROL_TYPE_READ_WRITE:
+					return new StrategyReadWrite.Creator(id, this.getBaseCreator());
 				case XML_CONTROL_TYPE_READ:
 					return new StrategyRead.Creator(id, this.getBaseCreator());
 				case XML_CONTROL_TYPE_MODE:
 					return new StrategyMode.Creator(id, this.getBaseCreator());
 				case XML_UPDATE_BY:
 					return new UpdateStrategies.Creator(id, this.getBaseCreator());
-				case XML_PREPARATION_REF:
-					return new PreparationRef.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -233,19 +229,19 @@ public class Control extends ChannelSource {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_CONTROL_CURRENT:
-					this.current = (Rectangle) created;
+				case XML_GUI_ACCESS:
+					this.guiAccess = (GuiAccess) created;
 					break;
-				case XML_CONTROL_TYPE_VALUE:
+				case XML_MODBUS_ACCESS:
+					this.modbusAccess = (ModbusAccess) created;
+					break;
+				case XML_CONTROL_TYPE_READ_WRITE:
 				case XML_CONTROL_TYPE_READ:
 				case XML_CONTROL_TYPE_MODE:
 					this.strategy = (Strategy) created;
 					break;
 				case XML_UPDATE_BY:
 					this.updateStrategies = (UpdateStrategies) created;
-					break;
-				case XML_PREPARATION_REF:
-					this.preparationId = ((PreparationRef) created).getPreparationId();
 					break;
 			}
 		}
@@ -254,9 +250,9 @@ public class Control extends ChannelSource {
 
 	@Override
 	public void learn(Solvis solvis) throws IOException, LearningError {
-		if (strategy.mustBeLearned()) {
+		if (!this.getControlAccess(solvis).isModbus() && this.strategy.mustBeLearned()) {
 			SingleData<?> data = null;
-			Screen screen = this.screen.get(solvis);
+			Screen screen = this.guiAccess.getScreen().get(solvis);
 			if (screen == null) {
 				String error = "Learning of <" + this.getDescription().getId()
 						+ "> not possible, rejected. Screen undefined"
@@ -269,16 +265,16 @@ public class Control extends ChannelSource {
 			SolvisScreen saved = solvis.getCurrentScreen();
 			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
 				screen.goTo(solvis);
-				if (this.preparation != null) {
-					finished = this.preparation.learn(solvis);
+				if (this.guiAccess.getPreparation() != null) {
+					finished = this.guiAccess.getPreparation().learn(solvis);
 				} else {
 					finished = true;
 				}
 				if (finished) {
-					finished = this.strategy.learn(solvis);
+					finished = this.strategy.learn(solvis, this.getControlAccess(solvis));
 				}
 				if (finished) {
-					data = this.strategy.getValue(saved, this.valueRectangle);
+					data = this.strategy.getValue(saved, solvis, this.getControlAccess(solvis));
 					if (data == null) {
 						finished = false;
 					}
@@ -307,47 +303,6 @@ public class Control extends ChannelSource {
 		}
 	}
 
-//	@Override
-//	public void learn(Solvis solvis) throws IOException, TerminationException {
-//		if (this.preparation != null) {
-//			this.preparation.learn(solvis, this.getScreen(solvis.getConfigurationMask()));
-//		}
-//		if (this.strategy instanceof StrategyMode) {
-//			StrategyMode strategy = (StrategyMode) this.strategy;
-//			solvis.gotoScreen(this.screen.get(solvis.getConfigurationMask()));
-//			MyImage saved = solvis.getCurrentImage();
-//			boolean finished = false;
-//			SingleData<?> data = null;
-//			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
-//				for (Mode mode : strategy.getModes()) {
-//					solvis.send(mode.getTouch());
-//					mode.getGrafic().learn(solvis);
-//				}
-//				data = this.strategy.getValue(saved, this.valueRectangle, solvis);
-//				if (data == null) {
-//					logger.log(LEARN,
-//							"Learning of <" + this.getDescription().getId() + "> not successfull, will be retried");
-//				} else {
-//					finished = true;
-//				}
-//			}
-//			if (!finished) {
-//				String error = "Learning of <" + this.getDescription().getId() + "> not possible, rekjected.";
-//				logger.error(error);
-//				throw new LearningError(error);
-//			}
-//			for (int repeat = 0; repeat < Constants.SET_REPEATS; ++repeat) {
-//				boolean success = this.setValue(solvis, new SolvisData(data));
-//				if (success) {
-//					break;
-//				} else {
-//					AbortHelper.getInstance()
-//							.sleep(solvis.getSolvisDescription().getMiscellaneous().getUnsuccessfullWaitTime_ms());
-//				}
-//			}
-//		}
-//	}
-
 	@Override
 	public Type getType() {
 		return ChannelSourceI.Type.CONTROL;
@@ -355,17 +310,17 @@ public class Control extends ChannelSource {
 
 	@Override
 	public Screen getScreen(int configurationMask) {
-		return this.screen.get(configurationMask);
+		return this.guiAccess.getScreen().get(configurationMask);
 	}
 
 	@Override
 	public Collection<? extends ModeI> getModes() {
-		return strategy.getModes();
+		return this.strategy.getModes();
 	}
 
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
-		return strategy.getUpperLowerStep();
+		return this.strategy.getUpperLowerStep();
 	}
 
 	@Override
@@ -376,6 +331,148 @@ public class Control extends ChannelSource {
 	@Override
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
 		return this.strategy.interpretSetData(singleData);
+	}
+
+	public ModbusAccess getModbusAccess() {
+		return this.modbusAccess;
+	}
+
+	public static class GuiAccess implements Assigner, ControlAccess {
+		private final String screenId;
+		private final Rectangle valueRectangle;
+		private final String preparationId;
+
+		private OfConfigs<Screen> screen = null;
+		private Preparation preparation = null;
+
+		public GuiAccess(String screenId, Rectangle valueRectangle, String preparationId) {
+			this.screenId = screenId;
+			this.valueRectangle = valueRectangle;
+			this.preparationId = preparationId;
+		}
+
+		public String getScreenId() {
+			return this.screenId;
+		}
+
+		public Rectangle getValueRectangle() {
+			return this.valueRectangle;
+		}
+
+		public String getPreparationId() {
+			return this.preparationId;
+		}
+
+		public OfConfigs<Screen> getScreen() {
+			return this.screen;
+		}
+
+		public void setScreen(OfConfigs<Screen> screen) {
+			this.screen = screen;
+		}
+
+		public Preparation getPreparation() {
+			return this.preparation;
+		}
+
+		public void setPreparation(Preparation preparation) {
+			this.preparation = preparation;
+		}
+
+		public static class Creator extends CreatorByXML<GuiAccess> {
+
+			private String screenId;
+			private Rectangle valueRectangle;
+			private String preparationId;
+
+			public Creator(String id, BaseCreator<?> creator) {
+				super(id, creator);
+			}
+
+			@Override
+			public void setAttribute(QName name, String value) {
+				switch (name.getLocalPart()) {
+					case "screenId":
+						this.screenId = value;
+						break;
+				}
+
+			}
+
+			@Override
+			public GuiAccess create() throws XmlError, IOException {
+				return new GuiAccess(this.screenId, this.valueRectangle, this.preparationId);
+			}
+
+			@Override
+			public CreatorByXML<?> getCreator(QName name) {
+				String id = name.getLocalPart();
+				switch (id) {
+					case XML_CONTROL_CURRENT:
+						return new Rectangle.Creator(id, this.getBaseCreator());
+					case XML_PREPARATION_REF:
+						return new PreparationRef.Creator(id, getBaseCreator());
+				}
+				return null;
+			}
+
+			@Override
+			public void created(CreatorByXML<?> creator, Object created) {
+				switch (creator.getId()) {
+					case XML_CONTROL_CURRENT:
+						this.valueRectangle = (Rectangle) created;
+						break;
+					case XML_PREPARATION_REF:
+						this.preparationId = ((PreparationRef) created).getPreparationId();
+						break;
+				}
+
+			}
+
+		}
+
+		@Override
+		public void assign(SolvisDescription description) throws ReferenceError {
+			this.screen = description.getScreens().get(this.screenId);
+			if (this.screen == null) {
+				throw new ReferenceError("Screen of reference < " + this.screenId + " > not found");
+			}
+
+			if (this.preparationId != null) {
+				this.preparation = description.getPreparations().get(this.preparationId);
+				if (this.preparation == null) {
+					throw new ReferenceError("Preparation of reference < " + this.preparationId + " > not found");
+				}
+			}
+
+		}
+
+		boolean prepare(Solvis solvis) throws IOException, TerminationException {
+			if (this.preparation == null) {
+				return true;
+			} else {
+				return this.preparation.execute(solvis);
+			}
+		}
+
+		@Override
+		public boolean isModbus() {
+			return false;
+		}
+
+	}
+
+	private ControlAccess getControlAccess(Solvis solvis) {
+		if (this.isModbus(solvis)) {
+			return this.modbusAccess;
+		} else {
+			return this.guiAccess;
+		}
+	}
+
+	@Override
+	public boolean isModbus(Solvis solvis) {
+		return solvis.getUnit().isModbus() && this.modbusAccess != null && this.modbusAccess.isModbus();
 	}
 
 }

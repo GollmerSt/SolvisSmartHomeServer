@@ -53,6 +53,6 @@ public class ConnectPackage extends JsonPackage {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 }

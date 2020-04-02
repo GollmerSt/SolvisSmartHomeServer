@@ -14,26 +14,26 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class Dependency implements Assigner {
-	private final String id ;
-	private final String dataId ;
-	
-	private Dependency( String id, String dataId ) {
-		this.id = id ;
-		this.dataId = dataId ;
+	private final String id;
+	private final String dataId;
+
+	private Dependency(String id, String dataId) {
+		this.id = id;
+		this.dataId = dataId;
 	}
 
 	public String getDataId() {
-		return dataId;
+		return this.dataId;
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
-	
+
 	public static class Creator extends CreatorByXML<Dependency> {
 
-		private String id ;
-		private String dataId ;
+		private String id;
+		private String dataId;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -41,20 +41,20 @@ public class Dependency implements Assigner {
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			switch( name.getLocalPart()) {
+			switch (name.getLocalPart()) {
 				case "id":
-					this.id = value ;
-					break ;
+					this.id = value;
+					break;
 				case "dataId":
-					this.dataId = value ;
-					break ;
+					this.dataId = value;
+					break;
 			}
-			
+
 		}
 
 		@Override
 		public Dependency create() throws XmlError {
-			return new Dependency(id, dataId);
+			return new Dependency(this.id, this.dataId);
 		}
 
 		@Override
@@ -63,16 +63,14 @@ public class Dependency implements Assigner {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {			
+		public void created(CreatorByXML<?> creator, Object created) {
 		}
-		
+
 	}
 
 	@Override
 	public void assign(SolvisDescription description) {
-		
+
 	}
 
-	
-	
 }

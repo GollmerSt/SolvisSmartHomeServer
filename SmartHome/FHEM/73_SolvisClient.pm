@@ -44,7 +44,7 @@ use FHEM::Meta;
 use GPUtils qw(GP_Import GP_Export);
 
 
-use constant MODULE => "SolvisClient";
+use constant MODULE => 'SolvisClient';
 
 use constant WATCH_DOG_INTERVAL => 300 ;    #Mindestens alle 5 Minuten muss der Client Daten vom Servere erhalten haben.
                                             # Andernfalls wird die Verbindung neu aufgebaut
@@ -54,7 +54,7 @@ use constant MIN_CONNECTION_INTERVAL => 10 ;
 use constant _FALSE_ => 0 ;
 use constant _TRUE_ => 1;
 
-use constant FORMAT_VERSION_REGEXP => "m/01\.../" ;
+use constant FORMAT_VERSION_REGEXP => 'm/01\.../' ;
 
 use constant _DISABLE_GUI_ => 0 ;
 use constant _ENABLE_GUI_ => 1 ;
@@ -77,12 +77,12 @@ if (!$success) {
     $success = eval {
 
         # JSON preference order
-		
-		if ( !defined( $ENV{PERL_JSON_BACKEND} ) ) {
-			local $ENV{PERL_JSON_BACKEND} =
+        
+        if ( !defined( $ENV{PERL_JSON_BACKEND} ) ) {
+            local $ENV{PERL_JSON_BACKEND} =
                 'Cpanel::JSON::XS,JSON::XS,JSON::PP,JSON::backportPP' ;
-		}
-		
+        }
+        
         require JSON;
         import JSON qw( decode_json encode_json );
         1;
@@ -171,7 +171,7 @@ GP_Export(
 
 my %ChannelDescriptions ;
 my $setParameters ;
-my $serverCommands = "";
+my $serverCommands = '';
 my @serverCommand_Array = ();
 
 
@@ -189,7 +189,7 @@ sub Log {
     my $sub         = ( split( ':', $xsubroutine ) )[2];
     $sub =~ s/SolvisClient_//;
 
-    my $instName = ( ref($self) eq "HASH" ) ? $self->{NAME} : $self;
+    my $instName = ( ref($self) eq 'HASH' ) ? $self->{NAME} : $self;
     Log3 $self, $loglevel, MODULE." $instName: $sub.$xline $text";
 
     return;
@@ -216,8 +216,8 @@ sub Initialize {
     $modulData->{NotifyFn}      = \&Notify;
     $modulData->{AttrFn}        = \&Attr;
     $modulData->{AttrList}      =
-                                  "SolvisName ".
-                                  "GuiCommandsEnabled:TRUE,FALSE ".
+                                  'SolvisName '.
+                                  'GuiCommandsEnabled:TRUE,FALSE '.
                                   $readingFnAttributes;
     $modulData->{DbLog_splitFn} = \&DbLog_splitFn;
 
@@ -235,12 +235,12 @@ sub Initialize {
 sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
     my $self = shift ;
     my $def = shift ;
-	
-	if ( !FHEM::Meta::SetInternals($self)  ) {
-		return ($self,$def);
-	}
+    
+    if ( !FHEM::Meta::SetInternals($self)  ) {
+        return ($self,$def);
+    }
 
-    my @args = split( "[ \t][ \t]*", $def );
+    my @args = split( '[ \t][ \t]*', $def );
     my $url  = $args[2];
     my $name = $self->{NAME};
 
@@ -250,7 +250,7 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
     if( $init_done ) {
         my $result = Connect( $self, 0 );
     } else {
-        $self->{NOTIFYDEV} = "global";
+        $self->{NOTIFYDEV} = 'global';
     }
 
     $self->{helper}{GuiEnabled} = undef ;
@@ -276,7 +276,7 @@ sub Attr {
 
     my $self = $defs{$name} ;
 
-    if ( $attrName eq "GuiCommandsEnabled" ) {
+    if ( $attrName eq 'GuiCommandsEnabled' ) {
         if ( defined $attrValue  && $attrValue   ne 'TRUE' && $attrValue   ne 'FALSE' ) {
             return "Unknown value $attrValue for $attrName, choose one of TRUE FALSE";
         }
@@ -304,12 +304,12 @@ sub Notify {
     my $devName = $eventObject->{NAME}; # Device that created the events
     my $events = deviceEvents($eventObject, 1);
 
-    if($devName eq "global" && grep( { m/^INITIALIZED|REREADCFG$/x } @{$events}))
+    if($devName eq 'global' && grep( { m/^INITIALIZED|REREADCFG$/x } @{$events}))
     {
         $self->{helper}{GuiEnabled} = undef ;
          my $result = Connect( $self, 0 );
-        $self->{NOTIFYDEV} = "";
-		Log($self, 3, "New Connection in case of rereadcfg or initialized");
+        $self->{NOTIFYDEV} = '';
+        Log($self, 3, 'New Connection in case of rereadcfg or initialized');
     }
     return ;
 } # end Notify
@@ -327,7 +327,7 @@ sub CreateSendData {
     my $byteString = encode_json ( $sendData );
 
     my $length = length $byteString ;
-    $byteString = pack("CCCa*", $length>>16&0xff, $length>>8&0xff, $length&0xff, $byteString ) ;
+    $byteString = pack('CCCa*', $length>>16&0xff, $length>>8&0xff, $length&0xff, $byteString ) ;
 
     Log( $self, 5, "ByteString: $byteString");
 
@@ -355,7 +355,7 @@ sub Connect {
 
     my $error = DevIo_OpenDev($self, $reopen, $connectedSub);
 
-    $self->{helper}{BUFFER} = "" ;
+    $self->{helper}{BUFFER} = '' ;
 
     return $error;
 
@@ -375,7 +375,7 @@ sub SendConnectionData {
 
     my %sendConnectionInfo = (
         CONNECT => {
-            Id => AttrVal( $self->{NAME}, "SolvisName", $self->{NAME} )
+            Id => AttrVal( $self->{NAME}, 'SolvisName', $self->{NAME} )
         }
     ) ;
 
@@ -424,8 +424,8 @@ sub Ready {
 
     my $error = undef ;
 
-    if($self->{STATE} eq "disconnected" && isNewConnectionAllowed($self) == _TRUE_ ) {
-        Log( $self, 4, "Reconnection try");
+    if($self->{STATE} eq 'disconnected' && isNewConnectionAllowed($self) == _TRUE_ ) {
+        Log( $self, 4, 'Reconnection try');
         $error = Connect($self, 1) ; # reopen
     }
 
@@ -480,7 +480,7 @@ sub Read {
     InternalTimer($timeStamp, \&Reconnect, $self );
 
 
-    Log($self, 5, "Read entered");
+    Log($self, 5, 'Read entered');
 
     # einlesen der bereitstehenden Daten
     my $buf = DevIo_SimpleRead($self);
@@ -497,7 +497,7 @@ sub Read {
 
         my $bufferLength = length($self->{helper}{BUFFER}) ;
 
-        my @parts = unpack("CCC", $self->{helper}{BUFFER} ) ;
+        my @parts = unpack('CCC', $self->{helper}{BUFFER} ) ;
         my $length = $parts[2] | $parts[1] << 8 | $parts[0] << 16 ;
 
         Log($self, 5, "Length of package: $length");
@@ -506,7 +506,7 @@ sub Read {
             return ;
         }
 
-        @parts = unpack("CCCa".$length."a*", $self->{helper}{BUFFER} ) ;
+        @parts = unpack('CCCa'.$length.'a*', $self->{helper}{BUFFER} ) ;
         $self->{helper}{BUFFER} = $parts[4] ;
 
         Log($self, 5, "Package encoded: $parts[3]");
@@ -535,12 +535,12 @@ sub executeCommand {
 
     Log($self, 4, "Command detected: $command");
 
-	my %switch = (
-		'CONNECTED' => sub {
-			Connected($self, $receivedData) ;
+    my %switch = (
+        'CONNECTED' => sub {
+            Connected($self, $receivedData) ;
             EnableGui( $self ) ;
         },
-		'MEASUREMENTS' => sub {
+        'MEASUREMENTS' => sub {
             UpdateReadings($self, $receivedData->{MEASUREMENTS}) ;
             EnableGui( $self ) ;
             $self->{helper}{nextConnection} = undef ;
@@ -557,10 +557,10 @@ sub executeCommand {
             EnableGui( $self ) ;
         }
     ) ;
-	
-	if ( defined($switch{ $command  })) {
-		$switch{ $command  }->();
-	}
+    
+    if ( defined($switch{ $command  })) {
+        $switch{ $command  }->();
+    }
 
     return ;
 } # end executeCommand
@@ -581,7 +581,7 @@ sub Connected {
         my $formatVersion = $receivedData->{CONNECTED}->{FormatVersion} ;
         if ( ! $formatVersion =~ FORMAT_VERSION_REGEXP ) {
             Log($self, 3, "Format version $formatVersion of client is depricated, use a newer client, if available.");
-            $self->{INFO} = "Format version is depricated" ;
+            $self->{INFO} = 'Format version is depricated' ;
         }
         Log($self, 3, "Server version: $self->{VERSION_SERVER}") ;
     }
@@ -627,9 +627,9 @@ sub InterpreteConnectionState {
     my $message  ;
 
     foreach my $key( keys(%$state)) {
-        if ( $key eq "State") {
+        if ( $key eq 'State') {
             $stateString = $state->{$key } ;
-        } elsif ( $key eq "Message") {
+        } elsif ( $key eq 'Message') {
             $message = $state->{$key } ;
         }
     }
@@ -637,8 +637,8 @@ sub InterpreteConnectionState {
 
     Log($self, 5, "Connection status: $stateString");
 
-	my %switch = (
-		'CLIENT_UNKNOWN' => sub {
+    my %switch = (
+        'CLIENT_UNKNOWN' => sub {
             $self->{helper}{GuiEnabled} = undef ;
             $self->{CLIENT_ID} = undef ;
             Log($self, 3, "Client unknown: $message");
@@ -650,21 +650,21 @@ sub InterpreteConnectionState {
             ReconnectAfterDismiss($self);
         },
         'ALIVE' => sub {
-            Log($self, 4, "Alive received");
+            Log($self, 4, 'Alive received');
         },
         'USER_ACCESS_DETECTED' => sub {
-            Log($self, 3, "User access detected");
+            Log($self, 3, 'User access detected');
         },
         'USER_ACCESS_FINISHED' => sub {
-            Log($self, 3, "User access finished");
+            Log($self, 3, 'User access finished');
         }
     ) ;
 
-	if ( defined($switch{ $stateString  })) {
-		$switch{ $stateString  }->();
-	} else {
-		Log($self, 3, "Connection status: $stateString");
-	}
+    if ( defined($switch{ $stateString  })) {
+        $switch{ $stateString  }->();
+    } else {
+        Log($self, 3, "Connection status: $stateString");
+    }
 
     return ;
 } # end InterpreteConnectionState
@@ -703,14 +703,14 @@ sub InterpreteSolvisState {
     my $message  ;
 
     foreach my $key( keys(%$state)) {
-        if ( $key eq "SolvisState") {
+        if ( $key eq 'SolvisState') {
             $stateString = $state->{$key } ;
         }
     }
 
     Log($self, 3, "Solvis status: $stateString");
 
-    readingsSingleUpdate($self,"state",$stateString,1);
+    readingsSingleUpdate($self,'state',$stateString,1);
 
     #DoTrigger($self->{NAME}, $stateString);
 
@@ -729,7 +729,7 @@ sub Reconnect {
 
     $self->{helper}{GuiEnabled} = undef ;
 
-    Log($self, 3, "Retry reconnection");
+    Log($self, 3, 'Retry reconnection');
     DevIo_CloseDev($self) ;
     Connect($self,0);
     return ;
@@ -746,7 +746,7 @@ sub CreateGetSetServerCommands {
     my $descriptions = shift ;
 
     %ChannelDescriptions = ();
-    $serverCommands = "" ;
+    $serverCommands = '' ;
     @serverCommand_Array = ();
 
     foreach my $description( keys(%{$descriptions})) {
@@ -755,52 +755,52 @@ sub CreateGetSetServerCommands {
         my $name = $keys[0] ;
         Log($self, 5, "Processing of description: $name");
         my %channelHash = %{$descriptionHash{$name}} ;
-        if ( $channelHash{Type} eq "ServerCommand") {
-            if ( $name ne 'GUI_COMMANDS_DISABLE' && $name ne 'GUI_COMMANDS_ENABLE' ) {
+        if ( $channelHash{Type} eq 'ServerCommand') {
+            #if ( $name ne 'GUI_COMMANDS_DISABLE' && $name ne 'GUI_COMMANDS_ENABLE' ) {
                 push(@serverCommand_Array, $name);
-            }
+            #}
         } else {
             $ChannelDescriptions{$name} = {} ;
             $ChannelDescriptions{$name}{SET} = $channelHash{Writeable} ;
-            $ChannelDescriptions{$name}{GET} = $channelHash{Type} eq "CONTROL" ;
+            $ChannelDescriptions{$name}{GET} = $channelHash{Type} eq 'CONTROL' ;
             Log($self, 5, "Writeable: $channelHash{Writeable}");
-			my %switch = (
-				'Accuracy' => sub {
-					$ChannelDescriptions{$name}{Accuracy} = $channelHash{Accuracy} ;
-				},
-				'Modes' => sub {
-					$ChannelDescriptions{$name}{Modes} = {} ;
-					foreach my $mode (@{$channelHash{Modes}}) {
-						$ChannelDescriptions{$name}{Modes}{$mode} = 1 ;
-					}
-				},
-				'Upper' => sub {
-					$ChannelDescriptions{$name}{Upper} = $channelHash{Upper} ; ;
-				},
-				'Lower' => sub {
-					$ChannelDescriptions{$name}{Lower} = $channelHash{Lower} ; ;
-				},
-				'Step' => sub {
-					$ChannelDescriptions{$name}{Step} = $channelHash{Step} ; ;
-				},
-				'IsBoolean' => sub {
-					$ChannelDescriptions{$name}{IsBoolean} = $channelHash{IsBoolean} ;
-				},
-				'Unit' => sub {
-					$ChannelDescriptions{$name}{Unit} = $channelHash{Unit} ;
-				}
-			) ;
+            my %switch = (
+                'Accuracy' => sub {
+                    $ChannelDescriptions{$name}{Accuracy} = $channelHash{Accuracy} ;
+                },
+                'Modes' => sub {
+                    $ChannelDescriptions{$name}{Modes} = {} ;
+                    foreach my $mode (@{$channelHash{Modes}}) {
+                        $ChannelDescriptions{$name}{Modes}{$mode} = 1 ;
+                    }
+                },
+                'Upper' => sub {
+                    $ChannelDescriptions{$name}{Upper} = $channelHash{Upper} ; ;
+                },
+                'Lower' => sub {
+                    $ChannelDescriptions{$name}{Lower} = $channelHash{Lower} ; ;
+                },
+                'Step' => sub {
+                    $ChannelDescriptions{$name}{Step} = $channelHash{Step} ; ;
+                },
+                'IsBoolean' => sub {
+                    $ChannelDescriptions{$name}{IsBoolean} = $channelHash{IsBoolean} ;
+                },
+                'Unit' => sub {
+                    $ChannelDescriptions{$name}{Unit} = $channelHash{Unit} ;
+                }
+            ) ;
             foreach my $keyName ( keys %channelHash ) {
-				if ( defined($switch{ $keyName  })) {
-					$switch{ $keyName  }->();
-				}
+                if ( defined($switch{ $keyName  })) {
+                    $switch{ $keyName  }->();
+                }
             }
         }
     }
 
-    $serverCommands = join(",",sort(@serverCommand_Array));
-	
-	CreateSetParams() ;
+    $serverCommands = join(',',sort(@serverCommand_Array));
+    
+    CreateSetParams() ;
 
     return ;
 
@@ -813,44 +813,44 @@ sub CreateGetSetServerCommands {
 #       Create data for Set Parameters
 #
 sub CreateSetParams {
-	$setParameters = "" ;
+    $setParameters = '' ;
 
-	my @channels = keys(%ChannelDescriptions) ;
-	my $firstO = _TRUE_ ;
-	foreach my $channel (@channels) {
-		if ( $ChannelDescriptions{$channel}{SET} == _FALSE_ ) {
-			next ;
-		}
-		if ( ! $firstO ) {
-			$setParameters .= ' ' ;
-		} else {
-			$firstO = _FALSE_ ;
-		}
-		$setParameters .= $channel ;
-		my $firstI = _TRUE_ ;
-		if ( defined ($ChannelDescriptions{$channel}{Modes}) ) {
-			foreach my $mode (keys(%{$ChannelDescriptions{$channel}{Modes}})) {
-				if($firstI) {
-					$setParameters .= ':' ;
-					$firstI = _FALSE_ ;
-				} else {
-					$setParameters .= ','
-				}
-				$setParameters .=$mode ;
-			}
-		} elsif ( defined ($ChannelDescriptions{$channel}{Upper}) ) {
-			for ( my $count = $ChannelDescriptions{$channel}{Lower} ; $count <= $ChannelDescriptions{$channel}{Upper} ; $count += $ChannelDescriptions{$channel}{Step}) {
-				if($firstI) {
-					$setParameters .= ':' ;
-					$firstI = _FALSE_ ;
-				} else {
-					$setParameters .= ','
-				}
-				$setParameters .=$count ;
-			}
-		}
-	}
-	return ;
+    my @channels = keys(%ChannelDescriptions) ;
+    my $firstO = _TRUE_ ;
+    foreach my $channel (@channels) {
+        if ( $ChannelDescriptions{$channel}{SET} == _FALSE_ ) {
+            next ;
+        }
+        if ( ! $firstO ) {
+            $setParameters .= ' ' ;
+        } else {
+            $firstO = _FALSE_ ;
+        }
+        $setParameters .= $channel ;
+        my $firstI = _TRUE_ ;
+        if ( defined ($ChannelDescriptions{$channel}{Modes}) ) {
+            foreach my $mode (keys(%{$ChannelDescriptions{$channel}{Modes}})) {
+                if($firstI) {
+                    $setParameters .= ':' ;
+                    $firstI = _FALSE_ ;
+                } else {
+                    $setParameters .= ','
+                }
+                $setParameters .=$mode ;
+            }
+        } elsif ( defined ($ChannelDescriptions{$channel}{Upper}) ) {
+            for ( my $count = $ChannelDescriptions{$channel}{Lower} ; $count <= $ChannelDescriptions{$channel}{Upper} ; $count += $ChannelDescriptions{$channel}{Step}) {
+                if($firstI) {
+                    $setParameters .= ':' ;
+                    $firstI = _FALSE_ ;
+                } else {
+                    $setParameters .= ','
+                }
+                $setParameters .=$count ;
+            }
+        }
+    }
+    return ;
 }
 
 
@@ -869,7 +869,7 @@ sub UpdateReadings {
         if ( defined( $readings->{$readingName} )) {
             my $value = $readings->{$readingName} ;
             if ( $ChannelDescriptions{$readingName}{IsBoolean} != _FALSE_ ) {
-                $value = $value?"on":"off";
+                $value = $value?'on':'off';
             }
 
             readingsBulkUpdate($self,$readingName,$value);
@@ -905,13 +905,6 @@ sub Delete {
     my $self = shift ;
     my $args = shift ;
 
-    my $prefix = $self->{TYPE}."_".$self->{NAME}."_" ;
-
-#   foreach my $keyName( keys(%Secure)) {
-#       my $index = $prefix.$keyName;
-#       setKeyValue($index, undef );
-#       $Secure{$self->{NAME}}{$keyName} = "" ;
-#   }
     return ;
 }# end Delete
 
@@ -928,7 +921,7 @@ sub SendData {
     my $byteString = encode_json ( $sendPackage );
 
     my $length = length $byteString ;
-    $byteString = pack("CCCa*", $length&0xff, $length>>8&0xff, $length>>16&0xff, $byteString ) ;
+    $byteString = pack('CCCa*', $length&0xff, $length>>8&0xff, $length>>16&0xff, $byteString ) ;
 
     Log($self, 5, "ByteString: $byteString");
 
@@ -999,7 +992,7 @@ sub Set {
         return "\"set $self->{NAME}\" needs at least two arguments";
     }
 
-    if ( $cmd eq "ServerCommand") {
+    if ( $cmd eq 'ServerCommand') {
 
         my $serverCommand = $args[0];
 
@@ -1017,8 +1010,8 @@ sub Set {
             if ( defined ($ChannelDescriptions{$channel}{Modes}) ) {
                 if ( ! defined ($ChannelDescriptions{$channel}{Modes}{$value})) {
                     my @modes = keys(%{$ChannelDescriptions{$channel}{Modes}}) ;
-            Log($self, 5, "Mode 1: ".join(" ", $modes[0]));
-                    return "unknown value $value choose one of " . join(" ", @modes);
+            Log($self, 5, 'Mode 1: '.join(' ', $modes[0]));
+                    return "unknown value $value choose one of " . join(' ', @modes);
                 }
             } else {
                 $value = int($value) ;
@@ -1026,8 +1019,8 @@ sub Set {
             SendSetData($self, $channel, $value) ;
         } else {
             my @channels = keys(%ChannelDescriptions) ;
-            Log($self, 5, "Channels: ".join(" ", @channels));
-            return "unknown argument $channel choose one of " . join(" ", @channels);
+            Log($self, 5, 'Channels: '.join(' ', @channels));
+            return "unknown argument $channel choose one of " . join(' ', @channels);
         }
     }
 
@@ -1046,7 +1039,7 @@ sub SendServerCommand {
 
     my %ServerCommandPackage = (
         SERVER_COMMAND => {
-            "Command" => $command
+            'Command' => $command
         }
     ) ;
 
@@ -1070,14 +1063,14 @@ sub Get {
 
     ### If not enough arguments have been provided
     if ( !defined($opt) ) {
-        return "\"get Solvis\" needs at least one argument";
+        return '\"get Solvis\" needs at least one argument';
     }
 
     my $channel = $opt;
 
     if ( $channel eq '?' || ! defined($ChannelDescriptions{$channel} ) ) {
         my @channels = keys(%ChannelDescriptions) ;
-        my $params = "" ;
+        my $params = '' ;
         my $firstO = _TRUE_ ;
         foreach my $channel (@channels) {
             if ( $ChannelDescriptions{$channel}{GET} == _FALSE_ ) {
@@ -1097,7 +1090,7 @@ sub Get {
         Log($self, 4, "Get entered, device := $name, Cannel := $channel");
         SendGetData($self, $channel) ;
 
-        return "The reading process was started.\nThe value will be output only in the readings." ;
+        return 'The reading process was started.\nThe value will be output only in the readings.' ;
     }
 
     return ;
@@ -1121,7 +1114,7 @@ sub DbLog_splitFn {
     $reading = $splited[0];;
     $reading =~ tr/://d;
 
-    $unit = "" ;
+    $unit = '' ;
 
     if ( defined( $ChannelDescriptions{$reading}{Unit} ) ) {
         $unit = $ChannelDescriptions{$reading}{Unit} ;
@@ -1297,6 +1290,13 @@ sub DbLog_splitFn {
             </td></tr>
             <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_INHIBIT</code>: </td><td align="left" valign="top">
               Gegenstück zu dem ServerCommand COMMAND_OPTIMIZATION_ENABLE<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>GUI_COMMANDS_ENABLE</code>: </td><td align="left" valign="top">
+              Mithlife dieses Befehls kann die GUI-Steuerung tempor&auml;r deaktiviert werden, z.B. wenn die Wartung der Anlage erfolgt. Steuert man dies &uuml;ber die FHEM-Oberfl&auml;che, so ist ein SET-Befehl g&uuml;nstiger. Aktiviert/Deaktiviert man
+              die h&auml;ndisch, sollte man das entsprechende Attribut setzen.<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
+              Gegenstück zu dem ServerCommand GUI_COMMANDS_ENABLE<BR>
             </td></tr>
             <tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
               Startet den Server neu<BR>

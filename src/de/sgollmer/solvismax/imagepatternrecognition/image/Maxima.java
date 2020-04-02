@@ -20,14 +20,14 @@ public class Maxima {
 	 * @return the coord
 	 */
 	public int getCoord() {
-		return coord;
+		return this.coord;
 	}
 
 	/**
 	 * @return the value
 	 */
 	public int getValue() {
-		return value;
+		return this.value;
 	}
 }
 

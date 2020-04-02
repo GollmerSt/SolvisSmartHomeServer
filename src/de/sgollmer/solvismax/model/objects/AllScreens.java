@@ -48,7 +48,7 @@ public class AllScreens implements ScreenLearnable {
 
 	public Screen getScreen(MyImage image, Solvis solvis) {
 		int configurationMask = solvis.getConfigurationMask();
-		for (OfConfigs<Screen> screenConf : screens.values()) {
+		for (OfConfigs<Screen> screenConf : this.screens.values()) {
 			Screen screen = screenConf.get(configurationMask);
 			if (screen != null && screen.isScreen(image, solvis)) {
 				return screen;
@@ -58,7 +58,7 @@ public class AllScreens implements ScreenLearnable {
 	}
 
 	public void assign(SolvisDescription description) {
-		for (OfConfigs<Screen> screenConf : screens.values()) {
+		for (OfConfigs<Screen> screenConf : this.screens.values()) {
 			screenConf.assign(description);
 		}
 	}
@@ -92,7 +92,7 @@ public class AllScreens implements ScreenLearnable {
 
 		@Override
 		public AllScreens create() throws XmlError {
-			return new AllScreens(homeId, screens);
+			return new AllScreens(this.homeId, this.screens);
 		}
 
 		@Override
@@ -117,10 +117,9 @@ public class AllScreens implements ScreenLearnable {
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens,
-			Solvis solvis) {
+	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens, Solvis solvis) {
 		int configurationMask = solvis.getConfigurationMask();
-		for (OfConfigs<Screen> screenConf : screens.values()) {
+		for (OfConfigs<Screen> screenConf : this.screens.values()) {
 			Screen screen = screenConf.get(configurationMask);
 			if (screen != null) {
 				screen.createAndAddLearnScreen(null, learnScreens, solvis);
@@ -134,7 +133,7 @@ public class AllScreens implements ScreenLearnable {
 	}
 
 	public String getHomeId() {
-		return homeId;
+		return this.homeId;
 	}
 
 }

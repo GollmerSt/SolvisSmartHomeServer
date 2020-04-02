@@ -87,14 +87,8 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 		return this.channelSource.getDivisor();
 	}
 
-	@Override
 	public String getUnit() {
-		if (this.channelSource.getUnit() != null) {
-			return this.channelSource.getUnit();
-		} else {
-			return this.unit;
-		}
-
+		return this.unit;
 	}
 
 	@Override
@@ -109,7 +103,7 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 	@Override
 	public void assign(SolvisDescription description) {
-		if (channelSource != null) {
+		if (this.channelSource != null) {
 			this.channelSource.assign(description);
 		}
 
@@ -150,9 +144,9 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 
 		@Override
 		public ChannelDescription create() throws XmlError {
-			ChannelDescription description = new ChannelDescription(id, buffered, unit, configurationMasks,
-					channelSource);
-			channelSource.setDescription(description);
+			ChannelDescription description = new ChannelDescription(this.id, this.buffered, this.unit,
+					this.configurationMasks, this.channelSource);
+			this.channelSource.setDescription(description);
 			return description;
 		}
 
@@ -234,11 +228,16 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	}
 
 	public boolean isBuffered() {
-		return buffered;
+		return this.buffered;
 	}
 
 	@Override
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
 		return this.channelSource.interpretSetData(singleData);
+	}
+
+	@Override
+	public boolean isModbus(Solvis solvis) {
+		return this.channelSource.isModbus(solvis);
 	}
 }

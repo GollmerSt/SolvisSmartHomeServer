@@ -22,7 +22,7 @@ public enum Strategy {
 	DATE(new Date(), false), UNSIGNED(new Integer(false), true), SIGNED(new Integer(true), true),
 	BOOLEAN(new Boolean(), false);
 
-	//private static final Logger logger = LogManager.getLogger(Strategy.class);
+	// private static final Logger logger = LogManager.getLogger(Strategy.class);
 
 	private final StrategyClass type;
 	private final boolean numeric;
@@ -33,7 +33,7 @@ public enum Strategy {
 	}
 
 	public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws ErrorPowerOn {
-		return type.get(destin, fields, data);
+		return this.type.get(destin, fields, data);
 	}
 
 	public boolean isBoolean() {
@@ -72,7 +72,7 @@ public enum Strategy {
 	}
 
 	public boolean isNumeric() {
-		return numeric;
+		return this.numeric;
 	}
 
 	private static class Integer implements StrategyClass {
@@ -90,7 +90,7 @@ public enum Strategy {
 			}
 			String sub = field.subString(data.getHexString());
 			long result = toInt(sub);
-			if (signed) {
+			if (this.signed) {
 				long threshold = 1 << (4 * field.getLength() - 1);
 				if (result >= threshold) {
 					result -= threshold * 2;
@@ -157,6 +157,5 @@ public enum Strategy {
 			return false;
 		}
 	}
-
 
 }

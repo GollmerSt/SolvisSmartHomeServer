@@ -39,7 +39,7 @@ public class IntegerValue extends SingleData<Integer> {
 
 	@Override
 	public Integer getInt() {
-		return data;
+		return this.data;
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class IntegerValue extends SingleData<Integer> {
 
 	@Override
 	public String toString() {
-		return Integer.toString(data);
+		return Integer.toString(this.data);
 	}
 
 	@Override

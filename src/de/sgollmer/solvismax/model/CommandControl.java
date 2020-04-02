@@ -31,10 +31,12 @@ public class CommandControl extends Command {
 		this.screen = description.getScreen(solvis.getConfigurationMask());
 		this.baseDescription = description;
 		this.setValue = setValue;
-		for (ChannelDescription channelDescription : solvis.getSolvisDescription().getChannelDescriptions()
-				.getChannelDescriptions(this.screen, solvis)) {
-			if (channelDescription != this.baseDescription) {
-				this.descriptions.add(channelDescription);
+		if (!this.isModbus(solvis)) {
+			for (ChannelDescription channelDescription : solvis.getSolvisDescription().getChannelDescriptions()
+					.getChannelDescriptions(this.screen, solvis)) {
+				if (!channelDescription.isModbus(solvis) && channelDescription != this.baseDescription) {
+					this.descriptions.add(channelDescription);
+				}
 			}
 		}
 	}
@@ -45,7 +47,7 @@ public class CommandControl extends Command {
 
 	@Override
 	public boolean isInhibit() {
-		return inhibit;
+		return this.inhibit;
 	}
 
 	@Override
@@ -81,12 +83,12 @@ public class CommandControl extends Command {
 
 		boolean result = true;
 
-		if (!baseCommandExecuted) {
+		if (!this.baseCommandExecuted) {
 			result = this.execute(solvis, this.baseDescription, this.setValue);
 		}
 
 		if (result) {
-			baseCommandExecuted = true;
+			this.baseCommandExecuted = true;
 
 			if (this.setValue != null) {
 				AbortHelper.getInstance().sleep(1000);
@@ -113,11 +115,11 @@ public class CommandControl extends Command {
 		} else {
 			CommandControl qCmp = (CommandControl) queueEntry;
 			boolean sameScreen = qCmp.getScreen(solvis) == this.getScreen(solvis);
-			if ( sameScreen && this.setValue == null && qCmp.setValue == null ) {
-					return new Handling(true, false, false) ;
-				}
+			if (sameScreen && this.setValue == null && qCmp.setValue == null) {
+				return new Handling(true, false, false);
+			}
 			if (this.baseDescription.equals(qCmp.baseDescription)) {
-					return new Handling(this.setValue != null , this.setValue == null, true);
+				return new Handling(this.setValue != null, this.setValue == null, true);
 			} else {
 				return new Handling(false, false, sameScreen);
 			}
@@ -154,5 +156,19 @@ public class CommandControl extends Command {
 			builder.append(", set value: ");
 			builder.append(data.toString());
 		}
+	}
+
+	@Override
+	public boolean isModbus(Solvis solvis) {
+		return this.baseDescription.isModbus(solvis);
+	}
+
+	@Override
+	public boolean isWriting() {
+		return this.setValue != null;
+	}
+
+	@Override
+	public void notExecuted() {
 	}
 }

@@ -20,13 +20,13 @@ public class BaseData {
 
 	private static final String XML_UNITS = "Units";
 	private static final String XML_EXECUTION_DATA = "ExecutionData";
-	
-	public static boolean DEBUG = false ;
+
+	public static boolean DEBUG = false;
 
 	private final String timeZone;
 
 	public int getPort() {
-		return port;
+		return this.port;
 	}
 
 	public String getWritablePath() {
@@ -40,7 +40,7 @@ public class BaseData {
 	private final String writablePathLinux;
 
 	public String getTimeZone() {
-		return timeZone;
+		return this.timeZone;
 	}
 
 	private final Units units;
@@ -54,7 +54,7 @@ public class BaseData {
 	}
 
 	public Units getUnits() {
-		return units;
+		return this.units;
 	}
 
 	public static class Creator extends BaseCreator<BaseData> {
@@ -68,17 +68,17 @@ public class BaseData {
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			switch ( name.getLocalPart() ) {
+			switch (name.getLocalPart()) {
 				case "DEBUG":
-					DEBUG = Boolean.parseBoolean(value) ;
-					break ;
+					DEBUG = Boolean.parseBoolean(value);
+					break;
 			}
 		}
 
 		@Override
 		public BaseData create() throws XmlError, IOException {
-			return new BaseData(executionData.timeZone, executionData.port, executionData.writeablePathWindows,
-					executionData.writablePathLinux, units);
+			return new BaseData(this.executionData.timeZone, this.executionData.port,
+					this.executionData.writeablePathWindows, this.executionData.writablePathLinux, this.units);
 		}
 
 		@Override
@@ -155,7 +155,7 @@ public class BaseData {
 
 			@Override
 			public ExecutionData create() throws XmlError, IOException {
-				return new ExecutionData(timeZone, port, writeablePathWindows, writablePathLinux);
+				return new ExecutionData(this.timeZone, this.port, this.writeablePathWindows, this.writablePathLinux);
 			}
 
 			@Override

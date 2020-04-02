@@ -69,15 +69,15 @@ public class MeasurementsBackupHandler {
 
 		boolean success = true;
 
-		if (!parent.exists()) {
-			success = parent.mkdir();
+		if (!this.parent.exists()) {
+			success = this.parent.mkdir();
 		}
 
 		if (!success) {
-			throw new FileError("Error on creating directory <" + parent.getAbsolutePath() + ">");
+			throw new FileError("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
 		}
 
-		if (!xsdWritten) {
+		if (!this.xsdWritten) {
 
 			File xsd = new File(this.parent, NAME_XSD_MEASUREMENTS_FILE);
 
@@ -103,7 +103,7 @@ public class MeasurementsBackupHandler {
 
 		String rootId = XML_MEASUREMENTS;
 
-		reader.read(source, rootId, new Measurements.Creator(measurements, rootId), xml.getName());
+		reader.read(source, rootId, new Measurements.Creator(this.measurements, rootId), xml.getName());
 	}
 
 	private void update() throws IOException, XMLStreamException {
@@ -122,7 +122,7 @@ public class MeasurementsBackupHandler {
 
 		this.copyFiles();
 
-		File output = new File(parent, NAME_XML_MEASUREMENTS_FILE);
+		File output = new File(this.parent, NAME_XML_MEASUREMENTS_FILE);
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		OutputStream outputStream = new FileOutputStream(output);
@@ -159,16 +159,16 @@ public class MeasurementsBackupHandler {
 
 		@Override
 		public void run() {
-			while (!abort) {
+			while (!this.abort) {
 				try {
 					synchronized (this) {
 						try {
 							this.wait(this.measurementsBackupTime_ms);
 						} catch (InterruptedException e) {
 						}
-						if (!abort) {
+						if (!this.abort) {
 							try {
-								handler.write();
+								this.handler.write();
 							} catch (IOException | XMLStreamException e) {
 							}
 						}
@@ -187,7 +187,7 @@ public class MeasurementsBackupHandler {
 				this.notifyAll();
 			}
 			try {
-				handler.write();
+				this.handler.write();
 			} catch (IOException | XMLStreamException e) {
 			}
 		}
