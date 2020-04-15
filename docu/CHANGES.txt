@@ -13,7 +13,10 @@ Version 01.00.01
 	26.03.2020	Clock-Adjustment funktionierte bei einer Differenz von mehr als 19h nicht mehr
 	
 	02.04.2020	Die Gui-Steuerung funktionierte nach Power-Off nicht mehr, wenn das Feature
-				PowerOffIsServiceAccess aktiviert war. 
+				PowerOffIsServiceAccess aktiviert war.
+				
+				Nach einem User-Zugriff wurde weder die WW-Temperatur noch der Status der
+				WW-Pumpe aktualisiert 
 
 Version 00.11.02
 

@@ -1298,6 +1298,9 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 				</tns:TypeMode>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1323,6 +1326,9 @@
 						</tns:Lower>
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1864,7 +1870,7 @@
 	</tns:Preparations>
 	<tns:Clock timeChannelId="X6.UhrzeitSolvis"
 		screenId="Zeiteinstellung" okScreenId="Uhrzeit / Datum">
-		<tns:ModbusWrite address="0x8000" type="Holding"/>
+		<tns:ModbusWrite address="0x8000" type="Holding" />
 		<tns:Year least="2008">
 			<tns:Rectangle>
 				<tns:TopLeft X="101" Y="58" />

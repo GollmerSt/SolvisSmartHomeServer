@@ -391,7 +391,7 @@ public class Solvis {
 		private int doubleUpdateInterval;
 		boolean abort = false;
 		boolean power = false;
-		boolean powerDownInInterval = false;
+		boolean powerDownAfterLastInterval = false;
 
 		public MeasurementUpdateThread(Unit unit) {
 			super("MeasurementUpdateThread");
@@ -407,7 +407,7 @@ public class Solvis {
 				switch (data.getState()) {
 					case SOLVIS_CONNECTED:
 						MeasurementUpdateThread.this.power = true;
-						MeasurementUpdateThread.this.powerDownInInterval = false;
+						MeasurementUpdateThread.this.powerDownAfterLastInterval = false;
 						break;
 					case POWER_OFF:
 						MeasurementUpdateThread.this.power = false;
@@ -448,12 +448,12 @@ public class Solvis {
 								} catch (InterruptedException e) {
 								}
 							}
-							if (!this.abort && !this.powerDownInInterval) {
+							if (!this.abort && !this.powerDownAfterLastInterval) {
 								Solvis.this.distributor.sendCollection(getAllSolvisData().getMeasurements());
 							}
 
 							if (!this.power) {
-								this.powerDownInInterval = true;
+								this.powerDownAfterLastInterval = true;
 							}
 						}
 					}

@@ -21,7 +21,7 @@ public class Version {
     
     @SuppressWarnings("static-method")
 	public String getVersion() {
-    	return "01.00.01 alpha" ;
+    	return "01.00.01 modbus alpha" ;
     }
     
     @SuppressWarnings("static-method")
