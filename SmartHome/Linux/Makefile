@@ -2,6 +2,8 @@ SHELL = /bin/sh
 fhemDir = /opt/fhem
 fhemModul = 73_SolvisClient.pm
 fhemCommand = ./contrib/commandref_join.pl -noWarnings
+serviceFhem = fhem.service
+fhemRestart = 0
 solvisDir = /opt/SolvisSmartHomeServer
 solvisJar = SolvisSmartHomeServer.jar
 baseXml = base
@@ -14,6 +16,9 @@ javaAgentlib = jdwp=transport=dt_socket,suspend=n,server=y,address=$(javaDebugPo
 perl = /usr/bin/perl
 account = fhem
 group = dialout
+start = sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar)
+startDebug = sudo -u $(account) $(java) -agentlib:$(javaAgentlib) -jar $(solvisDir)/$(solvisJar)
+startLocal = sudo -u $(account) $(java) -jar $(solvisJar)
 
 .SUFFIXES:
 
@@ -22,6 +27,10 @@ install: installFHEM installSolvis
 
 
 uninstall: uninstallFHEM uninstallSolvis
+
+
+copyService: $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
+
 
 
 installService: installSolvis
@@ -61,7 +70,7 @@ uninstallSolvis: uninstallService uninstallDebugService
 	rm $(systemD)/$(serviceDebug).service
 	
 
-installSolvis: $(solvisDir)/$(solvisJar) $(solvisDir)/$(baseXml).xml  $(solvisDir)/$(baseXml).xsd $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
+installSolvis: $(solvisDir)/$(solvisJar) $(solvisDir)/$(baseXml).xml  $(solvisDir)/$(baseXml).xsd copyService
 
 
 update: stopServices install
@@ -73,21 +82,30 @@ updateDebug: stopServices install
 
 
 learn: stopServices installSolvis
-	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-learn
+	$(start) --server-learn
 	systemctl start $(service)
 
 
+testmail:
+	$(start) --test-mail
+	
+	
+crypt:
+	@read -p "Enter the word to be encrypted:" password; \
+	$(startLocal) --string-to-crypt=$$password
+
+
 learnDebug: stopServices installSolvis
-	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-learn
+	$(start) --server-learn
 	systemctl start $(serviceDebug)
 
 
 debugServer: stopServices installSolvis
-	sudo -u $(account) $(java) -agentlib:$(javaAgentlib) -jar $(solvisDir)/$(solvisJar)
+	$(startDebug)
 	
 
 terminate: stopServices installSolvis
-	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar) --server-terminate
+	$(start) --server-terminate
 
 
 foreground: stopServices installSolvis
@@ -104,6 +122,10 @@ $(fhemDir)/FHEM/$(fhemModul): $(fhemModul)
 	cp $< $@
 	chown -c $(account):$(group) $@ 
 	cd $(fhemDir);sudo -u $(account) $(perl) $(fhemCommand)
+ 	ifeq ($(fhemRestart),1)
+		systemctl restart $(serviceFhem)
+ 	endif
+
 
 
 $(solvisDir)/$(solvisJar): $(solvisJar) $(solvisDir)
@@ -124,7 +146,9 @@ $(solvisDir)/$(baseXml).xsd : $(baseXml).xsd
 
 $(systemD)/$(service).service: $(service).service
 	cp $< $@
+	systemctl daemon-reload
 
 
 $(systemD)/$(serviceDebug).service: $(serviceDebug).service
 	cp $< $@
+	systemctl daemon-reload

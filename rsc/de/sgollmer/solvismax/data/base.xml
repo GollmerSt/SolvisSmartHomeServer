@@ -6,7 +6,7 @@
 		port="10735" writablePathLinux="/opt/fhem" />
 	<tns:Units>
 		<tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true"
-			account="account" password="password" url="http://aaa.bbb.ccc.ddd"
+			account="account" password="AES-coded" url="http://aaa.bbb.ccc.ddd"
 			defaultAverageCount="12" measurementHysteresisFactor="4"
 			defaultReadMeasurementsInterval_ms="10000"
 			forcedUpdateInterval_ms="3600000" doubleUpdateInterval_ms="10000"
@@ -36,4 +36,14 @@
 			</tns:Features>
 		</tns:Unit>
 	</tns:Units>
+	<tns:ExceptionMail port="587" password="AES-coded"
+		name="Vorname Nachname" securityType="TLS"
+		provider="securesmtp.t-online.de" from="Mailadresse@t-online.de">
+		<tns:Recipients>
+			<tns:Recipient address="Mailadresse@t-online.de"
+				type="TO" />
+			<tns:Recipient address="Mailadresse@gmail.com"
+				type="TO" />
+		</tns:Recipients>
+	</tns:ExceptionMail>
 </tns:BaseData>

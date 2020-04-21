@@ -14,32 +14,44 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
+import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 
 public class SolvisState extends Observable<SolvisState> {
 
 	private static final Logger logger = LogManager.getLogger(SolvisState.class);
 
+	private final Solvis solvis;
 	private State state = State.UNDEFINED;
 	private int errorCnt = 0;
 	private long timeOfLastSwitchingOn = -1;
 	private Map<String, Boolean> errorStates = new HashMap<>();
+	private MyImage errorScreen = null;
+	private String lastMessage = null;
+
+	public SolvisState(Solvis solvis) {
+		this.solvis = solvis;
+	}
 
 	public enum State {
 		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, SOLVIS_DISCONNECTED, ERROR, UNDEFINED
 	}
 
-	public void error(boolean error, String errorName) {
+	public synchronized void error(boolean error, String errorName, MyImage image) {
 		Boolean last = this.errorStates.get(errorName);
 		if (last == null) {
 			last = false;
 		}
 		if (last != error) {
+			this.errorScreen = image;
 			this.errorStates.put(errorName, error);
 			this.errorCnt += error ? 1 : -1;
+			if (error) {
+				this.lastMessage = "The Solvis system \"" + this.solvis.getUnit().getId()
+						+ "\" reports the following error: " + errorName;
+			}
 			this.notify(this);
-			logger.info(error ? "Solvis error <" + errorName + "> detected!"
-					: "Solvis error  <" + errorName + "> cleared.");
+			logger.info(error ? this.lastMessage : "Solvis error  <" + errorName + "> cleared.");
 			logger.info(this.errorCnt > 0 ? "Solvis error!" : "Solvis error cleared.");
 		}
 	}
@@ -91,6 +103,14 @@ public class SolvisState extends Observable<SolvisState> {
 
 	public long getTimeOfLastSwitchingOn() {
 		return this.timeOfLastSwitchingOn;
+	}
+
+	public synchronized MyImage getErrorScreen() {
+		return this.errorScreen;
+	}
+
+	public synchronized String getLastMessage() {
+		return this.lastMessage;
 	}
 
 }

@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.MessagingException;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.logging.log4j.Level;
@@ -22,21 +23,54 @@ import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
 import de.sgollmer.solvismax.connection.TerminateClient;
+import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.Logger2;
+import de.sgollmer.solvismax.log.Logger2.LogErrors;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
 
 public class Main {
 
 	public static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
-	
+
 	private static Logger logger;
 	private static Level LEARN;
 
 	public static void main(String[] args) {
+
+		for (String arg : args) {
+			Matcher matcher = cmdPattern.matcher(arg);
+			if (!matcher.matches()) {
+				System.err.println("Unknowwn argument: " + arg);
+			} else {
+
+				String command = matcher.group(1);
+				String value = null;
+				if (matcher.groupCount() >= 3) {
+					value = matcher.group(3);
+				}
+
+				switch (command) {
+					case "string-to-crypt":
+						if (value == null) {
+							System.err.println("To less arguments!");
+							System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
+						}
+						try {
+							String out = new CryptAes().encrypt(value);
+							System.out.println(out);
+							System.exit(Constants.ExitCodes.OK);
+						} catch (Throwable e) {
+							System.err.println(e.getMessage());
+							System.exit(Constants.ExitCodes.CRYPTION_FAIL);
+						}
+						break;
+				}
+			}
+		}
 
 		BaseData baseData = null;
 		try {
@@ -49,22 +83,24 @@ public class Main {
 
 		String path = baseData.getWritablePath();
 
-		boolean success = false;
+		LogErrors error = LogErrors.INIT;
 
 		try {
-			success = Logger2.createInstance(path);
+			error = Logger2.createInstance(path);
 		} catch (IOException e) {
-			success = false;
+			error = LogErrors.INIT;
 			e.printStackTrace();
 		}
 
-		if (!success) {
+		if (error == LogErrors.INIT) {
 			System.err.println("Log4j couldn't initalized");
+		} else if (error == LogErrors.PREVIOUS) {
+			System.exit(Logger2.getInstance().getExitCode());
 		}
 
 		logger = LogManager.getLogger(Main.class);
 		logger.info("Server started");
-		LEARN = Level.getLevel("LEARN") ;
+		LEARN = Level.getLevel("LEARN");
 		boolean learn = false;
 
 		for (String arg : args) {
@@ -91,8 +127,18 @@ public class Main {
 						logger.info("server-restart");
 						Main.serverRestartAndExit(baseData, value);
 						break;
+					case "test-mail":
+						try {
+							baseData.getExceptionMail().send("Test mail", "This is a test mail", null);
+							System.exit(Constants.ExitCodes.OK);
+						} catch (MessagingException | IOException e) {
+							logger.log(LEARN, "Mailing error", e);
+							System.exit(Constants.ExitCodes.MAILING_ERROR);
+						}
+						break;
 					default:
 						System.err.println("Unknowwn argument: " + arg);
+						System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
 						break;
 				}
 			}
@@ -120,7 +166,7 @@ public class Main {
 		if (learn) {
 			try {
 				boolean learned = tempInstances.learn();
-				if ( !learned ) {
+				if (!learned) {
 					logger.log(LEARN, "Nothing to learn!");
 				}
 			} catch (IOException | XmlError | XMLStreamException | LearningError e) {
@@ -133,12 +179,12 @@ public class Main {
 
 		try {
 			tempInstances.init();
-		} catch (IOException | XmlError | XMLStreamException  e) {
+		} catch (IOException | XmlError | XMLStreamException e) {
 			logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
-		} catch (LearningError e2){
-			logger.error( e2.getMessage() );
+		} catch (LearningError e2) {
+			logger.error(e2.getMessage());
 			System.exit(ExitCodes.LEARNING_NECESSARY);
 		}
 
@@ -163,8 +209,7 @@ public class Main {
 		instances.initialized();
 		server.start();
 
-
-		//runnable.run();
+		// runnable.run();
 
 	}
 

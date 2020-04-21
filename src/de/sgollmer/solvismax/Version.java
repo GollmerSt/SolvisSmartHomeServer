@@ -19,12 +19,10 @@ public class Version {
         private static final Version INSTANCE = new Version();
     }
     
-    @SuppressWarnings("static-method")
 	public String getVersion() {
-    	return "01.00.01 modbus alpha" ;
+    	return "01.00.02 modbus alpha" ;
     }
     
-    @SuppressWarnings("static-method")
 	public String getFormatVersion() {
     	return "01.02" ;
     }

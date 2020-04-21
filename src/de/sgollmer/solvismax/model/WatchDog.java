@@ -165,7 +165,7 @@ public class WatchDog {
 
 				this.abort = !this.humanAccess.mustWait() && !this.errorDetected;
 
-				this.solvis.getSolvisState().error(this.errorDetected, "Error screen");
+				this.solvis.getSolvisState().error(this.errorDetected, "Error screen", this.realScreen.getImage() );
 
 				synchronized (this) {
 					if (!this.abort) {

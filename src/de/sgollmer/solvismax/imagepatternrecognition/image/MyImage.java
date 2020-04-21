@@ -367,4 +367,8 @@ public class MyImage {
 		return "Origin: " + this.origin + ", max: " + this.maxRel;
 	}
 
+	public BufferedImage getImage() {
+		return this.image;
+	}
+
 }

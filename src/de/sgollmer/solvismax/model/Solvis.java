@@ -55,7 +55,7 @@ public class Solvis {
 	private static final Logger logger = LogManager.getLogger(Solvis.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
-	private final SolvisState solvisState = new SolvisState();
+	private final SolvisState solvisState = new SolvisState(this);
 	private final SolvisDescription solvisDescription;
 	private final AllSolvisData allSolvisData = new AllSolvisData(this);
 	private SystemGrafics grafics;
@@ -186,7 +186,7 @@ public class Solvis {
 	}
 
 	public boolean writeUnsignedIntegerModbusData(ModbusAccess access, long data) throws IOException {
-		int [] writeData = new int[] {(int) (data >> 16L), (int)(data & 0xffffL)} ;
+		int[] writeData = new int[] { (int) (data >> 16L), (int) (data & 0xffffL) };
 		return this.connection.writeModbus(access, writeData);
 	}
 
@@ -391,7 +391,6 @@ public class Solvis {
 		private int doubleUpdateInterval;
 		boolean abort = false;
 		boolean power = false;
-		boolean powerDownAfterLastInterval = false;
 
 		public MeasurementUpdateThread(Unit unit) {
 			super("MeasurementUpdateThread");
@@ -407,10 +406,10 @@ public class Solvis {
 				switch (data.getState()) {
 					case SOLVIS_CONNECTED:
 						MeasurementUpdateThread.this.power = true;
-						MeasurementUpdateThread.this.powerDownAfterLastInterval = false;
 						break;
 					case POWER_OFF:
 						MeasurementUpdateThread.this.power = false;
+						Solvis.this.distributor.sendCollection(getAllSolvisData().getMeasurements());
 				}
 
 			}
@@ -448,12 +447,8 @@ public class Solvis {
 								} catch (InterruptedException e) {
 								}
 							}
-							if (!this.abort && !this.powerDownAfterLastInterval) {
+							if (!this.abort && this.power) {
 								Solvis.this.distributor.sendCollection(getAllSolvisData().getMeasurements());
-							}
-
-							if (!this.power) {
-								this.powerDownAfterLastInterval = true;
 							}
 						}
 					}

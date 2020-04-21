@@ -119,5 +119,4 @@ public abstract class CreatorByXML<T> {
 			}
 		}
 	}
-
 }

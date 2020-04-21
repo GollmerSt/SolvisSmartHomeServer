@@ -18,6 +18,7 @@ public class Constants {
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
 	public static final String RESOURCE_PATH = "data";
 	public static final int SCREEN_SAVER_IGNORED_FRAME_SIZE = 3;
+	public static final int CRYPT_PREVIOUS = 233;
 	/**
 	 * Max. number of tries, to get to the necessarry screen
 	 */
@@ -69,5 +70,8 @@ public class Constants {
 		public static final int RESTART_FAILURE = 13;
 		public static final int LEARNING_FAILED = 14;
 		public static final int LEARNING_NECESSARY = 15;
+		public static final int ARGUMENT_FAIL = 16;
+		public static final int CRYPTION_FAIL = 17;
+		public static final int MAILING_ERROR = 18;
 	}
 }

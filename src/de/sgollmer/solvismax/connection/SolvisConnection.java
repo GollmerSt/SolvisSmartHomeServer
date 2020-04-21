@@ -83,6 +83,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	}
 
 	private class MyAuthenticator extends Authenticator {
+
+		private PasswordAuthentication passwordAuthentication = null;
+
 		@Override
 		protected PasswordAuthentication getPasswordAuthentication() {
 			// System.out.println( "Hier erfolgt die Authentifizierung" ) ;
@@ -90,15 +93,38 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			// getRequestingURL(), getRequestingHost(),
 			// getRequestingSite(), getRequestingPort() );
 
-			return new PasswordAuthentication(SolvisConnection.this.accountInfo.getAccount(),
-					SolvisConnection.this.accountInfo.createPassword());
+			if (this.passwordAuthentication == null) {
+
+				char[] p = SolvisConnection.this.accountInfo.cP();
+
+				this.passwordAuthentication = new PasswordAuthentication(SolvisConnection.this.accountInfo.getAccount(),
+						p);
+
+				for (int i = 0; i < p.length; ++i) {
+					p[i] = 0;
+				}
+			}
+			return this.passwordAuthentication;
 		}
+
+		public void connected() {
+
+			if (this.passwordAuthentication != null) {
+				char[] p = this.passwordAuthentication.getPassword();
+				for (int i = 0; i < p.length; ++i) {
+					p[i] = '\0';
+				}
+				this.passwordAuthentication = null;
+			}
+		}
+
 	}
 
 	public InputStream connect(String suffix) throws IOException {
 		try {
 			this.connectTime = System.currentTimeMillis();
-			Authenticator.setDefault(new MyAuthenticator());
+			MyAuthenticator authenticator = new MyAuthenticator();
+			Authenticator.setDefault(authenticator);
 			URL url = new URL("http://" + this.urlBase + suffix);
 			synchronized (this) {
 				this.urlConnection = (HttpURLConnection) url.openConnection();
@@ -107,6 +133,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 //				System.out.println(
 //						"Connect-Timeout: " + uc.getConnectTimeout() + ", Read-Timeout: " + uc.getReadTimeout());
 				InputStream in = this.urlConnection.getInputStream();
+				authenticator.connected();
 				this.setConnected();
 				return in;
 			}

@@ -18,6 +18,7 @@ import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -51,6 +52,10 @@ public class Instances {
 		for (Unit xmlUnit : baseData.getUnits().getUnits()) {
 			Solvis solvis = this.createSolvisInstance(xmlUnit);
 			this.units.add(solvis);
+			ExceptionMail mail = baseData.getExceptionMail();
+			if (mail != null) {
+				solvis.getSolvisState().register(baseData.getExceptionMail());
+			}
 		}
 	}
 

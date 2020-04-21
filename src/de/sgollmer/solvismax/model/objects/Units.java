@@ -13,15 +13,18 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.apache.logging.log4j.Level;
+
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.AccountInfo;
+import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.log.Logger2;
+import de.sgollmer.solvismax.log.Logger2.DelayedMessage;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Units {
-
-	// private static final Logger logger =
-	// LogManager.getLogger(SolvisConnection.class);
 
 	private static final String XML_UNITS_UNIT = "Unit";
 	private static final String XML_FEATURES = "Features";
@@ -86,7 +89,7 @@ public class Units {
 		private final String type;
 		private final String url;
 		private final String account;
-		private final String password;
+		private final CryptAes password;
 		private final int defaultAverageCount;
 		private final int measurementHysteresisFactor;
 		private final int defaultReadMeasurementsInterval_ms;
@@ -99,7 +102,7 @@ public class Units {
 		private final boolean modbus;
 		private final Features features;
 
-		public Unit(String id, String type, String url, String account, String password, int defaultAverageCount,
+		public Unit(String id, String type, String url, String account, CryptAes password, int defaultAverageCount,
 				int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms, int forcedUpdateInterval_ms,
 				int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
 				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, boolean modbus, Features features) {
@@ -152,7 +155,7 @@ public class Units {
 			private String type;
 			private String url;
 			private String account;
-			private String password;
+			private CryptAes password = new CryptAes();
 			private int defaultAverageCount;
 			private int measurementHysteresisFactor;
 			private int defaultReadMeasurementsInterval_ms;
@@ -185,7 +188,14 @@ public class Units {
 						this.account = value;
 						break;
 					case "password":
-						this.password = value;
+						try {
+							this.password.decrypt(value);
+						} catch (Throwable e) {
+							String m = "Decrypt error: " + e.getMessage();
+							Logger2.addDelayedErrorMessage(
+									new DelayedMessage(Level.ERROR, m, Unit.class, Constants.ExitCodes.CRYPTION_FAIL));
+							System.err.println(m);
+						}
 						break;
 					case "defaultAverageCount":
 						this.defaultAverageCount = Integer.parseInt(value);
@@ -253,12 +263,8 @@ public class Units {
 		}
 
 		@Override
-		public char[] createPassword() {
-			return this.password.toCharArray();
-		}
-
-		public String getPassword() {
-			return this.password;
+		public char[] cP() {
+			return this.password.cP();
 		}
 
 		public int getDefaultAverageCount() {

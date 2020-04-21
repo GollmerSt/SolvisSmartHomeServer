@@ -309,7 +309,7 @@ public class ErrorDetection {
 				String channelId = condition.getChannelId();
 				boolean error = channelId.equals(data.getDescription().getId())
 						&& data.getBool() == condition.getErrorValue();
-				data.getDatas().getSolvis().getSolvisState().error(error, channelId);
+				data.getDatas().getSolvis().getSolvisState().error(error, channelId, null);
 
 			}
 

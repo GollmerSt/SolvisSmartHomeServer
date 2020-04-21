@@ -12,7 +12,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -30,10 +35,33 @@ public class Logger2 {
 		return LOGGER;
 	}
 
-	public static boolean createInstance(String pathName) throws IOException {
+	public enum LogErrors {
+		OK, INIT, PREVIOUS
+	};
+
+	public static LogErrors createInstance(String pathName) throws IOException {
 		LOGGER = new Logger2(pathName);
-		return LOGGER.setConfiguration();
+		if (!LOGGER.setConfiguration()) {
+			return LogErrors.INIT;
+		}
+		return LOGGER.outputDelayedMessages() ? LogErrors.PREVIOUS : LogErrors.OK;
 	}
+
+	public static class DelayedMessage {
+		private final Level level;
+		private final String message;
+		private final Class<?> loggedClass;
+		private final int errorCode;
+
+		public DelayedMessage(Level level, String message, Class<?> loggedClass, int errorCode) {
+			this.level = level;
+			this.message = message;
+			this.loggedClass = loggedClass;
+			this.errorCode = errorCode;
+		}
+	}
+
+	private static Collection<DelayedMessage> delayedErrorMessages = new ArrayList<>();
 
 	private static Logger2 LOGGER;
 
@@ -95,6 +123,35 @@ public class Logger2 {
 		ConfigurationSource source = new ConfigurationSource(input);
 		Configurator.initialize(null, source);
 		return true;
+	}
+
+	public static void addDelayedErrorMessage(DelayedMessage message) {
+		Logger2.delayedErrorMessages.add(message);
+	}
+
+	private boolean outputDelayedMessages() {
+		boolean error = false;
+		for (DelayedMessage message : Logger2.delayedErrorMessages) {
+			if (message.level.isMoreSpecificThan(Level.ERROR)) {
+				error = true;
+			}
+			Logger logger = LogManager.getLogger(message.loggedClass);
+			logger.log(message.level, message.message);
+		}
+		return error;
+	}
+
+	public int getExitCode() {
+		Level level = Level.INFO;
+		int errorCode = -1;
+		for (DelayedMessage message : Logger2.delayedErrorMessages) {
+
+			if (!message.level.equals(level) && message.level.isLessSpecificThan(level) && message.errorCode >= 0) {
+				errorCode = message.errorCode;
+				level = message.level;
+			}
+		}
+		return errorCode;
 	}
 
 }
