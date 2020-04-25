@@ -589,9 +589,14 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 			<tns:PreparationRef refId="Button_HK1" />
+			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen id="TagestemperaturSelected_HK1" backId="Home"
 			previousId="Tagestemperatur_HK1">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x07"
+					compareMask="0x01" />
+			</tns:ConfigurationMasks>
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="80" Y="45" />
@@ -604,6 +609,28 @@
 					<tns:BottomRight X="105" Y="60" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen id="TagestemperaturSelected_HK1" backId="Home"
+			previousId="Tagestemperatur_HK1">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x02"
+					compareMask="0x02" />
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="80" Y="45" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Tagestemperatur" />
+			<tns:ScreenGrafic id="TagestemperaturSelected"
+				exact="true">
+				<tns:Field>
+					<tns:TopLeft X="65" Y="55" />
+					<tns:BottomRight X="105" Y="60" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen id="Tagestemperatur_HK2" backId="Home"
 			previousId="Home">
@@ -624,6 +651,7 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 			<tns:PreparationRef refId="Button_HK2" />
+			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
 		<tns:Screen id="TagestemperaturSelected_HK2" backId="Home"
 			previousId="Tagestemperatur_HK2">
@@ -643,6 +671,7 @@
 					<tns:BottomRight X="105" Y="60" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
 		<tns:Screen id="Nachttemperatur_HK1" backId="Home"
 			previousId="Home">
@@ -684,9 +713,14 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 			<tns:PreparationRef refId="Button_HK1" />
+			<tns:LastPreparationRef refId="Button_HK1"/>
 		</tns:Screen>
 		<tns:Screen id="NachttemperaturSelected_HK1" backId="Home"
 			previousId="Nachttemperatur_HK1">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x07"
+					compareMask="0x01" />
+			</tns:ConfigurationMasks>
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="80" Y="45" />
@@ -699,6 +733,28 @@
 					<tns:BottomRight X="105" Y="60" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+		</tns:Screen>
+		<tns:Screen id="NachttemperaturSelected_HK1" backId="Home"
+			previousId="Nachttemperatur_HK1">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x02"
+					compareMask="0x02" />
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="80" Y="45" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Nachttemperatur" />
+			<tns:ScreenGrafic id="NachttemperaturSelected"
+				exact="true">
+				<tns:Field>
+					<tns:TopLeft X="65" Y="55" />
+					<tns:BottomRight X="105" Y="60" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+			<tns:LastPreparationRef refId="Button_HK1"/>
 		</tns:Screen>
 		<tns:Screen id="Nachttemperatur_HK2" backId="Home"
 			previousId="Home">
@@ -719,6 +775,7 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 			<tns:PreparationRef refId="Button_HK2" />
+			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
 		<tns:Screen id="NachttemperaturSelected_HK2" backId="Home"
 			previousId="Nachttemperatur_HK2">
@@ -738,6 +795,7 @@
 					<tns:BottomRight X="105" Y="60" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
 		<tns:Screen id="Sonstiges_Nutzerauswahl"
 			backId="Sonstiges 2" previousId="Sonstiges 2">

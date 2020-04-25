@@ -3,9 +3,12 @@ package de.sgollmer.solvismax.crypt;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
+import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -13,14 +16,16 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import de.sgollmer.solvismax.Constants;
 
 public class CryptAes {
 
 	private byte[] v = null;
 
-	private static int[] primes = new int[] { 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
-			71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
+	private static int[] primes = new int[] { 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
+			73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
 			191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307,
 			311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433,
 			439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571,
@@ -41,15 +46,7 @@ public class CryptAes {
 		Key aesKey = new SecretKeySpec(CryptAes.cK(), "AES");
 		Cipher cipher = Cipher.getInstance("AES");
 		cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-		this.v = word.getBytes() ;
-		int previous = Constants.CRYPT_PREVIOUS ; 
-		for ( int i = 0 ; i < this.v.length ; ++i ) {
-			byte b = this.v[i] ;
-			byte x = (byte) primes[previous%primes.length] ;
-			byte r = (byte) (b ^ x) ;
-			this.v[i] = r ;
-			previous = b & 0xff;
-		}
+		this.cI(word);
 		byte[] encrypted = cipher.doFinal(this.v);
 		Encoder base64Encoder = Base64.getEncoder();
 		return base64Encoder.encodeToString(encrypted);
@@ -65,20 +62,45 @@ public class CryptAes {
 		this.v = cipher.doFinal(crypted);
 	}
 
+	private void cI(String word) {
+		byte[] bb = word.getBytes();
+		this.v = new byte[(bb.length + 16) / 16 * 16 - 1];
+		this.v[0] = (byte) (bb.length & 0xff);
+		this.v[1] = (byte) ((bb.length >> 8) & 0xff);
+		for (int i = 0; i < bb.length; ++i) {
+			this.v[i + 2] = bb[i];
+		}
+		int previous = Constants.CRYPT_PREVIOUS;
+		for (int i = 0; i < this.v.length; ++i) {
+			byte b = this.v[i];
+			byte x = (byte) primes[previous % primes.length];
+			byte c = (byte) ((b + previous) ^ x);
+			this.v[i] = c;
+			previous = c & 0xff;
+		}
+	}
+
 	public char[] cP() {
-		byte [] result = null ;
+		byte[] result = null;
 		if (this.v != null) {
-			result = new byte[this.v.length] ;
-			int previous = Constants.CRYPT_PREVIOUS ; 
-			for ( int i = 0 ; i < this.v.length ; ++i ) {
-				byte b = this.v[i] ;
-				byte x = (byte) primes[previous%primes.length] ;
-				byte r = (byte) (b ^ x) ;
-				result[i] = r ;
-				previous = r & 0xff;
+			result = new byte[this.v.length];
+			int previous = Constants.CRYPT_PREVIOUS;
+			for (int i = 0; i < this.v.length; ++i) {
+				byte c = this.v[i];
+				byte x = (byte) primes[previous % primes.length];
+				byte b = (byte) ((c ^ x) - previous);
+				result[i] = b;
+				previous = c & 0xff;
 			}
 		}
-		return new String(result).toCharArray();
+		int length = (result[0] & 0xff) | (result[1] << 8 & 0xff);
+		return new String(Arrays.copyOfRange(result, 2, length + 2)).toCharArray();
+	}
+
+	public void set(String value) {
+		if (this.v == null) {
+			this.cI(value);
+		}
 	}
 
 }

@@ -16,7 +16,8 @@
 				<complexType>
 					<sequence>
 						<element name="ConfigurationMask"
-							type="tns:ConfigurationMask" maxOccurs="unbounded" minOccurs="0">
+							type="tns:ConfigurationMask" maxOccurs="unbounded"
+							minOccurs="0">
 						</element>
 					</sequence>
 				</complexType>
@@ -27,10 +28,8 @@
 					<documentation>
 						Bildschirmpunkt des Vorgänger-Bildschirms
 						(previousId), der gedrückt werden muss, um auf
-						den vorliegenden zu
-						gelangen. Können auch
-						mehrere sein (z.B. Main-Bildschirm Auswahl
-						des
+						den vorliegenden zu gelangen. Können auch
+						mehrere sein (z.B. Main-Bildschirm Auswahl des
 						Heizkreises)
 					</documentation>
 				</annotation>
@@ -53,8 +52,7 @@
 				<annotation>
 					<documentation>
 						Wenn sich der Bildschirm aus einem
-						Bildschirmbereich
-						bestimmt werden kann, die
+						Bildschirmbereich bestimmt werden kann, die
 						Definition erfolgt über eine Refenzierung
 					</documentation>
 				</annotation>
@@ -64,8 +62,7 @@
 				<annotation>
 					<documentation>
 						Wenn sich der Bildschirm aus einem
-						Bildschirmbereich
-						bestimmt werden kann
+						Bildschirmbereich bestimmt werden kann
 					</documentation>
 				</annotation>
 			</element>
@@ -75,34 +72,31 @@
 					<documentation>
 						Zur Erkennung von Useraktivitäten, Änderungen
 						innerhalb dieser Rechtecke werden nicht als
-						Useraktivität
-						registriert Dient der Untersuchung
-						von Usereingriffen. Im
-						Ruhezustand wird jede
-						Minute untersucht, ob der Bildschirminhalt
-						sich
+						Useraktivität registriert Dient der Untersuchung
+						von Usereingriffen. Im Ruhezustand wird jede
+						Minute untersucht, ob der Bildschirminhalt sich
 						geändert hat. Da auf einigen Bildschirmen
-						ständig sich ändernde
-						Werte angezeigt werden
-						(Uhrzeit, Istwerte oder Anlegenstatus)
-						können
+						ständig sich ändernde Werte angezeigt werden
+						(Uhrzeit, Istwerte oder Anlegenstatus) können
 						bestimmte Teile des Bildschirms mit Hilfe der
 						"IgnoreRectangle" beim Vergleich ausgeblendt
-						werden. Achtung: Im
-						rectangle-Element gibt es
-						auch noch das "invertFunction"-Attribut,
-						damit
+						werden. Achtung: Im rectangle-Element gibt es
+						auch noch das "invertFunction"-Attribut, damit
 						kann ein bestimmter Bereich doch wieder zum
-						Vergleich
-						herangezogen werden, auch wenn er
-						durch die anderen
-						Ingnorerectangles maskiert
+						Vergleich herangezogen werden, auch wenn er
+						durch die anderen Ingnorerectangles maskiert
 						ist. Ist etwas unsauber gelöst.
 					</documentation>
 				</annotation>
 			</element>
 			<element name="PreparationRef" type="tns:PreparationRef"
 				maxOccurs="1" minOccurs="0">
+			</element>
+			<element name="LastPreparationRef"
+				type="tns:PreparationRef" maxOccurs="1" minOccurs="0">
+                <annotation>
+                	<documentation>Sollte der Screeninhalt nicht eindeutig sein (nur bei Heizkreis-Screens möglich), wird noch zusätzlich bei der Identifizierung die letzte Preparation (evtl. auch eines Vorgängerbildschirms zum Vergleich hinzugenommen.</documentation>
+                </annotation>
 			</element>
 		</sequence>
 		<attribute name="id" type="string" use="required"></attribute>

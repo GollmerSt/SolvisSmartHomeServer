@@ -39,6 +39,7 @@ public class Preparation implements Assigner {
 	}
 
 	public boolean execute(Solvis solvis) throws IOException, TerminationException {
+		solvis.getHistory().set(this);
 		if (!this.screenGrafic.isElementOf(solvis.getCurrentScreen().getImage(), solvis)) {
 			return true;
 		} else {
@@ -61,6 +62,7 @@ public class Preparation implements Assigner {
 			solvis.send(this.touchPoint);
 			solvis.send(this.touchPoint);
 			this.screenGrafic.learn(solvis);
+			solvis.getHistory().set(this);
 			return true;
 		} else {
 			boolean result = false;

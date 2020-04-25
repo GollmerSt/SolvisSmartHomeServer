@@ -109,13 +109,13 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 		public void connected() {
 
-			if (this.passwordAuthentication != null) {
-				char[] p = this.passwordAuthentication.getPassword();
-				for (int i = 0; i < p.length; ++i) {
-					p[i] = '\0';
-				}
-				this.passwordAuthentication = null;
-			}
+//			if (this.passwordAuthentication != null) {
+//				char[] p = this.passwordAuthentication.getPassword();
+//				for (int i = 0; i < p.length; ++i) {
+//					p[i] = '\0';
+//				}
+//				this.passwordAuthentication = null;
+//			}
 		}
 
 	}

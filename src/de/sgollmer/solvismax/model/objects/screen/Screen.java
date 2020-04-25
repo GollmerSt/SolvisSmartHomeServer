@@ -53,6 +53,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	private static final String XML_SCREEN_OCR = "ScreenOcr";
 	private static final String XML_IGNORE_RECTANGLE = "IgnoreRectangle";
 	private static final String XML_PREPARATION_REF = "PreparationRef";
+	private static final String XML_LAST_PREPARATION_REF = "LastPreparationRef";
 
 	private final String id;
 	private final String previousId;
@@ -66,7 +67,9 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	private final Collection<String> screenGraficRefs;
 	private final Collection<Rectangle> ignoreRectangles;
 	private final String preparationId;
+	private final String lastPreparationId;
 	private Preparation preparation = null;
+	private Preparation lastPreparation = null;
 
 	public OfConfigs<Screen> previousScreen = null;
 	public OfConfigs<Screen> alternativePreviousScreen = null;
@@ -76,7 +79,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	public Screen(String id, String previousId, String alternativePreviousId, String backId, boolean ignoreChanges,
 			ConfigurationMasks configurationMasks, TouchPoint touchPoint, TouchPoint alternativeTouchPoint,
 			Collection<String> screenGraficRefs, Collection<ScreenOcr> ocrs, Collection<Rectangle> ignoreRectangles,
-			String preparationId) {
+			String preparationId, String lastPreparationId) {
 		this.id = id;
 		this.previousId = previousId;
 		this.alternativePreviousId = alternativePreviousId;
@@ -89,6 +92,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		this.screenCompares.addAll(ocrs);
 		this.ignoreRectangles = ignoreRectangles;
 		this.preparationId = preparationId;
+		this.lastPreparationId = lastPreparationId;
 	}
 
 	/**
@@ -179,6 +183,14 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 			this.preparation.assign(description);
 		}
 
+		if (this.lastPreparationId != null) {
+			this.lastPreparation = description.getPreparations().get(this.lastPreparationId);
+			if (this.lastPreparation == null) {
+				throw new ReferenceError("Preparation of reference < " + this.lastPreparationId + " > not found");
+			}
+			this.lastPreparation.assign(description);
+		}
+
 	}
 
 	public void addNextScreen(Screen nextScreen) {
@@ -197,6 +209,9 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	}
 
 	public boolean isScreen(MyImage image, Solvis solvis) {
+		if ( this.lastPreparation != null && solvis.getHistory().getLastPreparation() != this.lastPreparation ) {
+			return false ;
+		}
 		if (this.screenCompares.isEmpty()) {
 			throw new XmlError(
 					"Error in XML definition: Grafic information of screen <" + this.getId() + "> is missing.");
@@ -343,6 +358,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		private Collection<ScreenOcr> screenOcr = new ArrayList<>();
 		private List<Rectangle> ignoreRectangles = null;
 		private String preparationId = null;
+		private String lastPreparationId;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -393,7 +409,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 				});
 			return new Screen(this.id, this.previousId, this.alternativePreviousId, this.backId, this.ignoreChanges,
 					this.configurationMasks, this.touchPoint, this.alternativeTouchPoint, this.screenGraficRefs,
-					this.screenOcr, this.ignoreRectangles, this.preparationId);
+					this.screenOcr, this.ignoreRectangles, this.preparationId, this.lastPreparationId);
 		}
 
 		@Override
@@ -415,6 +431,8 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 				case XML_IGNORE_RECTANGLE:
 					return new Rectangle.Creator(id, getBaseCreator());
 				case XML_PREPARATION_REF:
+					return new PreparationRef.Creator(id, getBaseCreator());
+				case XML_LAST_PREPARATION_REF:
 					return new PreparationRef.Creator(id, getBaseCreator());
 			}
 			return null;
@@ -451,6 +469,9 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 					break;
 				case XML_PREPARATION_REF:
 					this.preparationId = ((PreparationRef) created).getPreparationId();
+					break;
+				case XML_LAST_PREPARATION_REF:
+					this.lastPreparationId = ((PreparationRef) created).getPreparationId();
 					break;
 			}
 

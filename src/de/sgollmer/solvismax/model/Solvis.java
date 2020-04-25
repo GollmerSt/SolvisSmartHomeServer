@@ -45,6 +45,7 @@ import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
@@ -54,6 +55,7 @@ public class Solvis {
 	// LoggerFactory.getLogger(Solvis.class);
 	private static final Logger logger = LogManager.getLogger(Solvis.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
+	private static final boolean DEBUG_TWO_STATIONS = false;
 
 	private final SolvisState solvisState = new SolvisState(this);
 	private final SolvisDescription solvisDescription;
@@ -79,6 +81,7 @@ public class Solvis {
 	private final String timeZone;
 	private final boolean delayAfterSwitchingOnEnable;
 	private final Unit unit;
+	private final History history = new History();
 
 	public Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone) {
@@ -213,6 +216,7 @@ public class Solvis {
 	}
 
 	public void gotoHome() throws IOException {
+		this.getHistory().set(null);
 		this.solvisDescription.getFallBack().execute(this);
 	}
 
@@ -389,8 +393,9 @@ public class Solvis {
 
 		private int updateInterval;
 		private int doubleUpdateInterval;
-		boolean abort = false;
-		boolean power = false;
+		private boolean abort = false;
+		private boolean power = false;
+		private boolean singleUpdate = false;
 
 		public MeasurementUpdateThread(Unit unit) {
 			super("MeasurementUpdateThread");
@@ -409,7 +414,7 @@ public class Solvis {
 						break;
 					case POWER_OFF:
 						MeasurementUpdateThread.this.power = false;
-						Solvis.this.distributor.sendCollection(getAllSolvisData().getMeasurements());
+						MeasurementUpdateThread.this.triggerUpdate();
 				}
 
 			}
@@ -439,15 +444,20 @@ public class Solvis {
 					waitTimes[0] = (int) (nextUpdate - now);
 					waitTimes[1] = this.doubleUpdateInterval;
 
+					boolean single = false;
 					for (int waitTime : waitTimes) {
-						if (waitTime > 0) {
+						if (waitTime > 0 && !single) {
+							boolean update = false;
 							synchronized (this) {
 								try {
 									this.wait(waitTime);
 								} catch (InterruptedException e) {
 								}
+								update = !this.abort && this.power || this.singleUpdate;
+								single = this.singleUpdate;
+								this.singleUpdate = false;
 							}
-							if (!this.abort && this.power) {
+							if (update) {
 								Solvis.this.distributor.sendCollection(getAllSolvisData().getMeasurements());
 							}
 						}
@@ -461,6 +471,11 @@ public class Solvis {
 
 		public synchronized void abort() {
 			this.abort = true;
+			this.notifyAll();
+		}
+
+		public synchronized void triggerUpdate() {
+			this.singleUpdate = true;
 			this.notifyAll();
 		}
 
@@ -496,7 +511,9 @@ public class Solvis {
 			time = System.currentTimeMillis();
 			try {
 				this.configurationMask = this.getSolvisDescription().getConfigurations(this, current);
-//				this.configurationMask = 0x01000009 ;
+				if (DEBUG_TWO_STATIONS) {
+					this.configurationMask |= 0x00000003;
+				}
 				connected = true;
 			} catch (IOException e) {
 				time = System.currentTimeMillis();
@@ -542,6 +559,10 @@ public class Solvis {
 
 	public void serviceReset() {
 		this.worker.serviceReset();
+	}
+
+	public History getHistory() {
+		return this.history;
 	}
 
 }

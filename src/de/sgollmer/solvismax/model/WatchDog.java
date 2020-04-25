@@ -277,6 +277,9 @@ public class WatchDog {
 
 		}
 		this.realScreen = realScreen;
+		if ( humanAccess ) {
+			this.solvis.getHistory().set(null);
+		}
 		return humanAccess;
 	}
 

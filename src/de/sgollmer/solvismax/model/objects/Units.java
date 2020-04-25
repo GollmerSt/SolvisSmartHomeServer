@@ -187,7 +187,7 @@ public class Units {
 					case "account":
 						this.account = value;
 						break;
-					case "password":
+					case "passwordCrypt":
 						try {
 							this.password.decrypt(value);
 						} catch (Throwable e) {
@@ -196,6 +196,9 @@ public class Units {
 									new DelayedMessage(Level.ERROR, m, Unit.class, Constants.ExitCodes.CRYPTION_FAIL));
 							System.err.println(m);
 						}
+						break;
+					case "password":
+						this.password.set(value) ;
 						break;
 					case "defaultAverageCount":
 						this.defaultAverageCount = Integer.parseInt(value);

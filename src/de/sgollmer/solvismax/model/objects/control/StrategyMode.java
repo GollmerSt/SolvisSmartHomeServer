@@ -199,28 +199,36 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis, ControlAccess controlAccess) throws IOException {
+	public boolean learn(Solvis solvis, ControlAccess controlAccess) {
 		boolean successfull = true;
 		for (ModeEntry mode : this.getModes()) {
-			solvis.send(mode.getGuiSet().getTouch());
-			ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
-			grafic.learn(solvis);
-			solvis.clearCurrentScreen();
-			SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess);
-			if (data == null || !mode.equals(data.get())) {
-				logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
+			try {
+				solvis.send(mode.getGuiSet().getTouch());
+				ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
+				grafic.learn(solvis);
+				solvis.clearCurrentScreen();
+				SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess);
+				if (data == null || !mode.equals(data.get())) {
+					logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
+					successfull = false;
+					break;
+				}
+			} catch (IOException e) {
 				successfull = false;
-				break;
+				logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull (IOError), will be retried");
 			}
 		}
-		for (ListIterator<ModeEntry> itO = this.getModes().listIterator(); itO.hasNext();) {
-			ModeEntry modeO = itO.next();
-			for (ListIterator<ModeEntry> itI = this.getModes().listIterator(itO.nextIndex()); itI.hasNext();) {
-				ModeEntry modeI = itI.next();
-				if (modeO.getGuiSet().getGrafic().equals(modeI.getGuiSet().getGrafic())) {
-					logger.log(LEARN,
-							"Learning of <" + modeI.getId() + "> not successfull (not unique), will be retried");
-					break;
+		if (successfull) {
+			for (ListIterator<ModeEntry> itO = this.getModes().listIterator(); itO.hasNext();) {
+				ModeEntry modeO = itO.next();
+				for (ListIterator<ModeEntry> itI = this.getModes().listIterator(itO.nextIndex()); itI.hasNext();) {
+					ModeEntry modeI = itI.next();
+					if (modeO.getGuiSet().getGrafic().equals(modeI.getGuiSet().getGrafic())) {
+						logger.log(LEARN,
+								"Learning of <" + modeI.getId() + "> not successfull (not unique), will be retried");
+						successfull = false ;
+						break;
+					}
 				}
 			}
 		}

@@ -17,6 +17,9 @@ Version 01.00.02
 					                    Dies dient der Erzeugung der in die base.xml
 					                    nun verschlüsselt einzutragenden Passwörter.
 					sudo make testmail:	Versendet eine Test-Mail
+					
+	22.04.2020	Deadlock-Problem behoben. Bei der Erkennung führte in bestimmten Fällen zu
+				einem Deadlock.
 
 
 Version 01.00.01
