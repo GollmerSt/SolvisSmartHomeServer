@@ -15,6 +15,8 @@ Version 01.00.03
 				Durch ein Invertierfehler wurden die Heizkreisbuttons bei Anlagen mit mehr als 
 				einem Heizreis nicht gedrückt.
 				
+				Einige Kanäle zeigten noch einen um Faktor 10 zu hohen Wert an
+				
 
 Version 01.00.02
 				
