@@ -1195,7 +1195,7 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="SL.Solarleistung_kW" buffered="true" unit="kW">
-			<tns:Measurement type="unsigned" divisor="10 "
+			<tns:Measurement type="unsigned" divisor="10"
 				dynamic="true">
 				<tns:Field position="196" length="4" />
 			</tns:Measurement>
