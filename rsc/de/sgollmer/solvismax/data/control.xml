@@ -713,7 +713,7 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 			<tns:PreparationRef refId="Button_HK1" />
-			<tns:LastPreparationRef refId="Button_HK1"/>
+			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen id="NachttemperaturSelected_HK1" backId="Home"
 			previousId="Nachttemperatur_HK1">
@@ -754,7 +754,7 @@
 					<tns:BottomRight X="105" Y="60" />
 				</tns:Field>
 			</tns:ScreenGrafic>
-			<tns:LastPreparationRef refId="Button_HK1"/>
+			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen id="Nachttemperatur_HK2" backId="Home"
 			previousId="Home">
@@ -1045,17 +1045,20 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AIn1">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned" divisor="10"
+				dynamic="true">
 				<tns:Field position="86" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AIn2">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned" divisor="10"
+				dynamic="true">
 				<tns:Field position="90" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AIn3">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned" divisor="10"
+				dynamic="true">
 				<tns:Field position="94" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1192,7 +1195,8 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="SL.Solarleistung_kW" buffered="true" unit="kW">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned" divisor="10 "
+				dynamic="true">
 				<tns:Field position="196" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
