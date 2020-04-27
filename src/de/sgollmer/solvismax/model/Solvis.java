@@ -113,7 +113,7 @@ public class Solvis {
 		return this.currentScreen != null;
 	}
 
-	public void setCurrentCreen(SolvisScreen screen) {
+	public void setCurrentScreen(SolvisScreen screen) {
 		this.currentScreen = screen;
 	}
 

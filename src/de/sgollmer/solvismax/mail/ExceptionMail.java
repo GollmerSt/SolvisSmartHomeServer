@@ -17,7 +17,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -47,9 +46,10 @@ public class ExceptionMail implements ObserverI<SolvisState> {
 	private final String provider;
 	private final int port;
 	private final Collection<Recipient> recipients;
+	private final boolean valid ;
 
 	public ExceptionMail(String name, String from, CryptAes password, Security securityType, String provider, int port,
-			Collection<Recipient> recipients) {
+			Collection<Recipient> recipients, boolean valid ) {
 		this.name = name;
 		this.from = from;
 		this.password = password;
@@ -57,6 +57,7 @@ public class ExceptionMail implements ObserverI<SolvisState> {
 		this.provider = provider;
 		this.port = port;
 		this.recipients = recipients;
+		this.valid = valid ;
 	}
 
 	public static class Creator extends CreatorByXML<ExceptionMail> {
@@ -68,6 +69,7 @@ public class ExceptionMail implements ObserverI<SolvisState> {
 		private String provider;
 		private int port;
 		private Collection<Recipient> recipients;
+		private boolean valid = true ;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -105,9 +107,10 @@ public class ExceptionMail implements ObserverI<SolvisState> {
 						break;
 				}
 			} catch (Throwable e) {
-				String m = "base.vml error: " + e.getMessage();
+				this.valid = false ;
+				String m = "base.xml error: " + e.getMessage();
 				Logger2.addDelayedErrorMessage(
-						new DelayedMessage(Level.ERROR, m, Unit.class, Constants.ExitCodes.CRYPTION_FAIL));
+						new DelayedMessage(Level.ERROR, m, Unit.class, null));
 				System.err.println(m);
 			}
 		}
@@ -115,7 +118,7 @@ public class ExceptionMail implements ObserverI<SolvisState> {
 		@Override
 		public ExceptionMail create() throws XmlError, IOException {
 			return new ExceptionMail(this.name, this.from, this.password, this.securityType, this.provider, this.port,
-					this.recipients);
+					this.recipients, this.valid);
 		}
 
 		@Override
@@ -158,5 +161,9 @@ public class ExceptionMail implements ObserverI<SolvisState> {
 			}
 		}
 
+	}
+
+	public boolean isValid() {
+		return this.valid;
 	}
 }

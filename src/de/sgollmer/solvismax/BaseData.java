@@ -116,7 +116,10 @@ public class BaseData {
 					this.executionData = (ExecutionData) created;
 					break;
 				case XML_MAIL:
-					this.exceptionMail = (ExceptionMail) created;
+					ExceptionMail em = (ExceptionMail) created;
+					if (em.isValid()) {
+						this.exceptionMail = em;
+					}
 					break;
 			}
 

@@ -36,7 +36,6 @@ public class WatchDog {
 	private final int releaseBlockingAfterServiceAccess_ms;
 
 	private final int watchDogTime;
-	private boolean screenSaverActive = false;
 	private boolean errorDetected = false;
 	private boolean abort = false;
 	private HumanAccess humanAccess = HumanAccess.NONE;
@@ -132,7 +131,6 @@ public class WatchDog {
 			this.initialized = true;
 			try {
 				this.isScreenSaver();
-				this.realScreen = this.solvis.getCurrentScreen();
 				this.processHumanAccess(Event.INIT);
 			} catch (Throwable e) {
 			}
@@ -147,25 +145,25 @@ public class WatchDog {
 					// do nothing
 				} else if (this.isScreenSaver()) {
 					event = Event.SCREENSAVER;
-					event = this.checkHumanAccess() ? Event.CHANGED : Event.SCREENSAVER;
-				} else if (this.solvis.getSolvisDescription().getErrorDetection().is(this.realScreen)) {
+					event = this.isHumanAccess() ? Event.CHANGED : Event.SCREENSAVER;
+				} else if (this.isError()) {
 					this.errorDetected = true;
 					event = Event.ERROR;
 				} else {
 					this.errorDetected = false;
-					event = this.checkHumanAccess() ? Event.CHANGED : Event.NONE;
+					event = this.isHumanAccess() ? Event.CHANGED : Event.NONE;
 				}
 				this.lastScreen = this.realScreen;
 
 				if (event == Event.CHANGED) {
-					this.solvis.setCurrentCreen(this.realScreen);
+					this.solvis.setCurrentScreen(this.realScreen);
 				}
 
 				this.processHumanAccess(event);
 
 				this.abort = !this.humanAccess.mustWait() && !this.errorDetected;
 
-				this.solvis.getSolvisState().error(this.errorDetected, "Error screen", this.realScreen.getImage() );
+				this.solvis.getSolvisState().error(this.errorDetected, "Error screen", this.realScreen.getImage());
 
 				synchronized (this) {
 					if (!this.abort) {
@@ -182,105 +180,66 @@ public class WatchDog {
 	}
 
 	private boolean isScreenSaver() throws IOException {
-		boolean finished = false;
-		SolvisScreen realScreen = this.realScreen;
-		while (!finished && !this.abort) {
-			finished = true;
-			if (realScreen == null) {
-				realScreen = this.solvis.getRealScreen();
-			}
-			if (this.saver.is(realScreen)) {
-				this.screenSaverActive = true;
-				this.solvis.setScreenSaverActive(true);
-			} else {
-				if (this.screenSaverActive) {
-					finished = false;
-					realScreen = null; // read image again
-					this.screenSaverActive = false;
+		boolean screenSaverActive = this.isTwiceDetected(new Detect() {
+
+			@Override
+			public boolean detect(SolvisScreen screen) throws IOException {
+				boolean screenSaverActive = false;
+				if (WatchDog.this.saver.is(screen)) {
+					screenSaverActive = true;
 				} else {
-					this.solvis.setScreenSaverActive(false);
-					if (!this.saver.getDebugInfo().isEmpty()) {
-						logger.info(this.saver.getDebugInfo());
+					if (!WatchDog.this.saver.getDebugInfo().isEmpty()) {
+						logger.info(WatchDog.this.saver.getDebugInfo());
 					}
 				}
+				return screenSaverActive;
 			}
-			if (!finished) {
-				synchronized (this) {
-					if (!this.abort) {
-						try {
-							this.wait(Constants.WAIT_AFTER_SCREEN_SAVER_FINISHED_DETECTED);
-						} catch (InterruptedException e) {
-						}
-					}
-				}
-			}
-		}
-		this.realScreen = realScreen;
-		return this.screenSaverActive;
+		});
+		WatchDog.this.solvis.setScreenSaverActive(screenSaverActive);
+		return screenSaverActive;
 	}
 
-	private boolean checkHumanAccess() throws IOException {
-		boolean humanAccess = false;
-		SolvisScreen realScreen = this.realScreen;
-		boolean repeat = false;
-		boolean finished = false;
+	private boolean isHumanAccess() throws IOException {
+		return this.isTwiceDetected(new Detect() {
 
-		while (!finished && !this.abort) {
-			if (realScreen == null) {
-				realScreen = this.solvis.getRealScreen();
-			}
+			@Override
+			public boolean detect(SolvisScreen screen) throws IOException {
+				boolean humanAccess = false;
 
-			humanAccess = false;
+				if (!screen.imagesEquals(WatchDog.this.solvis.getCurrentScreen())) {
 
-			if (realScreen.imagesEquals(this.solvis.getCurrentScreen())) {
-				finished = true;
-			} else {
-
-				if (realScreen.get() != null && realScreen.get() == this.solvis.getCurrentScreen().get()) {
-					if (realScreen.get().isIgnoreChanges()) {
-						finished = true;
-					} else {
-						Collection<Rectangle> ignoreRectangles = realScreen.get().getIgnoreRectangles();
-						if (ignoreRectangles == null) {
-							humanAccess = true;
-							finished = false;
-						} else {
-							MyImage ignoreRectScreen = new MyImage(realScreen.getImage(), false, ignoreRectangles);
-							if (ignoreRectScreen.equals(this.solvis.getCurrentScreen().getImage(), true)) {
-								finished = true;
-							} else {
+					if (screen.get() != null && screen.get() == WatchDog.this.solvis.getCurrentScreen().get()) {
+						if (!screen.get().isIgnoreChanges()) {
+							Collection<Rectangle> ignoreRectangles = screen.get().getIgnoreRectangles();
+							if (ignoreRectangles == null) {
 								humanAccess = true;
-								finished = false;
+							} else {
+								MyImage ignoreRectScreen = new MyImage(screen.getImage(), false, ignoreRectangles);
+								if (!ignoreRectScreen.equals(WatchDog.this.solvis.getCurrentScreen().getImage(),
+										true)) {
+									humanAccess = true;
+								}
 							}
 						}
-					}
-				} else {
-					humanAccess = true;
-					finished = false;
-				}
-			}
-
-			if (!finished && !repeat) {
-				repeat = true;
-				realScreen = null;
-				synchronized (this) {
-					if (!this.abort) {
-						try {
-							this.wait(Constants.WAIT_AFTER_SCREEN_SAVER_FINISHED_DETECTED);
-						} catch (InterruptedException e) {
-						}
+					} else {
+						humanAccess = true;
 					}
 				}
-			} else {
-				finished = true;
+				return humanAccess;
 			}
 
-		}
-		this.realScreen = realScreen;
-		if ( humanAccess ) {
-			this.solvis.getHistory().set(null);
-		}
-		return humanAccess;
+		});
+	}
+
+	private boolean isError() throws IOException {
+		return this.isTwiceDetected(new Detect() {
+
+			@Override
+			public boolean detect(SolvisScreen screen) {
+				return WatchDog.this.solvis.getSolvisDescription().getErrorDetection().is(screen);
+			}
+
+		});
 	}
 
 	private HumanAccess processHumanAccess(Event event) {
@@ -390,5 +349,35 @@ public class WatchDog {
 			this.serviceAccessFinishedTime = 0;
 		}
 
+	}
+
+	private interface Detect {
+		public boolean detect(SolvisScreen screen) throws IOException;
+	}
+
+	private boolean isTwiceDetected(final Detect detect) throws IOException {
+		boolean detected = true;
+		SolvisScreen realScreen = WatchDog.this.realScreen;
+
+		for (int r = 0; r < 2 && detected && !this.abort; ++r) {
+
+			if (realScreen == null) {
+				realScreen = WatchDog.this.solvis.getRealScreen();
+			}
+			detected = detect.detect(realScreen);
+			if (detected && r == 0) {
+				realScreen = null;
+				synchronized (this) {
+					if (!WatchDog.this.abort) {
+						try {
+							this.wait(Constants.WAIT_AFTER_FIRST_ASYNC_DETECTION);
+						} catch (InterruptedException e) {
+						}
+					}
+				}
+			}
+		}
+		WatchDog.this.realScreen = realScreen;
+		return detected && !this.abort;
 	}
 }

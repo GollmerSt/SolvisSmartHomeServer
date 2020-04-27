@@ -593,7 +593,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 						}
 					}
 					if (!success) {
-						String message = "Learning of screen <" + this.getId() + "> not possible. Learning terminated.";
+						String message = "Learning of screen <" + nextScreen.getId() + "> not possible. Learning terminated.";
 						logger.error(message);
 						throw new LearningError(message);
 					}

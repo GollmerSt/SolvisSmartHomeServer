@@ -12,7 +12,6 @@ import java.net.ServerSocket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.MessagingException;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.logging.log4j.Level;
@@ -129,10 +128,13 @@ public class Main {
 						break;
 					case "test-mail":
 						try {
+							if ( baseData.getExceptionMail() == null ) {
+								throw new Error("Sending mail not possible in case of mssing or invalid data in <base.xml>") ;
+							}
 							baseData.getExceptionMail().send("Test mail", "This is a test mail", null);
 							System.exit(Constants.ExitCodes.OK);
-						} catch (MessagingException | IOException e) {
-							logger.log(LEARN, "Mailing error", e);
+						} catch (Throwable e) {
+							logger.error("Mailing error", e);
 							System.exit(Constants.ExitCodes.MAILING_ERROR);
 						}
 						break;

@@ -51,9 +51,9 @@ public class Logger2 {
 		private final Level level;
 		private final String message;
 		private final Class<?> loggedClass;
-		private final int errorCode;
+		private final Integer errorCode;
 
-		public DelayedMessage(Level level, String message, Class<?> loggedClass, int errorCode) {
+		public DelayedMessage(Level level, String message, Class<?> loggedClass, Integer errorCode) {
 			this.level = level;
 			this.message = message;
 			this.loggedClass = loggedClass;
@@ -132,7 +132,7 @@ public class Logger2 {
 	private boolean outputDelayedMessages() {
 		boolean error = false;
 		for (DelayedMessage message : Logger2.delayedErrorMessages) {
-			if (message.level.isMoreSpecificThan(Level.ERROR)) {
+			if (message.errorCode != null) {
 				error = true;
 			}
 			Logger logger = LogManager.getLogger(message.loggedClass);
@@ -146,7 +146,7 @@ public class Logger2 {
 		int errorCode = -1;
 		for (DelayedMessage message : Logger2.delayedErrorMessages) {
 
-			if (!message.level.equals(level) && message.level.isLessSpecificThan(level) && message.errorCode >= 0) {
+			if (message.errorCode != null && !message.level.equals(level) && message.level.isLessSpecificThan(level)) {
 				errorCode = message.errorCode;
 				level = message.level;
 			}
