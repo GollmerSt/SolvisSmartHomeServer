@@ -1,5 +1,21 @@
 Ä N D E R U N G EN
 
+Version 01.00.03
+				
+	26.04.2020	Es war möglich, dass bei einem User-Zugriff eine Fehler-Mail gesendet wurde, wenn
+	            ausgerechnet der Bildschirm in diesem Moment gescannt wurde. In diesem Fall ist das
+	            Gelesene ein Mix von verschiedenen Bildschirmen, der die Kriterien für einen
+	            Fehlerbildschirm erfüllen kann. Nun wird nach einer Detection nach 100ms
+	            der Bildschirm erneut abgetastet.
+	            
+	27.04.2020	Fehlerhafte Daten bei dem ExeptionMail in den base.xml-Daten führen nicht mehr zum
+				Beenden des Servers. Die Fehler werden zwar gemeldet, aber in der Weise ignoriert,
+				dass keine Fehler-Meldungs-Mails verschickt werden.
+				 
+				Durch ein Invertierfehler wurden die Heizkreisbuttons bei Anlagen mit mehr als 
+				einem Heizreis nicht gedrückt.
+				
+
 Version 01.00.02
 				
 	17.04.2020	Die Erkennung von Power-Off bewirkt ein direktes Senden sämtlicher
