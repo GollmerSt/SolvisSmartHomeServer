@@ -1,5 +1,11 @@
 Ä N D E R U N G EN
 
+Version 01.00.06
+				
+	28.04.2020	Im Zusammenhang mit der Modbus-Ergänzung ist auch die Laufzeitanforderung 2 nicht mehr
+				optional gwesen. Gefixt. 
+				
+
 Version 01.00.05
 				
 	28.04.2020	Die XML-Struktur des control.xml-Files musste durch die Modbus-Ergänzung geändert
