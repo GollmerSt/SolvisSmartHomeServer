@@ -3,8 +3,8 @@
 Version 01.00.05
 				
 	28.04.2020	Die XML-Struktur des control.xml-Files musste durch die Modbus-Ergänzung geändert
-				werden. Durch ein Bug funktionierte danach nicht mehr die Solvis-Konfiguration
-				ohne Raumfühler nicht mehr. 
+				werden. Durch ein Bug funktionierte danach die Solvis-Konfiguration ohne Raumfühler
+				nicht mehr. 
 				
 
 Version 01.00.04
