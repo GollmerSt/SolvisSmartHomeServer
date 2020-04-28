@@ -52,7 +52,7 @@ uninstallService: stopServices
 	systemctl disable $(service)
 
 
-uninstallDebugService: stopService
+uninstallDebugService: stopServices
 	systemctl disable $(serviceDebug)
 
 
