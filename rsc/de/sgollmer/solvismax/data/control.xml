@@ -279,7 +279,7 @@
 			</tns:ConfigurationMasks>
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="20" Y="15" />
+				<tns:Coordinate X="20" Y="45" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="21/5">
 				<tns:Field>

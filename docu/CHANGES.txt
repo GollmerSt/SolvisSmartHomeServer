@@ -1,5 +1,13 @@
 Ä N D E R U N G EN
 
+Version 01.00.04
+				
+	28.04.2020	Heizkreis 2-Problem gefixt. Wenn das Heizkreis2-Menü angefahren werden sollte, wurde
+				im Bildschirm "Heizkreise" fälschlicherweise der Button für den heizkreis 1 gedrückt
+				
+				Uninstall über das makefile funktionierte nicht mehr, gefixt
+				
+
 Version 01.00.03
 				
 	26.04.2020	Es war möglich, dass bei einem User-Zugriff eine Fehler-Mail gesendet wurde, wenn
