@@ -1299,7 +1299,7 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C03.LaufzeitAnforderung2" unit="h">
-			<tns:Control>
+			<tns:Control optional="true">
 				<tns:ModbusAccess address="0x8302" type="Input" />
 				<tns:GuiAccess screenId="Zaehlfunktion">
 					<tns:CurrentValue>
@@ -1307,7 +1307,7 @@
 						<tns:BottomRight X="200" Y="117" />
 					</tns:CurrentValue>
 				</tns:GuiAccess>
-				<tns:TypeRead optional="true">
+				<tns:TypeRead>
 					<tns:GuiRead format="######0C" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
