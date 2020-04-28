@@ -39,7 +39,7 @@ public class StrategyReadWrite extends StrategyRead {
 	private final GuiModification guiModification;
 
 	public StrategyReadWrite(int increment, int divisor, int least, int most, GuiModification guiModification) {
-		super(false, divisor, guiModification);
+		super( divisor, guiModification);
 		this.increment = increment;
 		this.least = least;
 		this.most = most;
@@ -56,7 +56,7 @@ public class StrategyReadWrite extends StrategyRead {
 			throws IOException, TerminationException {
 		if (controlAccess instanceof GuiAccess) {
 			Integer goal = setValue.getInteger();
-			IntegerValue data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess);
+			IntegerValue data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 			if (data == null) {
 				return null;
 			} else if (data.get() == null) {

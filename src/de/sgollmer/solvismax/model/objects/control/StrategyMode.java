@@ -57,7 +57,7 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public ModeValue<ModeEntry> getValue(SolvisScreen source, Solvis solvis, ControlAccess controlAccess)
+	public ModeValue<ModeEntry> getValue(SolvisScreen source, Solvis solvis, ControlAccess controlAccess, boolean optional)
 			throws IOException {
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
@@ -96,7 +96,7 @@ public class StrategyMode implements Strategy {
 			throw new TypeError("Wrong value type");
 		}
 		ModeI valueMode = value.getMode().get();
-		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess);
+		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 		if (cmp != null && value.getMode().equals(cmp)) {
 			return cmp;
 		}
@@ -207,7 +207,7 @@ public class StrategyMode implements Strategy {
 				ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
 				grafic.learn(solvis);
 				solvis.clearCurrentScreen();
-				SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess);
+				SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 				if (data == null || !mode.equals(data.get())) {
 					logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
 					successfull = false;

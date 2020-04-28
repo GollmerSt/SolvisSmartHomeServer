@@ -101,7 +101,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	private synchronized void setData(SingleData<?> data, Object source) {
 
-		if (data == null) {
+		if (data == null || data.get() == null ) {
 			this.data = null;
 			return;
 		}

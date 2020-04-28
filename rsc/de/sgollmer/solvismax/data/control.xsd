@@ -1228,21 +1228,6 @@
 			<element name="GuiRead" type="tns:GuiRead"
 				maxOccurs="1" minOccurs="0"></element>
 		</sequence>
-		<attribute name="optional" type="boolean" use="optional">
-			<annotation>
-				<documentation>
-					Wenn das Feld nicht in allen Konfigurationen
-					vorhanden ist, kann das nicht vorhandensein durch
-					setzen von
-					optional auf &quot;true&quot; werden. Das
-					ist z.B. für
-					C03.LaufzeitAnforderung2 erforderlich,
-					da diese bei modulierten
-					Gasbrennern nicht vorhanden
-					ist.
-				</documentation>
-			</annotation>
-		</attribute>
 		<attribute name="divisor" type="int" use="optional">
 			<annotation>
 				<documentation>

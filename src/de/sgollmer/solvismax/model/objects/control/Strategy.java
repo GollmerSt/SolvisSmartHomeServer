@@ -23,7 +23,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public interface Strategy extends Assigner {
 
-	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, ControlAccess controlAccess) throws TerminationException, IOException;
+	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, ControlAccess controlAccess, boolean optional) throws TerminationException, IOException;
 
 	public SingleData<?> setValue(Solvis solvis, ControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeError;

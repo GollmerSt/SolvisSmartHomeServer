@@ -34,12 +34,10 @@ public class StrategyRead implements Strategy {
 
 	private static final String XML_GUI_READ = "GuiRead";
 
-	protected final boolean optional;
 	protected final int divisor;
 	private final GuiRead guiRead;
 
-	public StrategyRead(boolean optional, int divisor, GuiRead guiRead) {
-		this.optional = optional;
+	public StrategyRead(int divisor, GuiRead guiRead) {
 		this.divisor = divisor;
 		this.guiRead = guiRead;
 	}
@@ -50,7 +48,7 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, ControlAccess controlAccess) throws IOException {
+	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, ControlAccess controlAccess, boolean optional) throws IOException {
 		Integer i;
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
@@ -58,7 +56,7 @@ public class StrategyRead implements Strategy {
 			String s = ocr.getString();
 			s = this.guiRead.format.getString(s);
 			if (s == null) {
-				if (this.optional) {
+				if (optional) {
 					i = null;
 				} else {
 					return null;
@@ -84,7 +82,6 @@ public class StrategyRead implements Strategy {
 
 	public static class Creator extends CreatorByXML<StrategyRead> {
 
-		private boolean optional = false;
 		private int divisor = 1;
 		private GuiRead guiRead = null;
 
@@ -95,9 +92,6 @@ public class StrategyRead implements Strategy {
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-				case "optional":
-					this.optional = Boolean.parseBoolean(value);
-					break;
 				case "divisor":
 					this.divisor = Integer.parseInt(value);
 					break;
@@ -107,7 +101,7 @@ public class StrategyRead implements Strategy {
 
 		@Override
 		public StrategyRead create() throws XmlError {
-			return new StrategyRead(this.optional, this.divisor, this.guiRead);
+			return new StrategyRead(this.divisor, this.guiRead);
 		}
 
 		@Override

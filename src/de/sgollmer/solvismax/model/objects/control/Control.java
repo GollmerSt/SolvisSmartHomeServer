@@ -57,14 +57,16 @@ public class Control extends ChannelSource {
 	private static final String XML_CONTROL_TYPE_MODE = "TypeMode";
 	private static final String XML_UPDATE_BY = "UpdateBy";
 
+	private final boolean optional ;
 	private final GuiAccess guiAccess;
 	private final ModbusAccess modbusAccess;
 
 	private final Strategy strategy;
 	private final UpdateStrategies updateStrategies;
 
-	public Control(GuiAccess guiAccess, ModbusAccess modbusAccess, Strategy strategy,
+	public Control(boolean optional, GuiAccess guiAccess, ModbusAccess modbusAccess, Strategy strategy,
 			UpdateStrategies updateStrategies) {
+		this.optional = optional ;
 		this.guiAccess = guiAccess;
 		this.modbusAccess = modbusAccess;
 		this.strategy = strategy;
@@ -84,7 +86,7 @@ public class Control extends ChannelSource {
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return false;
 		}
-		SingleData<?> data = this.strategy.getValue(solvis.getCurrentScreen(), solvis, this.getControlAccess(solvis));
+		SingleData<?> data = this.strategy.getValue(solvis.getCurrentScreen(), solvis, this.getControlAccess(solvis), this.optional);
 		if (data == null) {
 			return false;
 		} else {
@@ -178,6 +180,7 @@ public class Control extends ChannelSource {
 
 	public static class Creator extends CreatorByXML<Control> {
 
+		private boolean optional ;
 		private GuiAccess guiAccess;
 		private ModbusAccess modbusAccess;
 		private Strategy strategy;
@@ -189,6 +192,11 @@ public class Control extends ChannelSource {
 
 		@Override
 		public void setAttribute(QName name, String value) {
+			switch ( name.getLocalPart() ) {
+				case "optional":
+					this.optional = Boolean.parseBoolean(value) ;
+					break ;
+			}
 		}
 
 		@Override
@@ -203,7 +211,7 @@ public class Control extends ChannelSource {
 					throw new XmlError("Missing gui value definitions");
 				}
 			}
-			return new Control(this.guiAccess, this.modbusAccess, this.strategy, this.updateStrategies);
+			return new Control(this.optional, this.guiAccess, this.modbusAccess, this.strategy, this.updateStrategies);
 		}
 
 		@Override
@@ -274,7 +282,7 @@ public class Control extends ChannelSource {
 					finished = this.strategy.learn(solvis, this.getControlAccess(solvis));
 				}
 				if (finished) {
-					data = this.strategy.getValue(saved, solvis, this.getControlAccess(solvis));
+					data = this.strategy.getValue(saved, solvis, this.getControlAccess(solvis), false);
 					if (data == null) {
 						finished = false;
 					}
