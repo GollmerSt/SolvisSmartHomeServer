@@ -1,5 +1,24 @@
 Ä N D E R U N G EN
 
+Version 01.00.06
+				
+	28.04.2020	Im Zusammenhang mit der Modbus-Ergänzung ist auch die Laufzeitanforderung 2 nicht mehr
+				optional gwesen. Gefixt.
+				
+				Wird ein Control-Befehl verworfen, werden fälschlicherweise noch weitere nicht
+				abgearbeitete verworfen.
+				
+	29.04.2020	Der Bildschirmschoner wurde immer wieder zurückgesetzt.
+	
+				Log4J aktualisiert , Version 2.13.2
+				
+				Makefile geändert. Die vorherige base.xml wird gesichert als base.xml.old
+				
+				Ant-File geändert. Im Packet ist anstelle der base.xml immer einen base.xml.new
+				enthalten. Auf diese Weise wird die vom Anwender geänderte base.xml beim Transfer
+				nicht überschrieben
+				
+
 Version 01.00.05
 				
 	28.04.2020	Die XML-Struktur des control.xml-Files musste durch die Modbus-Ergänzung geändert
