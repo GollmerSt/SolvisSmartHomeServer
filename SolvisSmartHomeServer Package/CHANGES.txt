@@ -10,6 +10,9 @@ Version 01.00.06
 				
 	29.04.2020	Der Bildschirmschoner wurde immer wieder zurückgesetzt.
 	
+				Es kam durch asynchreone Zugriffe auf die SolvisControl2 immer noch zu falschen
+				Fehlermeldungen. Algorithmus geändert.
+	
 				Log4J aktualisiert , Version 2.13.2
 				
 				Makefile geändert. Die vorherige base.xml wird gesichert als base.xml.old
