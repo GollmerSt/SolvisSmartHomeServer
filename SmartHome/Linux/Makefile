@@ -134,6 +134,8 @@ $(solvisDir)/$(solvisJar): $(solvisJar) $(solvisDir)
 	
 	
 $(solvisDir)/$(baseXml).xml : $(baseXml).xml
+	mv $@ $<.old
+	chown -c `ls -l $< | awk '{ print $$3":"$$4 }'` $<.old 
 	cp $< $@
 	chown -c $(account):$(group) $@
 	chmod 600 $@
