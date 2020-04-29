@@ -15,8 +15,6 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public abstract class Command {
 
-	private int failCount = 0;
-
 	public abstract boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn;
 	
 	public abstract void notExecuted() ;
@@ -34,9 +32,9 @@ public abstract class Command {
 
 	public static class Handling {
 		private final boolean inQueueInhibt;
-		private final boolean inhibitAppend;
+		private final boolean inhibitAdd;
 		private final boolean insert;
-		private final boolean same;
+		private final boolean mustFinished;
 		
 		/**
 		 * 
@@ -51,27 +49,27 @@ public abstract class Command {
 			this(inQueueInhibit, inhibitAppend, insert, false);
 		}
 
-		public Handling(boolean inQueueInhibt, boolean inhibitAppend, boolean insert, boolean same) {
+		public Handling(boolean inQueueInhibt, boolean inhibitAdd, boolean insert, boolean mustFinished) {
 			this.inQueueInhibt = inQueueInhibt;
-			this.inhibitAppend = inhibitAppend;
+			this.inhibitAdd = inhibitAdd;
 			this.insert = insert;
-			this.same = same;
+			this.mustFinished = mustFinished;
 		}
 
 		public boolean mustInhibitInQueue() {
 			return this.inQueueInhibt;
 		}
 
-		public boolean isInhibitAppend() {
-			return this.inhibitAppend;
+		public boolean isInhibitAdd() {
+			return this.inhibitAdd;
 		}
 
 		public boolean mustInsert() {
 			return this.insert;
 		}
 
-		public boolean isSame() {
-			return this.same;
+		public boolean mustFinished() {
+			return this.mustFinished;
 		}
 		
 	}
@@ -84,19 +82,15 @@ public abstract class Command {
 		return false;
 	}
 
-	public int getFailCount() {
-		return this.failCount;
+	public boolean toEndOfQueue() {
+		return false ;
 	}
 
-	public void incrementFailCount() {
-		++this.failCount;
-	}
-	
-	public boolean isModbus(Solvis solvis) {
-		return false ;
-	}
-	
 	public boolean isWriting() {
 		return false ;
+	}
+
+	public boolean isModbus() {
+		return false;
 	}
 }

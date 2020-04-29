@@ -145,7 +145,7 @@ public class WatchDog {
 					// do nothing
 				} else if (this.isScreenSaver()) {
 					event = Event.SCREENSAVER;
-					event = this.isHumanAccess() ? Event.CHANGED : Event.SCREENSAVER;
+//					event = this.isHumanAccess() ? Event.CHANGED : Event.SCREENSAVER;
 				} else if (this.isError()) {
 					this.errorDetected = true;
 					event = Event.ERROR;
@@ -179,67 +179,72 @@ public class WatchDog {
 		}
 	}
 
-	private boolean isScreenSaver() throws IOException {
-		boolean screenSaverActive = this.isTwiceDetected(new Detect() {
+	private final Detect screenSaverDetect = new Detect() {
 
-			@Override
-			public boolean detect(SolvisScreen screen) throws IOException {
-				boolean screenSaverActive = false;
-				if (WatchDog.this.saver.is(screen)) {
-					screenSaverActive = true;
-				} else {
-					if (!WatchDog.this.saver.getDebugInfo().isEmpty()) {
-						logger.info(WatchDog.this.saver.getDebugInfo());
-					}
+		@Override
+		public boolean detect(SolvisScreen screen) throws IOException {
+			boolean screenSaverActive = false;
+			if (WatchDog.this.saver.is(screen)) {
+				screenSaverActive = true;
+			} else {
+				if (!WatchDog.this.saver.getDebugInfo().isEmpty()) {
+					logger.info(WatchDog.this.saver.getDebugInfo());
 				}
-				return screenSaverActive;
 			}
-		});
+			return screenSaverActive;
+		}
+	};
+
+	private boolean isScreenSaver() throws IOException {
+		boolean screenSaverActive = this.getTwiceState(this.screenSaverDetect);
 		WatchDog.this.solvis.setScreenSaverActive(screenSaverActive);
 		return screenSaverActive;
 	}
 
-	private boolean isHumanAccess() throws IOException {
-		return this.isTwiceDetected(new Detect() {
+	private final Detect humanAccessDetect = new Detect() {
 
-			@Override
-			public boolean detect(SolvisScreen screen) throws IOException {
-				boolean humanAccess = false;
+		@Override
+		public boolean detect(SolvisScreen screen) throws IOException {
+			boolean humanAccess = false;
 
-				if (!screen.imagesEquals(WatchDog.this.solvis.getCurrentScreen())) {
+			if (!screen.imagesEquals(WatchDog.this.solvis.getCurrentScreen(false))) {
 
-					if (screen.get() != null && screen.get() == WatchDog.this.solvis.getCurrentScreen().get()) {
-						if (!screen.get().isIgnoreChanges()) {
-							Collection<Rectangle> ignoreRectangles = screen.get().getIgnoreRectangles();
-							if (ignoreRectangles == null) {
+				if (screen.get() != null && screen.get() == WatchDog.this.solvis.getCurrentScreen(false).get()) {
+					if (!screen.get().isIgnoreChanges()) {
+						Collection<Rectangle> ignoreRectangles = screen.get().getIgnoreRectangles();
+						if (ignoreRectangles == null) {
+							humanAccess = true;
+						} else {
+							MyImage ignoreRectScreen = new MyImage(screen.getImage(), false, ignoreRectangles);
+							if (!ignoreRectScreen.equals(WatchDog.this.solvis.getCurrentScreen(false).getImage(), true)) {
 								humanAccess = true;
-							} else {
-								MyImage ignoreRectScreen = new MyImage(screen.getImage(), false, ignoreRectangles);
-								if (!ignoreRectScreen.equals(WatchDog.this.solvis.getCurrentScreen().getImage(),
-										true)) {
-									humanAccess = true;
-								}
 							}
 						}
-					} else {
-						humanAccess = true;
 					}
+				} else {
+					humanAccess = true;
 				}
-				return humanAccess;
 			}
+			return humanAccess;
+		}
+		
+	};
 
-		});
+	private boolean isHumanAccess() throws IOException {
+		return this.getTwiceState(this.humanAccessDetect);
 	}
 
+	private final Detect errorDetect = new Detect() {
+
+		@Override
+		public boolean detect(SolvisScreen screen) {
+			return WatchDog.this.solvis.getSolvisDescription().getErrorDetection().is(screen);
+		}
+
+	};
+
 	private boolean isError() throws IOException {
-		return this.isTwiceDetected(new Detect() {
-
-			@Override
-			public boolean detect(SolvisScreen screen) {
-				return WatchDog.this.solvis.getSolvisDescription().getErrorDetection().is(screen);
-			}
-
-		});
+		return this.getTwiceState(this.errorDetect);
 	}
 
 	private HumanAccess processHumanAccess(Event event) {
@@ -351,21 +356,29 @@ public class WatchDog {
 
 	}
 
-	private interface Detect {
-		public boolean detect(SolvisScreen screen) throws IOException;
+	private static abstract class Detect {
+		private Boolean former = null;
+
+		public abstract boolean detect(SolvisScreen screen) throws IOException;
 	}
 
-	private boolean isTwiceDetected(final Detect detect) throws IOException {
-		boolean detected = true;
+	private boolean getTwiceState(final Detect detect) throws IOException {
+		Boolean state = detect.former ;
+		boolean currentState = false ;
+		boolean repeat = true;
 		SolvisScreen realScreen = WatchDog.this.realScreen;
 
-		for (int r = 0; r < 2 && detected && !this.abort; ++r) {
+		for (int r = 0; r < 2 && repeat && !this.abort; ++r) {
 
 			if (realScreen == null) {
 				realScreen = WatchDog.this.solvis.getRealScreen();
 			}
-			detected = detect.detect(realScreen);
-			if (detected && r == 0) {
+			currentState = detect.detect(realScreen);
+			
+			if ( state == null || currentState == state ) {
+				repeat = false ;
+			}
+			if (repeat && r == 0) {
 				realScreen = null;
 				synchronized (this) {
 					if (!WatchDog.this.abort) {
@@ -378,6 +391,7 @@ public class WatchDog {
 			}
 		}
 		WatchDog.this.realScreen = realScreen;
-		return detected && !this.abort;
+		detect.former = currentState ;
+		return currentState;
 	}
 }

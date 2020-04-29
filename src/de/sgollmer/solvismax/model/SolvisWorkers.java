@@ -118,7 +118,6 @@ public class SolvisWorkers {
 						if (command != null
 								&& command.getScreen(SolvisWorkers.this.solvis) == SolvisWorkers.this.solvis
 										.getCurrentScreen().get()
-								&& !SolvisWorkers.this.solvis.isScreenSaverActive()
 								&& SolvisWorkers.this.solvis.getSolvisState().getState() != SolvisState.State.ERROR
 										| stateChanged) {
 							executeWatchDog = true;
@@ -136,9 +135,10 @@ public class SolvisWorkers {
 							executeWatchDog = false;
 						}
 						if (command != null && !command.isInhibit()) {
-							logger.debug("Command <" + command.toString() + "> will be executed");
+							String commandString = command.toString() ;
+							logger.debug("Command <" + commandString + "> will be executed");
 							success = execute(command);
-							logger.debug("Command <" + command.toString() + "> executed "
+							logger.debug("Command <" + commandString + "> executed "
 									+ (success ? "" : "not " + "successfull"));
 						}
 					} catch (IOException | ErrorPowerOn e) {
@@ -158,15 +158,7 @@ public class SolvisWorkers {
 					boolean insertAtTheEnd = false;
 					if (command != null) {
 						if (!success) {
-							command.incrementFailCount();
-							if (command.getFailCount() >= Constants.COMMAND_TO_QUEUE_END_AFTER_N_FAILURES) {
-								remove = true;
-								if (command.getFailCount() < Constants.COMMAND_IGNORED_AFTER_N_FAILURES) {
-									insertAtTheEnd = true;
-								} else {
-									logger.error("Command <" + command.toString() + "> couldn't executed. Is ignored.");
-								}
-							}
+							insertAtTheEnd = command.toEndOfQueue();
 						}
 						if (remove) {
 							boolean deleted = false;
@@ -221,13 +213,16 @@ public class SolvisWorkers {
 							cmp.setInhibit(true);
 							logger.debug("Command <" + cmp.toString() + "> was inhibited.");
 						}
-						if (handling.isInhibitAppend()) {
+						if (handling.isInhibitAdd()) {
 							add = false;
 						}
 						if (handling.mustInsert()) {
 							if (itInsert == null) {
 								itInsert = this.queue.listIterator(it.nextIndex());
 							}
+						}
+						if ( handling.mustFinished() ) {
+							break ;
 						}
 					}
 				} else {
@@ -285,7 +280,7 @@ public class SolvisWorkers {
 	}
 
 	private boolean execute(Command command) throws IOException, TerminationException, ErrorPowerOn {
-		if (!command.isModbus(this.solvis) || command.isWriting()) {
+		if (!command.isModbus() || command.isWriting()) {
 			Screen commandScreen = command.getScreen(this.solvis);
 			if (commandScreen != null) {
 				long now = System.currentTimeMillis();
@@ -335,7 +330,7 @@ public class SolvisWorkers {
 				}
 
 				@Override
-				public boolean isModbus(Solvis solvis) {
+				public boolean isModbus() {
 					return false;
 				}
 

@@ -1,25 +1,5 @@
 Ä N D E R U N G EN
 
-Version 01.00.06
-				
-	28.04.2020	Im Zusammenhang mit der Modbus-Ergänzung ist auch die Laufzeitanforderung 2 nicht mehr
-				optional gwesen. Gefixt.
-				
-				Wird ein Control-Befehl verworfen, werden fälschlicherweise noch weitere nicht
-				abgearbeitete verworfen.
-				
-	29.04.2020	Der Bildschirmschoner wurde immer wieder zurückgesetzt.
-	
-				Log4J aktualisiert , Version 2.13.2
-				
-
-Version 01.00.05
-				
-	28.04.2020	Die XML-Struktur des control.xml-Files musste durch die Modbus-Ergänzung geändert
-				werden. Durch ein Bug funktionierte danach die Solvis-Konfiguration ohne Raumfühler
-				nicht mehr. 
-				
-
 Version 01.00.04
 				
 	28.04.2020	Heizkreis 2-Problem gefixt. Wenn das Heizkreis2-Menü angefahren werden sollte, wurde

@@ -116,9 +116,13 @@ public class Solvis {
 	public void setCurrentScreen(SolvisScreen screen) {
 		this.currentScreen = screen;
 	}
-
+	
 	public SolvisScreen getCurrentScreen() throws IOException {
-		if (this.screenSaverActive) {
+		return this.getCurrentScreen(true);
+	}
+
+	public SolvisScreen getCurrentScreen(boolean screensaverOff) throws IOException {
+		if (this.screenSaverActive && screensaverOff ) {
 			this.resetSreensaver();
 			this.screenSaverActive = false;
 		}
@@ -275,7 +279,7 @@ public class Solvis {
 	}
 
 	public void saveScreen() throws IOException {
-		Screen current = this.getCurrentScreen().get();
+		Screen current = this.getCurrentScreen(false).get();
 		if (current != null && !current.equals(SolvisScreen.get(this.savedScreen))) {
 			logger.info("Screen <" + current.getId() + "> saved");
 			this.savedScreen = this.getCurrentScreen();
