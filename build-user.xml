@@ -20,8 +20,8 @@
 		value="SmartHome/Linux/SolvisSmartHomeServer.service" />
 	<property name="linux.systemdD"
 		value="SmartHome/Linux/DebugSolvisSmartHomeServer.service" />
-	<property name="pubBase"
-		value="${bin.dir}/de/sgollmer/solvismax/data/base" />
+	<property name="pubBaseDir"
+		value="${bin.dir}/de/sgollmer/solvismax/data" />
 	<property name="myBase.xml"
 		value="${env.EIGENE_DATEIEN}/Programmierung/Extensions/base.xml" />
 	<property name="lib.dir" value="lib" />
@@ -170,11 +170,12 @@
 			<fileset file="${fhem.pm}" casesensitive="yes" />
 			<fileset file="${linux.systemd}" casesensitive="yes" />
 			<fileset file="${linux.systemdD}" casesensitive="yes" />
-			<fileset file="${pubBase}.xml" casesensitive="yes" />
-			<fileset file="${pubBase}.xsd" casesensitive="yes" />
+			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
 			<fileset file="${makefile}" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 			<fileset file="${changes}" casesensitive="yes" />
 		</copy>
+		<copy file="${pubBaseDir}/base.xml"
+			tofile="${pub.dir}/base.xml.new" />
 	</target>
 </project>

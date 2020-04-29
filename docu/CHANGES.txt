@@ -14,6 +14,10 @@ Version 01.00.06
 				
 				Makefile geändert. Die vorherige base.xml wird gesichert als base.xml.old
 				
+				Ant-File geändert. Im Packet ist anstelle der base.xml immer einen base.xml.new
+				enthalten. Auf diese Weise wird die vom Anwender geänderte base.xml beim Transfer
+				nicht überschrieben
+				
 
 Version 01.00.05
 				
