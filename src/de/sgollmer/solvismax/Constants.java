@@ -44,7 +44,9 @@ public class Constants {
 	public static final int TIME_COMMAND_SCREEN_VALID = 5000;
 
 	public static final int SCREENSAVER_INHIBIT_INTERVAL = 120000;
+	
 	public static final int WAIT_AFTER_FIRST_ASYNC_DETECTION = 100;
+	public static final int ERROR_DETECTED_AFTER_N_ERROR_SCREENS = 2 ;
 
 	public static final long SETTING_TIME_RANGE_LOWER = 5000;
 	public static final long SETTING_TIME_RANGE_UPPER = 50000;

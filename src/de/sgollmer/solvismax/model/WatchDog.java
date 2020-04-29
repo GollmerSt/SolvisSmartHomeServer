@@ -36,7 +36,7 @@ public class WatchDog {
 	private final int releaseBlockingAfterServiceAccess_ms;
 
 	private final int watchDogTime;
-	private boolean errorDetected = false;
+	private int errorDetected = 0;
 	private boolean abort = false;
 	private HumanAccess humanAccess = HumanAccess.NONE;
 	private HumanAccess formerHumanAccess = HumanAccess.NONE;
@@ -138,19 +138,25 @@ public class WatchDog {
 		while (!this.abort) { // loop in case off user access or error detected
 
 			try {
+
+				boolean errorPending = this.errorDetected > 0
+						&& this.errorDetected < Constants.ERROR_DETECTED_AFTER_N_ERROR_SCREENS;
 				Event event = Event.NONE;
 
 				this.realScreen = this.solvis.getRealScreen();
-				if (this.realScreen.imagesEquals(this.lastScreen)) {
+				if (!errorPending && this.realScreen.imagesEquals(this.lastScreen)) {
 					// do nothing
 				} else if (this.isScreenSaver()) {
 					event = Event.SCREENSAVER;
 //					event = this.isHumanAccess() ? Event.CHANGED : Event.SCREENSAVER;
 				} else if (this.isError()) {
-					this.errorDetected = true;
-					event = Event.ERROR;
+					if (this.errorDetected < Constants.ERROR_DETECTED_AFTER_N_ERROR_SCREENS) {
+						++this.errorDetected;
+					} else {
+						event = Event.ERROR;
+					}
 				} else {
-					this.errorDetected = false;
+					this.errorDetected = 0;
 					event = this.isHumanAccess() ? Event.CHANGED : Event.NONE;
 				}
 				this.lastScreen = this.realScreen;
@@ -161,9 +167,10 @@ public class WatchDog {
 
 				this.processHumanAccess(event);
 
-				this.abort = !this.humanAccess.mustWait() && !this.errorDetected;
+				this.abort = !this.humanAccess.mustWait() && this.errorDetected == 0;
 
-				this.solvis.getSolvisState().error(this.errorDetected, "Error screen", this.realScreen.getImage());
+				boolean errorDetected = this.errorDetected >= Constants.ERROR_DETECTED_AFTER_N_ERROR_SCREENS;
+				this.solvis.getSolvisState().error(errorDetected, "Error screen", this.realScreen.getImage());
 
 				synchronized (this) {
 					if (!this.abort) {
@@ -175,6 +182,14 @@ public class WatchDog {
 				}
 
 			} catch (IOException e) {
+				synchronized (this) {
+					if (!this.abort) {
+						try {
+							this.wait(Constants.WAIT_TIME_AFTER_IO_ERROR);
+						} catch (InterruptedException e1) {
+						}
+					}
+				}
 			}
 		}
 	}
@@ -216,7 +231,8 @@ public class WatchDog {
 							humanAccess = true;
 						} else {
 							MyImage ignoreRectScreen = new MyImage(screen.getImage(), false, ignoreRectangles);
-							if (!ignoreRectScreen.equals(WatchDog.this.solvis.getCurrentScreen(false).getImage(), true)) {
+							if (!ignoreRectScreen.equals(WatchDog.this.solvis.getCurrentScreen(false).getImage(),
+									true)) {
 								humanAccess = true;
 							}
 						}
@@ -227,7 +243,7 @@ public class WatchDog {
 			}
 			return humanAccess;
 		}
-		
+
 	};
 
 	private boolean isHumanAccess() throws IOException {
@@ -363,8 +379,8 @@ public class WatchDog {
 	}
 
 	private boolean getTwiceState(final Detect detect) throws IOException {
-		Boolean state = detect.former ;
-		boolean currentState = false ;
+		Boolean state = detect.former;
+		boolean currentState = false;
 		boolean repeat = true;
 		SolvisScreen realScreen = WatchDog.this.realScreen;
 
@@ -374,9 +390,9 @@ public class WatchDog {
 				realScreen = WatchDog.this.solvis.getRealScreen();
 			}
 			currentState = detect.detect(realScreen);
-			
-			if ( state == null || currentState == state ) {
-				repeat = false ;
+
+			if (state == null || currentState == state) {
+				repeat = false;
 			}
 			if (repeat && r == 0) {
 				realScreen = null;
@@ -391,7 +407,7 @@ public class WatchDog {
 			}
 		}
 		WatchDog.this.realScreen = realScreen;
-		detect.former = currentState ;
+		detect.former = currentState;
 		return currentState;
 	}
 }
