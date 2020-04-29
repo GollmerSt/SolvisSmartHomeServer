@@ -12,6 +12,8 @@ Version 01.00.06
 	
 				Log4J aktualisiert , Version 2.13.2
 				
+				Makefile geändert. Die vorherige base.xml wird gesichert als base.xml.old
+				
 
 Version 01.00.05
 				
