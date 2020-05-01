@@ -1,5 +1,12 @@
 Ä N D E R U N G EN
 
+Version 01.00.07
+				
+	01.05.2020	FHEM-Client um einige Logs erweitert und von einem unnötigen Teil bereinigt, der
+				injm einem besonderen Fall stundenlang verhindern konnte, dass er sich wieder mit
+				dem Server verbindet.
+					
+
 Version 01.00.06
 				
 	28.04.2020	Im Zusammenhang mit der Modbus-Ergänzung ist auch die Laufzeitanforderung 2 nicht mehr

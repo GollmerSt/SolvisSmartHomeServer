@@ -14,6 +14,7 @@
 #   00.02.01    06.02.2020  SCMP77              SolvisClient_InterpreteConnectionState  Updated to current messages
 #   00.02.02    13.02.2020  SCMP77              SolvisClient_InterpreteConnectionState  Attribut enable gui commands addes
 #   00.02.03    24.03.2020  SCMP77              All                                     Using FHEM::SolvisClient-Package, Supports FHEM:Meta, Allgemeine Perl
+#   00.02.04    01.05.2020  SCMP77              All                                     Reconnction after unknown client shortend, Timeout reported
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -48,7 +49,9 @@ use constant MODULE => 'SolvisClient';
 
 use constant WATCH_DOG_INTERVAL => 300 ;    #Mindestens alle 5 Minuten muss der Client Daten vom Servere erhalten haben.
                                             # Andernfalls wird die Verbindung neu aufgebaut
+use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 5 ;
 use constant RECONNECT_AFTER_DISMISS => 30 ;
+
 use constant MIN_CONNECTION_INTERVAL => 10 ;
 
 use constant _FALSE_ => 0 ;
@@ -59,6 +62,7 @@ use constant FORMAT_VERSION_REGEXP => 'm/01\.../' ;
 use constant _DISABLE_GUI_ => 0 ;
 use constant _ENABLE_GUI_ => 1 ;
 use constant _UPDATE_GUI_ => 2 ;
+
 
 
 
@@ -148,6 +152,7 @@ BEGIN {
             DevIo_CloseDev
             DevIo_SimpleWrite
             DevIo_SimpleRead
+            DevIo_IsOpen
             InternalTimer
             RemoveInternalTimer
             AttrVal
@@ -353,6 +358,11 @@ sub Connect {
 
     }
 
+    if (defined(DevIo_IsOpen($self))) {
+        Log( $self, 3, "Connection wasn't closed");
+        DevIo_CloseDev($self) ;
+    }
+
     my $error = DevIo_OpenDev($self, $reopen, $connectedSub);
 
     $self->{helper}{BUFFER} = '' ;
@@ -424,7 +434,7 @@ sub Ready {
 
     my $error = undef ;
 
-    if($self->{STATE} eq 'disconnected' && isNewConnectionAllowed($self) == _TRUE_ ) {
+    if(!defined(DevIo_IsOpen($self))) {
         Log( $self, 4, 'Reconnection try');
         $error = Connect($self, 1) ; # reopen
     }
@@ -437,37 +447,6 @@ sub Ready {
 
 ################################################
 #
-#       Untersuchen, ob reconnect wieder erlaubt
-#
-sub isNewConnectionAllowed {
-    my $self = shift ;
-
-    my $now = gettimeofday() ;
-
-    my $connect = _FALSE_ ;
-
-    if ( defined( $self->{helper}{nextConnection})) {
-        if ( $now > $self->{helper}{nextConnection} ) {
-            $connect = _TRUE_ ;
-        }
-    } else {
-        $connect = _TRUE_ ;
-        $self->{helper}{connectionInterval} = undef ;
-    }
-    if ( $connect == _TRUE_ ) {
-        my $interval = MIN_CONNECTION_INTERVAL ;
-        if ( defined( $self->{helper}{connectionInterval})) {
-            $interval = $self->{helper}{connectionInterval} ;
-        }
-        $self->{helper}{connectionInterval} = $interval * 2 ;
-        $self->{helper}{nextConnection} = $now + $interval ;
-    }
-    return $connect
-}
-
-
-################################################
-#
 #       Daten vom Server erhalten
 #
 sub Read {
@@ -475,9 +454,9 @@ sub Read {
 
     my $name = $self->{NAME};
 
-    RemoveInternalTimer($self, \&Reconnect );
+    RemoveInternalTimer($self, \&WatchDogTimeout );
     my $timeStamp = gettimeofday() + WATCH_DOG_INTERVAL ;
-    InternalTimer($timeStamp, \&Reconnect, $self );
+    InternalTimer($timeStamp, \&WatchDogTimeout, $self );
 
 
     Log($self, 5, 'Read entered');
@@ -513,7 +492,7 @@ sub Read {
 
         my $receivedData = decode_json ($parts[3]);
 
-        executeCommand($self, $receivedData) ;
+        ExecuteCommand($self, $receivedData) ;
     }
 
     return ;
@@ -525,7 +504,7 @@ sub Read {
 #
 #       Execute server commands
 #
-sub executeCommand {
+sub ExecuteCommand {
     my $self = shift ;
     my $receivedData = shift ;
 
@@ -543,7 +522,6 @@ sub executeCommand {
         'MEASUREMENTS' => sub {
             UpdateReadings($self, $receivedData->{MEASUREMENTS}) ;
             EnableGui( $self ) ;
-            $self->{helper}{nextConnection} = undef ;
         },
         'DESCRIPTIONS' => sub {
             CreateGetSetServerCommands($self, $receivedData->{DESCRIPTIONS}) ;
@@ -563,7 +541,7 @@ sub executeCommand {
     }
 
     return ;
-} # end executeCommand
+} # end ExecuteCommand
 
 
 
@@ -642,12 +620,12 @@ sub InterpreteConnectionState {
             $self->{helper}{GuiEnabled} = undef ;
             $self->{CLIENT_ID} = undef ;
             Log($self, 3, "Client unknown: $message");
-            ReconnectAfterDismiss($self);
+            ReconnectAfterDismiss($self, RECONNECT_AFTER_UNKNOWN_CLIENT);
         },
         'CONNECTION_NOT_POSSIBLE' => sub {
             $self->{helper}{GuiEnabled} = undef ;
             Log($self, 3, "Connection not possible: $message");
-            ReconnectAfterDismiss($self);
+            ReconnectAfterDismiss($self, RECONNECT_AFTER_DISMISS);
         },
         'ALIVE' => sub {
             Log($self, 4, 'Alive received');
@@ -677,11 +655,12 @@ sub InterpreteConnectionState {
 #
 sub ReconnectAfterDismiss {
     my $self = shift ;
+    my $reconnectionDelay = shift ;
 
     DevIo_CloseDev($self) ;
     $self->{helper}{GuiEnabled} = undef ;
 
-    my $timeStamp = gettimeofday() + RECONNECT_AFTER_DISMISS ;
+    my $timeStamp = gettimeofday() + $reconnectionDelay ;
     InternalTimer($timeStamp, \&Reconnect, $self );
 
     return ;
@@ -719,13 +698,27 @@ sub InterpreteSolvisState {
 
 
 
+##########################################
+#
+#       Timeout der Verbindung
+#
+sub WatchDogTimeout {
+    my $self = shift ;
+    
+    Log($self, 3, 'Timeout of connection detected. Try reconnection');
+    Reconnect($self) ;
+
+    return ;
+} # end WatchDogTimeout
+
+
+
 ################################################
 #
 #       Reconnect
 #
 sub Reconnect {
     my $self = shift ;
-
 
     $self->{helper}{GuiEnabled} = undef ;
 
@@ -1428,7 +1421,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.03",
+  "version": "v00.02.04",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
