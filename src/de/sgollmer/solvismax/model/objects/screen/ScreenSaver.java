@@ -7,8 +7,15 @@
 
 package de.sgollmer.solvismax.model.objects.screen;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 
+import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
 import org.apache.logging.log4j.LogManager;
@@ -118,26 +125,37 @@ public class ScreenSaver implements Assigner {
 	}
 
 	public boolean is(SolvisScreen screen) {
+		MyImage original = SolvisScreen.getImage(screen);
+		return this.is(original);
+	}
+
+	public boolean is(MyImage image) {
 
 		int fs = Constants.SCREEN_SAVER_IGNORED_FRAME_SIZE;
 
-		MyImage original = SolvisScreen.getImage(screen);
-
-		if (original == null) {
+		if (image == null) {
 			return false;
 		}
 
-		Pattern pattern = new Pattern(original, new Coordinate(fs, fs),
-				new Coordinate(original.getWidth() - 2 * fs, original.getHeight() - 2 * fs));
+		Pattern pattern = new Pattern(image, new Coordinate(fs, fs),
+				new Coordinate(image.getWidth() - 2 * fs, image.getHeight() - 2 * fs));
 
-		if (!pattern.isIn(this.timeDateRectangle.getBottomRight())) {
+		Coordinate timeTopLeft = this.timeDateRectangle.getTopLeft();
+		Coordinate dateBottomRight = this.timeDateRectangle.getBottomRight();
+		Coordinate check = new Coordinate(timeTopLeft.getX(), dateBottomRight.getY() );
+
+		if (!pattern.isIn(check)) {
 			if (DEBUG) {
 				this.debugInfo = "Not in <timeDateRectangle>. " + pattern.getDebugInfo();
 			}
 			return false;
 		}
 
-		Pattern timeDatePattern = new Pattern(pattern, this.timeDateRectangle);
+		dateBottomRight = new Coordinate(pattern.getWidth() - 1, dateBottomRight.getY());
+
+		Rectangle timeDateRectangle = new Rectangle(timeTopLeft, dateBottomRight);
+
+		Pattern timeDatePattern = new Pattern(pattern, timeDateRectangle);
 
 		Rectangle timeRectangle = new Rectangle(new Coordinate(0, 0),
 				new Coordinate(timeDatePattern.getWidth() - 1, this.timeHeight));
@@ -184,6 +202,35 @@ public class ScreenSaver implements Assigner {
 
 	public String getDebugInfo() {
 		return this.debugInfo;
+	}
+
+	public static void main(String[] args) {
+		Rectangle timeDateRectangle = new Rectangle(new Coordinate(75, 0), new Coordinate(135, 32));
+		ScreenSaver saver = new ScreenSaver(18, timeDateRectangle, null);
+
+		File parent = new File("testFiles\\images");
+
+		Collection<String> names = Arrays.asList("Bildschirmschoner V1.bmp", "Bildschirmschoner V1 2.bmp", "bildschirmschoner.png",
+				"bildschirmschoner1.png", "bildschirmschoner2.png");
+
+		BufferedImage image = null;
+
+		for (Iterator<String> it = names.iterator(); it.hasNext();) {
+			File file = new File(parent, it.next());
+			try {
+				image = ImageIO.read(file);
+			} catch (IOException e) {
+				System.err.println("File: " + file.getName());
+				e.printStackTrace();
+			}
+
+			MyImage myImage = new MyImage(image);
+
+			boolean isScreenSaver = saver.is(myImage);
+
+			System.out.println(file.getName() + " isScreenSaver? " + Boolean.toString(isScreenSaver));
+		}
+
 	}
 
 }

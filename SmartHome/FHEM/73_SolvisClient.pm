@@ -49,7 +49,7 @@ use constant MODULE => 'SolvisClient';
 
 use constant WATCH_DOG_INTERVAL => 300 ;    #Mindestens alle 5 Minuten muss der Client Daten vom Servere erhalten haben.
                                             # Andernfalls wird die Verbindung neu aufgebaut
-use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 5 ;
+use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 2 ;
 use constant RECONNECT_AFTER_DISMISS => 30 ;
 
 use constant MIN_CONNECTION_INTERVAL => 10 ;
@@ -251,6 +251,10 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
 
 
     $self->{DeviceName}  = $url;    #Für DevIO, Name fest vorgegeben
+    
+    $self->{ConnectionError} = undef ;
+    $self->{ConnectionByReadyFinished} = _FALSE_ ;
+    $self->{ConnectionOngoingByReady} = _FALSE_ ;
 
     if( $init_done ) {
         my $result = Connect( $self, 0 );
@@ -349,6 +353,12 @@ sub CreateSendData {
 sub Connect {
     my $self = shift ;
     my $reopen = shift ;
+    my $byReady = shift ;
+    
+    if ( $self->{ConnectionOngoing} ) {
+        Log( $self, 3, "Connection still ongoing");
+        return "Connection still ongoing" ;
+    }
 
     my $connectedSub = \&SendConnectionData ;
 
@@ -363,13 +373,42 @@ sub Connect {
         DevIo_CloseDev($self) ;
     }
 
-    my $error = DevIo_OpenDev($self, $reopen, $connectedSub);
+    my $error = DevIo_OpenDev($self, $reopen, $connectedSub, \&ConnectCallback );
+
+    $self->{ConnectionOngoingByReady} = $byReady ;
+    $self->{ConnectionByReadyFinished} = _FALSE_ ;
 
     $self->{helper}{BUFFER} = '' ;
 
     return $error;
 
 } # end Connect
+
+
+
+#####################################
+#
+#       Callback after connection war tried 
+#
+sub ConnectCallback {
+    my $self = shift ;
+    my $error = shift ;
+    
+    $self->{ConnectionError} = $error ;
+    
+    if ( $self->{ConnectionOngoingByReady} ) {
+        $self->{ConnectionByReadyFinished} = _TRUE_ ;
+    }
+    
+    $self->{ConnectionOngoingByReady} = _FALSE_ ;
+    
+    if ( defined($error) ) {
+        Log( $self, 4, "Connection error: $error");
+    }
+
+    return ;
+
+} # end ConnectCallback
 
 
 
@@ -430,16 +469,30 @@ sub SendReconnectionData {
 sub Ready {
     my $self = shift ;
 
+    if ( $self->{ConnectionOngoingByReady} ) {
+        return 'Connection still ongoing' ;
+    }
+
     $self->{helper}{GuiEnabled} = undef ;
 
-    my $error = undef ;
-
-    if(!defined(DevIo_IsOpen($self))) {
+    my $error = $self->{ConnectionError} ;
+    
+    $self->{ConnectionError} = $error ;
+    
+    my $isOpen = DevIo_IsOpen($self);
+    
+    if ( $self->{ConnectionByReadyFinished} ) {
+        $self->{ConnectionByReadyFinished} = _FALSE_ ;
+        if($isOpen || defined($error)) {
+            return $error
+        }
+    }
+    
+    if(!$isOpen) {
         Log( $self, 4, 'Reconnection try');
         $error = Connect($self, 1) ; # reopen
     }
-
-    return !defined($error);
+    return 'Connection ongoing';
 
 } # end Ready
 
