@@ -1,9 +1,33 @@
 Ä N D E R U N G EN
 
+Version 01.00.08
+				
+	08.05.2020	Wegen der Artefakte am Rand der Anzeige an manchen Anlagen wurden bisher je 3 Pixel
+				am Rand bei der Bildschirmschonererkennung nicht berücksichtigt. Das
+
+	06.05.2020	Ein Bug im Client gefixt. Die Länge eines JSON-Pakets wurde fehlerhaft an den Server
+				übergeben. Das führte dazu, dass bei zwei direkt vom Client gesendete JSON-Pakete
+				der Anfang des zweiten verstümmelt war, wenn das erste noch nicht abgearbeitet war.
+				Das führte sporadisch in der Verbindungsaufbau-Phase zu sporadischen Verbindungs-
+				abbrüchen.
+
+	04.05.2020	Bei einem Update des Servers, bei dem sich die Struktur des control.xml-Files
+				sich grundlegend geändert hat, konnte es passieren, dass der Server nicht mehr
+				starten konnte. Der Server versucht zu Beginn immer die alte Datei zu lesen.
+				Bei solchen größeren Änderungen kann es dabei passieren, dass er dies aber nicht
+				mehr erfolgreich kann und sich beendet.
+				In diesem Fall wird nun von der alten control.xml ein Backup erstellt (ob diese
+				vom Anwender geändert wurde kann nicht mehr festgestellt werden) und mit der
+				neuen des Progarmmpakets überschrieben.
+				
+				Das gleiche kann auch für die Datei graphics.xml zutreffen. Wenn die nicht mehr
+				gelesen werden kann, wird sie immer neu erstellt, d.h. ein Learning wird notwendig.
+
+
 Version 01.00.07
 				
 	01.05.2020	FHEM-Client um einige Logs erweitert und von einem unnötigen Teil bereinigt, der
-				injm einem besonderen Fall stundenlang verhindern konnte, dass er sich wieder mit
+				in einem besonderen Fall stundenlang verhindern konnte, dass er sich wieder mit
 				dem Server verbindet.
 					
 
