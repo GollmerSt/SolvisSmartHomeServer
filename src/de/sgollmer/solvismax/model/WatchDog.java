@@ -28,7 +28,7 @@ public class WatchDog {
 	private static final Logger logger = LogManager.getLogger(WatchDog.class);
 
 	private final Solvis solvis;
-	private final ScreenSaver saver;
+	private final ScreenSaver.Executable saver;
 
 	private SolvisScreen lastScreen = null;
 	private SolvisScreen realScreen = null;
@@ -68,7 +68,7 @@ public class WatchDog {
 
 	public WatchDog(Solvis solvis, ScreenSaver saver) {
 		this.solvis = solvis;
-		this.saver = saver;
+		this.saver = saver.createExecutable(solvis);
 		Miscellaneous misc = this.solvis.getSolvisDescription().getMiscellaneous();
 		this.releaseBlockingAfterUserChange_ms = BaseData.DEBUG ? Constants.DEBUG_USER_ACCESS_TIME
 				: misc.getReleaseBlockingAfterUserAccess_ms();

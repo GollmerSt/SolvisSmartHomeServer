@@ -17,6 +17,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +25,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.log.Logger2;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 
@@ -92,8 +94,12 @@ public class GraficFileHandler {
 
 			result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName()).getTree();
 
-		} catch (IOException | XmlError | XMLStreamException e) {
-			logger.error("Warning: Read error on graficx.xml file. A new one will be created.");
+		} catch (IOException | XmlError | XMLStreamException e1) {
+			logger.error("Warning: Read error on grafics.xml file. A new one will be created.");
+			result = new AllSolvisGrafics();
+		} catch ( Throwable e2 ) {
+			Logger2.out(logger, Level.ERROR, "Unexpected error found on reading the grafics.xml, a new on will be cerated.\n"
+					+ "If the error still exits, please conact the developer.", e2.getStackTrace());
 			result = new AllSolvisGrafics();
 		}
 

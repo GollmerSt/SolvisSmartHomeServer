@@ -15,6 +15,7 @@
 #   00.02.02    13.02.2020  SCMP77              SolvisClient_InterpreteConnectionState  Attribut enable gui commands addes
 #   00.02.03    24.03.2020  SCMP77              All                                     Using FHEM::SolvisClient-Package, Supports FHEM:Meta, Allgemeine Perl
 #   00.02.04    01.05.2020  SCMP77              All                                     Reconnction after unknown client shortend, Timeout reported
+#   00.02.05    06.05.2020  SCMP77              All                                     Length bug of SendData fixed, Some optimizations
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -47,21 +48,22 @@ use GPUtils qw(GP_Import GP_Export);
 
 use constant MODULE => 'SolvisClient';
 
-use constant WATCH_DOG_INTERVAL => 300 ;    #Mindestens alle 5 Minuten muss der Client Daten vom Servere erhalten haben.
-                                            # Andernfalls wird die Verbindung neu aufgebaut
-use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 2 ;
-use constant RECONNECT_AFTER_DISMISS => 30 ;
+use constant WATCH_DOG_INTERVAL => 300 ;        #Violates 'ProhibitConstantPragma'
+                                                #Mindestens alle 5 Minuten muss der Client Daten vom Servere erhalten haben.
+                                                # Andernfalls wird die Verbindung neu aufgebaut
+use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 2 ; #Violates 'ProhibitConstantPragma'
+use constant RECONNECT_AFTER_DISMISS => 30 ;    #Violates 'ProhibitConstantPragma'
 
-use constant MIN_CONNECTION_INTERVAL => 10 ;
+use constant MIN_CONNECTION_INTERVAL => 10 ;    #Violates 'ProhibitConstantPragma'
 
-use constant _FALSE_ => 0 ;
-use constant _TRUE_ => 1;
+use constant _FALSE_ => 0 ;                     #Violates 'ProhibitConstantPragma'
+use constant _TRUE_ => 1;   #Violates 'ProhibitConstantPragma'
 
-use constant FORMAT_VERSION_REGEXP => 'm/01\.../' ;
+use constant FORMAT_VERSION_REGEXP => 'm/01\.../' ; #Violates 'ProhibitConstantPragma'
 
-use constant _DISABLE_GUI_ => 0 ;
-use constant _ENABLE_GUI_ => 1 ;
-use constant _UPDATE_GUI_ => 2 ;
+use constant _DISABLE_GUI_ => 0 ;               #Violates 'ProhibitConstantPragma'
+use constant _ENABLE_GUI_ => 1 ;                #Violates 'ProhibitConstantPragma'
+use constant _UPDATE_GUI_ => 2 ;                #Violates 'ProhibitConstantPragma'
 
 
 
@@ -284,14 +286,22 @@ sub Attr {
     my $attrValue   = shift ;
 
     my $self = $defs{$name} ;
+	
+	my %switch = (
+        'GuiCommandsEnabled' => sub {
+			if ( defined $attrValue  && $attrValue ne 'TRUE' && $attrValue   ne 'FALSE' ) {
+				return "Unknown value $attrValue for $attrName, choose one of TRUE FALSE";
+			}
+       },
+	   'SolvisName' => sub {
+	   }
+    ) ;
 
-    if ( $attrName eq 'GuiCommandsEnabled' ) {
-        if ( defined $attrValue  && $attrValue   ne 'TRUE' && $attrValue   ne 'FALSE' ) {
-            return "Unknown value $attrValue for $attrName, choose one of TRUE FALSE";
-        }
+    if ( defined($switch{ $attrName })) {
+        $switch{ $attrName }->();
+    } else {
+        Log($self, 3, "Warning: Unknown attribute $attrName");
     }
-
-    return ;
 } # end Attr
 
 
@@ -313,36 +323,15 @@ sub Notify {
     my $devName = $eventObject->{NAME}; # Device that created the events
     my $events = deviceEvents($eventObject, 1);
 
-    if($devName eq 'global' && grep( { m/^INITIALIZED|REREADCFG$/x } @{$events}))
-    {
+    if($devName eq 'global' && grep( { m/^INITIALIZED|REREADCFG$/x } @{$events})) {
+		
         $self->{helper}{GuiEnabled} = undef ;
-         my $result = Connect( $self, 0 );
+        my $result = Connect( $self, 0 );
         $self->{NOTIFYDEV} = '';
         Log($self, 3, 'New Connection in case of rereadcfg or initialized');
     }
     return ;
 } # end Notify
-
-
-
-#########################################
-#
-#       Create Send data
-#
-sub CreateSendData {
-    my $self = shift ;
-    my $sendData = shift ;
-
-    my $byteString = encode_json ( $sendData );
-
-    my $length = length $byteString ;
-    $byteString = pack('CCCa*', $length>>16&0xff, $length>>8&0xff, $length&0xff, $byteString ) ;
-
-    Log( $self, 5, "ByteString: $byteString");
-
-    return $byteString ;
-
-} # end CreateSendData
 
 
 
@@ -360,16 +349,11 @@ sub Connect {
         return "Connection still ongoing" ;
     }
 
-    my $connectedSub = \&SendConnectionData ;
-
-    if ( $reopen ) {
-
-        $connectedSub = \&SendReconnectionData ;
-
-    }
+    my $connectedSub = $reopen?\&SendReconnectionData:\&SendConnectionData ;
 
     if (defined(DevIo_IsOpen($self))) {
         Log( $self, 3, "Connection wasn't closed");
+		
         DevIo_CloseDev($self) ;
     }
 
@@ -419,16 +403,9 @@ sub ConnectCallback {
 sub SendConnectionData {
     my $self = shift ;
 
-
     $self->{CLIENT_ID} = undef ;
 
-    my %sendConnectionInfo = (
-        CONNECT => {
-            Id => AttrVal( $self->{NAME}, 'SolvisName', $self->{NAME} )
-        }
-    ) ;
-
-    DevIo_SimpleWrite($self, CreateSendData($self, \%sendConnectionInfo ), 0);
+    SendData( $self, 'CONNECT', 'Id', AttrVal( $self->{NAME}, 'SolvisName', $self->{NAME} ) );
 
     return ;
 
@@ -445,13 +422,7 @@ sub SendReconnectionData {
 
     if ( defined( $self->{CLIENT_ID} ) ) {
 
-        my %sendReconnectionInfo = (
-            RECONNECT => {
-                Id => $self->{CLIENT_ID}
-            }
-        ) ;
-
-        DevIo_SimpleWrite($self, CreateSendData($self, \%sendReconnectionInfo ), 0);
+        SendData( $self, 'RECONNECT', 'Id', $self->{CLIENT_ID} ) ;
 
     } else {
          SendConnectionData($self) ;
@@ -480,7 +451,7 @@ sub Ready {
     $self->{ConnectionError} = $error ;
     
     my $isOpen = DevIo_IsOpen($self);
-    
+        
     if ( $self->{ConnectionByReadyFinished} ) {
         $self->{ConnectionByReadyFinished} = _FALSE_ ;
         if($isOpen || defined($error)) {
@@ -510,7 +481,6 @@ sub Read {
     RemoveInternalTimer($self, \&WatchDogTimeout );
     my $timeStamp = gettimeofday() + WATCH_DOG_INTERVAL ;
     InternalTimer($timeStamp, \&WatchDogTimeout, $self );
-
 
     Log($self, 5, 'Read entered');
 
@@ -591,6 +561,8 @@ sub ExecuteCommand {
     
     if ( defined($switch{ $command  })) {
         $switch{ $command  }->();
+    } else {
+        Log($self, 3, "Warning: Unknown command $command");
     }
 
     return ;
@@ -605,15 +577,21 @@ sub ExecuteCommand {
 sub Connected {
     my $self = shift ;
     my $receivedData = shift ;
+    
+    my $connected = $receivedData->{CONNECTED} ;
 
-    $self->{CLIENT_ID} = $receivedData->{CONNECTED}->{ClientId} ;
-    if ( defined ($receivedData->{CONNECTED}->{ServerVersion}) ) {
-        $self->{VERSION_SERVER} = $receivedData->{CONNECTED}->{ServerVersion} ;
-        my $formatVersion = $receivedData->{CONNECTED}->{FormatVersion} ;
+    $self->{CLIENT_ID} = $connected->{ClientId} ;
+    
+    if ( defined ($connected->{ServerVersion}) ) {
+        
+        $self->{VERSION_SERVER} = $connected->{ServerVersion} ;
+        
+        my $formatVersion = $connected->{FormatVersion} ;
         if ( ! $formatVersion =~ FORMAT_VERSION_REGEXP ) {
-            Log($self, 3, "Format version $formatVersion of client is depricated, use a newer client, if available.");
-            $self->{INFO} = 'Format version is depricated' ;
+            Log($self, 3, "Format version $formatVersion of client is deprecated, use a newer client, if available.");
+            $self->{INFO} = 'Format version is deprecated' ;
         }
+        
         Log($self, 3, "Server version: $self->{VERSION_SERVER}") ;
     }
     return ;
@@ -632,6 +610,7 @@ sub EnableGui {
     my $enabled = $attrVal eq 'TRUE' ;
 
     if (!defined($self->{helper}{GuiEnabled}) || $self->{helper}{GuiEnabled} != $enabled ) {
+        
         my $command = $enabled?'GUI_COMMANDS_ENABLE':'GUI_COMMANDS_DISABLE' ;
 
         SendServerCommand($self, $command) ;
@@ -658,6 +637,7 @@ sub InterpreteConnectionState {
     my $message  ;
 
     foreach my $key( keys(%$state)) {
+        
         if ( $key eq 'State') {
             $stateString = $state->{$key } ;
         } elsif ( $key eq 'Message') {
@@ -669,6 +649,7 @@ sub InterpreteConnectionState {
     Log($self, 5, "Connection status: $stateString");
 
     my %switch = (
+    
         'CLIENT_UNKNOWN' => sub {
             $self->{helper}{GuiEnabled} = undef ;
             $self->{CLIENT_ID} = undef ;
@@ -694,7 +675,7 @@ sub InterpreteConnectionState {
     if ( defined($switch{ $stateString  })) {
         $switch{ $stateString  }->();
     } else {
-        Log($self, 3, "Connection status: $stateString");
+        Log($self, 3, "Connection status unknown: $stateString");
     }
 
     return ;
@@ -778,6 +759,7 @@ sub Reconnect {
     Log($self, 3, 'Retry reconnection');
     DevIo_CloseDev($self) ;
     Connect($self,0);
+    
     return ;
 } # end Reconnect
 
@@ -809,7 +791,9 @@ sub CreateGetSetServerCommands {
             $ChannelDescriptions{$name} = {} ;
             $ChannelDescriptions{$name}{SET} = $channelHash{Writeable} ;
             $ChannelDescriptions{$name}{GET} = $channelHash{Type} eq 'CONTROL' ;
+            
             Log($self, 5, "Writeable: $channelHash{Writeable}");
+            
             my %switch = (
                 'Accuracy' => sub {
                     $ChannelDescriptions{$name}{Accuracy} = $channelHash{Accuracy} ;
@@ -962,12 +946,21 @@ sub Delete {
 #
 sub SendData {
     my $self = shift ;
-    my $sendPackage = shift ;
+    my $command = shift;
+    my $key  = shift;
+    my $val  = shift;
 
-    my $byteString = encode_json ( $sendPackage );
+    my %sendPackage = (
+        $command => {
+            $key => $val
+        }
+    ) ;
+
+    my $byteString = encode_json ( \%sendPackage );
 
     my $length = length $byteString ;
-    $byteString = pack('CCCa*', $length&0xff, $length>>8&0xff, $length>>16&0xff, $byteString ) ;
+#    $byteString = pack('CCCa*', $length&0xff, $length>>8&0xff, $length>>16&0xff, $byteString ) ;
+    $byteString = pack('CCCa*', $length>>16&0xff, $length>>8&0xff, $length&0xff, $byteString ) ;
 
     Log($self, 5, "ByteString: $byteString");
 
@@ -987,13 +980,7 @@ sub SendSetData {
     my $channel = shift ;
     my $data = shift ;
 
-    my %SetPackage = (
-        SET => {
-            $channel => $data
-        }
-    ) ;
-
-    SendData($self, \%SetPackage);
+    SendData( $self, 'SET', $channel, $data ) ;
 
     return ;
 }# end SendSetData
@@ -1008,13 +995,7 @@ sub SendGetData {
     my $self = shift ;
     my $channel = shift ;
 
-    my %GetPackage = (
-        GET => {
-            $channel => undef
-        }
-    ) ;
-
-    SendData($self, \%GetPackage);
+    SendData( $self, 'GET', $channel, undef ) ;
 
     return ;
 }# end SendGetData
@@ -1083,13 +1064,7 @@ sub SendServerCommand {
     my $self = shift ;
     my $command = shift ;
 
-    my %ServerCommandPackage = (
-        SERVER_COMMAND => {
-            'Command' => $command
-        }
-    ) ;
-
-    SendData($self, \%ServerCommandPackage);
+    SendData($self, 'SERVER_COMMAND', 'Command', $command);
 
     return ;
 } # end SendServerCommand
@@ -1128,7 +1103,6 @@ sub Get {
                 $firstO = _FALSE_ ;
             }
             $params .= $channel ;
-            my $firstI = _TRUE_ ;
         }
         return "unknown argument $channel choose one of $params";
     } else {
@@ -1474,7 +1448,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.04",
+  "version": "v00.02.05",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

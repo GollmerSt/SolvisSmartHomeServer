@@ -26,7 +26,10 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
+import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -46,8 +49,6 @@ public class ScreenSaver implements Assigner {
 	private static final String XML_TIME_DATA_RECTANGLE = "TimeDateRectangle";
 
 	private static final Logger logger = LogManager.getLogger(ScreenSaver.class);
-
-	private String debugInfo = "";
 
 	private final int timeHeight;
 	private final Rectangle timeDateRectangle;
@@ -71,6 +72,10 @@ public class ScreenSaver implements Assigner {
 	 */
 	public TouchPoint getResetScreenSaver() {
 		return this.resetScreenSaver;
+	}
+
+	public Executable createExecutable(Solvis solvis) {
+		return new Executable(solvis);
 	}
 
 	public static class Creator extends CreatorByXML<ScreenSaver> {
@@ -124,99 +129,38 @@ public class ScreenSaver implements Assigner {
 		}
 	}
 
-	public boolean is(SolvisScreen screen) {
-		MyImage original = SolvisScreen.getImage(screen);
-		return this.is(original);
-	}
-
-	public boolean is(MyImage image) {
-
-		int fs = Constants.SCREEN_SAVER_IGNORED_FRAME_SIZE;
-
-		if (image == null) {
-			return false;
-		}
-
-		Pattern pattern = new Pattern(image, new Coordinate(fs, fs),
-				new Coordinate(image.getWidth() - 2 * fs, image.getHeight() - 2 * fs));
-
-		Coordinate timeTopLeft = this.timeDateRectangle.getTopLeft();
-		Coordinate dateBottomRight = this.timeDateRectangle.getBottomRight();
-		Coordinate check = new Coordinate(timeTopLeft.getX(), dateBottomRight.getY() );
-
-		if (!pattern.isIn(check)) {
-			if (DEBUG) {
-				this.debugInfo = "Not in <timeDateRectangle>. " + pattern.getDebugInfo();
-			}
-			return false;
-		}
-
-		dateBottomRight = new Coordinate(pattern.getWidth() - 1, dateBottomRight.getY());
-
-		Rectangle timeDateRectangle = new Rectangle(timeTopLeft, dateBottomRight);
-
-		Pattern timeDatePattern = new Pattern(pattern, timeDateRectangle);
-
-		Rectangle timeRectangle = new Rectangle(new Coordinate(0, 0),
-				new Coordinate(timeDatePattern.getWidth() - 1, this.timeHeight));
-
-		if (!timeDatePattern.isIn(timeRectangle.getBottomRight())) {
-			if (DEBUG) {
-				this.debugInfo = "Not in <timeRectangle>. " + pattern.getDebugInfo();
-			}
-			return false;
-		}
-
-		OcrRectangle ocrRectangle = new OcrRectangle(timeDatePattern, timeRectangle);
-		String time = ocrRectangle.getString();
-		Matcher m = TIME_PATTERN.matcher(time);
-		if (!m.matches()) {
-			if (DEBUG) {
-				this.debugInfo = pattern.getDebugInfo() + ", time = " + time;
-			}
-			return false;
-		}
-
-		Rectangle dateRectangle = new Rectangle(new Coordinate(0, this.timeHeight),
-				new Coordinate(timeDatePattern.getWidth() - 1, timeDatePattern.getHeight() - 1));
-
-		if (!timeDatePattern.isIn(dateRectangle.getBottomRight())) {
-			if (DEBUG) {
-				this.debugInfo = "Not in <dateRectangle>. " + pattern.getDebugInfo();
-			}
-			return false;
-		}
-
-		ocrRectangle = new OcrRectangle(timeDatePattern, dateRectangle);
-		String date = ocrRectangle.getString();
-		logger.debug("Screen saver time: " + time + "  " + date);
-		m = DATE_PATTERN.matcher(date);
-		if (!m.matches()) {
-			if (DEBUG) {
-				this.debugInfo = pattern.getDebugInfo() + ", date = " + date;
-			}
-			return false;
-		}
-		return true;
-	}
-
-	public String getDebugInfo() {
-		return this.debugInfo;
-	}
-
 	public static void main(String[] args) {
 		Rectangle timeDateRectangle = new Rectangle(new Coordinate(75, 0), new Coordinate(135, 32));
 		ScreenSaver saver = new ScreenSaver(18, timeDateRectangle, null);
 
 		File parent = new File("testFiles\\images");
 
-		Collection<String> names = Arrays.asList("Bildschirmschoner V1.bmp", "Bildschirmschoner V1 2.bmp", "bildschirmschoner.png",
-				"bildschirmschoner1.png", "bildschirmschoner2.png");
+		final class Test {
+			private final boolean newSaver;
+			private final String name;
+
+			public Test(boolean newSaver, String name) {
+				this.newSaver = newSaver;
+				this.name = name;
+			}
+		}
+
+		Collection<Test> names = Arrays.asList(new Test(true, "Bildschirmschoner V1 Artefakte.bmp"),
+				new Test(false, "Bildschirmschoner 2 V1 Artefakte.bmp"), new Test(true, "Bildschirmschoner V1.bmp"),
+				new Test(false, "Bildschirmschoner V1 2.bmp"), new Test(false, "Bildschirmschoner V1 3.bmp"),
+				new Test(false, "bildschirmschoner.png"), new Test(false, "bildschirmschoner1.png"),
+				new Test(false, "bildschirmschoner2.png"));
 
 		BufferedImage image = null;
 
-		for (Iterator<String> it = names.iterator(); it.hasNext();) {
-			File file = new File(parent, it.next());
+		ScreenSaver.Executable executable = saver.createExecutable(null);
+
+		for (Iterator<Test> it = names.iterator(); it.hasNext();) {
+			Test test = it.next();
+			if (test.newSaver) {
+				executable = saver.createExecutable(null);
+			}
+			File file = new File(parent, test.name);
 			try {
 				image = ImageIO.read(file);
 			} catch (IOException e) {
@@ -226,9 +170,170 @@ public class ScreenSaver implements Assigner {
 
 			MyImage myImage = new MyImage(image);
 
-			boolean isScreenSaver = saver.is(myImage);
+			boolean isScreenSaver = executable.is(myImage);
 
 			System.out.println(file.getName() + " isScreenSaver? " + Boolean.toString(isScreenSaver));
+		}
+
+	}
+
+	public class Executable implements ObserverI<SolvisState> {
+
+		private Rectangle scanArea = null;
+		private String debugInfo = "";
+
+		public Executable(Solvis solvis) {
+			if (solvis != null) {
+				solvis.getSolvisState().register(this);
+			}
+		}
+
+		@Override
+		public void update(SolvisState data, Object source) {
+			if (data.getState() == SolvisState.State.ERROR || data.getState() == SolvisState.State.POWER_OFF) {
+				this.scanArea = null;
+			}
+
+		}
+
+		public boolean is(SolvisScreen screen) {
+			MyImage original = SolvisScreen.getImage(screen);
+			return this.is(original);
+		}
+
+		public boolean is(MyImage image) {
+
+			if (image == null) {
+				return false;
+			}
+
+			Rectangle scanArea = this.scanArea;
+			if (scanArea == null) {
+				int fs = Constants.SCREEN_SAVER_IGNORED_FRAME_SIZE;
+				scanArea = new Rectangle(new Coordinate(fs, fs),
+						new Coordinate(image.getWidth() - 2 * fs, image.getHeight() - 2 * fs));
+			}
+
+			MyImage myImage = new MyImage(image);
+			myImage.createHistograms(false);
+
+			Pattern pattern = new Pattern(image, scanArea);
+
+			Coordinate timeTopLeft = ScreenSaver.this.timeDateRectangle.getTopLeft();
+			Coordinate dateBottomRight = ScreenSaver.this.timeDateRectangle.getBottomRight();
+			Coordinate check = new Coordinate(timeTopLeft.getX(), dateBottomRight.getY());
+
+			if (!pattern.isIn(check)) {
+				if (DEBUG) {
+					this.debugInfo = "Not in <timeDateRectangle>. " + pattern.getDebugInfo();
+				}
+				return false;
+			}
+
+			dateBottomRight = new Coordinate(pattern.getWidth() - 1, dateBottomRight.getY());
+
+			Rectangle timeDateRectangle = new Rectangle(timeTopLeft, dateBottomRight);
+
+			Pattern timeDatePattern = new Pattern(pattern, timeDateRectangle);
+
+			Rectangle timeRectangle = new Rectangle(new Coordinate(0, 0),
+					new Coordinate(timeDatePattern.getWidth() - 1, ScreenSaver.this.timeHeight));
+
+			if (!timeDatePattern.isIn(timeRectangle.getBottomRight())) {
+				if (DEBUG) {
+					this.debugInfo = "Not in <timeRectangle>. " + pattern.getDebugInfo();
+				}
+				return false;
+			}
+
+			OcrRectangle ocrRectangle = new OcrRectangle(timeDatePattern, timeRectangle);
+			String time = ocrRectangle.getString();
+			Matcher m = TIME_PATTERN.matcher(time);
+			if (!m.matches()) {
+				if (DEBUG) {
+					this.debugInfo = pattern.getDebugInfo() + ", time = " + time;
+				}
+				return false;
+			}
+
+			Rectangle dateRectangle = new Rectangle(new Coordinate(0, ScreenSaver.this.timeHeight),
+					new Coordinate(timeDatePattern.getWidth() - 1, timeDatePattern.getHeight() - 1));
+
+			if (!timeDatePattern.isIn(dateRectangle.getBottomRight())) {
+				if (DEBUG) {
+					this.debugInfo = "Not in <dateRectangle>. " + pattern.getDebugInfo();
+				}
+				return false;
+			}
+
+			ocrRectangle = new OcrRectangle(timeDatePattern, dateRectangle);
+			String date = ocrRectangle.getString();
+			logger.debug("Screen saver time: " + time + "  " + date);
+			m = DATE_PATTERN.matcher(date);
+			if (!m.matches()) {
+				if (DEBUG) {
+					this.debugInfo = pattern.getDebugInfo() + ", date = " + date;
+				}
+				return false;
+			}
+			this.setScanArea(pattern);
+			return true;
+		}
+
+		private void setScanArea(Pattern pattern) {
+			if (this.scanArea != null) {
+				return;
+			}
+			Coordinate origin = pattern.getOrigin();
+			int fs = Constants.SCREEN_SAVER_IGNORED_FRAME_SIZE;
+
+			if (origin.getX() <= fs || origin.getY() <= fs) {
+				return;
+			}
+
+			MyImage screen = new MyImage(pattern.getImage());
+
+			if (origin.getX() + pattern.getWidth() >= screen.getWidth() - fs - 1
+					|| origin.getY() + pattern.getHeight() >= screen.getHeight() - fs - 1) {
+				return;
+			}
+
+			screen.createHistograms(false);
+
+			int left = 0;
+			int right = screen.getWidth() - 1;
+			int top = 0;
+			int bottom = screen.getHeight() - 1;
+
+			for (int i = 0; i < fs; ++i) {
+				if (screen.getHistogramX().get(i) > 0) {
+					left = i + 1;
+				}
+			}
+
+			for (int i = screen.getWidth() - 1; i >= screen.getWidth() - fs; --i) {
+				if (screen.getHistogramX().get(i) > 0) {
+					right = i - 1;
+				}
+			}
+
+			for (int i = 0; i < fs; ++i) {
+				if (screen.getHistogramY().get(i) > 0) {
+					top = i + 1;
+				}
+			}
+
+			for (int i = screen.getHeight() - 1; i >= screen.getHeight() - fs; --i) {
+				if (screen.getHistogramY().get(i) > 0) {
+					bottom = i - 1;
+				}
+			}
+
+			this.scanArea = new Rectangle(new Coordinate(left, top), new Coordinate(--right, --bottom));
+		}
+
+		public String getDebugInfo() {
+			return this.debugInfo;
 		}
 
 	}

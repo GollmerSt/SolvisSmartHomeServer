@@ -153,5 +153,14 @@ public class Logger2 {
 		}
 		return errorCode;
 	}
+	
+	public static void out( Logger logger, Level level, String message, StackTraceElement [] elements ) {
+		StringBuilder builder = new StringBuilder(message) ;
+		for ( StackTraceElement element : elements ) {
+			builder.append('\n') ;
+			builder.append(element.toString()) ;
+		}
+		logger.log(level, builder.toString());
+	}
 
 }

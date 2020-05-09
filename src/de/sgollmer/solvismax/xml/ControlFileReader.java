@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.Main;
 import de.sgollmer.solvismax.error.FileError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.log.Logger2;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
 
@@ -125,10 +126,25 @@ public class ControlFileReader {
 
 		XmlStreamReader.Result<SolvisDescription> xmlFromFile = null;
 
+		boolean mustWrite = false;
+		boolean createBackup = false;
+		boolean xmlExits = false;
+
+		Throwable e = null;
+
 		if (xml.exists()) {
 
-			xmlFromFile = reader.read(new FileInputStream(xml), rootId, new SolvisDescription.Creator(rootId),
-					xml.getName());
+			xmlExits = true;
+			try {
+
+				xmlFromFile = reader.read(new FileInputStream(xml), rootId, new SolvisDescription.Creator(rootId),
+						xml.getName());
+			} catch (Throwable e1) {
+				e = e1;
+				createBackup = true;
+			}
+		} else {
+			mustWrite = true;
 		}
 
 		String resourcePath = Constants.RESOURCE_PATH + File.separator + NAME_XML_CONTROLFILE;
@@ -138,11 +154,17 @@ public class ControlFileReader {
 
 		int newResourceHash = xmlFromResource.getHash();
 
-		boolean isNewResource = formerResourceHash == null || newResourceHash != formerResourceHash;
+		mustWrite |= formerResourceHash == null || newResourceHash != formerResourceHash
+				|| !xmlExits ;
+		// wenn nicht vorhanden oder Hashes unterscheiden sich
 
-		if (isNewResource && learn || xmlFromFile == null) {
+		createBackup |= xmlFromFile != null
+				&& (formerResourceHash == null || xmlFromFile.getHash() != formerResourceHash); //
+		// wenn keine graphics.xml oder unterschiedlich zur alten
 
-			if (xmlFromFile != null && formerResourceHash != null && xmlFromFile.getHash() != formerResourceHash) {
+		if (mustWrite && learn || !xmlExits ) {
+
+			if (createBackup) {
 
 				FileHelper.renameDuplicates(xml, Constants.NUMBER_OF_CONTROL_FILE_DUPLICATES);
 
@@ -156,15 +178,15 @@ public class ControlFileReader {
 
 			this.copyFiles(true);
 			return new Result(xmlFromResource, newResourceHash);
-		} else if (isNewResource) {
+		} else if (mustWrite) {
 			return new Result(xmlFromResource, newResourceHash);
+		} else if (e != null) {
+			Logger2.out(logger, Level.ERROR, "Error on reading control.xml: ", e.getStackTrace());
+			System.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
+			return null;
 		} else {
-			if (learn) {
-				this.copyFiles(false);
-			}
 			return new Result(xmlFromFile, newResourceHash);
 		}
-
 	}
 
 }

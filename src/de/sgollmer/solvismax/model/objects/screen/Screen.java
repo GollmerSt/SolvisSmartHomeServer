@@ -649,7 +649,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	}
 
 	/**
-	 * current muss angelernt sein, Nur fü den Lern-Modus!!!!!!!
+	 * current muss angelernt sein, Nur für den Lern-Modus!!!!!!!
 	 * 
 	 * @param solvis
 	 * @param screen

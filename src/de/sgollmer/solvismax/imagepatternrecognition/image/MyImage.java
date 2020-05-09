@@ -371,4 +371,8 @@ public class MyImage {
 		return this.image;
 	}
 
+	public Coordinate getOrigin() {
+		return this.origin;
+	}
+
 }
