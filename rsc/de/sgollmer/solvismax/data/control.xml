@@ -1203,20 +1203,12 @@
 		<tns:ChannelDescription id="X1.BrennerStarts">
 			<tns:Calculation strategy="starts">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
-				<tns:UpdateBy>
-					<tns:SolvisHeatingData
-						solvisDataId="C02.StartsBrenner" />
-				</tns:UpdateBy>
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X2.BrennerLaufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
-				<tns:UpdateBy>
-					<tns:SolvisHeatingData
-						solvisDataId="C03.LaufzeitBrenner" factor="3600" />
-				</tns:UpdateBy>
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1229,10 +1221,6 @@
 			id="X4.BrennerStufe2Laufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
-				<tns:UpdateBy>
-					<tns:SolvisHeatingData
-						solvisDataId="C04.LaufzeitAnforderung2" factor="3600" />
-				</tns:UpdateBy>
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="X5.BrennerStatus">
@@ -2052,5 +2040,6 @@
 		releaseBlockingAfterUserAccess_ms="300000"
 		releaseBlockingAfterServiceAccess_ms="3600000"
 		unsuccessfullWaitTime_ms="10000" connectionHoldTime_ms="300000"
-		solvisConnectionTimeout_ms="10000" solvisReadTimeout_ms="2000" />
+		solvisConnectionTimeout_ms="10000" solvisReadTimeout_ms="2000"
+		clientTimeoutTime_ms="120000" />
 </tns:SolvisDescription>

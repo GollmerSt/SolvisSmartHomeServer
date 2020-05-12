@@ -67,7 +67,7 @@ public class CryptAes {
 
 	private void cI(String word) {
 		byte[] bb = word.getBytes();
-		this.v = new byte[(bb.length + 16) / 16 * 16 - 1];
+		this.v = new byte[(bb.length + 2 + 16) / 16 * 16 - 1];
 		this.v[0] = (byte) (bb.length & 0xff);
 		this.v[1] = (byte) ((bb.length >> 8) & 0xff);
 		for (int i = 0; i < bb.length; ++i) {
@@ -103,6 +103,25 @@ public class CryptAes {
 	public void set(String value) {
 		if (this.v == null) {
 			this.cI(value);
+		}
+	}
+
+	public static void main(String[] args) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException {
+		CryptAes aes = new CryptAes();
+		for (int i = 0; i < 100; ++i) {
+			StringBuilder builder = new StringBuilder();
+			for (int j = 1; j < i + 2; ++j) {
+				builder.append(Integer.toString(j % 10));
+			}
+			String uncrypted = builder.toString();
+			String crypted = aes.encrypt(uncrypted);
+			aes.decrypt(crypted);
+			char[] u = aes.cP();
+			String check = new String(u);
+			if (!check.equals(uncrypted)) {
+				System.err.println("Failing on " + uncrypted);
+			}
 		}
 	}
 

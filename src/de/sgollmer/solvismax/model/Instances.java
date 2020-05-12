@@ -22,7 +22,6 @@ import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
-import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.xml.ControlFileReader;
@@ -43,7 +42,7 @@ public class Instances {
 		this.writeablePath = baseData.getWritablePath();
 		this.graficDatas = new GraficFileHandler(this.writeablePath).read();
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
-		ControlFileReader.Result result = reader.read(this.graficDatas.getControlResourceHashCode(), learn);
+		ControlFileReader.Result result = reader.read(this.graficDatas.getControlHashCodes(), learn);
 		this.solvisDescription = result.getSolvisDescription();
 		this.xmlHash = result.getHashes();
 		this.backupHandler = new MeasurementsBackupHandler(this.writeablePath,
@@ -66,8 +65,6 @@ public class Instances {
 	public boolean learn() throws IOException, LearningError, XMLStreamException {
 		boolean nothingToLearn = true;
 		for (Solvis solvis : this.units) {
-			SystemGrafics systemGrafics = this.graficDatas.get(solvis.getUnit().getId(), this.xmlHash);
-			systemGrafics.setControlFileHashCode(this.xmlHash.getFileHash());
 			solvis.learning();
 			nothingToLearn = false;
 			new GraficFileHandler(this.writeablePath).write(this.graficDatas);

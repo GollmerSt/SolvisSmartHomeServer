@@ -24,4 +24,9 @@ public abstract class ChannelSource implements ChannelSourceI {
 	public void setDescription(ChannelDescription description) {
 		this.description = description;
 	}
+	
+	@Override
+	public boolean isScreenChangeDependend() {
+		return false ;
+	}
 }

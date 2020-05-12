@@ -27,21 +27,29 @@ public class AllSolvisGrafics implements XmlWriteable {
 
 	private final Collection<SystemGrafics> systems;
 	private Integer controlResourceHashCode;
+	private Integer controlFileHashCode;
 
-	private AllSolvisGrafics(Collection<SystemGrafics> systems, Integer controlResourceHashCode) {
+	private AllSolvisGrafics(Collection<SystemGrafics> systems, Integer controlResourceHashCode,
+			Integer controlFileHashCode) {
 		this.systems = systems;
 		this.controlResourceHashCode = controlResourceHashCode;
+		this.controlFileHashCode = controlFileHashCode;
 	}
 
 	public AllSolvisGrafics() {
 		this.systems = new ArrayList<>();
 		this.controlResourceHashCode = null;
+		this.controlFileHashCode = null;
 	}
 
 	public SystemGrafics get(String unitId, Hashes hashes) {
-		if (this.controlResourceHashCode == null || hashes.getResourceHash() != this.controlResourceHashCode) {
+		if (this.controlResourceHashCode == null || !this.controlResourceHashCode.equals(hashes.getResourceHash())) {
 			this.systems.clear();
 			this.controlResourceHashCode = hashes.getResourceHash();
+			this.controlFileHashCode = hashes.getFileHash();
+		}
+		if (this.controlFileHashCode == null || !this.controlFileHashCode.equals(hashes.getFileHash())) {
+			this.systems.clear();
 		}
 		SystemGrafics result = null;
 		for (SystemGrafics system : this.systems) {
@@ -49,14 +57,8 @@ public class AllSolvisGrafics implements XmlWriteable {
 				result = system;
 			}
 		}
-
-		if (result != null && result.getControlFileHashCode() != hashes.getFileHash()) {
-			result.clear();
-			result.setControlFileHashCode(hashes.getFileHash());
-		}
-
 		if (result == null) {
-			result = new SystemGrafics(unitId, hashes.getFileHash());
+			result = new SystemGrafics(unitId);
 			this.systems.add(result);
 		}
 
@@ -67,6 +69,7 @@ public class AllSolvisGrafics implements XmlWriteable {
 	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException {
 		for (SystemGrafics system : this.systems) {
 			writer.writeAttribute("controlResourceHashCode", Integer.toString(this.controlResourceHashCode));
+			writer.writeAttribute("controlFileHashCode", Integer.toString(this.controlFileHashCode));
 			writer.writeStartElement(XML_SYSTEM);
 			system.writeXml(writer);
 			writer.writeEndElement();
@@ -78,6 +81,7 @@ public class AllSolvisGrafics implements XmlWriteable {
 
 		private Collection<SystemGrafics> systems = new ArrayList<>();
 		private Integer controlResourceHashCode = null;
+		private Integer controlFileHashCode = null;
 
 		public Creator(String id) {
 			super(id);
@@ -89,12 +93,15 @@ public class AllSolvisGrafics implements XmlWriteable {
 				case "controlResourceHashCode":
 					this.controlResourceHashCode = Integer.parseInt(value);
 					break;
+				case "controlFileHashCode":
+					this.controlFileHashCode = Integer.parseInt(value);
+					break;
 			}
 		}
 
 		@Override
 		public AllSolvisGrafics create() throws XmlError, IOException {
-			return new AllSolvisGrafics(this.systems, this.controlResourceHashCode);
+			return new AllSolvisGrafics(this.systems, this.controlResourceHashCode, this.controlFileHashCode);
 		}
 
 		@Override
@@ -119,7 +126,7 @@ public class AllSolvisGrafics implements XmlWriteable {
 
 	}
 
-	public Integer getControlResourceHashCode() {
-		return this.controlResourceHashCode;
+	public Hashes getControlHashCodes() {
+		return new Hashes(this.controlResourceHashCode, this.controlFileHashCode);
 	}
 }

@@ -28,7 +28,6 @@ public class ReceivedPackageCreator {
 		private static final ReceivedPackageCreator INSTANCE = new ReceivedPackageCreator();
 	}
 
-	@SuppressWarnings("static-method")
 	private JsonPackage toSpecificPackage(JsonPackage jsonPackage) {
 		Command command = jsonPackage.command;
 
@@ -67,9 +66,9 @@ public class ReceivedPackageCreator {
 		return result;
 	}
 
-	public JsonPackage receive(InputStream stream) throws IOException, JsonError {
+	public JsonPackage receive(InputStream stream, int timeout) throws IOException, JsonError {
 		JsonPackage receivedPackage = new JsonPackage();
-		receivedPackage.receive(stream);
+		receivedPackage.receive(stream, timeout);
 		JsonPackage result = this.toSpecificPackage(receivedPackage);
 		result.finish();
 

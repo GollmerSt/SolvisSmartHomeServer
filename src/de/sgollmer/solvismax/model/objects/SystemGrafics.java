@@ -27,18 +27,16 @@ public class SystemGrafics implements XmlWriteable {
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
 
 	private final String id;
-	private int controlFileHashCode;
 	private int configurationMask;
 	private final Map<String, ScreenGraficData> graficDatas;
 
-	public SystemGrafics(String id, int controllFileHashCode) {
-		this(id, controllFileHashCode, 0, new HashMap<>());
+	public SystemGrafics(String id) {
+		this(id, 0, new HashMap<>());
 	}
 
-	private SystemGrafics(String id, int controllFileHashCode, int configurationMask,
+	private SystemGrafics(String id, int configurationMask,
 			Map<String, ScreenGraficData> graficDatas) {
 		this.id = id;
-		this.controlFileHashCode = controllFileHashCode;
 		this.configurationMask = configurationMask;
 		this.graficDatas = graficDatas;
 	}
@@ -67,7 +65,6 @@ public class SystemGrafics implements XmlWriteable {
 	@Override
 	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException {
 		writer.writeAttribute("id", this.id);
-		writer.writeAttribute("controlFileHashCode", Integer.toString(this.controlFileHashCode));
 		writer.writeAttribute("configurationMask", Integer.toString(this.configurationMask));
 		for (ScreenGraficData data : this.graficDatas.values()) {
 			writer.writeStartElement(XML_SCREEN_GRAFIC);
@@ -80,7 +77,6 @@ public class SystemGrafics implements XmlWriteable {
 	public static class Creator extends CreatorByXML<SystemGrafics> {
 
 		private String id;
-		private int controlFileHashCode;
 		private int configurationMask;
 		private final Map<String, ScreenGraficData> graficDatas = new HashMap<>();
 
@@ -94,9 +90,6 @@ public class SystemGrafics implements XmlWriteable {
 				case "id":
 					this.id = value;
 					break;
-				case "controlFileHashCode":
-					this.controlFileHashCode = Integer.parseInt(value);
-					break;
 				case "configurationMask":
 					this.configurationMask = Integer.parseInt(value);
 			}
@@ -106,7 +99,7 @@ public class SystemGrafics implements XmlWriteable {
 		@Override
 		public SystemGrafics create() throws XmlError, IOException {
 
-			return new SystemGrafics(this.id, this.controlFileHashCode, this.configurationMask, this.graficDatas);
+			return new SystemGrafics(this.id, this.configurationMask, this.graficDatas);
 		}
 
 		@Override
@@ -133,20 +126,6 @@ public class SystemGrafics implements XmlWriteable {
 
 	public boolean isEmpty() {
 		return this.graficDatas.isEmpty();
-	}
-
-	/**
-	 * @return the controlFileHashCode
-	 */
-	public int getControlFileHashCode() {
-		return this.controlFileHashCode;
-	}
-
-	/**
-	 * @param controlFileHashCode the controlFileHashCode to set
-	 */
-	public void setControlFileHashCode(int controlFileHashCode) {
-		this.controlFileHashCode = controlFileHashCode;
 	}
 
 	public int getConfigurationMask() {

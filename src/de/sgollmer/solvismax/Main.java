@@ -27,9 +27,11 @@ import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.Logger2;
+import de.sgollmer.solvismax.log.Logger2.DelayedMessage;
 import de.sgollmer.solvismax.log.Logger2.LogErrors;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
+import de.sgollmer.solvismax.xml.XmlStreamReader;
 
 public class Main {
 
@@ -73,11 +75,16 @@ public class Main {
 
 		BaseData baseData = null;
 		try {
-			baseData = new BaseControlFileReader().read().getTree();
+			XmlStreamReader.Result<BaseData> base = new BaseControlFileReader().read();
+			if (base == null) {
+				throw new XmlError("");
+			}
+			baseData = base.getTree();
 		} catch (IOException | XmlError | XMLStreamException e) {
 			e.printStackTrace();
-			System.err.println("base.xml couldn't be read.");
-			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
+			Logger2.addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "base.xml couldn't be read.", Main.class,
+					ExitCodes.READING_CONFIGURATION_FAIL));
+			Logger2.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
 		String path = baseData.getWritablePath();
@@ -94,7 +101,7 @@ public class Main {
 		if (error == LogErrors.INIT) {
 			System.err.println("Log4j couldn't initalized");
 		} else if (error == LogErrors.PREVIOUS) {
-			System.exit(Logger2.getInstance().getExitCode());
+			Logger2.exit(0);
 		}
 
 		logger = LogManager.getLogger(Main.class);
@@ -128,8 +135,9 @@ public class Main {
 						break;
 					case "test-mail":
 						try {
-							if ( baseData.getExceptionMail() == null ) {
-								throw new Error("Sending mail not possible in case of mssing or invalid data in <base.xml>") ;
+							if (baseData.getExceptionMail() == null) {
+								throw new Error(
+										"Sending mail not possible in case of mssing or invalid data in <base.xml>");
 							}
 							baseData.getExceptionMail().send("Test mail", "This is a test mail", null);
 							System.exit(Constants.ExitCodes.OK);
@@ -192,7 +200,7 @@ public class Main {
 
 		final Instances instances = tempInstances;
 		final CommandHandler commandHandler = new CommandHandler(instances);
-		Server server = new Server(serverSocket, commandHandler);
+		Server server = new Server(serverSocket, commandHandler, instances.getSolvisDescription().getMiscellaneous());
 		Runnable runnable = new Runnable() {
 
 			@Override
@@ -254,7 +262,7 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("Terminate not successfull.");
-			System.exit(ExitCodes.SERVER_TERMINATION_FAIL);
+			Logger2.exit(ExitCodes.SERVER_TERMINATION_FAIL);
 		}
 		System.exit(ExitCodes.OK);
 

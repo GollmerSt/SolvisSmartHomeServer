@@ -601,9 +601,6 @@
 					</documentation>
 				</annotation>
 			</element>
-			<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1"
-				minOccurs="0">
-			</element>
 		</sequence>
 
 		<attribute name="strategy" use="required">
@@ -678,7 +675,6 @@
 			<documentation>Abhängigkeit zu einem Solvis-Datums von andern
 			</documentation>
 		</annotation>
-		<sequence></sequence>
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="dataId" type="string" use="required"></attribute>
 	</complexType>
@@ -822,29 +818,27 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="releaseBlockingAfterUserAccess_ms"
-			type="int" use="required">
+		<attribute name="releaseBlockingAfterUserAccess_ms" type="int"
+			use="required">
 			<annotation>
 				<documentation>
 					Zeitintervall, das nach einem Usereingriff vergehen
 					muss, bis die Werte upgedated werden. In dieser zeit
-					werden keien
-					Werte vom GUI abgerufen, damit die
-					Eingabe des Users nicht gestört
-					wird.
+					werden keien Werte vom GUI abgerufen, damit die
+					Eingabe des Users nicht gestört wird.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="releaseBlockingAfterServiceAccess_ms"
-			type="int"></attribute>
+			type="int">
+		</attribute>
 		<attribute name="connectionHoldTime_ms" type="int"
 			use="required">
 			<annotation>
 				<documentation>
 					Wird eine Verbindung zum Client unterbrochen, kann
 					innerhalb dieser Zeit eine Verbindung
-					wiederhergestellt werden, ohne
-					dass clienbezogene
+					wiederhergestellt werden, ohne dass clienbezogene
 					Einstellungen im Server verloren gehen
 				</documentation>
 			</annotation>
@@ -855,6 +849,7 @@
 		<attribute name="solvisReadTimeout_ms" type="int"
 			use="required">
 		</attribute>
+		<attribute name="clientTimeoutTime_ms" type="int" use="required"></attribute>
 	</complexType>
 
 	<complexType name="UpdateBy">

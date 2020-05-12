@@ -57,7 +57,7 @@ public class Control extends ChannelSource {
 	private static final String XML_CONTROL_TYPE_MODE = "TypeMode";
 	private static final String XML_UPDATE_BY = "UpdateBy";
 
-	private final boolean optional ;
+	private final boolean optional;
 	private final GuiAccess guiAccess;
 	private final ModbusAccess modbusAccess;
 
@@ -66,7 +66,7 @@ public class Control extends ChannelSource {
 
 	public Control(boolean optional, GuiAccess guiAccess, ModbusAccess modbusAccess, Strategy strategy,
 			UpdateStrategies updateStrategies) {
-		this.optional = optional ;
+		this.optional = optional;
 		this.guiAccess = guiAccess;
 		this.modbusAccess = modbusAccess;
 		this.strategy = strategy;
@@ -86,7 +86,8 @@ public class Control extends ChannelSource {
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return false;
 		}
-		SingleData<?> data = this.strategy.getValue(solvis.getCurrentScreen(), solvis, this.getControlAccess(solvis), this.optional);
+		SingleData<?> data = this.strategy.getValue(solvis.getCurrentScreen(), solvis, this.getControlAccess(solvis),
+				this.optional);
 		if (data == null) {
 			return false;
 		} else {
@@ -178,9 +179,14 @@ public class Control extends ChannelSource {
 
 	}
 
+	@Override
+	public boolean isScreenChangeDependend() {
+		return this.updateStrategies == null ? false : this.updateStrategies.isScreenChangeDependend();
+	}
+
 	public static class Creator extends CreatorByXML<Control> {
 
-		private boolean optional ;
+		private boolean optional;
 		private GuiAccess guiAccess;
 		private ModbusAccess modbusAccess;
 		private Strategy strategy;
@@ -192,10 +198,10 @@ public class Control extends ChannelSource {
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			switch ( name.getLocalPart() ) {
+			switch (name.getLocalPart()) {
 				case "optional":
-					this.optional = Boolean.parseBoolean(value) ;
-					break ;
+					this.optional = Boolean.parseBoolean(value);
+					break;
 			}
 		}
 

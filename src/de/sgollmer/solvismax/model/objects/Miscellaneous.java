@@ -26,11 +26,12 @@ public class Miscellaneous {
 	private final int connectionHoldTime_ms;
 	private final int solvisConnectionTimeout_ms;
 	private final int solvisReadTimeout_ms;
+	private final int clientTimeoutTime_ms;
 
 	public Miscellaneous(int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors,
 			int powerOffDetectedAfterTimeout_ms, int unsuccessfullWaitTime_ms, int releaseBlockingAfterUserAccess_ms,
 			int releaseBlockingAfterServiceAccess_ms, int connectionHoldTime_ms, int solvisConnectionTimeout_ms,
-			int solvisReadTimeout_ms) {
+			int solvisReadTimeout_ms, int clientTimeoutTime_ms) {
 		this.measurementsBackupTime_ms = measurementsBackupTime_ms;
 		this.powerOffDetectedAfterIoErrors = powerOffDetectedAfterIoErrors;
 		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
@@ -40,6 +41,7 @@ public class Miscellaneous {
 		this.connectionHoldTime_ms = connectionHoldTime_ms;
 		this.solvisConnectionTimeout_ms = solvisConnectionTimeout_ms;
 		this.solvisReadTimeout_ms = solvisReadTimeout_ms;
+		this.clientTimeoutTime_ms = clientTimeoutTime_ms ;
 	}
 
 	public int getPowerOffDetectedAfterIoErrors() {
@@ -69,6 +71,7 @@ public class Miscellaneous {
 		private int connectionHoldTime_ms;
 		private int solvisConnectionTimeout_ms;
 		private int solvisReadTimeout_ms;
+		private int clientTimeoutTime_ms;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -104,6 +107,9 @@ public class Miscellaneous {
 				case "solvisReadTimeout_ms":
 					this.solvisReadTimeout_ms = Integer.parseInt(value);
 					break;
+				case "clientTimeoutTime_ms":
+					this.clientTimeoutTime_ms = Integer.parseInt(value);
+					break;
 			}
 
 		}
@@ -113,7 +119,8 @@ public class Miscellaneous {
 			return new Miscellaneous(this.measurementsBackupTime_ms, this.powerOffDetectedAfterIoErrors,
 					this.powerOffDetectedAfterTimeout_ms, this.unsuccessfullWaitTime_ms,
 					this.releaseBlockingAfterUserAccess_ms, this.releaseBlockingAfterServiceAccess_ms,
-					this.connectionHoldTime_ms, this.solvisConnectionTimeout_ms, this.solvisReadTimeout_ms);
+					this.connectionHoldTime_ms, this.solvisConnectionTimeout_ms, this.solvisReadTimeout_ms,
+					this.clientTimeoutTime_ms);
 		}
 
 		@Override
@@ -146,6 +153,10 @@ public class Miscellaneous {
 
 	public int getReleaseBlockingAfterServiceAccess_ms() {
 		return this.releaseBlockingAfterServiceAccess_ms;
+	}
+
+	public int getClientTimeoutTime_ms() {
+		return this.clientTimeoutTime_ms;
 	}
 
 }

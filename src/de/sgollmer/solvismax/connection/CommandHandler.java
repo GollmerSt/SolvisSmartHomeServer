@@ -132,6 +132,9 @@ public class CommandHandler {
 			case SERVICE_RESET:
 				assignments.serviceReset();
 				break;
+			case UPDATE_CHANNELS:
+				assignments.updateControlChannels();
+				break;
 			default:
 				logger.warn("Server command <" + serverCommand.getServerCommand().name()
 						+ ">unknown, old version of SolvisSmartHomeServer?");

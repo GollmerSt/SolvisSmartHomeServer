@@ -44,7 +44,7 @@ public class Logger2 {
 		if (!LOGGER.setConfiguration()) {
 			return LogErrors.INIT;
 		}
-		return LOGGER.outputDelayedMessages() ? LogErrors.PREVIOUS : LogErrors.OK;
+		return Logger2.outputDelayedMessages() ? LogErrors.PREVIOUS : LogErrors.OK;
 	}
 
 	public static class DelayedMessage {
@@ -62,8 +62,9 @@ public class Logger2 {
 	}
 
 	private static Collection<DelayedMessage> delayedErrorMessages = new ArrayList<>();
+	private static int delayedErrorCode = -1;
 
-	private static Logger2 LOGGER;
+	private static Logger2 LOGGER = null;
 
 	private final File parent;
 
@@ -126,41 +127,67 @@ public class Logger2 {
 	}
 
 	public static void addDelayedErrorMessage(DelayedMessage message) {
-		Logger2.delayedErrorMessages.add(message);
-	}
-
-	private boolean outputDelayedMessages() {
-		boolean error = false;
-		for (DelayedMessage message : Logger2.delayedErrorMessages) {
-			if (message.errorCode != null) {
-				error = true;
-			}
+		if (LOGGER != null) {
 			Logger logger = LogManager.getLogger(message.loggedClass);
 			logger.log(message.level, message.message);
+
+		} else {
+			Logger2.delayedErrorMessages.add(message);
 		}
-		return error;
 	}
 
-	public int getExitCode() {
+	private static boolean outputDelayedMessages() {
 		Level level = Level.INFO;
-		int errorCode = -1;
 		for (DelayedMessage message : Logger2.delayedErrorMessages) {
-
 			if (message.errorCode != null && !message.level.equals(level) && message.level.isLessSpecificThan(level)) {
-				errorCode = message.errorCode;
+				Logger2.delayedErrorCode = message.errorCode;
 				level = message.level;
 			}
+
+			if (LOGGER != null) {
+				Logger logger = LogManager.getLogger(message.loggedClass);
+				logger.log(message.level, message.message);
+			} else {
+				System.err.println(message.level.toString() + ": " + message.message);
+			}
 		}
-		return errorCode;
+		Logger2.delayedErrorMessages.clear();
+		return Logger2.delayedErrorCode != -1;
 	}
-	
-	public static void out( Logger logger, Level level, String message, StackTraceElement [] elements ) {
-		StringBuilder builder = new StringBuilder(message) ;
-		for ( StackTraceElement element : elements ) {
-			builder.append('\n') ;
-			builder.append(element.toString()) ;
+
+	public static int getExitCode() {
+		if (Logger2.delayedErrorCode == 0) {
+			Level level = Level.INFO;
+			Logger2.delayedErrorCode = -1;
+			for (DelayedMessage message : Logger2.delayedErrorMessages) {
+
+				if (message.errorCode != null && !message.level.equals(level)
+						&& message.level.isLessSpecificThan(level)) {
+					Logger2.delayedErrorCode = message.errorCode;
+					level = message.level;
+				}
+			}
+		}
+		return Logger2.delayedErrorCode;
+	}
+
+	public static void out(Logger logger, Level level, String message, StackTraceElement[] elements) {
+		StringBuilder builder = new StringBuilder(message);
+		for (StackTraceElement element : elements) {
+			builder.append('\n');
+			builder.append(element.toString());
 		}
 		logger.log(level, builder.toString());
+	}
+
+	public static void exit(int errorCode) {
+		if (Logger2.LOGGER == null && !Logger2.delayedErrorMessages.isEmpty()) {
+			boolean error = Logger2.outputDelayedMessages() ;
+			if ( error ) {
+				System.exit(Logger2.getExitCode() );
+			}
+		}
+		System.exit(errorCode);
 	}
 
 }

@@ -52,6 +52,8 @@ public interface ChannelSourceI extends Assigner, GraficsLearnable {
 
 	public boolean isModbus(Solvis solvis);
 
+	public boolean isScreenChangeDependend();
+
 	public static class UpperLowerStep {
 		private final float upper;
 		private final float lower;

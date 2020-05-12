@@ -75,6 +75,10 @@ public class UpdateStrategies implements Assigner {
 			this.source = source;
 		}
 
+		public boolean isScreenChangeDependend() {
+			return false;
+		}
+
 	}
 
 	public static class Creator extends CreatorByXML<UpdateStrategies> {
@@ -136,7 +140,15 @@ public class UpdateStrategies implements Assigner {
 		for (Strategy<?> strategy : this.strategies) {
 			strategy.instantiate(solvis);
 		}
+	}
 
+	public boolean isScreenChangeDependend() {
+		for (Strategy<?> strategy : this.strategies) {
+			if (strategy.isScreenChangeDependend()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

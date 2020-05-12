@@ -232,11 +232,27 @@ public class Solvis {
 		}
 		SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.unit.getId());
 		this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
+		this.worker.init();
+		this.updateControlChannels();
 		this.worker.start();
-		this.getSolvisDescription().getChannelDescriptions().initControl(this);
 		this.getDistributor().register(this);
 		this.getSolvisDescription().instantiate(this);
+		this.registerScreenChangedByHumanObserver(new ObserverI<WatchDog.HumanAccess>() {
+			
+			@Override
+			public void update(HumanAccess data, Object source) {
+				Solvis.this.updateByScreenChange();
+			}
+		});
 		this.measurementUpdateThread.start();
+	}
+	
+	public void updateControlChannels() {
+		this.getSolvisDescription().getChannelDescriptions().updateControlChannels(this);
+	}
+
+	public void updateByScreenChange() {
+		this.getSolvisDescription().getChannelDescriptions().updateByScreenChange(this);
 	}
 
 	public void measure() throws IOException, ErrorPowerOn {

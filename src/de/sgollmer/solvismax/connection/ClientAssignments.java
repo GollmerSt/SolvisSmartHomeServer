@@ -146,4 +146,9 @@ public class ClientAssignments {
 		this.solvis.serviceReset();
 
 	}
+
+	public void updateControlChannels() {
+		this.solvis.updateControlChannels();
+
+	}
 }

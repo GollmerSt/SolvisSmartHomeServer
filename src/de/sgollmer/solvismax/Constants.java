@@ -75,5 +75,7 @@ public class Constants {
 		public static final int ARGUMENT_FAIL = 16;
 		public static final int CRYPTION_FAIL = 17;
 		public static final int MAILING_ERROR = 18;
+		public static final int BASE_XML_ERROR = 19;
+		public static final int XML_VERIFICATION_ERROR = 20;
 	}
 }

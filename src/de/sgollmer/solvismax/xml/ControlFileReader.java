@@ -99,25 +99,25 @@ public class ControlFileReader {
 	}
 
 	public static class Hashes {
-		private final int resourceHash;
-		private final int fileHash;
+		private final Integer resourceHash;
+		private final Integer fileHash;
 
-		public Hashes(int resourceHash, int fileHash) {
+		public Hashes(Integer resourceHash, Integer fileHash) {
 			this.resourceHash = resourceHash;
 			this.fileHash = fileHash;
 		}
 
-		public int getResourceHash() {
+		public Integer getResourceHash() {
 			return this.resourceHash;
 		}
 
-		public int getFileHash() {
+		public Integer getFileHash() {
 			return this.fileHash;
 		}
 
 	}
 
-	public Result read(Integer formerResourceHash, boolean learn) throws IOException, XmlError, XMLStreamException {
+	public Result read(Hashes former, boolean learn) throws IOException, XmlError, XMLStreamException {
 
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
 
@@ -126,23 +126,42 @@ public class ControlFileReader {
 
 		XmlStreamReader.Result<SolvisDescription> xmlFromFile = null;
 
-		boolean mustWrite = false;
-		boolean createBackup = false;
-		boolean xmlExits = false;
+		boolean mustWrite = false; // Wenn im Verzeichnis nicht vorhanden, nicht lesbar oder älter
+									// oder Checksumme unbekannt
+		boolean modifiedByUser = false; // Wenn vom User modifiziert oder nicht lesbar
 
 		Throwable e = null;
 
-		if (xml.exists()) {
+		boolean xmlExits = xml.exists();
+		if (xmlExits) {
 
-			xmlExits = true;
+			boolean mustVerify = false; // Wenn zu verifizieren
+
 			try {
 
 				xmlFromFile = reader.read(new FileInputStream(xml), rootId, new SolvisDescription.Creator(rootId),
 						xml.getName());
+				mustVerify = xmlFromFile.getHash() != former.getFileHash();
+				modifiedByUser = former.getFileHash() == null || former.getResourceHash() != xmlFromFile.getHash();
 			} catch (Throwable e1) {
 				e = e1;
-				createBackup = true;
+				modifiedByUser = true;
+				mustVerify = true;
+				mustWrite = true;
 			}
+			if (mustVerify) {
+				String xsdPath = Constants.RESOURCE_PATH + File.separator + NAME_XSD_CONTROLFILE;
+				InputStream xsd = Main.class.getResourceAsStream(xsdPath);
+				boolean validated = reader.validate(new FileInputStream(xml), xsd) ;
+				if ( !validated ) {
+					if ( !mustWrite ) {
+						Logger2.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
+					} else {
+						logger.warn("Not valid control.xml will be overwriten by a newer version");
+					}
+				}
+			}
+
 		} else {
 			mustWrite = true;
 		}
@@ -154,17 +173,13 @@ public class ControlFileReader {
 
 		int newResourceHash = xmlFromResource.getHash();
 
-		mustWrite |= formerResourceHash == null || newResourceHash != formerResourceHash
-				|| !xmlExits ;
-		// wenn nicht vorhanden oder Hashes unterscheiden sich
+		mustWrite |= former.getResourceHash() == null || newResourceHash != former.getResourceHash();
+		// wenn alter Resource-Hash nicht vorhanden oder Resource-Hashs unterscheiden
+		// sich
 
-		createBackup |= xmlFromFile != null
-				&& (formerResourceHash == null || xmlFromFile.getHash() != formerResourceHash); //
-		// wenn keine graphics.xml oder unterschiedlich zur alten
+		if (mustWrite && learn || !xmlExits) {
 
-		if (mustWrite && learn || !xmlExits ) {
-
-			if (createBackup) {
+			if (modifiedByUser) {
 
 				FileHelper.renameDuplicates(xml, Constants.NUMBER_OF_CONTROL_FILE_DUPLICATES);
 
@@ -181,8 +196,8 @@ public class ControlFileReader {
 		} else if (mustWrite) {
 			return new Result(xmlFromResource, newResourceHash);
 		} else if (e != null) {
-			Logger2.out(logger, Level.ERROR, "Error on reading control.xml: ", e.getStackTrace());
-			System.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
+			logger.error("Error on reading control.xml. Learning is necessary, start parameter \"--server-learn\" must be used.");
+			Logger2.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
 			return null;
 		} else {
 			return new Result(xmlFromFile, newResourceHash);

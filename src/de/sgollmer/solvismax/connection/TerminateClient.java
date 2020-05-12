@@ -43,7 +43,7 @@ public class TerminateClient {
 
 		connectPackage.send(out);
 
-		JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(input);
+		JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(input, 0);
 
 		if (!(jsonPackage instanceof ConnectedPackage)) {
 			System.err.println("Wrong json package.");

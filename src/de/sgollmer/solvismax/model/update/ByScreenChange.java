@@ -10,13 +10,8 @@ package de.sgollmer.solvismax.model.update;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
-import de.sgollmer.solvismax.model.objects.ChannelSourceI;
-import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
-import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.Strategy;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.UpdateCreator;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -24,34 +19,21 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ByScreenChange extends Strategy<ByScreenChange> {
 
-	@Override
-	public void instantiate(Solvis solvis) {
-		solvis.registerScreenChangedByHumanObserver(new Execute(solvis));
-
+	public static ByScreenChange getInstance() {
+		return ByScreenChangeHolder.INSTANCE;
 	}
 
-	private class Execute implements Observer.ObserverI<HumanAccess> {
+	private static class ByScreenChangeHolder {
+		private static final ByScreenChange INSTANCE = new ByScreenChange();
+	}
 
-		private final Solvis solvis;
-		private HumanAccess lastHumanAccess = HumanAccess.NONE;
+	@Override
+	public void instantiate(Solvis solvis) {
+	}
 
-		public Execute(Solvis solvis) {
-			this.solvis = solvis;
-		}
-
-		@Override
-		public void update(HumanAccess humanAccess, Object source) {
-			if (!this.solvis.getUnit().getFeatures().isUpdateAfterUserAccess()) {
-				return;
-			}
-			if (this.lastHumanAccess != HumanAccess.NONE && humanAccess != this.lastHumanAccess) {
-				ChannelSourceI channelSource = ByScreenChange.this.source;
-				if (channelSource instanceof Control) {
-					this.solvis.execute(new CommandControl(((Control) channelSource).getDescription(), this.solvis));
-				}
-			}
-			this.lastHumanAccess = humanAccess;
-		}
+	@Override
+	public boolean isScreenChangeDependend() {
+		return true;
 	}
 
 	public static class Creator extends UpdateCreator<ByScreenChange> {
@@ -71,7 +53,7 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 
 		@Override
 		public ByScreenChange create() throws XmlError {
-			return new ByScreenChange();
+			return ByScreenChange.getInstance();
 		}
 
 		@Override

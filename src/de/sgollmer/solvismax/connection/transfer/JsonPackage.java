@@ -62,12 +62,14 @@ public class JsonPackage {
 		stream.flush();
 	}
 
-	public void receive(InputStream stream) throws IOException, JsonError {
+	public void receive(InputStream stream, int timeout) throws IOException, JsonError {
 		byte[] lengthBytes = new byte[3];
-		stream.read(lengthBytes);
+		Helper.read( stream, lengthBytes, timeout );
 		int length = lengthBytes[0] << 16 | lengthBytes[1] << 8 | lengthBytes[2];
+		
 		byte[] receivedData = new byte[length];
-		stream.read(receivedData);
+		Helper.read( stream, receivedData, timeout );
+		
 		Frame receivedFrame = new Frame();
 		String receivedString = new String(receivedData, CHARSET);
 		receivedFrame.from(receivedString, 0);

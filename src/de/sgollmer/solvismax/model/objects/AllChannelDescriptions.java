@@ -36,6 +36,9 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 
 	private Map<String, OfConfigs<ChannelDescription>> descriptions = new HashMap<>();
 
+	private Map<Integer, Collection<ChannelDescription>> updateControlChannelsSequences = new HashMap<>();
+	private Map<Integer, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>();
+
 	public void addDescription(ChannelDescription description) {
 		OfConfigs<ChannelDescription> channelConf = this.descriptions.get(description.getId());
 		if (channelConf == null) {
@@ -127,8 +130,8 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 			if (description != null) {
 				if (description.getType() == ChannelSourceI.Type.MEASUREMENT) {
 					description.getValue(solvis, timeAfterLastSwitchingOn);
-				} else if ( description.isModbus(solvis)) {
-					description.getValue( solvis, timeAfterLastSwitchingOn);
+				} else if (description.isModbus(solvis)) {
+					description.getValue(solvis, timeAfterLastSwitchingOn);
 				}
 			}
 		}
@@ -155,23 +158,67 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		}
 	}
 
-	public void initControl(Solvis solvis) {
+//	private Map<ConfigurationMask, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>();
+
+	public void updateControlChannels(Solvis solvis) {
 		final int configurationMask = solvis.getConfigurationMask();
-		List<ChannelDescription> descriptions = new ArrayList<>();
-		for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
-			ChannelDescription description = confDescriptions.get(solvis);
-			if (description != null && description.getType() == ChannelSourceI.Type.CONTROL
-					&& description.isInConfiguration(configurationMask) && ! description.isModbus(solvis)) {
-				descriptions.add(description);
+
+		Collection<ChannelDescription> descriptions = this.updateControlChannelsSequences.get(configurationMask);
+
+		if (descriptions == null) {
+			descriptions = new ArrayList<>();
+			for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
+				ChannelDescription description = confDescriptions.get(solvis);
+				if (description != null && description.getType() == ChannelSourceI.Type.CONTROL
+						&& description.isInConfiguration(configurationMask) && !description.isModbus(solvis)) {
+					descriptions.add(description);
+				}
 			}
+			this.optimize((List<ChannelDescription>) descriptions, configurationMask);
+
+			this.updateControlChannelsSequences.put(configurationMask, descriptions);
 		}
+
+		for (ChannelDescription description : descriptions) {
+			solvis.execute(new CommandControl(description, solvis));
+		}
+
+	}
+
+	public void updateByScreenChange(Solvis solvis) {
+		final int configurationMask = solvis.getConfigurationMask();
+
+		Collection<ChannelDescription> descriptions = this.updateByScreenChangeSequences.get(configurationMask);
+
+		if (descriptions == null) {
+			descriptions = new ArrayList<>();
+			for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
+				ChannelDescription description = confDescriptions.get(solvis);
+				if (description != null && description.isScreenChangeDependend()
+						&& description.isInConfiguration(configurationMask) && !description.isModbus(solvis)) {
+					descriptions.add(description);
+				}
+			}
+			this.optimize((List<ChannelDescription>) descriptions, configurationMask);
+
+			this.updateByScreenChangeSequences.put(configurationMask, descriptions);
+		}
+
+		for (ChannelDescription description : descriptions) {
+			solvis.execute(new CommandControl(description, solvis));
+		}
+
+	}
+
+	private void optimize(List<ChannelDescription> descriptions, int mask) {
+
 		Collections.sort(descriptions, new Comparator<ChannelDescription>() {
 
 			@Override
 			public int compare(ChannelDescription o1, ChannelDescription o2) {
 
-				List<ScreenTouch> p1 = o1.getScreen(configurationMask).getPreviosScreens(configurationMask);
-				List<ScreenTouch> p2 = o2.getScreen(configurationMask).getPreviosScreens(configurationMask);
+				List<ScreenTouch> p1 = o1.getScreen(mask).getPreviosScreens(mask);
+				List<ScreenTouch> p2 = o2.getScreen(mask).getPreviosScreens(mask);
 
 				if (p1.size() == 0 && p2.size() == 0) {
 					return 0;
@@ -209,13 +256,8 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 					return 1;
 				}
 				return 0;
-
-				// return o1.getScreen().compareTo(o2.getScreen());
 			}
 		});
-		for (ChannelDescription description : descriptions) {
-			solvis.execute(new CommandControl(description, solvis));
-		}
 
 	}
 

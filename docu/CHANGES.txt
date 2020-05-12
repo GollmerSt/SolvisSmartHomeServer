@@ -1,5 +1,19 @@
 Ä N D E R U N G EN
 
+Version 01.00.09
+				
+	10.05.2020	Für die Steuerfiles base.xml und control.xml einen Check gegenüber die entsprechende xsd-Datei
+				realiert. Damit ist sicher gestellt, dass dem Server kein fehlerhaftes oder zu altes
+				xml-File einlesen muss. Dies hat in der kürzlichen Vergangenheit
+				
+	11.05.2000	Server-Command UPDATE_CHANNELS hinzugefügt. Er löst ein Aktualisieren sämtlicher nur über
+				das GUI erreichbare Kanäle aus.
+				
+				control.xml bereinigt, es enthielt nicht mehr genutzte Einstellungen.
+				
+	12.05.2020	Die Passwort-Verschlüsselung kam nicht mit Paswörtern klar, welche eine Länge von 14 + N * 16
+				und 15 + N * 16 hatten.
+
 Version 01.00.08
 				
 	08.05.2020	Wegen der Artefakte am Rand der Anzeige an manchen Anlagen wurden bisher je 3 Pixel

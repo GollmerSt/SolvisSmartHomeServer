@@ -135,7 +135,7 @@ public class SolvisWorkers {
 							executeWatchDog = false;
 						}
 						if (command != null && !command.isInhibit()) {
-							String commandString = command.toString() ;
+							String commandString = command.toString();
 							logger.debug("Command <" + commandString + "> will be executed");
 							success = execute(command);
 							logger.debug("Command <" + commandString + "> executed "
@@ -221,8 +221,8 @@ public class SolvisWorkers {
 								itInsert = this.queue.listIterator(it.nextIndex());
 							}
 						}
-						if ( handling.mustFinished() ) {
-							break ;
+						if (handling.mustFinished()) {
+							break;
 						}
 					}
 				} else {
@@ -379,10 +379,20 @@ public class SolvisWorkers {
 		}
 	}
 
-	public void start() {
+	public void init() {
 		synchronized (this) {
 			if (this.controlsThread == null) {
 				this.controlsThread = new ControlWorkerThread();
+			}
+			if (this.measurementsThread == null) {
+				this.measurementsThread = new MeasurementsWorkerThread();
+			}
+		}
+	}
+
+	public void start() {
+		synchronized (this) {
+			if (this.controlsThread != null && !this.controlsThread.isAlive())
 				synchronized (this.controlsThread) {
 					try {
 						this.controlsThread.start();
@@ -390,10 +400,8 @@ public class SolvisWorkers {
 					} catch (InterruptedException e) {
 					}
 				}
-			}
 
-			if (this.measurementsThread == null) {
-				this.measurementsThread = new MeasurementsWorkerThread();
+			if (this.measurementsThread != null && !this.measurementsThread.isAlive()) {
 				this.measurementsThread.start();
 			}
 		}

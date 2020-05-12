@@ -35,6 +35,7 @@
 			</element>
 		</sequence>
 		<attribute name="controlResourceHashCode" type="int"></attribute>
+		<attribute name="controlFileHashCode" type="int"></attribute>
 	</complexType>
 
 	<element name="SolvisGrafics" type="tns:SolvisGrafics"></element>
@@ -57,7 +58,6 @@
 				<documentation>Id der Solvis-Anlage</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="controlFileHashCode" type="int"></attribute>
 		<attribute name="configurationMask" type="int"></attribute>
 	</complexType>
 

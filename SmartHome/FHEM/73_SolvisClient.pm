@@ -8,14 +8,15 @@
 #
 #                                          CHANGELOG
 #
-#   Version     Date        Programmer          Subroutine                              Description of Change
-#   00.01.00    17.12.2019  SCMP77              All                                     Initial Release
-#   00.02.00    21.01.2020  SCMP77              SolvisClient_CreateGetSetServerCommands Server commands are determined by the server itself
-#   00.02.01    06.02.2020  SCMP77              SolvisClient_InterpreteConnectionState  Updated to current messages
-#   00.02.02    13.02.2020  SCMP77              SolvisClient_InterpreteConnectionState  Attribut enable gui commands addes
-#   00.02.03    24.03.2020  SCMP77              All                                     Using FHEM::SolvisClient-Package, Supports FHEM:Meta, Allgemeine Perl
-#   00.02.04    01.05.2020  SCMP77              All                                     Reconnction after unknown client shortend, Timeout reported
-#   00.02.05    06.05.2020  SCMP77              All                                     Length bug of SendData fixed, Some optimizations
+#   Version     Date        Programmer          Description of Change
+#   00.01.00    17.12.2019  SCMP77              Initial Release
+#   00.02.00    21.01.2020  SCMP77              Server commands are determined by the server itself
+#   00.02.01    06.02.2020  SCMP77              Updated to current messages
+#   00.02.02    13.02.2020  SCMP77              Attribut enable gui commands addes
+#   00.02.03    24.03.2020  SCMP77              Using FHEM::SolvisClient-Package, Supports FHEM:Meta, Allgemeine Perl
+#   00.02.04    01.05.2020  SCMP77              Reconnction after unknown client shortend, Timeout reported
+#   00.02.05    06.05.2020  SCMP77              Length bug of SendData fixed, Some optimizations
+#   00.02.06    11.05.2020  SCMP77              HumanAccess status added, HTML-Beschreibung ergänzt
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -44,7 +45,6 @@ use strict;
 use warnings;
 use FHEM::Meta;
 use GPUtils qw(GP_Import GP_Export);
-
 
 use constant MODULE => 'SolvisClient';
 
@@ -177,7 +177,7 @@ GP_Export(
 
 
 my %ChannelDescriptions ;
-my $setParameters ;
+my $setParameters = '';
 my $serverCommands = '';
 my @serverCommand_Array = ();
 
@@ -269,6 +269,8 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
     use version 0.77;
     our $CLIENT_VERSION = FHEM::Meta::Get( $self, 'version' );
     $self->{VERSION_CLIENT} = version->parse($CLIENT_VERSION)->normal ;
+    
+    readingsSingleUpdate($self,'HumanAccess','none',1);
 
     return ;
 } # end Define
@@ -286,21 +288,19 @@ sub Attr {
     my $attrValue   = shift ;
 
     my $self = $defs{$name} ;
-	
-	my %switch = (
+    
+    my %switch = (
         'GuiCommandsEnabled' => sub {
-			if ( defined $attrValue  && $attrValue ne 'TRUE' && $attrValue   ne 'FALSE' ) {
-				return "Unknown value $attrValue for $attrName, choose one of TRUE FALSE";
-			}
+            if ( defined $attrValue  && $attrValue ne 'TRUE' && $attrValue   ne 'FALSE' ) {
+                return "Unknown value $attrValue for $attrName, choose one of TRUE FALSE";
+            }
        },
-	   'SolvisName' => sub {
-	   }
+       'SolvisName' => sub {
+       }
     ) ;
 
     if ( defined($switch{ $attrName })) {
         $switch{ $attrName }->();
-    } else {
-        Log($self, 3, "Warning: Unknown attribute $attrName");
     }
 } # end Attr
 
@@ -324,7 +324,7 @@ sub Notify {
     my $events = deviceEvents($eventObject, 1);
 
     if($devName eq 'global' && grep( { m/^INITIALIZED|REREADCFG$/x } @{$events})) {
-		
+        
         $self->{helper}{GuiEnabled} = undef ;
         my $result = Connect( $self, 0 );
         $self->{NOTIFYDEV} = '';
@@ -353,7 +353,7 @@ sub Connect {
 
     if (defined(DevIo_IsOpen($self))) {
         Log( $self, 3, "Connection wasn't closed");
-		
+        
         DevIo_CloseDev($self) ;
     }
 
@@ -665,9 +665,15 @@ sub InterpreteConnectionState {
             Log($self, 4, 'Alive received');
         },
         'USER_ACCESS_DETECTED' => sub {
+            readingsSingleUpdate($self,'HumanAccess','user',1);
             Log($self, 3, 'User access detected');
         },
-        'USER_ACCESS_FINISHED' => sub {
+        'SERVICE_ACCESS_DETECTED' => sub {
+            readingsSingleUpdate($self,'HumanAccess','service',1);
+            Log($self, 3, 'User access detected');
+        },
+        'HUMAN_ACCESS_FINISHED' => sub {
+            readingsSingleUpdate($self,'HumanAccess','none',1);
             Log($self, 3, 'User access finished');
         }
     ) ;
@@ -1143,7 +1149,6 @@ sub DbLog_splitFn {
     return ($reading, $value, $unit) ;
 } # end DbLog_splitFn
 
-
 1;
 
 ###START###### Description for fhem commandref ################################################################START####
@@ -1153,7 +1158,7 @@ sub DbLog_splitFn {
 =item summary       Module for controlling solvis heating system
 =item summary_DE    Modul zur Steuerung einer Solvis Heizungsanlage
 
-=begin html
+=begin html_DE
 
 <a name="SolvisClient"></a>
 <h3>SolvisClient</h3>
@@ -1318,6 +1323,9 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
               Gegenstück zu dem ServerCommand GUI_COMMANDS_ENABLE<BR>
             </td></tr>
+            <tr><td align="right" valign="top"><code>UPDATE_CHANNELS</code>: </td><td align="left" valign="top">
+              Update aller Kan&auml;le, welche nur &uuml;ber das GUI zug&auml;lich sind<BR>
+            </td></tr>
             <tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
               Startet den Server neu<BR>
             </td></tr>
@@ -1425,6 +1433,308 @@ sub DbLog_splitFn {
           </ul>
         </td></tr>
       </table>
+
+      <table>
+        <tr><td><a name="SolvisClientHumanAccess"></a><b>HumanAccess</b></td></tr>
+        <tr><td>
+          <ul>
+              Das spezielle Reading "HumanAccess" kann folgende Werte annehmen:<BR>
+            <ul>
+              <ul>
+                <table>
+                    <tr><td align="right" valign="top"><code>none</code> : </td><td align="left" valign="top">Kein externer Zugriff erkannt</td></tr>
+                    <tr><td align="right" valign="top"><code>service</code> : </td><td align="left" valign="top">Zugriff vom Service</td></tr>
+                    <tr><td align="right" valign="top"><code>user</code> : </td><td align="left" valign="top">Zugriff vom User</td></tr>
+                </table>
+              </ul>
+            </ul><BR>
+          </ul>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</ul>
+=end html_DE
+
+=begin html
+
+<a name="SolvisClient"></a>
+<h3>SolvisClient</h3>
+<ul>
+  <table>
+    <tr><td>
+        In order to be able to access the 
+        <a href="https://www.solvis.de/solvisben">SolvisBen</a> or <a href="https://www.solvis.de/solvismax">SolvisMax</a>
+        solar heating systems using FHEM, the <a href="https://www.solvis.de/solvisremote">SolvisRemote</a> is required. It is a communication device with a
+        <a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/remote-mobile.png">web interface</a>.<BR>.
+        <BR>
+        To use the SolvisClient module, you must first define the IP address, the user and the password with the
+        <a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/Download/konfig-remote.zip">configuration program</a>.<BR>
+        The router can optionally specify the IP address, but then a fixed IP address should be defined in the router for the
+        <a href="https://www.solvis.de/solvisremote">SolvisRemote</a>
+        so that the SolvisSmartHome server can also find it.<BR>
+        <BR>
+        In addition to the <a href="https://www.solvis.de/solvisremote">SolvisRemote</a>, the SolvisSmartHome server must also be installed and set up, which is part of this FHEM module. According to the enclosed instructions, this must first be set up and the system parameters defined there.<BR>
+        <BR>
+        A connection to the server is then attempted with the define instruction of the FHEM module. Depending on whether the connection was successful, a corresponding message appears in the status field.<BR>
+        If the connection is successful, the client is regularly supplied with data from the server by the heating system.<BR>
+        <BR>
+        In addition to recording these values, the server also uses these values ​​to calculate the burner starts and burner runtime for the two burner stages. In addition, a reading of the burner status and the rest position of the mixer are calculated.<BR>
+        <BR>
+        The following readings are also calculated:
+      <ul>
+        <ul>
+          <table>
+            <tr><td align="right" valign="top"><code>X1.BrennerStarts</code> : </td><td align="left" valign="top">Number of burner starts of level 1</td></tr>
+            <tr><td align="right" valign="top"><code>X3.BrennerStufe2Starts</code> : </td><td align="left" valign="top">Number of burner starts of level 2</td></tr>
+            <tr><td align="right" valign="top"><code>X2.BrennerLaufzeit_s</code> : </td><td align="left" valign="top">Burner runtime in level 1</td></tr>
+            <tr><td align="right" valign="top"><code>X4.BrennerStufe2Laufzeit_s</code> : </td><td align="left" valign="top">Burner runtime in level 2</td></tr>
+            <tr><td align="right" valign="top"><code>X5.BrennerStatus</code> : </td><td align="left" valign="top">Current burner firing level (off, Stufe1 oder Stufe2)</td></tr>
+            <tr><td align="right" valign="top"><code>X6.UhrzeitSolvis</code> : </td><td align="left" valign="top">Time of the SolvisControl</td></tr>
+            <tr><td align="right" valign="top"><code>X7.MischerPosition0_HK1</code> : </td><td align="left" valign="top">Mixer of heating circuit 1 in the rest position</td></tr>
+            <tr><td align="right" valign="top"><code>X8.MischerPosition0_HK2</code> : </td><td align="left" valign="top">Mixer of heating circuit 2 in the rest position</td></tr>
+          </table>
+        </ul>
+      </ul><BR><BR>
+        There are also other values that are determined from the SolvisControl GUI using OCR. These are only updated if the value is read / changed using a GET / SET command. So they are not always up to date.<BR>
+        <BR>
+        The following readings are determined from the GUI:
+      <ul>
+        <ul>
+          <table>
+            <tr><td align="right" valign="top"><code>C01.StartsBrenner</code> : </td><td align="left" valign="top">Number of burner starts of level 1</td></tr>
+            <tr><td align="right" valign="top"><code>C02.LaufzeitBrenner</code> : </td><td align="left" valign="top">Burner runtime in level 1 (in h)</td></tr>
+            <tr><td align="right" valign="top"><code>C03.LaufzeitAnforderung2</code> : </td><td align="left" valign="top">Burner runtime in stage 2 (in h)</td></tr>
+            <tr><td align="right" valign="top"><code>C04.WarmwasserPumpe</code> : </td><td align="left" valign="top">hot water pump (on / off / auto)</td></tr>
+            <tr><td align="right" valign="top"><code>C05.WassertemperaturSoll</code> : </td><td align="left" valign="top">target temperature hot water (10 .. 65&deg;C)</td></tr>
+            <tr><td align="right" valign="top"><code>C06.Anlagenmodus_HK1</code> : </td><td align="left" valign="top">Mode of heating circuit 1 (Tag/Nacht/Standby/Timer)</td></tr>
+            <tr><td align="right" valign="top"><code>C07.Tagestemperatur_HK1</code> : </td><td align="left" valign="top">Set temperature day heating circuit 1</td></tr>
+            <tr><td align="right" valign="top"><code>C08.Nachttemperatur_HK1</code> : </td><td align="left" valign="top">Set temperature night heating circuit 1</td></tr>
+            <tr><td align="right" valign="top"><code>C09.TemperaturFeineinstellung_HK1</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 1 (-5 ... 5)</td></tr>
+            <tr><td align="right" valign="top"><code>C10.Raumeinfluss_HK1</code> : </td><td align="left" valign="top">Room influence of heating circuit 1 (0 ... 90%)</td></tr>
+            <tr><td align="right" valign="top"><code>C11.Vorlauf_Soll_HK1</code> : </td><td align="left" valign="top">Setpoint of the flow temperature heating circuit 1</td></tr>
+            <tr><td align="right" valign="top"><code>C12.Anlagenmodus_HK2</code> : </td><td align="left" valign="top">Mode of heating circuit 2 (Tag/Nacht/Standby/Timer)</td></tr>
+            <tr><td align="right" valign="top"><code>C13.Tagestemperatur_HK2</code> : </td><td align="left" valign="top">target temperature day heating circuit 2</td></tr>
+            <tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Set temperature night heating circuit 2</td></tr>
+            <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 2 (-5 ... 5)</td></tr>
+            <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">room influence of heating circuit 2 (0 ... 90%)</td></tr>
+            <tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Setpoint of the flow temperature heating circuit 2</td></tr>
+          </table>
+        </ul>
+      </ul><BR><BR><BR><BR>
+        The module can be integrated and parameterized in FHEM as follows:
+        <BR><BR>
+
+      <table>
+        <tr><td><a name="SolvisClientDefine"></a><b>Define</b></td></tr>
+      </table>
+
+      <table>
+        <tr><td><ul><code>define &lt;device&gt; SolvisClient &lt;url&gt;</code></ul></td></tr>
+      </table>
+
+      <ul>
+        <ul>
+          <table>
+            <tr><td align="right" valign="top"><code>&lt;device&gt;</code> :</td><td align="left" valign="top">
+              The name of the device. Recommendation: "mySolvisMax".</td></tr>
+            <tr><td align="right" valign="top"><code>&lt;url&gt;</code> :</td><td align="left" valign="top">
+              A valid url (IP address or internet path) of the SolvisSmartHome server with channel number (usually 10735). Possibly look up in the router which IP address the SolvisSmartHome server was assigned by the DHCP server. If the server is running on the Fhem system, "localhost: 10735" can also be entered.</td></tr>
+          </table>
+        </ul>
+      </ul><BR><BR>
+
+      <table>
+        <tr><td><a name="SolvisClientSet"></a><b>Set</b></td></tr>
+        <tr><td>
+          <ul>
+            The set function changes a subset of the system values ​​of the Solvis. The following values ​​can currently be changed:
+            <ul>
+              <ul>
+                <table>
+                    <tr><td align="right" valign="top"><code>C04.WarmwasserPumpe</code> : </td><td align="left" valign="top">hot water pump (on / off / auto)</td></tr>
+                    <tr><td align="right" valign="top"><code>C05.WassertemperaturSoll</code> : </td><td align="left" valign="top">target temperature hot water (10 .. 65&deg;C)</td></tr>
+                    <tr><td align="right" valign="top"><code>C06.Anlagenmodus_HK1</code> : </td><td align="left" valign="top">Mode of heating circuit 1 (Tag/Nacht/Standby/Timer)</td></tr>
+                    <tr><td align="right" valign="top"><code>C07.Tagestemperatur_HK1</code> : </td><td align="left" valign="top">Set temperature day heating circuit 1</td></tr>
+                    <tr><td align="right" valign="top"><code>C08.Nachttemperatur_HK1</code> : </td><td align="left" valign="top">Set temperature night heating circuit 1</td></tr>
+                    <tr><td align="right" valign="top"><code>C09.TemperaturFeineinstellung_HK1</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 1 (-5 ... 5)</td></tr>
+                    <tr><td align="right" valign="top"><code>C10.Raumeinfluss_HK1</code> : </td><td align="left" valign="top">Room influence of heating circuit 1 (0 ... 90%)</td></tr>
+                    <tr><td align="right" valign="top"><code>C12.Anlagenmodus_HK2</code> : </td><td align="left" valign="top">Mode of heating circuit 2 (Tag/Nacht/Standby/Timer)</td></tr>
+                    <tr><td align="right" valign="top"><code>C13.Tagestemperatur_HK2</code> : </td><td align="left" valign="top">target temperature day heating circuit 2</td></tr>
+                    <tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Set temperature night heating circuit 2</td></tr>
+                    <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 2 (-5 ... 5)</td></tr>
+                    <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top"> room influence of heating circuit 2 (0 ... 90%)</td></tr>
+                </table>
+              </ul>
+            </ul><BR>
+          </ul>
+        </td></tr>
+      </table>
+
+      <table>
+        <tr><td><ul><code>set &lt;device&gt; &lt;name&gt; &lt;value&gt;</code></ul></td></tr>
+      </table>
+
+      <ul>
+        <ul>
+          <table>
+            <tr><td align="right" valign="top"><code>&lt;device&gt;</code> : </td><td align="left" valign="top">
+                    The name of the device. Recommendation: "mySolvisMax".</td></tr>
+            <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
+                    The name of the value to be set. E.g.: <code>C08.Nachttemperatur_HK1</code>"<BR></td></tr>
+            <tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
+                    A valid value.<BR></td></tr>
+          </table><BR>
+        </ul>
+            In addition to the SET commands for changing the above system values, there are also the following server commands (&lt;name&gt;: "ServerCommand", &lt;value&gt; , according to the following table):
+        <ul>
+          <table>
+            <tr><td align="right" valign="top"><code>BACKUP</code>: </td><td align="left" valign="top">
+              Saves the calculated measured values ​​(X1 .. X8) in a backup file.<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>SCREEN_RESTORE_INHIBIT</code>: </td><td align="left" valign="top">
+              Normally, after a parameter query in the GUI, the SolvisControl returns to the previous screen. This behavior is prevented by this command.<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
+              Counterpart to the server command SCREEN_RESTORE_INHIBIT<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_ENABLE</code>: </td><td align="left" valign="top">
+              Normally the control commands are executed in an optimized order. Commands that trigger actions on the same screen are carried out together. If strict compliance with the command sequence is required, this can be prevented by this server command.<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_INHIBIT</code>: </td><td align="left" valign="top">
+              counterpart to the ServerCommand COMMAND_OPTIMIZATION_ENABLE<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>GUI_COMMANDS_ENABLE</code>: </td><td align="left" valign="top">
+              Using this command, the GUI control can be temporarily deactivated, e.g. when the system is serviced. If you control this via the FHEM interface, a SET command is recommended. If you activate / deactivate them manually, you should set the corresponding attribute.<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
+              Counterpart to the ServerCommand GUI_COMMANDS_ENABLE<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>UPDATE_CHANNELS</code>: </td><td align="left" valign="top">
+              Update all channels that are only accessible via the GUI.<BR>
+            </td></tr>
+            <tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
+              Restarts the server<BR>
+            </td></tr>
+          </table>
+        </ul><BR>
+            This table does not necessarily reflect the current status. More or fewer server commands can be defined, since the server commands are handed over to the client by the server itself (with each new connection). The server itself determines what the client offers. The decisive factor is therefore always the output in the web interface.
+      </ul><BR><BR><BR>
+      <table>
+        <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>
+        <tr><td>
+          <ul>
+              The Get function triggers the reading of system values ​​from the GUI of the SolvisControl. The following values ​​can be read out:
+            <ul>
+              <ul>
+                <table>
+                    <tr><td align="right" valign="top"><code>C01.StartsBrenner</code> : </td><td align="left" valign="top">Number of burner starts of level 1</td></tr>
+                    <tr><td align="right" valign="top"><code>C02.LaufzeitBrenner</code> : </td><td align="left" valign="top">Burner runtime in level 1 (in h)</td></tr>
+                    <tr><td align="right" valign="top"><code>C03.LaufzeitAnforderung2</code> : </td><td align="left" valign="top">Burner runtime in level 2 (in h)</td></tr>
+                    <tr><td align="right" valign="top"><code>C04.WarmwasserPumpe</code> : </td><td align="left" valign="top">hot water pump (on / off / auto)</td></tr>
+                    <tr><td align="right" valign="top"><code>C05.WassertemperaturSoll</code> : </td><td align="left" valign="top">target temperature hot water (10 .. 65&deg;C)</td></tr>
+                    <tr><td align="right" valign="top"><code>C06.Anlagenmodus_HK1</code> : </td><td align="left" valign="top">Mode of heating circuit 1 (Tag/Nacht/Standby/Timer)</td></tr>
+                    <tr><td align="right" valign="top"><code>C07.Tagestemperatur_HK1</code> : </td><td align="left" valign="top">Set temperature day heating circuit 1</td></tr>
+                    <tr><td align="right" valign="top"><code>C08.Nachttemperatur_HK1</code> : </td><td align="left" valign="top">Set temperature night heating circuit 1</td></tr>
+                    <tr><td align="right" valign="top"><code>C09.TemperaturFeineinstellung_HK1</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 1 (-5 ... 5)</td></tr>
+                    <tr><td align="right" valign="top"><code>C10.Raumeinfluss_HK1</code> : </td><td align="left" valign="top">Room influence of heating circuit 1 (0 ... 90%)</td></tr>
+                    <tr><td align="right" valign="top"><code>C11.Vorlauf_Soll_HK1</code> : </td><td align="left" valign="top">Setpoint of the flow temperature heating circuit 1</td></tr>
+                    <tr><td align="right" valign="top"><code>C12.Anlagenmodus_HK2</code> : </td><td align="left" valign="top">Mode of heating circuit 2 (Tag/Nacht/Standby/Timer)</td></tr>
+                    <tr><td align="right" valign="top"><code>C13.Tagestemperatur_HK2</code> : </td><td align="left" valign="top">target temperature day heating circuit 2</td></tr>
+                    <tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Set temperature night heating circuit 2</td></tr>
+                    <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 2 (-5 ... 5)</td></tr>
+                    <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">room influence of heating circuit 2 (0 ... 90%)</td></tr>
+                    <tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Setpoint of the flow temperature heating circuit 2</td></tr>
+                </table>
+              </ul>
+            </ul><BR>
+          </ul>
+        </td></tr>
+      </table>
+      <table>
+        <tr><td><ul><code>get &lt;device&gt; &lt;name&gt;</code></ul></td></tr>
+      </table>
+      <ul>
+        <ul>
+          <table>
+            <tr><td align="right" valign="top"><code>&lt;device&gt;</code> : </td><td align="left" valign="top">
+                The name of the device. Recommendation: "mySolvisMax".</td></tr>
+            <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
+                 The name of the value to be read out. E.g .: "<code>C08.Nachttemperatur_HK1</code>"<BR></td></tr>
+          </table>
+        </ul>
+      </ul><BR><BR>
+      <table>
+        <tr><td><a name="SolvisClientAttr"></a><b>Attribute</b></td></tr>
+        <tr><td>
+          <ul>
+              The following module-specific attributes can be set in addition to the known global attributes such as: <a href="#room">room</a>.<BR>
+            <ul>
+              <ul>
+                <table>
+                    <tr><td align="right" valign="top"><code>SolvisName</code> : </td><td align="left" valign="top">Name of the id of the server unit (defined in base.xml). If the attribute is not defined, the FHEM device name must be identical to the ID of the unit of the base.xml of the server.</td></tr>
+                    <tr><td align="right" valign="top"><code>GuiCommandsEnabled</code> : </td><td align="left" valign="top">TRUE / FALSE: Gui commands are enabled / disabled. In the case of service, it is recommended to set this attribute to FALSE so that the service is not irritated by the SolvisSmartHomeServer. Default: TRUE</td></tr>
+                </table>
+              </ul>
+            </ul><BR>
+          </ul>
+        </td></tr>
+      </table>
+
+      <table>
+        <tr><td><ul><code>attr &lt;devive&gt; &lt;name&gt; &lt;value&gt;</code></ul></td></tr>
+      </table>
+      <ul>
+        <ul>
+          <table>
+              <tr><td align="right" valign="top"><code>&lt;device&gt;</code> : </td><td align="left" valign="top">
+                  The name of the device. Recommendation: "mySolvisMax".</td></tr>
+              <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
+                  The name of the value to be set.<BR></td></tr>
+              <tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
+                  A valid value.<BR></td></tr>
+          </table><BR><BR>
+        </ul>
+      </ul>
+
+      <table>
+        <tr><td><a name="SolvisClientState"></a><b>state</b></td></tr>
+        <tr><td>
+          <ul>
+              The special reading "state" can have the following values:<BR>
+            <ul>
+              <ul>
+                <table>
+                    <tr><td align="right" valign="top"><code>disconnected</code> : </td><td align="left" valign="top">Server is not connected to the client.</td></tr>
+                    <tr><td align="right" valign="top"><code>opened</code> : </td><td align="left" valign="top">The connection to the server is established.</td></tr>
+                    <tr><td align="right" valign="top"><code>SOLVIS_DISCONNECTED</code> : </td><td align="left" valign="top">DThe connection to the server is established, but none to the SolvisRemote</td></tr>
+                    <tr><td align="right" valign="top"><code>REMOTE_CONNECTED</code> : </td><td align="left" valign="top">The connection to the server and SolvisRemote is established. No connection to the heating system.</td></tr>
+                    <tr><td align="right" valign="top"><code>SOLVIS_CONNECTED</code> : </td><td align="left" valign="top">All connections established.</td></tr>
+                    <tr><td align="right" valign="top"><code>POWER_OFF</code> : </td><td align="left" valign="top">Solvis system is apparently switched off.</td></tr>
+                    <tr><td align="right" valign="top"><code>ERROR</code> : </td><td align="left" valign="top">SolvisControl displays an error message.</td></tr>
+                </table>
+              </ul>
+            </ul><BR>
+          </ul>
+        </td></tr>
+      </table>
+      <table>
+        <tr><td><a name="SolvisClientHumanAccess"></a><b>HumanAccess</b></td></tr>
+        <tr><td>
+          <ul>
+              The special reading "HumanAccess" can have the following values:<BR>
+            <ul>
+              <ul>
+                <table>
+                    <tr><td align="right" valign="top"><code>none</code> : </td><td align="left" valign="top">No external access detected</td></tr>
+                    <tr><td align="right" valign="top"><code>service</code> : </td><td align="left" valign="top">Access from the service</td></tr>
+                    <tr><td align="right" valign="top"><code>user</code> : </td><td align="left" valign="top">Access from the user</td></tr>
+                </table>
+              </ul>
+            </ul><BR>
+          </ul>
+        </td></tr>
+      </table>
     </td></tr>
   </table>
 </ul>
@@ -1448,7 +1758,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.05",
+  "version": "v00.02.06",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

@@ -22,6 +22,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
 import de.sgollmer.solvismax.helper.Helper;
+import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 
 public class Server {
@@ -32,11 +33,13 @@ public class Server {
 	private final Collection<Client> connectedClients;
 	private final CommandHandler commandHandler;
 	private final ServerThread serverThread;
+	private final int clientTimeout ;
 
-	public Server(ServerSocket serverSocket, CommandHandler commandHandler) {
+	public Server(ServerSocket serverSocket, CommandHandler commandHandler, Miscellaneous misc) {
 		this.connectedClients = new ArrayList<>(Constants.MAX_CONNECTIONS);
 		this.serverSocket = serverSocket;
 		this.commandHandler = commandHandler;
+		this.clientTimeout=misc.getClientTimeoutTime_ms() ;
 		this.serverThread = new ServerThread();
 	}
 
@@ -128,7 +131,7 @@ public class Server {
 				boolean abortConnection = false;
 
 				while (!abortConnection) {
-					JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(in);
+					JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(in, Server.this.clientTimeout);
 					abortConnection = Server.this.commandHandler.commandFromClient(jsonPackage, this);
 				}
 
