@@ -59,5 +59,4 @@ public class SolvisScreen {
 	public boolean imagesEquals(SolvisScreen screen) {
 		return this.image.equals(SolvisScreen.getImage(screen));
 	}
-
 }
