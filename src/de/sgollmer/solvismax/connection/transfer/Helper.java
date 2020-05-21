@@ -34,12 +34,13 @@ public class Helper {
 		Runnable runnable = null;
 		while (transfered < bytes.length) {
 			int cnt = in.read(bytes, transfered, bytes.length - transfered);
-			if (cnt < 0 ) {
-				if ( transfered > 0 ) {
-				throw new IOException("Not enough bytes received (transfered: " + transfered + ", target: "
-						+ bytes.length + "). Connection closed?");
-			}else {
-				throw new IOException("Connection closed.");}
+			if (cnt < 0) {
+				if (transfered > 0) {
+					throw new IOException("Not enough bytes received (transfered: " + transfered + ", target: "
+							+ bytes.length + "). Connection closed?");
+				} else {
+					throw new IOException("Connection closed.");
+				}
 			}
 			transfered += cnt;
 			if (transfered < bytes.length && timeout > 0) {
