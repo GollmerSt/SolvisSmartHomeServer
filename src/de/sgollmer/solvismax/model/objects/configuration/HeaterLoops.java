@@ -128,7 +128,6 @@ public class HeaterLoops implements Configuration {
 
 	}
 
-	@SuppressWarnings("static-method")
 	public MyImage getTestImage() throws IOException {
 
 		File parent = new File("testFiles\\images");
