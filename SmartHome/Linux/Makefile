@@ -87,7 +87,7 @@ learn: stopServices installSolvis
 
 
 testmail:
-	$(start) --test-mail
+	$(startLocal) --test-mail
 	
 	
 crypt:
