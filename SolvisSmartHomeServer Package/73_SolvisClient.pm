@@ -1,7 +1,7 @@
 ########################################################################################################################
 #
 # Attention: it's not the FHEM archive, it's a private one
-# $Id: 73_SolvisClient.pm 216 2020-05-12 14:57:40Z stefa_000 $
+# $Id: 73_SolvisClient.pm 219 2020-05-21 09:49:41Z stefa_000 $
 #
 #  (c) 2019-2020 Copyright: Stefan Gollmer (Stefan dot Gollmer at gmail dot com)
 #  All rights reserved
@@ -17,6 +17,7 @@
 #   00.02.04    01.05.2020  SCMP77              Reconnction after unknown client shortend, Timeout reported
 #   00.02.05    06.05.2020  SCMP77              Length bug of SendData fixed, Some optimizations
 #   00.02.06    11.05.2020  SCMP77              HumanAccess status added, HTML-Beschreibung ergänzt
+#   00.02.07    21.05.2020  SCMP77              GUI_COMMANDS_ENABLE/DISABLE was incorrectly sent on reconnection
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -444,8 +445,6 @@ sub Ready {
         return 'Connection still ongoing' ;
     }
 
-    $self->{helper}{GuiEnabled} = undef ;
-
     my $error = $self->{ConnectionError} ;
     
     $self->{ConnectionError} = $error ;
@@ -698,7 +697,6 @@ sub ReconnectAfterDismiss {
     my $reconnectionDelay = shift ;
 
     DevIo_CloseDev($self) ;
-    $self->{helper}{GuiEnabled} = undef ;
 
     my $timeStamp = gettimeofday() + $reconnectionDelay ;
     InternalTimer($timeStamp, \&Reconnect, $self );
@@ -759,8 +757,6 @@ sub WatchDogTimeout {
 #
 sub Reconnect {
     my $self = shift ;
-
-    $self->{helper}{GuiEnabled} = undef ;
 
     Log($self, 3, 'Retry reconnection');
     DevIo_CloseDev($self) ;
@@ -1758,7 +1754,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.06",
+  "version": "v00.02.07",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

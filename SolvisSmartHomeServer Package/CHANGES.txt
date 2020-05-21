@@ -1,18 +1,39 @@
 Ä N D E R U N G EN
 
+Version 01.00.10
+
+	
+	14.05.2020	Die Grafik des Bildschirmschoners ist an einigen Solvis-Anlagen nicht im Bild komplett
+				drin, sondern auch teilweise außerhalb. Das wurde bei der Bildschirmschone nun
+				berücksichtigt.
+				
+	15.05.2020	Beim Lesen von JSON-Daten wurden Zahlen immer in den Typ float umgewandelt. Das reicht
+				auch normalerweise, weil die Genauigkeit für normale Messwerte ausreichend ist.
+				Für die Übergabe der ClientId reichte das nicht, da in nicht in float ohne Rundungs-
+				Verlust abgebildet werden kann. Das hatte zur Folge, dass nur selten ein Reconnect
+				erfolgreich war.
+			
+	19.05.2020	Die Fehlermeldungs-Bildschirmüberwachung wurde überarbeitet.
+				
+	21.05.2020	FHEM-Client: GUI_COMMANDS_ENABLE/DISABLE wurde fälchlicherweise auch bei Wiederaufbau
+				der Verbindung gesendet
+				
+	
+
 Version 01.00.09
 				
-	10.05.2020	Für die Steuerfiles base.xml und control.xml einen Check gegenüber die entsprechende xsd-Datei
-				realiert. Damit ist sicher gestellt, dass dem Server kein fehlerhaftes oder zu altes
-				xml-File einlesen muss. Dies hat in der kürzlichen Vergangenheit
+	10.05.2020	Für die Steuerfiles base.xml und control.xml einen Check gegenüber die entsprechende
+				xsd-Datei realisiert. Damit ist sicher gestellt, dass dem Server kein fehlerhaftes oder
+				zu altes xml-File einlesen muss.
 				
 	11.05.2000	Server-Command UPDATE_CHANNELS hinzugefügt. Er löst ein Aktualisieren sämtlicher nur über
 				das GUI erreichbare Kanäle aus.
 				
 				control.xml bereinigt, es enthielt nicht mehr genutzte Einstellungen.
 				
-	12.05.2020	Die Passwort-Verschlüsselung kam nicht mit Paswörtern klar, welche eine Länge von 14 + N * 16
-				und 15 + N * 16 hatten.
+	12.05.2020	Die Passwort-Verschlüsselung kam nicht mit Paswörtern klar, welche eine Länge von
+				14 + N * 16 und 15 + N * 16 hatten.
+
 
 Version 01.00.08
 				
