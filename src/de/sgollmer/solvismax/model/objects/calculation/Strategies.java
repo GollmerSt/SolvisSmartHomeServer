@@ -50,19 +50,16 @@ public enum Strategies {
 
 		public abstract boolean isWriteable();
 
-		@SuppressWarnings("static-method")
 		public SingleData<?> setValue(Solvis solvis, SolvisData value) {
 			return null; // i.g. is directly set via solvis data
 		}
 
-		@SuppressWarnings("static-method")
 		public boolean getValue(SolvisData dest, Solvis solvis) {
 			return true; // i.g. solvis data contains the current value
 		}
 
 		public abstract void instantiate(Solvis solvis);
 		
-		@SuppressWarnings("static-method")
 		public Collection< ModeI > getModes() {
 			return null ;
 		}
