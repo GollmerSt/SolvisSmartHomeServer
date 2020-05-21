@@ -8,7 +8,6 @@
 		<tns:Type id="SolvisBen" configuration="0x02000000" />
 	</tns:SolvisTypes>
 	<tns:Configurations>
-		<tns:ReferencePoint X="45" Y="51" />
 		<tns:HeaterLoops screenRef="Home">
 			<tns:HK1Button>
 				<tns:TopLeft X="55" Y="10" />
@@ -72,7 +71,7 @@
 			<tns:ScreenGrafic exact="true" id="Home">
 				<tns:Field>
 					<tns:TopLeft X="0" Y="8" />
-					<tns:BottomRight X="45" Y="20" />
+					<tns:BottomRight X="45" Y="125" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 			<tns:IgnoreRectangle>
@@ -91,8 +90,8 @@
 			</tns:TouchPoint>
 			<tns:ScreenGrafic exact="true" id="Warmwasser">
 				<tns:Field>
-					<tns:TopLeft X="0" Y="33" />
-					<tns:BottomRight X="45" Y="45" />
+					<tns:TopLeft X="0" Y="8" />
+					<tns:BottomRight X="45" Y="125" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
@@ -104,8 +103,8 @@
 			</tns:TouchPoint>
 			<tns:ScreenGrafic exact="true" id="Zirkulation">
 				<tns:Field>
-					<tns:TopLeft X="0" Y="58" />
-					<tns:BottomRight X="45" Y="70" />
+					<tns:TopLeft X="0" Y="8" />
+					<tns:BottomRight X="45" Y="125" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
@@ -116,8 +115,8 @@
 			</tns:TouchPoint>
 			<tns:ScreenGrafic exact="true" id="Solar">
 				<tns:Field>
-					<tns:TopLeft X="0" Y="83" />
-					<tns:BottomRight X="45" Y="95" />
+					<tns:TopLeft X="0" Y="8" />
+					<tns:BottomRight X="45" Y="125" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 			<tns:IgnoreRectangle>

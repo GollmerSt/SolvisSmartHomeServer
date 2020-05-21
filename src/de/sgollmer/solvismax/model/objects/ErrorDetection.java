@@ -67,7 +67,11 @@ public class ErrorDetection {
 		this.errorConditions = errorConditions;
 	}
 
-	public boolean is(SolvisScreen screen) {
+	public enum Type {
+		NONE, HOME_NONE, MESSAGE_BOX, ERROR_BUTTON
+	}
+
+	public Type getType(SolvisScreen screen) {
 
 		MyImage image = screen.getImage();
 
@@ -131,20 +135,24 @@ public class ErrorDetection {
 
 		boolean error = mask == 0x1f;
 
-		if (!error) {
-			if (screen.getSolvis().getHomeScreen().equals(screen.get())) {
-				String hhmm = new OcrRectangle(image, this.hhMm).getString();
-				String ddMMYY = new OcrRectangle(image, this.ddMmYy).getString();
+		if (error) {
+			return Type.MESSAGE_BOX;
+		}
 
-				Matcher t = TIME_PATTERN.matcher(hhmm);
-				Matcher d = DATE_PATTERN.matcher(ddMMYY);
+		if (screen.getSolvis().getHomeScreen().equals(screen.get())) {
+			String hhmm = new OcrRectangle(image, this.hhMm).getString();
+			String ddMMYY = new OcrRectangle(image, this.ddMmYy).getString();
 
-				if (!t.matches() && !d.matches()) {
-					error = true;
-				}
+			Matcher t = TIME_PATTERN.matcher(hhmm);
+			Matcher d = DATE_PATTERN.matcher(ddMMYY);
+
+			if (!t.matches() && !d.matches()) {
+				return Type.ERROR_BUTTON;
+			} else {
+				return Type.HOME_NONE;
 			}
 		}
-		return error;
+		return Type.NONE;
 	}
 
 	private int getTreshold(Range upper, Range lower) {
@@ -307,10 +315,10 @@ public class ErrorDetection {
 		public void update(SolvisData data, Object source) {
 			for (ErrorCondition condition : ErrorDetection.this.errorConditions) {
 				String channelId = condition.getChannelId();
-				boolean error = channelId.equals(data.getDescription().getId())
-						&& data.getBool() == condition.getErrorValue();
-				data.getDatas().getSolvis().getSolvisState().error(error, channelId, null);
-
+				if (channelId.equals(data.getDescription().getId())) {
+					boolean error = data.getBool() == condition.getErrorValue();
+					data.getSolvis().getSolvisState().setError(error, data.getDescription());
+				}
 			}
 
 		}

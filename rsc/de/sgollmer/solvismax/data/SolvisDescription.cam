@@ -1,0 +1,1085 @@
+<as:CAM
+ xmlns:as="http://www.oasis-open.org/committees/cam"
+ xmlns:camed="http://jcam.org.uk/editor"
+ xmlns:tns="http://www.example.org/control"
+ xmlns:xml="http://www.w3.org/XML/1998/namespace" CAMlevel="1" version="1.0" cameditor="3.2.1">
+  <as:Header>
+    <as:Description>Generated for SolvisDescription  by XSD 2 CAM generator v2.31</as:Description>
+    <as:Owner>To be Completed</as:Owner>
+    <as:Version>0.1</as:Version>
+    <as:DateTime>2020-05-20T10:44:19</as:DateTime>
+  </as:Header>
+  <as:AssemblyStructure>
+    <as:Structure taxonomy="XML" ID="SolvisDescription" reference="">
+      <tns:SolvisDescription>
+        <tns:SolvisTypes>
+          <tns:Type id="%string%" configuration="%tns:UnNBytesHexInt%" />
+        </tns:SolvisTypes>
+        <tns:Configurations>
+          <tns:HeaterLoops screenRef="%string%">
+            <tns:HK1Button invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:HK1Button>
+            <tns:HK2Button invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:HK2Button>
+            <tns:HK3Button invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:HK3Button>
+          </tns:HeaterLoops>
+          <tns:Solar screenRef="%string%" format="%string%" maxTemperatureX10="%12345%">
+            <tns:ReturnTemperature invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:ReturnTemperature>
+            <tns:OutgoingTemperature invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:OutgoingTemperature>
+          </tns:Solar>
+        </tns:Configurations>
+        <tns:ScreenSaver timeHeight="%12345%">
+          <tns:TimeDateRectangle invertFunction="%false%">
+            <tns:TopLeft X="%12345%" Y="%12345%" />
+            <tns:BottomRight X="%12345%" Y="%12345%" />
+          </tns:TimeDateRectangle>
+          <tns:ResetScreenSaver pushTimeRefId="%string%" releaseTimeRefId="%string%">
+            <tns:Coordinate X="%12345%" Y="%12345%" />
+          </tns:ResetScreenSaver>
+        </tns:ScreenSaver>
+        <tns:ErrorDetection>
+          <tns:LeftBorder lowerLimit="%12345%" higherLimit="%12345%" />
+          <tns:RightBorder lowerLimit="%12345%" higherLimit="%12345%" />
+          <tns:TopBorder lowerLimit="%12345%" higherLimit="%12345%" />
+          <tns:MiddleBorder lowerLimit="%12345%" higherLimit="%12345%" />
+          <tns:BottomBorder lowerLimit="%12345%" higherLimit="%12345%" />
+          <tns:HhMm invertFunction="%false%">
+            <tns:TopLeft X="%12345%" Y="%12345%" />
+            <tns:BottomRight X="%12345%" Y="%12345%" />
+          </tns:HhMm>
+          <tns:DdMmYy invertFunction="%false%">
+            <tns:TopLeft X="%12345%" Y="%12345%" />
+            <tns:BottomRight X="%12345%" Y="%12345%" />
+          </tns:DdMmYy>
+          <tns:ErrorCondition channelId="%string%" value="%false%" />
+        </tns:ErrorDetection>
+        <tns:Service>
+          <tns:ServiceScreen id="%string%" />
+        </tns:Service>
+        <tns:Screens homeId="%string%">
+          <tns:Screen id="%string%" previousId="%string%" alternativePreviousId="%string%" backId="%string%" ignoreChanges="%false%">
+            <tns:ConfigurationMasks>
+              <tns:ConfigurationMask andMask="%tns:UnNBytesHexInt%" compareMask="%tns:UnNBytesHexInt%" />
+            </tns:ConfigurationMasks>
+            <tns:TouchPoint pushTimeRefId="%string%" releaseTimeRefId="%string%">
+              <tns:Coordinate X="%12345%" Y="%12345%" />
+            </tns:TouchPoint>
+            <tns:AlternativeTouchPoint pushTimeRefId="%string%" releaseTimeRefId="%string%">
+              <tns:Coordinate X="%12345%" Y="%12345%" />
+            </tns:AlternativeTouchPoint>
+            <tns:ScreenOcr value="%string%">
+              <tns:Field invertFunction="%false%">
+                <tns:TopLeft X="%12345%" Y="%12345%" />
+                <tns:BottomRight X="%12345%" Y="%12345%" />
+              </tns:Field>
+            </tns:ScreenOcr>
+            <tns:ScreenGraficRef refId="%string%" />
+            <tns:ScreenGrafic id="%string%" exact="%false%">
+              <tns:Field invertFunction="%false%">
+                <tns:TopLeft X="%12345%" Y="%12345%" />
+                <tns:BottomRight X="%12345%" Y="%12345%" />
+              </tns:Field>
+            </tns:ScreenGrafic>
+            <tns:IgnoreRectangle invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:IgnoreRectangle>
+            <tns:PreparationRef refId="%string%" />
+            <tns:LastPreparationRef refId="%string%" />
+          </tns:Screen>
+        </tns:Screens>
+        <tns:ScreenGrafics>
+          <tns:ScreenGrafic id="%string%" exact="%false%">
+            <tns:Field invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:Field>
+          </tns:ScreenGrafic>
+        </tns:ScreenGrafics>
+        <tns:FallBack>
+          <tns:Back />
+          <tns:ScreenRef id="%string%" />
+        </tns:FallBack>
+        <tns:ChannelDescriptions>
+          <tns:ChannelDescription id="%string%" buffered="%false%" unit="%string%">
+            <tns:ConfigurationMasks>
+              <tns:ConfigurationMask andMask="%tns:UnNBytesHexInt%" compareMask="%tns:UnNBytesHexInt%" />
+            </tns:ConfigurationMasks>
+            <tns:Modbus address="%12345%">
+              <tns:TypeRead divisor="%12345%">
+                <tns:GuiRead format="%string%" />
+              </tns:TypeRead>
+              <tns:TypeValue>%string%</tns:TypeValue>
+              <tns:TypeMode>%string%</tns:TypeMode>
+            </tns:Modbus>
+            <tns:Calculation strategy="%string%">
+              <tns:Dependency id="%string%" dataId="%string%" />
+            </tns:Calculation>
+          </tns:ChannelDescription>
+        </tns:ChannelDescriptions>
+        <tns:Preparations>
+          <tns:Preparation id="%string%">
+            <tns:TouchPoint pushTimeRefId="%string%" releaseTimeRefId="%string%">
+              <tns:Coordinate X="%12345%" Y="%12345%" />
+            </tns:TouchPoint>
+            <tns:ScreenGrafic id="%string%" exact="%false%">
+              <tns:Field invertFunction="%false%">
+                <tns:TopLeft X="%12345%" Y="%12345%" />
+                <tns:BottomRight X="%12345%" Y="%12345%" />
+              </tns:Field>
+            </tns:ScreenGrafic>
+          </tns:Preparation>
+        </tns:Preparations>
+        <tns:Clock timeChannelId="%string%" screenId="%string%" okScreenId="%string%">
+          <tns:ModbusWrite address="%tns:UnNBytesHexInt%" type="%string%" />
+          <tns:Year least="%12345%">
+            <tns:Rectangle invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:Rectangle>
+            <tns:Touch pushTimeRefId="%string%" releaseTimeRefId="%string%">
+              <tns:Coordinate X="%12345%" Y="%12345%" />
+            </tns:Touch>
+            <tns:ScreenGrafic id="%string%" exact="%false%">
+              <tns:Field invertFunction="%false%">
+                <tns:TopLeft X="%12345%" Y="%12345%" />
+                <tns:BottomRight X="%12345%" Y="%12345%" />
+              </tns:Field>
+            </tns:ScreenGrafic>
+          </tns:Year>
+          <tns:Month least="%12345%">
+            <tns:Rectangle invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:Rectangle>
+            <tns:Touch pushTimeRefId="%string%" releaseTimeRefId="%string%">
+              <tns:Coordinate X="%12345%" Y="%12345%" />
+            </tns:Touch>
+            <tns:ScreenGrafic id="%string%" exact="%false%">
+              <tns:Field invertFunction="%false%">
+                <tns:TopLeft X="%12345%" Y="%12345%" />
+                <tns:BottomRight X="%12345%" Y="%12345%" />
+              </tns:Field>
+            </tns:ScreenGrafic>
+          </tns:Month>
+          <tns:Day least="%12345%">
+            <tns:Rectangle invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:Rectangle>
+            <tns:Touch pushTimeRefId="%string%" releaseTimeRefId="%string%">
+              <tns:Coordinate X="%12345%" Y="%12345%" />
+            </tns:Touch>
+            <tns:ScreenGrafic id="%string%" exact="%false%">
+              <tns:Field invertFunction="%false%">
+                <tns:TopLeft X="%12345%" Y="%12345%" />
+                <tns:BottomRight X="%12345%" Y="%12345%" />
+              </tns:Field>
+            </tns:ScreenGrafic>
+          </tns:Day>
+          <tns:Hour least="%12345%">
+            <tns:Rectangle invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:Rectangle>
+            <tns:Touch pushTimeRefId="%string%" releaseTimeRefId="%string%">
+              <tns:Coordinate X="%12345%" Y="%12345%" />
+            </tns:Touch>
+            <tns:ScreenGrafic id="%string%" exact="%false%">
+              <tns:Field invertFunction="%false%">
+                <tns:TopLeft X="%12345%" Y="%12345%" />
+                <tns:BottomRight X="%12345%" Y="%12345%" />
+              </tns:Field>
+            </tns:ScreenGrafic>
+          </tns:Hour>
+          <tns:Minute least="%12345%">
+            <tns:Rectangle invertFunction="%false%">
+              <tns:TopLeft X="%12345%" Y="%12345%" />
+              <tns:BottomRight X="%12345%" Y="%12345%" />
+            </tns:Rectangle>
+            <tns:Touch pushTimeRefId="%string%" releaseTimeRefId="%string%">
+              <tns:Coordinate X="%12345%" Y="%12345%" />
+            </tns:Touch>
+            <tns:ScreenGrafic id="%string%" exact="%false%">
+              <tns:Field invertFunction="%false%">
+                <tns:TopLeft X="%12345%" Y="%12345%" />
+                <tns:BottomRight X="%12345%" Y="%12345%" />
+              </tns:Field>
+            </tns:ScreenGrafic>
+          </tns:Minute>
+          <tns:Upper pushTimeRefId="%string%" releaseTimeRefId="%string%">
+            <tns:Coordinate X="%12345%" Y="%12345%" />
+          </tns:Upper>
+          <tns:Lower pushTimeRefId="%string%" releaseTimeRefId="%string%">
+            <tns:Coordinate X="%12345%" Y="%12345%" />
+          </tns:Lower>
+          <tns:Ok pushTimeRefId="%string%" releaseTimeRefId="%string%">
+            <tns:Coordinate X="%12345%" Y="%12345%" />
+          </tns:Ok>
+          <tns:DisableClockSetting burnerId="%string%" hotWaterPumpId="%string%" />
+        </tns:Clock>
+        <tns:Durations>
+          <tns:Duration id="%string%" time_ms="%12345%" />
+        </tns:Durations>
+        <tns:Miscellaneous powerOffDetectedAfterIoErrors="%12345%" powerOffDetectedAfterTimeout_ms="%12345%" measurementsBackupTime_ms="%12345%" unsuccessfullWaitTime_ms="%12345%" releaseBlockingAfterUserAccess_ms="%12345%" releaseBlockingAfterServiceAccess_ms="%12345%" connectionHoldTime_ms="%12345%" solvisConnectionTimeout_ms="%12345%" solvisReadTimeout_ms="%12345%" clientTimeoutTime_ms="%12345%" />
+      </tns:SolvisDescription>
+    </as:Structure>
+  </as:AssemblyStructure>
+  <as:BusinessUseContext>
+    <as:Rules>
+      <as:default>
+        <as:context>
+          <as:constraint action="setNumberMask(//tns:AlternativeTouchPoint/tns:Coordinate/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:AlternativeTouchPoint/tns:Coordinate/@Y,######)" />
+          <as:constraint action="makeOptional(//tns:Calculation/tns:Dependency)" />
+          <as:constraint action="makeRepeatable(//tns:Calculation/tns:Dependency)" />
+          <as:constraint action="restrictValues(//tns:ChannelDescription/tns:Calculation/@strategy,'runtime' |'starts' |'burnerStatus' |'mixerPosition0')" />
+          <as:constraint action="makeOptional(//tns:ChannelDescription/tns:ConfigurationMasks)" />
+          <as:constraint action="makeOptional(//tns:ChannelDescription/tns:Modbus)" />
+          <as:constraint action="setNumberMask(//tns:ChannelDescription/tns:Modbus/@address,######)" />
+          <as:constraint action="makeOptional(//tns:ChannelDescription/tns:TypeMode)" />
+          <as:constraint action="makeOptional(//tns:ChannelDescription/tns:TypeRead)" />
+          <as:constraint action="makeOptional(//tns:ChannelDescription/tns:TypeValue)" />
+          <as:constraint action="makeOptional(//tns:ChannelDescriptions/tns:ChannelDescription)" />
+          <as:constraint action="makeRepeatable(//tns:ChannelDescriptions/tns:ChannelDescription)" />
+          <as:constraint action="makeOptional(//tns:ChannelDescriptions/tns:ChannelDescription/@buffered)" />
+          <as:constraint action="makeOptional(//tns:ChannelDescriptions/tns:ChannelDescription/@unit)" />
+          <as:constraint action="makeOptional(//tns:Clock/tns:Day/@least)" />
+          <as:constraint action="setNumberMask(//tns:Clock/tns:Day/@least,######)" />
+          <as:constraint action="makeOptional(//tns:Clock/tns:DisableClockSetting/@hotWaterPumpId)" />
+          <as:constraint action="makeOptional(//tns:Clock/tns:Hour/@least)" />
+          <as:constraint action="setNumberMask(//tns:Clock/tns:Hour/@least,######)" />
+          <as:constraint action="makeOptional(//tns:Clock/tns:Minute/@least)" />
+          <as:constraint action="setNumberMask(//tns:Clock/tns:Minute/@least,######)" />
+          <as:constraint action="restrictValues(//tns:Clock/tns:ModbusWrite/@type,'Input' |'Holding')" />
+          <as:constraint action="makeOptional(//tns:Clock/tns:Month/@least)" />
+          <as:constraint action="setNumberMask(//tns:Clock/tns:Month/@least,######)" />
+          <as:constraint action="makeOptional(//tns:Clock/tns:Year/@least)" />
+          <as:constraint action="setNumberMask(//tns:Clock/tns:Year/@least,######)" />
+          <as:constraint action="makeOptional(//tns:ConfigurationMasks/tns:ConfigurationMask)" />
+          <as:constraint action="makeRepeatable(//tns:ConfigurationMasks/tns:ConfigurationMask)" />
+          <as:constraint action="setNumberMask(//tns:Configurations/tns:Solar/@maxTemperatureX10,######)" />
+          <as:constraint action="makeOptional(//tns:Day/tns:Rectangle/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:Day/tns:ScreenGrafic/@exact)" />
+          <as:constraint action="setNumberMask(//tns:DdMmYy/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:DdMmYy/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:DdMmYy/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:DdMmYy/tns:TopLeft/@Y,######)" />
+          <as:constraint action="makeOptional(//tns:Durations/tns:Duration)" />
+          <as:constraint action="makeRepeatable(//tns:Durations/tns:Duration)" />
+          <as:constraint action="setNumberMask(//tns:Durations/tns:Duration/@time_ms,######)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:BottomBorder/@higherLimit,######)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:BottomBorder/@lowerLimit,######)" />
+          <as:constraint action="makeOptional(//tns:ErrorDetection/tns:DdMmYy/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:ErrorDetection/tns:ErrorCondition)" />
+          <as:constraint action="makeRepeatable(//tns:ErrorDetection/tns:ErrorCondition)" />
+          <as:constraint action="makeOptional(//tns:ErrorDetection/tns:HhMm/@invertFunction)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:LeftBorder/@higherLimit,######)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:LeftBorder/@lowerLimit,######)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:MiddleBorder/@higherLimit,######)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:MiddleBorder/@lowerLimit,######)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:RightBorder/@higherLimit,######)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:RightBorder/@lowerLimit,######)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:TopBorder/@higherLimit,######)" />
+          <as:constraint action="setNumberMask(//tns:ErrorDetection/tns:TopBorder/@lowerLimit,######)" />
+          <as:constraint action="setNumberMask(//tns:Field/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:Field/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:Field/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:Field/tns:TopLeft/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:HK1Button/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:HK1Button/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:HK1Button/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:HK1Button/tns:TopLeft/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:HK2Button/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:HK2Button/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:HK2Button/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:HK2Button/tns:TopLeft/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:HK3Button/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:HK3Button/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:HK3Button/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:HK3Button/tns:TopLeft/@Y,######)" />
+          <as:constraint action="makeOptional(//tns:HeaterLoops/tns:HK1Button/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:HeaterLoops/tns:HK2Button/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:HeaterLoops/tns:HK3Button/@invertFunction)" />
+          <as:constraint action="setNumberMask(//tns:HhMm/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:HhMm/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:HhMm/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:HhMm/tns:TopLeft/@Y,######)" />
+          <as:constraint action="makeOptional(//tns:Hour/tns:Rectangle/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:Hour/tns:ScreenGrafic/@exact)" />
+          <as:constraint action="setNumberMask(//tns:IgnoreRectangle/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:IgnoreRectangle/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:IgnoreRectangle/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:IgnoreRectangle/tns:TopLeft/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:Lower/tns:Coordinate/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:Lower/tns:Coordinate/@Y,######)" />
+          <as:constraint action="makeOptional(//tns:Minute/tns:Rectangle/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:Minute/tns:ScreenGrafic/@exact)" />
+          <as:constraint action="makeOptional(//tns:Modbus/tns:TypeRead/@divisor)" />
+          <as:constraint action="setNumberMask(//tns:Modbus/tns:TypeRead/@divisor,######)" />
+          <as:constraint action="makeOptional(//tns:Month/tns:Rectangle/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:Month/tns:ScreenGrafic/@exact)" />
+          <as:constraint action="setNumberMask(//tns:Ok/tns:Coordinate/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:Ok/tns:Coordinate/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:OutgoingTemperature/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:OutgoingTemperature/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:OutgoingTemperature/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:OutgoingTemperature/tns:TopLeft/@Y,######)" />
+          <as:constraint action="makeOptional(//tns:Preparation/tns:ScreenGrafic/@exact)" />
+          <as:constraint action="makeOptional(//tns:Preparations/tns:Preparation)" />
+          <as:constraint action="makeRepeatable(//tns:Preparations/tns:Preparation)" />
+          <as:constraint action="setNumberMask(//tns:Rectangle/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:Rectangle/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:Rectangle/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:Rectangle/tns:TopLeft/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:ResetScreenSaver/tns:Coordinate/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:ResetScreenSaver/tns:Coordinate/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:ReturnTemperature/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:ReturnTemperature/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:ReturnTemperature/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:ReturnTemperature/tns:TopLeft/@Y,######)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:AlternativeTouchPoint)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:ConfigurationMasks)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:IgnoreRectangle)" />
+          <as:constraint action="makeRepeatable(//tns:Screen/tns:IgnoreRectangle)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:IgnoreRectangle/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:LastPreparationRef)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:PreparationRef)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:ScreenGrafic)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:ScreenGrafic/@exact)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:ScreenGraficRef)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:ScreenOcr)" />
+          <as:constraint action="makeOptional(//tns:Screen/tns:TouchPoint)" />
+          <as:constraint action="makeOptional(//tns:ScreenGrafic/tns:Field)" />
+          <as:constraint action="makeOptional(//tns:ScreenGrafic/tns:Field/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:ScreenGrafics/tns:ScreenGrafic)" />
+          <as:constraint action="makeRepeatable(//tns:ScreenGrafics/tns:ScreenGrafic)" />
+          <as:constraint action="makeOptional(//tns:ScreenGrafics/tns:ScreenGrafic/@exact)" />
+          <as:constraint action="makeOptional(//tns:ScreenOcr/tns:Field/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:ScreenSaver/tns:TimeDateRectangle/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:Screens/tns:Screen)" />
+          <as:constraint action="makeRepeatable(//tns:Screens/tns:Screen)" />
+          <as:constraint action="makeOptional(//tns:Screens/tns:Screen/@alternativePreviousId)" />
+          <as:constraint action="makeOptional(//tns:Screens/tns:Screen/@ignoreChanges)" />
+          <as:constraint action="makeOptional(//tns:Service/tns:ServiceScreen)" />
+          <as:constraint action="makeRepeatable(//tns:Service/tns:ServiceScreen)" />
+          <as:constraint action="makeOptional(//tns:Solar/tns:OutgoingTemperature/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:Solar/tns:ReturnTemperature/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:SolvisDescription/tns:Back)" />
+          <as:constraint action="makeRepeatable(//tns:SolvisDescription/tns:Back)" />
+          <as:constraint action="makeOptional(//tns:SolvisDescription/tns:Configurations)" />
+          <as:constraint action="makeOptional(//tns:SolvisDescription/tns:Durations)" />
+          <as:constraint action="makeRepeatable(//tns:SolvisDescription/tns:Durations)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@clientTimeoutTime_ms,######)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@connectionHoldTime_ms,######)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@measurementsBackupTime_ms,######)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@powerOffDetectedAfterIoErrors,######)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@powerOffDetectedAfterTimeout_ms,######)" />
+          <as:constraint action="makeOptional(//tns:SolvisDescription/tns:Miscellaneous/@releaseBlockingAfterServiceAccess_ms)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@releaseBlockingAfterServiceAccess_ms,######)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@releaseBlockingAfterUserAccess_ms,######)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@solvisConnectionTimeout_ms,######)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@solvisReadTimeout_ms,######)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:Miscellaneous/@unsuccessfullWaitTime_ms,######)" />
+          <as:constraint action="makeOptional(//tns:SolvisDescription/tns:Preparations)" />
+          <as:constraint action="makeOptional(//tns:SolvisDescription/tns:ScreenRef)" />
+          <as:constraint action="makeRepeatable(//tns:SolvisDescription/tns:ScreenRef)" />
+          <as:constraint action="setNumberMask(//tns:SolvisDescription/tns:ScreenSaver/@timeHeight,######)" />
+          <as:constraint action="makeOptional(//tns:SolvisDescription/tns:Screens/@homeId)" />
+          <as:constraint action="makeRepeatable(//tns:SolvisTypes/tns:Type)" />
+          <as:constraint action="restrictValues(//tns:SolvisTypes/tns:Type/@id,'SolvisMax' |'SolvisBen')" />
+          <as:constraint action="setNumberMask(//tns:TimeDateRectangle/tns:BottomRight/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:TimeDateRectangle/tns:BottomRight/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:TimeDateRectangle/tns:TopLeft/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:TimeDateRectangle/tns:TopLeft/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:Touch/tns:Coordinate/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:Touch/tns:Coordinate/@Y,######)" />
+          <as:constraint action="setNumberMask(//tns:TouchPoint/tns:Coordinate/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:TouchPoint/tns:Coordinate/@Y,######)" />
+          <as:constraint action="makeOptional(//tns:TypeRead/tns:GuiRead)" />
+          <as:constraint action="setNumberMask(//tns:Upper/tns:Coordinate/@X,######)" />
+          <as:constraint action="setNumberMask(//tns:Upper/tns:Coordinate/@Y,######)" />
+          <as:constraint action="makeOptional(//tns:Year/tns:Rectangle/@invertFunction)" />
+          <as:constraint action="makeOptional(//tns:Year/tns:ScreenGrafic/@exact)" />
+          <as:constraint action="setChoice(//tns:ChannelDescriptions/tns:ChannelDescription/*[contains(name(),'tns:Modbus')])" />
+        </as:context>
+      </as:default>
+    </as:Rules>
+  </as:BusinessUseContext>
+  <as:Extension name="uk.org.jcam.camed.extensions.StructureAnnotations">
+    <camed:annotation item="//ChannelDescription/tns:Calculation">
+      <camed:documentation type="Definition">Notwendigen Definitionen zur Berechnung für eine aus
+				den Daten zu berechnender Wert</camed:documentation>
+      <camed:documentation type="Ref">ChannelDescription/tns:Calculation</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//Modbus/tns:TypeMode">
+      <camed:documentation type="Definition">Definitionen, wenn Solvis-Anlagenparameter
+							ein
+							einzustellender Modus (z.B. Betriebsart)
+							ist</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//Modbus/tns:TypeRead">
+      <camed:documentation type="Type">tns:Read</camed:documentation>
+      <camed:documentation type="Definition">Definitionen, wenn
+							derSolvis-Anlagenparameter nur
+							ein
+							auszulesender Wert (z. B. Brennerstarts) ist</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:AlternativeTouchPoint/@pushTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, die der Button gedrückt wird</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:AlternativeTouchPoint/@releaseTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, wie lange gewartet wird,
+					nachdem der Button losgelassen wurde.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:AlternativeTouchPoint/tns:Coordinate">
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:BottomBorder/@higherLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:BottomBorder/@lowerLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Calculation/@strategy">
+      <camed:documentation type="Definition">Berechnungsart des zu berechnendesn Wertes</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Calculation/tns:Dependency">
+      <camed:documentation type="Definition">Abhängigkeiten von Solvis-Messungen (Brenner
+						an/aus etc.)</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ChannelDescription/@id">
+      <camed:documentation type="Definition">Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ChannelDescriptions/tns:ChannelDescription">
+      <camed:documentation type="Definition">Definitionen eines darzustellenden Solvis-Datums (z.B.
+				A09.Mischer.HK1)</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/@okScreenId">
+      <camed:documentation type="Definition">Id des Screens, der nach den Druck des OK-Buttons
+					erscheinen soll (dient der Verifikation)</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/@screenId">
+      <camed:documentation type="Definition">Id des Screen, wo das Setzen der Zeit erfolgt.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/@timeChannelId">
+      <camed:documentation type="Definition">Id des Channels, der die aktuelle Zeit der Solvis-Uhr
+					wiedergibt.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/tns:Day">
+      <camed:documentation type="Type">tns:DatePart</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/tns:Hour">
+      <camed:documentation type="Type">tns:DatePart</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/tns:Lower">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+      <camed:documentation type="Definition">Berührungspunkt-Definition um den Wert zu
+						erniedrigen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/tns:Minute">
+      <camed:documentation type="Type">tns:DatePart</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/tns:ModbusWrite">
+      <camed:documentation type="Type">tns:ModbusAccess</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/tns:Month">
+      <camed:documentation type="Type">tns:DatePart</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/tns:Ok">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/tns:Upper">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+      <camed:documentation type="Definition">Berührungspunkt-Definition um den Wert zu
+						erhöhen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Clock/tns:Year">
+      <camed:documentation type="Type">tns:DatePart</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Configurations/tns:HeaterLoops">
+      <camed:documentation type="Definition">Konfiguration der Heizkreise</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Configurations/tns:Solar">
+      <camed:documentation type="Definition">Zur Ermittlung des Solarkreises</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Day/@least">
+      <camed:documentation type="Definition">kleinster Wert des Parameters</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Day/tns:Rectangle">
+      <camed:documentation type="Definition">Definition eines Bereichs auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Day/tns:ScreenGrafic">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Day/tns:Touch">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem
+									Bildschirm um den Modus zu wählen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:DdMmYy/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:DdMmYy/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Dependency/@id">
+      <camed:documentation type="Definition">Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:DisableClockSetting/@burnerId">
+      <camed:documentation type="Definition">Brenner-Name der Solvis-XML-Definitionen A12.Brenner
+					oder A13.Brenner_S2)</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Duration/@id">
+      <camed:documentation type="Definition">Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Durations/tns:Duration">
+      <camed:documentation type="Definition">Dauer allgemein, meist für Länge eines Druckes auf dem
+				Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ErrorCondition/@value">
+      <camed:documentation type="Definition">Soll-Zeichen-String</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ErrorDetection/tns:BottomBorder">
+      <camed:documentation type="Type">tns:Range</camed:documentation>
+      <camed:documentation type="Definition">Unterer Rahmen der Fehlermeldung</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ErrorDetection/tns:DdMmYy">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+      <camed:documentation type="Definition">Koordinaten der Datumsanzeige des
+						Home-Bildschirms.
+						Hier ist im Fehlerfall
+						anstelle der Zeit ein runder Button mit
+						einem
+						blinkenden Warnzeichen eingeblendet. Daher
+						liefert der Server
+						einen Error-Event, wenn nicht
+						mehr die Uhranzeige eingeblendet ist.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ErrorDetection/tns:HhMm">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+      <camed:documentation type="Definition">Koordinaten der Zeitanzeige des
+						Home-Bildschirms.
+						Hier ist im Fehlerfall
+						anstelle der Zeit ein runder Button mit
+						einem
+						blinkenden Warnzeichen eingeblendet. Daher
+						liefert der Server
+						einen Error-Event, wenn nicht
+						mehr die Uhranzeige eingeblendet ist.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ErrorDetection/tns:LeftBorder">
+      <camed:documentation type="Type">tns:Range</camed:documentation>
+      <camed:documentation type="Definition">Linker Rahmen der Fehlermeldung</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ErrorDetection/tns:MiddleBorder">
+      <camed:documentation type="Type">tns:Range</camed:documentation>
+      <camed:documentation type="Definition">Mittlerer Rahmen der Fehlermeldung</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ErrorDetection/tns:RightBorder">
+      <camed:documentation type="Type">tns:Range</camed:documentation>
+      <camed:documentation type="Definition">Rechter Rahmen der Fehlermeldung</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ErrorDetection/tns:TopBorder">
+      <camed:documentation type="Type">tns:Range</camed:documentation>
+      <camed:documentation type="Definition">Oberer Rahmen der Fehlermeldung</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Field/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Field/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:GuiRead/@format">
+      <camed:documentation type="Definition">Der Format-String dient zur Extraktion der
+					Daten aus einem String
+
+					Er besteht aus folgenden zeichen:
+
+					C: beliebiges Zeichen, wird ignoriert 0:
+					Ziffer oder +/-, muss vorhanden sein, wird
+					übernommen #: Ziffer oder +/- optional, wird
+					übernommen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HK1Button/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HK1Button/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HK2Button/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HK2Button/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HK3Button/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HK3Button/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HeaterLoops/tns:HK1Button">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HeaterLoops/tns:HK2Button">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HeaterLoops/tns:HK3Button">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HhMm/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:HhMm/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Hour/@least">
+      <camed:documentation type="Definition">kleinster Wert des Parameters</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Hour/tns:Rectangle">
+      <camed:documentation type="Definition">Definition eines Bereichs auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Hour/tns:ScreenGrafic">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Hour/tns:Touch">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem
+									Bildschirm um den Modus zu wählen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:IgnoreRectangle/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:IgnoreRectangle/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:LeftBorder/@higherLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:LeftBorder/@lowerLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Lower/@pushTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, die der Button gedrückt wird</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Lower/@releaseTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, wie lange gewartet wird,
+					nachdem der Button losgelassen wurde.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Lower/tns:Coordinate">
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:MiddleBorder/@higherLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:MiddleBorder/@lowerLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Minute/@least">
+      <camed:documentation type="Definition">kleinster Wert des Parameters</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Minute/tns:Rectangle">
+      <camed:documentation type="Definition">Definition eines Bereichs auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Minute/tns:ScreenGrafic">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Minute/tns:Touch">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem
+									Bildschirm um den Modus zu wählen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Miscellaneous/@connectionHoldTime_ms">
+      <camed:documentation type="Definition">Wird eine Verbindung zum Client unterbrochen, kann
+					innerhalb dieser Zeit eine Verbindung
+					wiederhergestellt werden, ohne dass clienbezogene
+					Einstellungen im Server verloren gehen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Miscellaneous/@powerOffDetectedAfterIoErrors">
+      <camed:documentation type="Definition">Anzahl der IO-Fehler, nachdem ein Power-Off der
+					Solvis-Anlage erkannt wurde. Zusätzlich muss die
+					"powerOffDetectedAfterTimeout_ms"-Zeit abgelaufen
+					ist</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Miscellaneous/@powerOffDetectedAfterTimeout_ms">
+      <camed:documentation type="Definition">Zeit ohne Reaktion der Solvis-Anlage, bis ein
+					Power-Off erkannt wird. Zusätzlich müssen noch
+					"powerOffDetectedAfterIoErrors" erfüllt sein</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Miscellaneous/@releaseBlockingAfterUserAccess_ms">
+      <camed:documentation type="Definition">Zeitintervall, das nach einem Usereingriff vergehen
+					muss, bis die Werte upgedated werden. In dieser zeit
+					werden keien Werte vom GUI abgerufen, damit die
+					Eingabe des Users nicht gestört wird.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Miscellaneous/@unsuccessfullWaitTime_ms">
+      <camed:documentation type="Definition">Wiederholzeit nach fehlgeschlagenem Befehl</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Modbus/@address">
+      <camed:documentation type="Definition">Adresse des Modbus-Registers</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ModbusWrite/@address">
+      <camed:documentation type="Definition">Adresse des Modbus-Registers</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ModbusWrite/@type">
+      <camed:documentation type="Definition">Art der Umwandlung</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Month/@least">
+      <camed:documentation type="Definition">kleinster Wert des Parameters</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Month/tns:Rectangle">
+      <camed:documentation type="Definition">Definition eines Bereichs auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Month/tns:ScreenGrafic">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Month/tns:Touch">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem
+									Bildschirm um den Modus zu wählen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Ok/@pushTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, die der Button gedrückt wird</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Ok/@releaseTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, wie lange gewartet wird,
+					nachdem der Button losgelassen wurde.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Ok/tns:Coordinate">
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:OutgoingTemperature/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:OutgoingTemperature/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Preparation/@id">
+      <camed:documentation type="Definition">Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Preparation/tns:ScreenGrafic">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Preparation/tns:TouchPoint">
+      <camed:documentation type="Definition">Bildschirmpunkt des Vorgänger-Bildschirms
+						(previousId), der gedrückt werden muss, um auf
+						den vorliegenden zu gelangen. Können auch
+						mehrere sein (z.B. Main-Bildschirm Auswahl des
+						Heizkreises)</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Rectangle/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Rectangle/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ResetScreenSaver/@pushTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, die der Button gedrückt wird</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ResetScreenSaver/@releaseTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, wie lange gewartet wird,
+					nachdem der Button losgelassen wurde.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ResetScreenSaver/tns:Coordinate">
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ReturnTemperature/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ReturnTemperature/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:RightBorder/@higherLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:RightBorder/@lowerLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/@alternativePreviousId">
+      <camed:documentation type="Definition">Wenn der Folgebildschirm nicht eindeutig ist, gibt
+					es
+					auch einen alternativen Vorgänger (Beispiel
+					Anlagenmodus). Der
+					Folgebildschirm hängt in solchen
+					Fällen von der letzten Useraktion
+					ab. Wichti!!!! Für
+					den Lernmodus muss daher vom User-Modus vorher
+					der
+					richtige Bildschirm ausgewählt werden. Im Lernmodus
+					werden die
+					ALternativen nicht beachtet!</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/@backId">
+      <camed:documentation type="Definition">Bildschirm nach Druck auf die Back-Taste</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/@id">
+      <camed:documentation type="Definition">Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/@ignoreChanges">
+      <camed:documentation type="Definition">Zur Erkennung von Useraktivitäten, Änderungen auf
+					diesem Screen werden nicht als Useraktivität
+					registriert. Default:
+					false</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/@previousId">
+      <camed:documentation type="Definition">Vorgänger-Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/tns:AlternativeTouchPoint">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/tns:IgnoreRectangle">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+      <camed:documentation type="Definition">Zur Erkennung von Useraktivitäten, Änderungen
+						innerhalb dieser Rechtecke werden nicht als
+						Useraktivität registriert Dient der Untersuchung
+						von Usereingriffen. Im Ruhezustand wird jede
+						Minute untersucht, ob der Bildschirminhalt sich
+						geändert hat. Da auf einigen Bildschirmen
+						ständig sich ändernde Werte angezeigt werden
+						(Uhrzeit, Istwerte oder Anlegenstatus) können
+						bestimmte Teile des Bildschirms mit Hilfe der
+						"IgnoreRectangle" beim Vergleich ausgeblendt
+						werden. Achtung: Im rectangle-Element gibt es
+						auch noch das "invertFunction"-Attribut, damit
+						kann ein bestimmter Bereich doch wieder zum
+						Vergleich herangezogen werden, auch wenn er
+						durch die anderen Ingnorerectangles maskiert
+						ist. Ist etwas unsauber gelöst.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/tns:LastPreparationRef">
+      <camed:documentation type="Type">tns:PreparationRef</camed:documentation>
+      <camed:documentation type="Definition">Sollte der Screeninhalt nicht eindeutig sein (nur bei Heizkreis-Screens möglich), wird noch zusätzlich bei der Identifizierung die letzte Preparation (evtl. auch eines Vorgängerbildschirms zum Vergleich hinzugenommen.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/tns:PreparationRef">
+      <camed:documentation type="Definition">Referenz auf die spezielle GUI-Vorbereitung, z.b.
+						Auswahl des Heizkreises</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/tns:ScreenGrafic">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/tns:ScreenGraficRef">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann, die
+						Definition erfolgt über eine Refenzierung</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/tns:ScreenOcr">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus erkennbaren Zeichen
+						bestimmt werden kann</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screen/tns:TouchPoint">
+      <camed:documentation type="Definition">Bildschirmpunkt des Vorgänger-Bildschirms
+						(previousId), der gedrückt werden muss, um auf
+						den vorliegenden zu gelangen. Können auch
+						mehrere sein (z.B. Main-Bildschirm Auswahl des
+						Heizkreises)</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ScreenGrafic/@exact">
+      <camed:documentation type="Definition">true: Wenn auch Grauwerte verglichen werden sollen
+					false: Schwarz-Weiß reicht aus</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ScreenGrafic/@id">
+      <camed:documentation type="Definition">Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ScreenGrafic/tns:Field">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+      <camed:documentation type="Definition">Zu vergleichende Bildschirmbereich. Die
+						Bereichangabe ist optional, wenn sie aus dem übergeorneten Element
+						(z.B. Control-Element) geholt werden kann.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ScreenGrafics/tns:ScreenGrafic">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ScreenOcr/@value">
+      <camed:documentation type="Definition">Soll-Zeichen-String</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ScreenOcr/tns:Field">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+      <camed:documentation type="Definition">Zu vergleichende Bildschirmbereich. Die
+						Bereichangabe ist optional, wenn sie aus dem übergeorneten Element
+						(z.B. Control-Element) geholt werden kann.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ScreenRef/@id">
+      <camed:documentation type="Definition">Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ScreenSaver/tns:ResetScreenSaver">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ScreenSaver/tns:TimeDateRectangle">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Screens/tns:Screen">
+      <camed:documentation type="Definition">Bildschirm-Definition</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Service/tns:ServiceScreen">
+      <camed:documentation type="Type">tns:ScreenRef</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:ServiceScreen/@id">
+      <camed:documentation type="Definition">Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Solar/@format">
+      <camed:documentation type="Definition">Der Format-String dient zur Extraktion der
+					Daten aus einem String
+
+					Er besteht aus folgenden zeichen:
+
+					C: beliebiges Zeichen, wird ignoriert 0:
+					Ziffer oder +/-, muss vorhanden sein, wird
+					übernommen #: Ziffer oder +/- optional, wird
+					übernommen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Solar/tns:OutgoingTemperature">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Solar/tns:ReturnTemperature">
+      <camed:documentation type="Type">tns:Rectangle</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:SolvisDescription">
+      <camed:documentation type="Definition">Root mit der Home-Screen-Definition</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:SolvisDescription/tns:Clock">
+      <camed:documentation type="Definition">Parameter zum Stellen der Uhr</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:SolvisDescription/tns:Configurations">
+      <camed:documentation type="Definition">Beschreibungen um die Anlagenkonfiguration zu
+				ermitteln</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:SolvisDescription/tns:Miscellaneous">
+      <camed:documentation type="Definition">Verschiedenes</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:SolvisDescription/tns:ScreenSaver">
+      <camed:documentation type="Definition">Daten für die Screen-Saver-Erkennung</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:SolvisDescription/tns:Screens">
+      <camed:documentation type="Definition">Alle Bildschirm-Definitionen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:TimeDateRectangle/tns:BottomRight">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate unten rechts</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:TimeDateRectangle/tns:TopLeft">
+      <camed:documentation type="Type">tns:Coordinate</camed:documentation>
+      <camed:documentation type="Definition">Koordinate oben links</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:TopBorder/@higherLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:TopBorder/@lowerLimit">
+      <camed:documentation type="Definition">Relativ mit 1000 multipliziert</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Touch/@pushTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, die der Button gedrückt wird</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Touch/@releaseTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, wie lange gewartet wird,
+					nachdem der Button losgelassen wurde.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Touch/tns:Coordinate">
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:TouchPoint/@pushTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, die der Button gedrückt wird</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:TouchPoint/@releaseTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, wie lange gewartet wird,
+					nachdem der Button losgelassen wurde.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:TouchPoint/tns:Coordinate">
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Type/@configuration">
+      <camed:documentation type="Definition">In der Configuration sind die wesentlichen
+					Besonderheiten der Anlage erfasst.
+					Folgende Bits sind aktuell definiert (Bit 0 ist LSB) und ein gesetztes Bit
+					bedeutet::
+
+					Bit 0: Heizkreis 1 vorhanden
+					Bit 1: Heizkreis 2 vorhanden
+					Bit 2: Heizkreis 3 vorhanden (wird aktuell ignoriert)
+					Bit 3: Solar-Kreislauf vorhanden
+
+					Bit 24: SolvisMax
+					Bit 25: SolvisBen</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Type/@id">
+      <camed:documentation type="Definition">Die id muss über alle ScreenGrafic-Elemente eindeutig
+					sein. Sie dient auch als Verweis auf die Datei mit den Grafik-Daten</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:TypeRead/@divisor">
+      <camed:documentation type="Definition">Bei sihned und unsigned der Divisor</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Upper/@pushTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, die der Button gedrückt wird</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Upper/@releaseTimeRefId">
+      <camed:documentation type="Definition">Referenz auf die Zeit, wie lange gewartet wird,
+					nachdem der Button losgelassen wurde.</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Upper/tns:Coordinate">
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Year/@least">
+      <camed:documentation type="Definition">kleinster Wert des Parameters</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Year/tns:Rectangle">
+      <camed:documentation type="Definition">Definition eines Bereichs auf dem Bildschirm</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Year/tns:ScreenGrafic">
+      <camed:documentation type="Definition">Wenn sich der Bildschirm aus einem
+						Bildschirmbereich bestimmt werden kann</camed:documentation>
+    </camed:annotation>
+    <camed:annotation item="//tns:Year/tns:Touch">
+      <camed:documentation type="Type">tns:TouchPoint</camed:documentation>
+      <camed:documentation type="Definition">Zu drückender Punkt auf dem
+									Bildschirm um den Modus zu wählen</camed:documentation>
+    </camed:annotation>
+  </as:Extension>
+</as:CAM>

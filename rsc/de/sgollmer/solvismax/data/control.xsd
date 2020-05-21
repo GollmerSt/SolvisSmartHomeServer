@@ -926,20 +926,6 @@
 				ermitteln</documentation>
 		</annotation>
 		<sequence>
-			<element name="ReferencePoint" type="tns:Coordinate">
-				<annotation>
-					<documentation>Der Origin des Solvis-Bildschirms kann von Anlage zu
-						Anlage unterschiedlich sein. Das ist abhängig von der
-						Montagetoleranz, welche über die Kalibrierung des TouchScreen dann
-						ausgeglichen wird.
-						Der in der Web-Oberfläche dargestellte Bildschirm kann durch dies
-						Kalibrierung einen leichten Versatz aufweisen. Diser Versatz muss
-						ermittelt werden und
-						erfolgt mittels der Erkennung des Ende des Striches zwischen dem Wasser
-						und dem Solar-Button auf dem Home-Screen.
-					</documentation>
-				</annotation>
-			</element>
 			<element name="HeaterLoops" type="tns:HeaterLoops"
 				maxOccurs="1" minOccurs="1">
 				<annotation>

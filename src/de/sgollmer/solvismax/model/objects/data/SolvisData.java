@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.TypeError;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -271,6 +272,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	public boolean isFastChange() {
 		return this.data.isFastChange();
+	}
+	
+	public Solvis getSolvis() {
+		return this.datas.getSolvis();
 	}
 
 }

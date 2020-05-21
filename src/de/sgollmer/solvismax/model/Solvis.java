@@ -30,6 +30,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
@@ -81,10 +82,11 @@ public class Solvis {
 	private final String timeZone;
 	private final boolean delayAfterSwitchingOnEnable;
 	private final Unit unit;
+	private final ExceptionMail exceptionMail;
 	private final History history = new History();
 
 	public Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
-			MeasurementsBackupHandler measurementsBackupHandler, String timeZone) {
+			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, ExceptionMail exceptionMail) {
 		this.unit = unit;
 		this.type = unit.getType();
 		this.defaultReadMeasurementsInterval_ms = unit.getDefaultReadMeasurementsInterval_ms();
@@ -103,6 +105,7 @@ public class Solvis {
 		this.measurementUpdateThread = new MeasurementUpdateThread(unit);
 		this.timeZone = timeZone;
 		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
+		this.exceptionMail = exceptionMail;
 	}
 
 	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
@@ -116,13 +119,13 @@ public class Solvis {
 	public void setCurrentScreen(SolvisScreen screen) {
 		this.currentScreen = screen;
 	}
-	
+
 	public SolvisScreen getCurrentScreen() throws IOException {
 		return this.getCurrentScreen(true);
 	}
 
 	public SolvisScreen getCurrentScreen(boolean screensaverOff) throws IOException {
-		if (this.screenSaverActive && screensaverOff ) {
+		if (this.screenSaverActive && screensaverOff) {
 			this.resetSreensaver();
 			this.screenSaverActive = false;
 		}
@@ -238,7 +241,7 @@ public class Solvis {
 		this.getDistributor().register(this);
 		this.getSolvisDescription().instantiate(this);
 		this.registerScreenChangedByHumanObserver(new ObserverI<WatchDog.HumanAccess>() {
-			
+
 			@Override
 			public void update(HumanAccess data, Object source) {
 				Solvis.this.updateByScreenChange();
@@ -246,7 +249,7 @@ public class Solvis {
 		});
 		this.measurementUpdateThread.start();
 	}
-	
+
 	public void updateControlChannels() {
 		this.getSolvisDescription().getChannelDescriptions().updateControlChannels(this);
 	}
@@ -585,4 +588,52 @@ public class Solvis {
 		return this.history;
 	}
 
+	private SolvisScreen lastRealScreen = null;
+
+	public static class SynchronizedScreenResult {
+		private final boolean changed;
+		private final SolvisScreen screen;
+
+		public SynchronizedScreenResult(boolean changed, SolvisScreen screen) {
+			this.changed = changed;
+			this.screen = screen;
+		}
+
+		public boolean isChanged() {
+			return this.changed;
+		}
+
+		public SolvisScreen getScreen() {
+			return this.screen;
+		}
+	}
+
+	public SynchronizedScreenResult getSyncronizedRealScreen() throws IOException {
+
+		SolvisScreen lastRealScreen = this.lastRealScreen;
+		boolean isSynchronized = false;
+		boolean changed = false;
+		for (int cnt = 0; !isSynchronized && cnt < 3; ++cnt) {
+			SolvisScreen realScreen = this.getRealScreen();
+
+			if (realScreen.imagesEquals(lastRealScreen)) {
+				if (changed) {
+					changed = !realScreen.imagesEquals(this.lastRealScreen);
+				}
+				if (changed) {
+					this.lastRealScreen = lastRealScreen;
+				}
+				return new SynchronizedScreenResult(changed, this.lastRealScreen);
+			} else {
+				changed = true;
+				lastRealScreen = realScreen;
+			}
+			AbortHelper.getInstance().sleep(Constants.WAIT_AFTER_FIRST_ASYNC_DETECTION);
+		}
+		return null;
+	}
+
+	public ExceptionMail getExceptionMail() {
+		return this.exceptionMail;
+	}
 }

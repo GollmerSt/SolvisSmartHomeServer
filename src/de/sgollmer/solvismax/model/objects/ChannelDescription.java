@@ -245,4 +245,9 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	public boolean isScreenChangeDependend() {
 		return this.channelSource.isScreenChangeDependend();
 	}
+	
+	@Override
+	public String toString() {
+		return this.getId() ;
+	}
 }

@@ -21,15 +21,25 @@ public class Rectangle {
 	private final boolean invertFunction;
 	private final Coordinate topLeft;
 	private final Coordinate bottomRight;
+	private final String name;
 
 	public Rectangle(Coordinate topLeft, Coordinate bottomRight) {
-		this(false, topLeft, bottomRight);
+		this(null, false, topLeft, bottomRight);
+	}
+
+	public Rectangle(String name, Coordinate topLeft, Coordinate bottomRight) {
+		this(name, false, topLeft, bottomRight);
 	}
 
 	public Rectangle(boolean invertFunction, Coordinate topLeft, Coordinate bottomRight) {
+		this(null, invertFunction, topLeft, bottomRight);
+	}
+
+	public Rectangle(String name, boolean invertFunction, Coordinate topLeft, Coordinate bottomRight) {
 		this.invertFunction = invertFunction;
 		this.topLeft = topLeft;
 		this.bottomRight = bottomRight;
+		this.name = name;
 	}
 
 	/**
@@ -50,9 +60,15 @@ public class Rectangle {
 		private boolean invertFunction = false;
 		private Coordinate topLeft;
 		private Coordinate bottomRight;
+		private final String name ;
 
 		public Creator(String id, BaseCreator<?> creator) {
+			this(null, id, creator);
+		}
+
+		public Creator(String name, String id, BaseCreator<?> creator) {
 			super(id, creator);
+			this.name = name ;
 		}
 
 		@Override
@@ -66,7 +82,7 @@ public class Rectangle {
 
 		@Override
 		public Rectangle create() throws XmlError {
-			return new Rectangle(this.invertFunction, this.topLeft, this.bottomRight);
+			return new Rectangle(this.name, this.invertFunction, this.topLeft, this.bottomRight);
 		}
 
 		@Override
@@ -110,6 +126,10 @@ public class Rectangle {
 
 	public boolean isInvertFunction() {
 		return this.invertFunction;
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 }

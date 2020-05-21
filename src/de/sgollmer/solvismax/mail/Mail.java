@@ -49,6 +49,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 public class Mail {
 
 	private static Logger logger;
+	private static boolean DEBUG = false; // kein Mailversand
 
 	public enum Security {
 		TLS, SSL
@@ -144,7 +145,7 @@ public class Mail {
 		}
 		props.put("mail.smtp.auth", "true"); // Enabling SMTP Authentication
 		props.put("mail.smtp.port", portString); // SMTP Port
-        props.put("mail.smtp.ssl.trust", "*");
+		props.put("mail.smtp.ssl.trust", "*");
 
 		Authenticator auth = new Authenticator() {
 
@@ -189,7 +190,11 @@ public class Mail {
 		message.setContent(multipart);
 
 		logger.info("Send email...");
-		Transport.send(message);
+		if (!DEBUG) {
+			Transport.send(message);
+		} else {
+			logger.info("Text of mail: " + subject);
+		}
 		logger.info("Email was sent.");
 	}
 

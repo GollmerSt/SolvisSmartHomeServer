@@ -67,7 +67,9 @@ public class AbortHelper {
 		}
 	}
 	
-	
+	public boolean isAborted() {
+		return this.abort;
+	}
 	
 	
 

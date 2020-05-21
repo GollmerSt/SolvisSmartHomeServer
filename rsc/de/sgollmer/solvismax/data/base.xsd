@@ -254,39 +254,62 @@
 		<sequence>
 			<element name="ClockTuning" type="boolean" maxOccurs="1"
 				minOccurs="1">
-                <annotation>
-                	<documentation>Die Solvis-Uhr wird +-31s genau eingestellt</documentation>
-                </annotation>
+				<annotation>
+					<documentation>
+						Die Solvis-Uhr wird +-31s genau eingestellt
+					</documentation>
+				</annotation>
 			</element>
 			<element name="HeatingBurnerTimeSynchronisation"
 				type="boolean" maxOccurs="1" minOccurs="1">
-                <annotation>
-                	<documentation>Die Synchronisation der SolvisControl-Zählern (Brennerlaufzeit/-Starts aktivieren.</documentation>
-                </annotation>
+				<annotation>
+					<documentation>
+						Die Synchronisation der SolvisControl-Zählern
+						(Brennerlaufzeit/-Starts aktivieren.
+					</documentation>
+				</annotation>
 			</element>
 			<element name="UpdateAfterUserAccess" type="boolean"
 				maxOccurs="1" minOccurs="1">
-                <annotation>
-                	<documentation>Nach jedem erkannnten Anwenderzugriff auf dei SolvisControl werden die Anlagen-Werte wieder gelesen.
-Dies ist erforderlich, weil der Anwender diese Werte manuell geändert haben könnte.</documentation>
-                </annotation>
+				<annotation>
+					<documentation>
+						Nach jedem erkannnten Anwenderzugriff auf dei
+						SolvisControl werden die Anlagen-Werte wieder
+						gelesen. Dies ist erforderlich, weil der
+						Anwender diese Werte manuell geändert haben
+						könnte.
+					</documentation>
+				</annotation>
 			</element>
 			<element name="DetectServiceAccess" type="boolean"
 				maxOccurs="1" minOccurs="1">
-                <annotation>
-                	<documentation>Es wird der Zugriff eines Service-Mitarbeiter (Schornsteinfeger/Installateur) erkannt und die Sperrung des GUI-Zugriffs durch den Server erhöht sich auf 60 Minuten.</documentation>
-                </annotation>
-			</element>
-			<element name="PowerOffIsServiceAccess" type="boolean" maxOccurs="1" minOccurs="1">
 				<annotation>
-					<documentation>Ein Power-Off der Anlage wird als Aktion eines Service-Mitarbeiters gewertet.</documentation>
-				</annotation></element>
+					<documentation>
+						Es wird der Zugriff eines Service-Mitarbeiter
+						(Schornsteinfeger/Installateur) erkannt und die
+						Sperrung des GUI-Zugriffs durch den Server
+						erhöht sich auf 60 Minuten.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="PowerOffIsServiceAccess" type="boolean"
+				maxOccurs="1" minOccurs="1">
+				<annotation>
+					<documentation>
+						Ein Power-Off der Anlage wird als Aktion eines
+						Service-Mitarbeiters gewertet.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="ClearErrorMessageAfterMail" type="boolean" maxOccurs="1" minOccurs="1"></element>
 			<element name="OnlyMeasurements" type="boolean"
 				maxOccurs="1" minOccurs="1">
-                <annotation>
-                	<documentation>Dieses Attribut deaktiviert sämtliche Zugriffe zum GUI der Solvis.
-</documentation>
-                </annotation>
+				<annotation>
+					<documentation>
+						Dieses Attribut deaktiviert sämtliche Zugriffe
+						zum GUI der Solvis.
+					</documentation>
+				</annotation>
 			</element>
 		</sequence>
 
@@ -308,7 +331,7 @@ Dies ist erforderlich, weil der Anwender diese Werte manuell geändert haben kö
 			</annotation></attribute>
 		<attribute name="password" type="string" use="required">
 			<annotation>
-				<documentation>Pasasword verschlüsselt</documentation>
+				<documentation>Password verschlüsselt</documentation>
 			</annotation></attribute>
 		<attribute name="securityType" use="required">
             <annotation>

@@ -33,6 +33,7 @@ public class Units {
 	private static final String XML_UPDATE_AFTER_USER_ACCESS = "UpdateAfterUserAccess";
 	private static final String XML_DETECT_SERVICE_ACCESS = "DetectServiceAccess";
 	private static final String XMl_POWEROFF_IS_SERVICE_ACCESS = "PowerOffIsServiceAccess";
+	private static final String XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL = "ClearErrorMessageAfterMail";
 	private static final String XML_ONLY_MEASUREMENT = "OnlyMeasurements";
 
 	private final Collection<Unit> units;
@@ -198,7 +199,7 @@ public class Units {
 						}
 						break;
 					case "password":
-						this.password.set(value) ;
+						this.password.set(value);
 						break;
 					case "defaultAverageCount":
 						this.defaultAverageCount = Integer.parseInt(value);
@@ -315,15 +316,18 @@ public class Units {
 		private final boolean updateAfterUserAccess;
 		private final boolean detectServiceAccess;
 		private final boolean powerOffIsServiceAccess;
+		private final boolean clearErrorMessageAfterMail;
 		private final boolean onlyMeasurements;
 
 		public Features(boolean clockTuning, boolean heatingBurnerTimeSynchronisation, boolean updateAfterUserAccess,
-				boolean detectServiceAccess, boolean powerOffIsServiceAccess, boolean onlyMeasurements) {
+				boolean detectServiceAccess, boolean powerOffIsServiceAccess, boolean clearErrorMessageAfterMail,
+				boolean onlyMeasurements) {
 			this.clockTuning = clockTuning;
 			this.heatingBurnerTimeSynchronisation = heatingBurnerTimeSynchronisation;
 			this.updateAfterUserAccess = updateAfterUserAccess;
 			this.detectServiceAccess = detectServiceAccess;
 			this.powerOffIsServiceAccess = powerOffIsServiceAccess;
+			this.clearErrorMessageAfterMail = clearErrorMessageAfterMail;
 			this.onlyMeasurements = onlyMeasurements;
 		}
 
@@ -347,6 +351,10 @@ public class Units {
 			return this.detectServiceAccess;
 		}
 
+		public boolean isClearErrorMessageAfterMail() {
+			return this.clearErrorMessageAfterMail;
+		}
+
 		public boolean isPowerOffIsServiceAccess() {
 			return this.powerOffIsServiceAccess;
 		}
@@ -358,6 +366,7 @@ public class Units {
 			private boolean updateAfterUserAccess;
 			private boolean detectServiceAccess;
 			private boolean powerOffIsServiceAccess;
+			private boolean clearErrorMessageAfterMail;
 			private boolean onlyMeasurements;
 
 			public Creator(String id, BaseCreator<?> creator) {
@@ -371,7 +380,8 @@ public class Units {
 			@Override
 			public Features create() throws XmlError, IOException {
 				return new Features(this.clockTuning, this.heatingBurnerTimeSynchronisation, this.updateAfterUserAccess,
-						this.detectServiceAccess, this.powerOffIsServiceAccess, this.onlyMeasurements);
+						this.detectServiceAccess, this.powerOffIsServiceAccess, this.clearErrorMessageAfterMail,
+						this.onlyMeasurements);
 			}
 
 			@Override
@@ -383,6 +393,7 @@ public class Units {
 					case XML_UPDATE_AFTER_USER_ACCESS:
 					case XML_DETECT_SERVICE_ACCESS:
 					case XMl_POWEROFF_IS_SERVICE_ACCESS:
+					case XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL:
 					case XML_ONLY_MEASUREMENT:
 						return new StringElement.Creator(id, getBaseCreator());
 				}
@@ -408,6 +419,9 @@ public class Units {
 							break;
 						case XMl_POWEROFF_IS_SERVICE_ACCESS:
 							this.powerOffIsServiceAccess = bool;
+							break;
+						case XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL:
+							this.clearErrorMessageAfterMail = bool;
 							break;
 						case XML_ONLY_MEASUREMENT:
 							this.onlyMeasurements = bool;

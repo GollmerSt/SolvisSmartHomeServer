@@ -7,15 +7,20 @@
 
 package de.sgollmer.solvismax.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.mail.MessagingException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class SolvisState extends Observable<SolvisState> {
 
@@ -23,11 +28,10 @@ public class SolvisState extends Observable<SolvisState> {
 
 	private final Solvis solvis;
 	private State state = State.UNDEFINED;
-	private int errorCnt = 0;
+	private SolvisScreen errorScreen = null;
+	private Set<ChannelDescription> errorChannels = new HashSet<>();
+	private boolean error = false;
 	private long timeOfLastSwitchingOn = -1;
-	private Map<String, Boolean> errorStates = new HashMap<>();
-	private MyImage errorScreen = null;
-	private String lastMessage = null;
 
 	public SolvisState(Solvis solvis) {
 		this.solvis = solvis;
@@ -37,23 +41,70 @@ public class SolvisState extends Observable<SolvisState> {
 		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, SOLVIS_DISCONNECTED, ERROR, UNDEFINED
 	}
 
-	public synchronized void error(boolean error, String errorName, MyImage image) {
-		Boolean last = this.errorStates.get(errorName);
-		if (last == null) {
-			last = false;
+	private enum ErrorChanged {
+		SET, NONE, RESET
+	}
+
+	public synchronized void setError(boolean error, ChannelDescription description) {
+		ErrorChanged changed;
+		if (error) {
+			changed = this.errorChannels.add(description) ? ErrorChanged.SET : ErrorChanged.NONE;
+		} else {
+			changed = this.errorChannels.remove(description) ? ErrorChanged.RESET : ErrorChanged.NONE;
 		}
-		if (last != error) {
-			this.errorScreen = image;
-			this.errorStates.put(errorName, error);
-			this.errorCnt += error ? 1 : -1;
-			if (error) {
-				this.lastMessage = "The Solvis system \"" + this.solvis.getUnit().getId()
-						+ "\" reports the following error: " + errorName;
+		processError(changed, null);
+	}
+
+	public synchronized boolean setError(boolean error, SolvisScreen errorScreen) {
+		ErrorChanged changed = ErrorChanged.NONE;
+		boolean isHomeScreen = errorScreen != null && errorScreen.get() == this.solvis.getHomeScreen();
+		if (error || this.errorScreen != null) {
+			if (!error && isHomeScreen) { // Nur der Homescreen kann Fehler zuücksetzen
+				this.errorScreen = null;
+				changed = ErrorChanged.RESET;
+			} else if (error && (this.errorScreen == null || !isHomeScreen)) {
+				this.errorScreen = errorScreen;
+				changed = ErrorChanged.SET;
+			} else {
+				changed = ErrorChanged.NONE;
 			}
-			this.notify(this);
-			logger.info(error ? this.lastMessage : "Solvis error  <" + errorName + "> cleared.");
-			logger.info(this.errorCnt > 0 ? "Solvis error!" : "Solvis error cleared.");
 		}
+		return processError(changed, null);
+	}
+
+	private boolean processError(ErrorChanged errorState, ChannelDescription description) {
+		String errorName = description == null ? "Message box" : description.getId();
+		boolean last = this.error;
+		this.error = this.errorScreen != null || !this.errorChannels.isEmpty();
+		MailInfo mailInfo = null;
+		if (errorState != ErrorChanged.NONE) {
+			String message = "The Solvis system \"" + this.solvis.getUnit().getId() + "\" reports: ";
+			if (errorState == ErrorChanged.SET) {
+				message += " Error: " + errorName + " occured.";
+			} else {
+				message += errorName + " cleared.";
+			}
+			logger.info(message);
+			mailInfo = new MailInfo(SolvisScreen.getImage(this.errorScreen), message);
+			this.notify(this);
+		}
+		if (!this.error && last) {
+			String message = "All errors of Solvis system \"" + this.solvis.getUnit().getId() + "\" cleared.";
+			logger.info(message);
+			mailInfo = new MailInfo(SolvisScreen.getImage(this.errorScreen), message);
+			this.notify(this);
+		}
+		if (mailInfo != null) {
+			try {
+				if (this.solvis.getExceptionMail() == null) {
+					return false;
+				}
+				this.solvis.getExceptionMail().send(mailInfo);
+			} catch (MessagingException | IOException e) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void powerOff() {
@@ -73,7 +124,7 @@ public class SolvisState extends Observable<SolvisState> {
 	}
 
 	public State getState() {
-		if (this.errorCnt > 0) {
+		if (this.error) {
 			return State.ERROR;
 		} else if (this.state == State.UNDEFINED) {
 			return State.POWER_OFF;
@@ -106,11 +157,33 @@ public class SolvisState extends Observable<SolvisState> {
 	}
 
 	public synchronized MyImage getErrorScreen() {
-		return this.errorScreen;
+		return this.errorScreen.getImage();
 	}
 
-	public synchronized String getLastMessage() {
-		return this.lastMessage;
+	public static class MailInfo {
+		private final MyImage image;
+		private final String message;
+
+		public MailInfo(MyImage image, String message) {
+			this.image = image;
+			this.message = message;
+		}
+
+		public MyImage getImage() {
+			return this.image;
+		}
+
+		public String getMessage() {
+			return this.message;
+		}
+	}
+
+	public boolean isError() {
+		return this.error;
+	}
+
+	public boolean isErrorMessage() {
+		return this.errorScreen != null;
 	}
 
 }

@@ -49,12 +49,8 @@ public class Instances {
 				this.solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
 
 		for (Unit xmlUnit : baseData.getUnits().getUnits()) {
-			Solvis solvis = this.createSolvisInstance(xmlUnit);
+			Solvis solvis = this.createSolvisInstance(xmlUnit, baseData.getExceptionMail() );
 			this.units.add(solvis);
-			ExceptionMail mail = baseData.getExceptionMail();
-			if (mail != null) {
-				solvis.getSolvisState().register(baseData.getExceptionMail());
-			}
 		}
 	}
 
@@ -93,14 +89,14 @@ public class Instances {
 		return null;
 	}
 
-	private Solvis createSolvisInstance(Unit unit) throws IOException, XmlError, XMLStreamException, LearningError {
+	private Solvis createSolvisInstance(Unit unit, ExceptionMail exceptionMail) throws IOException, XmlError, XMLStreamException, LearningError {
 		Miscellaneous misc = this.solvisDescription.getMiscellaneous();
 		SolvisConnection connection = new SolvisConnection(unit.getUrl(), unit, misc.getSolvisConnectionTimeout_ms(),
 				misc.getSolvisReadTimeout_ms(), misc.getPowerOffDetectedAfterIoErrors(),
 				misc.getPowerOffDetectedAfterTimeout_ms(), unit.isFwLth2_21_02A());
 		String timeZone = this.baseData.getTimeZone();
 		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId(), this.xmlHash),
-				connection, this.backupHandler, timeZone);
+				connection, this.backupHandler, timeZone, exceptionMail);
 		return solvis;
 	}
 

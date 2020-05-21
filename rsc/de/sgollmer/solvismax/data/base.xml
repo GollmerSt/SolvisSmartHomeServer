@@ -6,8 +6,9 @@
 		port="10735" writablePathLinux="/opt/fhem" />
 	<tns:Units>
 		<tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true"
-			account="account" passwordCrypt="AES-coded" url="http://aaa.bbb.ccc.ddd"
-			defaultAverageCount="12" measurementHysteresisFactor="4"
+			account="account" passwordCrypt="AES-coded"
+			url="http://aaa.bbb.ccc.ddd" defaultAverageCount="12"
+			measurementHysteresisFactor="4"
 			defaultReadMeasurementsInterval_ms="10000"
 			forcedUpdateInterval_ms="3600000" doubleUpdateInterval_ms="10000"
 			bufferedInterval_ms="60000" watchDogTime_ms="30000"
@@ -29,6 +30,15 @@
 				<tns:PowerOffIsServiceAccess>false</tns:PowerOffIsServiceAccess>
 				<!-- Wird ein Power-Off der Anlage erkannt, wird der wie ein Zugriff 
 					auf die Service-Screens behandelt (siehe vorheriges Element) -->
+				<tns:ClearErrorMessageAfterMail>false</tns:ClearErrorMessageAfterMail>
+				<!-- Ist dieses Feature deaktiviert (false), wird bei einem Anlagenfehler 
+					die GUI-Steuerung solange deaktiviert, bis die Fehlermeldung verschwunden 
+					ist. Die Steuereungsbefehle werden gemerkt und nach beenden des Fehlerzustandes 
+					ausgeführt. Ist es aktiviert (true) und ist auch die "ExceptionMail" funktionsfähig, 
+					wird im Fehlerfall nach erfolgtem Mail-Versand (Mail mit Hardcopy der Fehlermeldung) 
+					zum HomeScreen gewechselt und dort der Button mit dem Warnzeichen beobachtet. 
+					Der Error-Status wird zurückgesetzt, wenn dieser Button nicht mehr sichtbar 
+					ist. GUI-Steuerungsbefehle werden in dieser Zeit ausgeführt -->
 				<tns:OnlyMeasurements>true</tns:OnlyMeasurements>   <!-- true: GUI controlling disabled -->
 				<!-- Bei true werden sämtliche Gui-Aktivitäten verhindert. Das Modul 
 					verhält sich so wie das bisherige, ein aktiver Eingriff vom Server auf die 
@@ -36,7 +46,7 @@
 			</tns:Features>
 		</tns:Unit>
 	</tns:Units>
-	<tns:ExceptionMail port="587" password="AES-coded"
+	<tns:ExceptionMail port="5870" password="AES-coded"
 		name="Vorname Nachname" securityType="TLS"
 		provider="securesmtp.t-online.de" from="Mailadresse@t-online.de">
 		<tns:Recipients>

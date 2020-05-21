@@ -87,7 +87,8 @@ public class SolvisWorkers {
 			while (!this.abort) {
 				boolean success;
 				Command command = null;
-				if (SolvisWorkers.this.solvis.getSolvisState().getState() == SolvisState.State.SOLVIS_CONNECTED) {
+				SolvisState.State state = SolvisWorkers.this.solvis.getSolvisState().getState() ;
+				if (state == SolvisState.State.SOLVIS_CONNECTED || state == SolvisState.State.ERROR) {
 					synchronized (this) {
 						if (this.queue.isEmpty() || this.commandDisableCount > 0 || !SolvisWorkers.this.controlEnable) {
 							if (!queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
@@ -118,12 +119,13 @@ public class SolvisWorkers {
 						if (command != null
 								&& command.getScreen(SolvisWorkers.this.solvis) == SolvisWorkers.this.solvis
 										.getCurrentScreen().get()
-								&& SolvisWorkers.this.solvis.getSolvisState().getState() != SolvisState.State.ERROR
-										| stateChanged) {
+								&& !SolvisWorkers.this.solvis.getSolvisState().isError() | stateChanged) {
 							executeWatchDog = true;
 						}
 						stateChanged = false;
-						if (saveScreen) {
+						if (SolvisWorkers.this.solvis.getSolvisState().isError()) {
+							saveScreen = false;
+						} else if (saveScreen) {
 							SolvisWorkers.this.solvis.saveScreen();
 							saveScreen = false;
 						} else if (restoreScreen) {
@@ -133,6 +135,9 @@ public class SolvisWorkers {
 						if (executeWatchDog) {
 							SolvisWorkers.this.watchDog.execute();
 							executeWatchDog = false;
+						}
+						if (command == null && SolvisWorkers.this.solvis.getSolvisState().isError()) {
+							SolvisWorkers.this.solvis.getHomeScreen().goTo(SolvisWorkers.this.solvis);
 						}
 						if (command != null && !command.isInhibit()) {
 							String commandString = command.toString();

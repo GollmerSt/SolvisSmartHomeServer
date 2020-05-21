@@ -24,15 +24,13 @@ import de.sgollmer.solvismax.log.Logger2;
 import de.sgollmer.solvismax.log.Logger2.DelayedMessage;
 import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
-import de.sgollmer.solvismax.model.SolvisState;
-import de.sgollmer.solvismax.model.SolvisState.State;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.SolvisState.MailInfo;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.xml.ArrayXml;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ExceptionMail implements ObserverI<SolvisState> {
+public class ExceptionMail {
 
 	private static Logger logger = null;
 
@@ -149,19 +147,11 @@ public class ExceptionMail implements ObserverI<SolvisState> {
 		Mail.send(subject, text, this.name, this.from, this.password, this.securityType, this.provider, this.port,
 				this.recipients, image);
 	}
-
-	@Override
-	public void update(SolvisState data, Object source) {
-		
-		if (data.getState() == State.ERROR) {
-			try {
-				this.send(data.getLastMessage(), "", data.getErrorScreen());
-			} catch (Throwable e) {
-				logger.error("Error occured on sending message.", e);
-			}
-		}
-
+	
+	public void send( MailInfo info ) throws MessagingException, IOException {
+		this.send(info.getMessage(), "", info.getImage());
 	}
+	
 
 	public boolean isValid() {
 		return this.valid;
