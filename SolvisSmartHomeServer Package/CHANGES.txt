@@ -1,4 +1,4 @@
-Ä N D E R U N G E N
+Ä N D E R U N G EN
 
 Version 01.00.10
 
@@ -17,11 +17,6 @@ Version 01.00.10
 				
 	21.05.2020	FHEM-Client: GUI_COMMANDS_ENABLE/DISABLE wurde fälchlicherweise auch bei Wiederaufbau
 				der Verbindung gesendet
-				
-	22.05.2020	Beim manuellen Wechsel auf den HomeScreen wird die Zeit etwas verspätet eingeblendet.
-				Da die Anlagenfehlererkennung bisher erkannt wird , die Zeit nicht eingeblendet ist,
-				erfolgte bisher in diesem Fall einen falsche Fehlermeldung. Nun wird zusätzlich getestet,
-				ob in diesem Bereich eine Grafik vorhanden ist. Wenn ja, liegt ein Anlagenfehler vor.  
 				
 	
 
