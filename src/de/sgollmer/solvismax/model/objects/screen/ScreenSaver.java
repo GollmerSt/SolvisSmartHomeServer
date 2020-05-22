@@ -193,9 +193,8 @@ public class ScreenSaver implements Assigner {
 					} else if (now - this.firstOutsideTime > Constants.MAX_OUTSIDE_TIME) {
 						this.lastState = State.NONE;
 						return SaverState.NONE;
-					} else {
-						return this.lastState == State.NONE ? SaverState.POSSIBLE : SaverState.SCREENSAVER;
 					}
+					return this.lastState == State.NONE ? SaverState.POSSIBLE : SaverState.SCREENSAVER;
 			}
 
 			Coordinate timeTopLeft = ScreenSaver.this.timeDateRectangle.getTopLeft();
@@ -370,33 +369,37 @@ public class ScreenSaver implements Assigner {
 		File parent = new File("testFiles\\images");
 
 		final class Test {
+			private final SaverState soll;
 			private final boolean newSaver;
 			private final String name;
 
-			public Test(boolean newSaver, String name) {
+			public Test(SaverState soll, boolean newSaver, String name) {
+				this.soll = soll;
 				this.newSaver = newSaver;
 				this.name = name;
 			}
 		}
 
 		Collection<Test> names = Arrays.asList( //
-				new Test(true, "Bildschirmschoner V1 Artefakte.bmp"), //
-				new Test(false, "Bildschirmschoner 2 V1 Artefakte.bmp"), //
-				new Test(true, "Bildschirmschoner V1.bmp"), //
-				new Test(false, "Bildschirmschoner V1 2.bmp"), //
-				new Test(false, "Bildschirmschoner V1 2 auﬂerhalb.bmp"), //
-				new Test(false, "Bildschirmschoner V1 auﬂerhalb.bmp"), //
-				new Test(false, "Bildschirmschoner V1 1 none.bmp"), //
-				new Test(false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
-				new Test(false, "Bildschirmschoner V1 3.bmp"), //
-				new Test(false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
-				new Test(true, "bildschirmschoner.png"), //
-				new Test(false, "bildschirmschoner1.png"), //
-				new Test(false, "bildschirmschoner2.png"));
+				new Test(SaverState.SCREENSAVER, true, "Bildschirmschoner V1 Artefakte.bmp"), //
+				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner 2 V1 Artefakte.bmp"), //
+				new Test(SaverState.SCREENSAVER, true, "Bildschirmschoner V1.bmp"), //
+				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 2.bmp"), //
+				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 2 auﬂerhalb.bmp"), //
+				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 auﬂerhalb.bmp"), //
+				new Test(SaverState.NONE, false, "Bildschirmschoner V1 1 none.bmp"), //
+				new Test(SaverState.POSSIBLE, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
+				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 3.bmp"), //
+				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
+				new Test(SaverState.SCREENSAVER, true, "bildschirmschoner.png"), //
+				new Test(SaverState.SCREENSAVER, false, "bildschirmschoner1.png"), //
+				new Test(SaverState.SCREENSAVER, false, "bildschirmschoner2.png"));
 
 		BufferedImage image = null;
 
 		ScreenSaver.getState executable = saver.createExecutable(null);
+
+		boolean failed = false;
 
 		for (Iterator<Test> it = names.iterator(); it.hasNext();) {
 			Test test = it.next();
@@ -415,7 +418,16 @@ public class ScreenSaver implements Assigner {
 
 			SaverState state = executable.getSaverState(myImage);
 
-			System.out.println(file.getName() + " isScreenSaver? " + state.name());
+			boolean pass = state == test.soll;
+			failed |= !pass;
+
+			System.out.println(file.getName() + " isScreenSaver? " + state.name() + ": " + pass);
+		}
+
+		if (failed) {
+			System.err.println("Test failed");
+		} else {
+			System.out.println("Test pass");
 		}
 
 	}
