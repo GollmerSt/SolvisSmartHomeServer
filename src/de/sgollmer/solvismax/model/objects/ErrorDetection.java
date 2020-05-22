@@ -275,7 +275,6 @@ public class ErrorDetection {
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
-				// TODO Auto-generated constructor stub
 			}
 
 			@Override

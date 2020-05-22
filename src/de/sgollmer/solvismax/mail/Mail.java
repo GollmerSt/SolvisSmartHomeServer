@@ -223,7 +223,6 @@ public class Mail {
 
 		@Override
 		public OutputStream getOutputStream() throws IOException {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	}
