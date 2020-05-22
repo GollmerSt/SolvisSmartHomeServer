@@ -43,7 +43,9 @@ public class Constants {
 	 */
 	public static final int TIME_COMMAND_SCREEN_VALID = 5000;
 
-	public static final int SCREENSAVER_INHIBIT_INTERVAL = 120000;
+	public static final int MAX_OUTSIDE_TIME = 120000;
+	public static final int SCREEN_SAVER_WIDTH_INACCURACY = 5;
+	public static final int SCREEN_SAVER_HEIGHT_INACCURACY = 5;
 	
 	public static final int WAIT_AFTER_FIRST_ASYNC_DETECTION = 100;
 
@@ -77,4 +79,5 @@ public class Constants {
 		public static final int BASE_XML_ERROR = 19;
 		public static final int XML_VERIFICATION_ERROR = 20;
 	}
+
 }

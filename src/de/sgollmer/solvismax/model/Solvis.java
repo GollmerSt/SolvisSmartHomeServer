@@ -593,6 +593,14 @@ public class Solvis {
 	public static class SynchronizedScreenResult {
 		private final boolean changed;
 		private final SolvisScreen screen;
+		
+		public static SolvisScreen getScreen( SynchronizedScreenResult result ) {
+			if ( result == null ) {
+				return null ;
+			} else {
+				return result.screen ;
+			}
+		}
 
 		public SynchronizedScreenResult(boolean changed, SolvisScreen screen) {
 			this.changed = changed;

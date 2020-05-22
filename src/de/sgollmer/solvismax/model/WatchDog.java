@@ -21,6 +21,7 @@ import de.sgollmer.solvismax.model.Solvis.SynchronizedScreenResult;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
+import de.sgollmer.solvismax.model.objects.screen.ScreenSaver.SaverState;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 
@@ -29,7 +30,7 @@ public class WatchDog {
 	private static final Logger logger = LogManager.getLogger(WatchDog.class);
 
 	private final Solvis solvis;
-	private final ScreenSaver.Executable saver;
+	private final ScreenSaver.getState saver;
 
 	private final int releaseBlockingAfterUserChange_ms;
 	private final int releaseBlockingAfterServiceAccess_ms;
@@ -139,28 +140,25 @@ public class WatchDog {
 
 			try {
 
+				SynchronizedScreenResult synchronizedScreenResult = this.solvis.getSyncronizedRealScreen();
+
+				SolvisScreen realScreen = SynchronizedScreenResult.getScreen(synchronizedScreenResult);
+
+				SolvisScreen possibleErrorScreen = realScreen;
 				Event event = Event.NONE;
 
-				SynchronizedScreenResult synchronizedScreenResult = this.solvis.getSyncronizedRealScreen();
-				SolvisScreen realScreen;
-				if (synchronizedScreenResult == null) {
-					realScreen = null;
-				} else {
-					realScreen = synchronizedScreenResult.getScreen();
-				}
-				SolvisScreen possibleErrorScreen = realScreen;
+				if (realScreen != null && synchronizedScreenResult.isChanged()) {
 
-				if (realScreen == null || !synchronizedScreenResult.isChanged()) {
-					// do nothing
-				} else if (this.saver.is(realScreen)) {
-					event = Event.SCREENSAVER;
-					possibleErrorScreen = null;
-//					event = this.isHumanAccess() ? Event.CHANGED : Event.SCREENSAVER;
-				} else {
-					event = this.checkError(realScreen);
+					SaverState saverState = this.saver.getSaverState(realScreen) ;
+					if ( saverState == SaverState.SCREENSAVER) {
+						event = Event.SCREENSAVER;
+						possibleErrorScreen = null;
+					} else if ( saverState != SaverState.POSSIBLE) {						
+						event = this.checkError(realScreen);  // RESET_ERROR or SET_ERROR
 
-					if (event == null) {
-						event = this.isHumanAccess(realScreen) ? Event.CHANGED : Event.NONE;
+						if (event == null) {
+							event = this.isHumanAccess(realScreen) ? Event.CHANGED : Event.NONE;
+						}
 					}
 				}
 

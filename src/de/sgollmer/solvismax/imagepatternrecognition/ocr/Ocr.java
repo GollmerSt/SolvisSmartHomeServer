@@ -281,6 +281,10 @@ public class Ocr extends MyImage {
 	public char toChar() {
 		// - Erkennung von 4, geschlossene Struktur obere Hälfte, waagerechtes
 		// Maximum 3/4 * Breite, nahe Mitte
+		
+		if ( this.getHeight() == 0 || this.getWidth() == 0 ) {
+			return 0x00;
+		}
 
 		int y = this.maximaY[0].getCoord();
 		int value = this.maximaY[0].getValue();

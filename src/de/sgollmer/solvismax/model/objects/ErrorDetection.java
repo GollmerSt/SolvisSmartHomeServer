@@ -7,12 +7,17 @@
 
 package de.sgollmer.solvismax.model.objects;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +30,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
+import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Range;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -70,8 +76,12 @@ public class ErrorDetection {
 	public enum Type {
 		NONE, HOME_NONE, MESSAGE_BOX, ERROR_BUTTON
 	}
+	
+	public Type getType(SolvisScreen screen ) {
+		return this.getType(screen, false);
+	}
 
-	public Type getType(SolvisScreen screen) {
+	private Type getType(SolvisScreen screen, boolean isHome ) {
 
 		MyImage image = screen.getImage();
 
@@ -139,9 +149,17 @@ public class ErrorDetection {
 			return Type.MESSAGE_BOX;
 		}
 
-		if (screen.getSolvis().getHomeScreen().equals(screen.get())) {
-			String hhmm = new OcrRectangle(image, this.hhMm).getString();
-			String ddMMYY = new OcrRectangle(image, this.ddMmYy).getString();
+		if (isHome || screen.getSolvis().getHomeScreen().equals(screen.get())) {
+			OcrRectangle ocrRectangle = new OcrRectangle(image, this.hhMm) ;
+			if ( ocrRectangle.getWidth() == 0 || ocrRectangle.getHeight() == 0 ) {
+				return Type.HOME_NONE;
+			}
+			String hhmm = ocrRectangle.getString();
+			ocrRectangle = new OcrRectangle(image, this.ddMmYy) ;
+			if ( ocrRectangle.getWidth() == 0 || ocrRectangle.getHeight() == 0 ) {
+				return Type.HOME_NONE;
+			}
+			String ddMMYY = ocrRectangle.getString();
 
 			Matcher t = TIME_PATTERN.matcher(hhmm);
 			Matcher d = DATE_PATTERN.matcher(ddMMYY);
@@ -321,6 +339,66 @@ public class ErrorDetection {
 				}
 			}
 
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		Range leftBorder = new Range(51, 84);
+		Range rightBorder = new Range(906, 938);
+		Range topBorder = new Range(92, 151);
+		Range middleBorder = new Range(223, 282);
+		Range bottomBorder = new Range(810, 869);
+		Rectangle hhMm = new Rectangle(new Coordinate(190, 62), new Coordinate(224, 74));
+		Rectangle ddMmYy = new Rectangle(new Coordinate(190, 80), new Coordinate(238, 91));
+		Collection<ErrorCondition> errorConditions = Arrays.asList(new ErrorCondition("A14.Entstoerung", true));
+
+		ErrorDetection errorDetection = new ErrorDetection(leftBorder, rightBorder, topBorder, middleBorder,
+				bottomBorder, hhMm, ddMmYy, errorConditions);
+
+		File parent = new File("testFiles\\images");
+
+		final class Test {
+			private final boolean isHome;
+			private final String name;
+
+			public Test(boolean isHome, String name) {
+				this.isHome = isHome;
+				this.name = name;
+			}
+		}
+
+		Collection<Test> names = Arrays.asList(	//
+				new Test(false, "Stoerung 1.png"),
+				new Test(false, "Stoerung 2.png"),
+				new Test(false, "Stoerung 3.png"),
+				new Test(false, "Stoerung 4.png"),
+				new Test(false, "Stoerung 5.png"),
+				new Test(true, "Stoerung h keine.png"),
+				new Test(true, "Stoerung h1.bmp"),
+				new Test(true, "Stoerung h2.png"));
+
+		BufferedImage image = null;
+
+		for (Iterator<Test> it = names.iterator(); it.hasNext();) {
+			Test test = it.next();
+
+			File file = new File(parent, test.name);
+			try {
+				image = ImageIO.read(file);
+			} catch (IOException e) {
+				System.err.println("File: " + file.getName());
+				e.printStackTrace();
+			}
+
+			MyImage myImage = new MyImage(image);
+			
+			SolvisScreen screen = new SolvisScreen(myImage, null) ;
+			
+			Type type = errorDetection.getType(screen, test.isHome) ;
+
+			System.out.println(file.getName() + " errorType? " + type.name());
 		}
 
 	}

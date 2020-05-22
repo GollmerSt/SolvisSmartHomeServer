@@ -216,8 +216,8 @@ public class MyImage {
 		}
 		int minX = 0;
 		int minY = 0;
-		int width = 0;
-		int height = 0;
+		int maxX = -1;
+		int maxY = -1;
 
 		for (int x = 0; x < this.histogramX.size(); ++x) {
 			int cnt = this.histogramX.get(x);
@@ -230,7 +230,7 @@ public class MyImage {
 		for (int x = this.histogramX.size() - 1; x >= 0; --x) {
 			int cnt = this.histogramX.get(x);
 			if (cnt > 0) {
-				width = x;
+				maxX = x;
 				break;
 			}
 		}
@@ -246,16 +246,16 @@ public class MyImage {
 		for (int y = this.histogramY.size() - 1; y >= 0; --y) {
 			int cnt = this.histogramY.get(y);
 			if (cnt > 0) {
-				height = y;
+				maxY = y;
 				break;
 			}
 		}
 
-		this.histogramX = this.histogramX.subList(minX, width + 1);
-		this.histogramY = this.histogramY.subList(minY, height + 1);
+		this.histogramX = this.histogramX.subList(minX, maxX + 1);
+		this.histogramY = this.histogramY.subList(minY, maxY + 1);
 
-		width += 1 - minX;
-		height += 1 - minY;
+		int width = maxX + 1 - minX;
+		int height = maxY + 1 - minY;
 		this.maxRel = new Coordinate(width, height);
 		this.origin = new Coordinate(minX + this.origin.getX(), minY + this.origin.getY());
 
