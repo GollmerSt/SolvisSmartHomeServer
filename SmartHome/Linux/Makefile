@@ -81,7 +81,7 @@ updateDebug: stopServices install
 	systemctl start $(serviceDebug)
 
 
-learn: stopServices installSolvis
+learn: stopServices install
 	$(start) --server-learn
 	systemctl start $(service)
 
