@@ -107,7 +107,7 @@ class Logger4j2 {
 
 		@Override
 		public void log(de.sgollmer.solvismax.log.LogManager.Level level, String message) {
-			this.logger.log(this.getLevel(level), message);	
+			this.logger.log(this.getLevel(level), message);
 
 		}
 
@@ -154,14 +154,14 @@ class Logger4j2 {
 
 		@Override
 		public void log(de.sgollmer.solvismax.log.LogManager.Level level, String message, Throwable throwable) {
-			// TODO Auto-generated method stub
+			this.logger.log(this.getLevel(level), message, throwable);
 
 		}
 
 		@Override
 		public void shutdown() throws InterruptedException {
-			LogManager.shutdown();;
-			
+			LogManager.shutdown();
+
 		}
 	}
 
