@@ -95,7 +95,7 @@ crypt:
 	$(startLocal) --string-to-crypt=$$password
 
 
-learnDebug: stopServices installSolvis
+learnDebug: stopServices install
 	$(start) --server-learn
 	systemctl start $(serviceDebug)
 
