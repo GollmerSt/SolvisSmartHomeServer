@@ -14,13 +14,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Command.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
@@ -28,7 +27,7 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class SolvisWorkers {
 
-	private static final Logger logger = LogManager.getLogger(SolvisWorkers.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
 
 	private final Solvis solvis;
 	private final WatchDog watchDog;
@@ -87,7 +86,7 @@ public class SolvisWorkers {
 			while (!this.abort) {
 				boolean success;
 				Command command = null;
-				SolvisState.State state = SolvisWorkers.this.solvis.getSolvisState().getState() ;
+				SolvisState.State state = SolvisWorkers.this.solvis.getSolvisState().getState();
 				if (state == SolvisState.State.SOLVIS_CONNECTED || state == SolvisState.State.ERROR) {
 					synchronized (this) {
 						if (this.queue.isEmpty() || this.commandDisableCount > 0 || !SolvisWorkers.this.controlEnable) {
@@ -159,31 +158,19 @@ public class SolvisWorkers {
 					stateChanged = true;
 				}
 				synchronized (this) {
-					boolean remove = success;
-					boolean insertAtTheEnd = false;
 					if (command != null) {
-						if (!success) {
-							insertAtTheEnd = command.toEndOfQueue();
-						}
-						if (remove) {
-							boolean deleted = false;
-							for (Iterator<Command> it = this.queue.iterator(); it.hasNext() && !deleted;) {
-								Command cmp = it.next();
-								if (command == cmp) {
-									it.remove();
-									deleted = true;
-								}
+						if (success) {
+							this.removeCommand(command);
+						} else {
+							if (command.toEndOfQueue()) {
+								this.moveToTheEnd(command);
 							}
-						}
-						if (insertAtTheEnd) {
-							this.queue.add(command); // Shift command at the end of the queue on too many errors
 						}
 					}
 					if (!success) {
 						try {
 							this.wait(unsuccessfullWaitTime);
-							if (SolvisWorkers.this.solvis.getSolvisState()
-									.getState() == SolvisState.State.SOLVIS_CONNECTED) {
+							if (SolvisWorkers.this.solvis.getSolvisState().isConnected()) {
 								SolvisWorkers.this.watchDog.execute();
 								executeWatchDog = false;
 							}
@@ -192,6 +179,39 @@ public class SolvisWorkers {
 					}
 				}
 			}
+		}
+
+		private synchronized void removeCommand(Command command) {
+			boolean deleted = false;
+			for (Iterator<Command> it = this.queue.iterator(); it.hasNext() && !deleted;) {
+				Command cmp = it.next();
+				if (command == cmp) {
+					it.remove();
+					deleted = true;
+				}
+			}
+		}
+
+		private synchronized void moveToTheEnd(Command command) {
+			boolean deleted = false;
+			Iterator<Command> it = this.queue.iterator();
+			while (it.hasNext() && !deleted) {
+				Command cmp = it.next();
+				if (command == cmp) {
+					it.remove();
+					deleted = true;
+				}
+			}
+			if (command.isInhibit()) {
+				return;
+			}
+			while (it.hasNext()) {
+				Command cmp = it.next();
+				if (command.canBeIgnored(cmp)) {
+					return;
+				}
+			}
+			this.queue.add(command);
 		}
 
 		public synchronized void abort() {

@@ -13,14 +13,13 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.Level;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.AccountInfo;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.log.Logger2;
-import de.sgollmer.solvismax.log.Logger2.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -193,7 +192,7 @@ public class Units {
 							this.password.decrypt(value);
 						} catch (Throwable e) {
 							String m = "Decrypt error: " + e.getMessage();
-							Logger2.addDelayedErrorMessage(
+							LogManager.getInstance().addDelayedErrorMessage(
 									new DelayedMessage(Level.ERROR, m, Unit.class, Constants.ExitCodes.CRYPTION_FAIL));
 							System.err.println(m);
 						}

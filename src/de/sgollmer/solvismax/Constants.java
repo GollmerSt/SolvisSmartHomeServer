@@ -15,6 +15,11 @@ public class Constants {
 	 */
 	public static final int DELAYED_CLOSING_TIME = 1000;
 	public static final String LOG4J_CONFIG_FILE = "log4j2.xml";
+	
+	public static final String TINY_LOG_CONFIG_FILE = "tinylog.properties";
+	public static final String TINY_LOG_FILE_PROPERTY_PREFIX = "writer";
+	public static final String TINY_LOG_FILE_PROPERTY_SUFFIX = ".file";
+	
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
 	public static final String RESOURCE_PATH = "data";
 	public static final int SCREEN_SAVER_IGNORED_FRAME_SIZE = 3;

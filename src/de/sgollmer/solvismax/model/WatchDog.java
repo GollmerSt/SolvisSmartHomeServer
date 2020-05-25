@@ -10,13 +10,12 @@ package de.sgollmer.solvismax.model;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.ConnectionStatus;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Solvis.SynchronizedScreenResult;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
@@ -27,7 +26,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public class WatchDog {
 
-	private static final Logger logger = LogManager.getLogger(WatchDog.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(WatchDog.class);
 
 	private final Solvis solvis;
 	private final ScreenSaver.getState saver;

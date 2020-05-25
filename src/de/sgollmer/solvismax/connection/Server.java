@@ -15,19 +15,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
 import de.sgollmer.solvismax.helper.Helper;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 
 public class Server {
 
-	private static final Logger logger = LogManager.getLogger(Server.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(Server.class);
 
 	private ServerSocket serverSocket;
 	private final Collection<Client> connectedClients;

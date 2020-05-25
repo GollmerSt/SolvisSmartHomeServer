@@ -14,15 +14,14 @@ import java.util.ListIterator;
 
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
@@ -40,7 +39,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class StrategyMode implements Strategy {
 
-	private static final Logger logger = LogManager.getLogger(StrategyMode.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(StrategyMode.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static final String XML_MODE_ENTRY = "ModeEntry";

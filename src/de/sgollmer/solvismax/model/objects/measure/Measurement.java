@@ -17,6 +17,7 @@ import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -105,9 +106,10 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis, int timeAfterLastSwitchingOn)
+	public boolean getValue(SolvisData dest, Solvis solvis)
 			throws ErrorPowerOn, IOException {
-		if (timeAfterLastSwitchingOn < this.delayAfterSwitchingOn) {
+		
+		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
 			dest.setSingleData(null);
 			return true;
 		} else {
@@ -261,6 +263,11 @@ public class Measurement extends ChannelSource {
 	@Override
 	public boolean isModbus(Solvis solvis) {
 		return false;
+	}
+
+	@Override
+	public ChannelDescription getRestoreChannel(Solvis solvis) {
+		return null;
 	}
 
 }

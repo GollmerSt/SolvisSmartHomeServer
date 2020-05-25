@@ -26,9 +26,6 @@ import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.intelligt.modbus.jlibmodbus.Modbus;
 import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
 import com.intelligt.modbus.jlibmodbus.master.ModbusMaster;
@@ -39,6 +36,8 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.error.ModbusError;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
@@ -46,7 +45,7 @@ import de.sgollmer.solvismax.objects.Coordinate;
 
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
-	private static final Logger logger = LogManager.getLogger(SolvisConnection.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(SolvisConnection.class);
 	private static final Coordinate RELEASE_COORDINATE = new Coordinate(260, 260);
 
 	private final String urlBase;

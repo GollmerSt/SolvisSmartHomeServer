@@ -15,17 +15,40 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public abstract class Command {
 
+	/**
+	 * Executes the command
+	 * 
+	 * @param solvis
+	 * @return	true if successfull
+	 * @throws IOException
+	 * @throws TerminationException
+	 * @throws ErrorPowerOn
+	 */
 	public abstract boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn;
 	
 	public abstract void notExecuted() ;
 
+	/**
+	 * Get the necessary screen for executing
+	 * @param solvis
+	 * @return	screen
+	 */
 	public Screen getScreen(Solvis solvis) {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @return true if command is inhibited
+	 */
 	public boolean isInhibit() {
 		return false;
 	}
+	
+	/**
+	 * Set the inhibit status
+	 * @param inhibit	true if the command should be inhibited
+	 */
 
 	public void setInhibit(boolean inhibit) {
 	};
@@ -78,19 +101,44 @@ public abstract class Command {
 		return new Handling(false, false, false);
 	}
 
+	/**
+	 * 
+	 * @return true if the command should be at the first position of the queue
+	 */
 	public boolean first() {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @return true if the command should be moved to the end of the queue
+	 */
 	public boolean toEndOfQueue() {
 		return false ;
 	}
 
+	/**
+	 * 
+	 * @return true if the command is changed a solvis parameter
+	 */
 	public boolean isWriting() {
 		return false ;
 	}
 
+	/**
+	 * 
+	 * @return true if access channel is a modbus channel
+	 */
 	public boolean isModbus() {
 		return false;
+	}
+
+	/**
+	 * 
+	 * @param command
+	 * @return	true both commands write to the same channel
+	 */
+	protected boolean canBeIgnored(Command queueCommand) {
+		return false ;
 	}
 }

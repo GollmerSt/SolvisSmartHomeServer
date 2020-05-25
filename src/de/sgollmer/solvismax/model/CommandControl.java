@@ -8,17 +8,12 @@
 package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -26,86 +21,24 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class CommandControl extends Command {
 
-	private static final Logger logger = LogManager.getLogger(CommandControl.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(CommandControl.class);
 
-	private final Collection<SubCommand> subCommands = new ArrayList<>();
+	private final ChannelDescription description;
+	private final SingleData<?> setValue;
 	private final Screen screen;
-	private boolean writing;
 	private final boolean modbus;
 	private boolean inhibit = false;
-	private boolean toEndOfQueue = false;
-
-	private static class SubCommand extends Command {
-		private final ChannelDescription description;
-		private final SingleData<?> setValue;
-		private int failCount = 0;
-
-		public SubCommand(ChannelDescription description, SingleData<?> setValue) {
-			this.description = description;
-			this.setValue = setValue;
-		}
-
-		@Override
-		public boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn {
-			boolean success = false;
-			SolvisData data = solvis.getAllSolvisData().get(this.description);
-			if (this.setValue == null) {
-				success = this.description.getValue(solvis, solvis.getTimeAfterLastSwitchingOn());
-			} else {
-				SolvisData clone = data.clone();
-				clone.setSingleData(this.setValue);
-				SingleData<?> setData = this.description.setValue(solvis, clone);
-				if (setData != null) {
-					data.setSingleData(setData);
-					success = true;
-				}
-			}
-			if (!success) {
-				++this.failCount;
-			}
-			return success;
-		}
-
-		public boolean toRemove() {
-			return this.failCount >= Constants.COMMAND_IGNORED_AFTER_N_FAILURES;
-		}
-
-		@Override
-		public boolean toEndOfQueue() {
-			return this.failCount >= Constants.COMMAND_TO_QUEUE_END_AFTER_N_FAILURES;
-		}
-
-		@Override
-		public void notExecuted() {
-		}
-
-		@Override
-		public boolean isWriting() {
-			return this.setValue != null;
-		}
-
-		@Override
-		public String toString() {
-			String out = "Id: " + this.description.getId();
-			if (this.setValue != null) {
-				out += ", set value: " + this.setValue.toString();
-			}
-			return out;
-		}
-	}
+	private int writeFailCount = 0;
+	private int readFailCount = 0;
 
 	public CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) {
-		this.subCommands.add(new SubCommand(description, setValue));
-		this.writing = setValue != null;
 		this.modbus = description.isModbus(solvis);
-		this.screen = description.getScreen(solvis.getConfigurationMask());
-		if (!this.modbus) {
-			for (ChannelDescription channelDescription : solvis.getSolvisDescription().getChannelDescriptions()
-					.getChannelDescriptions(this.screen, solvis)) {
-				if (!channelDescription.isModbus(solvis) && channelDescription != description) {
-					this.subCommands.add(new SubCommand(channelDescription, null));
-				}
-			}
+		this.setValue = setValue;
+		this.description = description;
+		if (this.modbus) {
+			this.screen = null;
+		} else {
+			this.screen = description.getScreen(solvis.getConfigurationMask());
 		}
 	}
 
@@ -128,44 +61,101 @@ public class CommandControl extends Command {
 		return this.screen;
 	}
 
+	private boolean save(Solvis solvis) throws IOException, ErrorPowerOn {
+		ChannelDescription restoreChannel = this.description.getRestoreChannel(solvis);
+		if (restoreChannel == null || this.isModbus()) {
+			return true;
+		}
+		boolean success = false;
+		CommandControl save = new CommandControl(restoreChannel, solvis);
+		for (int cnt = 0; !success && cnt < Constants.COMMAND_IGNORED_AFTER_N_FAILURES; ++cnt) {
+			success = save.execute(solvis);
+		}
+		return success;
+	}
+
+	private boolean restore(Solvis solvis) throws IOException, ErrorPowerOn {
+		ChannelDescription restoreChannel = this.description.getRestoreChannel(solvis);
+		if (restoreChannel == null || this.isModbus()) {
+			return true;
+		}
+		boolean success = false;
+		SolvisData data = solvis.getAllSolvisData().get(restoreChannel);
+		CommandControl restore = new CommandControl(restoreChannel, data.getSingleData(), solvis);
+		for (int cnt = 0; !success && cnt < Constants.COMMAND_IGNORED_AFTER_N_FAILURES; ++cnt) {
+			success = restore.execute(solvis);
+		}
+		return success;
+	}
+
+	private boolean write(Solvis solvis) throws IOException, TerminationException {
+		SolvisData data = solvis.getAllSolvisData().get(this.description);
+		SolvisData clone = data.clone();
+		clone.setSingleData(this.setValue);
+		SingleData<?> setData = this.description.setValue(solvis, clone);
+		if (setData != null) {
+			data.setSingleData(setData);
+		} else {
+			++this.writeFailCount;
+			if (this.writeFailCount < Constants.COMMAND_IGNORED_AFTER_N_FAILURES) {
+				return false;
+			}
+			logger.error("Set of channel <" + this.description.getId() + "> not successfull. Aborted.");
+		}
+		return true;
+	}
+
 	@Override
 	public boolean execute(Solvis solvis) throws IOException, ErrorPowerOn {
 
-		boolean success = true;
-		boolean written = false;
-		this.toEndOfQueue = false;
+		int maxFailCnt = Constants.COMMAND_IGNORED_AFTER_N_FAILURES;
 
-		for (Iterator<SubCommand> it = this.subCommands.iterator(); it.hasNext();) {
-			SubCommand subCommand = it.next();
-			if (written) {
-				AbortHelper.getInstance().sleep(1000);
-				solvis.clearCurrentScreen();
+		if (!this.save(solvis)) {
+			this.writeFailCount = maxFailCnt;
+			logger.error("Save of channel <" + this.description.getRestoreChannel(solvis).getId()
+					+ "> not successfull. Aborted.");
+			return false;
+		}
+
+		boolean success = true;
+
+		if (this.isWriting() && this.writeFailCount < maxFailCnt) {
+			success = write(solvis);
+		}
+
+		if (success) {
+
+			if (this.modbus) {
+				success = this.description.getValue(solvis);
+
+			} else {
+				for (ChannelDescription description : solvis.getSolvisDescription().getChannelDescriptions()
+						.getChannelDescriptions(this.screen, solvis)) {
+					success |= description.getValue(solvis);
+				}
 			}
-			boolean successI = subCommand.execute(solvis);
-			synchronized (this) {
-				if (successI) {
-					it.remove();
-					written = subCommand.isWriting();
-					if (written) {
-						this.writing = false;
-					}
-				} else {
-					written = false;
-					if (subCommand.toRemove()) {
-						it.remove();
-						logger.error("Command <" + subCommand.toString() + "> couldn't executed. Is ignored.");
-					} else {
-						this.toEndOfQueue |= subCommand.toEndOfQueue();
-					}
+			if (!success) {
+				++this.readFailCount;
+				if (this.readFailCount >= maxFailCnt) {
+					logger.error("Get channels of screen <" + this.screen.getId() + "> not successfull. Aborted.");
+					success = true;
 				}
 			}
 		}
+		if (!this.restore(solvis)) {
+			this.writeFailCount = maxFailCnt;
+			logger.error("Restore of channel <" + this.description.getRestoreChannel(solvis).getId()
+					+ "> not successfull. Aborted.");
+			success = false;
+		}
+
 		return success;
 	}
 
 	@Override
 	public synchronized boolean toEndOfQueue() {
-		return this.toEndOfQueue;
+		int cmp = Constants.COMMAND_TO_QUEUE_END_AFTER_N_FAILURES;
+		return this.writeFailCount >= cmp || this.readFailCount >= cmp;
 	}
 
 	@Override
@@ -184,22 +174,21 @@ public class CommandControl extends Command {
 					finished = true;
 				}
 				CommandControl qCmp = (CommandControl) queueEntry;
-				ChannelDescription description = this.subCommands.iterator().next().description;
-				ChannelDescription cmpDescription = null;
-				for (SubCommand subCommand : qCmp.subCommands) {
-					if (description.equals(subCommand.description)) {
-						cmpDescription = subCommand.description;
-					}
-				}
 				boolean sameScreen = qCmp.getScreen(solvis) == this.getScreen(solvis);
 
-				if (cmpDescription == null && sameScreen) {
-					insert = true;
-				} else if (cmpDescription != null) {
-					inQueueInhibit = this.isWriting() || !queueEntry.isWriting();
-					inhibitAdd = queueEntry.isWriting() && !this.isWriting();
-					insert = queueEntry.isWriting();
+				if (sameScreen) {
+
+					if (queueEntry.isWriting()) {
+						if (this.description == qCmp.description && this.isWriting()) {
+							inQueueInhibit = true;
+						}
+						inhibitAdd = !this.isWriting();
+						insert = true;
+					} else {
+						inQueueInhibit = true;
+					}
 				}
+
 				return new Handling(inQueueInhibit, inhibitAdd, insert, finished);
 			}
 		}
@@ -209,23 +198,16 @@ public class CommandControl extends Command {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		String prefix = "";
-		if (this.subCommands.size() > 1) {
-			prefix = "    ";
-			builder.append("\n  SubCommands: \n");
+		builder.append("Screen: ");
+		builder.append(this.screen.getId());
+		if (this.isWriting()) {
+			builder.append(", channel: ");
+			builder.append(this.description.getId());
+			builder.append(", set value: ");
+			builder.append(this.setValue.toString());
 		}
-		boolean first = true;
-		for (SubCommand subCommand : this.subCommands) {
-			if (first) {
-				first = false;
-			} else {
-				builder.append('\n');
-			}
-			builder.append(prefix);
-			builder.append(subCommand.toString());
-		}
-		if (this.subCommands.size() > 1) {
-			builder.append('\n');
+		if (this.inhibit) {
+			builder.append(", inhibited");
 		}
 		return builder.toString();
 	}
@@ -237,10 +219,26 @@ public class CommandControl extends Command {
 
 	@Override
 	public boolean isWriting() {
-		return this.writing;
+		return this.setValue != null && !this.inhibit;
 	}
 
 	@Override
 	public void notExecuted() {
+	}
+
+	@Override
+	protected boolean canBeIgnored(Command queueCommand) {
+		if (!(queueCommand instanceof CommandControl)) {
+			return false;
+		}
+		CommandControl control = (CommandControl) queueCommand;
+		if (this.modbus) {
+			return !this.isInhibit() && this.description == control.description && (!this.isWriting() || control.isWriting());
+		}
+		if (!control.isInhibit() && control.screen == this.screen) {
+			return !this.isWriting() || control.isWriting() && control.description == this.description;
+		} else {
+			return false;
+		}
 	}
 }

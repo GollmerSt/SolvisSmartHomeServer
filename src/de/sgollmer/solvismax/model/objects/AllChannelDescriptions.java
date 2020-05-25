@@ -124,14 +124,13 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		solvis.clearMeasuredData();
 		solvis.getMeasureData();
 		solvis.getDistributor().setBurstUpdate(true);
-		int timeAfterLastSwitchingOn = solvis.getTimeAfterLastSwitchingOn();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
 			if (description != null) {
 				if (description.getType() == ChannelSourceI.Type.MEASUREMENT) {
-					description.getValue(solvis, timeAfterLastSwitchingOn);
+					description.getValue(solvis);
 				} else if (description.isModbus(solvis)) {
-					description.getValue(solvis, timeAfterLastSwitchingOn);
+					description.getValue(solvis);
 				}
 			}
 		}

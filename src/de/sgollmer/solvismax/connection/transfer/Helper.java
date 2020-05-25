@@ -10,16 +10,15 @@ package de.sgollmer.solvismax.connection.transfer;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.error.JsonError;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.SolvisWorkers;
 
 public class Helper {
 
-	private static final Logger logger = LogManager.getLogger(SolvisWorkers.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
 
 	public static char charAt(String json, int position) throws JsonError {
 		try {

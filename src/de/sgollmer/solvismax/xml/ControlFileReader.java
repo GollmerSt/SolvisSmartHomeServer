@@ -14,22 +14,20 @@ import java.io.InputStream;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Main;
 import de.sgollmer.solvismax.error.FileError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
-import de.sgollmer.solvismax.log.Logger2;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
 
 public class ControlFileReader {
 
-	private static final Logger logger = LogManager.getLogger(Control.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(Control.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static final String NAME_XML_CONTROLFILE = "control.xml";
@@ -155,7 +153,7 @@ public class ControlFileReader {
 				boolean validated = reader.validate(new FileInputStream(xml), xsd) ;
 				if ( !validated ) {
 					if ( !mustWrite ) {
-						Logger2.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
+						LogManager.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
 					} else {
 						logger.warn("Not valid control.xml will be overwriten by a newer version");
 					}
@@ -197,7 +195,7 @@ public class ControlFileReader {
 			return new Result(xmlFromResource, newResourceHash);
 		} else if (e != null) {
 			logger.error("Error on reading control.xml. Learning is necessary, start parameter \"--server-learn\" must be used.");
-			Logger2.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
+			LogManager.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
 			return null;
 		} else {
 			return new Result(xmlFromFile, newResourceHash);

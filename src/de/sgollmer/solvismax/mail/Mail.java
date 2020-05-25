@@ -36,12 +36,11 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.xml.ArrayXml;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -128,7 +127,7 @@ public class Mail {
 			String provider, int port, Collection<Recipient> recipients, MyImage image)
 			throws MessagingException, IOException {
 		if (logger == null) {
-			logger = LogManager.getLogger(Mail.class);
+			logger = LogManager.getInstance().getLogger(Mail.class);
 		}
 
 		String portString = Integer.toString(port);

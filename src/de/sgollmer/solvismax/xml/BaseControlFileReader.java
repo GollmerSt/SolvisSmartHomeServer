@@ -14,15 +14,14 @@ import java.io.InputStream;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.logging.log4j.Level;
-
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Main;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
-import de.sgollmer.solvismax.log.Logger2;
-import de.sgollmer.solvismax.log.Logger2.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager.Level;
 
 public class BaseControlFileReader {
 
@@ -51,7 +50,7 @@ public class BaseControlFileReader {
 
 		boolean verified = reader.validate(source, xsd);
 		if (!verified) {
-			Logger2.addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "Reading of " + NAME_XML_BASEFILE + " not successfull", BaseControlFileReader.class, Constants.ExitCodes.BASE_XML_ERROR));
+			LogManager.getInstance().addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "Reading of " + NAME_XML_BASEFILE + " not successfull", BaseControlFileReader.class, Constants.ExitCodes.BASE_XML_ERROR));
 			return null ;
 		}
 

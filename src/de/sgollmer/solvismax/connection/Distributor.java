@@ -13,14 +13,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
@@ -32,7 +31,7 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class Distributor extends Observable<JsonPackage> {
 
-	private static final Logger logger = LogManager.getLogger(Distributor.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(Distributor.class);
 
 	private Measurements collectedMeasurements = new Measurements() {
 

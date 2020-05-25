@@ -15,6 +15,7 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.ChannelSourceI;
 import de.sgollmer.solvismax.model.objects.Dependencies;
@@ -45,7 +46,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis, int timeAfterLastSwitchingOn) {
+	public boolean getValue(SolvisData dest, Solvis solvis) {
 		return this.strategy.getValue(dest, solvis);
 	}
 
@@ -177,5 +178,10 @@ public class Calculation extends ChannelSource {
 	@Override
 	public boolean isModbus(Solvis solvis) {
 		return false;
+	}
+
+	@Override
+	public ChannelDescription getRestoreChannel(Solvis solvis) {
+		return null;
 	}
 }

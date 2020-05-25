@@ -18,14 +18,13 @@ import java.util.regex.Matcher;
 import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Assigner;
@@ -48,7 +47,7 @@ public class ScreenSaver implements Assigner {
 	private static final String XML_RESET_SCREEN_SAVER = "ResetScreenSaver";
 	private static final String XML_TIME_DATA_RECTANGLE = "TimeDateRectangle";
 
-	private static final Logger logger = LogManager.getLogger(ScreenSaver.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(ScreenSaver.class);
 
 	private final int timeHeight;
 	private final Rectangle timeDateRectangle;

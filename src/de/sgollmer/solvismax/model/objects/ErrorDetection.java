@@ -20,12 +20,11 @@ import java.util.regex.Matcher;
 import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -38,7 +37,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ErrorDetection {
 
-	private static final Logger logger = LogManager.getLogger(Solvis.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(Solvis.class);
 
 	private static final String XML_LEFT_BORDER = "LeftBorder";
 	private static final String XML_RIGHT_BORDER = "RightBorder";

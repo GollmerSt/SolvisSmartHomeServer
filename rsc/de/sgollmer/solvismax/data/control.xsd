@@ -1279,25 +1279,30 @@
 			<element name="CurrentValue" type="tns:Rectangle"
 				maxOccurs="1" minOccurs="1">
 				<annotation>
-					<documentation>Feld-Koordinaten mit aktuellem Wert
+					<documentation>
+						Feld-Koordinaten mit aktuellem Wert
 					</documentation>
 				</annotation>
 			</element>
 			<element name="PreparationRef" type="tns:PreparationRef"
 				maxOccurs="1" minOccurs="0">
 				<annotation>
-					<documentation>Referenz auf die spezielle GUI-Vorbereitung, z.b.
-						Auswahl des Heizkreises</documentation>
+					<documentation>
+						Referenz auf die spezielle GUI-Vorbereitung,
+						z.b. Auswahl des Heizkreises
+					</documentation>
 				</annotation>
 			</element>
 		</sequence>
 		<attribute name="screenId" type="string" use="required">
 			<annotation>
-				<documentation>Name des Bildschirms, über das der Anlagenparameter
+				<documentation>
+					Name des Bildschirms, über das der Anlagenparameter
 					ausgelesen/eingestellt werden kann
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="restoreChannelId" type="string" use="optional"></attribute>
 	</complexType>
 
 	<complexType name="ModbusAccess">

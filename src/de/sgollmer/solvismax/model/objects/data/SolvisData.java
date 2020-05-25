@@ -9,11 +9,10 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import java.util.Calendar;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.TypeError;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
@@ -24,7 +23,7 @@ import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 
 public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, ObserverI<SolvisState> {
 
-	private static final Logger logger = LogManager.getLogger(SolvisData.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(SolvisData.class);
 
 	private final ChannelDescription description;
 	private final AllSolvisData datas;

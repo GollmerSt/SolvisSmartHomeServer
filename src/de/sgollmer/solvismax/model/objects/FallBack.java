@@ -13,11 +13,10 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -25,7 +24,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class FallBack implements Assigner {
 	
-	private static final Logger logger = LogManager.getLogger(FallBack.class) ;
+	private static final Logger logger = LogManager.getInstance().getLogger(FallBack.class) ;
 
 	private static final String XML_BACK = "Back";
 	private static final String XML_SCREENREF = "ScreenRef";

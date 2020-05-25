@@ -14,9 +14,6 @@ import java.util.Iterator;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.Restart;
 import de.sgollmer.solvismax.connection.Server.Client;
@@ -37,6 +34,8 @@ import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Helper;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -44,7 +43,7 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class CommandHandler {
 
-	private static final Logger logger = LogManager.getLogger(CommandHandler.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(CommandHandler.class);
 
 	private final Collection<ClientAssignments> clients;
 	private final Instances instances;

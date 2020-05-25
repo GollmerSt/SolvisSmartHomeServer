@@ -19,8 +19,10 @@ import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public interface ChannelSourceI extends Assigner, GraficsLearnable {
+	
+	public ChannelDescription getRestoreChannel( Solvis solvis) ;
 
-	public boolean getValue(SolvisData dest, Solvis solvis, int timeAfterLastSwitchingOn) throws IOException;
+	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException;
 
 	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException;
 

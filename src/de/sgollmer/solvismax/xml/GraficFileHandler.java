@@ -17,21 +17,19 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
-import de.sgollmer.solvismax.log.Logger2;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 
 public class GraficFileHandler {
 
-	private static final Logger logger = LogManager.getLogger(Solvis.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(Solvis.class);
 	private static final String NAME_XSD_GRAFICSFILE = "graficData.xsd";
 	private static final String NAME_XML_GRAFICSFILE = "graficData.xml";
 
@@ -98,7 +96,7 @@ public class GraficFileHandler {
 			logger.error("Warning: Read error on grafics.xml file. A new one will be created.");
 			result = new AllSolvisGrafics();
 		} catch ( Throwable e2 ) {
-			Logger2.out(logger, Level.ERROR, "Unexpected error found on reading the grafics.xml, a new on will be cerated.\n"
+			LogManager.out(logger, Level.ERROR, "Unexpected error found on reading the grafics.xml, a new on will be cerated.\n"
 					+ "If the error still exits, please conact the developer.", e2.getStackTrace());
 			result = new AllSolvisGrafics();
 		}

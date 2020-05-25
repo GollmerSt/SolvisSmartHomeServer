@@ -13,15 +13,13 @@ import java.util.Collection;
 import javax.mail.MessagingException;
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
-import de.sgollmer.solvismax.log.Logger2;
-import de.sgollmer.solvismax.log.Logger2.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
 import de.sgollmer.solvismax.model.SolvisState.MailInfo;
@@ -107,7 +105,7 @@ public class ExceptionMail {
 			} catch (Throwable e) {
 				this.valid = false ;
 				String m = "base.xml error: " + e.getMessage();
-				Logger2.addDelayedErrorMessage(
+				LogManager.getInstance().addDelayedErrorMessage(
 						new DelayedMessage(Level.ERROR, m, Unit.class, null));
 				System.err.println(m);
 			}
@@ -142,7 +140,7 @@ public class ExceptionMail {
 
 	public void send(String subject, String text, MyImage image) throws MessagingException, IOException {
 		if (logger == null) {
-			logger = LogManager.getLogger(ExceptionMail.class);
+			logger = LogManager.getInstance().getLogger(ExceptionMail.class);
 		}
 		Mail.send(subject, text, this.name, this.from, this.password, this.securityType, this.provider, this.port,
 				this.recipients, image);

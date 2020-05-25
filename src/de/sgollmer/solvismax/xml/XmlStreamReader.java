@@ -24,13 +24,13 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.apache.logging.log4j.Level;
 import org.xml.sax.SAXParseException;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.log.Logger2;
-import de.sgollmer.solvismax.log.Logger2.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager.Level;
 
 public class XmlStreamReader<D> {
 
@@ -183,6 +183,7 @@ public class XmlStreamReader<D> {
 	}
 
 	public boolean validate(InputStream xml, InputStream xsd) {
+		LogManager logManager = LogManager.getInstance();
 		try {
 			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema;
@@ -194,11 +195,11 @@ public class XmlStreamReader<D> {
 		} catch (SAXParseException ex) {
 			String message = "Line: " + ex.getLineNumber() + ", Column: " + ex.getColumnNumber() + " Error: "
 					+ ex.getMessage();
-			Logger2.addDelayedErrorMessage(new DelayedMessage(Level.WARN, message, XmlStreamReader.class,
+			logManager.addDelayedErrorMessage(new DelayedMessage(Level.WARN, message, XmlStreamReader.class,
 					Constants.ExitCodes.XML_VERIFICATION_ERROR));
 			return false;
 		} catch (Exception e) {
-			Logger2.addDelayedErrorMessage(new DelayedMessage(Level.WARN, e.getMessage(), XmlStreamReader.class,
+			logManager.addDelayedErrorMessage(new DelayedMessage(Level.WARN, e.getMessage(), XmlStreamReader.class,
 					Constants.ExitCodes.XML_VERIFICATION_ERROR));
 			return false;
 		}

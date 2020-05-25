@@ -1,7 +1,13 @@
 Ä N D E R U N G E N
 
-Version 01.00.10
+Version 01.00.11
+	
+	23.05.2020	Die Logging-Library log4j2 wurde durch TinyLog ersetzt. Auf diese Weise wurde
+				das Jar-Datei von 3,3 auf 1,3 MByte reduziert. Mir ist schleierhaft, warum ein
+				Logging-Paket 2 MByte beansprucht, Tiny benötigt gerade mal 140 kByte.
 
+
+Version 01.00.10
 	
 	14.05.2020	Die Grafik des Bildschirmschoners ist an einigen Solvis-Anlagen nicht im Bild komplett
 				drin, sondern auch teilweise außerhalb. Das wurde bei der Bildschirmschone nun
@@ -19,11 +25,11 @@ Version 01.00.10
 				der Verbindung gesendet
 				
 	22.05.2020	Beim manuellen Wechsel auf den HomeScreen wird die Zeit etwas verspätet eingeblendet.
-				Da die Anlagenfehlererkennung bisher erkannt wird , die Zeit nicht eingeblendet ist,
-				erfolgte bisher in diesem Fall einen falsche Fehlermeldung. Nun wird zusätzlich getestet,
-				ob in diesem Bereich eine Grafik vorhanden ist. Wenn ja, liegt ein Anlagenfehler vor.  
-				
-	
+				Da die Anlagenfehlererkennung bisher dadurcherkannt wird, dassdie Zeit nicht eingeblendet
+				ist, erfolgte bisher in diesem Fall einen falsche Fehlermeldung. Nun wird zusätzlich
+				getestet, ob in diesem Bereich eine Grafik vorhanden ist. Wenn ja, liegt ein
+				Anlagenfehler vor.  
+
 
 Version 01.00.09
 				

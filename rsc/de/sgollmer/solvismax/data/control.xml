@@ -1513,7 +1513,8 @@
 			</tns:ConfigurationMasks>
 			<tns:Control>
 				<tns:ModbusAccess address="0x0B04" type="Holding" />
-				<tns:GuiAccess screenId="TagestemperaturSelected_HK1">
+				<tns:GuiAccess screenId="TagestemperaturSelected_HK1"
+					restoreChannelId="C06.Anlagenmodus_HK1">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
@@ -1546,7 +1547,8 @@
 			</tns:ConfigurationMasks>
 			<tns:Control>
 				<tns:ModbusAccess address="0x0B05" type="Holding" />
-				<tns:GuiAccess screenId="NachttemperaturSelected_HK1">
+				<tns:GuiAccess screenId="NachttemperaturSelected_HK1"
+					restoreChannelId="C06.Anlagenmodus_HK1">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
@@ -1750,7 +1752,8 @@
 			</tns:ConfigurationMasks>
 			<tns:Control>
 				<tns:ModbusAccess address="0x0C04" type="Holding" />
-				<tns:GuiAccess screenId="TagestemperaturSelected_HK2">
+				<tns:GuiAccess screenId="TagestemperaturSelected_HK2"
+					restoreChannelId="C12.Anlagenmodus_HK2">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
@@ -1783,7 +1786,8 @@
 			</tns:ConfigurationMasks>
 			<tns:Control>
 				<tns:ModbusAccess address="0x0C05" type="Holding" />
-				<tns:GuiAccess screenId="NachttemperaturSelected_HK2">
+				<tns:GuiAccess screenId="NachttemperaturSelected_HK2"
+					restoreChannelId="C12.Anlagenmodus_HK2">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />

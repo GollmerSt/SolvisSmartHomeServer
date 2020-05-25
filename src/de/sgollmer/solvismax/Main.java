@@ -14,10 +14,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
@@ -26,9 +22,11 @@ import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
-import de.sgollmer.solvismax.log.Logger2;
-import de.sgollmer.solvismax.log.Logger2.DelayedMessage;
-import de.sgollmer.solvismax.log.Logger2.LogErrors;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.solvismax.log.LogManager.LogErrors;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.solvismax.xml.XmlStreamReader;
@@ -74,6 +72,7 @@ public class Main {
 		}
 
 		BaseData baseData = null;
+		final LogManager logManager = LogManager.getInstance();
 		try {
 			XmlStreamReader.Result<BaseData> base = new BaseControlFileReader().read();
 			if (base == null) {
@@ -82,9 +81,9 @@ public class Main {
 			baseData = base.getTree();
 		} catch (IOException | XmlError | XMLStreamException e) {
 			e.printStackTrace();
-			Logger2.addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "base.xml couldn't be read.", Main.class,
+			logManager.addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "base.xml couldn't be read.", Main.class,
 					ExitCodes.READING_CONFIGURATION_FAIL));
-			Logger2.exit(ExitCodes.READING_CONFIGURATION_FAIL);
+			LogManager.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
 		String path = baseData.getWritablePath();
@@ -92,7 +91,7 @@ public class Main {
 		LogErrors error = LogErrors.INIT;
 
 		try {
-			error = Logger2.createInstance(path);
+			error = logManager.createInstance(path);
 		} catch (IOException e) {
 			error = LogErrors.INIT;
 			e.printStackTrace();
@@ -101,10 +100,10 @@ public class Main {
 		if (error == LogErrors.INIT) {
 			System.err.println("Log4j couldn't initalized");
 		} else if (error == LogErrors.PREVIOUS) {
-			Logger2.exit(0);
+			LogManager.exit(0);
 		}
 
-		logger = LogManager.getLogger(Main.class);
+		logger = logManager.getLogger(Main.class);
 		logger.info("Server started");
 		LEARN = Level.getLevel("LEARN");
 		boolean learn = false;
@@ -211,6 +210,7 @@ public class Main {
 					server.abort();
 				}
 				AbortHelper.getInstance().abort();
+				logManager.shutdown();
 			}
 		};
 
@@ -262,7 +262,7 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("Terminate not successfull.");
-			Logger2.exit(ExitCodes.SERVER_TERMINATION_FAIL);
+			LogManager.exit(ExitCodes.SERVER_TERMINATION_FAIL);
 		}
 		System.exit(ExitCodes.OK);
 

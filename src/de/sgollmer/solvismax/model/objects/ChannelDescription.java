@@ -55,16 +55,16 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 		return this.id;
 	}
 
-	public boolean getValue(Solvis solvis, int timeAfterLastSwitchingOn)
+	public boolean getValue(Solvis solvis)
 			throws IOException, ErrorPowerOn, TerminationException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
-		return this.getValue(data, solvis, timeAfterLastSwitchingOn);
+		return this.getValue(data, solvis);
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis, int timeAfterLastSwitchingOn)
+	public boolean getValue(SolvisData dest, Solvis solvis)
 			throws IOException, ErrorPowerOn, TerminationException {
-		return this.channelSource.getValue(dest, solvis, timeAfterLastSwitchingOn);
+		return this.channelSource.getValue(dest, solvis);
 	}
 
 	@Override
@@ -249,5 +249,10 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	@Override
 	public String toString() {
 		return this.getId() ;
+	}
+
+	@Override
+	public ChannelDescription getRestoreChannel(Solvis solvis) {
+		return this.channelSource.getRestoreChannel(solvis);
 	}
 }

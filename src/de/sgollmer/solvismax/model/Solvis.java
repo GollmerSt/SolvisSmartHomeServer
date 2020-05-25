@@ -12,12 +12,6 @@ import java.util.Calendar;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-//import org.apache.logging.slf4j.Log4jLogger;
-//import org.slf4j.LoggerFactory;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.Distributor;
 import de.sgollmer.solvismax.connection.SolvisConnection;
@@ -30,6 +24,9 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
@@ -54,7 +51,7 @@ public class Solvis {
 
 	// private static final org.slf4j.Logger logger =
 	// LoggerFactory.getLogger(Solvis.class);
-	private static final Logger logger = LogManager.getLogger(Solvis.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(Solvis.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 	private static final boolean DEBUG_TWO_STATIONS = false;
 

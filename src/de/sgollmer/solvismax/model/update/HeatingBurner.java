@@ -9,11 +9,10 @@ package de.sgollmer.solvismax.model.update;
 
 import javax.xml.namespace.QName;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Solvis;
@@ -29,7 +28,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class HeatingBurner extends Strategy<HeatingBurner> {
 
-	private static final Logger logger = LogManager.getLogger(HeatingBurner.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(HeatingBurner.class);
 
 	private final String burnerId;
 	private final String burnerCalcId;

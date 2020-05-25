@@ -12,15 +12,14 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.connection.CommandHandler;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 
 public class Restart {
 
-	private static final Logger logger = LogManager.getLogger(CommandHandler.class);
+	private static final Logger logger = LogManager.getInstance().getLogger(CommandHandler.class);
 
 	/**
 	 * Sun property pointing the main class and its arguments. Might not be defined
