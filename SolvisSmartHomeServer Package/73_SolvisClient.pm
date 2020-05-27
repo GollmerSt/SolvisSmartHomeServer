@@ -1,7 +1,7 @@
 ########################################################################################################################
 #
-# Attention: it's not the FHEM archive, it's a private one
-# $Id: 73_SolvisClient.pm 219 2020-05-21 09:49:41Z stefa_000 $
+# Attention! This file isn't in the FHEM repository, a private one is used.
+# $Id: 73_SolvisClient.pm 240 2020-05-25 12:45:04Z stefa_000 $
 #
 #  (c) 2019-2020 Copyright: Stefan Gollmer (Stefan dot Gollmer at gmail dot com)
 #  All rights reserved
@@ -18,6 +18,7 @@
 #   00.02.05    06.05.2020  SCMP77              Length bug of SendData fixed, Some optimizations
 #   00.02.06    11.05.2020  SCMP77              HumanAccess status added, HTML-Beschreibung ergänzt
 #   00.02.07    21.05.2020  SCMP77              GUI_COMMANDS_ENABLE/DISABLE was incorrectly sent on reconnection
+#   00.02.08    25.05.2020  SCMP77              Some variables moved to helper (should not be visible in Web-Interface)
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -254,10 +255,10 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
 
 
     $self->{DeviceName}  = $url;    #Für DevIO, Name fest vorgegeben
-    
-    $self->{ConnectionError} = undef ;
-    $self->{ConnectionByReadyFinished} = _FALSE_ ;
-    $self->{ConnectionOngoingByReady} = _FALSE_ ;
+        
+    $self->{helper}{ConnectionError} = undef ;
+    $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
+    $self->{helper}{ConnectionOngoingByReady} = _FALSE_ ;
 
     if( $init_done ) {
         my $result = Connect( $self, 0 );
@@ -360,8 +361,8 @@ sub Connect {
 
     my $error = DevIo_OpenDev($self, $reopen, $connectedSub, \&ConnectCallback );
 
-    $self->{ConnectionOngoingByReady} = $byReady ;
-    $self->{ConnectionByReadyFinished} = _FALSE_ ;
+    $self->{helper}{ConnectionOngoingByReady} = $byReady ;
+    $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
 
     $self->{helper}{BUFFER} = '' ;
 
@@ -379,13 +380,13 @@ sub ConnectCallback {
     my $self = shift ;
     my $error = shift ;
     
-    $self->{ConnectionError} = $error ;
+    $self->{helper}{ConnectionError} = $error ;
     
-    if ( $self->{ConnectionOngoingByReady} ) {
-        $self->{ConnectionByReadyFinished} = _TRUE_ ;
+    if ( $self->{helper}{ConnectionOngoingByReady} ) {
+        $self->{helper}{ConnectionByReadyFinished} = _TRUE_ ;
     }
     
-    $self->{ConnectionOngoingByReady} = _FALSE_ ;
+    $self->{helper}{ConnectionOngoingByReady} = _FALSE_ ;
     
     if ( defined($error) ) {
         Log( $self, 4, "Connection error: $error");
@@ -441,18 +442,18 @@ sub SendReconnectionData {
 sub Ready {
     my $self = shift ;
 
-    if ( $self->{ConnectionOngoingByReady} ) {
+    if ( $self->{helper}{ConnectionOngoingByReady} ) {
         return 'Connection still ongoing' ;
     }
 
-    my $error = $self->{ConnectionError} ;
+    my $error = $self->{helper}{ConnectionError} ;
     
-    $self->{ConnectionError} = $error ;
+    $self->{helper}{ConnectionError} = $error ;
     
     my $isOpen = DevIo_IsOpen($self);
         
-    if ( $self->{ConnectionByReadyFinished} ) {
-        $self->{ConnectionByReadyFinished} = _FALSE_ ;
+    if ( $self->{helper}{ConnectionByReadyFinished} ) {
+        $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
         if($isOpen || defined($error)) {
             return $error
         }
@@ -1754,7 +1755,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.07",
+  "version": "v00.02.08",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
