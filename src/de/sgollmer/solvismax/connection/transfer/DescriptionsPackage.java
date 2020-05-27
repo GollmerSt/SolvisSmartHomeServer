@@ -26,7 +26,7 @@ public class DescriptionsPackage extends JsonPackage {
 		}
 		
 		for ( ServerCommandPackage.ServerCommandEnum command : ServerCommandPackage.ServerCommandEnum.values()) {
-			ServerCommandDescription descr = new ServerCommandDescription(command.name()) ;
+			ServerCommandDescription descr = new ServerCommandDescription(command) ;
 			this.data.add(descr);
 		}
 
