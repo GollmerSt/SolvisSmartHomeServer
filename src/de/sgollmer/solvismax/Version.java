@@ -20,7 +20,7 @@ public class Version {
     }
     
 	public String getVersion() {
-    	return "01.00.11, modbus alpha, two stations beta" ;
+    	return "01.00.11, modbus alpha" ;
     }
     
 	public String getFormatVersion() {
