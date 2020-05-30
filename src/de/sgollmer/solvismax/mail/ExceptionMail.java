@@ -42,10 +42,9 @@ public class ExceptionMail {
 	private final String provider;
 	private final int port;
 	private final Collection<Recipient> recipients;
-	private final boolean valid ;
 
 	public ExceptionMail(String name, String from, CryptAes password, Security securityType, String provider, int port,
-			Collection<Recipient> recipients, boolean valid ) {
+			Collection<Recipient> recipients) {
 		this.name = name;
 		this.from = from;
 		this.password = password;
@@ -53,7 +52,6 @@ public class ExceptionMail {
 		this.provider = provider;
 		this.port = port;
 		this.recipients = recipients;
-		this.valid = valid ;
 	}
 
 	public static class Creator extends CreatorByXML<ExceptionMail> {
@@ -65,7 +63,7 @@ public class ExceptionMail {
 		private String provider;
 		private int port;
 		private Collection<Recipient> recipients;
-		private boolean valid = true ;
+		private boolean valid = true;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -103,18 +101,21 @@ public class ExceptionMail {
 						break;
 				}
 			} catch (Throwable e) {
-				this.valid = false ;
+				this.valid = false;
 				String m = "base.xml error: " + e.getMessage();
-				LogManager.getInstance().addDelayedErrorMessage(
-						new DelayedMessage(Level.ERROR, m, Unit.class, null));
+				LogManager.getInstance().addDelayedErrorMessage(new DelayedMessage(Level.ERROR, m, Unit.class, null));
 				System.err.println(m);
 			}
 		}
 
 		@Override
 		public ExceptionMail create() throws XmlError, IOException {
-			return new ExceptionMail(this.name, this.from, this.password, this.securityType, this.provider, this.port,
-					this.recipients, this.valid);
+			if (this.valid) {
+				return new ExceptionMail(this.name, this.from, this.password, this.securityType, this.provider,
+						this.port, this.recipients);
+			} else {
+				return null;
+			}
 		}
 
 		@Override
@@ -145,13 +146,8 @@ public class ExceptionMail {
 		Mail.send(subject, text, this.name, this.from, this.password, this.securityType, this.provider, this.port,
 				this.recipients, image);
 	}
-	
-	public void send( MailInfo info ) throws MessagingException, IOException {
-		this.send(info.getMessage(), "", info.getImage());
-	}
-	
 
-	public boolean isValid() {
-		return this.valid;
+	public void send(MailInfo info) throws MessagingException, IOException {
+		this.send(info.getMessage(), "", info.getImage());
 	}
 }

@@ -7,7 +7,7 @@
 	<tns:Units>
 		<tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true"
 			account="account" passwordCrypt="AES-coded"
-			url="http://aaa.bbb.ccc.ddd" defaultAverageCount="12"
+			url="aaa.bbb.ccc.ddd" defaultAverageCount="12"
 			measurementHysteresisFactor="4"
 			defaultReadMeasurementsInterval_ms="10000"
 			forcedUpdateInterval_ms="3600000" doubleUpdateInterval_ms="10000"

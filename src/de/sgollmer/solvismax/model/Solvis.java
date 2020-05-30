@@ -540,14 +540,18 @@ public class Solvis {
 				if (time - 120000 > lastErrorOutTime) {
 					String message = e.getMessage();
 					if (message.contains("timed")) {
-						logger.error("Solvis not available. Powered down or wrong IP address. Will try again.");
+						logger.error("Solvis not available. Powered down or wrong IP address."
+								+ " Will try again.");
+						logger.info("Java error message: ", e);
 					} else if (message.contains("too many")) {
 						logger.error(
-								"Solvis not available. The password or account name may not be correct. Will try again.");
+								"Solvis not available. The password or account name"
+								+ " may not be correct. Will try again.");
+						logger.info("Java error message: ", e);
 					} else {
 						logger.error(
-								"Solvis not available. Powered down or wrong IP address. Will try again. Java-Error-Message:\n",
-								e);
+								"Solvis not available. Powered down or wrong IP address."
+								+ " Will try again. Java-Error-Message:\n", e);
 					}
 				}
 				lastErrorOutTime = time;
