@@ -104,12 +104,17 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="url" type="string" use="optional">
+		<attribute name="url" use="optional">
 			<annotation>
 				<documentation>
 					Url-Pfad der Solvis-Anlage
 				</documentation>
 			</annotation>
+			<simpleType>
+				<restriction base="anyURI">
+					<pattern value="[^:/]*"></pattern>
+				</restriction>
+			</simpleType>
 		</attribute>
 		<attribute name="account" type="string" use="required">
 			<annotation>

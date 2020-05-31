@@ -1,5 +1,13 @@
 Ä N D E R U N G E N
 
+Version 01.00.12
+
+    29.05.2020  INFO-Logging-Ausgabe bei einem Solvis Zugriffsfehler wieder etwas erweitert.
+    
+    30.05.2020	Das Solvis-Url des base.xml wird nun durch jetzt auf Fehleingabe besser getestet.
+
+
+
 Version 01.00.11
 
     23.05.2020  Die Logging-Library log4j2 wurde durch TinyLog ersetzt. Auf diese Weise wurde
