@@ -1,0 +1,45 @@
+    Server
+        Backup
+        Restart
+        Status                      ?????
+    mySolvis1
+        Server
+            Command_Optimization    (true/false)
+            GUI_commands_enabled    (true/false)
+            Screen_Restore_enabled  (true/false)
+        Status
+            Unit                    (power_off, disconnected, remote_connected, solvis_connected, error)
+            Human_access            (uswer, service, none)
+        Measurement
+            Pumpe_Warmwasser        (true/false)
+            Pumpe_HK1               (true/false)
+            Raumfuehler_HK1         numeric
+            ......
+        Control
+            WarmwasserPumpe         (on, off, auto)
+            WassertemperaturSoll    (10 ... 65 )
+            ......
+        Calculation
+            BrennerLaufzeit_s
+            ......
+    mySolvis2
+        Server
+            Command_Optimization    (true/false)
+            GUI_commands_enabled    (true/false)
+            Screen_Restore_enabled  (true/false)
+            Service_reset
+        Status
+            Unit                    (power_off, disconnected, remote_connected, solvis_connected, error)
+            Human_access            (uswer, service, none)
+        Measurement
+            Pumpe_Warmwasser        (true/false)
+            Pumpe_HK1               (true/false)
+            Raumfuehler_HK1         numeric
+            ......
+        Control
+            WarmwasserPumpe         (on, off, auto)
+            WassertemperaturSoll    (10 ... 65 )
+            ......
+        Calculation
+            BrennerLaufzeit_s
+            ......
