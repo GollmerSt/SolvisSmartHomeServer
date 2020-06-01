@@ -149,7 +149,9 @@ public class ScreenSaver implements Assigner {
 		@Override
 		public void update(SolvisState data, Object source) {
 			if (data.isError() || data.getState() == SolvisState.State.POWER_OFF) {
-				this.scanArea = null;
+				synchronized (this) {
+					this.scanArea = null;
+				}
 			}
 
 		}
@@ -164,8 +166,10 @@ public class ScreenSaver implements Assigner {
 			if (image == null) {
 				return SaverState.NONE;
 			}
-
-			Rectangle scanArea = this.scanArea;
+			Rectangle scanArea ;
+			synchronized ( this) {
+				scanArea = this.scanArea;
+			}
 			if (scanArea == null) {
 				int fs = Constants.SCREEN_SAVER_IGNORED_FRAME_SIZE;
 				scanArea = new Rectangle(new Coordinate(fs, fs),
@@ -174,7 +178,7 @@ public class ScreenSaver implements Assigner {
 
 			Pattern pattern = new Pattern(image, scanArea);
 
-			State state = this.isInPicture(pattern);
+			State state = this.isInPicture(pattern, scanArea);
 
 			switch (state) {
 				case INSIDE:
@@ -310,8 +314,9 @@ public class ScreenSaver implements Assigner {
 					bottom = i - 1;
 				}
 			}
-
-			this.scanArea = new Rectangle(new Coordinate(left, top), new Coordinate(right, bottom));
+			synchronized (this) {
+				this.scanArea = new Rectangle(new Coordinate(left, top), new Coordinate(right, bottom));
+			}
 		}
 
 		public String getDebugInfo() {
@@ -324,7 +329,7 @@ public class ScreenSaver implements Assigner {
 			}
 		}
 
-		public State isInPicture(Pattern pattern) {
+		public State isInPicture(Pattern pattern, Rectangle scanArea) {
 			if (this.margins == null) {
 				return State.INSIDE;
 			}
@@ -335,8 +340,8 @@ public class ScreenSaver implements Assigner {
 				return State.NONE;
 			}
 			if (pattern.getWidth() < this.margins.getX() - Constants.SCREEN_SAVER_WIDTH_INACCURACY) {
-				if (pattern.getOrigin().getX() > this.scanArea.getTopLeft().getX() //
-						&& pattern.getOrigin().getX() + pattern.getWidth() < this.scanArea.getBottomRight().getX()
+				if (pattern.getOrigin().getX() > scanArea.getTopLeft().getX() //
+						&& pattern.getOrigin().getX() + pattern.getWidth() < scanArea.getBottomRight().getX()
 								+ 1) {
 					return State.NONE;
 				} else {
@@ -344,8 +349,8 @@ public class ScreenSaver implements Assigner {
 				}
 			}
 			if (pattern.getHeight() < this.margins.getY()) {
-				if (pattern.getOrigin().getY() > this.scanArea.getTopLeft().getY() //
-						&& pattern.getOrigin().getY() + pattern.getHeight() < this.scanArea.getBottomRight().getY()
+				if (pattern.getOrigin().getY() > scanArea.getTopLeft().getY() //
+						&& pattern.getOrigin().getY() + pattern.getHeight() < scanArea.getBottomRight().getY()
 								+ 1) {
 					return State.NONE;
 				} else {
