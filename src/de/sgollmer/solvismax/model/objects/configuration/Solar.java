@@ -17,6 +17,8 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Helper.Format;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations.Configuration;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
@@ -25,6 +27,8 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Solar implements Configuration {
+
+	private static final Logger logger = LogManager.getInstance().getLogger(Solar.class);
 
 	private static final String XML_RETURN_TEMPERATURE = "ReturnTemperature";
 	private static final String XML_OUTGOING_TEMPERATURE = "OutgoingTemperature";
@@ -110,6 +114,10 @@ public class Solar implements Configuration {
 			OcrRectangle ocr = new OcrRectangle(image, rectangle);
 			String scanned = ocr.getString();
 			String intString = this.format.getString(scanned);
+			if (intString == null ) {
+				logger.error("Scanned string <" + scanned + "> doesn't fit the regular expression");
+				return 0x00;
+			}
 			if (Integer.parseInt(intString) <= this.maxTemperatureX10) {
 				return 0x08;
 			}

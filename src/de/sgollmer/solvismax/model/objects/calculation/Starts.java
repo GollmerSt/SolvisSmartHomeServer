@@ -42,32 +42,32 @@ public class Starts extends Strategy<Starts> {
 
 		Dependencies dependencies = this.calculation.getDependencies();
 
-		SolvisData burnerOn = dependencies.get(allData, "burnerOn");
+		SolvisData equipmentOn = dependencies.get(allData, "equipmentOn");
 
-		Executable executable = new Executable(result, burnerOn);
+		Executable executable = new Executable(result, equipmentOn);
 
-		executable.update(burnerOn, this);
+		executable.update(equipmentOn, this);
 	}
 
 	private class Executable implements ObserverI<SolvisData> {
 		private final SolvisData result;
-		private final SolvisData burnerOn;
+		private final SolvisData equipmentOn;
 
-		public Executable(SolvisData result, SolvisData burnerOn) {
+		public Executable(SolvisData result, SolvisData equipmentOn) {
 			this.result = result;
-			this.burnerOn = burnerOn;
-			this.burnerOn.register(this);
+			this.equipmentOn = equipmentOn;
+			this.equipmentOn.register(this);
 		}
 
 		@Override
 		public void update(SolvisData data, Object source ) {
-			if (this.result == null || this.burnerOn == null) {
+			if (this.result == null || this.equipmentOn == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
 
-			boolean burnerOn = data.getBool();
+			boolean equipmentOn = data.getBool();
 
-			if (burnerOn) {
+			if (equipmentOn) {
 				int result = this.result.getInt();
 				++result;
 				this.result.setInteger(result, data.getTimeStamp());

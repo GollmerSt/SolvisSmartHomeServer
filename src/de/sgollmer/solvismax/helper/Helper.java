@@ -11,14 +11,37 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Helper {
 
 	public static class Format {
+		private final Pattern pattern;
+
+		public Format(String regEx) {
+			this.pattern = Pattern.compile(regEx);
+		}
+
+		public String getString(String source) {
+			Matcher matcher = this.pattern.matcher(source);
+			StringBuilder builder = new StringBuilder();
+			if (!matcher.matches()) {
+				return null;
+			} else {
+				for (int i = 1; i <= matcher.groupCount(); ++i) {
+					builder.append(matcher.group(i));
+				}
+				return builder.toString();
+			}
+		}
+	}
+
+	public static class FormatOldX {
 		private final Collection<FormatChar> formatChars = new ArrayList<>(5);
 		private final int origin;
 
-		public Format(String format) {
+		public FormatOldX(String format) {
 			this.origin = format.length() - 1;
 			for (int pos = this.origin; pos >= 0; --pos) {
 				FormatChar fc = FormatChar.create(format, pos);

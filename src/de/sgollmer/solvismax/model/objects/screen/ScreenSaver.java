@@ -26,9 +26,7 @@ import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Logger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Assigner;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -46,17 +44,21 @@ public class ScreenSaver implements Assigner {
 
 	private static final String XML_RESET_SCREEN_SAVER = "ResetScreenSaver";
 	private static final String XML_TIME_DATA_RECTANGLE = "TimeDateRectangle";
+	private static final String XML_MAX_GRAFIC_SIZE = "MaxGraficSize";
 
 	private static final Logger logger = LogManager.getInstance().getLogger(ScreenSaver.class);
 
 	private final int timeHeight;
 	private final Rectangle timeDateRectangle;
+	private final Coordinate maxGraficSize;
 	private final TouchPoint resetScreenSaver;
 
-	public ScreenSaver(int timeHeight, Rectangle timeDateRectangle, TouchPoint resetScreenSaver) {
+	public ScreenSaver(int timeHeight, Rectangle timeDateRectangle, Coordinate maxGraficSize,
+			TouchPoint resetScreenSaver) {
 		this.timeHeight = timeHeight;
 		this.timeDateRectangle = timeDateRectangle;
 		this.resetScreenSaver = resetScreenSaver;
+		this.maxGraficSize = maxGraficSize;
 	}
 
 	@Override
@@ -73,8 +75,8 @@ public class ScreenSaver implements Assigner {
 		return this.resetScreenSaver;
 	}
 
-	public getState createExecutable(Solvis solvis) {
-		return new getState(solvis);
+	public Exec createExecutable(Solvis solvis) {
+		return new Exec(solvis);
 	}
 
 	public static class Creator extends CreatorByXML<ScreenSaver> {
@@ -82,6 +84,7 @@ public class ScreenSaver implements Assigner {
 		private int timeHeight;
 		private Rectangle timeDateRectangle;
 		private TouchPoint resetScreenSaver = null;
+		private Coordinate maxGraficSize;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -99,7 +102,7 @@ public class ScreenSaver implements Assigner {
 		@Override
 
 		public ScreenSaver create() throws XmlError {
-			return new ScreenSaver(this.timeHeight, this.timeDateRectangle, this.resetScreenSaver);
+			return new ScreenSaver(this.timeHeight, this.timeDateRectangle, this.maxGraficSize, this.resetScreenSaver);
 		}
 
 		@Override
@@ -110,6 +113,9 @@ public class ScreenSaver implements Assigner {
 					break;
 				case XML_RESET_SCREEN_SAVER:
 					this.resetScreenSaver = (TouchPoint) created;
+					break;
+				case XML_MAX_GRAFIC_SIZE:
+					this.maxGraficSize = (Coordinate) created;
 					break;
 			}
 
@@ -123,94 +129,85 @@ public class ScreenSaver implements Assigner {
 					return new Rectangle.Creator(XML_TIME_DATA_RECTANGLE, id, this.getBaseCreator());
 				case XML_RESET_SCREEN_SAVER:
 					return new TouchPoint.Creator(id, this.getBaseCreator());
+				case XML_MAX_GRAFIC_SIZE:
+					return new Coordinate.Creator(id, this.getBaseCreator()) ;
 			}
 			return null;
 		}
 	}
 
-	public enum SaverState {
+	public enum State {
 		NONE, SCREENSAVER, POSSIBLE
 	}
 
-	public class getState implements ObserverI<SolvisState> {
+	public class Exec {
 
-		private Rectangle scanArea = null;
+		private final int frameThickness;
 		private String debugInfo = "";
 		private Coordinate margins = null;
-		private State lastState = State.NONE;
+		private PositionState lastState = PositionState.NONE;
 		private long firstOutsideTime = -1;
 
-		public getState(Solvis solvis) {
+		public Exec(Solvis solvis) {
 			if (solvis != null) {
-				solvis.getSolvisState().register(this);
-			}
-		}
-
-		@Override
-		public void update(SolvisState data, Object source) {
-			if (data.isError() || data.getState() == SolvisState.State.POWER_OFF) {
-				synchronized (this) {
-					this.scanArea = null;
-				}
+				this.frameThickness = solvis.getUnit().getIgnoredFrameThicknesScreenSaver();
+			} else {
+				this.frameThickness = Constants.SCREEN_SAVER_IGNORED_FRAME_SIZE;
 			}
 
 		}
 
-		public SaverState getSaverState(SolvisScreen screen) {
+		public State getSaverState(SolvisScreen screen) {
 			MyImage original = SolvisScreen.getImage(screen);
 			return this.getSaverState(original);
 		}
 
-		public SaverState getSaverState(MyImage image) {
+		public State getSaverState(MyImage image) {
 
 			if (image == null) {
-				return SaverState.NONE;
+				return State.NONE;
 			}
-			Rectangle scanArea ;
-			synchronized ( this) {
-				scanArea = this.scanArea;
-			}
-			if (scanArea == null) {
-				int fs = Constants.SCREEN_SAVER_IGNORED_FRAME_SIZE;
-				scanArea = new Rectangle(new Coordinate(fs, fs),
-						new Coordinate(image.getWidth() - 2 * fs, image.getHeight() - 2 * fs));
-			}
+			Rectangle scanArea;
+
+			int fs = this.frameThickness;
+			scanArea = new Rectangle(new Coordinate(fs, fs),
+					new Coordinate(image.getWidth() - 2 * fs, image.getHeight() - 2 * fs));
 
 			Pattern pattern = new Pattern(image, scanArea);
 
-			State state = this.isInPicture(pattern, scanArea);
+			PositionState state = this.isInPicture(pattern, scanArea);
 
 			switch (state) {
 				case INSIDE:
-					this.lastState = State.INSIDE;
+					this.lastState = PositionState.INSIDE;
 					this.firstOutsideTime = -1;
 					break;
 				case NONE:
-					this.lastState = State.NONE;
+					this.lastState = PositionState.NONE;
 					this.firstOutsideTime = -1;
-					return SaverState.NONE;
+					return State.NONE;
 				case OUTSIDE:
 					long now = System.currentTimeMillis();
 					if (this.firstOutsideTime < 0) {
 						this.firstOutsideTime = now;
 					} else if (now - this.firstOutsideTime > Constants.MAX_OUTSIDE_TIME) {
-						this.lastState = State.NONE;
-						return SaverState.NONE;
+						this.lastState = PositionState.NONE;
+						return State.NONE;
 					}
-					return this.lastState == State.NONE ? SaverState.POSSIBLE : SaverState.SCREENSAVER;
+					return this.lastState == PositionState.NONE ? State.POSSIBLE : State.SCREENSAVER;
 			}
 
 			Coordinate timeTopLeft = ScreenSaver.this.timeDateRectangle.getTopLeft();
 			Coordinate dateBottomRight = ScreenSaver.this.timeDateRectangle.getBottomRight();
 			Coordinate check = new Coordinate(timeTopLeft.getX(), dateBottomRight.getY());
 
-			this.lastState = State.NONE;
+			this.lastState = PositionState.NONE;
 
 			if (!pattern.isIn(check)) {
 				if (DEBUG) {
 					this.debugInfo = "Not in <timeDateRectangle>. " + pattern.getDebugInfo();
 				}
-				return SaverState.NONE;
+				return State.NONE;
 			}
 
 			dateBottomRight = new Coordinate(pattern.getWidth() - 1, dateBottomRight.getY());
@@ -224,7 +221,7 @@ public class ScreenSaver implements Assigner {
 
 			String time = getContentsOfRectangle(timeDatePattern, timeRectangle, TIME_PATTERN);
 			if (time == null) {
-				return SaverState.NONE;
+				return State.NONE;
 			}
 
 			Rectangle dateRectangle = new Rectangle(new Coordinate(0, ScreenSaver.this.timeHeight),
@@ -232,15 +229,14 @@ public class ScreenSaver implements Assigner {
 
 			String date = getContentsOfRectangle(timeDatePattern, dateRectangle, DATE_PATTERN);
 			if (date == null) {
-				return SaverState.NONE;
+				return State.NONE;
 			}
 
 			logger.debug("Screen saver time: " + time + "  " + date);
 
-			this.setScanArea(pattern);
 			this.createMargins(pattern);
-			this.lastState = State.INSIDE;
-			return SaverState.SCREENSAVER;
+			this.lastState = PositionState.INSIDE;
+			return State.SCREENSAVER;
 		}
 
 		private String getContentsOfRectangle(Pattern timeDatePattern, Rectangle rectangle,
@@ -266,118 +262,80 @@ public class ScreenSaver implements Assigner {
 			return time;
 		}
 
-		private void setScanArea(Pattern pattern) {
-			if (this.scanArea != null) {
-				return;
-			}
-			Coordinate origin = pattern.getOrigin();
-			int fs = Constants.SCREEN_SAVER_IGNORED_FRAME_SIZE;
-
-			if (origin.getX() <= fs || origin.getY() <= fs) {
-				return;
-			}
-
-			MyImage screen = new MyImage(pattern.getImage());
-
-			if (origin.getX() + pattern.getWidth() >= screen.getWidth() - fs - 1
-					|| origin.getY() + pattern.getHeight() >= screen.getHeight() - fs - 1) {
-				return;
-			}
-
-			screen.createHistograms(false);
-
-			int left = 0;
-			int right = screen.getWidth() - 1;
-			int top = 0;
-			int bottom = screen.getHeight() - 1;
-
-			for (int i = 0; i < fs; ++i) {
-				if (screen.getHistogramX().get(i) > 0) {
-					left = i + 1;
-				}
-			}
-
-			for (int i = screen.getWidth() - 1; i >= screen.getWidth() - fs; --i) {
-				if (screen.getHistogramX().get(i) > 0) {
-					right = i - 1;
-				}
-			}
-
-			for (int i = 0; i < fs; ++i) {
-				if (screen.getHistogramY().get(i) > 0) {
-					top = i + 1;
-				}
-			}
-
-			for (int i = screen.getHeight() - 1; i >= screen.getHeight() - fs; --i) {
-				if (screen.getHistogramY().get(i) > 0) {
-					bottom = i - 1;
-				}
-			}
-			synchronized (this) {
-				this.scanArea = new Rectangle(new Coordinate(left, top), new Coordinate(right, bottom));
-			}
-		}
-
 		public String getDebugInfo() {
 			return this.debugInfo;
 		}
 
 		public void createMargins(Pattern pattern) {
 			if (this.margins == null) {
+				
+				if ( pattern.getOrigin().getX() <= this.frameThickness) {
+					return ;
+				}
+				
+				if ( pattern.getOrigin().getY() <= this.frameThickness) {
+					return ;
+				}
+				
+				if ( pattern.getOrigin().getX() + ScreenSaver.this.maxGraficSize.getX() >= pattern.getImageSize().getX() - this.frameThickness) {
+					return ;
+				}
+				
+				if ( pattern.getOrigin().getY() + ScreenSaver.this.maxGraficSize.getY() >= pattern.getImageSize().getY() - this.frameThickness) {
+					return ;
+				}
+
 				this.margins = new Coordinate(pattern.getWidth(), pattern.getHeight());
 			}
 		}
 
-		public State isInPicture(Pattern pattern, Rectangle scanArea) {
+		public PositionState isInPicture(Pattern pattern, Rectangle scanArea) {
 			if (this.margins == null) {
-				return State.INSIDE;
+				return PositionState.INSIDE;
 			}
 			if (pattern.getHeight() > this.margins.getY() + Constants.SCREEN_SAVER_HEIGHT_INACCURACY) {
-				return State.NONE;
+				return PositionState.NONE;
 			}
 			if (pattern.getWidth() > this.margins.getX() + Constants.SCREEN_SAVER_WIDTH_INACCURACY) {
-				return State.NONE;
+				return PositionState.NONE;
 			}
 			if (pattern.getWidth() < this.margins.getX() - Constants.SCREEN_SAVER_WIDTH_INACCURACY) {
 				if (pattern.getOrigin().getX() > scanArea.getTopLeft().getX() //
-						&& pattern.getOrigin().getX() + pattern.getWidth() < scanArea.getBottomRight().getX()
-								+ 1) {
-					return State.NONE;
+						&& pattern.getOrigin().getX() + pattern.getWidth() < scanArea.getBottomRight().getX() + 1) {
+					return PositionState.NONE;
 				} else {
-					return State.OUTSIDE;
+					return PositionState.OUTSIDE;
 				}
 			}
 			if (pattern.getHeight() < this.margins.getY()) {
 				if (pattern.getOrigin().getY() > scanArea.getTopLeft().getY() //
-						&& pattern.getOrigin().getY() + pattern.getHeight() < scanArea.getBottomRight().getY()
-								+ 1) {
-					return State.NONE;
+						&& pattern.getOrigin().getY() + pattern.getHeight() < scanArea.getBottomRight().getY() + 1) {
+					return PositionState.NONE;
 				} else {
-					return State.OUTSIDE;
+					return PositionState.OUTSIDE;
 				}
 			}
-			return State.INSIDE;
+			return PositionState.INSIDE;
 		}
 
 	}
 
-	public enum State {
+	private enum PositionState {
 		OUTSIDE, INSIDE, NONE
 	}
 
 	public static void main(String[] args) {
 		Rectangle timeDateRectangle = new Rectangle(new Coordinate(75, 0), new Coordinate(135, 32));
-		ScreenSaver saver = new ScreenSaver(18, timeDateRectangle, null);
+		ScreenSaver saver = new ScreenSaver(18, timeDateRectangle, new Coordinate(150, 80), null);
 
 		File parent = new File("testFiles\\images");
 
 		final class Test {
-			private final SaverState soll;
+			private final State soll;
 			private final boolean newSaver;
 			private final String name;
 
-			public Test(SaverState soll, boolean newSaver, String name) {
+			public Test(State soll, boolean newSaver, String name) {
 				this.soll = soll;
 				this.newSaver = newSaver;
 				this.name = name;
@@ -385,26 +343,29 @@ public class ScreenSaver implements Assigner {
 		}
 
 		Collection<Test> names = Arrays.asList( //
-				new Test(SaverState.SCREENSAVER, true, "Bildschirmschoner V1 Artefakte.bmp"), //
-				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner 2 V1 Artefakte.bmp"), //
-				new Test(SaverState.SCREENSAVER, true, "Bildschirmschoner V1.bmp"), //
-				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 2.bmp"), //
-				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 2 auﬂerhalb.bmp"), //
-				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 auﬂerhalb.bmp"), //
-				new Test(SaverState.NONE, false, "Bildschirmschoner V1 1 none.bmp"), //
-				new Test(SaverState.POSSIBLE, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
-				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 3.bmp"), //
-				new Test(SaverState.SCREENSAVER, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
-				new Test(SaverState.SCREENSAVER, true, "bildschirmschoner.png"), //
-				new Test(SaverState.SCREENSAVER, false, "bildschirmschoner1.png"), //
-				new Test(SaverState.SCREENSAVER, false, "bildschirmschoner2.png"));
+				new Test(State.SCREENSAVER, true, "Bildschirmschoner V1 Artefakte.bmp"), //
+				new Test(State.SCREENSAVER, false, "Bildschirmschoner 2 V1 Artefakte.bmp"), //
+				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1.bmp"), //
+				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 2.bmp"), //
+				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 2 auﬂerhalb.bmp"), //
+				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 auﬂerhalb.bmp"), //
+				new Test(State.NONE, false, "raumeinfluss.png"), //
+				new Test(State.POSSIBLE, false, "Bildschirmschoner V1 1 none.bmp"), //
+				new Test(State.POSSIBLE, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
+				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 Artefakte.bmp"), //
+				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 3.bmp"), //
+				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
+				new Test(State.SCREENSAVER, true, "bildschirmschoner.png"), //
+				new Test(State.SCREENSAVER, false, "bildschirmschoner1.png"), //
+				new Test(State.SCREENSAVER, false, "bildschirmschoner2.png"));
 
 		BufferedImage image = null;
 
-		ScreenSaver.getState executable = saver.createExecutable(null);
+		ScreenSaver.Exec executable = saver.createExecutable(null);
 
 		boolean failed = false;
 
+		int i = 0 ;
 		for (Iterator<Test> it = names.iterator(); it.hasNext();) {
 			Test test = it.next();
 			if (test.newSaver) {
@@ -420,12 +381,14 @@ public class ScreenSaver implements Assigner {
 
 			MyImage myImage = new MyImage(image);
 
-			SaverState state = executable.getSaverState(myImage);
+			State state = executable.getSaverState(myImage);
 
 			boolean pass = state == test.soll;
-			failed |= !pass;
+			if (!pass) {
+				failed = true;
+			}
 
-			System.out.println(file.getName() + " isScreenSaver? " + state.name() + ": " + pass);
+			System.out.println("" + ++i + ". " + file.getName() + " State: " + state.name() + ", Soll: " + test.soll.name() + ", Check: " + pass);
 		}
 
 		if (failed) {

@@ -28,10 +28,11 @@ public class Units {
 	private static final String XML_UNITS_UNIT = "Unit";
 	private static final String XML_FEATURES = "Features";
 	private static final String XML_CLOCK_TUNING = "ClockTuning";
-	private static final String XML_HEATING_BURNER_TIME_SYNC = "HeatingBurnerTimeSynchronisation";
+	private static final String XML_EQUIPMENT_TIME_SYNC = "EquipmentTimeSynchronisation";
 	private static final String XML_UPDATE_AFTER_USER_ACCESS = "UpdateAfterUserAccess";
 	private static final String XML_DETECT_SERVICE_ACCESS = "DetectServiceAccess";
 	private static final String XMl_POWEROFF_IS_SERVICE_ACCESS = "PowerOffIsServiceAccess";
+	private static final String XMl_SEND_MAIL_ON_ERROR = "SendMailOnError";
 	private static final String XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL = "ClearErrorMessageAfterMail";
 	private static final String XML_ONLY_MEASUREMENT = "OnlyMeasurements";
 
@@ -90,6 +91,7 @@ public class Units {
 		private final String url;
 		private final String account;
 		private final CryptAes password;
+		private final int configOrMask;
 		private final int defaultAverageCount;
 		private final int measurementHysteresisFactor;
 		private final int defaultReadMeasurementsInterval_ms;
@@ -101,16 +103,19 @@ public class Units {
 		private final boolean fwLth2_21_02A;
 		private final boolean modbus;
 		private final Features features;
+		private final int ignoredFrameThicknesScreenSaver;
 
-		public Unit(String id, String type, String url, String account, CryptAes password, int defaultAverageCount,
-				int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms, int forcedUpdateInterval_ms,
-				int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
-				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, boolean modbus, Features features) {
+		public Unit(String id, String type, String url, String account, CryptAes password, int configOrMask,
+				int defaultAverageCount, int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms,
+				int forcedUpdateInterval_ms, int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
+				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, boolean modbus, Features features,
+				int ignoredFrameThicknesScreenSaver) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
 			this.account = account;
 			this.password = password;
+			this.configOrMask = configOrMask;
 			this.defaultAverageCount = defaultAverageCount;
 			this.measurementHysteresisFactor = measurementHysteresisFactor;
 			this.defaultReadMeasurementsInterval_ms = defaultReadMeasurementsInterval_ms;
@@ -122,6 +127,7 @@ public class Units {
 			this.fwLth2_21_02A = fwLth2_21_02A;
 			this.modbus = modbus;
 			this.features = features;
+			this.ignoredFrameThicknesScreenSaver = ignoredFrameThicknesScreenSaver;
 		}
 
 		public String getId() {
@@ -156,6 +162,7 @@ public class Units {
 			private String url;
 			private String account;
 			private CryptAes password = new CryptAes();
+			private int configOrMask;
 			private int defaultAverageCount;
 			private int measurementHysteresisFactor;
 			private int defaultReadMeasurementsInterval_ms;
@@ -167,6 +174,7 @@ public class Units {
 			private boolean fwLth2_21_02A = false;
 			private boolean modbus = false;
 			private Features features;
+			private int ignoredFrameThicknesScreenSaver;
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -186,6 +194,9 @@ public class Units {
 						break;
 					case "account":
 						this.account = value;
+						break;
+					case "configOrMask":
+						this.configOrMask = Integer.decode(value);
 						break;
 					case "passwordCrypt":
 						try {
@@ -230,17 +241,21 @@ public class Units {
 					case "modbus":
 						this.modbus = Boolean.parseBoolean(value);
 						break;
+					case "ignoredFrameThicknesScreenSaver":
+						this.ignoredFrameThicknesScreenSaver = Integer.parseInt(value);
+						break;
 				}
 
 			}
 
 			@Override
 			public Unit create() throws XmlError, IOException {
-				return new Unit(this.id, this.type, this.url, this.account, this.password, this.defaultAverageCount,
-						this.measurementHysteresisFactor, this.defaultReadMeasurementsInterval_ms,
-						this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
-						this.watchDogTime_ms, this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.modbus,
-						this.features);
+				return new Unit(this.id, this.type, this.url, this.account, this.password, this.configOrMask,
+						this.defaultAverageCount, this.measurementHysteresisFactor,
+						this.defaultReadMeasurementsInterval_ms, this.forcedUpdateInterval_ms,
+						this.doubleUpdateInterval_ms, this.bufferedInterval_ms, this.watchDogTime_ms,
+						this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.modbus, this.features,
+						this.ignoredFrameThicknesScreenSaver);
 
 			}
 
@@ -306,26 +321,36 @@ public class Units {
 			return this.modbus;
 		}
 
+		public int getIgnoredFrameThicknesScreenSaver() {
+			return this.ignoredFrameThicknesScreenSaver;
+		}
+
+		public int getConfigOrMask() {
+			return this.configOrMask;
+		}
+
 	}
 
 	public static class Features {
 
 		private final boolean clockTuning;
-		private final boolean heatingBurnerTimeSynchronisation;
+		private final boolean equipmentTimeSynchronisation;
 		private final boolean updateAfterUserAccess;
 		private final boolean detectServiceAccess;
 		private final boolean powerOffIsServiceAccess;
+		private final boolean sendMailOnError;
 		private final boolean clearErrorMessageAfterMail;
 		private final boolean onlyMeasurements;
 
-		public Features(boolean clockTuning, boolean heatingBurnerTimeSynchronisation, boolean updateAfterUserAccess,
-				boolean detectServiceAccess, boolean powerOffIsServiceAccess, boolean clearErrorMessageAfterMail,
-				boolean onlyMeasurements) {
+		public Features(boolean clockTuning, boolean equipmentTimeSynchronisation, boolean updateAfterUserAccess,
+				boolean detectServiceAccess, boolean powerOffIsServiceAccess, boolean sendMailOnError,
+				boolean clearErrorMessageAfterMail, boolean onlyMeasurements) {
 			this.clockTuning = clockTuning;
-			this.heatingBurnerTimeSynchronisation = heatingBurnerTimeSynchronisation;
+			this.equipmentTimeSynchronisation = equipmentTimeSynchronisation;
 			this.updateAfterUserAccess = updateAfterUserAccess;
 			this.detectServiceAccess = detectServiceAccess;
 			this.powerOffIsServiceAccess = powerOffIsServiceAccess;
+			this.sendMailOnError = sendMailOnError;
 			this.clearErrorMessageAfterMail = clearErrorMessageAfterMail;
 			this.onlyMeasurements = onlyMeasurements;
 		}
@@ -334,8 +359,8 @@ public class Units {
 			return this.clockTuning;
 		}
 
-		public boolean isHeatingBurnerTimeSynchronisation() {
-			return this.heatingBurnerTimeSynchronisation;
+		public boolean isEquipmentTimeSynchronisation() {
+			return this.equipmentTimeSynchronisation;
 		}
 
 		public boolean isUpdateAfterUserAccess() {
@@ -358,13 +383,18 @@ public class Units {
 			return this.powerOffIsServiceAccess;
 		}
 
+		public boolean isSendMailOnError() {
+			return this.sendMailOnError;
+		}
+
 		public static class Creator extends CreatorByXML<Features> {
 
 			private boolean clockTuning;
-			private boolean heatingBurnerTimeSynchronisation;
+			private boolean equipmentTimeSynchronisation;
 			private boolean updateAfterUserAccess;
 			private boolean detectServiceAccess;
 			private boolean powerOffIsServiceAccess;
+			private boolean sendMailOnError;
 			private boolean clearErrorMessageAfterMail;
 			private boolean onlyMeasurements;
 
@@ -378,9 +408,9 @@ public class Units {
 
 			@Override
 			public Features create() throws XmlError, IOException {
-				return new Features(this.clockTuning, this.heatingBurnerTimeSynchronisation, this.updateAfterUserAccess,
-						this.detectServiceAccess, this.powerOffIsServiceAccess, this.clearErrorMessageAfterMail,
-						this.onlyMeasurements);
+				return new Features(this.clockTuning, this.equipmentTimeSynchronisation, this.updateAfterUserAccess,
+						this.detectServiceAccess, this.powerOffIsServiceAccess, this.sendMailOnError,
+						this.clearErrorMessageAfterMail, this.onlyMeasurements);
 			}
 
 			@Override
@@ -388,10 +418,11 @@ public class Units {
 				String id = name.getLocalPart();
 				switch (id) {
 					case XML_CLOCK_TUNING:
-					case XML_HEATING_BURNER_TIME_SYNC:
+					case XML_EQUIPMENT_TIME_SYNC:
 					case XML_UPDATE_AFTER_USER_ACCESS:
 					case XML_DETECT_SERVICE_ACCESS:
 					case XMl_POWEROFF_IS_SERVICE_ACCESS:
+					case XMl_SEND_MAIL_ON_ERROR:
 					case XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL:
 					case XML_ONLY_MEASUREMENT:
 						return new StringElement.Creator(id, getBaseCreator());
@@ -407,8 +438,8 @@ public class Units {
 						case XML_CLOCK_TUNING:
 							this.clockTuning = bool;
 							break;
-						case XML_HEATING_BURNER_TIME_SYNC:
-							this.heatingBurnerTimeSynchronisation = bool;
+						case XML_EQUIPMENT_TIME_SYNC:
+							this.equipmentTimeSynchronisation = bool;
 							break;
 						case XML_UPDATE_AFTER_USER_ACCESS:
 							this.updateAfterUserAccess = bool;
@@ -418,6 +449,9 @@ public class Units {
 							break;
 						case XMl_POWEROFF_IS_SERVICE_ACCESS:
 							this.powerOffIsServiceAccess = bool;
+							break;
+						case XMl_SEND_MAIL_ON_ERROR:
+							this.sendMailOnError = bool;
 							break;
 						case XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL:
 							this.clearErrorMessageAfterMail = bool;

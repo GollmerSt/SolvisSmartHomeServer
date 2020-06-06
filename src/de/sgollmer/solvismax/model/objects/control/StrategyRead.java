@@ -214,4 +214,9 @@ public class StrategyRead implements Strategy {
 		return true;
 	}
 
+	@Override
+	public boolean isBoolean() {
+		return false;
+	}
+
 }

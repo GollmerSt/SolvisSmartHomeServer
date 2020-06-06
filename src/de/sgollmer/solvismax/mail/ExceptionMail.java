@@ -79,7 +79,7 @@ public class ExceptionMail {
 					case "from":
 						this.from = value;
 						break;
-					case "password":
+					case "passwordCrypt":
 						try {
 							this.password.decrypt(value);
 						} catch (Throwable e) {

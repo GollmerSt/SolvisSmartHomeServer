@@ -283,8 +283,7 @@
 					<annotation>
 						<documentation>
 							Definitionen, wenn
-							derSolvis-Anlagenparameter nur
-							ein
+							derSolvis-Anlagenparameter nur ein
 							auszulesender Wert (z. B. Brennerstarts) ist
 						</documentation>
 					</annotation>
@@ -294,11 +293,13 @@
 					<annotation>
 						<documentation>
 							Definitionen, wenn Solvis-Anlagenparameter
-							ein
-							einzustellender Modus (z.B. Betriebsart)
+							ein einzustellender Modus (z.B. Betriebsart)
 							ist
 						</documentation>
 					</annotation>
+				</element>
+				<element name="TypeButton" type="tns:Button"
+					maxOccurs="1" minOccurs="1">
 				</element>
 			</choice>
 
@@ -515,6 +516,7 @@
 			<element name="TimeDateRectangle" type="tns:Rectangle"
 				maxOccurs="1" minOccurs="1">
 			</element>
+			<element name="MaxGraficSize" type="tns:Coordinate" maxOccurs="1" minOccurs="1"></element>
 			<element name="ResetScreenSaver" type="tns:TouchPoint"
 				maxOccurs="1" minOccurs="1">
 			</element>
@@ -646,7 +648,7 @@
 				<element name="Calculation" type="tns:Calculation"
 					maxOccurs="1" minOccurs="1">
 				</element>
-				<sequence>
+				<sequence minOccurs="1" maxOccurs="1">
 					<element name="Modbus" type="tns:Modbus" maxOccurs="1"
 						minOccurs="0"></element>
 					<choice maxOccurs="1" minOccurs="0">
@@ -695,14 +697,14 @@
 
 
 
-	<complexType name="HeatingBurner">
+	<complexType name="EquipmentOnOff">
 		<annotation>
 			<documentation>Defintionen zum Abgleich der berechneten Brennerdaten
 				mit den Solvis-Daten (z.B. Laufzeiten, Brennerstarts)
 			</documentation>
 		</annotation>
 
-		<attribute name="burnerId" type="string" use="required">
+		<attribute name="equipmentId" type="string" use="required">
 			<annotation>
 				<documentation>Brenner-Name der Solvis-XML-Definitionen A12.Brenner
 					oder A13.Brenner_S2)
@@ -858,7 +860,7 @@
 				berechnete Laufzeit zu kommen, normalerweise 3600.</documentation>
 		</annotation>
 		<sequence>
-			<element name="HeatingBurner" type="tns:HeatingBurner"
+			<element name="EquipmentOnOff" type="tns:EquipmentOnOff"
 				maxOccurs="1" minOccurs="0">
 			</element>
 			<element name="ScreenChange" type="tns:ScreenChange"
@@ -1381,4 +1383,10 @@
 	</complexType>
 
 
+
+	<complexType name="Button">
+		<attribute name="invert" type="boolean" use="optional"></attribute>
+		<attribute name="pushTimeId" type="string" use="required"></attribute>
+		<attribute name="releaseTimeId" type="string" use="required"></attribute>
+	</complexType>
 </schema>

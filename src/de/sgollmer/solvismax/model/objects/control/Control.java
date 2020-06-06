@@ -55,6 +55,7 @@ public class Control extends ChannelSource {
 	private static final String XML_CONTROL_TYPE_READ_WRITE = "TypeReadWrite";
 	private static final String XML_CONTROL_TYPE_READ = "TypeRead";
 	private static final String XML_CONTROL_TYPE_MODE = "TypeMode";
+	private static final String XML_CONTROL_TYPE_BUTTON = "TypeButton";
 	private static final String XML_UPDATE_BY = "UpdateBy";
 
 	private final boolean optional;
@@ -235,6 +236,8 @@ public class Control extends ChannelSource {
 					return new StrategyRead.Creator(id, this.getBaseCreator());
 				case XML_CONTROL_TYPE_MODE:
 					return new StrategyMode.Creator(id, this.getBaseCreator());
+				case XML_CONTROL_TYPE_BUTTON:
+					return new StrategyButton.Creator(id, this.getBaseCreator());
 				case XML_UPDATE_BY:
 					return new UpdateStrategies.Creator(id, this.getBaseCreator());
 			}
@@ -253,6 +256,7 @@ public class Control extends ChannelSource {
 				case XML_CONTROL_TYPE_READ_WRITE:
 				case XML_CONTROL_TYPE_READ:
 				case XML_CONTROL_TYPE_MODE:
+				case XML_CONTROL_TYPE_BUTTON:
 					this.strategy = (Strategy) created;
 					break;
 				case XML_UPDATE_BY:
@@ -340,7 +344,7 @@ public class Control extends ChannelSource {
 
 	@Override
 	public boolean isBoolean() {
-		return false;
+		return this.strategy.isBoolean();
 	}
 
 	@Override

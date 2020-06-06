@@ -20,7 +20,7 @@ import de.sgollmer.solvismax.model.Solvis.SynchronizedScreenResult;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
-import de.sgollmer.solvismax.model.objects.screen.ScreenSaver.SaverState;
+import de.sgollmer.solvismax.model.objects.screen.ScreenSaver.State;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 
@@ -29,7 +29,7 @@ public class WatchDog {
 	private static final Logger logger = LogManager.getInstance().getLogger(WatchDog.class);
 
 	private final Solvis solvis;
-	private final ScreenSaver.getState saver;
+	private final ScreenSaver.Exec saver;
 
 	private final int releaseBlockingAfterUserChange_ms;
 	private final int releaseBlockingAfterServiceAccess_ms;
@@ -67,7 +67,7 @@ public class WatchDog {
 
 	public WatchDog(Solvis solvis, ScreenSaver saver) {
 		this.solvis = solvis;
-		this.clearErrorMessageAfterMail = solvis.getUnit().getFeatures().isClearErrorMessageAfterMail();
+		this.clearErrorMessageAfterMail = solvis.getFeatures().isClearErrorMessageAfterMail();
 		this.saver = saver.createExecutable(solvis);
 		Miscellaneous misc = this.solvis.getSolvisDescription().getMiscellaneous();
 		this.releaseBlockingAfterUserChange_ms = BaseData.DEBUG ? Constants.DEBUG_USER_ACCESS_TIME
@@ -84,8 +84,8 @@ public class WatchDog {
 
 			}
 		});
-		if (this.solvis.getUnit().getFeatures().isPowerOffIsServiceAccess()
-				&& this.solvis.getUnit().getFeatures().isDetectServiceAccess()) {
+		if (this.solvis.getFeatures().isPowerOffIsServiceAccess()
+				&& this.solvis.getFeatures().isDetectServiceAccess()) {
 			this.solvis.getSolvisState().register(this.solvisStateObserver);
 		}
 	}
@@ -148,12 +148,12 @@ public class WatchDog {
 
 				if (realScreen != null && synchronizedScreenResult.isChanged()) {
 
-					SaverState saverState = this.saver.getSaverState(realScreen) ;
-					if ( saverState == SaverState.SCREENSAVER) {
+					State saverState = this.saver.getSaverState(realScreen);
+					if (saverState == State.SCREENSAVER) {
 						event = Event.SCREENSAVER;
 						possibleErrorScreen = null;
-					} else if ( saverState != SaverState.POSSIBLE) {						
-						event = this.checkError(realScreen);  // RESET_ERROR or SET_ERROR
+					} else if (saverState != State.POSSIBLE) {
+						event = this.checkError(realScreen); // RESET_ERROR or SET_ERROR
 
 						if (event == null) {
 							event = this.isHumanAccess(realScreen) ? Event.CHANGED : Event.NONE;
@@ -300,7 +300,7 @@ public class WatchDog {
 					current = HumanAccess.SERVICE;
 				} else if (realScreen != null && this.solvis.getSolvisDescription().getService()
 						.isServiceScreen(realScreen.get(), this.solvis)
-						&& this.solvis.getUnit().getFeatures().isDetectServiceAccess()) {
+						&& this.solvis.getFeatures().isDetectServiceAccess()) {
 					synchronized (this) {
 						this.serviceScreenDetected = true;
 						current = HumanAccess.SERVICE;

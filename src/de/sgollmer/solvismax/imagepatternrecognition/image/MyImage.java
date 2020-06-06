@@ -26,8 +26,8 @@ public class MyImage {
 
 	private final BufferedImage image;
 	protected Coordinate origin;
-	protected Coordinate maxRel; // Zeigt auf 1. Pixel auﬂerhalb, relativ
-									// zu min
+	protected Coordinate size; // Zeigt auf 1. Pixel auﬂerhalb, relativ
+								// zu min
 	private final Collection<Rectangle> ignoreRectangles;
 
 	private final ImageMeta meta;
@@ -41,7 +41,7 @@ public class MyImage {
 	public MyImage(BufferedImage image) {
 		this.image = image;
 		this.origin = new Coordinate(0, 0);
-		this.maxRel = new Coordinate(image.getWidth(), image.getHeight());
+		this.size = this.getImageSize();
 		this.autoInvert = false;
 		this.meta = new ImageMeta(this);
 		this.ignoreRectangles = null;
@@ -50,7 +50,7 @@ public class MyImage {
 	public MyImage(MyImage image) {
 		this.image = image.image;
 		this.origin = image.origin;
-		this.maxRel = image.maxRel;
+		this.size = image.size;
 		if (image.histogramX != null) {
 			this.histogramX = new ArrayList<>(image.histogramX);
 		}
@@ -82,7 +82,7 @@ public class MyImage {
 			topLeft = image.origin;
 		}
 		if (bottomRight == null) {
-			bottomRight = image.origin.add(image.maxRel).decrement();
+			bottomRight = image.origin.add(image.size).decrement();
 		}
 		if (!image.isIn(topLeft) || !image.isIn(bottomRight)) {
 			throw new ErrorNotInRange("UpperLeft or lowerRight not within the image");
@@ -99,7 +99,7 @@ public class MyImage {
 		} else {
 			this.ignoreRectangles = null;
 		}
-		this.maxRel = bottomRight.diff(topLeft).increment();
+		this.size = bottomRight.diff(topLeft).increment();
 		this.origin = image.origin.add(topLeft);
 		this.autoInvert = image.autoInvert;
 		if (createImageMeta) {
@@ -131,12 +131,12 @@ public class MyImage {
 	}
 
 	public boolean isIn(Coordinate coord) {
-		return coord.getX() >= 0 && coord.getY() >= 0 && coord.getX() < this.maxRel.getX()
-				&& coord.getY() < this.maxRel.getY();
+		return coord.getX() >= 0 && coord.getY() >= 0 && coord.getX() < this.size.getX()
+				&& coord.getY() < this.size.getY();
 	}
 
 	public boolean isIn(int x, int y) {
-		return x >= 0 && y >= 0 && x < this.maxRel.getX() && y < this.maxRel.getY();
+		return x >= 0 && y >= 0 && x < this.size.getX() && y < this.size.getY();
 	}
 
 	public int getRGB(int x, int y) {
@@ -256,17 +256,21 @@ public class MyImage {
 
 		int width = maxX + 1 - minX;
 		int height = maxY + 1 - minY;
-		this.maxRel = new Coordinate(width, height);
+		this.size = new Coordinate(width, height);
 		this.origin = new Coordinate(minX + this.origin.getX(), minY + this.origin.getY());
 
 	}
 
 	public int getHeight() {
-		return this.maxRel.getY();
+		return this.size.getY();
 	}
 
 	public int getWidth() {
-		return this.maxRel.getX();
+		return this.size.getX();
+	}
+
+	public Coordinate getSize() {
+		return this.size;
 	}
 
 	/**
@@ -364,7 +368,7 @@ public class MyImage {
 	}
 
 	public String getDebugInfo() {
-		return "Origin: " + this.origin + ", max: " + this.maxRel;
+		return "Origin: " + this.origin + ", max: " + this.size;
 	}
 
 	public BufferedImage getImage() {
@@ -373,6 +377,10 @@ public class MyImage {
 
 	public Coordinate getOrigin() {
 		return this.origin;
+	}
+
+	public final Coordinate getImageSize() {
+		return new Coordinate(this.image.getWidth(), this.image.getHeight());
 	}
 
 }

@@ -6,17 +6,17 @@
 		port="10735" writablePathLinux="/opt/fhem" />
 	<tns:Units>
 		<tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true"
-			account="account" passwordCrypt="AES-coded"
-			url="aaa.bbb.ccc.ddd" defaultAverageCount="12"
-			measurementHysteresisFactor="4"
+			account="account" passwordCrypt="AES-coded" url="aaa.bbb.ccc.ddd"
+			defaultAverageCount="12" measurementHysteresisFactor="4"
 			defaultReadMeasurementsInterval_ms="10000"
 			forcedUpdateInterval_ms="3600000" doubleUpdateInterval_ms="10000"
 			bufferedInterval_ms="60000" watchDogTime_ms="30000"
-			delayAfterSwitchingOnEnable="true">
+			delayAfterSwitchingOnEnable="true"
+			ignoredFrameThicknesScreenSaver="3">
 			<tns:Features>
 				<tns:ClockTuning>false</tns:ClockTuning>
 				<!-- Die Uhr wird automatisch eingestellt, Genauigkeit +- 31s -->
-				<tns:HeatingBurnerTimeSynchronisation>false</tns:HeatingBurnerTimeSynchronisation>
+				<tns:EquipmentTimeSynchronisation>false</tns:EquipmentTimeSynchronisation>
 				<!-- Synchronisation der sekundengenauen Brennerlaufzeiten mit den stündlichen 
 					der SolvisControl -->
 				<tns:UpdateAfterUserAccess>false</tns:UpdateAfterUserAccess>
@@ -30,15 +30,18 @@
 				<tns:PowerOffIsServiceAccess>false</tns:PowerOffIsServiceAccess>
 				<!-- Wird ein Power-Off der Anlage erkannt, wird der wie ein Zugriff 
 					auf die Service-Screens behandelt (siehe vorheriges Element) -->
+				<tns:SendMailOnError>false</tns:SendMailOnError>
+				<!-- Im Fall eines Anlagenfehlers wird einen Mail gesendet. Definitionen 
+					im Abschnitt "ExceptionMail" -->
 				<tns:ClearErrorMessageAfterMail>false</tns:ClearErrorMessageAfterMail>
 				<!-- Ist dieses Feature deaktiviert (false), wird bei einem Anlagenfehler 
 					die GUI-Steuerung solange deaktiviert, bis die Fehlermeldung verschwunden 
 					ist. Die Steuereungsbefehle werden gemerkt und nach beenden des Fehlerzustandes 
-					ausgeführt. Ist es aktiviert (true) und ist auch die "ExceptionMail" funktionsfähig, 
-					wird im Fehlerfall nach erfolgtem Mail-Versand (Mail mit Hardcopy der Fehlermeldung) 
-					zum HomeScreen gewechselt und dort der Button mit dem Warnzeichen beobachtet. 
-					Der Error-Status wird zurückgesetzt, wenn dieser Button nicht mehr sichtbar 
-					ist. GUI-Steuerungsbefehle werden in dieser Zeit ausgeführt -->
+					ausgeführt. Ist es aktiviert (true), wird im Fehlerfall zum HomeScreen gewechselt 
+					und dort der Button mit dem Warnzeichen beobachtet. Ist dabei die ExceptionMail 
+					aktiviert, wird nur zum HomeScreen gewechselt, wenn der Versand der Mail 
+					erfolgreich war. Der Error-Status wird zurückgesetzt, wenn dieser Button 
+					nicht mehr sichtbar ist. GUI-Steuerungsbefehle werden in dieser Zeit ausgeführt -->
 				<tns:OnlyMeasurements>true</tns:OnlyMeasurements>   <!-- true: GUI controlling disabled -->
 				<!-- Bei true werden sämtliche Gui-Aktivitäten verhindert. Das Modul 
 					verhält sich so wie das bisherige, ein aktiver Eingriff vom Server auf die 
@@ -46,8 +49,9 @@
 			</tns:Features>
 		</tns:Unit>
 	</tns:Units>
-	<tns:ExceptionMail port="5870" password="AES-coded"
-		name="Vorname Nachname" securityType="TLS"
+	<!-- ExceptionMail securityType: TLS, SSL oder NONE -->
+	<tns:ExceptionMail port="5870"
+		passwordCrypt="AES-coded" name="Vorname Nachname" securityType="TLS"
 		provider="securesmtp.t-online.de" from="Mailadresse@t-online.de">
 		<tns:Recipients>
 			<tns:Recipient address="Mailadresse@t-online.de"

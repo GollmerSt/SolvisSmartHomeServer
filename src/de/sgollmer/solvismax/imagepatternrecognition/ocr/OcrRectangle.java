@@ -147,7 +147,7 @@ public class OcrRectangle extends MyImage {
 			return;
 		}
 		this.origin = new Coordinate(left + this.origin.getX(), top + this.origin.getY());
-		this.maxRel = new Coordinate(remainingX, remainingY);
+		this.size = new Coordinate(remainingX, remainingY);
 
 		this.histogramX = this.histogramX.subList(left, right + 1);
 		this.histogramY = this.histogramY.subList(top, bottom + 1);

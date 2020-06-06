@@ -47,5 +47,7 @@ public interface Strategy extends Assigner {
 	public SingleData<?> interpretSetData(SingleData<?> singleData)  throws TypeError;
 	
 	public boolean isXmlValid( boolean modbus) ;
+	
+	public boolean isBoolean() ;
 
 }

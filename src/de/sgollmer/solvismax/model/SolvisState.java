@@ -71,36 +71,34 @@ public class SolvisState extends Observable<SolvisState> {
 		return processError(changed, null);
 	}
 
-	private boolean processError(ErrorChanged errorState, ChannelDescription description) {
+	private boolean processError(ErrorChanged errorChangeState, ChannelDescription description) {
 		String errorName = description == null ? "Message box" : description.getId();
 		boolean last = this.error;
 		this.error = this.errorScreen != null || !this.errorChannels.isEmpty();
 		MailInfo mailInfo = null;
-		if (errorState != ErrorChanged.NONE) {
+		if (errorChangeState != ErrorChanged.NONE) {
 			String message = "The Solvis system \"" + this.solvis.getUnit().getId() + "\" reports: ";
-			if (errorState == ErrorChanged.SET) {
+			if (errorChangeState == ErrorChanged.SET) {
 				message += " Error: " + errorName + " occured.";
 			} else {
 				message += errorName + " cleared.";
 			}
 			logger.info(message);
 			mailInfo = new MailInfo(SolvisScreen.getImage(this.errorScreen), message);
-			this.notify(this);
 		}
 		if (!this.error && last) {
 			String message = "All errors of Solvis system \"" + this.solvis.getUnit().getId() + "\" cleared.";
 			logger.info(message);
 			mailInfo = new MailInfo(SolvisScreen.getImage(this.errorScreen), message);
-			this.notify(this);
 		}
 		if (mailInfo != null) {
-			try {
-				if (this.solvis.getExceptionMail() == null) {
+			this.notify(this);
+			if (this.solvis.getExceptionMail() != null && this.solvis.getFeatures().isSendMailOnError()) {
+				try {
+					this.solvis.getExceptionMail().send(mailInfo);
+				} catch (MessagingException | IOException e) {
 					return false;
 				}
-				this.solvis.getExceptionMail().send(mailInfo);
-			} catch (MessagingException | IOException e) {
-				return false;
 			}
 		}
 		return true;

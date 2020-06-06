@@ -34,7 +34,7 @@ public class Constants {
 	public static final int COMMAND_TO_QUEUE_END_AFTER_N_FAILURES = 3;
 	public static final int COMMAND_IGNORED_AFTER_N_FAILURES = 10;
 
-	public static final int HOURLY_BEARNER_SYNCHRONISATION_READ_INTERVAL_FACTOR = 6;
+	public static final int HOURLY_EQUIPMENT_SYNCHRONISATION_READ_INTERVAL_FACTOR = 6;
 
 	public static final int MAX_CONNECTIONS = 50;
 	public static final int RETRY_STARTING_SERVER_TIME = 60000;

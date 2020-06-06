@@ -51,7 +51,7 @@ public class Mail {
 	private static boolean DEBUG = false; // kein Mailversand
 
 	public enum Security {
-		TLS, SSL
+		TLS, SSL, NONE
 	};
 
 	private static Map<String, RecipientType> recipientTypeMap = new HashMap<>(5);
@@ -135,16 +135,24 @@ public class Mail {
 		logger.info(security.name() + "Email Start");
 		Properties props = new Properties();
 		props.put("mail.smtp.host", provider); // SMTP Host
-		if (security == Security.SSL) {
-			props.put("mail.smtp.socketFactory.port", portString); // SSL Port
-			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // SSL Factory Class
-		} else {
-			props.put("mail.smtp.starttls.enable", "true");
-//			props.put("mail.smtp.EnableSSL.enable", "true");
+		switch (security) {
+			case SSL:
+				props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // SSL Factory Class
+				props.put("mail.smtp.socketFactory.port", portString); // SSL Port
+				props.put("mail.smtp.ssl.trust", "*");
+				break;
+			case TLS:
+				props.put("mail.smtp.starttls.enable", "true");
+//				props.put("mail.smtp.EnableSSL.enable", "true");
+				props.put("mail.smtp.ssl.trust", "*");
+				break;
+			case NONE:
+				break;
+			default:
+				throw new MessagingException("Mail security type \"" + security.name() + "\" unknown.") ;
 		}
 		props.put("mail.smtp.auth", "true"); // Enabling SMTP Authentication
 		props.put("mail.smtp.port", portString); // SMTP Port
-		props.put("mail.smtp.ssl.trust", "*");
 
 		Authenticator auth = new Authenticator() {
 

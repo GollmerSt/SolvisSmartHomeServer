@@ -19,6 +19,7 @@
 #   00.02.06    11.05.2020  SCMP77              HumanAccess status added, HTML-Beschreibung ergänzt
 #   00.02.07    21.05.2020  SCMP77              GUI_COMMANDS_ENABLE/DISABLE was incorrectly sent on reconnection
 #   00.02.08    25.05.2020  SCMP77              Some variables moved to helper (should not be visible in Web-Interface)
+#   00.02.09    05.06.2020  SCMP77              Set of a binary value now possible
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -881,6 +882,8 @@ sub CreateSetParams {
                 }
                 $setParameters .=$count ;
             }
+        } elsif ( defined ($ChannelDescriptions{$channel}{IsBoolean}) ) {
+            $setParameters .= ':off,on' ;
         }
     }
     return ;
@@ -1040,8 +1043,16 @@ sub Set {
             if ( defined ($ChannelDescriptions{$channel}{Modes}) ) {
                 if ( ! defined ($ChannelDescriptions{$channel}{Modes}{$value})) {
                     my @modes = keys(%{$ChannelDescriptions{$channel}{Modes}}) ;
-            Log($self, 5, 'Mode 1: '.join(' ', $modes[0]));
+					Log($self, 5, 'Mode 1: '.join(' ', $modes[0]));
                     return "unknown value $value choose one of " . join(' ', @modes);
+                }
+            } elsif ( defined ($ChannelDescriptions{$channel}{IsBoolean}) ) {
+				if ( $value eq "on" ) {
+					$value = \1;
+				} elsif ( $value eq "off" ) {
+					$value = \0;
+				} else {
+                    return "unknown value $value choose one of on off";
                 }
             } else {
                 $value = int($value) ;

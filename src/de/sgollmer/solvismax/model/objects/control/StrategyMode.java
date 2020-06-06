@@ -263,4 +263,9 @@ public class StrategyMode implements Strategy {
 		}
 		return result;
 	}
+
+	@Override
+	public boolean isBoolean() {
+		return false;
+	}
 }

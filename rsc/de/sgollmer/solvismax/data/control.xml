@@ -23,7 +23,7 @@
 			</tns:HK3Button>
 		</tns:HeaterLoops>
 		<tns:Solar screenRef="Solar" maxTemperatureX10="2499"
-			format="##0C0CC">
+			format="^([+-]{0,1}\d+).(\d)..$">
 			<tns:ReturnTemperature>
 				<tns:TopLeft X="170" Y="30" />
 				<tns:BottomRight X="235" Y="40" />
@@ -39,6 +39,7 @@
 			<tns:TopLeft X="75" Y="0" />
 			<tns:BottomRight X="135" Y="32" />
 		</tns:TimeDateRectangle>
+		<tns:MaxGraficSize X="150" Y="80" />
 		<tns:ResetScreenSaver pushTimeRefId="Standard"
 			releaseTimeRefId="WindowChange">
 			<tns:Coordinate X="0" Y="0" />
@@ -1135,6 +1136,19 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A07"><!-- not used -->
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x10"
+					compareMask="0x00" />
+			</tns:ConfigurationMasks>
+			<tns:Measurement type="boolean" dynamic="true">
+				<tns:Field position="130" length="2" />
+			</tns:Measurement>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="A07.Pumpe_Solar2">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x10"
+					compareMask="0x10" />
+			</tns:ConfigurationMasks>
 			<tns:Measurement type="boolean" dynamic="true">
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
@@ -1201,25 +1215,27 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="X1.BrennerStarts">
 			<tns:Calculation strategy="starts">
-				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
+				<tns:Dependency id="equipmentOn" dataId="A12.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X2.BrennerLaufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
-				<tns:Dependency id="burnerOn" dataId="A12.Brenner" />
+				<tns:Dependency id="equipmentOn" dataId="A12.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X3.BrennerStufe2Starts">
 			<tns:Calculation strategy="starts">
-				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
+				<tns:Dependency id="equipmentOn"
+					dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X4.BrennerStufe2Laufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
-				<tns:Dependency id="burnerOn" dataId="A13.Brenner_S2" />
+				<tns:Dependency id="equipmentOn"
+					dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="X5.BrennerStatus">
@@ -1246,6 +1262,24 @@
 					dataId="A11.Mischer.HK2_zu" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="X9.LaufzeitSolarpumpe_s">
+			<tns:Calculation strategy="runtime">
+				<tns:Dependency id="equipmentOn"
+					dataId="A01.Pumpe_Solar" />
+			</tns:Calculation>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="X10.LaufzeitSolarpumpe2_s">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x10"
+					compareMask="0x10" />
+			</tns:ConfigurationMasks>
+			<tns:Calculation strategy="runtime">
+				<tns:Dependency id="equipmentOn"
+					dataId="A07.Pumpe_Solar2" />
+			</tns:Calculation>
+		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C01.StartsBrenner">
 			<tns:Control>
 				<tns:ModbusAccess address="0x8301" type="Input" />
@@ -1256,10 +1290,10 @@
 					</tns:CurrentValue>
 				</tns:GuiAccess>
 				<tns:TypeRead>
-					<tns:GuiRead format="#######0" />
+					<tns:GuiRead format="^(\d+)$" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
-					<tns:HeatingBurner burnerId="A12.Brenner"
+					<tns:EquipmentOnOff equipmentId="A12.Brenner"
 						calculatedId="X1.BrennerStarts" />
 				</tns:UpdateBy>
 			</tns:Control>
@@ -1275,12 +1309,13 @@
 					</tns:CurrentValue>
 				</tns:GuiAccess>
 				<tns:TypeRead>
-					<tns:GuiRead format="######0C" />
+					<tns:GuiRead format="^(\d+).$" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
-					<tns:HeatingBurner burnerId="A12.Brenner"
+					<tns:EquipmentOnOff equipmentId="A12.Brenner"
 						calculatedId="X2.BrennerLaufzeit_s" factor="3600" hourly="true"
-						checkIntervalId="checkBrenner" readIntervalId="readBrenner" />
+						checkIntervalId="checkCalculation"
+						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1295,13 +1330,13 @@
 					</tns:CurrentValue>
 				</tns:GuiAccess>
 				<tns:TypeRead>
-					<tns:GuiRead format="######0C" />
+					<tns:GuiRead format="^(\d+).$" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
-					<tns:HeatingBurner burnerId="A13.Brenner_S2"
+					<tns:EquipmentOnOff equipmentId="A13.Brenner_S2"
 						calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"
-						checkIntervalId="checkBrenner" readIntervalId="readBrenner"
-						hourly="true" />
+						checkIntervalId="checkCalculation"
+						readIntervalId="readCalculationInterval" hourly="true" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1364,7 +1399,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="65"
 					least="10">
-					<tns:GuiModification format="#0CC">
+					<tns:GuiModification format="(\d+)..^$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="225" Y="20" />
@@ -1522,7 +1557,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
-					<tns:GuiModification format="#0CC"
+					<tns:GuiModification format="^(\d+)..^$"
 						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
@@ -1556,7 +1591,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
-					<tns:GuiModification format="#0CC"
+					<tns:GuiModification format="^(\d+)..$"
 						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
@@ -1590,7 +1625,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="5"
 					least="-5">
-					<tns:GuiModification format="C#0C">
+					<tns:GuiModification format="^.(-{0,1}\d+).$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="220" Y="20" />
@@ -1624,7 +1659,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="5"
 					least="-5">
-					<tns:GuiModification format="C#0C">
+					<tns:GuiModification format="^.(-{0,1}\d+).$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="220" Y="20" />
@@ -1651,7 +1686,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="10" most="90"
 					least="0">
-					<tns:GuiModification format="#0C"
+					<tns:GuiModification format="^(\d+).$"
 						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
@@ -1678,7 +1713,7 @@
 					</tns:CurrentValue>
 				</tns:GuiAccess>
 				<tns:TypeRead>
-					<tns:GuiRead format="#0CC" />
+					<tns:GuiRead format="^([+-]{0,1}\d+)..$" />
 				</tns:TypeRead>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1761,7 +1796,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
-					<tns:GuiModification format="#0CC"
+					<tns:GuiModification format="^(\d+)..$"
 						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
@@ -1795,7 +1830,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
-					<tns:GuiModification format="#0CC"
+					<tns:GuiModification format="^(\d+)..$"
 						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
@@ -1828,7 +1863,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="5"
 					least="-5">
-					<tns:GuiModification format="C#0C">
+					<tns:GuiModification format="^.(-{0,1}\d+).$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="220" Y="20" />
@@ -1859,7 +1894,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="10" most="90"
 					least="10">
-					<tns:GuiModification format="#0C"
+					<tns:GuiModification format="^(\d+).$"
 						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
@@ -1890,8 +1925,80 @@
 					</tns:CurrentValue>
 				</tns:GuiAccess>
 				<tns:TypeRead>
-					<tns:GuiRead format="#0CC" />
+					<tns:GuiRead format="^([+-]{0,1}\d+)..$" />
 				</tns:TypeRead>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C24.LaufzeitSolarpumpe" unit="h">
+			<tns:Control optional="true">
+				<tns:GuiAccess screenId="Zaehlfunktion">
+					<tns:CurrentValue>
+						<tns:TopLeft X="140" Y="20" />
+						<tns:BottomRight X="205" Y="30" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="^(\d+).*$" />
+				</tns:TypeRead>
+				<tns:UpdateBy>
+					<tns:EquipmentOnOff
+						equipmentId="A01.Pumpe_Solar"
+						calculatedId="X9.LaufzeitSolarpumpe_s" factor="3600" hourly="true"
+						checkIntervalId="checkCalculation"
+						readIntervalId="readCalculationInterval" />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C25.LaufzeitSolarpumpe2" unit="h">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x10"
+					compareMask="0x10" />
+			</tns:ConfigurationMasks>
+			<tns:Control optional="true">
+				<tns:GuiAccess screenId="Zaehlfunktion">
+					<tns:CurrentValue>
+						<tns:TopLeft X="140" Y="20" />
+						<tns:BottomRight X="205" Y="30" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="^\d+/(\d+).*$" />
+				</tns:TypeRead>
+				<tns:UpdateBy>
+					<tns:EquipmentOnOff
+						equipmentId="A07.Pumpe_Solar2"
+						calculatedId="X10.LaufzeitSolarpumpe2_s" factor="3600"
+						hourly="true" checkIntervalId="checkCalculation"
+						readIntervalId="readCalculationInterval" />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C26.Warmwasserzirkulation_Puls">
+			<tns:Control>
+				<tns:GuiAccess screenId="Zirkulation">
+					<tns:CurrentValue>
+						<tns:TopLeft X="55" Y="26" />
+						<tns:BottomRight X="82" Y="52" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeButton pushTimeId="Standard"
+					releaseTimeId="WindowChange" />
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C27.Warmwasserzirkulation_Zeit">
+			<tns:Control>
+				<tns:GuiAccess screenId="Zirkulation">
+					<tns:CurrentValue>
+						<tns:TopLeft X="55" Y="60" />
+						<tns:BottomRight X="82" Y="86" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeButton pushTimeId="Standard"
+					releaseTimeId="WindowChange" />
 			</tns:Control>
 		</tns:ChannelDescription>
 	</tns:ChannelDescriptions>
@@ -2032,10 +2139,11 @@
 		<tns:Duration id="WindowChange" time_ms="3000" />
 		<!-- Zeitintervall für den Check der Zählfunktionen, um die berechneten 
 			Werte zu synchronisieren -->
-		<tns:Duration id="checkBrenner" time_ms="86400000" />
+		<tns:Duration id="checkCalculation" time_ms="86400000" />
 		<!-- Zeitintervall für das Lesen der Zählfunktionen, wenn die Synchronisation 
 			läuft -->
-		<tns:Duration id="readBrenner" time_ms="30000" />
+		<tns:Duration id="readCalculationInterval"
+			time_ms="30000" />
 	</tns:Durations>
 	<tns:Miscellaneous powerOffDetectedAfterIoErrors="3"
 		powerOffDetectedAfterTimeout_ms="120000"

@@ -362,7 +362,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 		@Override
 		public void update(SolvisData data, Object source) {
-			if (!this.solvis.getUnit().getFeatures().isClockTuning()) {
+			if (!this.solvis.getFeatures().isClockTuning()) {
 				return;
 			}
 			String channelId = data.getId();

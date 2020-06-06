@@ -39,6 +39,7 @@ import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
+import de.sgollmer.solvismax.model.objects.Units.Features;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
@@ -46,6 +47,7 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
+import de.sgollmer.solvismax.objects.Coordinate;
 
 public class Solvis {
 
@@ -206,10 +208,14 @@ public class Solvis {
 		if (point == null) {
 			logger.warn("TouchPoint is <null>, ignored");
 		}
-		this.getConnection().sendTouch(point.getCoordinate());
-		AbortHelper.getInstance().sleep(point.getPushTime());
+		this.send(point.getCoordinate(), point.getPushTime(), point.getReleaseTime());
+	}
+
+	public void send(Coordinate coord, int pushTime, int releaseTime ) throws IOException, TerminationException {
+		this.getConnection().sendTouch(coord);
+		AbortHelper.getInstance().sleep(pushTime);
 		this.getConnection().sendRelease();
-		AbortHelper.getInstance().sleep(point.getReleaseTime());
+		AbortHelper.getInstance().sleep(releaseTime);
 		this.clearCurrentScreen();
 	}
 
@@ -388,6 +394,10 @@ public class Solvis {
 	public Unit getUnit() {
 		return this.unit;
 	}
+	
+	public Features getFeatures() {
+		return this.unit.getFeatures();
+	}
 
 	public void registerObserver(Observer.ObserverI<SolvisData> observer) {
 		this.allSolvisData.registerObserver(observer);
@@ -531,6 +541,7 @@ public class Solvis {
 			time = System.currentTimeMillis();
 			try {
 				this.configurationMask = this.getSolvisDescription().getConfigurations(this, current);
+				this.configurationMask |= this.getUnit().getConfigOrMask();
 				if (DEBUG_TWO_STATIONS) {
 					this.configurationMask |= 0x00000003;
 				}

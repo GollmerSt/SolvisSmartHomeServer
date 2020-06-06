@@ -43,38 +43,38 @@ public class RunTime extends Strategy<RunTime> {
 
 		Dependencies dependencies = this.calculation.getDependencies();
 
-		SolvisData burnerOn = dependencies.get(allData, "burnerOn");
+		SolvisData equipmentOn = dependencies.get(allData, "equipmentOn");
 
-		Executable executable = new Executable(result, burnerOn);
+		Executable executable = new Executable(result, equipmentOn);
 
-		executable.update(burnerOn, this);
+		executable.update(equipmentOn, this);
 	}
 
 	private class Executable implements ObserverI<SolvisData> {
 
 		private final SolvisData result;
-		private final SolvisData burnerOn;
+		private final SolvisData equipmentOn;
 		private long lastStartTime = -1;
 		private int formerRunTime_s = -1;
 
-		public Executable(SolvisData result, SolvisData burnerOn) {
+		public Executable(SolvisData result, SolvisData equipmentOn) {
 			this.result = result;
-			this.burnerOn = burnerOn;
-			this.burnerOn.registerContinuousObserver(this);
+			this.equipmentOn = equipmentOn;
+			this.equipmentOn.registerContinuousObserver(this);
 			this.result.registerContinuousObserver(this);
 		}
 
 		@Override
 		public void update(SolvisData data, Object source ) {
-			if (this.result == null || this.burnerOn == null) {
+			if (this.result == null || this.equipmentOn == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
 			
-			Boolean burnerOn = null ;
+			Boolean equipmentOn = null ;
 
 			if ( data.getDescription() == this.result.getDescription() ) {
 				if ( source != this ) {
-					burnerOn = this.burnerOn.getBool() ;
+					equipmentOn = this.equipmentOn.getBool() ;
 					this.lastStartTime = -1 ;
 				}
 				else {
@@ -82,18 +82,18 @@ public class RunTime extends Strategy<RunTime> {
 				}
 			}
 			
-			if ( burnerOn == null ) {
-				burnerOn = data.getBool() ;
+			if ( equipmentOn == null ) {
+				equipmentOn = data.getBool() ;
 			}
 
 
-			if (burnerOn || this.lastStartTime >= 0) {
+			if (equipmentOn || this.lastStartTime >= 0) {
 
 				long time = System.currentTimeMillis();
 
 				int former = this.result.getInt();
 
-				if (burnerOn) {
+				if (equipmentOn) {
 					if (this.lastStartTime < 0) {
 						this.lastStartTime = time;
 						this.formerRunTime_s = former;
@@ -102,11 +102,11 @@ public class RunTime extends Strategy<RunTime> {
 				
 				int result = this.formerRunTime_s + (int) ((time - this.lastStartTime + 500) / 1000);
 
-				if (result - former > 60 || ! burnerOn ) {
+				if (result - former > 60 || ! equipmentOn ) {
 					this.result.setInteger(result, data.getTimeStamp(), this);
 				}
 				
-				if ( !burnerOn ) {
+				if ( !equipmentOn ) {
 					this.lastStartTime = -1;
 				}
 			}

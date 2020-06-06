@@ -38,7 +38,7 @@ public class UpdateStrategies implements Assigner {
 	public enum StrategyEnum {
 
 		SCREEN_CHANGED(new ByScreenChange.Creator(), "ScreenChange"),
-		BURNER_OFF_SOMETIMES(new HeatingBurner.Creator(), "HeatingBurner");
+		EQUIPMENT_ON_OFF(new EquipmentOnOff.Creator(), "EquipmentOnOff");
 
 		private final UpdateCreator<?> creator;
 		private final String xmlId;

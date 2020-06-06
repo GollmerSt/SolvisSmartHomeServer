@@ -1,5 +1,23 @@
 Ä N D E R U N G E N
 
+Version 01.00.13
+
+	01.06.2020	Es werden nun die Laufzeiten der Solarpumpen in die Readings geschrieben. Dabei
+				werden unter "C24.LaufzeitSolarpumpe" und "C25.LaufzeitSolarpumpe2" die ausgelesenen
+				Werte aus "Sonstig./weiter/Zählfunktion" eingetragen.
+				Zusätzlich gibt es eine sekundengenaue Berechnung unter "X9.LaufzeitSolarpumpe_s" und
+				"X10.LaufzeitSolarpumpe2_s", welche auf dem Beobachten der Ausgänge "A01.Pumpe_Solar"
+				bzw. A07.Pumpe_Solar2 beruhen.
+
+    03.06.2020  Mailversand ist nun auch ohne Verschlüsselung möglich.
+    
+    			Der Mailversand ist nun standardmäßig deaktiviert und muss durch das Setzen des
+    			Features "SendMailOnError" auf true erst aktiviert werden
+    
+    			
+
+
+
 Version 01.00.12
 
 	01.06.2020	In seltenen Fällen kam es nach dem Einschalten der Anlage beim Erscheinen des 
