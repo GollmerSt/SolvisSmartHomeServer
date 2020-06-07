@@ -1,11 +1,6 @@
 package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.ImageHelper;
@@ -28,38 +23,34 @@ public class Button extends Pattern {
 
 	private Boolean selected = null;
 
-	private static class Change {
-		private final int y;
-		private final int brightness;
-
-		public Change(int y, int brightness) {
-			this.y = y;
-			this.brightness = brightness;
-		}
-		
-		public String toString() {
-			
-		}
-	}
-
 	public boolean isSelected() {
 		if (this.selected == null) {
 
-			int x = this.getWidth() / 2;
+			int y = this.getHeight() / 2;
 
-			List<Change> changes = new ArrayList();
-
+			int changeCnt = 0 ;
+			
+			boolean frame = false ;
 			int former = ImageHelper.getBrightness(this.getRGB(0, 0));
 
-			for (int y = 0; y < this.getHeight(); ++y) {
+			for (int x = 0; x < this.getWidth()/2 && this.selected == null ; ++x) {
 				int brightness = ImageHelper.getBrightness(this.getRGB(x, y));
 				if (brightness != former) {
-					changes.add(new Change(y, brightness));
+					++changeCnt;
+					if ( changeCnt == 2 ) {
+						if ( x < 2 ) {
+							frame = true ;
+						}
+					}
+					if ( frame && changeCnt == 3 || !frame && changeCnt == 2) {
+						this.selected = brightness > former ;
+					}
 					former = brightness;
 				}
 			}
-			
-			
+			if ( this.selected == null ) {
+				this.selected = !frame ;
+			}
 		}
 		return this.selected;
 	}

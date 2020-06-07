@@ -39,6 +39,10 @@ public class Starts extends Strategy<Starts> {
 	public void instantiate(Solvis solvis) {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
+		
+		if ( result.getSingleData() == null ) {
+			result.setInteger(0, -1);
+		}
 
 		Dependencies dependencies = this.calculation.getDependencies();
 

@@ -51,8 +51,10 @@ public class AllSolvisData {
 			data = this.solvisDatas.get(id);
 			if (data == null) {
 				ChannelDescription description = this.solvis.getChannelDescription(id);
-				data = new SolvisData(description, this);
-				this.solvisDatas.put(id, data);
+				if (description != null) {
+					data = new SolvisData(description, this);
+					this.solvisDatas.put(id, data);
+				}
 			}
 		}
 		return data;
@@ -126,7 +128,9 @@ public class AllSolvisData {
 	public synchronized void restoreSpecialMeasurements(SystemMeasurements backup) {
 		for (Measurement measurement : backup.getMeasurements()) {
 			SolvisData data = this.get(measurement.getId());
-			data.setSingleData(measurement.getData());
+			if (data != null) {
+				data.setSingleData(measurement.getData());
+			}
 		}
 	}
 

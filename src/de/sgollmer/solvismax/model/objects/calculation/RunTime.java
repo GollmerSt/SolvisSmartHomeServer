@@ -41,6 +41,10 @@ public class RunTime extends Strategy<RunTime> {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
+		if ( result.getSingleData() == null ) {
+			result.setInteger(0, -1);
+		}
+
 		Dependencies dependencies = this.calculation.getDependencies();
 
 		SolvisData equipmentOn = dependencies.get(allData, "equipmentOn");

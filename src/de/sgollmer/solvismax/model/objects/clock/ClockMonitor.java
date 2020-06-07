@@ -728,21 +728,25 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			logger.error(error);
 			throw new LearningError(error);
 		}
-		this.screen.get(solvis).goTo(solvis);
 		boolean finished = false;
 		for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
-			if (repeat == 1) {
-				logger.log(LEARN, "Learning of clock not successfull, try it again.");
-			}
-			finished = true;
-			for (DatePart part : this.dateParts) {
-				solvis.send(part.touch);
-				solvis.clearCurrentScreen();
-				part.screenGrafic.learn(solvis);
-				if (part.getValue(solvis) == null) {
-					finished = false;
-					break;
+			try {
+				if (repeat == 1) {
+					logger.log(LEARN, "Learning of clock not successfull, try it again.");
 				}
+				this.screen.get(solvis).goTo(solvis);
+				finished = true;
+				for (DatePart part : this.dateParts) {
+					solvis.send(part.touch);
+					solvis.clearCurrentScreen();
+					part.screenGrafic.learn(solvis);
+					if (part.getValue(solvis) == null) {
+						finished = false;
+						break;
+					}
+				}
+			} catch (IOException e) {
+				finished = false;
 			}
 		}
 		if (!finished) {

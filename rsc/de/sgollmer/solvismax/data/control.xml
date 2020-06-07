@@ -905,7 +905,7 @@
 		<!-- <tns:ScreenRef id="Warmwasser" /> <tns:Back /> -->
 	</tns:FallBack>
 	<tns:ChannelDescriptions>
-		<tns:ChannelDescription id="X6.UhrzeitSolvis">
+		<tns:ChannelDescription id="X06.UhrzeitSolvis">
 			<tns:Measurement dynamic="true" type="date">
 				<tns:Field position="0" length="6" />
 				<tns:Field position="202" length="6" />
@@ -1213,32 +1213,32 @@
 				<tns:Field position="196" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="X1.BrennerStarts">
+		<tns:ChannelDescription id="X01.BrennerStarts">
 			<tns:Calculation strategy="starts">
 				<tns:Dependency id="equipmentOn" dataId="A12.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X2.BrennerLaufzeit_s" buffered="true" unit="s">
+			id="X02.BrennerLaufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="equipmentOn" dataId="A12.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X3.BrennerStufe2Starts">
+			id="X03.BrennerStufe2Starts">
 			<tns:Calculation strategy="starts">
 				<tns:Dependency id="equipmentOn"
 					dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X4.BrennerStufe2Laufzeit_s" buffered="true" unit="s">
+			id="X04.BrennerStufe2Laufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="equipmentOn"
 					dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="X5.BrennerStatus">
+		<tns:ChannelDescription id="X05.BrennerStatus">
 			<tns:Calculation strategy="burnerStatus">
 				<tns:Dependency id="burnerLevel1On"
 					dataId="A12.Brenner" />
@@ -1247,7 +1247,7 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X7.MischerPosition0_HK1">
+			id="X07.MischerPosition0_HK1">
 			<tns:Calculation strategy="mixerPosition0">
 				<tns:Dependency id="pumpOn" dataId="A03.Pumpe_HK1" />
 				<tns:Dependency id="mixerClosing"
@@ -1255,7 +1255,7 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X8.MischerPosition0_HK2">
+			id="X08.MischerPosition0_HK2">
 			<tns:Calculation strategy="mixerPosition0">
 				<tns:Dependency id="pumpOn" dataId="A04.Pumpe_HK2" />
 				<tns:Dependency id="mixerClosing"
@@ -1263,7 +1263,7 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X9.LaufzeitSolarpumpe_s">
+			id="X09.LaufzeitSolarpumpe_s">
 			<tns:Calculation strategy="runtime">
 				<tns:Dependency id="equipmentOn"
 					dataId="A01.Pumpe_Solar" />
@@ -1294,7 +1294,7 @@
 				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff equipmentId="A12.Brenner"
-						calculatedId="X1.BrennerStarts" />
+						calculatedId="X01.BrennerStarts" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1313,7 +1313,7 @@
 				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff equipmentId="A12.Brenner"
-						calculatedId="X2.BrennerLaufzeit_s" factor="3600" hourly="true"
+						calculatedId="X02.BrennerLaufzeit_s" factor="3600" hourly="true"
 						checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
@@ -1334,7 +1334,7 @@
 				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff equipmentId="A13.Brenner_S2"
-						calculatedId="X4.BrennerStufe2Laufzeit_s" factor="3600"
+						calculatedId="X04.BrennerStufe2Laufzeit_s" factor="3600"
 						checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" hourly="true" />
 				</tns:UpdateBy>
@@ -1944,7 +1944,7 @@
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff
 						equipmentId="A01.Pumpe_Solar"
-						calculatedId="X9.LaufzeitSolarpumpe_s" factor="3600" hourly="true"
+						calculatedId="X09.LaufzeitSolarpumpe_s" factor="3600" hourly="true"
 						checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
@@ -1986,6 +1986,9 @@
 				</tns:GuiAccess>
 				<tns:TypeButton pushTimeId="Standard"
 					releaseTimeId="WindowChange" />
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1999,6 +2002,9 @@
 				</tns:GuiAccess>
 				<tns:TypeButton pushTimeId="Standard"
 					releaseTimeId="WindowChange" />
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 	</tns:ChannelDescriptions>
@@ -2028,7 +2034,7 @@
 			</tns:ScreenGrafic>
 		</tns:Preparation>
 	</tns:Preparations>
-	<tns:Clock timeChannelId="X6.UhrzeitSolvis"
+	<tns:Clock timeChannelId="X06.UhrzeitSolvis"
 		screenId="Zeiteinstellung" okScreenId="Uhrzeit / Datum">
 		<tns:ModbusWrite address="0x8000" type="Holding" />
 		<tns:Year least="2008">

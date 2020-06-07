@@ -62,6 +62,10 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		Dependencies dependencies = this.calculation.getDependencies();
 
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
+		
+		if ( result.getMode() == null ) {
+			result.setMode(Status.OFF, -1);
+		}
 
 		SolvisData burnerLevel1On = dependencies.get(allData, "burnerLevel1On");
 		SolvisData burnerLevel2On = dependencies.get(allData, "burnerLevel2On");

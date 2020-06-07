@@ -162,7 +162,7 @@
 			<fileset file="${linux.systemd}" casesensitive="yes" />
 			<fileset file="${linux.systemdD}" casesensitive="yes" />
 			<fileset file="${myBase.xml}" casesensitive="yes" />
-			<fileset file="${pubBase}.xsd" casesensitive="yes" />
+			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
 			<fileset file="${makefile}" casesensitive="yes" />
 		</copy>
 	</target>

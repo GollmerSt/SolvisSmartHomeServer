@@ -5,7 +5,7 @@ Version 01.00.13
 	01.06.2020	Es werden nun die Laufzeiten der Solarpumpen in die Readings geschrieben. Dabei
 				werden unter "C24.LaufzeitSolarpumpe" und "C25.LaufzeitSolarpumpe2" die ausgelesenen
 				Werte aus "Sonstig./weiter/Zählfunktion" eingetragen.
-				Zusätzlich gibt es eine sekundengenaue Berechnung unter "X9.LaufzeitSolarpumpe_s" und
+				Zusätzlich gibt es eine sekundengenaue Berechnung unter "X09.LaufzeitSolarpumpe_s" und
 				"X10.LaufzeitSolarpumpe2_s", welche auf dem Beobachten der Ausgänge "A01.Pumpe_Solar"
 				bzw. A07.Pumpe_Solar2 beruhen.
 
@@ -13,8 +13,20 @@ Version 01.00.13
     
     			Der Mailversand ist nun standardmäßig deaktiviert und muss durch das Setzen des
     			Features "SendMailOnError" auf true erst aktiviert werden
-    
     			
+    06.06.2020	Es ist nun auch die WW-Zirkulationspumpe steuerbar. "C26.Warmwasserzirkulation_Puls"
+    			und "C27.Warmwasserzirkulation_Zeit" sind hinzu gekommen. Da bei das Aktivieren dieser
+    			Parameter bei Anlagen ohne Zirkulationspumpe zu Fehlermeldungen führen, konnten diese
+    			nivr wie bisher durch Betätigung im Learn-Modus angelernt werden. Stattdessen wurde
+    			ein neuer Algorithmus (Strategie "TypeButton") notwendig, der auch ohne Learning den
+    			Zustand eines Buttons ermitteln kann.
+    			
+    07.06.2020	Makefile geändert. Auf Anforderung wird nun FHEM neu gestartet, falls der
+    			SolvisClient aktualisiert wurde.
+    			
+    			Die berechneten Readings von X1.BrennerStarts ... X9..LaufzeitSolarpumpe_s in
+    			X01.BrennerStarts ... X09..LaufzeitSolarpumpe_s. Achtung evtl. Fhem-Konfig-
+    			Änderung notwendig.
 
 
 

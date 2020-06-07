@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="lib/mailapi-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/smtp-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/javax.activation-1.2.0.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_251"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_251"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2-api-2.13.2.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-api-2.13.2.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-core-2.13.2.jar"/>

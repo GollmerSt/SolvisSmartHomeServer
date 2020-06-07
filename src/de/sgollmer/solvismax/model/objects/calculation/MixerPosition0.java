@@ -41,6 +41,10 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
+		if ( result.getSingleData() == null ) {
+			result.setBoolean(false, -1);
+		}
+
 		Dependencies dependencies = this.calculation.getDependencies();
 
 		SolvisData pumpOn = dependencies.get(allData, "pumpOn");

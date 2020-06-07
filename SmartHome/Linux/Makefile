@@ -119,12 +119,17 @@ $(solvisDir):
 
 
 $(fhemDir)/FHEM/$(fhemModul): $(fhemModul)
-	cp $< $@
-	chown -c $(account):$(group) $@ 
-	cd $(fhemDir);sudo -u $(account) $(perl) $(fhemCommand)
- 	ifeq ($(fhemRestart),1)
-		systemctl restart $(serviceFhem)
- 	endif
+	@read -p 'Restart FHEM (y/n)? ' restart ; \
+	set -x; \
+	cp $< $@ ; \
+	chown -c $(account):$(group) $@ ; \
+	cd $(fhemDir) ; \
+	sudo -u $(account) $(perl) $(fhemCommand) ; \
+	set +x; \
+	if [ "$$restart" = "y" -o "$$restart" = "Y" ] ; then \
+		set -x; \
+ 		systemctl restart $(serviceFhem) ; \
+ 	fi ;
 
 
 

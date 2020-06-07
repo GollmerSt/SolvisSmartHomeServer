@@ -19,7 +19,7 @@
 #   00.02.06    11.05.2020  SCMP77              HumanAccess status added, HTML-Beschreibung ergänzt
 #   00.02.07    21.05.2020  SCMP77              GUI_COMMANDS_ENABLE/DISABLE was incorrectly sent on reconnection
 #   00.02.08    25.05.2020  SCMP77              Some variables moved to helper (should not be visible in Web-Interface)
-#   00.02.09    05.06.2020  SCMP77              Set of a binary value now possible
+#   00.02.09    05.06.2020  SCMP77              Set of a binary value now possible, Implementation of a min time between connection
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -57,7 +57,7 @@ use constant WATCH_DOG_INTERVAL => 300 ;        #Violates 'ProhibitConstantPragm
 use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 2 ; #Violates 'ProhibitConstantPragma'
 use constant RECONNECT_AFTER_DISMISS => 30 ;    #Violates 'ProhibitConstantPragma'
 
-use constant MIN_CONNECTION_INTERVAL => 10 ;    #Violates 'ProhibitConstantPragma'
+use constant MIN_CONNECTION_INTERVAL => 5 ;    #Violates 'ProhibitConstantPragma'
 
 use constant _FALSE_ => 0 ;                     #Violates 'ProhibitConstantPragma'
 use constant _TRUE_ => 1;   #Violates 'ProhibitConstantPragma'
@@ -260,6 +260,7 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
     $self->{helper}{ConnectionError} = undef ;
     $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
     $self->{helper}{ConnectionOngoingByReady} = _FALSE_ ;
+    $self->{helper}{TimeOfLastConnectionAttempt} = 0 ;
 
     if( $init_done ) {
         my $result = Connect( $self, 0 );
@@ -442,6 +443,13 @@ sub SendReconnectionData {
 #
 sub Ready {
     my $self = shift ;
+    
+    my $now = time ;
+
+    
+    if ( $self->{helper}{TimeOfLastConnectionAttempt} + MIN_CONNECTION_INTERVAL > $now) {
+        return 'Connection ongoing';
+    }
 
     if ( $self->{helper}{ConnectionOngoingByReady} ) {
         return 'Connection still ongoing' ;
@@ -461,6 +469,7 @@ sub Ready {
     }
     
     if(!$isOpen) {
+        $self->{helper}{TimeOfLastConnectionAttempt} = $now ;
         Log( $self, 4, 'Reconnection try');
         $error = Connect($self, 1) ; # reopen
     }
@@ -1043,15 +1052,15 @@ sub Set {
             if ( defined ($ChannelDescriptions{$channel}{Modes}) ) {
                 if ( ! defined ($ChannelDescriptions{$channel}{Modes}{$value})) {
                     my @modes = keys(%{$ChannelDescriptions{$channel}{Modes}}) ;
-					Log($self, 5, 'Mode 1: '.join(' ', $modes[0]));
+                    Log($self, 5, 'Mode 1: '.join(' ', $modes[0]));
                     return "unknown value $value choose one of " . join(' ', @modes);
                 }
             } elsif ( defined ($ChannelDescriptions{$channel}{IsBoolean}) ) {
-				if ( $value eq "on" ) {
-					$value = \1;
-				} elsif ( $value eq "off" ) {
-					$value = \0;
-				} else {
+                if ( $value eq "on" ) {
+                    $value = \1;
+                } elsif ( $value eq "off" ) {
+                    $value = \0;
+                } else {
                     return "unknown value $value choose one of on off";
                 }
             } else {
@@ -1766,7 +1775,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.08",
+  "version": "v00.02.09",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
