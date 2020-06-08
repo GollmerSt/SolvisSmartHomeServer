@@ -5,9 +5,13 @@
 	<tns:ExecutionData timeZone="Europe/Berlin"
 		port="10735" writablePathLinux="/opt/fhem" />
 	<tns:Units>
-		<tns:Unit id="mySolvis" type="SolvisMax" fwLth2_21_02A="true"
-			account="account" passwordCrypt="AES-coded" url="aaa.bbb.ccc.ddd"
-			defaultAverageCount="12" measurementHysteresisFactor="4"
+		<!-- Existiert im Solarkreislauf eine zweite Umwaelzpumpe, welche an A07 
+			angeschlossen ist, ist die configOrMask auf "0x10"zu setzen. Dann wird die 
+			Laufzeit dieser Solarpumpe ebenfalls angezeigt. -->
+		<tns:Unit id="mySolvis" type="SolvisMax" configOrMask="0x00"
+			fwLth2_21_02A="true" account="account" passwordCrypt="AES-coded"
+			url="aaa.bbb.ccc.ddd" defaultAverageCount="12"
+			measurementHysteresisFactor="4"
 			defaultReadMeasurementsInterval_ms="10000"
 			forcedUpdateInterval_ms="3600000" doubleUpdateInterval_ms="10000"
 			bufferedInterval_ms="60000" watchDogTime_ms="30000"
@@ -17,16 +21,16 @@
 				<tns:ClockTuning>false</tns:ClockTuning>
 				<!-- Die Uhr wird automatisch eingestellt, Genauigkeit +- 31s -->
 				<tns:EquipmentTimeSynchronisation>false</tns:EquipmentTimeSynchronisation>
-				<!-- Synchronisation der sekundengenauen Brennerlaufzeiten mit den stündlichen 
+				<!-- Synchronisation der sekundengenauen Brennerlaufzeiten mit den stuendlichen 
 					der SolvisControl -->
 				<tns:UpdateAfterUserAccess>false</tns:UpdateAfterUserAccess>
 				<!-- Nach jedem Userzugriff werden automatisch der Zustand der Anlage 
 					abgefragt -->
 				<tns:DetectServiceAccess>false</tns:DetectServiceAccess>
 				<!-- Es werden die Service-Screens "Schornsteinfeger", "Nutzerauswahl", 
-					"Nutzerauswahl-Code" besonders behandlt, werden diese erkannt, sind sämtliche 
-					Gui-Actionen für 1h deaktiviert. Jeder Anwender-Eingriff in dieser Zeit triggert 
-					die Stunde erneut. -->
+					"Nutzerauswahl-Code" besonders behandlt, werden diese erkannt, sind saemtliche 
+					Gui-Actionen fuer 1h deaktiviert. Jeder Anwender-Eingriff in dieser Zeit 
+					triggert die Stunde erneut. -->
 				<tns:PowerOffIsServiceAccess>false</tns:PowerOffIsServiceAccess>
 				<!-- Wird ein Power-Off der Anlage erkannt, wird der wie ein Zugriff 
 					auf die Service-Screens behandelt (siehe vorheriges Element) -->
@@ -37,14 +41,14 @@
 				<!-- Ist dieses Feature deaktiviert (false), wird bei einem Anlagenfehler 
 					die GUI-Steuerung solange deaktiviert, bis die Fehlermeldung verschwunden 
 					ist. Die Steuereungsbefehle werden gemerkt und nach beenden des Fehlerzustandes 
-					ausgeführt. Ist es aktiviert (true), wird im Fehlerfall zum HomeScreen gewechselt 
+					ausgefuehrt. Ist es aktiviert (true), wird im Fehlerfall zum HomeScreen gewechselt 
 					und dort der Button mit dem Warnzeichen beobachtet. Ist dabei die ExceptionMail 
 					aktiviert, wird nur zum HomeScreen gewechselt, wenn der Versand der Mail 
-					erfolgreich war. Der Error-Status wird zurückgesetzt, wenn dieser Button 
-					nicht mehr sichtbar ist. GUI-Steuerungsbefehle werden in dieser Zeit ausgeführt -->
+					erfolgreich war. Der Error-Status wird zurueckgesetzt, wenn dieser Button 
+					nicht mehr sichtbar ist. GUI-Steuerungsbefehle werden in dieser Zeit ausgefuehrt -->
 				<tns:OnlyMeasurements>true</tns:OnlyMeasurements>   <!-- true: GUI controlling disabled -->
-				<!-- Bei true werden sämtliche Gui-Aktivitäten verhindert. Das Modul 
-					verhält sich so wie das bisherige, ein aktiver Eingriff vom Server auf die 
+				<!-- Bei true werden saemtliche Gui-Aktivitaeten verhindert. Das Modul 
+					verhaelt sich so wie das bisherige, ein aktiver Eingriff vom Server auf die 
 					SolvisControl erfolgt nicht. -->
 			</tns:Features>
 		</tns:Unit>
