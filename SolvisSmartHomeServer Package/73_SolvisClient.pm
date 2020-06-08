@@ -1,7 +1,7 @@
 ########################################################################################################################
 #
 # Attention! This file isn't in the FHEM repository, a private one is used.
-# $Id: 73_SolvisClient.pm 240 2020-05-25 12:45:04Z stefa_000 $
+# $Id: 73_SolvisClient.pm 254 2020-06-08 12:46:04Z stefa_000 $
 #
 #  (c) 2019-2020 Copyright: Stefan Gollmer (Stefan dot Gollmer at gmail dot com)
 #  All rights reserved
@@ -19,6 +19,7 @@
 #   00.02.06    11.05.2020  SCMP77              HumanAccess status added, HTML-Beschreibung ergänzt
 #   00.02.07    21.05.2020  SCMP77              GUI_COMMANDS_ENABLE/DISABLE was incorrectly sent on reconnection
 #   00.02.08    25.05.2020  SCMP77              Some variables moved to helper (should not be visible in Web-Interface)
+#   00.02.09    05.06.2020  SCMP77              Set of a binary value now possible, Implementation of a min time between connection
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -56,7 +57,7 @@ use constant WATCH_DOG_INTERVAL => 300 ;        #Violates 'ProhibitConstantPragm
 use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 2 ; #Violates 'ProhibitConstantPragma'
 use constant RECONNECT_AFTER_DISMISS => 30 ;    #Violates 'ProhibitConstantPragma'
 
-use constant MIN_CONNECTION_INTERVAL => 10 ;    #Violates 'ProhibitConstantPragma'
+use constant MIN_CONNECTION_INTERVAL => 5 ;    #Violates 'ProhibitConstantPragma'
 
 use constant _FALSE_ => 0 ;                     #Violates 'ProhibitConstantPragma'
 use constant _TRUE_ => 1;   #Violates 'ProhibitConstantPragma'
@@ -259,6 +260,7 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
     $self->{helper}{ConnectionError} = undef ;
     $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
     $self->{helper}{ConnectionOngoingByReady} = _FALSE_ ;
+    $self->{helper}{TimeOfLastConnectionAttempt} = 0 ;
 
     if( $init_done ) {
         my $result = Connect( $self, 0 );
@@ -441,6 +443,13 @@ sub SendReconnectionData {
 #
 sub Ready {
     my $self = shift ;
+    
+    my $now = time ;
+
+    
+    if ( $self->{helper}{TimeOfLastConnectionAttempt} + MIN_CONNECTION_INTERVAL > $now) {
+        return 'Connection ongoing';
+    }
 
     if ( $self->{helper}{ConnectionOngoingByReady} ) {
         return 'Connection still ongoing' ;
@@ -460,6 +469,7 @@ sub Ready {
     }
     
     if(!$isOpen) {
+        $self->{helper}{TimeOfLastConnectionAttempt} = $now ;
         Log( $self, 4, 'Reconnection try');
         $error = Connect($self, 1) ; # reopen
     }
@@ -881,6 +891,8 @@ sub CreateSetParams {
                 }
                 $setParameters .=$count ;
             }
+        } elsif ( defined ($ChannelDescriptions{$channel}{IsBoolean}) ) {
+            $setParameters .= ':off,on' ;
         }
     }
     return ;
@@ -1040,8 +1052,16 @@ sub Set {
             if ( defined ($ChannelDescriptions{$channel}{Modes}) ) {
                 if ( ! defined ($ChannelDescriptions{$channel}{Modes}{$value})) {
                     my @modes = keys(%{$ChannelDescriptions{$channel}{Modes}}) ;
-            Log($self, 5, 'Mode 1: '.join(' ', $modes[0]));
+                    Log($self, 5, 'Mode 1: '.join(' ', $modes[0]));
                     return "unknown value $value choose one of " . join(' ', @modes);
+                }
+            } elsif ( defined ($ChannelDescriptions{$channel}{IsBoolean}) ) {
+                if ( $value eq "on" ) {
+                    $value = \1;
+                } elsif ( $value eq "off" ) {
+                    $value = \0;
+                } else {
+                    return "unknown value $value choose one of on off";
                 }
             } else {
                 $value = int($value) ;
@@ -1191,14 +1211,16 @@ sub DbLog_splitFn {
       <ul>
         <ul>
           <table>
-            <tr><td align="right" valign="top"><code>X1.BrennerStarts</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 1</td></tr>
-            <tr><td align="right" valign="top"><code>X3.BrennerStufe2Starts</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 2</td></tr>
-            <tr><td align="right" valign="top"><code>X2.BrennerLaufzeit_s</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 1</td></tr>
-            <tr><td align="right" valign="top"><code>X4.BrennerStufe2Laufzeit_s</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 2</td></tr>
-            <tr><td align="right" valign="top"><code>X5.BrennerStatus</code> : </td><td align="left" valign="top">Aktuelle Brennstufe des Brenners (off, Stufe1 oder Stufe2)</td></tr>
-            <tr><td align="right" valign="top"><code>X6.UhrzeitSolvis</code> : </td><td align="left" valign="top">Uhrzeit der SolvisControl</td></tr>
-            <tr><td align="right" valign="top"><code>X7.MischerPosition0_HK1</code> : </td><td align="left" valign="top">Mischer des Heizkreises 1 in Ruhestellung</td></tr>
-            <tr><td align="right" valign="top"><code>X8.MischerPosition0_HK2</code> : </td><td align="left" valign="top">Mischer des Heizkreises 2 in Ruhestellung</td></tr>
+            <tr><td align="right" valign="top"><code>X01.BrennerStarts</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 1</td></tr>
+            <tr><td align="right" valign="top"><code>X03.BrennerStufe2Starts</code> : </td><td align="left" valign="top">Anzahl der Brennerstarts der Stufe 2</td></tr>
+            <tr><td align="right" valign="top"><code>X02.BrennerLaufzeit_s</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 1</td></tr>
+            <tr><td align="right" valign="top"><code>X04.BrennerStufe2Laufzeit_s</code> : </td><td align="left" valign="top">Laufzeit des Brenners in der Stufe 2</td></tr>
+            <tr><td align="right" valign="top"><code>X05.BrennerStatus</code> : </td><td align="left" valign="top">Aktuelle Brennstufe des Brenners (off, Stufe1 oder Stufe2)</td></tr>
+            <tr><td align="right" valign="top"><code>X06.UhrzeitSolvis</code> : </td><td align="left" valign="top">Uhrzeit der SolvisControl</td></tr>
+            <tr><td align="right" valign="top"><code>X07.MischerPosition0_HK1</code> : </td><td align="left" valign="top">Mischer des Heizkreises 1 in Ruhestellung</td></tr>
+            <tr><td align="right" valign="top"><code>X08.MischerPosition0_HK2</code> : </td><td align="left" valign="top">Mischer des Heizkreises 2 in Ruhestellung</td></tr>
+            <tr><td align="right" valign="top"><code>X09.LaufzeitSolarpumpe_s</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe (A01)</td></tr>
+            <tr><td align="right" valign="top"><code>X10.LaufzeitSolarpumpe2_s</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe 2 (A07)</td></tr>
           </table>
         </ul>
       </ul><BR><BR>
@@ -1226,6 +1248,10 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 2 (-5 ... 5)</td></tr>
             <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 2(0 ... 90%)</td></tr>
             <tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Sollwert der Vorlauftemperatur Heizkreis 2</td></tr>
+            <tr><td align="right" valign="top"><code>C24.LaufzeitSolarpumpe</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe (A01)</td></tr>
+            <tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe 2 (A02)</td></tr>
+            <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
+            <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
           </table>
         </ul>
       </ul><BR><BR><BR><BR>
@@ -1272,6 +1298,8 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Solltemperatur Nacht Heizkreis 2</td></tr>
                     <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 2 (-5 ... 5)</td></tr>
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 2(0 ... 90%)</td></tr>
+					<tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
+					<tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1356,6 +1384,10 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 2 (-5 ... 5)</td></tr>
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 2(0 ... 90%)</td></tr>
                     <tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Sollwert der Vorlauftemperatur Heizkreis 2</td></tr>
+					<tr><td align="right" valign="top"><code>C24.LaufzeitSolarpumpe</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe (A01)</td></tr>
+					<tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe 2 (A02)</td></tr>
+					<tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
+					<tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1482,15 +1514,17 @@ sub DbLog_splitFn {
       <ul>
         <ul>
           <table>
-            <tr><td align="right" valign="top"><code>X1.BrennerStarts</code> : </td><td align="left" valign="top">Number of burner starts of level 1</td></tr>
-            <tr><td align="right" valign="top"><code>X3.BrennerStufe2Starts</code> : </td><td align="left" valign="top">Number of burner starts of level 2</td></tr>
-            <tr><td align="right" valign="top"><code>X2.BrennerLaufzeit_s</code> : </td><td align="left" valign="top">Burner runtime in level 1</td></tr>
-            <tr><td align="right" valign="top"><code>X4.BrennerStufe2Laufzeit_s</code> : </td><td align="left" valign="top">Burner runtime in level 2</td></tr>
-            <tr><td align="right" valign="top"><code>X5.BrennerStatus</code> : </td><td align="left" valign="top">Current burner firing level (off, Stufe1 oder Stufe2)</td></tr>
-            <tr><td align="right" valign="top"><code>X6.UhrzeitSolvis</code> : </td><td align="left" valign="top">Time of the SolvisControl</td></tr>
-            <tr><td align="right" valign="top"><code>X7.MischerPosition0_HK1</code> : </td><td align="left" valign="top">Mixer of heating circuit 1 in the rest position</td></tr>
-            <tr><td align="right" valign="top"><code>X8.MischerPosition0_HK2</code> : </td><td align="left" valign="top">Mixer of heating circuit 2 in the rest position</td></tr>
-          </table>
+            <tr><td align="right" valign="top"><code>X01.BrennerStarts</code> : </td><td align="left" valign="top">Number of burner starts of level 1</td></tr>
+            <tr><td align="right" valign="top"><code>X03.BrennerStufe2Starts</code> : </td><td align="left" valign="top">Number of burner starts of level 2</td></tr>
+            <tr><td align="right" valign="top"><code>X02.BrennerLaufzeit_s</code> : </td><td align="left" valign="top">Burner runtime in level 1</td></tr>
+            <tr><td align="right" valign="top"><code>X04.BrennerStufe2Laufzeit_s</code> : </td><td align="left" valign="top">Burner runtime in level 2</td></tr>
+            <tr><td align="right" valign="top"><code>X05.BrennerStatus</code> : </td><td align="left" valign="top">Current burner firing level (off, Stufe1 oder Stufe2)</td></tr>
+            <tr><td align="right" valign="top"><code>X06.UhrzeitSolvis</code> : </td><td align="left" valign="top">Time of the SolvisControl</td></tr>
+            <tr><td align="right" valign="top"><code>X07.MischerPosition0_HK1</code> : </td><td align="left" valign="top">Mixer of heating circuit 1 in the rest position</td></tr>
+            <tr><td align="right" valign="top"><code>X08.MischerPosition0_HK2</code> : </td><td align="left" valign="top">Mixer of heating circuit 2 in the rest position</td></tr>
+             <tr><td align="right" valign="top"><code>X09.LaufzeitSolarpumpe_s</code> : </td><td align="left" valign="top">Running time of the solar pump (A01)</td></tr>
+            <tr><td align="right" valign="top"><code>X10.LaufzeitSolarpumpe2_s</code> : </td><td align="left" valign="top">Running time of the solar pump 2 (A07)</td></tr>
+         </table>
         </ul>
       </ul><BR><BR>
         There are also other values that are determined from the SolvisControl GUI using OCR. These are only updated if the value is read / changed using a GET / SET command. So they are not always up to date.<BR>
@@ -1516,6 +1550,10 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 2 (-5 ... 5)</td></tr>
             <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">room influence of heating circuit 2 (0 ... 90%)</td></tr>
             <tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Setpoint of the flow temperature heating circuit 2</td></tr>
+            <tr><td align="right" valign="top"><code>C24.LaufzeitSolarpumpe</code> : </td><td align="left" valign="top">Running time of the solar pump (A01)</td></tr>
+            <tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Running time of the solar pump 2 (A02)</td></tr>
+            <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
+            <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
           </table>
         </ul>
       </ul><BR><BR><BR><BR>
@@ -1561,6 +1599,8 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Set temperature night heating circuit 2</td></tr>
                     <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 2 (-5 ... 5)</td></tr>
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top"> room influence of heating circuit 2 (0 ... 90%)</td></tr>
+					<tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
+					<tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1642,6 +1682,10 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 2 (-5 ... 5)</td></tr>
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">room influence of heating circuit 2 (0 ... 90%)</td></tr>
                     <tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Setpoint of the flow temperature heating circuit 2</td></tr>
+					<tr><td align="right" valign="top"><code>C24.LaufzeitSolarpumpe</code> : </td><td align="left" valign="top">Running time of the solar pump (A01)</td></tr>
+					<tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Running time of the solar pump 2 (A02)</td></tr>
+					<tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
+					<tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1755,7 +1799,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.08",
+  "version": "v00.02.09",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
