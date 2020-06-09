@@ -1,7 +1,7 @@
 ########################################################################################################################
 #
 # Attention! This file isn't in the FHEM repository, a private one is used.
-# $Id: 73_SolvisClient.pm 254 2020-06-08 12:46:04Z stefa_000 $
+# $Id: 73_SolvisClient.pm 257 2020-06-09 18:32:38Z stefa_000 $
 #
 #  (c) 2019-2020 Copyright: Stefan Gollmer (Stefan dot Gollmer at gmail dot com)
 #  All rights reserved
@@ -522,8 +522,16 @@ sub Read {
         $self->{helper}{BUFFER} = $parts[4] ;
 
         Log($self, 5, "Package encoded: $parts[3]");
-
-        my $receivedData = decode_json ($parts[3]);
+		
+		my $receivedData = {} ;
+		
+		eval {
+			$receivedData = decode_json ($parts[3]);
+		};
+		if ( $@ ne '' ) {
+			Log($self, 3, "Error on receiving JSON package occured, package ignored: $@");
+			return ;
+		}
 
         ExecuteCommand($self, $receivedData) ;
     }
