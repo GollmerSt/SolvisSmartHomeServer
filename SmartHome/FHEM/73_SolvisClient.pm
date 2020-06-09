@@ -522,8 +522,16 @@ sub Read {
         $self->{helper}{BUFFER} = $parts[4] ;
 
         Log($self, 5, "Package encoded: $parts[3]");
-
-        my $receivedData = decode_json ($parts[3]);
+		
+		my $receivedData = {} ;
+		
+		eval {
+			$receivedData = decode_json ($parts[3]);
+		};
+		if ( $@ ne '' ) {
+			Log($self, 3, "Error on receiving JSON package occured, package ignored: $@");
+			return ;
+		}
 
         ExecuteCommand($self, $receivedData) ;
     }

@@ -277,10 +277,10 @@ public class Distributor extends Observable<JsonPackage> {
 	}
 
 	public void setBurstUpdate(boolean burstUpdate) {
-		boolean send = false;
+		boolean send ;
 		Collection<SolvisData> collection = null;
 		synchronized (this) {
-			send = !burstUpdate && this.burstUpdate;
+			send = this.burstUpdate;
 			this.burstUpdate = burstUpdate;
 			if (send) {
 				collection = this.collectedMeasurements.cloneAndClear();

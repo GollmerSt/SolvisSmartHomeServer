@@ -41,7 +41,7 @@ public class Constants {
 	public static final int WAIT_TIME_AFTER_IO_ERROR = 10000;
 	public static final int ALIVE_TIME = 120000;
 	public static final int FORCE_UPDATE_AFTER_N_INTERVALS = 3;
-	public static final int WAIT_TIME_AFTER_THROWABLE = 300000;
+	public static final int WAIT_TIME_AFTER_THROWABLE = 30000;
 	/**
 	 * Maximum of time, within the screen isn't read again, if no other screen is
 	 * selected

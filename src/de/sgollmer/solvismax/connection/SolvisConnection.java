@@ -131,6 +131,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				this.urlConnection.setReadTimeout(this.readTimeout);
 //				System.out.println(
 //						"Connect-Timeout: " + uc.getConnectTimeout() + ", Read-Timeout: " + uc.getReadTimeout());
+				this.urlConnection.setUseCaches(false);
 				InputStream in = this.urlConnection.getInputStream();
 				authenticator.connected();
 				this.setConnected();
@@ -196,12 +197,17 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 						finished = true;
 					} else {
 						builder.append(array, 0, n);
-						if (builder.substring(builder.length() - 5).equals("</xml>")) {
+						if (builder.substring(builder.length() - 6).equals("</xml>")) {
 							finished = true;
 						}
 					}
 				}
 				in.close();
+			}
+			if (!builder.substring(builder.length() - 6).equals("</xml>")) {
+				IOException ex = new IOException("Solvis XML string not complete."); 
+				logger.error(ex.getMessage());
+				throw ex;
 			}
 			builder.delete(0, 11);
 			builder.delete(builder.length() - 15, builder.length());

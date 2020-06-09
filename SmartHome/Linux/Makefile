@@ -23,10 +23,10 @@ startLocal = sudo -u $(account) $(java) -jar $(solvisJar)
 .SUFFIXES:
 
 
-install: installFHEM installSolvis
+install: installSolvis installFHEM
 
 
-uninstall: uninstallFHEM uninstallSolvis
+uninstall: uninstallSolvis uninstallFHEM
 
 
 copyService: $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
@@ -119,17 +119,15 @@ $(solvisDir):
 
 
 $(fhemDir)/FHEM/$(fhemModul): $(fhemModul)
-	@read -p 'Restart FHEM (y/n)? ' restart ; \
-	set -x; \
-	cp $< $@ ; \
-	chown -c $(account):$(group) $@ ; \
-	cd $(fhemDir) ; \
-	sudo -u $(account) $(perl) $(fhemCommand) ; \
-	set +x; \
-	if [ "$$restart" = "y" -o "$$restart" = "Y" ] ; then \
-		set -x; \
- 		systemctl restart $(serviceFhem) ; \
- 	fi ;
+	cp $< $@
+	chown -c $(account):$(group) $@
+	cd $(fhemDir); sudo -u $(account) $(perl) $(fhemCommand)
+	@echo
+	@echo "******************************"
+	@echo "**                          **"
+	@echo "**  Bitte FHEM neu starten  **"
+	@echo "**                          **"
+	@echo "******************************"
 
 
 
