@@ -20,6 +20,7 @@
 #   00.02.07    21.05.2020  SCMP77              GUI_COMMANDS_ENABLE/DISABLE was incorrectly sent on reconnection
 #   00.02.08    25.05.2020  SCMP77              Some variables moved to helper (should not be visible in Web-Interface)
 #   00.02.09    05.06.2020  SCMP77              Set of a binary value now possible, Implementation of a min time between connection
+#   00.02.10    10.06.2020  SCMP77              ReadyFn simplified, reconnect on JSON errors
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -56,6 +57,7 @@ use constant WATCH_DOG_INTERVAL => 300 ;        #Violates 'ProhibitConstantPragm
                                                 # Andernfalls wird die Verbindung neu aufgebaut
 use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 2 ; #Violates 'ProhibitConstantPragma'
 use constant RECONNECT_AFTER_DISMISS => 30 ;    #Violates 'ProhibitConstantPragma'
+use constant RECONNECT_AFTER_TRANSFER_ERROR => 30 ;    #Violates 'ProhibitConstantPragma'
 
 use constant MIN_CONNECTION_INTERVAL => 5 ;    #Violates 'ProhibitConstantPragma'
 
@@ -257,11 +259,6 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
 
     $self->{DeviceName}  = $url;    #Für DevIO, Name fest vorgegeben
         
-    $self->{helper}{ConnectionError} = undef ;
-    $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
-    $self->{helper}{ConnectionOngoingByReady} = _FALSE_ ;
-    $self->{helper}{TimeOfLastConnectionAttempt} = 0 ;
-
     if( $init_done ) {
         my $result = Connect( $self, 0 );
     } else {
@@ -348,11 +345,6 @@ sub Connect {
     my $reopen = shift ;
     my $byReady = shift ;
     
-    if ( $self->{ConnectionOngoing} ) {
-        Log( $self, 3, "Connection still ongoing");
-        return "Connection still ongoing" ;
-    }
-
     my $connectedSub = $reopen?\&SendReconnectionData:\&SendConnectionData ;
 
     if (defined(DevIo_IsOpen($self))) {
@@ -360,43 +352,12 @@ sub Connect {
         
         DevIo_CloseDev($self) ;
     }
+	
+	$self->{helper}{BUFFER} = '' ;
 
-    my $error = DevIo_OpenDev($self, $reopen, $connectedSub, \&ConnectCallback );
-
-    $self->{helper}{ConnectionOngoingByReady} = $byReady ;
-    $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
-
-    $self->{helper}{BUFFER} = '' ;
-
-    return $error;
+    return DevIo_OpenDev($self, $reopen, $connectedSub );
 
 } # end Connect
-
-
-
-#####################################
-#
-#       Callback after connection war tried 
-#
-sub ConnectCallback {
-    my $self = shift ;
-    my $error = shift ;
-    
-    $self->{helper}{ConnectionError} = $error ;
-    
-    if ( $self->{helper}{ConnectionOngoingByReady} ) {
-        $self->{helper}{ConnectionByReadyFinished} = _TRUE_ ;
-    }
-    
-    $self->{helper}{ConnectionOngoingByReady} = _FALSE_ ;
-    
-    if ( defined($error) ) {
-        Log( $self, 4, "Connection error: $error");
-    }
-
-    return ;
-
-} # end ConnectCallback
 
 
 
@@ -446,34 +407,14 @@ sub Ready {
     
     my $now = time ;
 
-    
-    if ( $self->{helper}{TimeOfLastConnectionAttempt} + MIN_CONNECTION_INTERVAL > $now) {
-        return 'Connection ongoing';
+    if ( defined( $self->{helper}{NEXT_OPEN} ) && $self->{helper}{NEXT_OPEN} > $now) {
+        return ;
     }
 
-    if ( $self->{helper}{ConnectionOngoingByReady} ) {
-        return 'Connection still ongoing' ;
-    }
-
-    my $error = $self->{helper}{ConnectionError} ;
-    
-    $self->{helper}{ConnectionError} = $error ;
-    
-    my $isOpen = DevIo_IsOpen($self);
-        
-    if ( $self->{helper}{ConnectionByReadyFinished} ) {
-        $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
-        if($isOpen || defined($error)) {
-            return $error
-        }
-    }
-    
-    if(!$isOpen) {
-        $self->{helper}{TimeOfLastConnectionAttempt} = $now ;
-        Log( $self, 4, 'Reconnection try');
-        $error = Connect($self, 1) ; # reopen
-    }
-    return 'Connection ongoing';
+    $self->{helper}{NEXT_OPEN} = $now + MIN_CONNECTION_INTERVAL;
+	
+    Log( $self, 4, 'Reconnection try');
+	return Connect($self, 1) ; # reopen
 
 } # end Ready
 
@@ -528,8 +469,9 @@ sub Read {
 		eval {
 			$receivedData = decode_json ($parts[3]);
 		};
-		if ( $@ ne '' ) {
-			Log($self, 3, "Error on receiving JSON package occured, package ignored: $@");
+		if ( $@ ) {
+			Log($self, 3, "Error on receiving JSON package occured: $@, try reconnection");			
+            ReconnectAfterDismiss($self, RECONNECT_AFTER_TRANSFER_ERROR);
 			return ;
 		}
 
@@ -1807,7 +1749,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.09",
+  "version": "v00.02.10",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
