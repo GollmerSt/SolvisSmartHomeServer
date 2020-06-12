@@ -1,5 +1,15 @@
 Ä N D E R U N G E N
 
+Version 01.00.15
+
+    11.06.2020	Die Fehlerbearbeitung von einem JSON-Fehler im Client war nicht richtig
+                durchdacht. Es hat zur Folge, dass Änderungen verloren gehen. Es wird daher
+                nun im Fehlerfall die Verbindung neu aufgebaut. Bei einem neuen Verbindungsaufbau
+                erhält der Client immer die kompletten aktuellen Werte, dadurch gehen auch im 
+                Fehlerfall keine Daten verloren.
+
+
+
 Version 01.00.14
 
     09.06.2020  Wenn beim Transfer des XML-Strings mit dem Messwerten von der Solvis-Anlage
@@ -8,6 +18,10 @@ Version 01.00.14
                 
                 Automatischen Restart von FHEM wieder ausgebaut, und durch eine Erinnerungs-
                 Meldung ersetzt.
+                
+                Ein fehlerhaft enpfangenes JSON-Paket brachte den Client und damit FHEM zum
+                Absturz. Der Client wurde so geändert, dass das fehlerhafte JSON-Paket
+                ignoriert wird.
 
 
 
