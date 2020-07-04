@@ -1,7 +1,7 @@
 ########################################################################################################################
 #
 # Attention! This file isn't in the FHEM repository, a private one is used.
-# $Id: 73_SolvisClient.pm 260 2020-06-12 13:30:46Z stefa_000 $
+# $Id: 73_SolvisClient.pm 263 2020-07-04 06:20:57Z stefa_000 $
 #
 #  (c) 2019-2020 Copyright: Stefan Gollmer (Stefan dot Gollmer at gmail dot com)
 #  All rights reserved
