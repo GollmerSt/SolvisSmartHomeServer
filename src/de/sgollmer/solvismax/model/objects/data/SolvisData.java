@@ -9,21 +9,23 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import java.util.Calendar;
 
+import de.sgollmer.solvismax.connection.mqtt.Mqtt;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Observer;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
 
-public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, ObserverI<SolvisState> {
+public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, IObserver<SolvisState> {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(SolvisData.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisData.class);
 
 	private final ChannelDescription description;
 	private final AllSolvisData datas;
@@ -101,7 +103,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	private synchronized void setData(SingleData<?> data, Object source) {
 
-		if (data == null || data.get() == null ) {
+		if (data == null || data.get() == null) {
 			this.data = null;
 			return;
 		}
@@ -141,8 +143,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (data == null) {
 			return null;
 		} else if (data instanceof FloatValue) {
-			float f = ((FloatValue) data).get();
-			return Math.round(f);
+			double f = ((FloatValue) data).get();
+			return (int) Math.round(f);
 
 		} else if ((data instanceof IntegerValue)) {
 			return ((IntegerValue) data).get();
@@ -186,7 +188,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return bool;
 	}
 
-	public void setMode(ModeI mode, long timeStamp) {
+	public void setMode(IMode mode, long timeStamp) {
 		this.setData(new ModeValue<>(mode, timeStamp));
 	}
 
@@ -203,7 +205,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		this.setData(data);
 	}
 
-	public void registerContinuousObserver(Observer.ObserverI<SolvisData> observer) {
+	public void registerContinuousObserver(Observer.IObserver<SolvisData> observer) {
 		if (this.continousObservable == null) {
 			this.continousObservable = new Observable<>();
 		}
@@ -224,8 +226,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 //	}
 
 	public SingleValue toSingleValue(SingleData<?> data) {
-		if ( data.get() == null ) {
-			return null ;
+		if (data.get() == null) {
+			return null;
 		}
 		if (data instanceof IntegerValue) {
 			return new SingleValue(
@@ -272,9 +274,16 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	public boolean isFastChange() {
 		return this.data.isFastChange();
 	}
-	
+
 	public Solvis getSolvis() {
 		return this.datas.getSolvis();
+	}
+
+	public MqttData getMqttData() {
+		if (this.data == null) {
+			return null;
+		}
+		return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getId()), this.data.toString(), 0, true);
 	}
 
 }

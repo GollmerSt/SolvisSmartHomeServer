@@ -18,24 +18,17 @@ import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.Restart;
 import de.sgollmer.solvismax.connection.Server.Client;
 import de.sgollmer.solvismax.connection.transfer.Command;
-import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
-import de.sgollmer.solvismax.connection.transfer.DisconnectPackage;
-import de.sgollmer.solvismax.connection.transfer.GetPackage;
-import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
-import de.sgollmer.solvismax.connection.transfer.ReconnectPackage;
-import de.sgollmer.solvismax.connection.transfer.ServerCommandPackage;
-import de.sgollmer.solvismax.connection.transfer.SetPackage;
 import de.sgollmer.solvismax.error.JsonError;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -43,7 +36,7 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class CommandHandler {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(CommandHandler.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(CommandHandler.class);
 
 	private final Collection<ClientAssignments> clients;
 	private final Instances instances;
@@ -56,38 +49,36 @@ public class CommandHandler {
 
 	}
 
-	public boolean commandFromClient(JsonPackage jsonPackage, Client client) throws IOException {
-		Command command = jsonPackage.getCommand();
+	public boolean commandFromClient(ITransferedData receivedData, Client client) throws IOException {
+		Command command = receivedData.getCommand();
+		if (command == null) {
+			return false;
+		}
 		if (command != Command.SERVER_COMMAND) {
 			logger.info("Command <" + command.name() + "> received");
 		}
 		boolean abortConnection = false;
 		switch (command) {
 			case CONNECT:
-				abortConnection = this.connect((ConnectPackage) jsonPackage, client);
+				abortConnection = this.connect(receivedData, client);
 				break;
 			case RECONNECT:
-				abortConnection = this.reconnect((ReconnectPackage) jsonPackage, client);
+				abortConnection = this.reconnect(receivedData, client);
 				break;
 			case DISCONNECT:
-				this.disconnect((DisconnectPackage) jsonPackage, client, false);
+				this.disconnect(receivedData, client, false);
 				break;
 			case SHUTDOWN:
-				this.disconnect((DisconnectPackage) jsonPackage, client, true);
+				this.disconnect(receivedData, client, true);
 				break;
 			case GET:
-				this.get((GetPackage) jsonPackage, client);
+				this.get(receivedData, client);
 				break;
 			case SET:
-				this.set((SetPackage) jsonPackage, client);
+				this.set(receivedData, client);
 				break;
 			case SERVER_COMMAND:
-				this.executeServerCommand((ServerCommandPackage) jsonPackage, client);
-				break;
-			case TERMINATE:
-				if (this.get(client) == null) {
-					System.exit(ExitCodes.OK);
-				}
+				this.executeServerCommand(receivedData, client);
 				break;
 			default:
 				logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
@@ -96,10 +87,16 @@ public class CommandHandler {
 		return abortConnection;
 	}
 
-	private void executeServerCommand(ServerCommandPackage serverCommand, Client client) throws IOException {
-		ClientAssignments assignments = this.get(client);
-		logger.info("Server-Command <" + serverCommand.getServerCommand().name() + "> received");
-		switch (serverCommand.getServerCommand()) {
+	private void executeServerCommand(ITransferedData receivedData, Client client) throws IOException {
+		ClientAssignments assignments = null;
+		if (client == null) {
+			assignments = this.get(receivedData.getClientId());
+		} else {
+			assignments = this.get(client);
+		}
+		ServerCommand command = ServerCommand.valueOf((String) receivedData.getSingleData().get());
+		logger.info("Server-Command <" + command.name() + "> received");
+		switch (command) {
 			case BACKUP:
 				try {
 					this.instances.backupMeasurements();
@@ -120,7 +117,7 @@ public class CommandHandler {
 				assignments.optimizationInhibit(false);
 				break;
 			case RESTART:
-				this.restart();
+				this.terminate(true);
 				break;
 			case GUI_COMMANDS_DISABLE:
 				assignments.enableGuiCommands(false);
@@ -134,20 +131,26 @@ public class CommandHandler {
 			case UPDATE_CHANNELS:
 				assignments.updateControlChannels();
 				break;
+			case TERMINATE:
+				this.terminate(false);
+				break;
 			default:
-				logger.warn("Server command <" + serverCommand.getServerCommand().name()
-						+ ">unknown, old version of SolvisSmartHomeServer?");
+				logger.warn("Server command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
 				break;
 		}
 
 	}
 
-	private boolean connect(ConnectPackage jsonPackage, Client client) {
+	private boolean connect(ITransferedData receivedData, Client client) {
+		if (client == null) {
+			logger.error("Client doesn't exists. Connection ignored.");
+			return true;
+		}
 		int clientId = this.getNewClientId();
-		if (jsonPackage.getId() != null) {
+		if (receivedData.getSingleData().get() != null) {
 			Solvis solvis = null;
 			try {
-				solvis = this.instances.getInstance(jsonPackage);
+				solvis = this.instances.getInstance((String) receivedData.getSingleData().get());
 			} catch (IOException | XmlError | XMLStreamException | LearningError e1) {
 				client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE,
 						"Solvis not connected: " + e1.getMessage()).createJsonPackage());
@@ -171,17 +174,19 @@ public class CommandHandler {
 					this.instances.getSolvisDescription().getChannelDescriptions(), solvis.getConfigurationMask());
 			client.send(channelDescription);
 
-			client.send(new MeasurementsPackage(solvis.getAllSolvisData().getMeasurements()));
-			client.send(solvis.getSolvisState().getPackage());
+			this.sendMeasurements(solvis, client);
 		} else {
 			client.send(new ConnectedPackage(clientId));
 		}
 		return false;
 	}
 
-	private boolean reconnect(ReconnectPackage reconnectPackage, Client client) {
-
-		int clientId = reconnectPackage.getClientId();
+	private boolean reconnect(ITransferedData receivedData, Client client) {
+		if (client == null) {
+			logger.error("Client doesn't exists. Reconnection ignored.");
+			return true;
+		}
+		String clientId = (String) receivedData.getSingleData().get();
 		ClientAssignments assignments = this.get(clientId);
 		if (assignments == null) {
 			client.send(new ConnectionState(ConnectionStatus.CLIENT_UNKNOWN, "Client id unknown").createJsonPackage());
@@ -198,13 +203,24 @@ public class CommandHandler {
 		assignments.reconnect(client);
 		solvis.getDistributor().register(client);
 
-		client.send(new MeasurementsPackage(solvis.getAllSolvisData().getMeasurements()));
-		client.send(solvis.getSolvisState().getPackage());
+		sendMeasurements(solvis, client);
 
 		return false;
 	}
 
-	private void disconnect(DisconnectPackage jsonPackage, Client client, boolean shutdown) {
+	private void sendMeasurements(Solvis solvis, Client client) {
+		client.send(new MeasurementsPackage(solvis.getAllSolvisData().getMeasurements()));
+		client.send(solvis.getSolvisState().getPackage());
+		ConnectionStatus status = solvis.getHumanAccess().getConnectionStatus();
+		client.send(new ConnectionState(status).createJsonPackage());
+
+	}
+
+	private void disconnect(ITransferedData receivedData, Client client, boolean shutdown) {
+		if (client == null) {
+			logger.error("Client doesn't exists. Disconnection ignored.");
+			return;
+		}
 
 		ClientAssignments assignments = this.get(client);
 		Solvis solvis = assignments.getSolvis();
@@ -217,31 +233,42 @@ public class CommandHandler {
 		}
 	}
 
-	private void set(SetPackage jsonPackage, Client client) {
-		ClientAssignments assignments = this.get(client);
-		Solvis solvis = assignments.getSolvis();
-		ChannelDescription description = solvis.getChannelDescription(jsonPackage.getId());
-		SingleData<?> singleData = jsonPackage.getSingleData();
+	private void set(ITransferedData receivedDat, Client client) {
+		Solvis solvis = null;
+		if (client == null) {
+			solvis = receivedDat.getSolvis();
+		} else {
+			ClientAssignments assignments = this.get(client);
+			solvis = assignments.getSolvis();
+		}
+		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
+		SingleData<?> singleData = receivedDat.getSingleData();
 		logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");
 		try {
 			singleData = description.interpretSetData(singleData);
 		} catch (TypeError e) {
 			throw new JsonError(e.getMessage() + " Located in revceived Json package.");
 		}
-		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData, solvis));
+		solvis.setFromExternal(description, singleData);
 	}
 
-	private void get(GetPackage jsonPackage, Client client) {
-		ClientAssignments assignments = this.get(client);
-		Solvis solvis = assignments.getSolvis();
-		ChannelDescription description = solvis.getChannelDescription(jsonPackage.getId());
+	private void get(ITransferedData receivedDat, Client client) {
+		Solvis solvis = null;
+		if (client == null) {
+			solvis = receivedDat.getSolvis();
+		} else {
+			ClientAssignments assignments = this.get(client);
+			solvis = assignments.getSolvis();
+		}
+		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
 		logger.info("Channel <" + description.getId() + "> will be updated by GET command");
 		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, solvis));
 	}
 
-	private void restart() {
-		Restart restart = new Restart();
-		restart.startRestartProcess();
+	private void terminate(boolean restart) {
+		if (restart) {
+			new Restart().startRestartProcess();
+		}
 		System.exit(ExitCodes.OK);
 	}
 
@@ -254,9 +281,13 @@ public class CommandHandler {
 		return null;
 	}
 
-	public synchronized ClientAssignments get(int clientId) {
+	public ClientAssignments get(int clientId) {
+		return this.get(Integer.toString(clientId));
+	}
+
+	public synchronized ClientAssignments get(String clientId) {
 		for (ClientAssignments assignments : this.clients) {
-			if (assignments.getClientId() == clientId) {
+			if (assignments.getClientId().contentEquals(clientId)) {
 				return assignments;
 			}
 		}

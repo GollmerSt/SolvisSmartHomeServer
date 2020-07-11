@@ -5,8 +5,8 @@
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects;
+package de.sgollmer.solvismax.model.objects.control;
 
-public interface Assigner {
-	public void assign( SolvisDescription description ) ;
+public interface IControlAccess {
+	public boolean isModbus() ;
 }

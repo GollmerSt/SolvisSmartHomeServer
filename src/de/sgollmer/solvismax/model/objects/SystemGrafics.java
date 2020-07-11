@@ -20,9 +20,9 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficData;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
-import de.sgollmer.solvismax.xml.XmlWriteable;
+import de.sgollmer.solvismax.xml.IXmlWriteable;
 
-public class SystemGrafics implements XmlWriteable {
+public class SystemGrafics implements IXmlWriteable {
 
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
 

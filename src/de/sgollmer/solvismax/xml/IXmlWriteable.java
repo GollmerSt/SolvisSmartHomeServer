@@ -12,6 +12,6 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-public interface XmlWriteable {
+public interface IXmlWriteable {
 	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException ;
 }

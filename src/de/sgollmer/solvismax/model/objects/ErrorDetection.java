@@ -24,9 +24,9 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -37,7 +37,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ErrorDetection {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(Solvis.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
 
 	private static final String XML_LEFT_BORDER = "LeftBorder";
 	private static final String XML_RIGHT_BORDER = "RightBorder";
@@ -310,7 +310,7 @@ public class ErrorDetection {
 		solvis.registerObserver(execute);
 	}
 
-	private class Execute implements ObserverI<SolvisData> {
+	private class Execute implements IObserver<SolvisData> {
 
 		private Collection<SolvisData> errorSpecificDatas = new ArrayList<>();
 

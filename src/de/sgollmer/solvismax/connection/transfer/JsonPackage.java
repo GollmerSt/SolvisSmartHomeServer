@@ -12,14 +12,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import de.sgollmer.solvismax.connection.ITransferedData;
 import de.sgollmer.solvismax.error.JsonError;
+import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 
-public class JsonPackage {
+public class JsonPackage implements ITransferedData {
 
 	public static final Charset CHARSET = Charset.forName("UTF-8");
 
 	protected Command command;
 	protected Frame data;
+	private Solvis solvis = null;
 
 	public JsonPackage() {
 	}
@@ -64,12 +68,12 @@ public class JsonPackage {
 
 	public void receive(InputStream stream, int timeout) throws IOException, JsonError {
 		byte[] lengthBytes = new byte[3];
-		Helper.read( stream, lengthBytes, timeout );
+		Helper.read(stream, lengthBytes, timeout);
 		int length = lengthBytes[0] << 16 | lengthBytes[1] << 8 | lengthBytes[2];
-		
+
 		byte[] receivedData = new byte[length];
-		Helper.read( stream, receivedData, timeout );
-		
+		Helper.read(stream, receivedData, timeout);
+
 		Frame receivedFrame = new Frame();
 		String receivedString = new String(receivedData, CHARSET);
 		receivedFrame.from(receivedString, 0);
@@ -88,7 +92,33 @@ public class JsonPackage {
 
 	}
 
+	@Override
 	public Command getCommand() {
 		return this.command;
+	}
+
+	@Override
+	public void setSolvis(Solvis solvis) {
+		this.solvis = solvis;
+	}
+
+	@Override
+	public Solvis getSolvis() {
+		return this.solvis;
+	}
+
+	@Override
+	public String getChannelId() {
+		return null;
+	}
+
+	@Override
+	public SingleData<?> getSingleData() {
+		return null;
+	}
+
+	@Override
+	public String getClientId() {
+		return null;
 	}
 }

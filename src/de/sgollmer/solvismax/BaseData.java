@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.model.objects.Units;
@@ -22,6 +23,7 @@ public class BaseData {
 	private static final String XML_UNITS = "Units";
 	private static final String XML_EXECUTION_DATA = "ExecutionData";
 	private static final String XML_MAIL = "ExceptionMail";
+	private static final String XML_MQTT = "Mqtt";
 
 	public static boolean DEBUG = false;
 
@@ -40,21 +42,25 @@ public class BaseData {
 	private final int port;
 	private final String writeablePathWindows;
 	private final String writablePathLinux;
+	private final int echoInhibitTime_ms;
 	private final Units units;
 	private final ExceptionMail exceptionMail;
+	private final Mqtt mqtt;
 
 	public String getTimeZone() {
 		return this.timeZone;
 	}
 
-	public BaseData(String timeZone, int port, String writeablePathWindows, String writablePathLinux, Units units,
-			ExceptionMail exceptionMail) {
+	public BaseData(String timeZone, int port, String writeablePathWindows, String writablePathLinux,
+			int echoInhibitTime_ms, Units units, ExceptionMail exceptionMail, Mqtt mqtt) {
 		this.timeZone = timeZone;
 		this.port = port;
 		this.writeablePathWindows = writeablePathWindows;
 		this.writablePathLinux = writablePathLinux;
 		this.units = units;
 		this.exceptionMail = exceptionMail;
+		this.echoInhibitTime_ms = echoInhibitTime_ms;
+		this.mqtt = mqtt;
 
 	}
 
@@ -66,11 +72,20 @@ public class BaseData {
 		return this.exceptionMail;
 	}
 
+	public int getEchoInhibitTime_ms() {
+		return this.echoInhibitTime_ms;
+	}
+
+	public Mqtt getMqtt() {
+		return this.mqtt;
+	}
+
 	public static class Creator extends BaseCreator<BaseData> {
 
 		private Units units;
 		private ExecutionData executionData;
 		private ExceptionMail exceptionMail;
+		private Mqtt mqtt = null;
 
 		public Creator(String id) {
 			super(id);
@@ -88,8 +103,8 @@ public class BaseData {
 		@Override
 		public BaseData create() throws XmlError, IOException {
 			return new BaseData(this.executionData.timeZone, this.executionData.port,
-					this.executionData.writeablePathWindows, this.executionData.writablePathLinux, this.units,
-					this.exceptionMail);
+					this.executionData.writeablePathWindows, this.executionData.writablePathLinux,
+					this.executionData.echoInhibitTime_ms, this.units, this.exceptionMail, this.mqtt);
 		}
 
 		@Override
@@ -102,6 +117,8 @@ public class BaseData {
 					return new ExecutionData.Creator(id, getBaseCreator());
 				case XML_MAIL:
 					return new ExceptionMail.Creator(id, getBaseCreator());
+				case XML_MQTT:
+					return new Mqtt.Creator(id, getBaseCreator());
 			}
 			return null;
 		}
@@ -118,6 +135,9 @@ public class BaseData {
 				case XML_MAIL:
 					this.exceptionMail = (ExceptionMail) created;
 					break;
+				case XML_MQTT:
+					this.mqtt = (Mqtt) created;
+					break;
 			}
 
 		}
@@ -130,12 +150,15 @@ public class BaseData {
 		private final int port;
 		private final String writeablePathWindows;
 		private final String writablePathLinux;
+		public final int echoInhibitTime_ms;
 
-		public ExecutionData(String timeZone, int port, String writeablePathWindows, String writablePathLinux) {
+		public ExecutionData(String timeZone, int port, String writeablePathWindows, String writablePathLinux,
+				int echoInhibitTime_ms) {
 			this.timeZone = timeZone;
 			this.port = port;
 			this.writeablePathWindows = writeablePathWindows;
 			this.writablePathLinux = writablePathLinux;
+			this.echoInhibitTime_ms = echoInhibitTime_ms;
 		}
 
 		public static class Creator extends CreatorByXML<ExecutionData> {
@@ -144,6 +167,7 @@ public class BaseData {
 			private int port;
 			private String writeablePathWindows;
 			private String writablePathLinux;
+			private int echoInhibitTime_ms;
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -164,13 +188,17 @@ public class BaseData {
 					case "writablePathLinux":
 						this.writablePathLinux = value;
 						break;
+					case "echoInhibitTime_ms":
+						this.echoInhibitTime_ms = Integer.parseInt(value);
+						break;
 				}
 
 			}
 
 			@Override
 			public ExecutionData create() throws XmlError, IOException {
-				return new ExecutionData(this.timeZone, this.port, this.writeablePathWindows, this.writablePathLinux);
+				return new ExecutionData(this.timeZone, this.port, this.writeablePathWindows, this.writablePathLinux,
+						this.echoInhibitTime_ms);
 			}
 
 			@Override

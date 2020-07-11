@@ -19,21 +19,21 @@ import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class Distributor extends Observable<JsonPackage> {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(Distributor.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(Distributor.class);
 
-	private Measurements collectedMeasurements = new Measurements() {
+	private IMeasurements collectedMeasurements = new IMeasurements() {
 
 		private Collection<SolvisData> measurements = new ArrayList<>();
 
@@ -54,7 +54,7 @@ public class Distributor extends Observable<JsonPackage> {
 			return this.measurements.isEmpty();
 		}
 	};
-	private Measurements collectedBufferedMeasurements = new Measurements() {
+	private IMeasurements collectedBufferedMeasurements = new IMeasurements() {
 
 		private Map<String, SolvisData> measurements = new HashMap<>();
 
@@ -94,7 +94,7 @@ public class Distributor extends Observable<JsonPackage> {
 		}
 	}
 
-	private class SolvisDataObserver implements Observer.ObserverI<SolvisData> {
+	private class SolvisDataObserver implements Observer.IObserver<SolvisData> {
 
 		@Override
 		public void update(SolvisData data, Object source) {
@@ -122,7 +122,7 @@ public class Distributor extends Observable<JsonPackage> {
 		}
 	}
 
-	private class SolvisStateObserver implements Observer.ObserverI<SolvisState> {
+	private class SolvisStateObserver implements Observer.IObserver<SolvisState> {
 
 		@Override
 		public void update(SolvisState data, Object source) {
@@ -131,7 +131,7 @@ public class Distributor extends Observable<JsonPackage> {
 
 	}
 
-	private class ConnectionStateObserver implements Observer.ObserverI<ConnectionState> {
+	private class ConnectionStateObserver implements Observer.IObserver<ConnectionState> {
 
 		@Override
 		public void update(ConnectionState data, Object source) {
@@ -141,7 +141,7 @@ public class Distributor extends Observable<JsonPackage> {
 
 	}
 
-	private class HumanAccessObserver implements Observer.ObserverI<HumanAccess> {
+	private class HumanAccessObserver implements Observer.IObserver<HumanAccess> {
 
 		@Override
 		public void update(HumanAccess data, Object source) {
@@ -303,7 +303,7 @@ public class Distributor extends Observable<JsonPackage> {
 	}
 
 	public void register(Solvis solvis) {
-		solvis.registerAbortObserver(new ObserverI<Boolean>() {
+		solvis.registerAbortObserver(new IObserver<Boolean>() {
 
 			@Override
 			public void update(Boolean data, Object source) {
@@ -318,7 +318,7 @@ public class Distributor extends Observable<JsonPackage> {
 		this.aliveThread.start();
 	}
 
-	public interface Measurements {
+	public interface IMeasurements {
 		public void add(SolvisData data);
 
 		public boolean isEmpty();

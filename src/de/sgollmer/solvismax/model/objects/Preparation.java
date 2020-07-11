@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Preparation implements Assigner {
+public class Preparation implements IAssigner {
 
 	private static final String XML_TOUCH_POINT = "TouchPoint";
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";

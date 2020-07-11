@@ -11,12 +11,12 @@ import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
+import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -24,7 +24,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class StrategyButton implements Strategy {
+public class StrategyButton implements IStrategy {
 
 	private final boolean invert;
 	private final String pushTimeId;
@@ -52,7 +52,7 @@ public class StrategyButton implements Strategy {
 	}
 
 	@Override
-	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, ControlAccess controlAccess,
+	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess,
 			boolean optional) throws TerminationException, IOException {
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
@@ -65,7 +65,7 @@ public class StrategyButton implements Strategy {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, ControlAccess controlAccess, SolvisData value)
+	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeError {
 		Boolean bool = value.getBoolean();
 		if (bool == null) {
@@ -98,12 +98,12 @@ public class StrategyButton implements Strategy {
 	}
 
 	@Override
-	public Float getAccuracy() {
+	public Double getAccuracy() {
 		return null;
 	}
 
 	@Override
-	public List<? extends ModeI> getModes() {
+	public List<? extends IMode> getModes() {
 		return null;
 	}
 
@@ -123,7 +123,7 @@ public class StrategyButton implements Strategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis, ControlAccess controlAccess) throws IOException {
+	public boolean learn(Solvis solvis, IControlAccess controlAccess) throws IOException {
 		return true;
 	}
 
@@ -187,6 +187,11 @@ public class StrategyButton implements Strategy {
 	@Override
 	public boolean isBoolean() {
 		return true;
+	}
+
+	@Override
+	public SingleData<?> createSingleData(String value){
+		return new BooleanValue(Boolean.parseBoolean(value), -1);
 	}
 
 }

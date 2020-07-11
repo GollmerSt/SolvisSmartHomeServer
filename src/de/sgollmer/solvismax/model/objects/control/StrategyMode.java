@@ -21,13 +21,13 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
+import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -37,9 +37,9 @@ import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class StrategyMode implements Strategy {
+public class StrategyMode implements IStrategy {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(StrategyMode.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(StrategyMode.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static final String XML_MODE_ENTRY = "ModeEntry";
@@ -56,8 +56,8 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public ModeValue<ModeEntry> getValue(SolvisScreen source, Solvis solvis, ControlAccess controlAccess, boolean optional)
-			throws IOException {
+	public ModeValue<ModeEntry> getValue(SolvisScreen source, Solvis solvis, IControlAccess controlAccess,
+			boolean optional) throws IOException {
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			MyImage image = new MyImage(source.getImage(), rectangle, true);
@@ -89,12 +89,12 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, ControlAccess controlAccess, SolvisData value)
+	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeError {
 		if (value.getMode() == null) {
 			throw new TypeError("Wrong value type");
 		}
-		ModeI valueMode = value.getMode().get();
+		IMode valueMode = value.getMode().get();
 		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 		if (cmp != null && value.getMode().equals(cmp)) {
 			return cmp;
@@ -175,7 +175,7 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public Float getAccuracy() {
+	public Double getAccuracy() {
 		return null;
 	}
 
@@ -198,7 +198,7 @@ public class StrategyMode implements Strategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis, ControlAccess controlAccess) {
+	public boolean learn(Solvis solvis, IControlAccess controlAccess) {
 		boolean successfull = true;
 		for (ModeEntry mode : this.getModes()) {
 			try {
@@ -225,7 +225,7 @@ public class StrategyMode implements Strategy {
 					if (modeO.getGuiSet().getGrafic().equals(modeI.getGuiSet().getGrafic())) {
 						logger.log(LEARN,
 								"Learning of <" + modeI.getId() + "> not successfull (not unique), will be retried");
-						successfull = false ;
+						successfull = false;
 						break;
 					}
 				}
@@ -242,17 +242,21 @@ public class StrategyMode implements Strategy {
 
 	@Override
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
-		ModeI setMode = null;
-		for (ModeI mode : this.getModes()) {
-			if (mode.getName().equals(singleData.toString())) {
+		return this.interpretSetData(singleData.toString());
+	}
+
+	private SingleData<?> interpretSetData(String value) throws TypeError {
+		IMode setMode = null;
+		for (IMode mode : this.getModes()) {
+			if (mode.getName().equals(value)) {
 				setMode = mode;
 				break;
 			}
 		}
 		if (setMode == null) {
-			throw new TypeError("Mode <" + singleData.toString() + "> is unknown");
+			throw new TypeError("Mode <" + value + "> is unknown");
 		}
-		return new ModeValue<ModeI>(setMode, -1);
+		return new ModeValue<IMode>(setMode, -1);
 	}
 
 	@Override
@@ -267,5 +271,10 @@ public class StrategyMode implements Strategy {
 	@Override
 	public boolean isBoolean() {
 		return false;
+	}
+
+	@Override
+	public SingleData<?> createSingleData(String value)  throws TypeError{
+		return this.interpretSetData(value);
 	}
 }

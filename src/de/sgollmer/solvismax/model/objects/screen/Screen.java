@@ -25,7 +25,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
@@ -37,9 +37,9 @@ import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.Element<Screen> {
+public class Screen implements IScreenLearnable, Comparable<Screen>, OfConfigs.IElement<Screen> {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(Screen.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(Screen.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static final int LEARN_REPEAT_COUNT = 3;
@@ -62,7 +62,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	private final ConfigurationMasks configurationMasks;
 	private final TouchPoint touchPoint;
 	private final TouchPoint alternativeTouchPoint;
-	private final Collection<ScreenCompare> screenCompares = new ArrayList<>();
+	private final Collection<IScreenCompare> screenCompares = new ArrayList<>();
 	private final Collection<String> screenGraficRefs;
 	private final Collection<Rectangle> ignoreRectangles;
 	private final String preparationId;
@@ -97,9 +97,13 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 	/**
 	 * @return the id
 	 */
-	@Override
 	public String getId() {
 		return this.id;
+	}
+
+	@Override
+	public String getName() {
+		return this.getId();
 	}
 
 	/**
@@ -215,7 +219,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 			throw new XmlError(
 					"Error in XML definition: Grafic information of screen <" + this.getId() + "> is missing.");
 		}
-		for (ScreenCompare grafic : this.screenCompares) {
+		for (IScreenCompare grafic : this.screenCompares) {
 			if (!grafic.isElementOf(image, solvis)) {
 				return false;
 			}
@@ -225,7 +229,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 
 	public boolean isLearned(Solvis solvis) {
 
-		for (ScreenCompare cmp : this.screenCompares) {
+		for (IScreenCompare cmp : this.screenCompares) {
 			if (cmp instanceof ScreenGraficDescription) {
 				if (!((ScreenGraficDescription) cmp).isLearned(solvis)) {
 					return false;
@@ -512,7 +516,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 
 	@Override
 	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens, Solvis solvis) {
-		for (ScreenCompare cmp : this.screenCompares) {
+		for (IScreenCompare cmp : this.screenCompares) {
 			if (cmp instanceof ScreenGraficDescription) {
 				ScreenGraficDescription description = (ScreenGraficDescription) cmp;
 				if (!description.isLearned(solvis)) {
@@ -529,7 +533,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 		Collection<LearnScreen> learnScreens = solvis.getSolvisDescription().getLearnScreens(solvis);
 		while (learnScreens.size() > 0) {
 			solvis.getHomeScreen().learn(solvis, learnScreens, solvis.getConfigurationMask());
-			ScreenLearnable.clean(learnScreens, null, solvis);
+			IScreenLearnable.clean(learnScreens, null, solvis);
 			solvis.gotoHome();
 		}
 	}
@@ -563,7 +567,7 @@ public class Screen implements ScreenLearnable, Comparable<Screen>, OfConfigs.El
 			}
 		}
 
-		ScreenLearnable.clean(learnScreens, null, solvis);
+		IScreenLearnable.clean(learnScreens, null, solvis);
 
 		if (learnScreens.size() > 0) { // Yes
 			Screen current = this;

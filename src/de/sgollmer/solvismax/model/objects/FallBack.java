@@ -16,45 +16,45 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class FallBack implements Assigner {
+public class FallBack implements IAssigner {
 	
-	private static final Logger logger = LogManager.getInstance().getLogger(FallBack.class) ;
+	private static final ILogger logger = LogManager.getInstance().getLogger(FallBack.class) ;
 
 	private static final String XML_BACK = "Back";
 	private static final String XML_SCREENREF = "ScreenRef";
 
-	private final Collection<FallBackObject> sequence;
+	private final Collection<IFallBackObject> sequence;
 
-	private interface FallBackObject extends Assigner {
+	private interface IFallBackObject extends IAssigner {
 		public void execute(Solvis solvis) throws IOException;
 	}
 
-	public FallBack(Collection<FallBackObject> sequence) {
+	public FallBack(Collection<IFallBackObject> sequence) {
 		this.sequence = sequence;
 	}
 
 	public void execute(Solvis solvis) throws IOException {
-		for (FallBackObject obj : this.sequence) {
+		for (IFallBackObject obj : this.sequence) {
 			obj.execute(solvis);
 		}
 	}
 
 	@Override
 	public void assign(SolvisDescription description) {
-		for (FallBackObject obj : this.sequence) {
+		for (IFallBackObject obj : this.sequence) {
 			obj.assign(description);
 		}
 		
 	}
 	public static class Creator extends CreatorByXML<FallBack> {
 
-		private Collection<FallBackObject> sequence = new ArrayList<>();
+		private Collection<IFallBackObject> sequence = new ArrayList<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -96,7 +96,7 @@ public class FallBack implements Assigner {
 
 	}
 
-	public static class ScreenRef extends de.sgollmer.solvismax.model.objects.screen.ScreenRef implements FallBackObject {
+	public static class ScreenRef extends de.sgollmer.solvismax.model.objects.screen.ScreenRef implements IFallBackObject {
 		public ScreenRef(String id) {
 			super( id ) ;
 		}
@@ -126,7 +126,7 @@ public class FallBack implements Assigner {
 
 	}
 
-	public static class Back implements FallBackObject {
+	public static class Back implements IFallBackObject {
 
 		@Override
 		public void execute(Solvis solvis) throws IOException {

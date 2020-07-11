@@ -14,6 +14,9 @@ import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+
+import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
@@ -23,7 +26,7 @@ import de.sgollmer.solvismax.model.objects.configuration.SolvisTypes;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
-import de.sgollmer.solvismax.model.objects.screen.ScreenLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -349,6 +352,10 @@ public class SolvisDescription {
 	public void instantiate(Solvis solvis) {
 		this.clock.instantiate(solvis);
 		this.errorDetection.instantiate(solvis);
+	}
+
+	public void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException {
+		this.getChannelDescriptions().sendToMqtt(solvis, mqtt);
 	}
 
 }

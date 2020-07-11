@@ -9,7 +9,7 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
-public class ModeValue<M extends ModeI> extends SingleData<M> {
+public class ModeValue<M extends IMode> extends SingleData<M> {
 
 	private final M mode;
 

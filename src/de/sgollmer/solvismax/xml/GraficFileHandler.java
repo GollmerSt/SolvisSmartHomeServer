@@ -23,13 +23,13 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 
 public class GraficFileHandler {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(Solvis.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
 	private static final String NAME_XSD_GRAFICSFILE = "graficData.xsd";
 	private static final String NAME_XML_GRAFICSFILE = "graficData.xml";
 
@@ -65,7 +65,7 @@ public class GraficFileHandler {
 
 		File xsd = new File(this.parent, NAME_XSD_GRAFICSFILE);
 
-		FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XSD_GRAFICSFILE, xsd);
+		FileHelper.copyFromResource(Constants.RESOURCE_PATH + '/' + NAME_XSD_GRAFICSFILE, xsd);
 
 	}
 

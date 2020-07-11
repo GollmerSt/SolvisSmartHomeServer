@@ -20,7 +20,7 @@ import de.sgollmer.solvismax.model.objects.screen.ScreenRef;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Service implements Assigner {
+public class Service implements IAssigner {
 	
 	private static final String XML_SERVICE_SCREEN = "ServiceScreen";
 	

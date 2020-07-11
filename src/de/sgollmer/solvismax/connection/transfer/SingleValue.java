@@ -17,7 +17,7 @@ import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 
-public class SingleValue implements Value {
+public class SingleValue implements IValue {
 
 	private static final Pattern NULL = Pattern.compile("(null).*");
 	private static final Pattern BOOLEAN = Pattern.compile("(true|false).*");

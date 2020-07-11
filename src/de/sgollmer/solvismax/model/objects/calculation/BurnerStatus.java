@@ -14,10 +14,10 @@ import de.sgollmer.solvismax.error.AssignmentError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class BurnerStatus extends Strategy<BurnerStatus> {
@@ -36,7 +36,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		return new BurnerStatus(calculation);
 	}
 
-	public enum Status implements ModeI {
+	public enum Status implements IMode {
 		OFF("off"), LEVEL1("Stufe1"), LEVEL2("Stufe2");
 
 		private String name;
@@ -76,7 +76,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 	}
 
-	private class Executable implements ObserverI<SolvisData> {
+	private class Executable implements IObserver<SolvisData> {
 
 		private final SolvisData result;
 		private final SolvisData burnerLevel1On;
@@ -120,13 +120,13 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 
 	@Override
-	public Collection<ModeI> getModes() {
+	public Collection<IMode> getModes() {
 		return Arrays.asList(Status.values());
 	}
 
 
 	@Override
-	public Float getAccuracy() {
+	public Double getAccuracy() {
 		return null;
 	}
 

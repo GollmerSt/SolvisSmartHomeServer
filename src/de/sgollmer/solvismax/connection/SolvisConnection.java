@@ -37,7 +37,7 @@ import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.error.ModbusError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
@@ -45,11 +45,11 @@ import de.sgollmer.solvismax.objects.Coordinate;
 
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(SolvisConnection.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisConnection.class);
 	private static final Coordinate RELEASE_COORDINATE = new Coordinate(260, 260);
 
 	private final String urlBase;
-	private final AccountInfo accountInfo;
+	private final IAccountInfo accountInfo;
 	private final int connectionTimeout;
 	private final int readTimeout;
 	private final int powerOffDetectedAfterIoErrors;
@@ -66,7 +66,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	private ConnectionState connectionState = new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE);
 
-	public SolvisConnection(String urlBase, AccountInfo accountInfo, int connectionTimeout, int readTimeout,
+	public SolvisConnection(String urlBase, IAccountInfo accountInfo, int connectionTimeout, int readTimeout,
 			int powerOffDetectedAfterIoErrors, int powerOffDetectedAfterTimeout_ms, boolean fwLth2_21_02A) {
 		this.urlBase = urlBase;
 		this.accountInfo = accountInfo;

@@ -49,12 +49,12 @@ public class LogManager {
 		OK, INIT, PREVIOUS
 	}
 
-	public interface Logger {
-		public Logger create(Class<?> clazz);
+	public interface ILogger {
+		public ILogger create(Class<?> clazz);
 
 		public boolean createInstance(String path) throws IOException;
-		
-		public void shutdown() throws InterruptedException ;
+
+		public void shutdown() throws InterruptedException;
 
 		public void fatal(String message);
 
@@ -96,10 +96,13 @@ public class LogManager {
 			this.message = message;
 			this.loggedClass = loggedClass;
 			this.errorCode = errorCode;
+			if (level.isLessSpecificThan(Level.INFO)) {
+				System.err.println(message);
+			}
 		}
 	}
 
-	private Logger loggerBase = new TinyLog.LoggerTiny();
+	private ILogger loggerBase = new TinyLog.LoggerTiny();
 	private Collection<DelayedMessage> delayedErrorMessages = new ArrayList<>();
 	private int delayedErrorCode = -1;
 	private boolean initialized = false;
@@ -113,13 +116,13 @@ public class LogManager {
 		return this.outputDelayedMessages() ? LogErrors.PREVIOUS : LogErrors.OK;
 	}
 
-	public Logger getLogger(Class<?> loggedClass) {
+	public ILogger getLogger(Class<?> loggedClass) {
 		return this.loggerBase.create(loggedClass);
 	}
 
 	public void addDelayedErrorMessage(DelayedMessage message) {
 		if (this.initialized) {
-			Logger logger = this.getLogger(message.loggedClass);
+			ILogger logger = this.getLogger(message.loggedClass);
 			logger.log(message.level, message.message);
 
 		} else {
@@ -136,7 +139,7 @@ public class LogManager {
 			}
 
 			if (this.initialized) {
-				Logger logger = this.loggerBase.create(message.loggedClass);
+				ILogger logger = this.loggerBase.create(message.loggedClass);
 				logger.log(message.level, message.message);
 			} else {
 				System.err.println(message.level.toString() + ": " + message.message);
@@ -162,7 +165,7 @@ public class LogManager {
 		return this.delayedErrorCode;
 	}
 
-	public static void out(Logger logger, Level level, String message, StackTraceElement[] elements) {
+	public static void out(ILogger logger, Level level, String message, StackTraceElement[] elements) {
 		StringBuilder builder = new StringBuilder(message);
 		for (StackTraceElement element : elements) {
 			builder.append('\n');
@@ -181,7 +184,7 @@ public class LogManager {
 		}
 		System.exit(errorCode);
 	}
-	
+
 	public void shutdown() {
 		try {
 			this.loggerBase.shutdown();

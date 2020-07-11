@@ -26,7 +26,7 @@ import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
@@ -35,7 +35,7 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
@@ -43,6 +43,7 @@ import de.sgollmer.solvismax.model.objects.Units.Features;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
@@ -53,7 +54,7 @@ public class Solvis {
 
 	// private static final org.slf4j.Logger logger =
 	// LoggerFactory.getLogger(Solvis.class);
-	private static final Logger logger = LogManager.getInstance().getLogger(Solvis.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 	private static final boolean DEBUG_TWO_STATIONS = false;
 
@@ -66,6 +67,7 @@ public class Solvis {
 
 	private final String type;
 	private final int defaultReadMeasurementsInterval_ms;
+	private final int echoInhibitTime_ms;
 	private int configurationMask = 0;
 	private SolvisScreen currentScreen = null;
 	private SolvisScreen savedScreen = null;
@@ -85,10 +87,12 @@ public class Solvis {
 	private final History history = new History();
 
 	public Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
-			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, ExceptionMail exceptionMail) {
+			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, ExceptionMail exceptionMail,
+			int echoInhibitTime_ms) {
 		this.unit = unit;
 		this.type = unit.getType();
 		this.defaultReadMeasurementsInterval_ms = unit.getDefaultReadMeasurementsInterval_ms();
+		this.echoInhibitTime_ms = echoInhibitTime_ms;
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
 		this.grafics = grafics;
@@ -110,6 +114,7 @@ public class Solvis {
 	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
 
 	private Object solvisMeasureObject = new Object();
+	private HumanAccess humanAccess = HumanAccess.NONE;
 
 	public boolean isCurrentImageValid() {
 		return this.currentScreen != null;
@@ -211,7 +216,7 @@ public class Solvis {
 		this.send(point.getCoordinate(), point.getPushTime(), point.getReleaseTime());
 	}
 
-	public void send(Coordinate coord, int pushTime, int releaseTime ) throws IOException, TerminationException {
+	public void send(Coordinate coord, int pushTime, int releaseTime) throws IOException, TerminationException {
 		this.getConnection().sendTouch(coord);
 		AbortHelper.getInstance().sleep(pushTime);
 		this.getConnection().sendRelease();
@@ -243,7 +248,7 @@ public class Solvis {
 		this.worker.start();
 		this.getDistributor().register(this);
 		this.getSolvisDescription().instantiate(this);
-		this.registerScreenChangedByHumanObserver(new ObserverI<WatchDog.HumanAccess>() {
+		this.registerScreenChangedByHumanObserver(new IObserver<WatchDog.HumanAccess>() {
 
 			@Override
 			public void update(HumanAccess data, Object source) {
@@ -284,6 +289,15 @@ public class Solvis {
 		this.worker.push(command);
 	}
 
+	public void setFromExternal(ChannelDescription description, SingleData<?> singleData) {
+
+		SolvisData current = this.getAllSolvisData().get(description);
+		if (current.getSentTimeStamp() + this.getEchoInhibitTime_ms() < System.currentTimeMillis()
+				|| !current.getSingleData().equals(singleData)) {
+			this.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData, this));
+		}
+	}
+
 	public ChannelDescription getChannelDescription(String description) {
 		return this.solvisDescription.getChannelDescriptions().get(description, this.getConfigurationMask());
 	}
@@ -292,12 +306,17 @@ public class Solvis {
 		return this.solvisDescription.getDurations().get(id);
 	}
 
-	public void registerScreenChangedByHumanObserver(ObserverI<HumanAccess> observer) {
+	public void registerScreenChangedByHumanObserver(IObserver<HumanAccess> observer) {
 		this.screenChangedByHumanObserable.register(observer);
 	}
 
 	public void notifyScreenChangedByHumanObserver(HumanAccess humanAccess) {
+		this.humanAccess = humanAccess;
 		this.screenChangedByHumanObserable.notify(humanAccess);
+	}
+
+	public HumanAccess getHumanAccess() {
+		return this.humanAccess;
 	}
 
 	public void saveScreen() throws IOException {
@@ -394,12 +413,12 @@ public class Solvis {
 	public Unit getUnit() {
 		return this.unit;
 	}
-	
+
 	public Features getFeatures() {
 		return this.unit.getFeatures();
 	}
 
-	public void registerObserver(Observer.ObserverI<SolvisData> observer) {
+	public void registerObserver(Observer.IObserver<SolvisData> observer) {
 		this.allSolvisData.registerObserver(observer);
 	}
 
@@ -434,7 +453,7 @@ public class Solvis {
 			Solvis.this.solvisState.register(new PowerObserver());
 		}
 
-		private class PowerObserver implements ObserverI<SolvisState> {
+		private class PowerObserver implements IObserver<SolvisState> {
 
 			@Override
 			public void update(SolvisState data, Object source) {
@@ -515,7 +534,7 @@ public class Solvis {
 		return this.connection.getMaxResponseTime();
 	}
 
-	public void registerAbortObserver(ObserverI<Boolean> observer) {
+	public void registerAbortObserver(IObserver<Boolean> observer) {
 		this.abortObservable.register(observer);
 	}
 
@@ -551,17 +570,14 @@ public class Solvis {
 				if (time - 120000 > lastErrorOutTime) {
 					String message = e.getMessage();
 					if (message.contains("timed")) {
-						logger.error("Solvis not available. Powered down or wrong IP address."
-								+ " Will try again.");
+						logger.error("Solvis not available. Powered down or wrong IP address." + " Will try again.");
 						logger.info("Java error message: ", e);
 					} else if (message.contains("too many")) {
-						logger.error(
-								"Solvis not available. The password or account name"
+						logger.error("Solvis not available. The password or account name"
 								+ " may not be correct. Will try again.");
 						logger.info("Java error message: ", e);
 					} else {
-						logger.error(
-								"Solvis not available. Powered down or wrong IP address."
+						logger.error("Solvis not available. Powered down or wrong IP address."
 								+ " Will try again. Java-Error-Message:\n", e);
 					}
 				}
@@ -605,12 +621,12 @@ public class Solvis {
 	public static class SynchronizedScreenResult {
 		private final boolean changed;
 		private final SolvisScreen screen;
-		
-		public static SolvisScreen getScreen( SynchronizedScreenResult result ) {
-			if ( result == null ) {
-				return null ;
+
+		public static SolvisScreen getScreen(SynchronizedScreenResult result) {
+			if (result == null) {
+				return null;
 			} else {
-				return result.screen ;
+				return result.screen;
 			}
 		}
 
@@ -655,5 +671,9 @@ public class Solvis {
 
 	public ExceptionMail getExceptionMail() {
 		return this.exceptionMail;
+	}
+
+	public int getEchoInhibitTime_ms() {
+		return this.echoInhibitTime_ms;
 	}
 }

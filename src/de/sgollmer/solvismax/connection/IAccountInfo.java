@@ -5,8 +5,9 @@
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects.data;
+package de.sgollmer.solvismax.connection;
 
-public interface ModeI {
-	public String getName() ;
+public interface IAccountInfo {
+	public String getAccount() ;
+	public char [] cP() ;
 }

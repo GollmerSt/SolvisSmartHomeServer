@@ -17,10 +17,10 @@ import de.sgollmer.solvismax.model.objects.clock.ClockMonitor.NextAdjust;
 
 public class CommandClock extends Command {
 
-	private final ClockMonitor.AdjustStrategy strategy;
+	private final ClockMonitor.IAdjustStrategy strategy;
 	private final NextAdjust nextAdjust;
 
-	public CommandClock(ClockMonitor.AdjustStrategy strategy, NextAdjust nextAdjust) {
+	public CommandClock(ClockMonitor.IAdjustStrategy strategy, NextAdjust nextAdjust) {
 		this.strategy = strategy;
 		this.nextAdjust = nextAdjust;
 	}
@@ -50,7 +50,7 @@ public class CommandClock extends Command {
 		return this.nextAdjust;
 	}
 
-	public ClockMonitor.AdjustStrategy getStrategy() {
+	public ClockMonitor.IAdjustStrategy getStrategy() {
 		return this.strategy;
 	}
 

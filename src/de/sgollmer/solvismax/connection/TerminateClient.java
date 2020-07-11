@@ -17,7 +17,7 @@ import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
-import de.sgollmer.solvismax.connection.transfer.TerminatePackage;
+import de.sgollmer.solvismax.connection.transfer.ServerCommandPackage;
 
 public class TerminateClient {
 
@@ -53,8 +53,7 @@ public class TerminateClient {
 
 		// int clientId = ((ConnectedPackage) jsonPackage).getClientId();
 
-		TerminatePackage terminatePackage = new TerminatePackage();
-
+		ServerCommandPackage terminatePackage = new ServerCommandPackage( ServerCommand.TERMINATE);
 		terminatePackage.send(out);
 
 		out.flush();

@@ -12,11 +12,11 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.model.objects.control.ControlAccess;
+import de.sgollmer.solvismax.model.objects.control.IControlAccess;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ModbusAccess implements ControlAccess {
+public class ModbusAccess implements IControlAccess {
 	private final RegisterType type;
 	private final int address;
 

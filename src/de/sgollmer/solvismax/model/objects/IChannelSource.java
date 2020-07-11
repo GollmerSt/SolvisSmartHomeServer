@@ -12,13 +12,13 @@ import java.util.Collection;
 
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
+import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
-public interface ChannelSourceI extends Assigner, GraficsLearnable {
+public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	
 	public ChannelDescription getRestoreChannel( Solvis solvis) ;
 
@@ -34,7 +34,7 @@ public interface ChannelSourceI extends Assigner, GraficsLearnable {
 
 	public Integer getDivisor();
 
-	public Float getAccuracy();
+	public Double getAccuracy();
 
 	public boolean isBoolean();
 
@@ -46,7 +46,7 @@ public interface ChannelSourceI extends Assigner, GraficsLearnable {
 		CONTROL, CALCULATION, MEASUREMENT
 	}
 
-	public Collection<? extends ModeI> getModes();
+	public Collection<? extends IMode> getModes();
 
 	public Screen getScreen(int configurationMask);
 

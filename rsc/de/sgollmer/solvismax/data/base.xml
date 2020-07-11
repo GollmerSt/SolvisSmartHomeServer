@@ -3,7 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/control base.xsd ">
 	<tns:ExecutionData timeZone="Europe/Berlin"
-		port="10735" writablePathLinux="/opt/fhem" />
+		port="10735" writablePathLinux="/opt/fhem"
+		writeablePathWindows="C:\JavaPgms\SolvisSmartHomeServer\log"
+		echoInhibitTime_ms="2000" />
 	<tns:Units>
 		<!-- Existiert im Solarkreislauf eine zweite Umwaelzpumpe, welche an A07 
 			angeschlossen ist, ist die configOrMask auf "0x10"zu setzen. Dann wird die 
@@ -53,6 +55,9 @@
 			</tns:Features>
 		</tns:Unit>
 	</tns:Units>
+	<tns:Mqtt enable="false" brokerUrl="192.168.0.71" port="1883"
+		subscribeQoS="1" publishQoS="1" idPrefix="SolvisSmartHomeServer"
+		topicPrefix="SolvisSmartHomeServer" />
 	<!-- ExceptionMail securityType: TLS, SSL oder NONE -->
 	<tns:ExceptionMail port="5870"
 		passwordCrypt="AES-coded" name="Vorname Nachname" securityType="TLS"

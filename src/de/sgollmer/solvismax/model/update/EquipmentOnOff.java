@@ -12,12 +12,12 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -28,7 +28,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(EquipmentOnOff.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(EquipmentOnOff.class);
 
 	private final String equipmentId;
 	private final String calculatedId;
@@ -77,7 +77,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 	}
 
-	private class Executable implements ObserverI<SolvisData> {
+	private class Executable implements IObserver<SolvisData> {
 
 		private final Solvis solvis;
 		private final SolvisData toUpdate;
@@ -105,7 +105,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			this.hourly = hourly;
 
 			this.equipment.registerContinuousObserver(this);
-			this.toUpdate.register(new ObserverI<SolvisData>() {
+			this.toUpdate.register(new IObserver<SolvisData>() {
 
 				@Override
 				public void update(SolvisData data, Object source) {

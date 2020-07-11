@@ -14,10 +14,13 @@ import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.Server;
 import de.sgollmer.solvismax.connection.TerminateClient;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
@@ -26,7 +29,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.LogErrors;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.solvismax.xml.XmlStreamReader;
@@ -35,7 +38,7 @@ public class Main {
 
 	public static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
 
-	private static Logger logger;
+	private static ILogger logger;
 	private static Level LEARN;
 
 	public static void main(String[] args) {
@@ -200,16 +203,25 @@ public class Main {
 		final Instances instances = tempInstances;
 		final CommandHandler commandHandler = new CommandHandler(instances);
 		Server server = new Server(serverSocket, commandHandler, instances.getSolvisDescription().getMiscellaneous());
+		Mqtt mqtt = baseData.getMqtt();
+		try {
+			mqtt.connect(instances, commandHandler);
+		} catch (MqttException e) {
+			logger.error("Error: Mqtt connection error", e);
+			System.exit(Constants.ExitCodes.MQTT_ERROR);
+		}
 		Runnable runnable = new Runnable() {
 
 			@Override
 			public void run() {
 				instances.abort();
 				commandHandler.abort();
+				mqtt.abort();
 				if (server != null) {
 					server.abort();
 				}
 				AbortHelper.getInstance().abort();
+				logger.info("Server terminated");
 				logManager.shutdown();
 			}
 		};

@@ -16,7 +16,7 @@ import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
-public class TouchPoint implements Assigner {
+public class TouchPoint implements IAssigner {
 
 	private static final String XML_COORDINATE = "Coordinate";
 

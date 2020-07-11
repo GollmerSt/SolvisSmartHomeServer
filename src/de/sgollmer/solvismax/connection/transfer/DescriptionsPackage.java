@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
+import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 
@@ -24,10 +25,12 @@ public class DescriptionsPackage extends JsonPackage {
 				this.data.add(descr);
 			}
 		}
-		
-		for ( ServerCommandPackage.ServerCommandEnum command : ServerCommandPackage.ServerCommandEnum.values()) {
-			ServerCommandDescription descr = new ServerCommandDescription(command) ;
-			this.data.add(descr);
+
+		for (ServerCommand command : ServerCommand.values()) {
+			if (command.shouldCreateMeta()) {
+				ServerCommandDescription descr = new ServerCommandDescription(command);
+				this.data.add(descr);
+			}
 		}
 
 	}

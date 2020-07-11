@@ -11,7 +11,7 @@ import de.sgollmer.solvismax.error.JsonError;
 
 public class Element {
 	protected String name;
-	protected Value value;
+	protected IValue value;
 
 	public void addTo(StringBuilder builder) {
 		builder.append('"');
@@ -22,6 +22,13 @@ public class Element {
 		} else {
 			this.value.addTo(builder);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder() ;
+		this.addTo(builder);
+		return builder.toString();
 	}
 
 	public int from(String json, int position) throws JsonError {
@@ -86,11 +93,11 @@ public class Element {
 		this.name = name;
 	}
 
-	public Value getValue() {
+	public IValue getValue() {
 		return this.value;
 	}
 
-	public void setValue(Value value) {
+	public void setValue(IValue value) {
 		this.value = value;
 	}
 

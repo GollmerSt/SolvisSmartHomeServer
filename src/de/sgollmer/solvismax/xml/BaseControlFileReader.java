@@ -45,8 +45,15 @@ public class BaseControlFileReader {
 
 		String rootId = XML_ROOT_ID;
 
-		String resourcePath = Constants.RESOURCE_PATH + File.separator + NAME_XSD_BASEFILE;
+		String resourcePath = Constants.RESOURCE_PATH + '/' + NAME_XSD_BASEFILE;
+		System.err.println( "Path: " + Main.class.getCanonicalName());
 		InputStream xsd = Main.class.getResourceAsStream(resourcePath);
+		
+		if (xsd == null ) {
+			LogManager.getInstance().addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "Getting of " + NAME_XSD_BASEFILE + " fails", BaseControlFileReader.class, Constants.ExitCodes.BASE_XML_ERROR));
+			source.close();
+			return null;
+		}
 
 		boolean verified = reader.validate(source, xsd);
 		if (!verified) {

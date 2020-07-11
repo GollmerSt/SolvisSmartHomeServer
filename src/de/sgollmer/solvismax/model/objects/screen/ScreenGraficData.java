@@ -24,9 +24,9 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
-import de.sgollmer.solvismax.xml.XmlWriteable;
+import de.sgollmer.solvismax.xml.IXmlWriteable;
 
-public class ScreenGraficData implements XmlWriteable {
+public class ScreenGraficData implements IXmlWriteable {
 	private final String id;
 	private final MyImage image;
 

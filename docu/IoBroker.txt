@@ -43,3 +43,69 @@
         Calculation
             BrennerLaufzeit_s
             ......
+            
+--------------------------------------------------------------------
+
+MQTT-Lösung:
+
+	letzter Teil des Topics:
+		data		eigentliche Daten
+		isboolean	Boolscher Wert
+		enum1 ... n	Wertemenge (z.B. Tag/Nacht/Standby)
+		upper		höchster möglicher Wert
+		lower		niedrigster möglicher Wert
+		step		Stufen
+		type		Type
+		unit		Einheit
+		accuracy	Genauigkeit
+		
+	Nur data ist Pflicht, allesw andere je nach Channel
+	
+	Topic-Abfrage nur für Daten:
+	
+		%prefix%/+/channel/+/data
+		%prefix%/%unit%/channel/+/data
+
+	Grundsätzlich:
+		Client sendet immer mit %client%
+		Server sendet immer ohne %client% außer bei der Client-spezifischen Error-Message
+
+	%prefix%/server/meta										publish		JSON
+	%prefix%/%client%/server/cmnd								subscribe	backup, restart, 
+	%prefix%/server/status										publish
+	....
+	%prefix%/%client%/error										publish		error message for %client%
+	%prefix%/%unit%/server/meta									publish		JSON
+	%prefix%/%client%/%unit%/server/cmnd						subscribe	**
+	
+	** GUI_commands_enable, GUI_commands_disable,
+	   Screen_Restore_enable, Screen_Restore_disable
+	
+	%prefix%/client/status										true/false	QoS 2
+			 über letzten Willen auf false	subscribe
+	
+	%prefix%/%unit%/channel/A02.Pumpe_Warmwasser/meta			publish		JSON wie gehabt
+	%prefix%/%unit%/channel/A02.Pumpe_Warmwasser/data			publish		value als String
+	...
+	%prefix%/%unit%/channel/C04.WarmwasserPumpe/meta			publish		JSON wie gehabt
+	%prefix%/%unit%/channel/C04.WarmwasserPumpe/data			publish		value als String
+	%prefix%/%client%/%unit%/channel/C04.WarmwasserPumpe/update	subscribe	true (wird ignoriert)
+	%prefix%/%client%/%unit%/channel/C04.WarmwasserPumpe/cmnd	subscribe	value als String
+	
+
+	KeepAlive ist über PINGREQ-Package zu realisieren!
+	
+	Clean Session auf false setzen, dann merkt sich der Broker die Daten. Zusätzlich ist noch
+		das retained flag beim Publish zu setzen
+	
+	Session Present flag dabei nach dem Konnektieren abfragen. Abhängig davon
+		die Meta-Daten schicken
+	   
+	Bei Reset-Befehlen darf das Retain Flag beim publish nicht gesetzt werden.
+	
+	Client-Id dazu wie aktuell erzeugen, mit einem Solvis-Prefix
+	
+	QoS auf 2 setzen. Dann ist sicher gestellt, dass Daten sicher bei den Clients ankommen. Evtl
+		in base.xml konfigurierbar machen
+	
+	Beim Beenden des Servers an den MQTT-Brocker unsubscribe schicken!

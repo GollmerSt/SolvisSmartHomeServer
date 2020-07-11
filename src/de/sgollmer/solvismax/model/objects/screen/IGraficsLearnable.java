@@ -7,9 +7,12 @@
 
 package de.sgollmer.solvismax.model.objects.screen;
 
-import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import java.io.IOException;
+
+import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.model.Solvis;
 
-public interface ScreenCompare {
-	public boolean isElementOf(MyImage image, Solvis solvis);
+public interface IGraficsLearnable {
+	public void learn( Solvis solvis) throws IOException, LearningError ;
+
 }

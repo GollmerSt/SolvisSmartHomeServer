@@ -13,17 +13,19 @@ import java.util.Set;
 
 import javax.mail.MessagingException;
 
+import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class SolvisState extends Observable<SolvisState> {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(SolvisState.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisState.class);
 
 	private final Solvis solvis;
 	private State state = State.UNDEFINED;
@@ -185,6 +187,10 @@ public class SolvisState extends Observable<SolvisState> {
 
 	public boolean isErrorMessage() {
 		return this.errorScreen != null;
+	}
+	
+	public MqttData getMqttData() {
+		return new MqttData(this.solvis, Constants.Mqtt.STATUS, this.getState().name(),0, true) ;
 	}
 
 }

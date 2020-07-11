@@ -18,17 +18,17 @@ import de.sgollmer.solvismax.helper.Helper.Format;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.configuration.Configurations.Configuration;
+import de.sgollmer.solvismax.model.objects.configuration.Configurations.IConfiguration;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Solar implements Configuration {
+public class Solar implements IConfiguration {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(Solar.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(Solar.class);
 
 	private static final String XML_RETURN_TEMPERATURE = "ReturnTemperature";
 	private static final String XML_OUTGOING_TEMPERATURE = "OutgoingTemperature";

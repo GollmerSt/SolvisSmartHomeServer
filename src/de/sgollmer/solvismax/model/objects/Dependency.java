@@ -13,7 +13,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
-public class Dependency implements Assigner {
+public class Dependency implements IAssigner {
 	private final String id;
 	private final String dataId;
 

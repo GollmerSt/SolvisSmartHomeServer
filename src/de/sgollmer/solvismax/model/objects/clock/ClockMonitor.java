@@ -28,26 +28,26 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Assigner;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.IAssigner;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.data.DateValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
+import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ClockMonitor implements Assigner, GraficsLearnable {
+public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(ClockMonitor.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(ClockMonitor.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 	private static final Calendar CALENDAR_2018;
 
@@ -163,7 +163,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		}
 	}
 
-	interface AdjustStrategy {
+	interface IAdjustStrategy {
 		public boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException;
 
 		public void notExecuted();
@@ -333,7 +333,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 		NONE, NORMAL, FINE
 	}
 
-	public class Executable implements ObserverI<SolvisData> {
+	public class Executable implements IObserver<SolvisData> {
 
 		private AdjustmentType adjustmentTypeRequestPending = AdjustmentType.NONE;
 		private final Solvis solvis;
@@ -347,7 +347,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 
 		public Executable(Solvis solvis) {
 			this.solvis = solvis;
-			solvis.registerAbortObserver(new ObserverI<Boolean>() {
+			solvis.registerAbortObserver(new IObserver<Boolean>() {
 
 				@Override
 				public void update(Boolean data, Object source) {
@@ -465,7 +465,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			}
 		}
 
-		private void sheduleAdjustment(AdjustStrategy strategy, NextAdjust nextAdjust) {
+		private void sheduleAdjustment(IAdjustStrategy strategy, NextAdjust nextAdjust) {
 			if (this.adjustmentThread != null) {
 				this.adjustmentThread.abort();
 			}
@@ -477,7 +477,7 @@ public class ClockMonitor implements Assigner, GraficsLearnable {
 			this.adjustmentEnable = !this.burner && !this.hotWaterPump;
 		}
 
-		private class StrategyAdjust implements AdjustStrategy {
+		private class StrategyAdjust implements IAdjustStrategy {
 
 			@Override
 			public boolean execute(NextAdjust nextAdjust) throws IOException {

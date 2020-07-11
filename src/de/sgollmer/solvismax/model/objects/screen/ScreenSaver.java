@@ -24,9 +24,9 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -34,7 +34,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ScreenSaver implements Assigner {
+public class ScreenSaver implements IAssigner {
 
 	private static boolean DEBUG = false;
 
@@ -46,7 +46,7 @@ public class ScreenSaver implements Assigner {
 	private static final String XML_TIME_DATA_RECTANGLE = "TimeDateRectangle";
 	private static final String XML_MAX_GRAFIC_SIZE = "MaxGraficSize";
 
-	private static final Logger logger = LogManager.getInstance().getLogger(ScreenSaver.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(ScreenSaver.class);
 
 	private final int timeHeight;
 	private final Rectangle timeDateRectangle;

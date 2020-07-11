@@ -12,16 +12,16 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.Helper;
 
-public class ModeEntry implements Assigner, ModeI {
+public class ModeEntry implements IAssigner, IMode {
 
 	private static final String XML_GUI_SET = "GuiSet";
 	private static final String XML_MODBUS_VALUE = "ModbusValue";
@@ -130,7 +130,7 @@ public class ModeEntry implements Assigner, ModeI {
 		return this.modbusValue;
 	}
 
-	public static class GuiSet implements Assigner {
+	public static class GuiSet implements IAssigner {
 		private final TouchPoint touch;
 		private final ScreenGraficDescription grafic;
 

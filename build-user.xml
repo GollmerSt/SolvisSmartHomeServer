@@ -37,6 +37,7 @@
 		<pathelement location="lib/mailapi-1.6.2.jar" />
 		<pathelement location="lib/smtp-1.6.2.jar" />
 		<pathelement location="lib/javax.activation-1.2.0.jar" />
+		<pathelement location="lib/org.eclipse.paho.client.mqttv3-1.2.4.jar" />
 	</path>
 	<target name="init">
 		<mkdir dir="${bin.dir}" />
@@ -147,6 +148,7 @@
 			<zipfileset src="lib/mailapi-1.6.2.jar" />
 			<zipfileset src="lib/smtp-1.6.2.jar" />
 			<zipfileset src="lib/javax.activation-1.2.0.jar" />
+			<zipfileset src="lib/org.eclipse.paho.client.mqttv3-1.2.4.jar" />
 			<manifest>
 				<attribute name="Main-Class"
 					value="de.sgollmer.solvismax.Main" />

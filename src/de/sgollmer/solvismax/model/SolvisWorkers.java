@@ -19,15 +19,15 @@ import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Command.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class SolvisWorkers {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
 
 	private final Solvis solvis;
 	private final WatchDog watchDog;
@@ -42,7 +42,7 @@ public class SolvisWorkers {
 	public SolvisWorkers(Solvis solvis) {
 		this.solvis = solvis;
 		this.watchDog = new WatchDog(solvis, solvis.getSolvisDescription().getSaver());
-		this.solvis.registerAbortObserver(new ObserverI<Boolean>() {
+		this.solvis.registerAbortObserver(new IObserver<Boolean>() {
 
 			@Override
 			public void update(Boolean data, Object source) {

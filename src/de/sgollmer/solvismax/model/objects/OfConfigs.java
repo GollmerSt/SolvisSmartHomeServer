@@ -13,14 +13,14 @@ import java.util.Collection;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 
-public class OfConfigs<E extends OfConfigs.Element<E>> {
+public class OfConfigs<E extends OfConfigs.IElement<E>> {
 	private final Collection<E> elements = new ArrayList<>(1);
 
 	public void verifyAndAdd(E element) throws XmlError {
 		for (E e : this.elements) {
 			if (!element.isConfigurationVerified(e)) {
 				element.isConfigurationVerified(e) ;
-				throw new XmlError("Configuration mask of screen <" + element.getId() + "> isn't unique.");
+				throw new XmlError("Configuration mask of screen <" + element.getName() + "> isn't unique.");
 			}
 		}
 		this.elements.add(element);
@@ -60,11 +60,11 @@ public class OfConfigs<E extends OfConfigs.Element<E>> {
 		}
 	}
 	
-	public interface Element<E> {
+	public interface IElement<E> {
 		public boolean isConfigurationVerified(E e) ;
 		public boolean isInConfiguration(int configurationMask) ;
-		public String getId() ;
 		public void assign(SolvisDescription description);
+		public String getName() ;
 	}
 	
 	public int size() {

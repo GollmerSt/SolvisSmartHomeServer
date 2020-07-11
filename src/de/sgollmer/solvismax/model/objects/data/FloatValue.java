@@ -7,28 +7,24 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
-public class FloatValue extends SingleData<Float> {
+import de.sgollmer.solvismax.Constants;
 
-	private final float value;
-	private final boolean fastChange;
+public class FloatValue extends SingleData<Double> {
 
-	public FloatValue(float value, long timeStamp, boolean fastChange) {
+	private final double value;
+
+	public FloatValue(double value, long timeStamp) {
 		super(timeStamp);
 		this.value = value;
-		this.fastChange = fastChange;
-	}
-
-	public FloatValue(float value, long timeStamp) {
-		this(value, timeStamp, false);
 	}
 
 	@Override
 	public Integer getInt() {
-		return Math.round(this.value);
+		return (int) Math.round(this.value);
 	}
 
 	@Override
-	public SingleData<Float> create(int value, long timeStamp) {
+	public SingleData<Double> create(int value, long timeStamp) {
 		return new FloatValue(value, timeStamp);
 	}
 
@@ -39,7 +35,7 @@ public class FloatValue extends SingleData<Float> {
 
 	@Override
 	public String toString() {
-		return Float.toString(this.value);
+		return Double.toString(this.value);
 	}
 
 	@Override
@@ -48,13 +44,36 @@ public class FloatValue extends SingleData<Float> {
 	}
 
 	@Override
-	public Float get() {
+	public Double get() {
 		return this.value;
 	}
 
 	@Override
 	public boolean isFastChange() {
-		return this.fastChange;
+		return false;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if ( !(obj instanceof SingleData)) {
+			return false ;
+		}
+		double cmp ;
+		double maxEqualDiff = Math.abs(this.value) * Constants.PRECISION_DOUBLE ;
+		if (obj instanceof FloatValue) {
+			cmp = ((FloatValue) obj).value ;
+		} else if (obj instanceof IntegerValue ) {
+			cmp = ((IntegerValue) obj).get() ;
+		} else {
+			return false ;
+		}
+		double diff = this.value - cmp ;
+		return Math.abs(diff) < maxEqualDiff;
+	}
+
+	@Override
+	public int hashCode() {
+		return Double.valueOf(this.value).hashCode();
 	}
 
 }

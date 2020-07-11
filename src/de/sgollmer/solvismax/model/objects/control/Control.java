@@ -21,18 +21,18 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
-import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
-import de.sgollmer.solvismax.model.objects.ChannelSourceI;
+import de.sgollmer.solvismax.model.objects.IChannelSource;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
@@ -44,7 +44,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Control extends ChannelSource {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(Control.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(Control.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static final String XML_CONTROL_CURRENT = "CurrentValue";
@@ -62,10 +62,10 @@ public class Control extends ChannelSource {
 	private final GuiAccess guiAccess;
 	private final ModbusAccess modbusAccess;
 
-	private final Strategy strategy;
+	private final IStrategy strategy;
 	private final UpdateStrategies updateStrategies;
 
-	public Control(boolean optional, GuiAccess guiAccess, ModbusAccess modbusAccess, Strategy strategy,
+	public Control(boolean optional, GuiAccess guiAccess, ModbusAccess modbusAccess, IStrategy strategy,
 			UpdateStrategies updateStrategies) {
 		this.optional = optional;
 		this.guiAccess = guiAccess;
@@ -81,9 +81,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData destin, Solvis solvis)
-			throws IOException, TerminationException {
-		ControlAccess controlAccess = this.getControlAccess(solvis);
+	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException, TerminationException {
+		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return false;
 		}
@@ -99,8 +98,8 @@ public class Control extends ChannelSource {
 
 	@Override
 	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
-				
-		ControlAccess controlAccess = this.getControlAccess(solvis);
+
+		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return null;
 		}
@@ -125,8 +124,8 @@ public class Control extends ChannelSource {
 		}
 		return setValue;
 	}
-	
-	private boolean guiPrepare(Solvis solvis, ControlAccess controlAccess) throws IOException, TerminationException {
+
+	private boolean guiPrepare(Solvis solvis, IControlAccess controlAccess) throws IOException, TerminationException {
 		if (!controlAccess.isModbus()) {
 			this.guiAccess.getScreen().get(solvis).goTo(solvis);
 			if (!this.guiAccess.prepare(solvis)) {
@@ -152,7 +151,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public Float getAccuracy() {
+	public Double getAccuracy() {
 		return this.strategy.getAccuracy();
 	}
 
@@ -191,7 +190,7 @@ public class Control extends ChannelSource {
 		private boolean optional;
 		private GuiAccess guiAccess;
 		private ModbusAccess modbusAccess;
-		private Strategy strategy;
+		private IStrategy strategy;
 		private UpdateStrategies updateStrategies = null;
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -257,7 +256,7 @@ public class Control extends ChannelSource {
 				case XML_CONTROL_TYPE_READ:
 				case XML_CONTROL_TYPE_MODE:
 				case XML_CONTROL_TYPE_BUTTON:
-					this.strategy = (Strategy) created;
+					this.strategy = (IStrategy) created;
 					break;
 				case XML_UPDATE_BY:
 					this.updateStrategies = (UpdateStrategies) created;
@@ -324,7 +323,7 @@ public class Control extends ChannelSource {
 
 	@Override
 	public Type getType() {
-		return ChannelSourceI.Type.CONTROL;
+		return IChannelSource.Type.CONTROL;
 	}
 
 	@Override
@@ -333,7 +332,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public Collection<? extends ModeI> getModes() {
+	public Collection<? extends IMode> getModes() {
 		return this.strategy.getModes();
 	}
 
@@ -356,7 +355,7 @@ public class Control extends ChannelSource {
 		return this.modbusAccess;
 	}
 
-	public static class GuiAccess implements Assigner, ControlAccess {
+	public static class GuiAccess implements IAssigner, IControlAccess {
 		private final String screenId;
 		private final Rectangle valueRectangle;
 		private final String preparationId;
@@ -364,7 +363,7 @@ public class Control extends ChannelSource {
 
 		private OfConfigs<Screen> screen = null;
 		private Preparation preparation = null;
-		private OfConfigs<ChannelDescription> restoreChannel = null ;
+		private OfConfigs<ChannelDescription> restoreChannel = null;
 
 		public GuiAccess(String screenId, Rectangle valueRectangle, String preparationId, String restoreChannelId) {
 			this.screenId = screenId;
@@ -470,9 +469,9 @@ public class Control extends ChannelSource {
 					throw new ReferenceError("Preparation of reference < " + this.preparationId + " > not found");
 				}
 			}
-			
-			if ( this.restoreChannelId != null ) {
-				this.restoreChannel = description.getChannelDescriptions().get(this.restoreChannelId) ;
+
+			if (this.restoreChannelId != null) {
+				this.restoreChannel = description.getChannelDescriptions().get(this.restoreChannelId);
 				if (this.restoreChannel == null) {
 					throw new ReferenceError("Channel < " + this.restoreChannelId + " > not found");
 				}
@@ -495,7 +494,7 @@ public class Control extends ChannelSource {
 
 	}
 
-	private ControlAccess getControlAccess(Solvis solvis) {
+	private IControlAccess getControlAccess(Solvis solvis) {
 		if (this.isModbus(solvis)) {
 			return this.modbusAccess;
 		} else {
@@ -511,12 +510,17 @@ public class Control extends ChannelSource {
 	@Override
 	public ChannelDescription getRestoreChannel(Solvis solvis) {
 		if (this.isModbus(solvis)) {
-			return null ;
+			return null;
 		}
-		if ( this.guiAccess.restoreChannel != null ) {
-			return this.guiAccess.restoreChannel.get(solvis) ;
+		if (this.guiAccess.restoreChannel != null) {
+			return this.guiAccess.restoreChannel.get(solvis);
 		}
 		return null;
+	}
+
+	@Override
+	protected SingleData<?> createSingleData(String value) throws TypeError {
+		return this.strategy.createSingleData(value);
 	}
 
 }

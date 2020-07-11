@@ -28,7 +28,7 @@ import de.sgollmer.solvismax.helper.FileHelper;
  */
 class Logger4j2 {
 
-	public static class Logger implements de.sgollmer.solvismax.log.LogManager.Logger {
+	public static class Logger implements de.sgollmer.solvismax.log.LogManager.ILogger {
 
 		private final org.apache.logging.log4j.Logger logger;
 		private final Level LEARN;
@@ -44,7 +44,7 @@ class Logger4j2 {
 		}
 
 		@Override
-		public de.sgollmer.solvismax.log.LogManager.Logger create(Class<?> clazz) {
+		public de.sgollmer.solvismax.log.LogManager.ILogger create(Class<?> clazz) {
 			Logger logger = new Logger(clazz);
 			return logger;
 		}
@@ -198,7 +198,7 @@ class Logger4j2 {
 		File xml = new File(this.parent, Constants.LOG4J_CONFIG_FILE);
 
 		if (!xml.exists()) {
-			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + Constants.LOG4J_CONFIG_FILE, xml,
+			FileHelper.copyFromResource(Constants.RESOURCE_PATH + '/' + Constants.LOG4J_CONFIG_FILE, xml,
 					"****LogPath****", this.parent.getAbsolutePath());
 		}
 

@@ -78,7 +78,7 @@ public class FileHelper {
 		// System.out.println("Write not possible") ;
 		// }
 
-		FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + "graficData.xsd", file);
+		FileHelper.copyFromResource(Constants.RESOURCE_PATH + '/' + "graficData.xsd", file);
 	}
 
 	/**
@@ -115,12 +115,12 @@ public class FileHelper {
 
 		// prune for various cases
 		if (extURL.endsWith(".jar")) // from getCodeSource
-			extURL = extURL.substring(0, extURL.lastIndexOf("/"));
+			extURL = extURL.substring(0, extURL.lastIndexOf('/'));
 		else { // from getResource
-			String suffix = "/" + (aclass.getName()).replace(".", "/") + ".class";
+			String suffix = '/' + (aclass.getName()).replace('.', '/') + ".class";
 			extURL = extURL.replace(suffix, "");
 			if (extURL.startsWith("jar:") && extURL.endsWith(".jar!"))
-				extURL = extURL.substring(4, extURL.lastIndexOf("/"));
+				extURL = extURL.substring(4, extURL.lastIndexOf('/'));
 		}
 
 		// convert back to url

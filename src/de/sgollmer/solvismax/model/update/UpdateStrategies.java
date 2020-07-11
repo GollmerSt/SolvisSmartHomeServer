@@ -15,13 +15,13 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class UpdateStrategies implements Assigner {
+public class UpdateStrategies implements IAssigner {
 
 	private final Collection<Strategy<?>> strategies;
 
@@ -62,7 +62,7 @@ public class UpdateStrategies implements Assigner {
 		}
 	}
 
-	public static abstract class Strategy<S extends Strategy<?>> implements Assigner {
+	public static abstract class Strategy<S extends Strategy<?>> implements IAssigner {
 
 		protected ChannelSource source;
 

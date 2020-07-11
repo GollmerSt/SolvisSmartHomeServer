@@ -16,17 +16,17 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Assigner;
+import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ScreenGraficDescription implements ScreenCompare, Assigner {
+public class ScreenGraficDescription implements IScreenCompare, IAssigner {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(ScreenGraficDescription.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(ScreenGraficDescription.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static final String XML_FIELD = "Field";

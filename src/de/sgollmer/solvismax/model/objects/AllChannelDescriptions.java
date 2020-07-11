@@ -19,18 +19,22 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+
+import de.sgollmer.solvismax.connection.mqtt.Mqtt;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.GraficsLearnable;
+import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.Screen.ScreenTouch;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class AllChannelDescriptions implements Assigner, GraficsLearnable {
+public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	private static final String XML_CHANNEL_DESCRIPTION = "ChannelDescription";
 
@@ -114,7 +118,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 	public void learn(Solvis solvis) throws IOException {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
-			if (description != null && description instanceof GraficsLearnable) {
+			if (description != null && description instanceof IGraficsLearnable) {
 				description.learn(solvis);
 			}
 		}
@@ -127,7 +131,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
 			if (description != null) {
-				if (description.getType() == ChannelSourceI.Type.MEASUREMENT) {
+				if (description.getType() == IChannelSource.Type.MEASUREMENT) {
 					description.getValue(solvis);
 				} else if (description.isModbus(solvis)) {
 					description.getValue(solvis);
@@ -168,7 +172,7 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 			descriptions = new ArrayList<>();
 			for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
 				ChannelDescription description = confDescriptions.get(solvis);
-				if (description != null && description.getType() == ChannelSourceI.Type.CONTROL
+				if (description != null && description.getType() == IChannelSource.Type.CONTROL
 						&& description.isInConfiguration(configurationMask) && !description.isModbus(solvis)) {
 					descriptions.add(description);
 				}
@@ -272,5 +276,16 @@ public class AllChannelDescriptions implements Assigner, GraficsLearnable {
 			}
 		}
 		return result;
+	}
+
+	public void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException {
+		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
+			ChannelDescription meta = descriptionsC.get(solvis);
+			if (meta != null) {
+				MqttData data = meta.getMqttMeta(solvis);
+				mqtt.publish(data);
+			}
+		}
+
 	}
 }

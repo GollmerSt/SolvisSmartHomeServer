@@ -7,11 +7,12 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-import de.sgollmer.solvismax.connection.transfer.ServerCommandPackage.ServerCommandEnum;
+import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 
 public class ServerCommandDescription extends Element {
-	public ServerCommandDescription(ServerCommandEnum command) {
+	
+	public ServerCommandDescription(ServerCommand command) {
 		this.name = command.name();
 		Frame frame = new Frame();
 		this.value = frame;

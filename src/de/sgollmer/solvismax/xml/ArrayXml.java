@@ -15,9 +15,9 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
 
-public class ArrayXml<A extends ArrayXml.Element<A>> {
+public class ArrayXml<A extends ArrayXml.IElement<A>> {
 
-	public interface Element<C> {
+	public interface IElement<C> {
 		public CreatorByXML<C> getCreator(String name, BaseCreator<?> creator);
 	}
 
@@ -31,7 +31,7 @@ public class ArrayXml<A extends ArrayXml.Element<A>> {
 		return this.array;
 	}
 
-	public static class Creator<B extends Element<B>> extends CreatorByXML<ArrayXml<B>> {
+	public static class Creator<B extends IElement<B>> extends CreatorByXML<ArrayXml<B>> {
 
 		private final Collection<B> array = new ArrayList<>();
 		private final B parent;

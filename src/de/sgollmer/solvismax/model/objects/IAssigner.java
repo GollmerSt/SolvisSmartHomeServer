@@ -5,9 +5,8 @@
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.connection;
+package de.sgollmer.solvismax.model.objects;
 
-public interface AccountInfo {
-	public String getAccount() ;
-	public char [] cP() ;
+public interface IAssigner {
+	public void assign( SolvisDescription description ) ;
 }

@@ -7,7 +7,9 @@
 
 package de.sgollmer.solvismax.model.objects;
 
-public abstract class ChannelSource implements ChannelSourceI {
+import de.sgollmer.solvismax.model.objects.data.SingleData;
+
+public abstract class ChannelSource implements IChannelSource {
 
 	protected ChannelDescription description;
 
@@ -29,4 +31,6 @@ public abstract class ChannelSource implements ChannelSourceI {
 	public boolean isScreenChangeDependend() {
 		return false ;
 	}
+
+	protected abstract SingleData<?> createSingleData(String value);
 }

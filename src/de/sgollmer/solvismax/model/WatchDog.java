@@ -13,12 +13,13 @@ import java.util.Collection;
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.ConnectionStatus;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis.SynchronizedScreenResult;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver.State;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -26,7 +27,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public class WatchDog {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(WatchDog.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(WatchDog.class);
 
 	private final Solvis solvis;
 	private final ScreenSaver.Exec saver;
@@ -46,7 +47,7 @@ public class WatchDog {
 	private boolean initialized = false;
 	private SolvisStateObserver solvisStateObserver = new SolvisStateObserver();
 
-	private class SolvisStateObserver implements ObserverI<SolvisState> {
+	private class SolvisStateObserver implements IObserver<SolvisState> {
 
 		@Override
 		public void update(SolvisState data, Object source) {
@@ -74,7 +75,7 @@ public class WatchDog {
 				: misc.getReleaseBlockingAfterUserAccess_ms();
 		this.releaseBlockingAfterServiceAccess_ms = misc.getReleaseBlockingAfterServiceAccess_ms();
 		this.watchDogTime = this.solvis.getUnit().getWatchDogTime_ms();
-		this.solvis.registerAbortObserver(new ObserverI<Boolean>() {
+		this.solvis.registerAbortObserver(new IObserver<Boolean>() {
 
 			@Override
 			public void update(Boolean data, Object source) {
@@ -93,7 +94,7 @@ public class WatchDog {
 	public enum HumanAccess {
 		USER(true, "User", ConnectionStatus.USER_ACCESS_DETECTED),
 		SERVICE(true, "Service", ConnectionStatus.SERVICE_ACCESS_DETECTED),
-		NONE(false, "", ConnectionStatus.HUMAN_ACCESS_FINISHED);
+		NONE(false, "None", ConnectionStatus.HUMAN_ACCESS_FINISHED);
 
 		private final boolean wait;
 		private final String accessType;
@@ -117,10 +118,15 @@ public class WatchDog {
 			return this.connectionStatus;
 		}
 
+		public MqttData getMqttData(Solvis solvis) {
+			return new MqttData(solvis, Constants.Mqtt.HUMAN_ACCESS, this.accessType.toLowerCase(), 0, true);
+		}
+
 	}
 
 	public enum Event {
 		SCREENSAVER, SET_ERROR, RESET_ERROR, NONE, CHANGED, INIT, POWER_OFF, POWER_ON
+
 	}
 
 	public void execute() {

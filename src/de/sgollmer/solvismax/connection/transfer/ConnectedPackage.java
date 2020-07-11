@@ -14,13 +14,13 @@ public class ConnectedPackage extends JsonPackage {
 
 	private int clientId;
 
-	public int getClientId() {
-		return this.clientId;
-	}
-	
-	public ConnectedPackage() {
+	@Override
+	public String getClientId() {
+		return Integer.toBinaryString(this.clientId);
 	}
 
+	public ConnectedPackage() {
+	}
 
 	public ConnectedPackage(int clientId) {
 		this.clientId = clientId;

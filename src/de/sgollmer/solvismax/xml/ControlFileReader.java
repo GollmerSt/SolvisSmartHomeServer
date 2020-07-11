@@ -21,13 +21,13 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
 
 public class ControlFileReader {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(Control.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(Control.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
 	private static final String NAME_XML_CONTROLFILE = "control.xml";
@@ -67,12 +67,12 @@ public class ControlFileReader {
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
 
 		if (copyXml) {
-			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XML_CONTROLFILE, xml);
+			FileHelper.copyFromResource(Constants.RESOURCE_PATH + '/' + NAME_XML_CONTROLFILE, xml);
 		}
 
 		File xsd = new File(this.parent, NAME_XSD_CONTROLFILE);
 
-		FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + NAME_XSD_CONTROLFILE, xsd);
+		FileHelper.copyFromResource(Constants.RESOURCE_PATH + '/' + NAME_XSD_CONTROLFILE, xsd);
 
 	}
 
@@ -148,7 +148,7 @@ public class ControlFileReader {
 				mustWrite = true;
 			}
 			if (mustVerify) {
-				String xsdPath = Constants.RESOURCE_PATH + File.separator + NAME_XSD_CONTROLFILE;
+				String xsdPath = Constants.RESOURCE_PATH + '/' + NAME_XSD_CONTROLFILE;
 				InputStream xsd = Main.class.getResourceAsStream(xsdPath);
 				boolean validated = reader.validate(new FileInputStream(xml), xsd) ;
 				if ( !validated ) {
@@ -164,7 +164,7 @@ public class ControlFileReader {
 			mustWrite = true;
 		}
 
-		String resourcePath = Constants.RESOURCE_PATH + File.separator + NAME_XML_CONTROLFILE;
+		String resourcePath = Constants.RESOURCE_PATH + '/' + NAME_XML_CONTROLFILE;
 		InputStream source = Main.class.getResourceAsStream(resourcePath);
 		XmlStreamReader.Result<SolvisDescription> xmlFromResource = reader.read(source, rootId,
 				new SolvisDescription.Creator(rootId), NAME_XML_CONTROLFILE);

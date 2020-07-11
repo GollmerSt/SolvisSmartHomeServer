@@ -17,7 +17,7 @@ public class TinyLog {
 
 	private static TaggedLogger learningLogger;
 
-	public static class LoggerTiny implements de.sgollmer.solvismax.log.LogManager.Logger {
+	public static class LoggerTiny implements de.sgollmer.solvismax.log.LogManager.ILogger {
 
 		private final String className;
 
@@ -34,7 +34,7 @@ public class TinyLog {
 		}
 
 		@Override
-		public de.sgollmer.solvismax.log.LogManager.Logger create(Class<?> clazz) {
+		public de.sgollmer.solvismax.log.LogManager.ILogger create(Class<?> clazz) {
 			return new LoggerTiny(clazz);
 		}
 
@@ -187,7 +187,7 @@ public class TinyLog {
 		File xml = new File(this.parent, Constants.TINY_LOG_CONFIG_FILE);
 
 		if (!xml.exists()) {
-			FileHelper.copyFromResource(Constants.RESOURCE_PATH + File.separator + Constants.TINY_LOG_CONFIG_FILE, xml);
+			FileHelper.copyFromResource(Constants.RESOURCE_PATH + '/' + Constants.TINY_LOG_CONFIG_FILE, xml);
 		}
 
 	}

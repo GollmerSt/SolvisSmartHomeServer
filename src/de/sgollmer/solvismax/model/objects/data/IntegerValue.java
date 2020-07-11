@@ -10,23 +10,25 @@ package de.sgollmer.solvismax.model.objects.data;
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 
 public class IntegerValue extends SingleData<Integer> {
-	private final Integer data;
+	private final int data;
 	private final boolean fastChange;
 
-	public IntegerValue(Integer value, long timeStamp, boolean fastChange) {
+	public IntegerValue(int value, long timeStamp, boolean fastChange) {
 		super(timeStamp);
 		this.data = value;
 		this.fastChange = fastChange;
 	}
-	
-	public  IntegerValue(Integer value, long timeStamp) {
-		this(value, timeStamp, false) ;
+
+	public IntegerValue(int value, long timeStamp) {
+		this(value, timeStamp, false);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof IntegerValue) {
-			return this.data.equals(((IntegerValue) obj).data);
+			return this.data == (((IntegerValue) obj).data);
+		} else if (obj instanceof FloatValue) {
+			return ((FloatValue) obj).equals(this);
 		} else {
 			return false;
 		}
@@ -34,7 +36,7 @@ public class IntegerValue extends SingleData<Integer> {
 
 	@Override
 	public int hashCode() {
-		return this.data.hashCode();
+		return Integer.valueOf(this.data).hashCode();
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class IntegerValue extends SingleData<Integer> {
 	}
 
 	@Override
-	public SingleData<Integer> create(int value, long timeStamp,boolean fastChange) {
+	public SingleData<Integer> create(int value, long timeStamp, boolean fastChange) {
 		return new IntegerValue(value, timeStamp, fastChange);
 	}
 
@@ -76,6 +78,5 @@ public class IntegerValue extends SingleData<Integer> {
 	public boolean isFastChange() {
 		return this.fastChange;
 	}
-
 
 }

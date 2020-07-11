@@ -12,6 +12,8 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.connection.mqtt.Mqtt;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeError;
@@ -20,7 +22,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.calculation.Calculation;
 import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
 import de.sgollmer.solvismax.model.objects.control.Control;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.measure.Measurement;
@@ -28,7 +30,7 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.Element<ChannelDescription> {
+public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.IElement<ChannelDescription> {
 
 	private static final String XML_CONFIGURATION_MASKS = "ConfigurationMasks";
 	private static final String XML_CONTROL = "Control";
@@ -50,20 +52,22 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 		this.channelSource = channelSource;
 	}
 
-	@Override
 	public String getId() {
 		return this.id;
 	}
 
-	public boolean getValue(Solvis solvis)
-			throws IOException, ErrorPowerOn, TerminationException {
+	@Override
+	public String getName() {
+		return this.getId();
+	}
+
+	public boolean getValue(Solvis solvis) throws IOException, ErrorPowerOn, TerminationException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
 		return this.getValue(data, solvis);
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis)
-			throws IOException, ErrorPowerOn, TerminationException {
+	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, ErrorPowerOn, TerminationException {
 		return this.channelSource.getValue(dest, solvis);
 	}
 
@@ -92,7 +96,7 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	}
 
 	@Override
-	public Float getAccuracy() {
+	public Double getAccuracy() {
 		return this.channelSource.getAccuracy();
 	}
 
@@ -200,7 +204,7 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	}
 
 	@Override
-	public Collection<? extends ModeI> getModes() {
+	public Collection<? extends IMode> getModes() {
 		return this.channelSource.getModes();
 	}
 
@@ -245,14 +249,24 @@ public class ChannelDescription implements ChannelSourceI, Assigner, OfConfigs.E
 	public boolean isScreenChangeDependend() {
 		return this.channelSource.isScreenChangeDependend();
 	}
-	
+
 	@Override
 	public String toString() {
-		return this.getId() ;
+		return this.getId();
 	}
 
 	@Override
 	public ChannelDescription getRestoreChannel(Solvis solvis) {
 		return this.channelSource.getRestoreChannel(solvis);
+	}
+
+	public MqttData getMqttMeta(Solvis solvis) {
+		de.sgollmer.solvismax.connection.transfer.ChannelDescription meta = new de.sgollmer.solvismax.connection.transfer.ChannelDescription(
+				this);
+		return new MqttData(solvis, Mqtt.formatChannelMetaTopic(this.getId()), meta.getValue().toString(), 0, true);
+	}
+
+	public SingleData<?> createSingleData(String value) throws TypeError {
+		return this.channelSource.createSingleData(value);
 	}
 }

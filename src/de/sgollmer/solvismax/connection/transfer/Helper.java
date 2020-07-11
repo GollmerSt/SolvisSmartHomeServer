@@ -13,12 +13,12 @@ import java.io.InputStream;
 import de.sgollmer.solvismax.error.JsonError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.SolvisWorkers;
 
 public class Helper {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
 
 	public static char charAt(String json, int position) throws JsonError {
 		try {

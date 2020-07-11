@@ -14,7 +14,7 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.connection.AccountInfo;
+import de.sgollmer.solvismax.connection.IAccountInfo;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.log.LogManager;
@@ -84,7 +84,7 @@ public class Units {
 
 	}
 
-	public static class Unit implements AccountInfo {
+	public static class Unit implements IAccountInfo {
 
 		private final String id;
 		private final String type;

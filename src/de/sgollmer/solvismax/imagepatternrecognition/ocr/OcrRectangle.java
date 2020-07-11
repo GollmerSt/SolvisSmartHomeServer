@@ -18,13 +18,13 @@ import javax.imageio.ImageIO;
 
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
 
 public class OcrRectangle extends MyImage {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(OcrRectangle.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(OcrRectangle.class);
 
 	private Collection<Ocr> parts = null;
 

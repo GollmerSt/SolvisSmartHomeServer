@@ -16,7 +16,7 @@ import javax.xml.stream.XMLStreamWriter;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
@@ -117,7 +117,7 @@ public class Measurement {
 				case XML_MEASUREMENT_INTEGER:
 					return new IntegerValue(Integer.parseInt(dataString), -1);
 				case XML_MEASUREMENT_MODE:
-					return new ModeValue<ModeI>(new ModeI() {
+					return new ModeValue<IMode>(new IMode() {
 
 						@Override
 						public String getName() {

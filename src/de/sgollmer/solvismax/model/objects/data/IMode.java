@@ -5,8 +5,8 @@
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects.control;
+package de.sgollmer.solvismax.model.objects.data;
 
-public interface ControlAccess {
-	public boolean isModbus() ;
+public interface IMode {
+	public String getName() ;
 }

@@ -40,14 +40,14 @@ import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.xml.ArrayXml;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Mail {
 
-	private static Logger logger;
+	private static ILogger logger;
 	private static boolean DEBUG = false; // kein Mailversand
 
 	public enum Security {
@@ -62,7 +62,7 @@ public class Mail {
 		recipientTypeMap.put("BCC", RecipientType.BCC);
 	}
 
-	public static class Recipient implements ArrayXml.Element<Recipient> {
+	public static class Recipient implements ArrayXml.IElement<Recipient> {
 		private final String name;
 		private final String address;
 		private final RecipientType type;

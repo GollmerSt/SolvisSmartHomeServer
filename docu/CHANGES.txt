@@ -1,5 +1,19 @@
 Ä N D E R U N G E N
 
+Version 01.01.00
+
+    19.06.2020	(seit) Vorbereitungen für MQTT-Schnittstelle
+    
+                Echo inhibit realisiert:
+                Wenn innerhalb der echoInhibitTime_ms der gleiche Wert erneut vom Client gesetzt wird,
+                wird er itgnoriert.
+                
+    04.07.2000	Der SET-Befehl des FHEM-Cklient funktionierte nur bei Boolean-Werten.
+                
+    05.07.2000  Der HumanAccess-Mode wurde bei einer neuen Verbindung nicht übertragen.           
+
+
+
 Version 01.00.15
 
     11.06.2020	Die Fehlerbearbeitung von einem JSON-Fehler im Client war nicht richtig

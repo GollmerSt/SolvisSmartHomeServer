@@ -18,11 +18,11 @@ import de.sgollmer.solvismax.helper.Helper.Format;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
+import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -30,7 +30,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class StrategyRead implements Strategy {
+public class StrategyRead implements IStrategy {
 
 	private static final String XML_GUI_READ = "GuiRead";
 
@@ -48,7 +48,7 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, ControlAccess controlAccess, boolean optional) throws IOException {
+	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, IControlAccess controlAccess, boolean optional) throws IOException {
 		Integer i;
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
@@ -71,7 +71,7 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, ControlAccess controlAccess, SolvisData value) throws IOException {
+	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value) throws IOException {
 		return null;
 	}
 
@@ -130,12 +130,12 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public Float getAccuracy() {
-		return (float) 1 / (float) this.getDivisor();
+	public Double getAccuracy() {
+		return (double) 1 / (double) this.getDivisor();
 	}
 
 	@Override
-	public List<? extends ModeI> getModes() {
+	public List<? extends IMode> getModes() {
 		return null;
 	}
 
@@ -154,7 +154,7 @@ public class StrategyRead implements Strategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis, ControlAccess controlAccess) {
+	public boolean learn(Solvis solvis, IControlAccess controlAccess) {
 		return true;
 	}
 
@@ -217,6 +217,11 @@ public class StrategyRead implements Strategy {
 	@Override
 	public boolean isBoolean() {
 		return false;
+	}
+
+	@Override
+	public SingleData<?> createSingleData(String value) {
+		return null;
 	}
 
 }

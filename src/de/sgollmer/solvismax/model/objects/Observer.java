@@ -13,16 +13,16 @@ import java.util.Collection;
 public class Observer<D> {
 
 	public static class Observable<D> {
-		private Collection<ObserverI<D>> observers = null;
+		private Collection<IObserver<D>> observers = null;
 
-		public synchronized void register(ObserverI<D> observer) {
+		public synchronized void register(IObserver<D> observer) {
 			if (this.observers == null) {
 				this.observers = new ArrayList<>();
 			}
 			this.observers.add(observer);
 		}
 
-		public synchronized void unregister(ObserverI<D> observer) {
+		public synchronized void unregister(IObserver<D> observer) {
 			this.observers.remove(observer);
 		}
 		
@@ -32,18 +32,18 @@ public class Observer<D> {
 
 		public void notify(D data, Object source) {
 			if (this.observers != null) {
-				Collection<ObserverI<D>> copy;
+				Collection<IObserver<D>> copy;
 				synchronized (this) {
 					copy = new ArrayList<>(this.observers);
 				}
-				for (ObserverI<D> observer : copy) {
+				for (IObserver<D> observer : copy) {
 					observer.update(data, source);
 				}
 			}
 		}
 	}
 
-	public interface ObserverI<D> {
+	public interface IObserver<D> {
 		public void update(D data, Object source ) ;
 	}
 

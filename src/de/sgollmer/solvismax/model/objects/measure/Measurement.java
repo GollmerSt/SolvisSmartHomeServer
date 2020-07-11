@@ -19,9 +19,9 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
-import de.sgollmer.solvismax.model.objects.ChannelSourceI;
+import de.sgollmer.solvismax.model.objects.IChannelSource;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
@@ -220,7 +220,7 @@ public class Measurement extends ChannelSource {
 
 	@Override
 	public Type getType() {
-		return ChannelSourceI.Type.MEASUREMENT;
+		return IChannelSource.Type.MEASUREMENT;
 	}
 
 	@Override
@@ -229,14 +229,14 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public Collection<? extends ModeI> getModes() {
+	public Collection<? extends IMode> getModes() {
 		return null;
 	}
 
 	@Override
-	public Float getAccuracy() {
+	public Double getAccuracy() {
 		if (this.type.isNumeric()) {
-			return (float) 1 / (float) this.getDivisor();
+			return (double) 1 / (double) this.getDivisor();
 		}
 		return null;
 	}
@@ -267,6 +267,11 @@ public class Measurement extends ChannelSource {
 
 	@Override
 	public ChannelDescription getRestoreChannel(Solvis solvis) {
+		return null;
+	}
+
+	@Override
+	protected SingleData<?> createSingleData(String value) {
 		return null;
 	}
 

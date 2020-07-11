@@ -7,7 +7,9 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-public class GetPackage extends JsonPackage {
+import de.sgollmer.solvismax.connection.ITransferedData;
+
+public class GetPackage extends JsonPackage implements ITransferedData{
 	public GetPackage() {
 		this.command = Command.GET;
 	}
@@ -27,4 +29,10 @@ public class GetPackage extends JsonPackage {
 	public String getId() {
 		return this.id;
 	}
+
+	@Override
+	public String getChannelId() {
+		return this.getId();
+	}
+
 }

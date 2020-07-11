@@ -16,4 +16,7 @@ public class TypeError extends Error {
 	public TypeError( String message ) {
 		super(message) ;
 	}
+	public TypeError( Throwable throwable ) {
+		super(throwable) ;
+	}
 }

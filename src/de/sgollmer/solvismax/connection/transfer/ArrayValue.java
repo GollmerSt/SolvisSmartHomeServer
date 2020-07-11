@@ -12,18 +12,18 @@ import java.util.Collection;
 
 import de.sgollmer.solvismax.error.JsonError;
 
-public class ArrayValue implements Value {
+public class ArrayValue implements IValue {
 
-	private Collection<Value> values = new ArrayList<>();
+	private Collection<IValue> values = new ArrayList<>();
 	
-	public void add( Value value ) {
+	public void add( IValue value ) {
 		this.values.add(value) ;
 	}
 	
 	@Override
 	public void addTo(StringBuilder builder) {
 		boolean first = true;
-		for (Value value : this.values) {
+		for (IValue value : this.values) {
 			if (first) {
 				builder.append('[');
 				first = false;
@@ -66,6 +66,13 @@ public class ArrayValue implements Value {
 			}
 		}
 		return position;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		this.addTo(builder);
+		return builder.toString();
 	}
 
 }

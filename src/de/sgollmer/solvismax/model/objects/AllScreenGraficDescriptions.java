@@ -13,7 +13,7 @@ import java.util.Map;
 
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 
-public class AllScreenGraficDescriptions implements Assigner {
+public class AllScreenGraficDescriptions implements IAssigner {
 	private final Map<String, ScreenGraficDescription> screenGraficDescriptions = new HashMap<>();
 
 	public void add(ScreenGraficDescription grafic) {

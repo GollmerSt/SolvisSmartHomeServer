@@ -13,7 +13,7 @@ import java.util.Collection;
 import de.sgollmer.solvismax.error.DependencyError;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
-public class Dependencies implements Assigner {
+public class Dependencies implements IAssigner {
 	private final Collection<Dependency> collection = new ArrayList<>(2);
 
 	public void add(Dependency dependency) {

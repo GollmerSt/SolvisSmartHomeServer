@@ -11,7 +11,7 @@ import de.sgollmer.solvismax.error.AssignmentError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -54,7 +54,7 @@ public class RunTime extends Strategy<RunTime> {
 		executable.update(equipmentOn, this);
 	}
 
-	private class Executable implements ObserverI<SolvisData> {
+	private class Executable implements IObserver<SolvisData> {
 
 		private final SolvisData result;
 		private final SolvisData equipmentOn;
@@ -123,8 +123,8 @@ public class RunTime extends Strategy<RunTime> {
 	}
 
 	@Override
-	public Float getAccuracy() {
-		return (float) 1;
+	public Double getAccuracy() {
+		return (double) 1;
 	}
 
 	@Override

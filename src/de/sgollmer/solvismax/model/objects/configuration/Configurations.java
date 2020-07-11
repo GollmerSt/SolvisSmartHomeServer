@@ -18,7 +18,7 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
-import de.sgollmer.solvismax.model.objects.screen.ScreenLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -27,9 +27,9 @@ public class Configurations {
 	private static final String XML_HEATER_LOOPS = "HeaterLoops";
 	private static final String XML_SOLAR = "Solar";
 
-	private final Collection<Configuration> configurations;
+	private final Collection<IConfiguration> configurations;
 
-	public Configurations(Collection<Configuration> configurations) {
+	public Configurations(Collection<IConfiguration> configurations) {
 		this.configurations = configurations;
 	}
 
@@ -40,10 +40,10 @@ public class Configurations {
 
 		int configurationMask = 0;
 		Screen home = solvis.getHomeScreen();
-		Configuration homeConfiguration = null;
+		IConfiguration homeConfiguration = null;
 		Collection<LearnScreen> learnConfigurationScreens = new ArrayList<>();
-		for (Iterator<Configuration> it = this.configurations.iterator(); it.hasNext();) {
-			Configuration configuration = it.next();
+		for (Iterator<IConfiguration> it = this.configurations.iterator(); it.hasNext();) {
+			IConfiguration configuration = it.next();
 			Screen screen = configuration.getScreen(solvis);
 			if (screen == home) {
 				homeConfiguration = configuration;
@@ -59,7 +59,7 @@ public class Configurations {
 			configurationMask |= homeConfiguration.getConfiguration(solvis);
 			current = home;
 		}
-		for (Configuration configuration : this.configurations) {
+		for (IConfiguration configuration : this.configurations) {
 			Screen screen = configuration.getScreen(solvis);
 			if (screen != home) {
 				screen.gotoLearning(solvis, current, learnConfigurationScreens);
@@ -74,7 +74,7 @@ public class Configurations {
 		return configurationMask;
 	}
 
-	public interface Configuration {
+	public interface IConfiguration {
 		public int getConfiguration(Solvis solvis) throws IOException;
 
 		public Screen getScreen(Solvis solvis);
@@ -82,7 +82,7 @@ public class Configurations {
 
 	public static class Creator extends CreatorByXML<Configurations> {
 
-		private final Collection<Configuration> configurations = new ArrayList<>();
+		private final Collection<IConfiguration> configurations = new ArrayList<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -113,10 +113,10 @@ public class Configurations {
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
 				case XML_HEATER_LOOPS:
-					this.configurations.add((Configuration) created);
+					this.configurations.add((IConfiguration) created);
 					break;
 				case XML_SOLAR:
-					this.configurations.add((Configuration) created);
+					this.configurations.add((IConfiguration) created);
 					break;
 			}
 		}

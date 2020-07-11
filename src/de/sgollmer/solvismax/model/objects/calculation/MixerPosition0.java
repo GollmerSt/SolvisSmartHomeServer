@@ -11,7 +11,7 @@ import de.sgollmer.solvismax.error.AssignmentError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -55,7 +55,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		executable.update(pumpOn, this);
 	}
 
-	private class Executable implements ObserverI<SolvisData> {
+	private class Executable implements IObserver<SolvisData> {
 
 		private final SolvisData result;
 		private final SolvisData pumpOn;
@@ -93,7 +93,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	public Float getAccuracy() {
+	public Double getAccuracy() {
 		return null;
 	}
 

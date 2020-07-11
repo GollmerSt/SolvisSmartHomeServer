@@ -17,11 +17,11 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
-import de.sgollmer.solvismax.model.objects.screen.ScreenLearnable;
+import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
-public class AllScreens implements ScreenLearnable {
+public class AllScreens implements IScreenLearnable {
 
 	private static final String XML_SCREEN = "Screen";
 

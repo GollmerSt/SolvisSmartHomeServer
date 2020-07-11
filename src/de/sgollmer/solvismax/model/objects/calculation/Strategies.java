@@ -10,8 +10,8 @@ package de.sgollmer.solvismax.model.objects.calculation;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Assigner;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.IAssigner;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
@@ -38,7 +38,7 @@ public enum Strategies {
 		return null;
 	}
 
-	public static abstract class Strategy<T extends Strategy<?>> implements Assigner {
+	public static abstract class Strategy<T extends Strategy<?>> implements IAssigner {
 
 		protected final Calculation calculation;
 
@@ -60,11 +60,11 @@ public enum Strategies {
 
 		public abstract void instantiate(Solvis solvis);
 		
-		public Collection< ModeI > getModes() {
+		public Collection< IMode > getModes() {
 			return null ;
 		}
 
-		public abstract Float getAccuracy() ;
+		public abstract Double getAccuracy() ;
 
 		public abstract boolean isBoolean() ;
 

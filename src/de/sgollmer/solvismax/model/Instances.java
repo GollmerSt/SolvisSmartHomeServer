@@ -15,10 +15,8 @@ import javax.xml.stream.XMLStreamException;
 
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.connection.SolvisConnection;
-import de.sgollmer.solvismax.connection.transfer.ConnectPackage;
 import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -49,7 +47,7 @@ public class Instances {
 				this.solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
 
 		for (Unit xmlUnit : baseData.getUnits().getUnits()) {
-			Solvis solvis = this.createSolvisInstance(xmlUnit, baseData.getExceptionMail() );
+			Solvis solvis = this.createSolvisInstance(xmlUnit);
 			this.units.add(solvis);
 		}
 	}
@@ -79,24 +77,25 @@ public class Instances {
 		return true;
 	}
 
-	public synchronized Solvis getInstance(ConnectPackage connectPackage)
+	public synchronized Solvis getInstance(String solvisId)
 			throws IOException, XmlError, XMLStreamException, LearningError {
 		for (Solvis solvis : this.units) {
-			if (solvis.getUnit().getId().equals(connectPackage.getId())) {
+			if (solvis.getUnit().getId().equals(solvisId)) {
 				return solvis;
 			}
 		}
 		return null;
 	}
 
-	private Solvis createSolvisInstance(Unit unit, ExceptionMail exceptionMail) throws IOException, XmlError, XMLStreamException, LearningError {
+	private Solvis createSolvisInstance(Unit unit) throws IOException, XmlError, XMLStreamException, LearningError {
 		Miscellaneous misc = this.solvisDescription.getMiscellaneous();
 		SolvisConnection connection = new SolvisConnection(unit.getUrl(), unit, misc.getSolvisConnectionTimeout_ms(),
 				misc.getSolvisReadTimeout_ms(), misc.getPowerOffDetectedAfterIoErrors(),
 				misc.getPowerOffDetectedAfterTimeout_ms(), unit.isFwLth2_21_02A());
 		String timeZone = this.baseData.getTimeZone();
 		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId(), this.xmlHash),
-				connection, this.backupHandler, timeZone, exceptionMail);
+				connection, this.backupHandler, timeZone, this.baseData.getExceptionMail(),
+				this.baseData.getEchoInhibitTime_ms());
 		return solvis;
 	}
 
@@ -115,4 +114,16 @@ public class Instances {
 		this.backupHandler.write();
 	}
 
+	public Collection<Solvis> getUnits() {
+		return this.units ;
+	}
+
+	public Solvis getUnit(String unitId) {
+		for ( Solvis solvis : this.units ) {
+			if ( unitId.equals(solvis.getUnit().getId())) {
+				return solvis ;
+			}
+		}
+		return null;
+	}
 }

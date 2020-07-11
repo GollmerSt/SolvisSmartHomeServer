@@ -7,7 +7,11 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-public class ReconnectPackage extends JsonPackage {
+import de.sgollmer.solvismax.connection.ITransferedData;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
+import de.sgollmer.solvismax.model.objects.data.StringData;
+
+public class ReconnectPackage extends JsonPackage implements ITransferedData {
 
 	private Integer clientId = null;
 
@@ -30,8 +34,14 @@ public class ReconnectPackage extends JsonPackage {
 		this.data = null;
 	}
 
-	public Integer getClientId() {
-		return this.clientId;
+	@Override
+	public String getClientId() {
+		return Integer.toString(this.clientId);
+	}
+
+	@Override
+	public SingleData<?> getSingleData() {
+		return new StringData(this.getClientId(), 0);
 	}
 
 }

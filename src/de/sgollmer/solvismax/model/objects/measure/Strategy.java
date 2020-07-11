@@ -24,10 +24,10 @@ public enum Strategy {
 
 	// private static final Logger logger = LogManager.getLogger(Strategy.class);
 
-	private final StrategyClass type;
+	private final IStrategyClass type;
 	private final boolean numeric;
 
-	private Strategy(StrategyClass type, boolean numeric) {
+	private Strategy(IStrategyClass type, boolean numeric) {
 		this.type = type;
 		this.numeric = numeric;
 	}
@@ -40,7 +40,7 @@ public enum Strategy {
 		return this.type.isBoolean();
 	}
 
-	private interface StrategyClass {
+	private interface IStrategyClass {
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws ErrorPowerOn;
 
 		public boolean isBoolean();
@@ -75,7 +75,7 @@ public enum Strategy {
 		return this.numeric;
 	}
 
-	private static class Integer implements StrategyClass {
+	private static class Integer implements IStrategyClass {
 		private final boolean signed;
 
 		public Integer(boolean signed) {
@@ -107,7 +107,7 @@ public enum Strategy {
 
 	}
 
-	private static class Boolean implements StrategyClass {
+	private static class Boolean implements IStrategyClass {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws ErrorPowerOn {
@@ -128,7 +128,7 @@ public enum Strategy {
 
 	}
 
-	private static class Date implements StrategyClass {
+	private static class Date implements IStrategyClass {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) {

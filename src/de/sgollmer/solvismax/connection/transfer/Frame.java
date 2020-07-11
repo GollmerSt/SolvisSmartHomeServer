@@ -12,7 +12,7 @@ import java.util.List;
 
 import de.sgollmer.solvismax.error.JsonError;
 
-public class Frame implements Value {
+public class Frame implements IValue {
 	protected final List<Element> elements = new ArrayList<>();
 
 	public void add(Element element) {
@@ -39,9 +39,16 @@ public class Frame implements Value {
 	}
 
 	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		this.addTo(builder);
+		return builder.toString();
+	}
+
+	@Override
 	public int from(String json, int position) throws JsonError {
-		while (Character.isWhitespace(Helper.charAt(json, position))){
-			++position ;
+		while (Character.isWhitespace(Helper.charAt(json, position))) {
+			++position;
 		}
 		char c = Helper.charAt(json, position);
 		if (c == '{') {

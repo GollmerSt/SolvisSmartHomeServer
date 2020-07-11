@@ -12,7 +12,7 @@ import java.util.Iterator;
 
 import de.sgollmer.solvismax.model.Solvis;
 
-public interface ScreenLearnable extends GraficsLearnable {
+public interface IScreenLearnable extends IGraficsLearnable {
 
 	public static void clean(Collection<LearnScreen> learnScreens, Screen screen, Solvis solvis) {
 		for (Iterator<LearnScreen> it = learnScreens.iterator(); it.hasNext();) {

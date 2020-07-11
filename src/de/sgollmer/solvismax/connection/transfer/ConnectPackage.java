@@ -7,7 +7,11 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-public class ConnectPackage extends JsonPackage {
+import de.sgollmer.solvismax.connection.ITransferedData;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
+import de.sgollmer.solvismax.model.objects.data.StringData;
+
+public class ConnectPackage extends JsonPackage implements ITransferedData {
 
 	private String id = null;
 
@@ -54,5 +58,10 @@ public class ConnectPackage extends JsonPackage {
 
 	public String getId() {
 		return this.id;
+	}
+
+	@Override
+	public SingleData<?> getSingleData() {
+		return new StringData(this.getId(), 0);
 	}
 }

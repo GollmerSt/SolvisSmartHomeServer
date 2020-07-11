@@ -19,9 +19,9 @@ import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.ControlFileReader.Hashes;
 import de.sgollmer.solvismax.xml.CreatorByXML;
-import de.sgollmer.solvismax.xml.XmlWriteable;
+import de.sgollmer.solvismax.xml.IXmlWriteable;
 
-public class AllSolvisGrafics implements XmlWriteable {
+public class AllSolvisGrafics implements IXmlWriteable {
 
 	private static final String XML_SYSTEM = "System";
 

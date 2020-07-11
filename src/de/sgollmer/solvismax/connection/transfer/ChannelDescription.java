@@ -9,10 +9,10 @@ package de.sgollmer.solvismax.connection.transfer;
 
 import java.util.Collection;
 
-import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
+import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.FloatValue;
-import de.sgollmer.solvismax.model.objects.data.ModeI;
+import de.sgollmer.solvismax.model.objects.data.IMode;
 
 public class ChannelDescription extends Element {
 	public ChannelDescription(de.sgollmer.solvismax.model.objects.ChannelDescription description) {
@@ -42,7 +42,7 @@ public class ChannelDescription extends Element {
 			frame.add(unit);
 		}
 
-		Float accuracy = description.getAccuracy();
+		Double accuracy = description.getAccuracy();
 		if (accuracy != null) {
 			Element ac = new Element();
 			ac.name = "Accuracy";
@@ -72,13 +72,12 @@ public class ChannelDescription extends Element {
 			frame.add(step);
 		}
 
-		Collection<? extends ModeI> modes = description.getModes();
+		Collection<? extends IMode> modes = description.getModes();
 		if (modes != null) {
-
 			ArrayValue arrayValue = new ArrayValue();
 
-			for (ModeI mode : modes) {
-				Value value = new SingleValue(mode.getName());
+			for (IMode mode : modes) {
+				IValue value = new SingleValue(mode.getName());
 				arrayValue.add(value);
 			}
 

@@ -16,14 +16,16 @@ import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Assigner;
-import de.sgollmer.solvismax.model.objects.ChannelSourceI.UpperLowerStep;
+import de.sgollmer.solvismax.model.objects.IAssigner;
+import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
+import de.sgollmer.solvismax.model.objects.data.FloatValue;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.StringData;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -39,7 +41,7 @@ public class StrategyReadWrite extends StrategyRead {
 	private final GuiModification guiModification;
 
 	public StrategyReadWrite(int increment, int divisor, int least, int most, GuiModification guiModification) {
-		super( divisor, guiModification);
+		super(divisor, guiModification);
 		this.increment = increment;
 		this.least = least;
 		this.most = most;
@@ -52,7 +54,7 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, ControlAccess controlAccess, SolvisData setValue)
+	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData setValue)
 			throws IOException, TerminationException {
 		if (controlAccess instanceof GuiAccess) {
 			Integer goal = setValue.getInteger();
@@ -176,10 +178,22 @@ public class StrategyReadWrite extends StrategyRead {
 
 	@Override
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+		if (singleData instanceof StringData) {
+			String string = (String) singleData.get();
+			try {
+				if (string.contains(".")) {
+					return new FloatValue(Double.parseDouble(string), 0);
+				} else {
+					return new IntegerValue(Integer.parseInt(string), 0);
+				}
+			} catch (NumberFormatException e) {
+				throw new TypeError(e);
+			}
+		}
 		return singleData;
 	}
 
-	public static class GuiModification extends GuiRead implements Assigner {
+	public static class GuiModification extends GuiRead implements IAssigner {
 		private final boolean wrapAround;
 		private final TouchPoint upper;
 		private final TouchPoint lower;
@@ -255,8 +269,16 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public boolean isXmlValid(boolean modbus) {
+	public boolean isXmlValid(boolean modbus) throws TypeError {
 		return modbus || this.guiModification != null;
 	}
 
+	@Override
+	public SingleData<?> createSingleData(String value) {
+		try {
+			return new IntegerValue(Integer.parseInt(value), -1);
+		} catch (NumberFormatException e) {
+			throw new TypeError(e);
+		}
+	}
 }

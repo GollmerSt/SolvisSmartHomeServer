@@ -20,13 +20,13 @@ import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
-import de.sgollmer.solvismax.model.objects.Observer.ObserverI;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 
 public class Server {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(Server.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(Server.class);
 
 	private ServerSocket serverSocket;
 	private final Collection<Client> connectedClients;
@@ -111,7 +111,7 @@ public class Server {
 		}
 	}
 
-	public class Client extends Helper.Runnable implements Runnable, ObserverI<JsonPackage> {
+	public class Client extends Helper.Runnable implements IObserver<JsonPackage> {
 
 		private Socket socket;
 

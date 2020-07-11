@@ -7,25 +7,28 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-public class ServerCommandPackage extends JsonPackage {
+import de.sgollmer.solvismax.connection.ITransferedData;
+import de.sgollmer.solvismax.connection.ServerCommand;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
+import de.sgollmer.solvismax.model.objects.data.StringData;
+
+public class ServerCommandPackage extends JsonPackage implements ITransferedData {
+
+	private ServerCommand serverCommand;
 
 	public ServerCommandPackage() {
 		super.command = Command.SERVER_COMMAND;
 	}
 
-	public enum ServerCommandEnum {
-		BACKUP, //
-		SCREEN_RESTORE_INHIBIT, //
-		SCREEN_RESTORE_ENABLE, //
-		COMMAND_OPTIMIZATION_INHIBIT, //
-		COMMAND_OPTIMIZATION_ENABLE, //
-		RESTART, GUI_COMMANDS_ENABLE, //
-		GUI_COMMANDS_DISABLE, //
-		SERVICE_RESET, //
-		UPDATE_CHANNELS
+	public ServerCommandPackage(ServerCommand command) {
+		this.command = Command.SERVER_COMMAND;
+		this.data = new Frame();
+		Element element = new Element();
+		this.data.add(element);
+		element.name = "Command";
+		element.value = new SingleValue(command.name());
 	}
 
-	private ServerCommandEnum serverCommandEnum;
 
 	@Override
 	public void finish() {
@@ -34,8 +37,7 @@ public class ServerCommandPackage extends JsonPackage {
 			Element e = f.get(0);
 			if (e.getName().equals("Command")) {
 				if (e.value instanceof SingleValue) {
-					this.serverCommandEnum = ServerCommandEnum
-							.valueOf(((SingleValue) e.getValue()).getData().toString());
+					this.serverCommand = ServerCommand.valueOf(((SingleValue) e.getValue()).getData().toString());
 				}
 			}
 			this.data = null;
@@ -43,7 +45,13 @@ public class ServerCommandPackage extends JsonPackage {
 
 	}
 
-	public ServerCommandEnum getServerCommand() {
-		return this.serverCommandEnum;
+	public ServerCommand getServerCommand() {
+		return this.serverCommand;
 	}
+
+	@Override
+	public SingleData<?> getSingleData() {
+		return new StringData(this.serverCommand.name(), 0);
+	}
+
 }

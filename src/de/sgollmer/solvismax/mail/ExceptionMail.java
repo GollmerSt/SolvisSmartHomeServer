@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
 import de.sgollmer.solvismax.model.SolvisState.MailInfo;
@@ -30,7 +30,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ExceptionMail {
 
-	private static Logger logger = null;
+	private static ILogger logger = null;
 
 	private static final String XML_RECIPIENT = "Recipient";
 	private static final String XML_RECIPIENTS = "Recipients";

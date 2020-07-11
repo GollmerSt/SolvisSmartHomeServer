@@ -15,11 +15,11 @@ public class Constants {
 	 */
 	public static final int DELAYED_CLOSING_TIME = 1000;
 	public static final String LOG4J_CONFIG_FILE = "log4j2.xml";
-	
+
 	public static final String TINY_LOG_CONFIG_FILE = "tinylog.properties";
 	public static final String TINY_LOG_FILE_PROPERTY_PREFIX = "writer";
 	public static final String TINY_LOG_FILE_PROPERTY_SUFFIX = ".file";
-	
+
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
 	public static final String RESOURCE_PATH = "data";
 	public static final int SCREEN_SAVER_IGNORED_FRAME_SIZE = 3;
@@ -39,6 +39,7 @@ public class Constants {
 	public static final int MAX_CONNECTIONS = 50;
 	public static final int RETRY_STARTING_SERVER_TIME = 60000;
 	public static final int WAIT_TIME_AFTER_IO_ERROR = 10000;
+	public static final int WAIT_TIME_AFTER_MQTT_ERROR = 100;
 	public static final int ALIVE_TIME = 120000;
 	public static final int FORCE_UPDATE_AFTER_N_INTERVALS = 3;
 	public static final int WAIT_TIME_AFTER_THROWABLE = 30000;
@@ -51,7 +52,7 @@ public class Constants {
 	public static final int MAX_OUTSIDE_TIME = 120000;
 	public static final int SCREEN_SAVER_WIDTH_INACCURACY = 5;
 	public static final int SCREEN_SAVER_HEIGHT_INACCURACY = 5;
-	
+
 	public static final int WAIT_AFTER_FIRST_ASYNC_DETECTION = 100;
 
 	public static final long SETTING_TIME_RANGE_LOWER = 5000;
@@ -64,6 +65,7 @@ public class Constants {
 																	// full 10
 	// minutes
 	public static final int AVERAGE_COUNT_SOLVIS_CLOCK_PRECISION_CALCULATION = 10;
+	public static final double PRECISION_DOUBLE = 0.000001D;
 
 	public static final int MAX_WAIT_TIME_TERMINATING_OTHER_SERVER = 60000;
 	public static final int NUMBER_OF_CONTROL_FILE_DUPLICATES = 3;
@@ -83,6 +85,29 @@ public class Constants {
 		public static final int MAILING_ERROR = 18;
 		public static final int BASE_XML_ERROR = 19;
 		public static final int XML_VERIFICATION_ERROR = 20;
+		public static final int MQTT_ERROR = 21;
+	}
+
+	public static class Mqtt {
+		public static final String[] CMND_SUFFIXES = new String[] { //
+				"/+/server/cmnd", //	Server commands
+				"/+/online",//
+				"/+/+/server/cmnd", //	Server commands
+				"/+/+/+/cmnd", //	SET
+				"/+/+/+/update", //	GET
+				//"/#"
+		};
+		public static final String DATA_SUFFIX = "/data";
+		public static final String META_SUFFIX = "/meta";
+		public static final String SERVER_PREFIX = "server";
+		public static final String ONLINE_STATUS = "/online";
+		public static final String STATUS = "/status";
+		public static final String HUMAN_ACCESS = "/human_access";
+		public static final String ERROR = "/error";
+		public static final int MAX_INFLIGHT = 200;
+		public static final int MIN_CONNECTION_REPEAT_TIME = 1000;
+		public static final int MAX_CONNECTION_REPEAT_TIME = 120000;
+
 	}
 
 }

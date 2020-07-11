@@ -12,11 +12,11 @@ import java.io.InputStream;
 
 import de.sgollmer.solvismax.error.JsonError;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 
 public class ReceivedPackageCreator {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(ReceivedPackageCreator.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(ReceivedPackageCreator.class);
 
     public static ReceivedPackageCreator getInstance() {
 		return JsonPackageCreatorHolder.INSTANCE;
@@ -53,9 +53,6 @@ public class ReceivedPackageCreator {
 				break;
 			case SERVER_COMMAND:
 				result = new ServerCommandPackage() ;
-				break ;
-			case TERMINATE:
-				result = new TerminatePackage();
 				break ;
 			default:
 				logger.error("Command <" + command.name() + "> not known");

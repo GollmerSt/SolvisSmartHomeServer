@@ -13,7 +13,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Logger;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -21,7 +21,7 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class CommandControl extends Command {
 
-	private static final Logger logger = LogManager.getInstance().getLogger(CommandControl.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(CommandControl.class);
 
 	private final ChannelDescription description;
 	private final SingleData<?> setValue;
