@@ -666,7 +666,7 @@ public class Screen implements IScreenLearnable, Comparable<Screen>, OfConfigs.I
 			if (this != solvis.getHomeScreen()) {
 				logger.log(LEARN, "Warning: Goto screen <" + this + "> not successfull, home screen is forced");
 			}
-			solvis.gotoHome();
+			solvis.gotoHome(true);
 			current = solvis.getHomeScreen();
 		}
 		if (this == current) {
@@ -819,6 +819,9 @@ public class Screen implements IScreenLearnable, Comparable<Screen>, OfConfigs.I
 
 		if (solvis.getCurrentScreen().get() == null) {
 			solvis.gotoHome();
+			if (solvis.getCurrentScreen().get() == null) {
+				solvis.gotoHome(true);
+			}
 		}
 
 		if (solvis.getCurrentScreen().get() == this) {

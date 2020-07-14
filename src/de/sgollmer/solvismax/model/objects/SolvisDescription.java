@@ -173,7 +173,7 @@ public class SolvisDescription {
 				case XML_SCREENS:
 					return new AllScreens.Creator(id, this);
 				case XML_FALL_BACK:
-					return new FallBack.Creator(id, this);
+					return new FallBack.Creator(id, this, false);
 				case XML_SCREEN_GRAFICS:
 					return new CreatorScreenGrafics(id, this);
 				case XML_CHANNEL_DESCRIPTIONS:

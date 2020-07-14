@@ -2,6 +2,8 @@
 
 Version 01.01.00
 
+    13.07.2020  Installationsroutine für Windows erstellt
+
     19.06.2020  (seit) Vorbereitungen für MQTT-Schnittstelle
     
                 Echo inhibit realisiert:
@@ -18,8 +20,6 @@ Version 01.01.00
                 Aus diesem Zustand hat die Back-Taste der SolvisControl keine  Wirkung, so dass der
                 Server diesen Zustand nicht beheben konnte. In Zukunft wird in der FallBack-Sequenz
                 noch der Warmwasser-Screen ausgewählt.
-                
-    14.07.2020  
 
 
 

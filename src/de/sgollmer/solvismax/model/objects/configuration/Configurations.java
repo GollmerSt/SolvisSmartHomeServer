@@ -35,7 +35,7 @@ public class Configurations {
 
 	public int get(Solvis solvis, Reference<Screen> currentRef) throws IOException {
 
-		solvis.gotoHome();
+		solvis.gotoHome(true);
 		Screen current = solvis.getHomeScreen();
 
 		int configurationMask = 0;

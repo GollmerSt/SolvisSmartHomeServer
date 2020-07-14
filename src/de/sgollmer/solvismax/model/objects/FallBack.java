@@ -23,25 +23,32 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class FallBack implements IAssigner {
-	
-	private static final ILogger logger = LogManager.getInstance().getLogger(FallBack.class) ;
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(FallBack.class);
 
 	private static final String XML_BACK = "Back";
 	private static final String XML_SCREENREF = "ScreenRef";
+	private static final String XML_LAST_CHANCE = "LastChance";
 
 	private final Collection<IFallBackObject> sequence;
+	private final FallBack lastChance;
 
 	private interface IFallBackObject extends IAssigner {
 		public void execute(Solvis solvis) throws IOException;
 	}
 
-	public FallBack(Collection<IFallBackObject> sequence) {
+	public FallBack(Collection<IFallBackObject> sequence, FallBack lastChance) {
 		this.sequence = sequence;
+		this.lastChance = lastChance;
 	}
 
-	public void execute(Solvis solvis) throws IOException {
-		for (IFallBackObject obj : this.sequence) {
-			obj.execute(solvis);
+	public void execute(Solvis solvis, boolean lastChance) throws IOException {
+		if (lastChance && this.lastChance != null ) {
+			this.lastChance.execute(solvis, false);
+		} else {
+			for (IFallBackObject obj : this.sequence) {
+				obj.execute(solvis);
+			}
 		}
 	}
 
@@ -50,14 +57,21 @@ public class FallBack implements IAssigner {
 		for (IFallBackObject obj : this.sequence) {
 			obj.assign(description);
 		}
-		
+		if ( this.lastChance != null ) {
+			this.lastChance.assign(description);
+		}
+
 	}
+
 	public static class Creator extends CreatorByXML<FallBack> {
 
 		private Collection<IFallBackObject> sequence = new ArrayList<>();
+		private FallBack lastChance = null;
+		private final boolean inner;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(String id, BaseCreator<?> creator, boolean inner) {
 			super(id, creator);
+			this.inner = inner;
 		}
 
 		@Override
@@ -66,7 +80,7 @@ public class FallBack implements IAssigner {
 
 		@Override
 		public FallBack create() throws XmlError, IOException {
-			return new FallBack(this.sequence);
+			return new FallBack(this.sequence, this.lastChance);
 		}
 
 		@Override
@@ -77,6 +91,11 @@ public class FallBack implements IAssigner {
 					return new Back.Creator(id, this.getBaseCreator());
 				case XML_SCREENREF:
 					return new ScreenRef.Creator(id, this.getBaseCreator());
+				case XML_LAST_CHANCE:
+					if (!this.inner) {
+						return new Creator(id, this.getBaseCreator(), true);
+					}
+					break;
 			}
 			return null;
 		}
@@ -90,27 +109,33 @@ public class FallBack implements IAssigner {
 				case XML_SCREENREF:
 					this.sequence.add((ScreenRef) created);
 					break;
+				case XML_LAST_CHANCE:
+					this.lastChance = (FallBack) created;
+					break;
 			}
 
 		}
 
 	}
 
-	public static class ScreenRef extends de.sgollmer.solvismax.model.objects.screen.ScreenRef implements IFallBackObject {
+	public static class ScreenRef extends de.sgollmer.solvismax.model.objects.screen.ScreenRef
+			implements IFallBackObject {
 		public ScreenRef(String id) {
-			super( id ) ;
+			super(id);
 		}
 
 		@Override
 		public void execute(Solvis solvis) throws IOException, TerminationException {
 			Screen screen = this.getScreen().getIfSingle();
-			
-			if ( screen == null ) {
-				logger.error( "The screen < " + this.getId() +  "> is not possible in the FallBack Element of the XML, because it's not unique over all configurations. Ignored");
+
+			if (screen == null) {
+				logger.error("The screen < " + this.getId()
+						+ "> is not possible in the FallBack Element of the XML, because it's not unique over all configurations. Ignored");
 			}
-			
+
 			solvis.send(screen.getTouchPoint());
 		}
+
 		public static class Creator extends de.sgollmer.solvismax.model.objects.screen.ScreenRef.Creator {
 
 			public Creator(String id, BaseCreator<?> creator) {
@@ -165,6 +190,5 @@ public class FallBack implements IAssigner {
 		}
 
 	}
-
 
 }

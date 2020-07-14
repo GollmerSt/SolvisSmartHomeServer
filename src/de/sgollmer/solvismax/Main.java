@@ -31,6 +31,7 @@ import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.LogErrors;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Instances;
+import de.sgollmer.solvismax.windows.Task;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.solvismax.xml.XmlStreamReader;
 
@@ -40,8 +41,11 @@ public class Main {
 
 	private static ILogger logger;
 	private static Level LEARN;
-
+	
 	public static void main(String[] args) {
+
+		String createTaskName = null ;
+		boolean onBoot = false ;
 
 		for (String arg : args) {
 			Matcher matcher = cmdPattern.matcher(arg);
@@ -70,7 +74,26 @@ public class Main {
 							System.exit(Constants.ExitCodes.CRYPTION_FAIL);
 						}
 						break;
+					case "create-task-xml":
+						if (value == null) {
+							System.err.println("To less arguments!");
+							System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
+						}
+						createTaskName = value ;
+						break;
+					case "onBoot":
+						onBoot = true;
 				}
+			}
+		}
+		
+		if ( createTaskName != null ) {
+			try {
+				Task.createTask(createTaskName, onBoot);
+				System.exit(Constants.ExitCodes.OK);
+			} catch (XMLStreamException | IOException e) {
+				System.err.println(e.getMessage());
+				System.exit(Constants.ExitCodes.TASK_CREATING_ERROR);
 			}
 		}
 
@@ -230,6 +253,8 @@ public class Main {
 
 		instances.initialized();
 		server.start();
+		
+		System.out.println("Server started");
 
 		// runnable.run();
 

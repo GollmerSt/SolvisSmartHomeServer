@@ -5,12 +5,16 @@
 	entry and export the buildfile again. -->
 <project basedir="." default="Build for me" name="SolvisMax">
 	<property environment="env" />
+	<property name="innoSetup" value="${env.INNO_SETUP}/compil32" />
+	<property name="iss.dir" value="SmartHome\Windows" />
+	<property name="iss" location="${iss.dir}/SolvisSmartHomeServer.iss" />
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.8" />
 	<property name="source" value="1.8" />
 	<property name="bin.dir" value="bin" />
 	<property name="dist.dir" value="dist" />
-	<property name="pub.dir" value="publish" />
+	<property name="pubLinux" value="publish Linux" />
+	<property name="pubWindows.dir" value="publish Windows" />
 	<property name="pdf" value="docu/SolvisSmartHomeServer.pdf" />
 	<property name="changes" value="docu/CHANGES.txt" />
 	<property name="fhem.pm"
@@ -37,7 +41,8 @@
 		<pathelement location="lib/mailapi-1.6.2.jar" />
 		<pathelement location="lib/smtp-1.6.2.jar" />
 		<pathelement location="lib/javax.activation-1.2.0.jar" />
-		<pathelement location="lib/org.eclipse.paho.client.mqttv3-1.2.4.jar" />
+		<pathelement
+			location="lib/org.eclipse.paho.client.mqttv3-1.2.4.jar" />
 	</path>
 	<target name="init">
 		<mkdir dir="${bin.dir}" />
@@ -59,7 +64,7 @@
 	</target>
 	<target depends="clean" name="cleanall">
 		<delete dir="${dist.dir}" />
-		<delete dir="${pub.dir}" />
+		<delete dir="${pubLinux}" />
 	</target>
 	<target depends="build-subprojects,build-project" name="build" />
 	<target name="build-subprojects" />
@@ -148,7 +153,8 @@
 			<zipfileset src="lib/mailapi-1.6.2.jar" />
 			<zipfileset src="lib/smtp-1.6.2.jar" />
 			<zipfileset src="lib/javax.activation-1.2.0.jar" />
-			<zipfileset src="lib/org.eclipse.paho.client.mqttv3-1.2.4.jar" />
+			<zipfileset
+				src="lib/org.eclipse.paho.client.mqttv3-1.2.4.jar" />
 			<manifest>
 				<attribute name="Main-Class"
 					value="de.sgollmer.solvismax.Main" />
@@ -169,7 +175,7 @@
 		</copy>
 	</target>
 	<target depends="Build for me" name="Build users">
-		<copy todir="${pub.dir}">
+		<copy todir="${pubLinux}">
 			<fileset file="${dist.dir}/${dist.base}.jar"
 				casesensitive="yes" />
 			<fileset file="${fhem.pm}" casesensitive="yes" />
@@ -181,6 +187,10 @@
 			<fileset file="${changes}" casesensitive="yes" />
 		</copy>
 		<copy file="${pubBaseDir}/base.xml"
-			tofile="${pub.dir}/base.xml.new" />
+			tofile="${pubLinux}/base.xml.new" />
+		<exec executable="${innoSetup}" dir="${iss.dir}">
+			<arg value="/cc" />
+			<arg value="${iss}" />
+		</exec>
 	</target>
 </project>

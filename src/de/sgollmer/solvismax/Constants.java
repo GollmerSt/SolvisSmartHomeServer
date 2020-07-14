@@ -19,6 +19,8 @@ public class Constants {
 	public static final String TINY_LOG_CONFIG_FILE = "tinylog.properties";
 	public static final String TINY_LOG_FILE_PROPERTY_PREFIX = "writer";
 	public static final String TINY_LOG_FILE_PROPERTY_SUFFIX = ".file";
+	
+	public static final int MIN_TOUCH_TIME = 100 ;
 
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
 	public static final String RESOURCE_PATH = "data";
@@ -86,6 +88,7 @@ public class Constants {
 		public static final int BASE_XML_ERROR = 19;
 		public static final int XML_VERIFICATION_ERROR = 20;
 		public static final int MQTT_ERROR = 21;
+		public static final int TASK_CREATING_ERROR = 22;
 	}
 
 	public static class Mqtt {

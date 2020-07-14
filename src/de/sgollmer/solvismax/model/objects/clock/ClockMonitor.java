@@ -500,7 +500,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 				for (int repeatFail = 0; !success && repeatFail < Constants.FAIL_REPEATS; ++repeatFail) {
 					success = true;
 					if (repeatFail > 0) {
-						Executable.this.solvis.gotoHome();
+						Executable.this.solvis.gotoHome(true);
 					}
 					try {
 						for (DatePart part : ClockMonitor.this.dateParts) {

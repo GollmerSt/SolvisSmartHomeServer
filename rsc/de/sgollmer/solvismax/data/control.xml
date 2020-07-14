@@ -902,7 +902,14 @@
 		<tns:Back />
 		<tns:Back />
 		<tns:Back />
-		<!-- <tns:ScreenRef id="Warmwasser" /> <tns:Back /> -->
+		<tns:LastChance>
+			<tns:Back />
+			<tns:Back />
+			<tns:Back />
+			<tns:Back />
+			<tns:ScreenRef id="Warmwasser" />
+			<tns:Back/>
+		</tns:LastChance>
 	</tns:FallBack>
 	<tns:ChannelDescriptions>
 		<tns:ChannelDescription id="X06.UhrzeitSolvis">
@@ -1944,8 +1951,8 @@
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff
 						equipmentId="A01.Pumpe_Solar"
-						calculatedId="X09.LaufzeitSolarpumpe_s" factor="3600" hourly="true"
-						checkIntervalId="checkCalculation"
+						calculatedId="X09.LaufzeitSolarpumpe_s" factor="3600"
+						hourly="true" checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
 			</tns:Control>

@@ -882,6 +882,18 @@
 
 
 	<complexType name="FallBack">
+		<complexContent>
+			<extension base="tns:FallBackBase">
+				<sequence>
+					<element name="LastChance"
+						type="tns:FallBackBase" maxOccurs="1" minOccurs="0">
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="FallBackBase">
 		<sequence>
 			<choice maxOccurs="unbounded" minOccurs="0">
 				<element name="Back" type="tns:Back"></element>

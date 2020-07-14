@@ -218,7 +218,16 @@ public class Solvis {
 
 	public void send(Coordinate coord, int pushTime, int releaseTime) throws IOException, TerminationException {
 		this.getConnection().sendTouch(coord);
-		AbortHelper.getInstance().sleep(pushTime);
+		try {
+			Thread.sleep(Constants.MIN_TOUCH_TIME);
+		} catch (InterruptedException e1) {
+		}
+		try {
+			AbortHelper.getInstance().sleep(pushTime - Constants.MIN_TOUCH_TIME);
+		} catch (TerminationException e) {
+			this.getConnection().sendRelease();
+			throw e;
+		}
 		this.getConnection().sendRelease();
 		AbortHelper.getInstance().sleep(releaseTime);
 		this.clearCurrentScreen();
@@ -231,8 +240,12 @@ public class Solvis {
 	}
 
 	public void gotoHome() throws IOException {
+		this.gotoHome(false);
+	}
+
+	public void gotoHome(boolean lastChance) throws IOException {
 		this.getHistory().set(null);
-		this.solvisDescription.getFallBack().execute(this);
+		this.solvisDescription.getFallBack().execute(this, lastChance);
 	}
 
 	public void init() throws IOException, XmlError, XMLStreamException {
