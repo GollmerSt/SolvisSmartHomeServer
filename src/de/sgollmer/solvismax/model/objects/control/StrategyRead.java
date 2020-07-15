@@ -54,15 +54,15 @@ public class StrategyRead implements IStrategy {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
 			String s = ocr.getString();
-			s = this.guiRead.format.getString(s);
-			if (s == null) {
+			String formated = this.guiRead.format.getString(s);
+			if (formated == null) {
 				if (optional) {
 					i = null;
 				} else {
 					return null;
 				}
 			} else {
-				i = Integer.parseInt(s);
+				i = Integer.parseInt(formated);
 			}
 		} else {
 			i = solvis.readUnsignedShortModbusData((ModbusAccess) controlAccess);

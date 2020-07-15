@@ -33,6 +33,12 @@ public class ClientAssignments {
 		this.client = client;
 	}
 
+	public void add(Solvis solvis) {
+		if (solvis != null && !this.states.containsKey(solvis)) {
+			this.states.put(solvis, new State(solvis));
+		}
+	}
+
 	public void reconnect(Client client) {
 		this.abort();
 		this.client = client;
@@ -89,7 +95,7 @@ public class ClientAssignments {
 
 	public static class State {
 		private final Solvis solvis;
-		private boolean screenRestoreInhibit = false;
+		private boolean screenRestoreEnable = true;
 		private boolean optimizationEnable = true;
 		private boolean commandEnable = true;
 
@@ -97,12 +103,12 @@ public class ClientAssignments {
 			this.solvis = solvis;
 		}
 
-		public boolean isScreenRestoreInhibit() {
-			return this.screenRestoreInhibit;
+		public boolean isScreenRestoreEnable() {
+			return this.screenRestoreEnable;
 		}
 
-		public void setScreenRestoreInhibit(boolean screenRestoreInhibit) {
-			this.screenRestoreInhibit = screenRestoreInhibit;
+		public void setScreenRestoreEnable(boolean screenRestoreInhibit) {
+			this.screenRestoreEnable = screenRestoreInhibit;
 		}
 
 		public boolean isOptimizationEnable() {
@@ -122,77 +128,46 @@ public class ClientAssignments {
 		}
 	}
 
-	public void enableGuiCommands(boolean enable) {
-		this.enableGuiCommands(null, enable);
-	}
-
-		public void enableGuiCommands(Solvis solvis, boolean enable) {
+	public void enableGuiCommands(Solvis solvis, boolean enable) {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentError("Error: Client assignment error");
 		}
-		boolean set = false;
-		if (enable && !state.isCommandEnable()) {
-			set = true;
-		} else if (!enable && state.isCommandEnable()) {
-			set = true;
-		}
-		if (set) {
+		if (enable != state.isCommandEnable()) {
 			state.setCommandEnable(enable);
 			this.getSolvis().commandEnable(enable);
 		}
 
 	}
 
-	public void screenRestoreInhibit(boolean inhibit) {
-		this.screenRestoreInhibit(null, inhibit);
-	}
-
-	public void screenRestoreInhibit(Solvis solvis, boolean inhibit) {
+	public void screenRestoreEnable(Solvis solvis, boolean enable) {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentError("Error: Client assignment error");
 		}
-		boolean set = false;
-		if (inhibit && !state.isScreenRestoreInhibit()) {
-			set = true;
-		} else if (!inhibit && state.isScreenRestoreInhibit()) {
-			set = true;
-		}
-		if (set) {
-			state.setScreenRestoreInhibit(inhibit);
-			this.getSolvis().execute(new CommandScreenRestore(!inhibit));
+		if (enable != state.isScreenRestoreEnable()) {
+			state.setScreenRestoreEnable(enable);
+			this.getSolvis().execute(new CommandScreenRestore(enable));
 		}
 	}
 
-	
-	public void optimizationInhibit(boolean inhibit) {
-		this.optimizationInhibit(null, inhibit);
-	}
-
-	public void optimizationInhibit(Solvis solvis, boolean inhibit) {
-		boolean set = false;
-		if (inhibit && this.getState().isOptimizationEnable()) {
-			set = true;
-		} else if (!inhibit && !this.getState().isOptimizationEnable()) {
-			set = true;
+	public void optimizationEnable(Solvis solvis, boolean enable) {
+		State state = this.getState(solvis);
+		if (state == null) {
+			throw new ClientAssignmentError("Error: Client assignment error");
 		}
-		if (set) {
-			this.getState().setOptimizationEnable(!inhibit);
-			this.getSolvis().commandOptimization(!inhibit);
+		if (enable != state.isOptimizationEnable()) {
+			this.getState().setOptimizationEnable(enable);
+			this.getSolvis().commandOptimization(enable);
 		}
 	}
 
 	public void clientClosed() {
 		for (State state : this.states.values()) {
 			this.enableGuiCommands(state.solvis, true);
-			this.optimizationInhibit(state.solvis, false);
-			this.screenRestoreInhibit(state.solvis, false);
+			this.optimizationEnable(state.solvis, true);
+			this.screenRestoreEnable(state.solvis, true);
 		}
-	}
-	
-	public void serviceReset() {
-		this.serviceReset(null);
 	}
 
 	public void serviceReset(Solvis solvis) {
@@ -200,9 +175,6 @@ public class ClientAssignments {
 		state.solvis.serviceReset();
 	}
 
-	public void updateControlChannels() {
-		this.updateControlChannels(null);
-	}
 	public void updateControlChannels(Solvis solvis) {
 		State state = this.getState(solvis);
 		state.solvis.updateControlChannels();

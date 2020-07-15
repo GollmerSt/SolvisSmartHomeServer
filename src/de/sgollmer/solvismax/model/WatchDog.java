@@ -18,8 +18,8 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis.SynchronizedScreenResult;
-import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
+import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver.State;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -70,10 +70,10 @@ public class WatchDog {
 		this.solvis = solvis;
 		this.clearErrorMessageAfterMail = solvis.getFeatures().isClearErrorMessageAfterMail();
 		this.saver = saver.createExecutable(solvis);
-		Miscellaneous misc = this.solvis.getSolvisDescription().getMiscellaneous();
+		Unit unit = this.solvis.getUnit();
 		this.releaseBlockingAfterUserChange_ms = BaseData.DEBUG ? Constants.DEBUG_USER_ACCESS_TIME
-				: misc.getReleaseBlockingAfterUserAccess_ms();
-		this.releaseBlockingAfterServiceAccess_ms = misc.getReleaseBlockingAfterServiceAccess_ms();
+				: unit.getReleaseBlockingAfterUserAccess_ms();
+		this.releaseBlockingAfterServiceAccess_ms = unit.getReleaseBlockingAfterServiceAccess_ms();
 		this.watchDogTime = this.solvis.getUnit().getWatchDogTime_ms();
 		this.solvis.registerAbortObserver(new IObserver<Boolean>() {
 

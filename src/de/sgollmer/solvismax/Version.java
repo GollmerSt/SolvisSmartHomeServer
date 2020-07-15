@@ -20,11 +20,15 @@ public class Version {
     }
     
 	public String getVersion() {
-    	return "01.00.15, modbus alpha" ;
+    	return "01.01.00, modbus alpha, MQTT beta" ;
     }
     
-	public String getFormatVersion() {
+	public String getServerFormatVersion() {
     	return "01.02" ;
+    }
+
+	public String getMqttFormatVersion() {
+    	return "01.00" ;
     }
 
 }

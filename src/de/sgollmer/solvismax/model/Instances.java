@@ -77,8 +77,7 @@ public class Instances {
 		return true;
 	}
 
-	public synchronized Solvis getInstance(String solvisId)
-			throws IOException, XmlError, XMLStreamException, LearningError {
+	public synchronized Solvis getInstance(String solvisId) {
 		for (Solvis solvis : this.units) {
 			if (solvis.getUnit().getId().equals(solvisId)) {
 				return solvis;

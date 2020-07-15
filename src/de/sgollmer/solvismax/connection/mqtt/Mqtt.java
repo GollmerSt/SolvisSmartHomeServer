@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id: BaseData.java 266 2020-07-11 10:34:15Z stefa_000 $
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.connection.mqtt;
 
 import java.io.IOException;
@@ -263,7 +270,7 @@ public class Mqtt {
 
 		}
 
-		public void abort() {
+		public synchronized void abort() {
 			this.abort = true;
 			this.notifyAll();
 		}
@@ -528,7 +535,7 @@ public class Mqtt {
 		SERVER_META(new String[] { "server", "meta" }, 0, false, false, null, Format.NONE), //
 		SERVER_COMMAND(new String[] { "server", "cmnd" }, 1, false, false, Command.SERVER_COMMAND, Format.STRING), //
 		SERVER_ONLINE(new String[] { "server", "online" }, 0, false, false, null, Format.NONE), //
-		CLIENT_ONLINE(new String[] { "online" }, 1, false, false, null, Format.BOOLEAN), //
+		CLIENT_ONLINE(new String[] { "online" }, 1, false, false, Command.CLIENT_ONLINE, Format.BOOLEAN), //
 		UNIT_STATUS(new String[] { "status" }, 1, true, false, null, Format.NONE), //
 		UNIT_SERVER_COMMAND(new String[] { "server", "cmnd" }, 2, true, false, Command.SERVER_COMMAND, Format.STRING), //
 		UNIT_CHANNEL_COMMAND(new String[] { "cmnd" }, 3, true, true, Command.SET, Format.FROM_META), //
@@ -670,6 +677,17 @@ public class Mqtt {
 	}
 
 	public void abort() {
+		if (this.mqttThread != null) {
+			this.mqttThread.abort();
+		}
+		
+		if (this.client.isConnected()) {
+			try {
+				this.publish(this.getLastWill());
+				this.client.disconnect();
+			} catch (MqttException e) {
+			}
+		}
 	}
 
 	public static String formatChannelIn(String mqttChannelId) {

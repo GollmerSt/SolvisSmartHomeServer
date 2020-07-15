@@ -64,4 +64,8 @@ public enum Command {
 	 * Client: Startet bestimmte Server-Befehle (Backup etc.)
 	 */
 	SERVER_COMMAND,
+	/**
+	 * MQTT-Client online
+	 */
+	CLIENT_ONLINE,
 }

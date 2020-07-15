@@ -7,18 +7,21 @@
 	<property environment="env" />
 	<property name="innoSetup" value="${env.INNO_SETUP}/compil32" />
 	<property name="iss.dir" value="SmartHome\Windows" />
-	<property name="iss" location="${iss.dir}/SolvisSmartHomeServer.iss" />
+	<property name="iss"
+		location="${iss.dir}/SolvisSmartHomeServer.iss" />
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.8" />
 	<property name="source" value="1.8" />
 	<property name="bin.dir" value="bin" />
 	<property name="dist.dir" value="dist" />
-	<property name="pubLinux" value="publish Linux" />
+	<property name="pubLinux.dir" value="publish Linux" />
 	<property name="pubWindows.dir" value="publish Windows" />
 	<property name="pdf" value="docu/SolvisSmartHomeServer.pdf" />
 	<property name="changes" value="docu/CHANGES.txt" />
 	<property name="fhem.pm"
 		value="SmartHome/FHEM/73_SolvisClient.pm" />
+	<property name="iobroker.client.json"
+		value="SmartHome/IoBroker/mqtt-client.0.SolvisSmartHomeServer.json" />
 	<property name="makefile" value="SmartHome/Linux/Makefile" />
 	<property name="linux.systemd"
 		value="SmartHome/Linux/SolvisSmartHomeServer.service" />
@@ -64,7 +67,8 @@
 	</target>
 	<target depends="clean" name="cleanall">
 		<delete dir="${dist.dir}" />
-		<delete dir="${pubLinux}" />
+		<delete dir="${pubLinux.dir}" />
+		<delete dir="${pubWindows.dir}" />
 	</target>
 	<target depends="build-subprojects,build-project" name="build" />
 	<target name="build-subprojects" />
@@ -167,6 +171,7 @@
 		</copy>
 		<copy todir="${dist.dir}">
 			<fileset file="${fhem.pm}" casesensitive="yes" />
+			<fileset file="${iobroker.client.json}" casesensitive="yes"/>
 			<fileset file="${linux.systemd}" casesensitive="yes" />
 			<fileset file="${linux.systemdD}" casesensitive="yes" />
 			<fileset file="${myBase.xml}" casesensitive="yes" />
@@ -175,10 +180,11 @@
 		</copy>
 	</target>
 	<target depends="Build for me" name="Build users">
-		<copy todir="${pubLinux}">
+		<copy todir="${pubLinux.dir}">
 			<fileset file="${dist.dir}/${dist.base}.jar"
 				casesensitive="yes" />
 			<fileset file="${fhem.pm}" casesensitive="yes" />
+			<fileset file="${iobroker.client.json}" casesensitive="yes"/>
 			<fileset file="${linux.systemd}" casesensitive="yes" />
 			<fileset file="${linux.systemdD}" casesensitive="yes" />
 			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
@@ -187,10 +193,15 @@
 			<fileset file="${changes}" casesensitive="yes" />
 		</copy>
 		<copy file="${pubBaseDir}/base.xml"
-			tofile="${pubLinux}/base.xml.new" />
+			tofile="${pubLinux.dir}/base.xml.new" />
 		<exec executable="${innoSetup}" dir="${iss.dir}">
 			<arg value="/cc" />
 			<arg value="${iss}" />
 		</exec>
+		<copy todir="${pubWindows.dir}">
+			<fileset file="${fhem.pm}" casesensitive="yes" />
+			<fileset file="${iobroker.client.json}" casesensitive="yes"/>
+			<fileset file="${pdf}" casesensitive="yes" />
+		</copy>
 	</target>
 </project>

@@ -909,6 +909,7 @@
 			<tns:Back />
 			<tns:ScreenRef id="Warmwasser" />
 			<tns:Back/>
+			<tns:Back/>
 		</tns:LastChance>
 	</tns:FallBack>
 	<tns:ChannelDescriptions>
@@ -1406,7 +1407,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="65"
 					least="10">
-					<tns:GuiModification format="(\d+)..^$">
+					<tns:GuiModification format="(\d+)..$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="225" Y="20" />
@@ -1564,7 +1565,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
-					<tns:GuiModification format="^(\d+)..^$"
+					<tns:GuiModification format="^(\d+)..$"
 						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
@@ -2161,8 +2162,6 @@
 	<tns:Miscellaneous powerOffDetectedAfterIoErrors="3"
 		powerOffDetectedAfterTimeout_ms="120000"
 		measurementsBackupTime_ms="3600000"
-		releaseBlockingAfterUserAccess_ms="300000"
-		releaseBlockingAfterServiceAccess_ms="3600000"
 		unsuccessfullWaitTime_ms="10000" connectionHoldTime_ms="300000"
 		solvisConnectionTimeout_ms="10000" solvisReadTimeout_ms="2000"
 		clientTimeoutTime_ms="120000" />

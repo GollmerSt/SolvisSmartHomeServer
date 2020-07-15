@@ -259,6 +259,20 @@
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="releaseBlockingAfterUserAccess_ms" type="int"
+			use="required">
+			<annotation>
+				<documentation>Zeitintervall, das nach einem User-Eingriff vergehen muss, bis die Werte upgedated werden. In dieser Zeit werden keine Werte vom GUI abgerufen, damit die Eingabe des Users nicht gestört wird.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="releaseBlockingAfterServiceAccess_ms"
+			type="int">
+            <annotation>
+            	<documentation>Zeitintervall, das nach einem Service-Eingriff vergehen muss, bis die Werte upgedated werden. In dieser Zeit werden keine Werte vom GUI abgerufen, damit die Eingabe des Service nicht gestört wird.
+			</documentation>
+            </annotation>
+		</attribute>
 		<attribute name="delayAfterSwitchingOnEnable" type="boolean"
 			use="required">
 			<annotation>

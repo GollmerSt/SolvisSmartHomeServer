@@ -65,6 +65,10 @@ public class StrategyReadWrite extends StrategyRead {
 				return data;
 			}
 			int current = data.get();
+			
+			goal = Math.max(goal, this.least);
+			goal = Math.min(goal, this.most);
+			
 			int value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment))
 					/ (2 * this.increment);
 

@@ -32,13 +32,14 @@ public class Server {
 	private final Collection<Client> connectedClients;
 	private final CommandHandler commandHandler;
 	private final ServerThread serverThread;
-	private final int clientTimeout ;
+	private final int clientTimeout;
+	private boolean abort = false;
 
 	public Server(ServerSocket serverSocket, CommandHandler commandHandler, Miscellaneous misc) {
 		this.connectedClients = new ArrayList<>(Constants.MAX_CONNECTIONS);
 		this.serverSocket = serverSocket;
 		this.commandHandler = commandHandler;
-		this.clientTimeout=misc.getClientTimeoutTime_ms() ;
+		this.clientTimeout = misc.getClientTimeoutTime_ms();
 		this.serverThread = new ServerThread();
 	}
 
@@ -130,12 +131,15 @@ public class Server {
 				boolean abortConnection = false;
 
 				while (!abortConnection) {
-					JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(in, Server.this.clientTimeout);
+					JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(in,
+							Server.this.clientTimeout);
 					abortConnection = Server.this.commandHandler.commandFromClient(jsonPackage, this);
 				}
 
 			} catch (Throwable e) {
-				logger.info("Client connection closed. cause:", e);
+				if (!Server.this.abort) {
+					logger.info("Client connection closed. cause:", e);
+				}
 			}
 			this.close();
 		}
@@ -201,6 +205,7 @@ public class Server {
 	}
 
 	public void abort() {
+		this.abort = true;
 		synchronized (this.connectedClients) {
 			for (Iterator<Client> it = this.connectedClients.iterator(); it.hasNext();) {
 				Client client = it.next();

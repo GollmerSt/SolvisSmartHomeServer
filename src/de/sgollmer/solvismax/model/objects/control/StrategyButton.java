@@ -19,6 +19,7 @@ import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.StringData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -131,9 +132,13 @@ public class StrategyButton implements IStrategy {
 	public BooleanValue interpretSetData(SingleData<?> singleData) throws TypeError {
 		if (singleData instanceof BooleanValue) {
 			return (BooleanValue) singleData;
-		} else {
-			return null;
+		} else if (singleData instanceof StringData) {
+			String data = ((StringData) singleData).get();
+			if (data.equalsIgnoreCase("true") || data.equalsIgnoreCase("false")) {
+				return new BooleanValue(data.equalsIgnoreCase("true"), -1);
+			}
 		}
+		return null;
 	}
 
 	@Override
@@ -190,7 +195,7 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value){
+	public SingleData<?> createSingleData(String value) {
 		return new BooleanValue(Boolean.parseBoolean(value), -1);
 	}
 

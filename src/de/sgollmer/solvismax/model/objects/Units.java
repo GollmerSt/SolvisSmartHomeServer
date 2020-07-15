@@ -99,6 +99,8 @@ public class Units {
 		private final int doubleUpdateInterval_ms;
 		private final int bufferedInterval_ms;
 		private final int watchDogTime_ms;
+		private final int releaseBlockingAfterUserAccess_ms;
+		private final int releaseBlockingAfterServiceAccess_ms;
 		private final boolean delayAfterSwitchingOnEnable;
 		private final boolean fwLth2_21_02A;
 		private final boolean modbus;
@@ -108,6 +110,7 @@ public class Units {
 		public Unit(String id, String type, String url, String account, CryptAes password, int configOrMask,
 				int defaultAverageCount, int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms,
 				int forcedUpdateInterval_ms, int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
+				int releaseBlockingAfterUserAccess_ms, int releaseBlockingAfterServiceAccess_ms,
 				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, boolean modbus, Features features,
 				int ignoredFrameThicknesScreenSaver) {
 			this.id = id;
@@ -123,6 +126,8 @@ public class Units {
 			this.doubleUpdateInterval_ms = doubleUpdateInterval_ms;
 			this.bufferedInterval_ms = bufferedInterval_ms;
 			this.watchDogTime_ms = watchDogTime_ms;
+			this.releaseBlockingAfterUserAccess_ms = releaseBlockingAfterUserAccess_ms;
+			this.releaseBlockingAfterServiceAccess_ms = releaseBlockingAfterServiceAccess_ms;
 			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
 			this.fwLth2_21_02A = fwLth2_21_02A;
 			this.modbus = modbus;
@@ -170,6 +175,8 @@ public class Units {
 			private int doubleUpdateInterval_ms = 0;
 			private int bufferedInterval_ms;
 			private int watchDogTime_ms;
+			private int releaseBlockingAfterUserAccess_ms;
+			private int releaseBlockingAfterServiceAccess_ms;
 			private boolean delayAfterSwitchingOnEnable = false;
 			private boolean fwLth2_21_02A = false;
 			private boolean modbus = false;
@@ -232,6 +239,12 @@ public class Units {
 					case "watchDogTime_ms":
 						this.watchDogTime_ms = Integer.parseInt(value);
 						break;
+					case "releaseBlockingAfterUserAccess_ms":
+						this.releaseBlockingAfterUserAccess_ms = Integer.parseInt(value);
+						break;
+					case "releaseBlockingAfterServiceAccess_ms":
+						this.releaseBlockingAfterServiceAccess_ms = Integer.parseInt(value);
+						break;
 					case "delayAfterSwitchingOnEnable":
 						this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value);
 						break;
@@ -254,6 +267,7 @@ public class Units {
 						this.defaultAverageCount, this.measurementHysteresisFactor,
 						this.defaultReadMeasurementsInterval_ms, this.forcedUpdateInterval_ms,
 						this.doubleUpdateInterval_ms, this.bufferedInterval_ms, this.watchDogTime_ms,
+						this.releaseBlockingAfterUserAccess_ms, this.releaseBlockingAfterServiceAccess_ms,
 						this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.modbus, this.features,
 						this.ignoredFrameThicknesScreenSaver);
 
@@ -327,6 +341,14 @@ public class Units {
 
 		public int getConfigOrMask() {
 			return this.configOrMask;
+		}
+
+		public int getReleaseBlockingAfterUserAccess_ms() {
+			return this.releaseBlockingAfterUserAccess_ms;
+		}
+
+		public int getReleaseBlockingAfterServiceAccess_ms() {
+			return this.releaseBlockingAfterServiceAccess_ms;
 		}
 
 	}

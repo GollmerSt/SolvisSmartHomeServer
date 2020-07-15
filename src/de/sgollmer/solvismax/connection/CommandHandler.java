@@ -23,9 +23,7 @@ import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.error.JsonError;
-import de.sgollmer.solvismax.error.LearningError;
 import de.sgollmer.solvismax.error.TypeError;
-import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -80,6 +78,9 @@ public class CommandHandler {
 			case SERVER_COMMAND:
 				this.executeServerCommand(receivedData, client);
 				break;
+			case CLIENT_ONLINE:
+				this.clientOnline(receivedData, client);
+				break;
 			default:
 				logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
 				break;
@@ -88,13 +89,30 @@ public class CommandHandler {
 	}
 
 	private void executeServerCommand(ITransferedData receivedData, Client client) throws IOException {
-		ClientAssignments assignments = null;
-		if (client == null) {
-			assignments = this.get(receivedData.getClientId());
-		} else {
-			assignments = this.get(client);
-		}
 		ServerCommand command = ServerCommand.valueOf((String) receivedData.getSingleData().get());
+
+		ClientAssignments assignments = null;
+		Solvis solvis = null ;
+
+		if (!command.isGeneral()) {
+			if (client == null) {
+				assignments = this.get(receivedData.getClientId());
+			} else {
+				assignments = this.get(client);
+			}
+			if (assignments == null) {
+				if (client != null) {
+					client.send(new ConnectionState(ConnectionStatus.CLIENT_UNKNOWN, "Client id unknown")
+							.createJsonPackage());
+					client.closeDelayed();
+				}
+				return;
+			}
+
+			solvis = receivedData.getSolvis();
+			assignments.add(solvis);
+		}
+		
 		logger.info("Server-Command <" + command.name() + "> received");
 		switch (command) {
 			case BACKUP:
@@ -105,31 +123,31 @@ public class CommandHandler {
 				}
 				break;
 			case SCREEN_RESTORE_INHIBIT:
-				assignments.screenRestoreInhibit(true);
+				assignments.screenRestoreEnable(solvis, false);
 				break;
 			case SCREEN_RESTORE_ENABLE:
-				assignments.screenRestoreInhibit(false);
+				assignments.screenRestoreEnable(solvis, true);
 				break;
 			case COMMAND_OPTIMIZATION_INHIBIT:
-				assignments.optimizationInhibit(true);
+				assignments.optimizationEnable(solvis, true);
 				break;
 			case COMMAND_OPTIMIZATION_ENABLE:
-				assignments.optimizationInhibit(false);
+				assignments.optimizationEnable(solvis, false);
 				break;
 			case RESTART:
 				this.terminate(true);
 				break;
 			case GUI_COMMANDS_DISABLE:
-				assignments.enableGuiCommands(false);
+				assignments.enableGuiCommands(solvis, false);
 				break;
 			case GUI_COMMANDS_ENABLE:
-				assignments.enableGuiCommands(true);
+				assignments.enableGuiCommands(solvis, true);
 				break;
 			case SERVICE_RESET:
-				assignments.serviceReset();
+				assignments.serviceReset(solvis);
 				break;
 			case UPDATE_CHANNELS:
-				assignments.updateControlChannels();
+				assignments.updateControlChannels(solvis);
 				break;
 			case TERMINATE:
 				this.terminate(false);
@@ -141,6 +159,33 @@ public class CommandHandler {
 
 	}
 
+	private ClientAssignments createClientAssignments(int clientId, Client client) {
+		return this.createClientAssignments(Integer.toString(clientId), client);
+	}
+
+	private synchronized ClientAssignments createClientAssignments(String clientId, Client client) {
+		ClientAssignments assignments = new ClientAssignments(clientId, client);
+		this.clients.add(assignments);
+		return assignments;
+	}
+
+	private void clientOnline(ITransferedData receivedData, Client client) {
+		String clientId = receivedData.getClientId();
+		boolean online = (Boolean) receivedData.getSingleData().get();
+		synchronized (this) {
+			ClientAssignments assignments = this.get(clientId);
+			if (online) {
+				if (assignments != null) {
+					assignments.reconnect(null);
+				} else {
+					this.createClientAssignments(clientId, client);
+				}
+			} else {
+				this.clientClosed(assignments);
+			}
+		}
+	}
+
 	private boolean connect(ITransferedData receivedData, Client client) {
 		if (client == null) {
 			logger.error("Client doesn't exists. Connection ignored.");
@@ -149,14 +194,7 @@ public class CommandHandler {
 		int clientId = this.getNewClientId();
 		if (receivedData.getSingleData().get() != null) {
 			Solvis solvis = null;
-			try {
-				solvis = this.instances.getInstance((String) receivedData.getSingleData().get());
-			} catch (IOException | XmlError | XMLStreamException | LearningError e1) {
-				client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE,
-						"Solvis not connected: " + e1.getMessage()).createJsonPackage());
-				client.closeDelayed();
-				return true;
-			}
+			solvis = this.instances.getInstance((String) receivedData.getSingleData().get());
 			if (solvis == null) {
 				client.send(new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE, "Solvis id unknown")
 						.createJsonPackage());
@@ -164,11 +202,8 @@ public class CommandHandler {
 				return true;
 			}
 			solvis.getDistributor().register(client);
-			ClientAssignments assignments = new ClientAssignments(clientId, solvis, client);
-			synchronized (this) {
-				this.register(assignments);
-				this.clients.add(assignments);
-			}
+			ClientAssignments assignments = this.createClientAssignments(clientId, client);
+			assignments.add(solvis);
 			client.send(new ConnectedPackage(clientId));
 			DescriptionsPackage channelDescription = new DescriptionsPackage(
 					this.instances.getSolvisDescription().getChannelDescriptions(), solvis.getConfigurationMask());
@@ -187,25 +222,26 @@ public class CommandHandler {
 			return true;
 		}
 		String clientId = (String) receivedData.getSingleData().get();
-		ClientAssignments assignments = this.get(clientId);
-		if (assignments == null) {
-			client.send(new ConnectionState(ConnectionStatus.CLIENT_UNKNOWN, "Client id unknown").createJsonPackage());
-			client.closeDelayed();
-			return true;
+		synchronized (this) {
+			ClientAssignments assignments = this.get(clientId);
+			if (assignments != null) {
+				Client former = assignments.getClient();
+				Solvis solvis = assignments.getSolvis();
+				if (former != null) {
+					former.close();
+					solvis.getDistributor().unregister(former);
+				}
+
+				assignments.reconnect(client);
+				solvis.getDistributor().register(client);
+
+				sendMeasurements(solvis, client);
+				return false;
+			}
 		}
-		Client former = assignments.getClient();
-		Solvis solvis = assignments.getSolvis();
-		if (former != null) {
-			former.close();
-			solvis.getDistributor().unregister(former);
-		}
-
-		assignments.reconnect(client);
-		solvis.getDistributor().register(client);
-
-		sendMeasurements(solvis, client);
-
-		return false;
+		client.send(new ConnectionState(ConnectionStatus.CLIENT_UNKNOWN, "Client id unknown").createJsonPackage());
+		client.closeDelayed();
+		return true;
 	}
 
 	private void sendMeasurements(Solvis solvis, Client client) {
@@ -294,10 +330,6 @@ public class CommandHandler {
 		return null;
 	}
 
-	public synchronized void register(ClientAssignments assignment) {
-
-	}
-
 	public synchronized ClientAssignments unregister(ClientAssignments assignments) {
 		for (Iterator<ClientAssignments> it = this.clients.iterator(); it.hasNext();) {
 			ClientAssignments assignmentsC = it.next();
@@ -323,17 +355,21 @@ public class CommandHandler {
 		return this.nextClientId++;
 	}
 
-	public synchronized void clientClosed(Client client) {
-
-		ClientAssignments assignments = this.get(client);
-		// this.unregister(client);
+	private synchronized void clientClosed(ClientAssignments assignments) {
 		if (!this.abort && assignments != null) {
-			assignments.getSolvis().getDistributor().unregister(client);
+			Client client = assignments.getClient();
+			if (client != null) {
+				assignments.getSolvis().getDistributor().unregister(client);
+			}
 			assignments.setClosingThread(new ClosingThread(assignments));
 			assignments.getClosingThread().submit();
 			assignments.setClient(null);
 		}
+	}
 
+	public synchronized void clientClosed(Client client) {
+		ClientAssignments assignments = this.get(client);
+		this.clientClosed(assignments);
 	}
 
 	class ClosingThread extends Helper.Runnable implements Runnable {

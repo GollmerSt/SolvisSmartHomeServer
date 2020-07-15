@@ -1,7 +1,13 @@
+/************************************************************************
+ * 
+ * $Id: BaseData.java 266 2020-07-11 10:34:15Z stefa_000 $
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.windows;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,7 +18,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class Task {
 
-	private static String ENCODING_XML = "UTF-16";
 	private static String ENCODING = "UTF-16LE";
 	private static String VERSION = "1.0";
 	private static String NAMESPACE = "http://schemas.microsoft.com/windows/2004/02/mit/task";

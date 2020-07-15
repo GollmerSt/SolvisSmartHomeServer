@@ -37,7 +37,7 @@ public class ConnectedPackage extends JsonPackage {
 		element = new Element();
 		this.data.add(element);
 		element.name = "FormatVersion";
-		element.value = new SingleValue(Version.getInstance().getFormatVersion());
+		element.value = new SingleValue(Version.getInstance().getServerFormatVersion());
 	}
 
 	@Override

@@ -823,20 +823,6 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="releaseBlockingAfterUserAccess_ms" type="int"
-			use="required">
-			<annotation>
-				<documentation>
-					Zeitintervall, das nach einem Usereingriff vergehen
-					muss, bis die Werte upgedated werden. In dieser zeit
-					werden keien Werte vom GUI abgerufen, damit die
-					Eingabe des Users nicht gestört wird.
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="releaseBlockingAfterServiceAccess_ms"
-			type="int">
-		</attribute>
 		<attribute name="connectionHoldTime_ms" type="int"
 			use="required">
 			<annotation>
