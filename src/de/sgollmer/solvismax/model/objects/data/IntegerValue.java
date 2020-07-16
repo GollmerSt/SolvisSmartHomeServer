@@ -27,8 +27,8 @@ public class IntegerValue extends SingleData<Integer> {
 	public boolean equals(Object obj) {
 		if (obj instanceof IntegerValue) {
 			return this.data == (((IntegerValue) obj).data);
-		} else if (obj instanceof FloatValue) {
-			return ((FloatValue) obj).equals(this);
+		} else if (obj instanceof DoubleValue) {
+			return ((DoubleValue) obj).equals(this);
 		} else {
 			return false;
 		}

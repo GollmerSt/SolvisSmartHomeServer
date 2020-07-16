@@ -50,10 +50,11 @@ Source: "{#MyBaseDir}\SolvisSmartHomeServer.jar"; DestDir: "{app}"; Flags: ignor
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}""";
-Name: "{group}\{#MyAppName} im DOS-Fenster"; Filename: "{app}\{#MyAppExeName}"; Parameters: "dos";    
+Name: "{group}\{#MyAppName} in DOS window"; Filename: "{app}\{#MyAppExeName}"; Parameters: "dos";    
 Name: "{group}\Learn"; Filename: "{app}\{#MyAppExeName}"; Parameters: "learn";
 Name: "{group}\Terminate"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}"" --server-terminate";
 Name: "{group}\Crypt"; Filename: "{app}\{#MyAppExeName}"; Parameters: "crypt";
+Name: "{group}\Send testmail"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}"" --test-mail";
 Name: "{group}\Uninstall {#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Run]

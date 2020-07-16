@@ -417,12 +417,14 @@ public class Mqtt {
 							.getChannelDescription(subscribeData.getChannelId());
 					try {
 						data = description.interpretSetData(new StringData(string, 0));
+						if (data == null) {
+							Mqtt.this.publishError(subscribeData.getClientId(),
+									"Error: Channel <" + subscribeData.getChannelId() + "> not writable.");
+							return;
+						}
 					} catch (TypeError e) {
 						Mqtt.this.publishError(subscribeData.getClientId(), "Error: Value error, value: " + string);
-					}
-					if (data == null) {
-						Mqtt.this.publishError(subscribeData.getClientId(),
-								"Error: Channel <" + subscribeData.getChannelId() + "> not writable.");
+						return;
 					}
 			}
 			subscribeData.setValue(data);

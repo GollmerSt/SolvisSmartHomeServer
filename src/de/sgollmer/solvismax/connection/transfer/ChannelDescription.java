@@ -11,7 +11,7 @@ import java.util.Collection;
 
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
-import de.sgollmer.solvismax.model.objects.data.FloatValue;
+import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 
 public class ChannelDescription extends Element {
@@ -46,7 +46,7 @@ public class ChannelDescription extends Element {
 		if (accuracy != null) {
 			Element ac = new Element();
 			ac.name = "Accuracy";
-			ac.value = new SingleValue(new FloatValue(accuracy, -1));
+			ac.value = new SingleValue(new DoubleValue(accuracy, -1));
 			frame.add(ac);
 		}
 
@@ -60,15 +60,15 @@ public class ChannelDescription extends Element {
 		if (upperLowerStep != null) {
 			Element upper = new Element();
 			upper.name = "Upper";
-			upper.value = new SingleValue(new FloatValue(upperLowerStep.getUpper(), -1));
+			upper.value = new SingleValue(new DoubleValue(upperLowerStep.getUpper(), -1));
 			frame.add(upper);
 			Element lower = new Element();
 			lower.name = "Lower";
-			lower.value = new SingleValue(new FloatValue(upperLowerStep.getLower(), -1));
+			lower.value = new SingleValue(new DoubleValue(upperLowerStep.getLower(), -1));
 			frame.add(lower);
 			Element step = new Element();
 			step.name = "Step";
-			step.value = new SingleValue(new FloatValue(upperLowerStep.getStep(), -1));
+			step.value = new SingleValue(new DoubleValue(upperLowerStep.getStep(), -1));
 			frame.add(step);
 		}
 

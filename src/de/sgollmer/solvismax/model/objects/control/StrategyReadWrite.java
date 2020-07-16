@@ -21,7 +21,7 @@ import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
-import de.sgollmer.solvismax.model.objects.data.FloatValue;
+import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -186,7 +186,7 @@ public class StrategyReadWrite extends StrategyRead {
 			String string = (String) singleData.get();
 			try {
 				if (string.contains(".")) {
-					return new FloatValue(Double.parseDouble(string), 0);
+					return new DoubleValue(Double.parseDouble(string), 0);
 				} else {
 					return new IntegerValue(Integer.parseInt(string), 0);
 				}

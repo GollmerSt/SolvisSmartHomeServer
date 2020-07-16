@@ -142,8 +142,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		SingleData<?> data = this.data;
 		if (data == null) {
 			return null;
-		} else if (data instanceof FloatValue) {
-			double f = ((FloatValue) data).get();
+		} else if (data instanceof DoubleValue) {
+			double f = ((DoubleValue) data).get();
 			return (int) Math.round(f);
 
 		} else if ((data instanceof IntegerValue)) {
@@ -231,7 +231,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		}
 		if (data instanceof IntegerValue) {
 			return new SingleValue(
-					new FloatValue((float) data.getInt() / this.getDescription().getDivisor(), data.getTimeStamp()));
+					new DoubleValue((double) data.getInt() / this.getDescription().getDivisor(), data.getTimeStamp()));
 		} else {
 			return new SingleValue(data);
 		}

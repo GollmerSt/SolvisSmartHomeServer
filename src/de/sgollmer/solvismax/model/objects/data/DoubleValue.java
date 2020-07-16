@@ -9,11 +9,11 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.Constants;
 
-public class FloatValue extends SingleData<Double> {
+public class DoubleValue extends SingleData<Double> {
 
 	private final double value;
 
-	public FloatValue(double value, long timeStamp) {
+	public DoubleValue(double value, long timeStamp) {
 		super(timeStamp);
 		this.value = value;
 	}
@@ -25,7 +25,7 @@ public class FloatValue extends SingleData<Double> {
 
 	@Override
 	public SingleData<Double> create(int value, long timeStamp) {
-		return new FloatValue(value, timeStamp);
+		return new DoubleValue(value, timeStamp);
 	}
 
 	@Override
@@ -60,8 +60,8 @@ public class FloatValue extends SingleData<Double> {
 		}
 		double cmp ;
 		double maxEqualDiff = Math.abs(this.value) * Constants.PRECISION_DOUBLE ;
-		if (obj instanceof FloatValue) {
-			cmp = ((FloatValue) obj).value ;
+		if (obj instanceof DoubleValue) {
+			cmp = ((DoubleValue) obj).value ;
 		} else if (obj instanceof IntegerValue ) {
 			cmp = ((IntegerValue) obj).get() ;
 		} else {

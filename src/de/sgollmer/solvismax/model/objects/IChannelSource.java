@@ -57,9 +57,9 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	public boolean isScreenChangeDependend();
 
 	public static class UpperLowerStep {
-		private final float upper;
-		private final float lower;
-		private final float step;
+		private final double upper;
+		private final double lower;
+		private final double step;
 
 		public UpperLowerStep(float upper, float lower, float step) {
 			this.upper = upper;
@@ -67,15 +67,15 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 			this.step = step;
 		}
 
-		public float getUpper() {
+		public double getUpper() {
 			return this.upper;
 		}
 
-		public float getLower() {
+		public double getLower() {
 			return this.lower;
 		}
 
-		public float getStep() {
+		public double getStep() {
 			return this.step;
 		}
 	}
