@@ -25,10 +25,12 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.CommandHandler;
+import de.sgollmer.solvismax.connection.IClient;
 import de.sgollmer.solvismax.connection.ITransferedData;
 import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.connection.ServerStatus;
 import de.sgollmer.solvismax.connection.transfer.Command;
+import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.crypt.Ssl;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
@@ -393,7 +395,7 @@ public class Mqtt {
 				logger.error(e.getMessage());
 				return;
 			}
-			logger.debug("Topic <" + topic + "> with received message: " + message.toString());
+			logger.info("Topic <" + topic + "> with received message: " + message.toString());
 			Solvis solvis = null;
 			if (subscribeData.getUnitId() != null) {
 				solvis = Mqtt.this.instances.getUnit(subscribeData.getUnitId());
@@ -431,7 +433,7 @@ public class Mqtt {
 
 			try {
 				if (subscribeData.getCommand() != null) {
-					Mqtt.this.commandHandler.commandFromClient(subscribeData, null);
+					Mqtt.this.commandHandler.commandFromClient(subscribeData, new Client(subscribeData.getClientId()));
 				}
 			} catch (IOException e) {
 				logger.error("Error: On command handling", e);
@@ -473,9 +475,9 @@ public class Mqtt {
 
 	public void publishError(String clientId, String message) {
 		try {
-			this.publish(new MqttData(clientId + Constants.Mqtt.ERROR, message));
+			this.publish(new MqttData(clientId + Constants.Mqtt.ERROR, message, 0, false));
 		} catch (MqttException e) {
-			logger.error("Can't deliver error message to client: " + message);
+			logger.error("Can't deliver error message to iClient: " + message);
 		}
 	}
 
@@ -682,7 +684,7 @@ public class Mqtt {
 		if (this.mqttThread != null) {
 			this.mqttThread.abort();
 		}
-		
+
 		if (this.client.isConnected()) {
 			try {
 				this.publish(this.getLastWill());
@@ -710,4 +712,30 @@ public class Mqtt {
 	public static String formatServerMetaTopic() {
 		return Constants.Mqtt.SERVER_PREFIX + Constants.Mqtt.META_SUFFIX;
 	}
+
+	private class Client implements IClient {
+		private final String clientId;
+
+		public Client(String clientId) {
+			this.clientId = clientId;
+		}
+
+		@Override
+		public void sendCommandError(String message) {
+			publishError(this.clientId, message);
+			logger.info(message);
+
+		}
+
+		@Override
+		public void send(JsonPackage jsonPackage) {
+			logger.error("Unexpected using of iClient");
+		}
+
+		@Override
+		public void closeDelayed() {
+			logger.error("Unexpected using of iClient");
+		}
+	}
+
 }

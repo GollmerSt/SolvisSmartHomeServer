@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
 import de.sgollmer.solvismax.helper.Helper;
@@ -112,7 +113,7 @@ public class Server {
 		}
 	}
 
-	public class Client extends Helper.Runnable implements IObserver<JsonPackage> {
+	public class Client extends Helper.Runnable implements IObserver<JsonPackage>, IClient {
 
 		private Socket socket;
 
@@ -144,6 +145,7 @@ public class Server {
 			this.close();
 		}
 
+		@Override
 		public synchronized void send(JsonPackage jsonPackage) {
 			try {
 				if (this.socket != null) {
@@ -179,6 +181,7 @@ public class Server {
 
 		}
 
+		@Override
 		public synchronized void closeDelayed() {
 			try {
 				this.wait(Constants.DELAYED_CLOSING_TIME);
@@ -196,6 +199,13 @@ public class Server {
 			} catch (IOException e) {
 			}
 			this.notifyAll();
+		}
+
+		@Override
+		public void sendCommandError(String message) {
+			logger.info(message);
+			ConnectionState state = new ConnectionState(ConnectionStatus.COMMAND_ERROR, message) ; 
+			this.send(state.createJsonPackage());
 		}
 
 	}

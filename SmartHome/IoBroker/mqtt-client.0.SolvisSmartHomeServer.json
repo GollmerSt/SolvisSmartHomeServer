@@ -7758,5 +7758,85 @@
       "owner": "system.user.admin",
       "ownerGroup": "system.group.administrator"
     }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.A07:Pumpe_Solar2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/A07:Pumpe_Solar2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/A07:Pumpe_Solar2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.A07:Pumpe_Solar2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.A07:Pumpe_Solar2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/A07:Pumpe_Solar2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/A07:Pumpe_Solar2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.A07:Pumpe_Solar2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
   }
 }

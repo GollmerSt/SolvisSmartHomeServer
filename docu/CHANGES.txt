@@ -19,7 +19,7 @@ Version 01.01.00
                 Server diesen Zustand nicht beheben konnte. In Zukunft wird in der FallBack-Sequenz
                 noch der Warmwasser-Screen ausgewählt.
                 
-    14.07.2020  
+    17.07.2020	Retain-Flag muss bei Fehlermeldungen an den Client nicht gesetzt sein.
 
 
 

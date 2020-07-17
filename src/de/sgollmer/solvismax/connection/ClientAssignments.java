@@ -11,24 +11,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.sgollmer.solvismax.connection.CommandHandler.ClosingThread;
-import de.sgollmer.solvismax.connection.Server.Client;
 import de.sgollmer.solvismax.error.ClientAssignmentError;
 import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Solvis;
 
 public class ClientAssignments {
 	private final String clientId;
-	private Client client;
+	private IClient client;
 	private final Map<Solvis, State> states = new HashMap<>();
 	private ClosingThread closingThread = null;
 
-	public ClientAssignments(int clientid, Solvis solvis, Client client) {
+	public ClientAssignments(int clientid, Solvis solvis, IClient client) {
 		this.clientId = Integer.toString(clientid);
 		this.client = client;
 		this.states.put(solvis, new State(solvis));
 	}
 
-	public ClientAssignments(String clientid, Client client) {
+	public ClientAssignments(String clientid, IClient client) {
 		this.clientId = clientid;
 		this.client = client;
 	}
@@ -39,7 +38,7 @@ public class ClientAssignments {
 		}
 	}
 
-	public void reconnect(Client client) {
+	public void reconnect(IClient client) {
 		this.abort();
 		this.client = client;
 	}
@@ -51,11 +50,11 @@ public class ClientAssignments {
 		}
 	}
 
-	public Client getClient() {
+	public IClient getClient() {
 		return this.client;
 	}
 
-	public void setClient(Client client) {
+	public void setClient(IClient client) {
 		this.client = client;
 	}
 
