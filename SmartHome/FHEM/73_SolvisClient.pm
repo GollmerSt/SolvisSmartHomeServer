@@ -21,7 +21,8 @@
 #   00.02.08    25.05.2020  SCMP77              Some variables moved to helper (should not be visible in Web-Interface)
 #   00.02.09    05.06.2020  SCMP77              Set of a binary value now possible, Implementation of a min time between connection
 #   00.02.10    10.06.2020  SCMP77              ReadyFn simplified, reconnect on JSON errors
-#   00.02.11    02076.2020  SCMP77              Set bug fixed
+#   00.02.11    02.07.2020  SCMP77              Set bug fixed
+#   00.02.12    19.07.2020  SCMP77              Server compile time is written to the log
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -552,8 +553,15 @@ sub Connected {
             Log($self, 3, "Format version $formatVersion of client is deprecated, use a newer client, if available.");
             $self->{INFO} = 'Format version is deprecated' ;
         }
+		
+		my $buildDate = '';
+		if ( defined($connected->{BuildDate})) {
+			$buildDate = ", build date: $connected->{BuildDate}" ;
+		}
         
-        Log($self, 3, "Server version: $self->{VERSION_SERVER}") ;
+        Log($self, 3, "Server version: $self->{VERSION_SERVER}$buildDate") ;
+		
+		
     }
     return ;
 } # end Connected
@@ -1750,7 +1758,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.11",
+  "version": "v00.02.12",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

@@ -26,11 +26,11 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.IClient;
+import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.ITransferedData;
 import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.connection.ServerStatus;
 import de.sgollmer.solvismax.connection.transfer.Command;
-import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.crypt.Ssl;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
@@ -728,7 +728,7 @@ public class Mqtt {
 		}
 
 		@Override
-		public void send(JsonPackage jsonPackage) {
+		public void send(ISendData sendData) {
 			logger.error("Unexpected using of iClient");
 		}
 
@@ -736,6 +736,36 @@ public class Mqtt {
 		public void closeDelayed() {
 			logger.error("Unexpected using of iClient");
 		}
+
+		@Override
+		public String getClientId() {
+			return this.clientId;
+		}
+
+		@Override
+		public Solvis getSolvis() {
+			return null;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof Client)) {
+				return false;
+			}
+			if (this.clientId == null) {
+				return false;
+			}
+			return this.clientId.equals(((Client) obj).getClientId());
+		}
+
+		@Override
+		public int hashCode() {
+			if (this.clientId == null ) {
+				return 263;
+			}
+			return this.clientId.hashCode();
+		}
+
 	}
 
 }

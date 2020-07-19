@@ -38,8 +38,7 @@ public class WatchDog {
 
 	private final int watchDogTime;
 	private boolean abort = false;
-	private HumanAccess humanAccess = HumanAccess.NONE;
-	private boolean errorMessageVisible = false;
+	private HumanAccess humanAccess = HumanAccess.UNKNOWN;
 	private boolean serviceScreenDetected = false;
 	private boolean powerOff = false;
 	private long lastUserAccessTime = 0;
@@ -52,14 +51,17 @@ public class WatchDog {
 		@Override
 		public void update(SolvisState data, Object source) {
 			synchronized (WatchDog.this) {
-				switch (data.getState()) {
-					case POWER_OFF:
-					case REMOTE_CONNECTED:
-						getCurrentHumanAccess(Event.POWER_OFF, null);
-						break;
-					case SOLVIS_CONNECTED:
-						getCurrentHumanAccess(Event.POWER_ON, null);
-						break;
+				try {
+					switch (data.getState()) {
+						case POWER_OFF:
+						case REMOTE_CONNECTED:
+							processEvent(Event.POWER_OFF, null);
+							break;
+						case SOLVIS_CONNECTED:
+							processEvent(Event.POWER_ON, null);
+							break;
+					}
+				} catch (IOException e) {
 				}
 			}
 		}
@@ -94,7 +96,8 @@ public class WatchDog {
 	public enum HumanAccess {
 		USER(true, "User", ConnectionStatus.USER_ACCESS_DETECTED),
 		SERVICE(true, "Service", ConnectionStatus.SERVICE_ACCESS_DETECTED),
-		NONE(false, "None", ConnectionStatus.HUMAN_ACCESS_FINISHED);
+		NONE(false, "None", ConnectionStatus.HUMAN_ACCESS_FINISHED),
+		UNKNOWN(false, "None", ConnectionStatus.HUMAN_ACCESS_FINISHED);
 
 		private final boolean wait;
 		private final String accessType;
@@ -125,7 +128,16 @@ public class WatchDog {
 	}
 
 	public enum Event {
-		SCREENSAVER, SET_ERROR, RESET_ERROR, NONE, CHANGED, INIT, POWER_OFF, POWER_ON
+		SCREENSAVER, SET_ERROR_BY_BUTTON, SET_ERROR_BY_MESSAGE, RESET_ERROR, NONE, CHANGED, INIT, POWER_OFF, POWER_ON;
+
+		public boolean isError() {
+			switch (this) {
+				case SET_ERROR_BY_BUTTON:
+				case SET_ERROR_BY_MESSAGE:
+					return true;
+			}
+			return false;
+		}
 
 	}
 
@@ -137,10 +149,11 @@ public class WatchDog {
 		if (!this.initialized) {
 			this.initialized = true;
 			try {
-				this.getCurrentHumanAccess(Event.INIT, null);
+				this.processEvent(Event.INIT, null);
 			} catch (Throwable e) {
 			}
 		}
+				
 		while (!this.abort) { // loop in case off user access or error detected
 
 			try {
@@ -171,24 +184,20 @@ public class WatchDog {
 					this.solvis.setCurrentScreen(realScreen);
 				}
 
-				if (event == Event.RESET_ERROR || event == Event.SET_ERROR) {
-					handleErrorSuccessfull = this.solvis.getSolvisState().setError(event == Event.SET_ERROR,
-							possibleErrorScreen);
+				if (event == Event.RESET_ERROR || event.isError()) {
+					handleErrorSuccessfull = this.solvis.getSolvisState().setError(event, possibleErrorScreen);
 				}
 
-				HumanAccess currentHA = this.getCurrentHumanAccess(event, realScreen);
+				this.processEvent(event, realScreen);
 
-				if (currentHA != this.humanAccess) {
-					humanAccessChanged(currentHA, this.humanAccess);
-					this.humanAccess = currentHA;
+				boolean clearErrorMessage = this.clearErrorMessageAfterMail && handleErrorSuccessfull
+						&& event == Event.SET_ERROR_BY_MESSAGE;
+
+				if (clearErrorMessage) {
+					this.solvis.sendBack();
 				}
 
-				boolean abortEnable1 = !this.solvis.getSolvisState().isErrorMessage()
-						|| this.clearErrorMessageAfterMail && handleErrorSuccessfull;
-
-				boolean abortEnable2 = !this.errorMessageVisible;
-
-				this.abort = !currentHA.mustWait() && (abortEnable1 || abortEnable2);
+				this.abort = !this.humanAccess.mustWait() && (clearErrorMessage || event != Event.SET_ERROR_BY_MESSAGE);
 
 				synchronized (this) {
 					if (!this.abort) {
@@ -215,14 +224,12 @@ public class WatchDog {
 
 	private Event checkError(SolvisScreen realScreen) {
 		Event event = null;
-		this.errorMessageVisible = false;
 		switch (this.solvis.getSolvisDescription().getErrorDetection().getType(realScreen)) {
 			case MESSAGE_BOX:
-				this.errorMessageVisible = true;
-				event = Event.SET_ERROR;
+				event = Event.SET_ERROR_BY_MESSAGE;
 				break;
 			case ERROR_BUTTON:
-				event = Event.SET_ERROR;
+				event = Event.SET_ERROR_BY_BUTTON;
 				break;
 			case HOME_NONE:
 				if (this.solvis.getSolvisState().isErrorMessage()) {
@@ -261,7 +268,7 @@ public class WatchDog {
 		return humanAccess;
 	}
 
-	private HumanAccess getCurrentHumanAccess(Event event, SolvisScreen realScreen) {
+	private void processEvent(Event event, SolvisScreen realScreen) throws IOException {
 		HumanAccess current = this.humanAccess;
 		long currentTime = System.currentTimeMillis();
 		switch (event) {
@@ -323,7 +330,8 @@ public class WatchDog {
 					}
 				}
 				break;
-			case SET_ERROR:
+			case SET_ERROR_BY_BUTTON:
+			case SET_ERROR_BY_MESSAGE:
 			case RESET_ERROR:
 				break;
 			case INIT:
@@ -335,12 +343,16 @@ public class WatchDog {
 					}
 				}
 		}
-
-		return current;
+		processHumanAccess(current);
 	}
 
-	private void humanAccessChanged(HumanAccess current, HumanAccess former) {
-		this.solvis.notifyScreenChangedByHumanObserver(current);
+	private void processHumanAccess(HumanAccess current) throws IOException {
+		if ( this.humanAccess != HumanAccess.UNKNOWN) {
+			if (this.humanAccess == current ) {
+				return;
+			}
+			this.solvis.notifyScreenChangedByHumanObserver(current);
+		}
 
 		switch (current) {
 			case SERVICE:
@@ -348,8 +360,15 @@ public class WatchDog {
 				logger.info(current.getAccessType() + " access detected.");
 				break;
 			case NONE:
-				logger.info(former.getAccessType() + " access finished.");
+				logger.info(this.humanAccess.getAccessType() + " access finished.");
+				this.solvis.saveScreen();
+				break;
+			case UNKNOWN:
+				current = HumanAccess.NONE;
+				this.solvis.saveScreen();
+				break;
 		}
+		this.humanAccess = current;
 	}
 
 	private synchronized void abort() {

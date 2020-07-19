@@ -22,6 +22,7 @@ import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 
@@ -116,6 +117,8 @@ public class Server {
 	public class Client extends Helper.Runnable implements IObserver<JsonPackage>, IClient {
 
 		private Socket socket;
+		private String clientId;
+		private Solvis solvis;
 
 		public Client(Socket socket) {
 			super("Client");
@@ -145,7 +148,6 @@ public class Server {
 			this.close();
 		}
 
-		@Override
 		public synchronized void send(JsonPackage jsonPackage) {
 			try {
 				if (this.socket != null) {
@@ -204,8 +206,51 @@ public class Server {
 		@Override
 		public void sendCommandError(String message) {
 			logger.info(message);
-			ConnectionState state = new ConnectionState(ConnectionStatus.COMMAND_ERROR, message) ; 
+			ConnectionState state = new ConnectionState(ConnectionStatus.COMMAND_ERROR, message);
 			this.send(state.createJsonPackage());
+		}
+
+		@Override
+		public String getClientId() {
+			return this.clientId;
+		}
+
+		public void setClientId(String clientId) {
+			this.clientId = clientId;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof Client)) {
+				return false;
+			}
+			if (this.clientId == null) {
+				return false;
+			}
+			return this.clientId.equals(((Client) obj).getClientId());
+		}
+
+		@Override
+		public int hashCode() {
+			if (this.clientId == null ) {
+				return 263;
+			}
+			return this.clientId.hashCode();
+		}
+
+		@Override
+		public void send(ISendData sendData) {
+			this.send(sendData.createJsonPackage());
+			
+		}
+
+		@Override
+		public Solvis getSolvis() {
+			return this.solvis;
+		}
+		
+		public void setSolvis( Solvis solvis) {
+			this.solvis = solvis;
 		}
 
 	}

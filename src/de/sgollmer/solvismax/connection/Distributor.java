@@ -126,7 +126,7 @@ public class Distributor extends Observable<JsonPackage> {
 
 		@Override
 		public void update(SolvisState data, Object source) {
-			Distributor.this.notify(data.getPackage());
+			Distributor.this.notify(data.createJsonPackage());
 		}
 
 	}

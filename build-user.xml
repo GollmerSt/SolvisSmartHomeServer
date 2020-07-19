@@ -33,6 +33,9 @@
 		value="${env.EIGENE_DATEIEN}/Programmierung/Extensions/base.xml" />
 	<property name="lib.dir" value="lib" />
 	<property name="dist.base" value="SolvisSmartHomeServer" />
+	<tstamp>
+		<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+	</tstamp>
 	<path id="SolvisMax.classpath">
 		<pathelement location="bin" />
 		<pathelement location="lib/jlibmodbus-1.2.9.7.jar" />
@@ -62,82 +65,11 @@
 			</fileset>
 		</copy>
 	</target>
-	<target name="clean">
-		<delete dir="${bin.dir}" />
-	</target>
-	<target depends="clean" name="cleanall">
-		<delete dir="${dist.dir}" />
-		<delete dir="${pubLinux.dir}" />
-		<delete dir="${pubWindows.dir}" />
-	</target>
-	<target depends="build-subprojects,build-project" name="build" />
-	<target name="build-subprojects" />
-	<target depends="init" name="build-project">
-		<echo message="${ant.project.name}: ${ant.file}" />
-		<javac debug="true" debuglevel="${debuglevel}" encoding="Cp1252"
-			destdir="${bin.dir}" includeantruntime="false" source="${source}"
-			target="${target}">
-			<src path="src" />
-			<src path="rsc" />
-			<classpath refid="SolvisMax.classpath" />
-		</javac>
-	</target>
-	<target
-		description="Build all projects which reference this project. Useful to propagate changes."
-		name="build-refprojects" />
-	<target name="ErrorScreen">
-		<java
-			classname="de.sgollmer.solvismax.model.objects.screen.ErrorScreen"
-			failonerror="true" fork="yes">
-			<classpath refid="SolvisMax.classpath" />
-		</java>
-	</target>
 	<target name="Main">
 		<java classname="de.sgollmer.solvismax.Main" failonerror="true"
 			fork="yes">
 			<arg
 				line="--solvis-id=mySolvis&#13;&#10;--solvis-url=http://192.168.1.40&#13;&#10;--solvis-account=SGollmer&#13;&#10;--solvis-password=e5am1kro" />
-			<classpath refid="SolvisMax.classpath" />
-		</java>
-	</target>
-	<target name="Ocr">
-		<java
-			classname="de.sgollmer.solvismax.imagepatternrecognition.ocr.Ocr"
-			failonerror="true" fork="yes">
-			<classpath refid="SolvisMax.classpath" />
-		</java>
-	</target>
-	<target name="OcrRectangle">
-		<java
-			classname="de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle"
-			failonerror="true" fork="yes">
-			<classpath refid="SolvisMax.classpath" />
-		</java>
-	</target>
-	<target name="Pattern">
-		<java
-			classname="de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern"
-			failonerror="true" fork="yes">
-			<classpath refid="SolvisMax.classpath" />
-		</java>
-	</target>
-	<target name="ScreenSaver">
-		<java
-			classname="de.sgollmer.solvismax.model.objects.screen.ScreenSaver"
-			failonerror="true" fork="yes">
-			<classpath refid="SolvisMax.classpath" />
-		</java>
-	</target>
-	<target name="Solvis">
-		<java classname="de.sgollmer.solvismax.model.Solvis"
-			failonerror="true" fork="yes">
-			<classpath refid="SolvisMax.classpath" />
-		</java>
-	</target>
-	<target name="SolvisConnection">
-		<java
-			classname="de.sgollmer.solvismax.connection.SolvisConnection"
-			failonerror="true" fork="yes">
 			<classpath refid="SolvisMax.classpath" />
 		</java>
 	</target>
@@ -162,6 +94,7 @@
 			<manifest>
 				<attribute name="Main-Class"
 					value="de.sgollmer.solvismax.Main" />
+				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 		</jar>
 		<copy todir="${dist.dir}">
@@ -171,7 +104,7 @@
 		</copy>
 		<copy todir="${dist.dir}">
 			<fileset file="${fhem.pm}" casesensitive="yes" />
-			<fileset file="${iobroker.client.json}" casesensitive="yes"/>
+			<fileset file="${iobroker.client.json}" casesensitive="yes" />
 			<fileset file="${linux.systemd}" casesensitive="yes" />
 			<fileset file="${linux.systemdD}" casesensitive="yes" />
 			<fileset file="${myBase.xml}" casesensitive="yes" />
@@ -184,7 +117,7 @@
 			<fileset file="${dist.dir}/${dist.base}.jar"
 				casesensitive="yes" />
 			<fileset file="${fhem.pm}" casesensitive="yes" />
-			<fileset file="${iobroker.client.json}" casesensitive="yes"/>
+			<fileset file="${iobroker.client.json}" casesensitive="yes" />
 			<fileset file="${linux.systemd}" casesensitive="yes" />
 			<fileset file="${linux.systemdD}" casesensitive="yes" />
 			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
@@ -200,8 +133,25 @@
 		</exec>
 		<copy todir="${pubWindows.dir}">
 			<fileset file="${fhem.pm}" casesensitive="yes" />
-			<fileset file="${iobroker.client.json}" casesensitive="yes"/>
+			<fileset file="${iobroker.client.json}" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 		</copy>
+	</target>
+	<target name="clean">
+		<delete dir="${bin.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete dir="${pubLinux.dir}" />
+		<delete dir="${pubWindows.dir}" />
+	</target>
+	<target depends="build-project" name="build" />
+	<target depends="init" name="build-project">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" encoding="Cp1252"
+			destdir="${bin.dir}" includeantruntime="false" source="${source}"
+			target="${target}">
+			<src path="src" />
+			<src path="rsc" />
+			<classpath refid="SolvisMax.classpath" />
+		</javac>
 	</target>
 </project>

@@ -229,7 +229,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (data.get() == null) {
 			return null;
 		}
-		if (data instanceof IntegerValue) {
+		if (data instanceof IntegerValue && this.getDescription().getDivisor() != 1) {
 			return new SingleValue(
 					new DoubleValue((double) data.getInt() / this.getDescription().getDivisor(), data.getTimeStamp()));
 		} else {
@@ -283,7 +283,13 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (this.data == null) {
 			return null;
 		}
-		return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getId()), this.data.toString(), 0, true);
+		String value ;
+		if (this.data instanceof IntegerValue && this.getDescription().getDivisor() != 1) {
+			value = Double.toString((double) this.data.getInt() / this.getDescription().getDivisor());
+		} else {
+			value =this.data.toString();
+		}
+		return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getId()), value, 0, true);
 	}
 
 }

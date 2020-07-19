@@ -14,16 +14,18 @@ import java.util.Set;
 import javax.mail.MessagingException;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.model.WatchDog.Event;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
-public class SolvisState extends Observable<SolvisState> {
+public class SolvisState extends Observable<SolvisState>  implements ISendData {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisState.class);
 
@@ -46,6 +48,13 @@ public class SolvisState extends Observable<SolvisState> {
 		SET, NONE, RESET
 	}
 
+	/**
+	 * Set/reset error, if error channel detects an error
+	 * 
+	 * @param error
+	 * @param description
+	 */
+
 	public synchronized void setError(boolean error, ChannelDescription description) {
 		ErrorChanged changed;
 		if (error) {
@@ -56,14 +65,23 @@ public class SolvisState extends Observable<SolvisState> {
 		processError(changed, null);
 	}
 
-	public synchronized boolean setError(boolean error, SolvisScreen errorScreen) {
+	/**
+	 * Set error if an error message/button is visible on screen
+	 * 
+	 * @param errorVisible if error button or error message box is visible
+	 * @param errorScreen
+	 * @return
+	 */
+
+	public synchronized boolean setError(Event errorEvent, SolvisScreen errorScreen) {
+		boolean errorVisible = errorEvent.isError();
 		ErrorChanged changed = ErrorChanged.NONE;
 		boolean isHomeScreen = errorScreen != null && errorScreen.get() == this.solvis.getHomeScreen();
-		if (error || this.errorScreen != null) {
-			if (!error && isHomeScreen) { // Nur der Homescreen kann Fehler zuücksetzen
+		if (errorVisible || this.errorScreen != null) {
+			if (!errorVisible && isHomeScreen) { // Nur der Homescreen kann Fehler zuücksetzen
 				this.errorScreen = null;
 				changed = ErrorChanged.RESET;
-			} else if (error && (this.errorScreen == null || !isHomeScreen)) {
+			} else if (errorEvent == Event.SET_ERROR_BY_MESSAGE || this.errorScreen == null) {
 				this.errorScreen = errorScreen;
 				changed = ErrorChanged.SET;
 			} else {
@@ -147,7 +165,8 @@ public class SolvisState extends Observable<SolvisState> {
 		}
 	}
 
-	public SolvisStatePackage getPackage() {
+	@Override
+	public SolvisStatePackage createJsonPackage() {
 		return new SolvisStatePackage(this.getState());
 	}
 
@@ -188,9 +207,9 @@ public class SolvisState extends Observable<SolvisState> {
 	public boolean isErrorMessage() {
 		return this.errorScreen != null;
 	}
-	
+
 	public MqttData getMqttData() {
-		return new MqttData(this.solvis, Constants.Mqtt.STATUS, this.getState().name(),0, true) ;
+		return new MqttData(this.solvis, Constants.Mqtt.STATUS, this.getState().name(), 0, true);
 	}
 
 }

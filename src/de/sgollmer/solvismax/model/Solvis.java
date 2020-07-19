@@ -70,7 +70,7 @@ public class Solvis {
 	private final int echoInhibitTime_ms;
 	private int configurationMask = 0;
 	private SolvisScreen currentScreen = null;
-	private SolvisScreen savedScreen = null;
+	private Screen savedScreen = null;
 	private Screen home = null;
 	private SolvisMeasurements measureData = null;
 	private boolean screenSaverActive = false;
@@ -334,15 +334,21 @@ public class Solvis {
 
 	public void saveScreen() throws IOException {
 		Screen current = this.getCurrentScreen(false).get();
-		if (current != null && !current.equals(SolvisScreen.get(this.savedScreen))) {
+		if ( current == null ) {
+			current = this.getCurrentScreen().get();
+		}
+		if ( current == null ) {
+			current = this.getHomeScreen();
+		}
+		if ( current != this.savedScreen ) {
 			logger.info("Screen <" + current.getId() + "> saved");
-			this.savedScreen = this.getCurrentScreen();
+			this.savedScreen = current;
 		}
 
 	}
 
 	public void restoreScreen() throws IOException {
-		Screen screen = SolvisScreen.get(this.savedScreen);
+		Screen screen = this.savedScreen;
 		if (screen != null) {
 			screen.goTo(this);
 			logger.info("Screen <" + screen.getId() + "> restored");

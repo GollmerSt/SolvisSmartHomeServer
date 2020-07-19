@@ -9,9 +9,10 @@ package de.sgollmer.solvismax.connection.transfer;
 
 import java.util.Collection;
 
+import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
-public class MeasurementsPackage extends JsonPackage {
+public class MeasurementsPackage extends JsonPackage implements ISendData {
 
 	public MeasurementsPackage(Collection<SolvisData> datas) {
 		this.command = Command.MEASUREMENTS;
@@ -25,6 +26,11 @@ public class MeasurementsPackage extends JsonPackage {
 				measurements.add(e);
 			}
 		}
+	}
+
+	@Override
+	public JsonPackage createJsonPackage() {
+		return this;
 	}
 
 }

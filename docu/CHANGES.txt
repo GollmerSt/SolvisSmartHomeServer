@@ -2,9 +2,9 @@
 
 Version 01.01.00
 
-    19.06.2020  (seit) Vorbereitungen für MQTT-Schnittstelle
+    seit 19.06.2020  Implementation der MQTT-Schnittstelle
     
-                Echo inhibit realisiert:
+    19.06.2020  Echo inhibit realisiert:
                 Wenn innerhalb der echoInhibitTime_ms der gleiche Wert erneut vom Client gesetzt wird,
                 wird er itgnoriert.
                 
@@ -19,8 +19,11 @@ Version 01.01.00
                 Server diesen Zustand nicht beheben konnte. In Zukunft wird in der FallBack-Sequenz
                 noch der Warmwasser-Screen ausgewählt.
                 
-    17.07.2020	Retain-Flag muss bei Fehlermeldungen an den Client nicht gesetzt sein.
-
+    17.07.2020  Retain-Flag darf bei Client-Fehlermeldungen nicht gesetzt sein.
+    
+    18.07.2020  Erfolgt eine Fehlermeldung im Home-Screen, blieb diese trotz aktiviertem Feature
+                ClearErrorMessageAfterMail sichtbar.
+                
 
 
 Version 01.00.15

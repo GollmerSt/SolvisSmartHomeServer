@@ -8,8 +8,9 @@
 package de.sgollmer.solvismax.connection.transfer;
 
 import de.sgollmer.solvismax.connection.ConnectionStatus;
+import de.sgollmer.solvismax.connection.ISendData;
 
-public class ConnectionState {
+public class ConnectionState implements ISendData {
 
 	private final ConnectionStatus status;
 	private final String message;
@@ -24,6 +25,7 @@ public class ConnectionState {
 		this(status, null);
 	}
 
+	@Override
 	public JsonPackage createJsonPackage() {
 		Frame frame = new Frame();
 		Element element = new Element();

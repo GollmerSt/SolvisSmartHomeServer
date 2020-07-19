@@ -41,11 +41,11 @@ public class Main {
 
 	private static ILogger logger;
 	private static Level LEARN;
-	
+
 	public static void main(String[] args) {
 
-		String createTaskName = null ;
-		boolean onBoot = false ;
+		String createTaskName = null;
+		boolean onBoot = false;
 
 		for (String arg : args) {
 			Matcher matcher = cmdPattern.matcher(arg);
@@ -79,15 +79,15 @@ public class Main {
 							System.err.println("To less arguments!");
 							System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
 						}
-						createTaskName = value ;
+						createTaskName = value;
 						break;
 					case "onBoot":
 						onBoot = true;
 				}
 			}
 		}
-		
-		if ( createTaskName != null ) {
+
+		if (createTaskName != null) {
 			try {
 				Task.createTask(createTaskName, onBoot);
 				System.exit(Constants.ExitCodes.OK);
@@ -130,7 +130,13 @@ public class Main {
 		}
 
 		logger = logManager.getLogger(Main.class);
-		logger.info("Server started");
+
+		String serverStart = "Server started, Version " + Version.getInstance().getVersion();
+		if (Version.getInstance().getBuildDate() != null) {
+			serverStart += ", compiled at " + Version.getInstance().getBuildDate();
+		}
+
+		logger.info(serverStart);
 		LEARN = Level.getLevel("LEARN");
 		boolean learn = false;
 
@@ -253,8 +259,8 @@ public class Main {
 
 		instances.initialized();
 		server.start();
-		
-		System.out.println("Server started");
+
+		System.out.println(serverStart);
 
 		// runnable.run();
 

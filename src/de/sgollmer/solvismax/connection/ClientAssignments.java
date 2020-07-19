@@ -16,25 +16,22 @@ import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Solvis;
 
 public class ClientAssignments {
-	private final String clientId;
 	private IClient client;
 	private final Map<Solvis, State> states = new HashMap<>();
 	private ClosingThread closingThread = null;
 
-	public ClientAssignments(int clientid, Solvis solvis, IClient client) {
-		this.clientId = Integer.toString(clientid);
+	public ClientAssignments(Solvis solvis, IClient client) {
 		this.client = client;
-		this.states.put(solvis, new State(solvis));
+		this.states.put(solvis, new State());
 	}
 
-	public ClientAssignments(String clientid, IClient client) {
-		this.clientId = clientid;
+	public ClientAssignments(IClient client) {
 		this.client = client;
 	}
 
 	public void add(Solvis solvis) {
 		if (solvis != null && !this.states.containsKey(solvis)) {
-			this.states.put(solvis, new State(solvis));
+			this.states.put(solvis, new State());
 		}
 	}
 
@@ -81,26 +78,10 @@ public class ClientAssignments {
 		this.closingThread = closingThread;
 	}
 
-	public String getClientId() {
-		return this.clientId;
-	}
-
-	public Solvis getSolvis() {
-		if (this.getState() != null) {
-			return this.getState().solvis;
-		}
-		return null;
-	}
-
 	public static class State {
-		private final Solvis solvis;
 		private boolean screenRestoreEnable = true;
 		private boolean optimizationEnable = true;
 		private boolean commandEnable = true;
-
-		public State(Solvis solvis) {
-			this.solvis = solvis;
-		}
 
 		public boolean isScreenRestoreEnable() {
 			return this.screenRestoreEnable;
@@ -134,7 +115,7 @@ public class ClientAssignments {
 		}
 		if (enable != state.isCommandEnable()) {
 			state.setCommandEnable(enable);
-			this.getSolvis().commandEnable(enable);
+			solvis.commandEnable(enable);
 		}
 
 	}
@@ -146,7 +127,7 @@ public class ClientAssignments {
 		}
 		if (enable != state.isScreenRestoreEnable()) {
 			state.setScreenRestoreEnable(enable);
-			this.getSolvis().execute(new CommandScreenRestore(enable));
+			solvis.execute(new CommandScreenRestore(enable));
 		}
 	}
 
@@ -157,26 +138,40 @@ public class ClientAssignments {
 		}
 		if (enable != state.isOptimizationEnable()) {
 			this.getState().setOptimizationEnable(enable);
-			this.getSolvis().commandOptimization(enable);
+			solvis.commandOptimization(enable);
 		}
 	}
 
 	public void clientClosed() {
-		for (State state : this.states.values()) {
-			this.enableGuiCommands(state.solvis, true);
-			this.optimizationEnable(state.solvis, true);
-			this.screenRestoreEnable(state.solvis, true);
+		for ( Solvis solvis : this.states.keySet()) {
+			this.enableGuiCommands(solvis, true);
+			this.optimizationEnable(solvis, true);
+			this.screenRestoreEnable(solvis, true);
 		}
 	}
 
 	public void serviceReset(Solvis solvis) {
 		State state = this.getState(solvis);
-		state.solvis.serviceReset();
+		if (state == null) {
+			throw new ClientAssignmentError("Error: Client assignment error");
+		}
+		solvis.serviceReset();
 	}
 
 	public void updateControlChannels(Solvis solvis) {
 		State state = this.getState(solvis);
-		state.solvis.updateControlChannels();
+		if (state == null) {
+			throw new ClientAssignmentError("Error: Client assignment error");
+		}
+		solvis.updateControlChannels();
 
+	}
+	
+	public Solvis getSolvis() {
+		if ( this.states.size() != 1 ) {
+			return null ;
+		} else {
+			return this.states.keySet().iterator().next();
+		}
 	}
 }

@@ -70,9 +70,8 @@ public class SolvisWorkers {
 		@Override
 		public void run() {
 			boolean queueWasEmpty = true;
-			boolean saveScreen = false;
 			boolean restoreScreen = false;
-			boolean executeWatchDog = false;
+			boolean executeWatchDog = true;
 			boolean stateChanged = false;
 
 			Miscellaneous misc = SolvisWorkers.this.solvis.getSolvisDescription().getMiscellaneous();
@@ -102,9 +101,6 @@ public class SolvisWorkers {
 							}
 
 						} else {
-							if (queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
-								saveScreen = true;
-							}
 							queueWasEmpty = false;
 							command = this.queue.peek();
 						}
@@ -122,12 +118,7 @@ public class SolvisWorkers {
 							executeWatchDog = true;
 						}
 						stateChanged = false;
-						if (SolvisWorkers.this.solvis.getSolvisState().isError()) {
-							saveScreen = false;
-						} else if (saveScreen) {
-							SolvisWorkers.this.solvis.saveScreen();
-							saveScreen = false;
-						} else if (restoreScreen) {
+						if  (restoreScreen) {
 							SolvisWorkers.this.solvis.restoreScreen();
 							restoreScreen = false;
 						}

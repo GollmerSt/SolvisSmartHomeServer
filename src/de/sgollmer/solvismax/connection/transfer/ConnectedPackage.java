@@ -8,9 +8,10 @@
 package de.sgollmer.solvismax.connection.transfer;
 
 import de.sgollmer.solvismax.Version;
+import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 
-public class ConnectedPackage extends JsonPackage {
+public class ConnectedPackage extends JsonPackage implements ISendData {
 
 	private int clientId;
 
@@ -27,17 +28,23 @@ public class ConnectedPackage extends JsonPackage {
 		this.command = Command.CONNECTED;
 		this.data = new Frame();
 		Element element = new Element();
-		this.data.add(element);
 		element.name = "ClientId";
 		element.value = new SingleValue(new IntegerValue(clientId, -1));
-		element = new Element();
 		this.data.add(element);
+		element = new Element();
 		element.name = "ServerVersion";
 		element.value = new SingleValue(Version.getInstance().getVersion());
-		element = new Element();
 		this.data.add(element);
+		if ( Version.getInstance().getBuildDate() != null ) {
+			element = new Element();
+			element.name = "BuildDate";
+			element.value = new SingleValue(Version.getInstance().getBuildDate());
+			this.data.add(element);
+		}
+		element = new Element();
 		element.name = "FormatVersion";
 		element.value = new SingleValue(Version.getInstance().getServerFormatVersion());
+		this.data.add(element);
 	}
 
 	@Override
@@ -53,6 +60,11 @@ public class ConnectedPackage extends JsonPackage {
 			}
 		}
 		this.data = null;
+	}
+
+	@Override
+	public JsonPackage createJsonPackage() {
+		return this;
 	}
 
 }
