@@ -22,7 +22,7 @@ public class SolvisTypes {
 	private static final String XML_TYPE = "Type";
 	private final Collection<Type> types;
 
-	public SolvisTypes(Collection<Type> types) {
+	private SolvisTypes(Collection<Type> types) {
 		this.types = types;
 	}
 
@@ -69,17 +69,17 @@ public class SolvisTypes {
 		private final String id;
 		private final int configuration;
 
-		public Type(String is, int configuration) {
+		private Type(String is, int configuration) {
 			this.id = is;
 			this.configuration = configuration;
 		}
 
-		public static class Creator extends CreatorByXML<Type> {
+		private static class Creator extends CreatorByXML<Type> {
 
 			private String id;
 			private int configuration;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 

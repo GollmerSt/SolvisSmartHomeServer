@@ -15,11 +15,11 @@ import de.sgollmer.solvismax.error.JsonError;
 public class ArrayValue implements IValue {
 
 	private Collection<IValue> values = new ArrayList<>();
-	
-	public void add( IValue value ) {
-		this.values.add(value) ;
+
+	public void add(IValue value) {
+		this.values.add(value);
 	}
-	
+
 	@Override
 	public void addTo(StringBuilder builder) {
 		boolean first = true;
@@ -37,7 +37,7 @@ public class ArrayValue implements IValue {
 
 	@Override
 	public int from(String json, int position) throws JsonError {
-		char c = Helper.charAt(json,position);
+		char c = Helper.charAt(json, position);
 		if (c != '[') {
 			throw new JsonError("Wrong character <" + c + "> at starting of a element");
 		}
@@ -45,12 +45,12 @@ public class ArrayValue implements IValue {
 
 		boolean finished = false;
 		while (!finished) {
-			switch (Helper.charAt(json,position)) {
+			switch (Helper.charAt(json, position)) {
 				case '{':
 					Frame frame = new Frame();
 					position = frame.from(json, position);
 					this.values.add(frame);
-					c = Helper.charAt(json,position);
+					c = Helper.charAt(json, position);
 					break;
 				case ',':
 					++position;
@@ -62,12 +62,12 @@ public class ArrayValue implements IValue {
 					SingleValue single = new SingleValue();
 					single.from(json, position);
 					this.values.add(single);
-					break ;
+					break;
 			}
 		}
 		return position;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

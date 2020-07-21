@@ -47,17 +47,21 @@ public class BaseControlFileReader {
 
 		String resourcePath = Constants.RESOURCE_PATH + '/' + NAME_XSD_BASEFILE;
 		InputStream xsd = Main.class.getResourceAsStream(resourcePath);
-		
-		if (xsd == null ) {
-			LogManager.getInstance().addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "Getting of " + NAME_XSD_BASEFILE + " fails", BaseControlFileReader.class, Constants.ExitCodes.BASE_XML_ERROR));
+
+		if (xsd == null) {
+			LogManager.getInstance().addDelayedErrorMessage(
+					new DelayedMessage(Level.FATAL, "Getting of " + NAME_XSD_BASEFILE + " fails",
+							BaseControlFileReader.class, Constants.ExitCodes.BASE_XML_ERROR));
 			source.close();
 			return null;
 		}
 
 		boolean verified = reader.validate(source, xsd);
 		if (!verified) {
-			LogManager.getInstance().addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "Reading of " + NAME_XML_BASEFILE + " not successfull", BaseControlFileReader.class, Constants.ExitCodes.BASE_XML_ERROR));
-			return null ;
+			LogManager.getInstance().addDelayedErrorMessage(
+					new DelayedMessage(Level.FATAL, "Reading of " + NAME_XML_BASEFILE + " not successfull",
+							BaseControlFileReader.class, Constants.ExitCodes.BASE_XML_ERROR));
+			return null;
 		}
 
 		source = new FileInputStream(xml);

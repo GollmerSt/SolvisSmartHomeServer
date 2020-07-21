@@ -21,22 +21,21 @@ import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class BurnerStatus extends Strategy<BurnerStatus> {
-	
-	public BurnerStatus() {
-		super(null) ;
+
+	BurnerStatus() {
+		super(null);
 	}
 
-
-	public BurnerStatus(Calculation calculation) {
+	private BurnerStatus(Calculation calculation) {
 		super(calculation);
 	}
 
 	@Override
-	public BurnerStatus create(Calculation calculation) {
+	protected BurnerStatus create(Calculation calculation) {
 		return new BurnerStatus(calculation);
 	}
 
-	public enum Status implements IMode {
+	private enum Status implements IMode {
 		OFF("off"), LEVEL1("Stufe1"), LEVEL2("Stufe2");
 
 		private String name;
@@ -52,18 +51,18 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	}
 
 	@Override
-	public boolean isWriteable() {
+	boolean isWriteable() {
 		return false;
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
+	void instantiate(Solvis solvis) {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		Dependencies dependencies = this.calculation.getDependencies();
 
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
-		
-		if ( result.getMode() == null ) {
+
+		if (result.getMode() == null) {
 			result.setMode(Status.OFF, -1);
 		}
 
@@ -72,7 +71,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 		Executable executable = new Executable(result, burnerLevel1On, burnerLevel2On);
 
-		executable.update(burnerLevel1On, this );
+		executable.update(burnerLevel1On, this);
 
 	}
 
@@ -82,7 +81,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		private final SolvisData burnerLevel1On;
 		private final SolvisData burnerLevel2On;
 
-		public Executable(SolvisData result, SolvisData burnerLevel1On, SolvisData burnerLevel2On) {
+		private Executable(SolvisData result, SolvisData burnerLevel1On, SolvisData burnerLevel2On) {
 			this.result = result;
 			this.burnerLevel1On = burnerLevel1On;
 			this.burnerLevel2On = burnerLevel2On;
@@ -91,7 +90,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		}
 
 		@Override
-		public void update(SolvisData data, Object source ) {
+		public void update(SolvisData data, Object source) {
 			if (this.result == null || this.burnerLevel1On == null || this.burnerLevel2On == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
@@ -115,25 +114,23 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		
+
 	}
 
-
 	@Override
-	public Collection<IMode> getModes() {
+	Collection<IMode> getModes() {
+		// TODO muss noch in die Meta-daten
 		return Arrays.asList(Status.values());
 	}
 
-
 	@Override
-	public Double getAccuracy() {
+	Double getAccuracy() {
 		return null;
 	}
 
-
 	@Override
-	public boolean isBoolean() {
+	boolean isBoolean() {
 		return false;
 	}
-	
+
 }

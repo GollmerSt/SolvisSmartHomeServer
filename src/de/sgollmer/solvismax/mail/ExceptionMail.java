@@ -43,7 +43,7 @@ public class ExceptionMail {
 	private final int port;
 	private final Collection<Recipient> recipients;
 
-	public ExceptionMail(String name, String from, CryptAes password, Security securityType, String provider, int port,
+	private ExceptionMail(String name, String from, CryptAes password, Security securityType, String provider, int port,
 			Collection<Recipient> recipients) {
 		this.name = name;
 		this.from = from;

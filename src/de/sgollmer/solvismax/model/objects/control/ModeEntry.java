@@ -32,7 +32,7 @@ public class ModeEntry implements IAssigner, IMode {
 	private final GuiSet guiSet;
 	private final Integer modbusValue;
 
-	public ModeEntry(String id, GuiSet guiSet, int modbusValue) {
+	private ModeEntry(String id, GuiSet guiSet, int modbusValue) {
 		this.id = id;
 		this.guiSet = guiSet;
 		this.modbusValue = modbusValue;
@@ -41,11 +41,11 @@ public class ModeEntry implements IAssigner, IMode {
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	String getId() {
 		return this.id;
 	}
 
-	public GuiSet getGuiSet() {
+	GuiSet getGuiSet() {
 		return this.guiSet;
 	}
 
@@ -57,13 +57,13 @@ public class ModeEntry implements IAssigner, IMode {
 
 	}
 
-	public static class Creator extends CreatorByXML<ModeEntry> {
+	static class Creator extends CreatorByXML<ModeEntry> {
 
 		private String id;
 		private GuiSet guiSet;
 		private int modbusValue;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -126,15 +126,15 @@ public class ModeEntry implements IAssigner, IMode {
 		return this.id.hashCode();
 	}
 
-	public int getModbusValue() {
+	int getModbusValue() {
 		return this.modbusValue;
 	}
 
-	public static class GuiSet implements IAssigner {
+	static class GuiSet implements IAssigner {
 		private final TouchPoint touch;
 		private final ScreenGraficDescription grafic;
 
-		public GuiSet(TouchPoint touch, ScreenGraficDescription grafic) {
+		private GuiSet(TouchPoint touch, ScreenGraficDescription grafic) {
 			this.touch = touch;
 			this.grafic = grafic;
 		}
@@ -146,20 +146,20 @@ public class ModeEntry implements IAssigner, IMode {
 			}
 		}
 
-		public TouchPoint getTouch() {
+		TouchPoint getTouch() {
 			return this.touch;
 		}
 
-		public ScreenGraficDescription getGrafic() {
+		ScreenGraficDescription getGrafic() {
 			return this.grafic;
 		}
 
-		public static class Creator extends CreatorByXML<GuiSet> {
+		private static class Creator extends CreatorByXML<GuiSet> {
 
 			private TouchPoint touch;
 			private ScreenGraficDescription grafic;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
@@ -200,7 +200,7 @@ public class ModeEntry implements IAssigner, IMode {
 
 	}
 
-	public boolean isXmlValid(boolean modbus) {
+	boolean isXmlValid(boolean modbus) {
 		return !modbus && this.guiSet != null || modbus & this.modbusValue != null;
 	}
 

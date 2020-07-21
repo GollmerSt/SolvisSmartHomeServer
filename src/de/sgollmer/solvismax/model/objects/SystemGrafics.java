@@ -30,18 +30,17 @@ public class SystemGrafics implements IXmlWriteable {
 	private int configurationMask;
 	private final Map<String, ScreenGraficData> graficDatas;
 
-	public SystemGrafics(String id) {
+	SystemGrafics(String id) {
 		this(id, 0, new HashMap<>());
 	}
 
-	private SystemGrafics(String id, int configurationMask,
-			Map<String, ScreenGraficData> graficDatas) {
+	private SystemGrafics(String id, int configurationMask, Map<String, ScreenGraficData> graficDatas) {
 		this.id = id;
 		this.configurationMask = configurationMask;
 		this.graficDatas = graficDatas;
 	}
 
-	public String getId() {
+	String getId() {
 		return this.id;
 	}
 
@@ -74,13 +73,13 @@ public class SystemGrafics implements IXmlWriteable {
 
 	}
 
-	public static class Creator extends CreatorByXML<SystemGrafics> {
+	static class Creator extends CreatorByXML<SystemGrafics> {
 
 		private String id;
 		private int configurationMask;
 		private final Map<String, ScreenGraficData> graficDatas = new HashMap<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 

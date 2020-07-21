@@ -25,15 +25,15 @@ public class Measurements {
 
 	private final Collection<SystemMeasurements> systemMeasurements;
 
-	public Measurements(Collection<SystemMeasurements> systemMeasurements) {
+	private Measurements(Collection<SystemMeasurements> systemMeasurements) {
 		this.systemMeasurements = systemMeasurements;
 	}
 
-	public Measurements() {
+	Measurements() {
 		this(new ArrayList<>());
 	}
 
-	public SystemMeasurements get(String id) {
+	SystemMeasurements get(String id) {
 		SystemMeasurements result = null;
 		for (SystemMeasurements measurements : this.systemMeasurements) {
 			if (id.equals(measurements.getId())) {
@@ -48,13 +48,13 @@ public class Measurements {
 		return result;
 	}
 
-	public static class Creator extends BaseCreator<Measurements> {
-		
-		private final Measurements measurements ;
+	static class Creator extends BaseCreator<Measurements> {
+
+		private final Measurements measurements;
 
 		public Creator(Measurements measurements, String id) {
 			super(id);
-			this.measurements = measurements ;
+			this.measurements = measurements;
 			this.measurements.systemMeasurements.clear();
 		}
 
@@ -64,7 +64,7 @@ public class Measurements {
 
 		@Override
 		public Measurements create() throws XmlError, IOException {
-			return this.measurements ;
+			return this.measurements;
 		}
 
 		@Override
@@ -87,8 +87,8 @@ public class Measurements {
 
 	}
 
-	public void writeXml(XMLStreamWriter writer) throws XMLStreamException {
-		for ( SystemMeasurements system : this.systemMeasurements ) {
+	void writeXml(XMLStreamWriter writer) throws XMLStreamException {
+		for (SystemMeasurements system : this.systemMeasurements) {
 			writer.writeStartElement(XML_MEASUREMENTS_SYSTEM_MEASUREMENTS);
 			system.writeXml(writer);
 			writer.writeEndElement();
@@ -98,7 +98,7 @@ public class Measurements {
 	/**
 	 * @return the systemMeasurements
 	 */
-	public Collection<SystemMeasurements> getSystemMeasurements() {
+	Collection<SystemMeasurements> getSystemMeasurements() {
 		return this.systemMeasurements;
 	}
 }

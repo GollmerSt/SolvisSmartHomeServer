@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
@@ -34,7 +41,7 @@ public class StrategyButton implements IStrategy {
 	private Integer pushTime = null;
 	private Integer releaseTime = null;
 
-	public StrategyButton(boolean invert, String pushTimeId, String releaseTimeId) {
+	private StrategyButton(boolean invert, String pushTimeId, String releaseTimeId) {
 		this.invert = invert;
 		this.pushTimeId = pushTimeId;
 		this.releaseTimeId = releaseTimeId;
@@ -42,8 +49,8 @@ public class StrategyButton implements IStrategy {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		Duration pushTimeDuration = description.getDurations().get(this.pushTimeId);
-		Duration releaseTimeDuration = description.getDurations().get(this.releaseTimeId);
+		Duration pushTimeDuration = description.getDuration(this.pushTimeId);
+		Duration releaseTimeDuration = description.getDuration(this.releaseTimeId);
 
 		if (pushTimeDuration == null || releaseTimeDuration == null) {
 			throw new AssignmentError("Duration time not found");
@@ -146,13 +153,13 @@ public class StrategyButton implements IStrategy {
 		return true;
 	}
 
-	public static class Creator extends CreatorByXML<StrategyButton> {
+	static class Creator extends CreatorByXML<StrategyButton> {
 
 		private boolean invert = false;
 		private String pushTimeId;
 		private String releaseTimeId;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 

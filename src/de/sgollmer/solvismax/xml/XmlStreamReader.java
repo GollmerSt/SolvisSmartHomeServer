@@ -38,7 +38,7 @@ public class XmlStreamReader<D> {
 		private final T tree;
 		private final int hash;
 
-		public Result(T tree, int hash) {
+		private Result(T tree, int hash) {
 			this.tree = tree;
 			this.hash = hash;
 		}
@@ -47,7 +47,7 @@ public class XmlStreamReader<D> {
 			return this.tree;
 		}
 
-		public int getHash() {
+		int getHash() {
 			return this.hash;
 		}
 	}
@@ -65,7 +65,7 @@ public class XmlStreamReader<D> {
 		return this.read(inputStream, rootId, rootCreator, streamId, false);
 	}
 
-	public Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId,
+	private Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId,
 			boolean hashOnly) throws IOException, XmlError, XMLStreamException {
 
 		final HashContainer hash = new HashContainer();
@@ -158,7 +158,7 @@ public class XmlStreamReader<D> {
 
 	private static class NullCreator extends CreatorByXML<Object> {
 
-		public NullCreator(String id, BaseCreator<?> creator) {
+		private NullCreator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -182,7 +182,7 @@ public class XmlStreamReader<D> {
 
 	}
 
-	public boolean validate(InputStream xml, InputStream xsd) {
+	boolean validate(InputStream xml, InputStream xsd) {
 		LogManager logManager = LogManager.getInstance();
 		try {
 			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

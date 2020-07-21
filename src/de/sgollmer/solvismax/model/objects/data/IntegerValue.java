@@ -7,13 +7,13 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
-import de.sgollmer.solvismax.model.objects.backup.Measurement;
+import de.sgollmer.solvismax.Constants;
 
 public class IntegerValue extends SingleData<Integer> {
 	private final int data;
 	private final boolean fastChange;
 
-	public IntegerValue(int value, long timeStamp, boolean fastChange) {
+	private IntegerValue(int value, long timeStamp, boolean fastChange) {
 		super(timeStamp);
 		this.data = value;
 		this.fastChange = fastChange;
@@ -61,7 +61,7 @@ public class IntegerValue extends SingleData<Integer> {
 
 	@Override
 	public String getXmlId() {
-		return Measurement.XML_MEASUREMENT_INTEGER;
+		return Constants.XmlStrings.XML_MEASUREMENT_INTEGER;
 	}
 
 	@Override

@@ -46,8 +46,6 @@ import de.sgollmer.solvismax.objects.Coordinate;
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisConnection.class);
-	private static final Coordinate RELEASE_COORDINATE = new Coordinate(260, 260);
-
 	private final String urlBase;
 	private final IAccountInfo accountInfo;
 	private final int connectionTimeout;
@@ -63,8 +61,6 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	private long connectTime = -1;
 	private HttpURLConnection urlConnection = null;
-
-	private ConnectionState connectionState = new ConnectionState(ConnectionStatus.CONNECTION_NOT_POSSIBLE);
 
 	public SolvisConnection(String urlBase, IAccountInfo accountInfo, int connectionTimeout, int readTimeout,
 			int powerOffDetectedAfterIoErrors, int powerOffDetectedAfterTimeout_ms, boolean fwLth2_21_02A) {
@@ -106,7 +102,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			return this.passwordAuthentication;
 		}
 
-		public void connected() {
+		private void connected() {
 
 //			if (this.passwordAuthentication != null) {
 //				char[] p = this.passwordAuthentication.getPassword();
@@ -119,7 +115,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	}
 
-	public InputStream connect(String suffix) throws IOException {
+	private InputStream connect(String suffix) throws IOException {
 		try {
 			this.connectTime = System.currentTimeMillis();
 			MyAuthenticator authenticator = new MyAuthenticator();
@@ -205,7 +201,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				in.close();
 			}
 			if (!builder.substring(builder.length() - 6).equals("</xml>")) {
-				IOException ex = new IOException("Solvis XML string not complete."); 
+				IOException ex = new IOException("Solvis XML string not complete.");
 				logger.error(ex.getMessage());
 				throw ex;
 			}
@@ -231,7 +227,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			this.buttonUrl = button;
 		}
 
-		public String getButtonUrl() {
+		private String getButtonUrl() {
 			return this.buttonUrl;
 		}
 	}
@@ -276,16 +272,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	}
 
 	public void sendRelease() throws IOException {
-		this.sendTouch(RELEASE_COORDINATE);
-	}
-
-	public ConnectionState getConnectionState() {
-		return this.connectionState;
-	}
-
-	public void setConnectionState(ConnectionState connectionState) {
-		this.connectionState = connectionState;
-		this.notify(connectionState);
+		this.sendTouch(Constants.RELEASE_COORDINATE);
 	}
 
 	private void setConnected() {

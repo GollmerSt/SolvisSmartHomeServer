@@ -15,10 +15,9 @@ import java.util.Iterator;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -29,11 +28,11 @@ public class Configurations {
 
 	private final Collection<IConfiguration> configurations;
 
-	public Configurations(Collection<IConfiguration> configurations) {
+	private Configurations(Collection<IConfiguration> configurations) {
 		this.configurations = configurations;
 	}
 
-	public int get(Solvis solvis, Reference<Screen> currentRef) throws IOException {
+	public int get(Solvis solvis) throws IOException {
 
 		solvis.gotoHome(true);
 		Screen current = solvis.getHomeScreen();
@@ -69,15 +68,14 @@ public class Configurations {
 			}
 		}
 		home.gotoLearning(solvis, current, learnConfigurationScreens);
-		currentRef.set(current);
 
 		return configurationMask;
 	}
 
-	public interface IConfiguration {
-		public int getConfiguration(Solvis solvis) throws IOException;
+	interface IConfiguration {
+		int getConfiguration(Solvis solvis) throws IOException;
 
-		public Screen getScreen(Solvis solvis);
+		Screen getScreen(Solvis solvis);
 	}
 
 	public static class Creator extends CreatorByXML<Configurations> {

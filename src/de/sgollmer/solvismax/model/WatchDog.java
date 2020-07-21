@@ -13,7 +13,7 @@ import java.util.Collection;
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.ConnectionStatus;
-import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -68,7 +68,7 @@ public class WatchDog {
 
 	}
 
-	public WatchDog(Solvis solvis, ScreenSaver saver) {
+	WatchDog(Solvis solvis, ScreenSaver saver) {
 		this.solvis = solvis;
 		this.clearErrorMessageAfterMail = solvis.getFeatures().isClearErrorMessageAfterMail();
 		this.saver = saver.createExecutable(solvis);
@@ -109,11 +109,11 @@ public class WatchDog {
 			this.connectionStatus = connectionStatus;
 		}
 
-		public boolean mustWait() {
+		private boolean mustWait() {
 			return this.wait;
 		}
 
-		public String getAccessType() {
+		private String getAccessType() {
 			return this.accessType;
 		}
 
@@ -127,10 +127,10 @@ public class WatchDog {
 
 	}
 
-	public enum Event {
+	enum Event {
 		SCREENSAVER, SET_ERROR_BY_BUTTON, SET_ERROR_BY_MESSAGE, RESET_ERROR, NONE, CHANGED, INIT, POWER_OFF, POWER_ON;
 
-		public boolean isError() {
+		boolean isError() {
 			switch (this) {
 				case SET_ERROR_BY_BUTTON:
 				case SET_ERROR_BY_MESSAGE:
@@ -141,7 +141,7 @@ public class WatchDog {
 
 	}
 
-	public void execute() {
+	void execute() {
 
 		this.abort = false;
 		boolean handleErrorSuccessfull = true;
@@ -153,7 +153,7 @@ public class WatchDog {
 			} catch (Throwable e) {
 			}
 		}
-				
+
 		while (!this.abort) { // loop in case off user access or error detected
 
 			try {
@@ -249,7 +249,8 @@ public class WatchDog {
 		boolean humanAccess = false;
 		if (!screen.imagesEquals(WatchDog.this.solvis.getCurrentScreen(false))) {
 
-			if (screen.get() != null && screen.get() == WatchDog.this.solvis.getCurrentScreen(false).get()) {
+			if (SolvisScreen.get(screen) != null
+					&& SolvisScreen.get(screen) == SolvisScreen.get(WatchDog.this.solvis.getCurrentScreen(false))) {
 				if (!screen.get().isIgnoreChanges()) {
 					Collection<Rectangle> ignoreRectangles = screen.get().getIgnoreRectangles();
 					if (ignoreRectangles == null) {
@@ -311,9 +312,8 @@ public class WatchDog {
 			case CHANGED:
 				if (this.powerOff) {
 					current = HumanAccess.SERVICE;
-				} else if (realScreen != null && this.solvis.getSolvisDescription().getService()
-						.isServiceScreen(realScreen.get(), this.solvis)
-						&& this.solvis.getFeatures().isDetectServiceAccess()) {
+				} else if (this.solvis.getSolvisDescription().getService().isServiceScreen(SolvisScreen.get(realScreen),
+						this.solvis) && this.solvis.getFeatures().isDetectServiceAccess()) {
 					synchronized (this) {
 						this.serviceScreenDetected = true;
 						current = HumanAccess.SERVICE;
@@ -336,7 +336,7 @@ public class WatchDog {
 				break;
 			case INIT:
 				if (realScreen != null && this.solvis.getSolvisDescription().getService()
-						.isServiceScreen(realScreen.get(), this.solvis)) {
+						.isServiceScreen(SolvisScreen.get(realScreen), this.solvis)) {
 					synchronized (this) {
 						this.serviceScreenDetected = true;
 						this.humanAccess = HumanAccess.SERVICE;
@@ -347,8 +347,8 @@ public class WatchDog {
 	}
 
 	private void processHumanAccess(HumanAccess current) throws IOException {
-		if ( this.humanAccess != HumanAccess.UNKNOWN) {
-			if (this.humanAccess == current ) {
+		if (this.humanAccess != HumanAccess.UNKNOWN) {
+			if (this.humanAccess == current) {
 				return;
 			}
 			this.solvis.notifyScreenChangedByHumanObserver(current);
@@ -376,11 +376,11 @@ public class WatchDog {
 		this.notifyAll();
 	}
 
-	public synchronized void bufferNotEmpty() {
+	synchronized void bufferNotEmpty() {
 		this.notifyAll();
 	}
 
-	public synchronized void serviceReset() {
+	synchronized void serviceReset() {
 		if (!this.serviceScreenDetected && !this.powerOff && this.humanAccess == HumanAccess.SERVICE) {
 			this.serviceAccessFinishedTime = 0;
 		}

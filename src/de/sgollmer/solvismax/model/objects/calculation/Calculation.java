@@ -41,10 +41,6 @@ public class Calculation extends ChannelSource {
 		this.dependencies = dependencies;
 	}
 
-	public Dependency getDependency(String id) {
-		return this.dependencies.get(id);
-	}
-
 	@Override
 	public boolean getValue(SolvisData dest, Solvis solvis) {
 		return this.strategy.getValue(dest, solvis);
@@ -84,7 +80,7 @@ public class Calculation extends ChannelSource {
 	/**
 	 * @return the dependencies
 	 */
-	public Dependencies getDependencies() {
+	Dependencies getDependencies() {
 		return this.dependencies;
 	}
 

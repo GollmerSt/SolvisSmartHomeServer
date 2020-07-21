@@ -24,6 +24,7 @@ import de.sgollmer.solvismax.model.Command.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class SolvisWorkers {
 
@@ -39,7 +40,7 @@ public class SolvisWorkers {
 	private long timeCommandScreen = System.currentTimeMillis();
 	private final boolean controlEnable;
 
-	public SolvisWorkers(Solvis solvis) {
+	SolvisWorkers(Solvis solvis) {
 		this.solvis = solvis;
 		this.watchDog = new WatchDog(solvis, solvis.getSolvisDescription().getSaver());
 		this.solvis.registerAbortObserver(new IObserver<Boolean>() {
@@ -63,7 +64,7 @@ public class SolvisWorkers {
 		private int optimizationInhibitCnt = 0;
 		private int commandDisableCount = 0;
 
-		public ControlWorkerThread() {
+		private ControlWorkerThread() {
 			super("ControlWorkerThread");
 		}
 
@@ -112,13 +113,13 @@ public class SolvisWorkers {
 
 					try {
 						if (command != null
-								&& command.getScreen(SolvisWorkers.this.solvis) == SolvisWorkers.this.solvis
-										.getCurrentScreen().get()
+								&& command.getScreen(SolvisWorkers.this.solvis) == SolvisScreen
+										.get(SolvisWorkers.this.solvis.getCurrentScreen())
 								&& !SolvisWorkers.this.solvis.getSolvisState().isError() | stateChanged) {
 							executeWatchDog = true;
 						}
 						stateChanged = false;
-						if  (restoreScreen) {
+						if (restoreScreen) {
 							SolvisWorkers.this.solvis.restoreScreen();
 							restoreScreen = false;
 						}
@@ -205,12 +206,12 @@ public class SolvisWorkers {
 			this.queue.add(command);
 		}
 
-		public synchronized void abort() {
+		private synchronized void abort() {
 			this.abort = true;
 			this.notifyAll();
 		}
 
-		public void push(Command command) {
+		private void push(Command command) {
 			if (!SolvisWorkers.this.controlEnable) {
 				return;
 			}
@@ -263,7 +264,7 @@ public class SolvisWorkers {
 			}
 		}
 
-		public synchronized void commandOptimization(boolean enable) {
+		private synchronized void commandOptimization(boolean enable) {
 			if (enable) {
 				if (this.optimizationInhibitCnt > 0) {
 					--this.optimizationInhibitCnt;
@@ -273,7 +274,7 @@ public class SolvisWorkers {
 			}
 		}
 
-		public synchronized void screenRestore(boolean enable) {
+		private synchronized void screenRestore(boolean enable) {
 			if (enable) {
 				if (this.screenRestoreInhibitCnt > 0) {
 					--this.screenRestoreInhibitCnt;
@@ -283,7 +284,7 @@ public class SolvisWorkers {
 			}
 		}
 
-		public synchronized void commandEnable(boolean enable) {
+		private synchronized void commandEnable(boolean enable) {
 			if (enable) {
 				if (this.commandDisableCount > 0) {
 					--this.commandDisableCount;
@@ -303,7 +304,8 @@ public class SolvisWorkers {
 
 				boolean clear;
 
-				if (this.solvis.getCurrentScreen().get() != commandScreen || this.commandScreen != commandScreen) {
+				if (SolvisScreen.get(this.solvis.getCurrentScreen()) != commandScreen
+						|| this.commandScreen != commandScreen) {
 					clear = true;
 				} else if (now > this.timeCommandScreen + Constants.TIME_COMMAND_SCREEN_VALID) {
 					clear = true;
@@ -330,7 +332,7 @@ public class SolvisWorkers {
 		}
 	}
 
-	public void commandOptimization(boolean enable) {
+	void commandOptimization(boolean enable) {
 		if (enable) {
 			this.controlsThread.push(new Command() {
 
@@ -365,24 +367,24 @@ public class SolvisWorkers {
 		}
 	}
 
-	public void screenRestore(boolean enable) {
+	void screenRestore(boolean enable) {
 		this.controlsThread.screenRestore(enable);
 
 	}
 
-	public void commandEnable(boolean enable) {
+	void commandEnable(boolean enable) {
 		this.controlsThread.commandEnable(enable);
 
 	}
 
-	public void push(Command command) {
+	void push(Command command) {
 		if (this.controlsThread == null) {
 			return;
 		}
 		this.controlsThread.push(command);
 	}
 
-	public void abort() {
+	private void abort() {
 		synchronized (this) {
 			if (this.controlsThread != null) {
 				this.controlsThread.abort();
@@ -395,7 +397,7 @@ public class SolvisWorkers {
 		}
 	}
 
-	public void init() {
+	void init() {
 		synchronized (this) {
 			if (this.controlsThread == null) {
 				this.controlsThread = new ControlWorkerThread();
@@ -406,7 +408,7 @@ public class SolvisWorkers {
 		}
 	}
 
-	public void start() {
+	void start() {
 		synchronized (this) {
 			if (this.controlsThread != null && !this.controlsThread.isAlive())
 				synchronized (this.controlsThread) {
@@ -428,7 +430,7 @@ public class SolvisWorkers {
 		private boolean abort = false;
 		private long nextTime;
 
-		public MeasurementsWorkerThread() {
+		private MeasurementsWorkerThread() {
 			super("MeasurementsWorkerThread");
 
 		}
@@ -466,13 +468,13 @@ public class SolvisWorkers {
 			}
 		}
 
-		public synchronized void abort() {
+		private synchronized void abort() {
 			this.abort = true;
 			this.notifyAll();
 		}
 	}
 
-	public void serviceReset() {
+	void serviceReset() {
 		this.watchDog.serviceReset();
 
 	}

@@ -23,13 +23,13 @@ public abstract class ChannelSource implements IChannelSource {
 	/**
 	 * @param description the description to set
 	 */
-	public void setDescription(ChannelDescription description) {
+	void setDescription(ChannelDescription description) {
 		this.description = description;
 	}
-	
+
 	@Override
 	public boolean isScreenChangeDependend() {
-		return false ;
+		return false;
 	}
 
 	protected abstract SingleData<?> createSingleData(String value);

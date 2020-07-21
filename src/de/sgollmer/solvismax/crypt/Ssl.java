@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.crypt;
 
 import java.io.IOException;
@@ -16,7 +23,7 @@ public class Ssl {
 	private final String clientCrtFilePath;// = "/your_ssl/client.pem";
 	private final String clientKeyFilePath;// = "/your_ssl/client.key";
 
-	public Ssl(boolean enable, String caFilePath, String clientCrtFilePath, String clientKeyFilePath) {
+	private Ssl(boolean enable, String caFilePath, String clientCrtFilePath, String clientKeyFilePath) {
 		this.enable = enable;
 		this.caFilePath = caFilePath;
 		this.clientCrtFilePath = clientCrtFilePath;
@@ -48,7 +55,7 @@ public class Ssl {
 					break;
 				case "clientKeyFilePath":
 					this.clientKeyFilePath = value;
-					break ;
+					break;
 			}
 
 		}
@@ -72,13 +79,14 @@ public class Ssl {
 
 	@SuppressWarnings("unused")
 	public SSLSocketFactory getSocketFactory() {
-		if ( !this.enable ) {
-			return null ;
+		if (!this.enable) {
+			return null;
 		}
 		String caFilePath = this.caFilePath;
-		String clientCrtFilePath= this.clientCrtFilePath;
-		String clientKeyFilePath=this.clientKeyFilePath;;
+		String clientCrtFilePath = this.clientCrtFilePath;
+		String clientKeyFilePath = this.clientKeyFilePath;
+		;
 		// TODO not yet implemented
-		return null ;
+		return null;
 	}
 }

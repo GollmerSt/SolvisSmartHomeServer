@@ -26,19 +26,19 @@ import de.sgollmer.solvismax.helper.FileHelper;
  *
  * @author gollmer
  */
-class Logger4j2 {
+public class Logger4j2 {
 
-	public static class Logger implements de.sgollmer.solvismax.log.LogManager.ILogger {
+	static class Logger implements de.sgollmer.solvismax.log.LogManager.ILogger {
 
 		private final org.apache.logging.log4j.Logger logger;
 		private final Level LEARN;
 
-		public Logger() {
+		Logger() {
 			this.logger = null;
 			this.LEARN = null;
 		}
 
-		public Logger(Class<?> clazz) {
+		private Logger(Class<?> clazz) {
 			this.logger = org.apache.logging.log4j.LogManager.getLogger(clazz);
 			this.LEARN = Level.getLevel("LEARN");
 		}
@@ -167,7 +167,7 @@ class Logger4j2 {
 
 	private final File parent;
 
-	public Logger4j2(String pathName) {
+	private Logger4j2(String pathName) {
 		File parent;
 
 		if (pathName == null) {

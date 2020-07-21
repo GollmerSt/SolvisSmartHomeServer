@@ -20,7 +20,7 @@ public class ConnectedPackage extends JsonPackage implements ISendData {
 		return Integer.toBinaryString(this.clientId);
 	}
 
-	public ConnectedPackage() {
+	ConnectedPackage() {
 	}
 
 	public ConnectedPackage(int clientId) {
@@ -35,7 +35,7 @@ public class ConnectedPackage extends JsonPackage implements ISendData {
 		element.name = "ServerVersion";
 		element.value = new SingleValue(Version.getInstance().getVersion());
 		this.data.add(element);
-		if ( Version.getInstance().getBuildDate() != null ) {
+		if (Version.getInstance().getBuildDate() != null) {
 			element = new Element();
 			element.name = "BuildDate";
 			element.value = new SingleValue(Version.getInstance().getBuildDate());
@@ -48,7 +48,7 @@ public class ConnectedPackage extends JsonPackage implements ISendData {
 	}
 
 	@Override
-	public void finish() {
+	void finish() {
 		Frame frame = this.data;
 		for (Element e : frame.elements) {
 			String id = e.name;

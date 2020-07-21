@@ -22,11 +22,11 @@ public class ScreenRef implements IAssigner {
 	private final String id;
 	private OfConfigs<Screen> screen = null;
 
-	public ScreenRef(String id) {
+	protected ScreenRef(String id) {
 		this.id = id;
 	}
 
-	public String getId() {
+	protected String getId() {
 		return this.id;
 	}
 

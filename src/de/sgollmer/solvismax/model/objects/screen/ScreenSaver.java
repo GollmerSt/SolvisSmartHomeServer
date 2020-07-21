@@ -53,7 +53,7 @@ public class ScreenSaver implements IAssigner {
 	private final Coordinate maxGraficSize;
 	private final TouchPoint resetScreenSaver;
 
-	public ScreenSaver(int timeHeight, Rectangle timeDateRectangle, Coordinate maxGraficSize,
+	private ScreenSaver(int timeHeight, Rectangle timeDateRectangle, Coordinate maxGraficSize,
 			TouchPoint resetScreenSaver) {
 		this.timeHeight = timeHeight;
 		this.timeDateRectangle = timeDateRectangle;
@@ -130,7 +130,7 @@ public class ScreenSaver implements IAssigner {
 				case XML_RESET_SCREEN_SAVER:
 					return new TouchPoint.Creator(id, this.getBaseCreator());
 				case XML_MAX_GRAFIC_SIZE:
-					return new Coordinate.Creator(id, this.getBaseCreator()) ;
+					return new Coordinate.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -148,7 +148,7 @@ public class ScreenSaver implements IAssigner {
 		private PositionState lastState = PositionState.NONE;
 		private long firstOutsideTime = -1;
 
-		public Exec(Solvis solvis) {
+		private Exec(Solvis solvis) {
 			if (solvis != null) {
 				this.frameThickness = solvis.getUnit().getIgnoredFrameThicknesScreenSaver();
 			} else {
@@ -162,7 +162,7 @@ public class ScreenSaver implements IAssigner {
 			return this.getSaverState(original);
 		}
 
-		public State getSaverState(MyImage image) {
+		private State getSaverState(MyImage image) {
 
 			if (image == null) {
 				return State.NONE;
@@ -262,34 +262,37 @@ public class ScreenSaver implements IAssigner {
 			return time;
 		}
 
-		public String getDebugInfo() {
+		@SuppressWarnings("unused")
+		private String getDebugInfo() {
 			return this.debugInfo;
 		}
 
-		public void createMargins(Pattern pattern) {
+		private void createMargins(Pattern pattern) {
 			if (this.margins == null) {
-				
-				if ( pattern.getOrigin().getX() <= this.frameThickness) {
-					return ;
+
+				if (pattern.getOrigin().getX() <= this.frameThickness) {
+					return;
 				}
-				
-				if ( pattern.getOrigin().getY() <= this.frameThickness) {
-					return ;
+
+				if (pattern.getOrigin().getY() <= this.frameThickness) {
+					return;
 				}
-				
-				if ( pattern.getOrigin().getX() + ScreenSaver.this.maxGraficSize.getX() >= pattern.getImageSize().getX() - this.frameThickness) {
-					return ;
+
+				if (pattern.getOrigin().getX() + ScreenSaver.this.maxGraficSize.getX() >= pattern.getImageSize().getX()
+						- this.frameThickness) {
+					return;
 				}
-				
-				if ( pattern.getOrigin().getY() + ScreenSaver.this.maxGraficSize.getY() >= pattern.getImageSize().getY() - this.frameThickness) {
-					return ;
+
+				if (pattern.getOrigin().getY() + ScreenSaver.this.maxGraficSize.getY() >= pattern.getImageSize().getY()
+						- this.frameThickness) {
+					return;
 				}
 
 				this.margins = new Coordinate(pattern.getWidth(), pattern.getHeight());
 			}
 		}
 
-		public PositionState isInPicture(Pattern pattern, Rectangle scanArea) {
+		private PositionState isInPicture(Pattern pattern, Rectangle scanArea) {
 			if (this.margins == null) {
 				return PositionState.INSIDE;
 			}
@@ -335,7 +338,7 @@ public class ScreenSaver implements IAssigner {
 			private final boolean newSaver;
 			private final String name;
 
-			public Test(State soll, boolean newSaver, String name) {
+			private Test(State soll, boolean newSaver, String name) {
 				this.soll = soll;
 				this.newSaver = newSaver;
 				this.name = name;
@@ -365,7 +368,7 @@ public class ScreenSaver implements IAssigner {
 
 		boolean failed = false;
 
-		int i = 0 ;
+		int i = 0;
 		for (Iterator<Test> it = names.iterator(); it.hasNext();) {
 			Test test = it.next();
 			if (test.newSaver) {
@@ -388,7 +391,8 @@ public class ScreenSaver implements IAssigner {
 				failed = true;
 			}
 
-			System.out.println("" + ++i + ". " + file.getName() + " State: " + state.name() + ", Soll: " + test.soll.name() + ", Check: " + pass);
+			System.out.println("" + ++i + ". " + file.getName() + " State: " + state.name() + ", Soll: "
+					+ test.soll.name() + ", Check: " + pass);
 		}
 
 		if (failed) {

@@ -20,7 +20,7 @@ public class CommandScreenRestore extends Command {
 	}
 
 	@Override
-	public boolean execute(Solvis solvis) throws IOException, ErrorPowerOn {
+	protected boolean execute(Solvis solvis) throws IOException, ErrorPowerOn {
 		solvis.screenRestore(this.enable);
 		return true;
 	}
@@ -32,6 +32,6 @@ public class CommandScreenRestore extends Command {
 	}
 
 	@Override
-	public void notExecuted() {
+	protected void notExecuted() {
 	}
 }

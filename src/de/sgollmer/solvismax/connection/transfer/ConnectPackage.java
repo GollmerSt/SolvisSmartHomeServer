@@ -15,7 +15,7 @@ public class ConnectPackage extends JsonPackage implements ITransferedData {
 
 	private String id = null;
 
-	public ConnectPackage() {
+	ConnectPackage() {
 		this.command = Command.CONNECT;
 	}
 
@@ -34,7 +34,7 @@ public class ConnectPackage extends JsonPackage implements ITransferedData {
 	}
 
 	@Override
-	public void finish() {
+	void finish() {
 		Frame frame = this.data;
 		for (Element e : frame.elements) {
 			String id = e.name;
@@ -56,7 +56,7 @@ public class ConnectPackage extends JsonPackage implements ITransferedData {
 		this.data = null;
 	}
 
-	public String getId() {
+	private String getId() {
 		return this.id;
 	}
 

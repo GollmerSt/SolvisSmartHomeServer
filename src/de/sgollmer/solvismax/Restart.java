@@ -25,10 +25,11 @@ public class Restart {
 	 * Sun property pointing the main class and its arguments. Might not be defined
 	 * on non Hotspot VM implementations.
 	 * 
-	 * This class is based on, but improved (original one doesn't work on a linux systems).
+	 * This class is based on, but improved (original one doesn't work on a linux
+	 * systems).
 	 * http://lewisleo.blogspot.com/2012/08/programmatically-restart-java.html
 	 */
-	public static final String SUN_JAVA_COMMAND = "sun.java.command";
+	private static final String SUN_JAVA_COMMAND = "sun.java.command";
 
 	private String java;
 	private Collection<String> vmArgs = new ArrayList<>();
@@ -68,7 +69,7 @@ public class Restart {
 
 	}
 
-	public String[] createRestartProcessArray() {
+	private String[] createRestartProcessArray() {
 		Collection<String> cmd = new ArrayList<>();
 		cmd.add(this.java);
 		cmd.addAll(this.vmArgs);
@@ -82,7 +83,7 @@ public class Restart {
 		return cmd.toArray(new String[1]);
 	}
 
-	public String[] createMainProcessArray(String agentlibOption) {
+	private String[] createMainProcessArray(String agentlibOption) {
 		Collection<String> cmd = new ArrayList<>();
 		cmd.add(this.java);
 		cmd.addAll(this.vmArgs);
@@ -113,7 +114,7 @@ public class Restart {
 		this.startProcess(this.createRestartProcessArray());
 	}
 
-	public void startMainProcess(String agentlibOption) {
+	void startMainProcess(String agentlibOption) {
 		this.startProcess(this.createMainProcessArray(agentlibOption));
 	}
 

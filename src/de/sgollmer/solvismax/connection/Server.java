@@ -45,11 +45,11 @@ public class Server {
 		this.serverThread = new ServerThread();
 	}
 
-	public class ServerThread extends Thread {
+	private class ServerThread extends Thread {
 
 		private boolean abort = false;
 
-		public ServerThread() {
+		private ServerThread() {
 			super("Server");
 		}
 
@@ -80,7 +80,7 @@ public class Server {
 
 		}
 
-		public synchronized void abort() {
+		private synchronized void abort() {
 			this.abort = true;
 			try {
 				Server.this.serverSocket.close();
@@ -114,13 +114,13 @@ public class Server {
 		}
 	}
 
-	public class Client extends Helper.Runnable implements IObserver<JsonPackage>, IClient {
+	class Client extends Helper.Runnable implements IObserver<JsonPackage>, IClient {
 
 		private Socket socket;
 		private String clientId;
 		private Solvis solvis;
 
-		public Client(Socket socket) {
+		private Client(Socket socket) {
 			super("Client");
 			this.socket = socket;
 		}
@@ -148,7 +148,7 @@ public class Server {
 			this.close();
 		}
 
-		public synchronized void send(JsonPackage jsonPackage) {
+		private synchronized void send(JsonPackage jsonPackage) {
 			try {
 				if (this.socket != null) {
 					jsonPackage.send(this.socket.getOutputStream());
@@ -164,7 +164,7 @@ public class Server {
 
 		}
 
-		public synchronized void close() {
+		synchronized void close() {
 			logger.info("Client disconnected");
 			try {
 				removeClient(this);
@@ -195,7 +195,7 @@ public class Server {
 			}
 		}
 
-		public synchronized void abort() {
+		private synchronized void abort() {
 			try {
 				this.socket.close();
 			} catch (IOException e) {
@@ -215,7 +215,7 @@ public class Server {
 			return this.clientId;
 		}
 
-		public void setClientId(String clientId) {
+		void setClientId(String clientId) {
 			this.clientId = clientId;
 		}
 
@@ -232,7 +232,7 @@ public class Server {
 
 		@Override
 		public int hashCode() {
-			if (this.clientId == null ) {
+			if (this.clientId == null) {
 				return 263;
 			}
 			return this.clientId.hashCode();
@@ -241,15 +241,15 @@ public class Server {
 		@Override
 		public void send(ISendData sendData) {
 			this.send(sendData.createJsonPackage());
-			
+
 		}
 
 		@Override
 		public Solvis getSolvis() {
 			return this.solvis;
 		}
-		
-		public void setSolvis( Solvis solvis) {
+
+		void setSolvis(Solvis solvis) {
 			this.solvis = solvis;
 		}
 

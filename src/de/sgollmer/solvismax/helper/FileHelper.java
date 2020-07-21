@@ -146,10 +146,10 @@ public class FileHelper {
 			if (i > 1) {
 				sourceName += '.' + Integer.toString(i - 1);
 			}
-			File s = new File( source.getParent(), sourceName ) ;
-			File d = new File( source.getParent(), destName ) ;
+			File s = new File(source.getParent(), sourceName);
+			File d = new File(source.getParent(), destName);
 			success = s.renameTo(d);
 		}
-		return success ;
+		return success;
 	}
 }

@@ -908,238 +908,233 @@
 			<tns:Back />
 			<tns:Back />
 			<tns:ScreenRef id="Warmwasser" />
-			<tns:Back/>
-			<tns:Back/>
+			<tns:Back />
+			<tns:Back />
 		</tns:LastChance>
 	</tns:FallBack>
 	<tns:ChannelDescriptions>
 		<tns:ChannelDescription id="X06.UhrzeitSolvis">
-			<tns:Measurement dynamic="true" type="date">
+			<tns:Measurement type="date">
 				<tns:Field position="0" length="6" />
 				<tns:Field position="202" length="6" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="I1.Anlagentyp">
-			<tns:Measurement type="unsigned" dynamic="false">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="6" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="I2.Systemnummer">
-			<tns:Measurement type="unsigned" dynamic="false">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="10" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S01.Warmwasserpuffer" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="600000">
+				divisor="10" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="14" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S02.Warmwassertemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="18" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S03.Speicherreferenztemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="600000">
+				divisor="10" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="22" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S04.Heizungspuffertemperatur_oben" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="600000">
+				divisor="10" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="26" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S05.Solarvorlauftemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="30" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S06.Solarruecklauftemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="S07.Solardruck"
 			buffered="true">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S08.Solarkollektortemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="42" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S09.Heizungspuffertemperatur_unten" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="600000">
+				divisor="10" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="46" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S10.Aussentemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="900000">
+				divisor="10" delayAfterSwitchingOn_ms="900000">
 				<tns:Field position="50" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S11.ZirkulationRuecklauftemperatur" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="54" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S12.Vorlauftemperatur_HK1" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="58" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S13.Vorlauftemperatur_HK2" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="62" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="S14">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="66" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="S15">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="70" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="S16">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="74" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S18.Durchfluss_Warmwasserzirkulation" unit="l/h">
-			<tns:Measurement type="unsigned" average="true"
-				dynamic="true">
+			<tns:Measurement type="unsigned" average="true">
 				<tns:Field position="78" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="S17.Durchfluss_Solarpanel" buffered="true" unit="l/h">
-			<tns:Measurement type="unsigned" average="true"
-				dynamic="true">
+			<tns:Measurement type="unsigned" average="true">
 				<tns:Field position="82" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AIn1">
-			<tns:Measurement type="unsigned" divisor="10"
-				dynamic="true">
+			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="86" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AIn2">
-			<tns:Measurement type="unsigned" divisor="10"
-				dynamic="true">
+			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="90" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AIn3">
-			<tns:Measurement type="unsigned" divisor="10"
-				dynamic="true">
+			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="94" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AOut0">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="98" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AOut1">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="100" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AOut2">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="102" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AOut3">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="104" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="RF1.Raumfuehler_HK1" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true" delayAfterSwitchingOn_ms="1500000">
+				divisor="10" delayAfterSwitchingOn_ms="1500000">
 				<tns:Field position="106" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="RF2.Raumfuehler_HK2" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="110" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="RF3.Raumfuehler_HK3" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" dynamic="true">
+				divisor="10">
 				<tns:Field position="114" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A01.Pumpe_Solar">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="118" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="A02.Pumpe_Warmwasser">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="120" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A03.Pumpe_HK1">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="122" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A04.Pumpe_HK2">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="124" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="A05.Pumpe_Warmwasserzirkulation">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="126" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A06.Pumpe_HK3">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="128" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1148,7 +1143,7 @@
 				<tns:ConfigurationMask andMask="0x10"
 					compareMask="0x00" />
 			</tns:ConfigurationMasks>
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1157,55 +1152,55 @@
 				<tns:ConfigurationMask andMask="0x10"
 					compareMask="0x10" />
 			</tns:ConfigurationMasks>
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="A08.Mischer_HK1_auf">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="132" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A09.Mischer.HK1_zu">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="134" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="A10.Mischer_HK2_auf">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="136" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A11.Mischer.HK2_zu">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="138" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A12.Brenner">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="140" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A13.Brenner_S2">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="142" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="A14.Entstoerung">
-			<tns:Measurement type="boolean" dynamic="true">
+			<tns:Measurement type="boolean">
 				<tns:Field position="144" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="SE.Solarertrag_kWh"
 			buffered="true" unit="kWh">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="162" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="AOut5">
-			<tns:Measurement type="unsigned" dynamic="true">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="176" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1216,8 +1211,7 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="SL.Solarleistung_kW" buffered="true" unit="kW">
-			<tns:Measurement type="unsigned" divisor="10"
-				dynamic="true">
+			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="196" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -2161,8 +2155,7 @@
 	</tns:Durations>
 	<tns:Miscellaneous powerOffDetectedAfterIoErrors="3"
 		powerOffDetectedAfterTimeout_ms="120000"
-		measurementsBackupTime_ms="3600000"
-		unsuccessfullWaitTime_ms="10000" connectionHoldTime_ms="300000"
-		solvisConnectionTimeout_ms="10000" solvisReadTimeout_ms="2000"
-		clientTimeoutTime_ms="120000" />
+		measurementsBackupTime_ms="3600000" unsuccessfullWaitTime_ms="10000"
+		connectionHoldTime_ms="300000" solvisConnectionTimeout_ms="10000"
+		solvisReadTimeout_ms="2000" clientTimeoutTime_ms="120000" />
 </tns:SolvisDescription>

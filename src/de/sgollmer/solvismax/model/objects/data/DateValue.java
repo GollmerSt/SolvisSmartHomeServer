@@ -11,22 +11,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import de.sgollmer.solvismax.model.objects.backup.Measurement;
+import de.sgollmer.solvismax.Constants;
 
 public class DateValue extends SingleData<Calendar> {
 	private static final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	private final Calendar calendar;
 
-	public DateValue(Calendar calendar, long timeStamp ) {
-		super(timeStamp) ;
+	DateValue(Calendar calendar, long timeStamp) {
+		super(timeStamp);
 		this.calendar = calendar;
 	}
 
-	public Calendar getCalendar() {
-		return this.calendar;
-	}
-	
 	@Override
 	public Integer getInt() {
 		return null;
@@ -39,26 +35,26 @@ public class DateValue extends SingleData<Calendar> {
 
 	@Override
 	public String toString() {
-		Date date = new Date( this.calendar.getTimeInMillis() );
+		Date date = new Date(this.calendar.getTimeInMillis());
 		return formater.format(date);
 	}
-	
+
 	@Override
-	public boolean equals( Object obj ) {
-		if ( obj instanceof DateValue ) {
-			return this.calendar.equals(((DateValue)obj).calendar) ;
+	public boolean equals(Object obj) {
+		if (obj instanceof DateValue) {
+			return this.calendar.equals(((DateValue) obj).calendar);
 		}
-		return false ;
+		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return this.calendar.hashCode() ;
+		return this.calendar.hashCode();
 	}
 
 	@Override
 	public String getXmlId() {
-		return Measurement.XML_MEASUREMENT_STRING;
+		return Constants.XmlStrings.XML_MEASUREMENT_STRING;
 	}
 
 	@Override
@@ -70,7 +66,5 @@ public class DateValue extends SingleData<Calendar> {
 	public Calendar get() {
 		return this.calendar;
 	}
-	
-	
 
 }

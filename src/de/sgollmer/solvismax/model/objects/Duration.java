@@ -17,7 +17,7 @@ public class Duration {
 	private final String id;
 	private final int time_ms;
 
-	public Duration(String id, int time_ms) {
+	private Duration(String id, int time_ms) {
 		this.id = id;
 		this.time_ms = time_ms;
 	}
@@ -25,7 +25,7 @@ public class Duration {
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	String getId() {
 		return this.id;
 	}
 
@@ -36,12 +36,12 @@ public class Duration {
 		return this.time_ms;
 	}
 
-	public static class Creator extends CreatorByXML<Duration> {
+	static class Creator extends CreatorByXML<Duration> {
 
 		private String id;
 		private int time_ms;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 

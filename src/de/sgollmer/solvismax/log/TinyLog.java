@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.log;
 
 import java.io.File;
@@ -17,11 +24,11 @@ public class TinyLog {
 
 	private static TaggedLogger learningLogger;
 
-	public static class LoggerTiny implements de.sgollmer.solvismax.log.LogManager.ILogger {
+	static class LoggerTiny implements de.sgollmer.solvismax.log.LogManager.ILogger {
 
 		private final String className;
 
-		public LoggerTiny() {
+		LoggerTiny() {
 			this.className = null;
 		}
 
@@ -29,7 +36,7 @@ public class TinyLog {
 			return "{} - " + message;
 		}
 
-		public LoggerTiny(Class<?> clazz) {
+		private LoggerTiny(Class<?> clazz) {
 			this.className = clazz.getName();
 		}
 
@@ -149,14 +156,14 @@ public class TinyLog {
 		@Override
 		public void shutdown() throws InterruptedException {
 			ProviderRegistry.getLoggingProvider().shutdown();
-			
+
 		}
 
 	}
 
 	private final File parent;
 
-	public TinyLog(String pathName) {
+	private TinyLog(String pathName) {
 		File parent;
 
 		if (pathName == null) {

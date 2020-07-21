@@ -15,7 +15,7 @@ import javax.mail.MessagingException;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.ISendData;
-import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
@@ -25,7 +25,7 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
-public class SolvisState extends Observable<SolvisState>  implements ISendData {
+public class SolvisState extends Observable<SolvisState> implements ISendData {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisState.class);
 
@@ -36,7 +36,7 @@ public class SolvisState extends Observable<SolvisState>  implements ISendData {
 	private boolean error = false;
 	private long timeOfLastSwitchingOn = -1;
 
-	public SolvisState(Solvis solvis) {
+	SolvisState(Solvis solvis) {
 		this.solvis = solvis;
 	}
 
@@ -73,10 +73,10 @@ public class SolvisState extends Observable<SolvisState>  implements ISendData {
 	 * @return
 	 */
 
-	public synchronized boolean setError(Event errorEvent, SolvisScreen errorScreen) {
+	synchronized boolean setError(Event errorEvent, SolvisScreen errorScreen) {
 		boolean errorVisible = errorEvent.isError();
 		ErrorChanged changed = ErrorChanged.NONE;
-		boolean isHomeScreen = errorScreen != null && errorScreen.get() == this.solvis.getHomeScreen();
+		boolean isHomeScreen = SolvisScreen.get(errorScreen) == this.solvis.getHomeScreen();
 		if (errorVisible || this.errorScreen != null) {
 			if (!errorVisible && isHomeScreen) { // Nur der Homescreen kann Fehler zuücksetzen
 				this.errorScreen = null;
@@ -136,7 +136,7 @@ public class SolvisState extends Observable<SolvisState>  implements ISendData {
 		this.setState(State.SOLVIS_DISCONNECTED);
 	}
 
-	public void remoteConnected() {
+	void remoteConnected() {
 		this.setState(State.REMOTE_CONNECTED);
 	}
 
@@ -170,19 +170,15 @@ public class SolvisState extends Observable<SolvisState>  implements ISendData {
 		return new SolvisStatePackage(this.getState());
 	}
 
-	public long getTimeOfLastSwitchingOn() {
+	long getTimeOfLastSwitchingOn() {
 		return this.timeOfLastSwitchingOn;
-	}
-
-	public synchronized MyImage getErrorScreen() {
-		return this.errorScreen.getImage();
 	}
 
 	public static class MailInfo {
 		private final MyImage image;
 		private final String message;
 
-		public MailInfo(MyImage image, String message) {
+		private MailInfo(MyImage image, String message) {
 			this.image = image;
 			this.message = message;
 		}
@@ -196,15 +192,15 @@ public class SolvisState extends Observable<SolvisState>  implements ISendData {
 		}
 	}
 
-	public boolean isError() {
+	boolean isError() {
 		return this.error;
 	}
 
-	public boolean isConnected() {
+	boolean isConnected() {
 		return this.state == State.SOLVIS_CONNECTED;
 	}
 
-	public boolean isErrorMessage() {
+	boolean isErrorMessage() {
 		return this.errorScreen != null;
 	}
 

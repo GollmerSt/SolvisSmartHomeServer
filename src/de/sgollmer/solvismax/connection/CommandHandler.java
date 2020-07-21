@@ -303,7 +303,7 @@ public class CommandHandler {
 		System.exit(ExitCodes.OK);
 	}
 
-	public synchronized ClientAssignments get(IClient client) {
+	private synchronized ClientAssignments get(IClient client) {
 		for (ClientAssignments assignments : this.clients) {
 			if (assignments.getClient().equals(client)) {
 				return assignments;
@@ -325,7 +325,7 @@ public class CommandHandler {
 //		return null;
 //	}
 //
-	public synchronized ClientAssignments unregister(ClientAssignments assignments) {
+	private synchronized ClientAssignments unregister(ClientAssignments assignments) {
 		for (Iterator<ClientAssignments> it = this.clients.iterator(); it.hasNext();) {
 			ClientAssignments assignmentsC = it.next();
 			if (assignmentsC == assignments) {
@@ -337,9 +337,9 @@ public class CommandHandler {
 		return null;
 	}
 
-	public synchronized boolean isSolvisConnected(Solvis solvis) {
+	private synchronized boolean isSolvisConnected(Solvis solvis) {
 		for (ClientAssignments assignments : this.clients) {
-			if (assignments.getState(solvis) != null ) {
+			if (assignments.getState(solvis) != null) {
 				return true;
 			}
 		}
@@ -362,7 +362,7 @@ public class CommandHandler {
 		}
 	}
 
-	public synchronized void clientClosed(Client client) {
+	synchronized void clientClosed(Client client) {
 		ClientAssignments assignments = this.get(client);
 		this.clientClosed(assignments);
 	}
@@ -371,7 +371,7 @@ public class CommandHandler {
 		private final ClientAssignments assignments;
 		private boolean abort = false;
 
-		public ClosingThread(ClientAssignments assignments) {
+		private ClosingThread(ClientAssignments assignments) {
 			super("ClosingThread");
 			this.assignments = assignments;
 		}
@@ -390,7 +390,7 @@ public class CommandHandler {
 			}
 		}
 
-		public synchronized void abort() {
+		synchronized void abort() {
 			this.abort = true;
 			this.notifyAll();
 		}

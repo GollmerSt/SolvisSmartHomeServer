@@ -29,7 +29,7 @@ public class BaseData {
 
 	private final String timeZone;
 
-	public int getPort() {
+	int getPort() {
 		return this.port;
 	}
 
@@ -51,7 +51,7 @@ public class BaseData {
 		return this.timeZone;
 	}
 
-	public BaseData(String timeZone, int port, String writeablePathWindows, String writablePathLinux,
+	private BaseData(String timeZone, int port, String writeablePathWindows, String writablePathLinux,
 			int echoInhibitTime_ms, Units units, ExceptionMail exceptionMail, Mqtt mqtt) {
 		this.timeZone = timeZone;
 		this.port = port;
@@ -76,7 +76,7 @@ public class BaseData {
 		return this.echoInhibitTime_ms;
 	}
 
-	public Mqtt getMqtt() {
+	Mqtt getMqtt() {
 		return this.mqtt;
 	}
 
@@ -150,9 +150,9 @@ public class BaseData {
 		private final int port;
 		private final String writeablePathWindows;
 		private final String writablePathLinux;
-		public final int echoInhibitTime_ms;
+		private final int echoInhibitTime_ms;
 
-		public ExecutionData(String timeZone, int port, String writeablePathWindows, String writablePathLinux,
+		private ExecutionData(String timeZone, int port, String writeablePathWindows, String writablePathLinux,
 				int echoInhibitTime_ms) {
 			this.timeZone = timeZone;
 			this.port = port;
@@ -161,7 +161,7 @@ public class BaseData {
 			this.echoInhibitTime_ms = echoInhibitTime_ms;
 		}
 
-		public static class Creator extends CreatorByXML<ExecutionData> {
+		private static class Creator extends CreatorByXML<ExecutionData> {
 
 			private String timeZone;
 			private int port;
@@ -169,7 +169,7 @@ public class BaseData {
 			private String writablePathLinux;
 			private int echoInhibitTime_ms;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 

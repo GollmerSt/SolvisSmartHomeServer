@@ -23,7 +23,7 @@ public class ArrayXml<A extends ArrayXml.IElement<A>> {
 
 	private final Collection<A> array;
 
-	public ArrayXml(Collection<A> array) {
+	private ArrayXml(Collection<A> array) {
 		this.array = array;
 	}
 

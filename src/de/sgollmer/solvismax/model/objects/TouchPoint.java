@@ -27,7 +27,7 @@ public class TouchPoint implements IAssigner {
 	private Integer pushTime = null;
 	private Integer releaseTime = null;
 
-	public TouchPoint(Coordinate coordinate, String pushTimeId, String releaseTimeId) {
+	private TouchPoint(Coordinate coordinate, String pushTimeId, String releaseTimeId) {
 		this.coordinate = coordinate;
 		this.pushTimeId = pushTimeId;
 		this.releaseTimeId = releaseTimeId;
@@ -83,8 +83,8 @@ public class TouchPoint implements IAssigner {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		Duration pushTimeDuration = description.getDurations().get(this.pushTimeId);
-		Duration releaseTimeDuration = description.getDurations().get(this.releaseTimeId);
+		Duration pushTimeDuration = description.getDuration(this.pushTimeId);
+		Duration releaseTimeDuration = description.getDuration(this.releaseTimeId);
 
 		if (pushTimeDuration == null || releaseTimeDuration == null) {
 			throw new AssignmentError("Duration time not found");

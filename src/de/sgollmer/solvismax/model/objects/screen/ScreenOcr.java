@@ -26,23 +26,9 @@ public class ScreenOcr implements IScreenCompare {
 	private final Rectangle rectangle;
 	private final String value;
 
-	public ScreenOcr(Rectangle rectangle, String value) {
+	private ScreenOcr(Rectangle rectangle, String value) {
 		this.rectangle = rectangle;
 		this.value = value;
-	}
-
-	/**
-	 * @return the rectangle
-	 */
-	public Rectangle getRectangle() {
-		return this.rectangle;
-	}
-
-	/**
-	 * @return the value
-	 */
-	public String getValue() {
-		return this.value;
 	}
 
 	@Override
@@ -52,12 +38,12 @@ public class ScreenOcr implements IScreenCompare {
 		return cmp.equals(this.value);
 	}
 
-	public static class Creator extends CreatorByXML<ScreenOcr> {
+	static class Creator extends CreatorByXML<ScreenOcr> {
 
 		private Rectangle rectangle;
 		private String value;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 

@@ -46,7 +46,7 @@ public class StrategyMode implements IStrategy {
 
 	private final List<ModeEntry> modes;
 
-	public StrategyMode(List<ModeEntry> modes) {
+	private StrategyMode(List<ModeEntry> modes) {
 		this.modes = modes;
 	}
 
@@ -127,11 +127,11 @@ public class StrategyMode implements IStrategy {
 		return null;
 	}
 
-	public static class Creator extends CreatorByXML<StrategyMode> {
+	static class Creator extends CreatorByXML<StrategyMode> {
 
 		private final List<ModeEntry> modes = new ArrayList<>(5);
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -274,7 +274,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value)  throws TypeError{
+	public SingleData<?> createSingleData(String value) throws TypeError {
 		return this.interpretSetData(value);
 	}
 }

@@ -53,7 +53,7 @@ public class TerminateClient {
 
 		// int clientId = ((ConnectedPackage) jsonPackage).getClientId();
 
-		ServerCommandPackage terminatePackage = new ServerCommandPackage( ServerCommand.TERMINATE);
+		ServerCommandPackage terminatePackage = new ServerCommandPackage(ServerCommand.TERMINATE);
 		terminatePackage.send(out);
 
 		out.flush();

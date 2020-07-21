@@ -11,7 +11,7 @@ import de.sgollmer.solvismax.connection.ITransferedData;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class SetPackage extends JsonPackage implements ITransferedData {
-	public SetPackage() {
+	SetPackage() {
 		this.command = Command.SET;
 	}
 
@@ -19,7 +19,7 @@ public class SetPackage extends JsonPackage implements ITransferedData {
 	private SingleData<?> singleData = null;
 
 	@Override
-	public void finish() {
+	void finish() {
 		Frame f = this.data;
 		if (f.size() > 0) {
 			Element e = f.get(0);
@@ -31,10 +31,6 @@ public class SetPackage extends JsonPackage implements ITransferedData {
 		this.data = null;
 	}
 
-	public String getId() {
-		return this.id;
-	}
-
 	@Override
 	public SingleData<?> getSingleData() {
 		return this.singleData;
@@ -42,7 +38,7 @@ public class SetPackage extends JsonPackage implements ITransferedData {
 
 	@Override
 	public String getChannelId() {
-		return this.getId();
+		return this.id;
 	}
 
 }

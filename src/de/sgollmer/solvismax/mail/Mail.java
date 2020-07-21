@@ -50,7 +50,7 @@ public class Mail {
 	private static ILogger logger;
 	private static boolean DEBUG = false; // kein Mailversand
 
-	public enum Security {
+	enum Security {
 		TLS, SSL, NONE
 	};
 
@@ -62,27 +62,27 @@ public class Mail {
 		recipientTypeMap.put("BCC", RecipientType.BCC);
 	}
 
-	public static class Recipient implements ArrayXml.IElement<Recipient> {
+	static class Recipient implements ArrayXml.IElement<Recipient> {
 		private final String name;
 		private final String address;
 		private final RecipientType type;
 
-		public Recipient(String name, String address, RecipientType type) {
+		private Recipient(String name, String address, RecipientType type) {
 			this.name = name;
 			this.address = address;
 			this.type = type;
 		}
 
-		public Recipient() {
+		Recipient() {
 			this(null, null, null);
 		}
 
-		public static class Creator extends CreatorByXML<Recipient> {
+		private static class Creator extends CreatorByXML<Recipient> {
 			private String name;
 			private String address;
 			private RecipientType type;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
@@ -123,7 +123,7 @@ public class Mail {
 		}
 	}
 
-	public static void send(String subject, String text, String name, String from, CryptAes password, Security security,
+	static void send(String subject, String text, String name, String from, CryptAes password, Security security,
 			String provider, int port, Collection<Recipient> recipients, MyImage image)
 			throws MessagingException, IOException {
 		if (logger == null) {
@@ -149,7 +149,7 @@ public class Mail {
 			case NONE:
 				break;
 			default:
-				throw new MessagingException("Mail security type \"" + security.name() + "\" unknown.") ;
+				throw new MessagingException("Mail security type \"" + security.name() + "\" unknown.");
 		}
 		props.put("mail.smtp.auth", "true"); // Enabling SMTP Authentication
 		props.put("mail.smtp.port", portString); // SMTP Port
@@ -205,7 +205,8 @@ public class Mail {
 		logger.info("Email was sent.");
 	}
 
-	public static class ImageDataSource implements DataSource {
+	@SuppressWarnings("unused")
+	private static class ImageDataSource implements DataSource {
 
 		private BufferedImage image;
 

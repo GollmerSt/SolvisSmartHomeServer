@@ -47,7 +47,7 @@ public class MyImage {
 		this.ignoreRectangles = null;
 	}
 
-	public MyImage(MyImage image) {
+	protected MyImage(MyImage image) {
 		this.image = image.image;
 		this.origin = image.origin;
 		this.size = image.size;
@@ -67,7 +67,7 @@ public class MyImage {
 		this(image, rectangle.getTopLeft(), rectangle.getBottomRight(), createImageMeta);
 	}
 
-	public MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta) {
+	protected MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta) {
 		this(image, topLeft, bottomRight, createImageMeta, null);
 	}
 
@@ -75,7 +75,7 @@ public class MyImage {
 		this(image, null, null, false, ignoreRectangles);
 	}
 
-	public MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta,
+	private MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta,
 			Collection<Rectangle> ignoreRectangles) {
 		this.image = image.image;
 		if (topLeft == null) {
@@ -135,11 +135,11 @@ public class MyImage {
 				&& coord.getY() < this.size.getY();
 	}
 
-	public boolean isIn(int x, int y) {
+	protected boolean isIn(int x, int y) {
 		return x >= 0 && y >= 0 && x < this.size.getX() && y < this.size.getY();
 	}
 
-	public int getRGB(int x, int y) {
+	protected int getRGB(int x, int y) {
 		return this.image.getRGB(x + this.origin.getX(), y + this.origin.getY());
 	}
 
@@ -147,7 +147,7 @@ public class MyImage {
 		return this.isActive(coord.getX(), coord.getY());
 	}
 
-	public boolean isActive(int x, int y) {
+	protected boolean isActive(int x, int y) {
 		if (this.isIn(x, y)) {
 			return this.meta.isActive(this.getRGB(x, y));
 		} else {
@@ -155,11 +155,7 @@ public class MyImage {
 		}
 	}
 
-	public boolean isLight(Coordinate coord) {
-		return this.isLight(coord.getX(), coord.getY());
-	}
-
-	public boolean isLight(int x, int y) {
+	protected boolean isLight(int x, int y) {
 		if (this.isIn(x, y)) {
 			return this.meta.isLight(this.getRGB(x, y));
 		} else {
@@ -269,10 +265,6 @@ public class MyImage {
 		return this.size.getX();
 	}
 
-	public Coordinate getSize() {
-		return this.size;
-	}
-
 	/**
 	 * @return the histogramX
 	 */
@@ -287,24 +279,24 @@ public class MyImage {
 		return this.histogramY;
 	}
 
-	public class WrongFormatError extends Error {
+	private class WrongFormatError extends Error {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1983506390675701039L;
 
-		public WrongFormatError(String message) {
+		private WrongFormatError(String message) {
 			super(message);
 		}
 	}
 
-	public class ErrorNotInRange extends Error {
+	private class ErrorNotInRange extends Error {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 6325263495347327288L;
 
-		public ErrorNotInRange(String message) {
+		private ErrorNotInRange(String message) {
 			super(message);
 		}
 	}

@@ -21,7 +21,7 @@ public class Pattern extends MyImage {
 
 	private Integer hashCode = null;
 
-	public Pattern(BufferedImage image) {
+	private Pattern(BufferedImage image) {
 		super(image);
 		processing();
 	}
@@ -31,13 +31,13 @@ public class Pattern extends MyImage {
 		processing();
 	}
 
-	public Pattern(MyImage image, Coordinate topLeft, Coordinate bottomRight) {
-		super(image, topLeft, bottomRight,false);
+	private Pattern(MyImage image, Coordinate topLeft, Coordinate bottomRight) {
+		super(image, topLeft, bottomRight, false);
 		processing();
 	}
 
 	public Pattern(MyImage image, Rectangle rectangle) {
-		super(image, rectangle,false);
+		super(image, rectangle, false);
 		processing();
 	}
 

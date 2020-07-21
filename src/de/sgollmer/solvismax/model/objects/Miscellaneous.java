@@ -26,9 +26,9 @@ public class Miscellaneous {
 	private final int solvisReadTimeout_ms;
 	private final int clientTimeoutTime_ms;
 
-	public Miscellaneous(int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors,
-			int powerOffDetectedAfterTimeout_ms, int unsuccessfullWaitTime_ms, int connectionHoldTime_ms, int solvisConnectionTimeout_ms,
-			int solvisReadTimeout_ms, int clientTimeoutTime_ms) {
+	private Miscellaneous(int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors,
+			int powerOffDetectedAfterTimeout_ms, int unsuccessfullWaitTime_ms, int connectionHoldTime_ms,
+			int solvisConnectionTimeout_ms, int solvisReadTimeout_ms, int clientTimeoutTime_ms) {
 		this.measurementsBackupTime_ms = measurementsBackupTime_ms;
 		this.powerOffDetectedAfterIoErrors = powerOffDetectedAfterIoErrors;
 		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
@@ -36,7 +36,7 @@ public class Miscellaneous {
 		this.connectionHoldTime_ms = connectionHoldTime_ms;
 		this.solvisConnectionTimeout_ms = solvisConnectionTimeout_ms;
 		this.solvisReadTimeout_ms = solvisReadTimeout_ms;
-		this.clientTimeoutTime_ms = clientTimeoutTime_ms ;
+		this.clientTimeoutTime_ms = clientTimeoutTime_ms;
 	}
 
 	public int getPowerOffDetectedAfterIoErrors() {
@@ -51,7 +51,7 @@ public class Miscellaneous {
 		return this.measurementsBackupTime_ms;
 	}
 
-	public static class Creator extends CreatorByXML<Miscellaneous> {
+	static class Creator extends CreatorByXML<Miscellaneous> {
 
 		private int measurementsBackupTime_ms;
 		private int powerOffDetectedAfterIoErrors;
@@ -62,7 +62,7 @@ public class Miscellaneous {
 		private int solvisReadTimeout_ms;
 		private int clientTimeoutTime_ms;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -100,9 +100,8 @@ public class Miscellaneous {
 		@Override
 		public Miscellaneous create() throws XmlError, IOException {
 			return new Miscellaneous(this.measurementsBackupTime_ms, this.powerOffDetectedAfterIoErrors,
-					this.powerOffDetectedAfterTimeout_ms, this.unsuccessfullWaitTime_ms,
-					this.connectionHoldTime_ms, this.solvisConnectionTimeout_ms, this.solvisReadTimeout_ms,
-					this.clientTimeoutTime_ms);
+					this.powerOffDetectedAfterTimeout_ms, this.unsuccessfullWaitTime_ms, this.connectionHoldTime_ms,
+					this.solvisConnectionTimeout_ms, this.solvisReadTimeout_ms, this.clientTimeoutTime_ms);
 		}
 
 		@Override

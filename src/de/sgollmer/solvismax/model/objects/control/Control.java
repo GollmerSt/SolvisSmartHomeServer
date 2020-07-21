@@ -65,7 +65,7 @@ public class Control extends ChannelSource {
 	private final IStrategy strategy;
 	private final UpdateStrategies updateStrategies;
 
-	public Control(boolean optional, GuiAccess guiAccess, ModbusAccess modbusAccess, IStrategy strategy,
+	private Control(boolean optional, GuiAccess guiAccess, ModbusAccess modbusAccess, IStrategy strategy,
 			UpdateStrategies updateStrategies) {
 		this.optional = optional;
 		this.guiAccess = guiAccess;
@@ -351,11 +351,7 @@ public class Control extends ChannelSource {
 		return this.strategy.interpretSetData(singleData);
 	}
 
-	public ModbusAccess getModbusAccess() {
-		return this.modbusAccess;
-	}
-
-	public static class GuiAccess implements IAssigner, IControlAccess {
+	static class GuiAccess implements IAssigner, IControlAccess {
 		private final String screenId;
 		private final Rectangle valueRectangle;
 		private final String preparationId;
@@ -365,49 +361,33 @@ public class Control extends ChannelSource {
 		private Preparation preparation = null;
 		private OfConfigs<ChannelDescription> restoreChannel = null;
 
-		public GuiAccess(String screenId, Rectangle valueRectangle, String preparationId, String restoreChannelId) {
+		private GuiAccess(String screenId, Rectangle valueRectangle, String preparationId, String restoreChannelId) {
 			this.screenId = screenId;
 			this.valueRectangle = valueRectangle;
 			this.preparationId = preparationId;
 			this.restoreChannelId = restoreChannelId;
 		}
 
-		public String getScreenId() {
-			return this.screenId;
-		}
-
-		public Rectangle getValueRectangle() {
+		Rectangle getValueRectangle() {
 			return this.valueRectangle;
 		}
 
-		public String getPreparationId() {
-			return this.preparationId;
-		}
-
-		public OfConfigs<Screen> getScreen() {
+		private OfConfigs<Screen> getScreen() {
 			return this.screen;
 		}
 
-		public void setScreen(OfConfigs<Screen> screen) {
-			this.screen = screen;
-		}
-
-		public Preparation getPreparation() {
+		private Preparation getPreparation() {
 			return this.preparation;
 		}
 
-		public void setPreparation(Preparation preparation) {
-			this.preparation = preparation;
-		}
-
-		public static class Creator extends CreatorByXML<GuiAccess> {
+		private static class Creator extends CreatorByXML<GuiAccess> {
 
 			private String screenId;
 			private Rectangle valueRectangle;
 			private String preparationId;
 			private String restoreChannelId;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 

@@ -36,7 +36,7 @@ public class LogManager {
 			this.prio = prio;
 		}
 
-		public boolean isLessSpecificThan(Level level) {
+		private boolean isLessSpecificThan(Level level) {
 			return this.prio < level.prio;
 		}
 
@@ -149,7 +149,7 @@ public class LogManager {
 		return this.delayedErrorCode != -1;
 	}
 
-	public int getExitCode() {
+	private int getExitCode() {
 		if (this.delayedErrorCode == 0) {
 			Level level = Level.INFO;
 			this.delayedErrorCode = -1;

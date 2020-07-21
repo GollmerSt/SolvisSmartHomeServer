@@ -22,19 +22,19 @@ public class AllDurations {
 
 	private Map<String, Duration> durations = new HashMap<>();
 
-	public void add(Duration duration) {
+	private void add(Duration duration) {
 		this.durations.put(duration.getId(), duration);
 	}
 
-	public Duration get(String id) {
+	Duration get(String id) {
 		return this.durations.get(id);
 	}
 
-	public static class Creator extends CreatorByXML<AllDurations> {
+	static class Creator extends CreatorByXML<AllDurations> {
 
 		private AllDurations durations;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 			this.durations = new AllDurations();
 		}

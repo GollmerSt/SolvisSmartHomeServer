@@ -37,7 +37,7 @@ import de.sgollmer.solvismax.xml.XmlStreamReader;
 
 public class Main {
 
-	public static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
+	private static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
 
 	private static ILogger logger;
 	private static Level LEARN;

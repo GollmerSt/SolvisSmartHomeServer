@@ -7,14 +7,14 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
-import de.sgollmer.solvismax.model.objects.backup.Measurement;
+import de.sgollmer.solvismax.Constants;
 
 public class ModeValue<M extends IMode> extends SingleData<M> {
 
 	private final M mode;
 
 	public ModeValue(M mode, long timeStamp) {
-		super(timeStamp) ;
+		super(timeStamp);
 		this.mode = mode;
 	}
 
@@ -54,7 +54,7 @@ public class ModeValue<M extends IMode> extends SingleData<M> {
 
 	@Override
 	public String getXmlId() {
-		return Measurement.XML_MEASUREMENT_MODE;
+		return Constants.XmlStrings.XML_MEASUREMENT_MODE;
 	}
 
 	@Override

@@ -81,7 +81,7 @@ public class ControlFileReader {
 		private final SolvisDescription solvisDescription;
 		private final Hashes hashes;
 
-		public Result(XmlStreamReader.Result<SolvisDescription> result, int resourceHash) {
+		private Result(XmlStreamReader.Result<SolvisDescription> result, int resourceHash) {
 			this.solvisDescription = result.getTree();
 			this.hashes = new Hashes(resourceHash, result.getHash());
 		}
@@ -150,9 +150,9 @@ public class ControlFileReader {
 			if (mustVerify) {
 				String xsdPath = Constants.RESOURCE_PATH + '/' + NAME_XSD_CONTROLFILE;
 				InputStream xsd = Main.class.getResourceAsStream(xsdPath);
-				boolean validated = reader.validate(new FileInputStream(xml), xsd) ;
-				if ( !validated ) {
-					if ( !mustWrite ) {
+				boolean validated = reader.validate(new FileInputStream(xml), xsd);
+				if (!validated) {
+					if (!mustWrite) {
 						LogManager.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
 					} else {
 						logger.warn("Not valid control.xml will be overwriten by a newer version");
@@ -194,7 +194,8 @@ public class ControlFileReader {
 		} else if (mustWrite) {
 			return new Result(xmlFromResource, newResourceHash);
 		} else if (e != null) {
-			logger.error("Error on reading control.xml. Learning is necessary, start parameter \"--server-learn\" must be used.");
+			logger.error(
+					"Error on reading control.xml. Learning is necessary, start parameter \"--server-learn\" must be used.");
 			LogManager.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
 			return null;
 		} else {

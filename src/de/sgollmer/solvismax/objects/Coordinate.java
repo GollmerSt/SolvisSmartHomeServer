@@ -8,12 +8,10 @@
 package de.sgollmer.solvismax.objects;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Coordinate implements Cloneable {
 	private final int x;
@@ -140,11 +138,6 @@ public class Coordinate implements Cloneable {
 	@Override
 	public String toString() {
 		return "(" + this.x + "|" + this.y + ")";
-	}
-
-	public void writeXml(XMLStreamWriter writer) throws XMLStreamException {
-		writer.writeAttribute("X", Integer.toString(this.x));
-		writer.writeAttribute("Y", Integer.toString(this.y));
 	}
 
 }

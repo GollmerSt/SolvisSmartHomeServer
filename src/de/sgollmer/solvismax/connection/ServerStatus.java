@@ -8,7 +8,7 @@
 package de.sgollmer.solvismax.connection;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
 
 public enum ServerStatus {
 	ONLINE(true), OFFLINE(false);
@@ -20,6 +20,7 @@ public enum ServerStatus {
 	}
 
 	public MqttData getMqttData() {
-		return new MqttData(Constants.Mqtt.SERVER_PREFIX + Constants.Mqtt.ONLINE_STATUS, Boolean.toString(this.online), 0, true);
+		return new MqttData(Constants.Mqtt.SERVER_PREFIX + Constants.Mqtt.ONLINE_STATUS, Boolean.toString(this.online),
+				0, true);
 	}
 }

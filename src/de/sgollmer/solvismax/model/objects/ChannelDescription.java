@@ -13,7 +13,7 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
-import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeError;
@@ -43,7 +43,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	private final ConfigurationMasks configurationMasks;
 	private final ChannelSource channelSource;
 
-	public ChannelDescription(String id, boolean buffered, String unit, ConfigurationMasks configurationMasks,
+	private ChannelDescription(String id, boolean buffered, String unit, ConfigurationMasks configurationMasks,
 			ChannelSource channelSource) {
 		this.id = id;
 		this.buffered = buffered;
@@ -119,7 +119,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 
 	}
 
-	public static class Creator extends CreatorByXML<ChannelDescription> {
+	static class Creator extends CreatorByXML<ChannelDescription> {
 
 		private String id;
 		private boolean buffered;
@@ -127,7 +127,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		private ConfigurationMasks configurationMasks;
 		private ChannelSource channelSource;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -260,13 +260,10 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.getRestoreChannel(solvis);
 	}
 
-	public MqttData getMqttMeta(Solvis solvis) {
+	MqttData getMqttMeta(Solvis solvis) {
 		de.sgollmer.solvismax.connection.transfer.ChannelDescription meta = new de.sgollmer.solvismax.connection.transfer.ChannelDescription(
 				this);
 		return new MqttData(solvis, Mqtt.formatChannelMetaTopic(this.getId()), meta.getValue().toString(), 0, true);
 	}
 
-	public SingleData<?> createSingleData(String value) throws TypeError {
-		return this.channelSource.createSingleData(value);
-	}
 }

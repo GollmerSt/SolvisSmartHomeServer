@@ -23,34 +23,34 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public interface IStrategy extends IAssigner {
 
-	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess,
-			boolean optional) throws TerminationException, IOException;
+	SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess, boolean optional)
+			throws TerminationException, IOException;
 
-	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeError;
 
-	public boolean isWriteable();
+	boolean isWriteable();
 
-	public Integer getDivisor();
+	Integer getDivisor();
 
-	public Double getAccuracy();
+	Double getAccuracy();
 
-	public List<? extends IMode> getModes();
+	List<? extends IMode> getModes();
 
-	public UpperLowerStep getUpperLowerStep();
+	UpperLowerStep getUpperLowerStep();
 
-	public void setCurrentRectangle(Rectangle rectangle);
+	void setCurrentRectangle(Rectangle rectangle);
 
-	public boolean mustBeLearned();
+	boolean mustBeLearned();
 
-	public boolean learn(Solvis solvis, IControlAccess controlAccess) throws IOException;
+	boolean learn(Solvis solvis, IControlAccess controlAccess) throws IOException;
 
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError;
+	SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError;
 
-	public boolean isXmlValid(boolean modbus);
+	boolean isXmlValid(boolean modbus);
 
-	public boolean isBoolean();
+	boolean isBoolean();
 
-	public SingleData<?> createSingleData(String value) throws TypeError;
+	SingleData<?> createSingleData(String value) throws TypeError;
 
 }

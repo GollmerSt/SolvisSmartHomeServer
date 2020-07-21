@@ -20,42 +20,37 @@ public class ClientAssignments {
 	private final Map<Solvis, State> states = new HashMap<>();
 	private ClosingThread closingThread = null;
 
-	public ClientAssignments(Solvis solvis, IClient client) {
-		this.client = client;
-		this.states.put(solvis, new State());
-	}
-
-	public ClientAssignments(IClient client) {
+	ClientAssignments(IClient client) {
 		this.client = client;
 	}
 
-	public void add(Solvis solvis) {
+	void add(Solvis solvis) {
 		if (solvis != null && !this.states.containsKey(solvis)) {
 			this.states.put(solvis, new State());
 		}
 	}
 
-	public void reconnect(IClient client) {
+	void reconnect(IClient client) {
 		this.abort();
 		this.client = client;
 	}
 
-	public synchronized void abort() {
+	synchronized void abort() {
 		if (this.closingThread != null) {
 			this.closingThread.abort();
 			this.closingThread = null;
 		}
 	}
 
-	public IClient getClient() {
+	IClient getClient() {
 		return this.client;
 	}
 
-	public void setClient(IClient client) {
+	void setClient(IClient client) {
 		this.client = client;
 	}
 
-	public State getState(Solvis solvis) {
+	State getState(Solvis solvis) {
 		if (solvis == null) {
 			return this.getState();
 		} else {
@@ -63,52 +58,52 @@ public class ClientAssignments {
 		}
 	}
 
-	public State getState() {
+	private State getState() {
 		if (this.states.size() == 1) {
 			return this.states.values().iterator().next();
 		}
 		return null;
 	}
 
-	public ClosingThread getClosingThread() {
+	ClosingThread getClosingThread() {
 		return this.closingThread;
 	}
 
-	public void setClosingThread(ClosingThread closingThread) {
+	void setClosingThread(ClosingThread closingThread) {
 		this.closingThread = closingThread;
 	}
 
-	public static class State {
+	private static class State {
 		private boolean screenRestoreEnable = true;
 		private boolean optimizationEnable = true;
 		private boolean commandEnable = true;
 
-		public boolean isScreenRestoreEnable() {
+		private boolean isScreenRestoreEnable() {
 			return this.screenRestoreEnable;
 		}
 
-		public void setScreenRestoreEnable(boolean screenRestoreInhibit) {
+		private void setScreenRestoreEnable(boolean screenRestoreInhibit) {
 			this.screenRestoreEnable = screenRestoreInhibit;
 		}
 
-		public boolean isOptimizationEnable() {
+		private boolean isOptimizationEnable() {
 			return this.optimizationEnable;
 		}
 
-		public void setOptimizationEnable(boolean optimizationEnable) {
+		private void setOptimizationEnable(boolean optimizationEnable) {
 			this.optimizationEnable = optimizationEnable;
 		}
 
-		public boolean isCommandEnable() {
+		private boolean isCommandEnable() {
 			return this.commandEnable;
 		}
 
-		public void setCommandEnable(boolean commandEnable) {
+		private void setCommandEnable(boolean commandEnable) {
 			this.commandEnable = commandEnable;
 		}
 	}
 
-	public void enableGuiCommands(Solvis solvis, boolean enable) {
+	void enableGuiCommands(Solvis solvis, boolean enable) {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentError("Error: Client assignment error");
@@ -120,7 +115,7 @@ public class ClientAssignments {
 
 	}
 
-	public void screenRestoreEnable(Solvis solvis, boolean enable) {
+	void screenRestoreEnable(Solvis solvis, boolean enable) {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentError("Error: Client assignment error");
@@ -131,7 +126,7 @@ public class ClientAssignments {
 		}
 	}
 
-	public void optimizationEnable(Solvis solvis, boolean enable) {
+	void optimizationEnable(Solvis solvis, boolean enable) {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentError("Error: Client assignment error");
@@ -142,15 +137,15 @@ public class ClientAssignments {
 		}
 	}
 
-	public void clientClosed() {
-		for ( Solvis solvis : this.states.keySet()) {
+	void clientClosed() {
+		for (Solvis solvis : this.states.keySet()) {
 			this.enableGuiCommands(solvis, true);
 			this.optimizationEnable(solvis, true);
 			this.screenRestoreEnable(solvis, true);
 		}
 	}
 
-	public void serviceReset(Solvis solvis) {
+	void serviceReset(Solvis solvis) {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentError("Error: Client assignment error");
@@ -158,7 +153,7 @@ public class ClientAssignments {
 		solvis.serviceReset();
 	}
 
-	public void updateControlChannels(Solvis solvis) {
+	void updateControlChannels(Solvis solvis) {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentError("Error: Client assignment error");
@@ -166,10 +161,10 @@ public class ClientAssignments {
 		solvis.updateControlChannels();
 
 	}
-	
-	public Solvis getSolvis() {
-		if ( this.states.size() != 1 ) {
-			return null ;
+
+	Solvis getSolvis() {
+		if (this.states.size() != 1) {
+			return null;
 		} else {
 			return this.states.keySet().iterator().next();
 		}

@@ -18,11 +18,11 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class RunTime extends Strategy<RunTime> {
 
-	public RunTime(Calculation calculation) {
+	private RunTime(Calculation calculation) {
 		super(calculation);
 	}
 
-	public RunTime() {
+	RunTime() {
 		super(null);
 	}
 
@@ -32,16 +32,16 @@ public class RunTime extends Strategy<RunTime> {
 	}
 
 	@Override
-	public boolean isWriteable() {
+	boolean isWriteable() {
 		return false;
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
+	void instantiate(Solvis solvis) {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
-		if ( result.getSingleData() == null ) {
+		if (result.getSingleData() == null) {
 			result.setInteger(0, -1);
 		}
 
@@ -61,7 +61,7 @@ public class RunTime extends Strategy<RunTime> {
 		private long lastStartTime = -1;
 		private int formerRunTime_s = -1;
 
-		public Executable(SolvisData result, SolvisData equipmentOn) {
+		private Executable(SolvisData result, SolvisData equipmentOn) {
 			this.result = result;
 			this.equipmentOn = equipmentOn;
 			this.equipmentOn.registerContinuousObserver(this);
@@ -69,27 +69,25 @@ public class RunTime extends Strategy<RunTime> {
 		}
 
 		@Override
-		public void update(SolvisData data, Object source ) {
+		public void update(SolvisData data, Object source) {
 			if (this.result == null || this.equipmentOn == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
-			
-			Boolean equipmentOn = null ;
 
-			if ( data.getDescription() == this.result.getDescription() ) {
-				if ( source != this ) {
-					equipmentOn = this.equipmentOn.getBool() ;
-					this.lastStartTime = -1 ;
-				}
-				else {
-					return ;
+			Boolean equipmentOn = null;
+
+			if (data.getDescription() == this.result.getDescription()) {
+				if (source != this) {
+					equipmentOn = this.equipmentOn.getBool();
+					this.lastStartTime = -1;
+				} else {
+					return;
 				}
 			}
-			
-			if ( equipmentOn == null ) {
-				equipmentOn = data.getBool() ;
-			}
 
+			if (equipmentOn == null) {
+				equipmentOn = data.getBool();
+			}
 
 			if (equipmentOn || this.lastStartTime >= 0) {
 
@@ -103,14 +101,14 @@ public class RunTime extends Strategy<RunTime> {
 						this.formerRunTime_s = former;
 					}
 				}
-				
+
 				int result = this.formerRunTime_s + (int) ((time - this.lastStartTime + 500) / 1000);
 
-				if (result - former > 60 || ! equipmentOn ) {
+				if (result - former > 60 || !equipmentOn) {
 					this.result.setInteger(result, data.getTimeStamp(), this);
 				}
-				
-				if ( !equipmentOn ) {
+
+				if (!equipmentOn) {
 					this.lastStartTime = -1;
 				}
 			}
@@ -123,12 +121,12 @@ public class RunTime extends Strategy<RunTime> {
 	}
 
 	@Override
-	public Double getAccuracy() {
+	Double getAccuracy() {
 		return (double) 1;
 	}
 
 	@Override
-	public boolean isBoolean() {
+	boolean isBoolean() {
 		return false;
 	}
 

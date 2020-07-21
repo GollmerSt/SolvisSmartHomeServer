@@ -15,13 +15,13 @@ public class XmlError extends Error {
 	 * 
 	 */
 	private static final long serialVersionUID = -6034730869461501021L;
-	
-	public XmlError( String message ) {
-		super(message) ;
+
+	public XmlError(String message) {
+		super(message);
 	}
-	
-	public XmlError( XMLStreamException e, String message ) {
-		super(message, e) ;
+
+	public XmlError(XMLStreamException e, String message) {
+		super(message, e);
 	}
 
 }

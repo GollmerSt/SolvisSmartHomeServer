@@ -35,10 +35,6 @@ public class ScreenGraficDescription implements IScreenCompare, IAssigner {
 	private final boolean exact;
 	private Rectangle rectangle = null;
 
-	public Rectangle getRectangle() {
-		return this.rectangle;
-	}
-
 	private ScreenGraficDescription(String id, boolean exact, Rectangle rectangle) {
 		this.id = id;
 		this.exact = exact;

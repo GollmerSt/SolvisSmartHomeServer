@@ -28,13 +28,13 @@ public class Preparation implements IAssigner {
 	private final TouchPoint touchPoint;
 	private final ScreenGraficDescription screenGrafic;
 
-	public Preparation(String id, TouchPoint touchPoint, ScreenGraficDescription screenGrafic) {
+	private Preparation(String id, TouchPoint touchPoint, ScreenGraficDescription screenGrafic) {
 		this.id = id;
 		this.touchPoint = touchPoint;
 		this.screenGrafic = screenGrafic;
 	}
 
-	public String getId() {
+	String getId() {
 		return this.id;
 	}
 
@@ -73,13 +73,13 @@ public class Preparation implements IAssigner {
 		}
 	}
 
-	public static class Creator extends CreatorByXML<Preparation> {
+	static class Creator extends CreatorByXML<Preparation> {
 
 		private String id;
 		private TouchPoint touchPoint;
 		private ScreenGraficDescription screenGrafic;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 

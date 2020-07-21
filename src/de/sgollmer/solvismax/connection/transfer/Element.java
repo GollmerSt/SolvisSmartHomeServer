@@ -13,7 +13,7 @@ public class Element {
 	protected String name;
 	protected IValue value;
 
-	public void addTo(StringBuilder builder) {
+	void addTo(StringBuilder builder) {
 		builder.append('"');
 		builder.append(this.name);
 		builder.append("\":");
@@ -23,15 +23,15 @@ public class Element {
 			this.value.addTo(builder);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder() ;
+		StringBuilder builder = new StringBuilder();
 		this.addTo(builder);
 		return builder.toString();
 	}
 
-	public int from(String json, int position) throws JsonError {
+	int from(String json, int position) throws JsonError {
 		while (Character.isWhitespace(Helper.charAt(json, position))) {
 			++position;
 		}
@@ -85,11 +85,11 @@ public class Element {
 		return position;
 	}
 
-	public String getName() {
+	String getName() {
 		return this.name;
 	}
 
-	public void setName(String name) {
+	void setName(String name) {
 		this.name = name;
 	}
 
@@ -97,7 +97,7 @@ public class Element {
 		return this.value;
 	}
 
-	public void setValue(IValue value) {
+	void setValue(IValue value) {
 		this.value = value;
 	}
 

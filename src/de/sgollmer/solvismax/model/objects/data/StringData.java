@@ -7,34 +7,33 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
-import de.sgollmer.solvismax.model.objects.backup.Measurement;
+import de.sgollmer.solvismax.Constants;
 
 public class StringData extends SingleData<String> {
-	private final String data ;
-	
-	public StringData( String data, long timeStamp ) {
-		super(timeStamp) ;
-		this.data = data ;
+	private final String data;
+
+	public StringData(String data, long timeStamp) {
+		super(timeStamp);
+		this.data = data;
 	}
 
 	@Override
-	public boolean equals( Object obj) {
-		if ( obj instanceof StringData ) {
-			return this.data.equals(((StringData)obj).data ) ;
+	public boolean equals(Object obj) {
+		if (obj instanceof StringData) {
+			return this.data.equals(((StringData) obj).data);
 		} else {
-			return false ;
+			return false;
 		}
 	}
-	
-	
+
 	@Override
 	public int hashCode() {
-		return this.data.hashCode() ;
+		return this.data.hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return this.data ;
+		return this.data;
 	}
 
 	@Override
@@ -49,17 +48,17 @@ public class StringData extends SingleData<String> {
 
 	@Override
 	public String getXmlId() {
-		return Measurement.XML_MEASUREMENT_STRING;
+		return Constants.XmlStrings.XML_MEASUREMENT_STRING;
 	}
 
 	@Override
 	public String toJson() {
-		return "\"" + this.data + "\"" ;
+		return "\"" + this.data + "\"";
 	}
 
 	@Override
 	public String get() {
 		return this.data;
 	}
-	
+
 }

@@ -17,13 +17,9 @@ public class Field {
 	private final int position;
 	private final int length;
 
-	public Field(int position, int length) {
+	private Field(int position, int length) {
 		this.position = position;
 		this.length = length;
-	}
-
-	public int getPosition() {
-		return this.position;
 	}
 
 	public int getLength() {

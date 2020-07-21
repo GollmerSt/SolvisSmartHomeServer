@@ -20,7 +20,7 @@ public class ModbusAccess implements IControlAccess {
 	private final RegisterType type;
 	private final int address;
 
-	public ModbusAccess(RegisterType type, int address) {
+	private ModbusAccess(RegisterType type, int address) {
 		this.type = type;
 		this.address = address;
 	}
@@ -35,7 +35,7 @@ public class ModbusAccess implements IControlAccess {
 
 	public static class Creator extends CreatorByXML<ModbusAccess> {
 
-		private RegisterType type = null ;
+		private RegisterType type = null;
 		private int address;
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -73,7 +73,7 @@ public class ModbusAccess implements IControlAccess {
 
 	@Override
 	public boolean isModbus() {
-		return this.type != null ;
+		return this.type != null;
 	}
 
 }

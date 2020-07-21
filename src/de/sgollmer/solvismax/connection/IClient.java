@@ -10,9 +10,13 @@ package de.sgollmer.solvismax.connection;
 import de.sgollmer.solvismax.model.Solvis;
 
 public interface IClient {
-	public void sendCommandError( String message ) ;
-	public void send(ISendData sendData) ;
+	public void sendCommandError(String message);
+
+	public void send(ISendData sendData);
+
 	public void closeDelayed();
+
 	public String getClientId();
-	public Solvis getSolvis() ;
+
+	public Solvis getSolvis();
 }

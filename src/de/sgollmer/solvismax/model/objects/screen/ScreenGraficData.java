@@ -53,7 +53,7 @@ public class ScreenGraficData implements IXmlWriteable {
 	/**
 	 * @return the image
 	 */
-	public MyImage getImage() {
+	MyImage getImage() {
 		return this.image;
 	}
 

@@ -16,10 +16,10 @@ import de.sgollmer.solvismax.model.Solvis;
 public class OfConfigs<E extends OfConfigs.IElement<E>> {
 	private final Collection<E> elements = new ArrayList<>(1);
 
-	public void verifyAndAdd(E element) throws XmlError {
+	void verifyAndAdd(E element) throws XmlError {
 		for (E e : this.elements) {
 			if (!element.isConfigurationVerified(e)) {
-				element.isConfigurationVerified(e) ;
+				element.isConfigurationVerified(e);
 				throw new XmlError("Configuration mask of screen <" + element.getName() + "> isn't unique.");
 			}
 		}
@@ -27,8 +27,8 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> {
 	}
 
 	public E get(int configurationMask) {
-		if ( configurationMask == 0 && this.elements.size() == 1 ) {
-			return this.elements.iterator().next() ;
+		if (configurationMask == 0 && this.elements.size() == 1) {
+			return this.elements.iterator().next();
 		}
 		for (E e : this.elements) {
 			if (e.isInConfiguration(configurationMask)) {
@@ -37,12 +37,12 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> {
 		}
 		return null;
 	}
-	
-	public E get(Solvis  solvis) {
-		return this.get( solvis.getConfigurationMask()) ;
+
+	public E get(Solvis solvis) {
+		return this.get(solvis.getConfigurationMask());
 	}
 
-	public void assign(SolvisDescription description) {
+	void assign(SolvisDescription description) {
 		for (E e : this.elements) {
 			e.assign(description);
 		}
@@ -51,23 +51,23 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> {
 	public Collection<E> getElements() {
 		return this.elements;
 	}
-	
-	public E getIfSingle() {
-		if ( this.elements.size() == 1 ) {
-			return this.elements.iterator().next() ;
+
+	E getIfSingle() {
+		if (this.elements.size() == 1) {
+			return this.elements.iterator().next();
 		} else {
-			return null ;
+			return null;
 		}
 	}
-	
+
 	public interface IElement<E> {
-		public boolean isConfigurationVerified(E e) ;
-		public boolean isInConfiguration(int configurationMask) ;
+		public boolean isConfigurationVerified(E e);
+
+		public boolean isInConfiguration(int configurationMask);
+
 		public void assign(SolvisDescription description);
-		public String getName() ;
+
+		public String getName();
 	}
-	
-	public int size() {
-		return this.elements.size() ;
-	}
+
 }

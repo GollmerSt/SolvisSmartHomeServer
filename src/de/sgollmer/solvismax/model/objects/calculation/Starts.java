@@ -17,11 +17,11 @@ import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class Starts extends Strategy<Starts> {
-	public Starts(Calculation calculation) {
+	private Starts(Calculation calculation) {
 		super(calculation);
 	}
 
-	public Starts() {
+	Starts() {
 		super(null);
 	}
 
@@ -31,16 +31,16 @@ public class Starts extends Strategy<Starts> {
 	}
 
 	@Override
-	public boolean isWriteable() {
+	boolean isWriteable() {
 		return false;
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
+	void instantiate(Solvis solvis) {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
-		
-		if ( result.getSingleData() == null ) {
+
+		if (result.getSingleData() == null) {
 			result.setInteger(0, -1);
 		}
 
@@ -57,14 +57,14 @@ public class Starts extends Strategy<Starts> {
 		private final SolvisData result;
 		private final SolvisData equipmentOn;
 
-		public Executable(SolvisData result, SolvisData equipmentOn) {
+		private Executable(SolvisData result, SolvisData equipmentOn) {
 			this.result = result;
 			this.equipmentOn = equipmentOn;
 			this.equipmentOn.register(this);
 		}
 
 		@Override
-		public void update(SolvisData data, Object source ) {
+		public void update(SolvisData data, Object source) {
 			if (this.result == null || this.equipmentOn == null) {
 				throw new AssignmentError("Assignment error: Dependencies not assigned");
 			}
@@ -86,12 +86,12 @@ public class Starts extends Strategy<Starts> {
 	}
 
 	@Override
-	public Double getAccuracy() {
+	Double getAccuracy() {
 		return (double) 1;
 	}
 
 	@Override
-	public boolean isBoolean() {
+	boolean isBoolean() {
 		return false;
 	}
 

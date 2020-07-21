@@ -42,8 +42,4 @@ public class ConnectionState implements ISendData {
 
 	}
 
-	public ConnectionStatus getStatus() {
-		return this.status;
-	}
-
 }

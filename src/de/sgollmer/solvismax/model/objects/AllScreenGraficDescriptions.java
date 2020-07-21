@@ -20,7 +20,7 @@ public class AllScreenGraficDescriptions implements IAssigner {
 		this.screenGraficDescriptions.put(grafic.getId(), grafic);
 	}
 
-	public void addAll(Collection<ScreenGraficDescription> grafics) {
+	void addAll(Collection<ScreenGraficDescription> grafics) {
 		for (ScreenGraficDescription grafic : grafics) {
 			this.screenGraficDescriptions.put(grafic.getId(), grafic);
 		}
@@ -32,9 +32,9 @@ public class AllScreenGraficDescriptions implements IAssigner {
 
 	@Override
 	public void assign(SolvisDescription description) {
-		for ( ScreenGraficDescription grafic : this.screenGraficDescriptions.values() ) {
+		for (ScreenGraficDescription grafic : this.screenGraficDescriptions.values()) {
 			grafic.assign(description);
 		}
-		
+
 	}
 }

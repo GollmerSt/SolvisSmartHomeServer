@@ -18,7 +18,7 @@ public class ReceivedPackageCreator {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(ReceivedPackageCreator.class);
 
-    public static ReceivedPackageCreator getInstance() {
+	public static ReceivedPackageCreator getInstance() {
 		return JsonPackageCreatorHolder.INSTANCE;
 	}
 
@@ -38,7 +38,7 @@ public class ReceivedPackageCreator {
 				break;
 			case CONNECTED:
 				result = new ConnectedPackage();
-				break ;
+				break;
 			case RECONNECT:
 				result = new ReconnectPackage();
 				break;
@@ -52,8 +52,8 @@ public class ReceivedPackageCreator {
 				result = new GetPackage();
 				break;
 			case SERVER_COMMAND:
-				result = new ServerCommandPackage() ;
-				break ;
+				result = new ServerCommandPackage();
+				break;
 			default:
 				logger.error("Command <" + command.name() + "> not known");
 				return null;

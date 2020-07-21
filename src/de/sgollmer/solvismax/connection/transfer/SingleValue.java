@@ -27,7 +27,7 @@ public class SingleValue implements IValue {
 
 	private SingleData<?> data;
 
-	public SingleValue() {
+	SingleValue() {
 	}
 
 	public SingleValue(String value) {
@@ -51,11 +51,11 @@ public class SingleValue implements IValue {
 		Matcher m = STRING.matcher(sub);
 		if (m.matches()) {
 			group = m.group(1);
-			group = group.replace("\\\"", "\"") ; 
+			group = group.replace("\\\"", "\"");
 			this.data = new StringData(group, -1);
 			return position + group.length() + 2;
 		}
-		m = INTEGER.matcher(sub) ;
+		m = INTEGER.matcher(sub);
 		if (m.matches()) {
 			group = m.group(1);
 			this.data = new IntegerValue(Integer.parseInt(group), -1);

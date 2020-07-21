@@ -16,7 +16,7 @@ public class ServerCommandPackage extends JsonPackage implements ITransferedData
 
 	private ServerCommand serverCommand;
 
-	public ServerCommandPackage() {
+	ServerCommandPackage() {
 		super.command = Command.SERVER_COMMAND;
 	}
 
@@ -29,9 +29,8 @@ public class ServerCommandPackage extends JsonPackage implements ITransferedData
 		element.value = new SingleValue(command.name());
 	}
 
-
 	@Override
-	public void finish() {
+	void finish() {
 		Frame f = this.data;
 		if (f.size() > 0) {
 			Element e = f.get(0);
@@ -43,10 +42,6 @@ public class ServerCommandPackage extends JsonPackage implements ITransferedData
 			this.data = null;
 		}
 
-	}
-
-	public ServerCommand getServerCommand() {
-		return this.serverCommand;
 	}
 
 	@Override

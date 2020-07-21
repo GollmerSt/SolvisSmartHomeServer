@@ -20,7 +20,7 @@ public class Helper {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
 
-	public static char charAt(String json, int position) throws JsonError {
+	static char charAt(String json, int position) throws JsonError {
 		try {
 			return json.charAt(position);
 		} catch (IndexOutOfBoundsException e) {
@@ -28,11 +28,21 @@ public class Helper {
 		}
 	}
 
-	public static void read(InputStream in, byte[] bytes, int timeout) throws IOException {
+	static void read(InputStream in, byte[] bytes, int timeout) throws IOException {
 		int transfered = 0;
 		Runnable runnable = null;
 		while (transfered < bytes.length) {
-			int cnt = in.read(bytes, transfered, bytes.length - transfered);
+			
+			int cnt;
+			try {
+				cnt = in.read(bytes, transfered, bytes.length - transfered);
+			} catch (IOException e) {
+				if ( AbortHelper.getInstance().isAbort()) {
+					return;
+				} else {
+					throw e;
+				}
+			}
 			if (cnt < 0) {
 				if (transfered > 0) {
 					throw new IOException("Not enough bytes received (transfered: " + transfered + ", target: "
@@ -58,7 +68,7 @@ public class Helper {
 		private final InputStream inputStream;
 		private boolean abort = false;
 
-		public Runnable(InputStream stream, int timeout) {
+		private Runnable(InputStream stream, int timeout) {
 			super("ReadTimeout");
 			this.timeout = timeout;
 			this.inputStream = stream;
@@ -78,7 +88,7 @@ public class Helper {
 			}
 		}
 
-		public synchronized void abort() {
+		private synchronized void abort() {
 			this.abort = true;
 			this.notifyAll();
 		}

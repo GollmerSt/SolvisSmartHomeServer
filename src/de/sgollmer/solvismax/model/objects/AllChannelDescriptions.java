@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
-import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.CommandControl;
@@ -43,7 +43,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	private Map<Integer, Collection<ChannelDescription>> updateControlChannelsSequences = new HashMap<>();
 	private Map<Integer, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>();
 
-	public void addDescription(ChannelDescription description) {
+	private void addDescription(ChannelDescription description) {
 		OfConfigs<ChannelDescription> channelConf = this.descriptions.get(description.getId());
 		if (channelConf == null) {
 			channelConf = new OfConfigs<ChannelDescription>();
@@ -76,11 +76,11 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		return this.descriptions.values();
 	}
 
-	public static class Creator extends CreatorByXML<AllChannelDescriptions> {
+	static class Creator extends CreatorByXML<AllChannelDescriptions> {
 
 		private final AllChannelDescriptions descriptions = new AllChannelDescriptions();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -188,7 +188,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	}
 
-	public void updateByScreenChange(Solvis solvis) {
+	public void updateByHumanAccessFinished(Solvis solvis) {
 		final int configurationMask = solvis.getConfigurationMask();
 
 		Collection<ChannelDescription> descriptions = this.updateByScreenChangeSequences.get(configurationMask);
@@ -278,7 +278,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		return result;
 	}
 
-	public void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException {
+	void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException {
 		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
 			ChannelDescription meta = descriptionsC.get(solvis);
 			if (meta != null) {

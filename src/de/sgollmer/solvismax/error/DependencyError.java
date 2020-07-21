@@ -13,7 +13,7 @@ public class DependencyError extends Error {
 	 */
 	private static final long serialVersionUID = 883291412939229936L;
 
-	public DependencyError( String message ) {
-		super( message ) ;
+	public DependencyError(String message) {
+		super(message);
 	}
 }

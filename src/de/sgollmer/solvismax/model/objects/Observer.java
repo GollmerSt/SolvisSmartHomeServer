@@ -25,7 +25,7 @@ public class Observer<D> {
 		public synchronized void unregister(IObserver<D> observer) {
 			this.observers.remove(observer);
 		}
-		
+
 		public void notify(D data) {
 			this.notify(data, null);
 		}
@@ -44,7 +44,7 @@ public class Observer<D> {
 	}
 
 	public interface IObserver<D> {
-		public void update(D data, Object source ) ;
+		public void update(D data, Object source);
 	}
 
 }

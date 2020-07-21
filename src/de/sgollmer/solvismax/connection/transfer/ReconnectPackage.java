@@ -15,12 +15,12 @@ public class ReconnectPackage extends JsonPackage implements ITransferedData {
 
 	private Integer clientId = null;
 
-	public ReconnectPackage() {
+	ReconnectPackage() {
 		this.command = Command.RECONNECT;
 	}
 
 	@Override
-	public void finish() {
+	void finish() {
 		Frame f = this.data;
 		if (f.elements.size() > 0) {
 			Element e = f.elements.get(0);

@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class JsonPackage implements ITransferedData {
 
-	public static final Charset CHARSET = Charset.forName("UTF-8");
+	private static final Charset CHARSET = Charset.forName("UTF-8");
 
 	protected Command command;
 	protected Frame data;
@@ -28,12 +28,12 @@ public class JsonPackage implements ITransferedData {
 	public JsonPackage() {
 	}
 
-	public JsonPackage(Command command, Frame frame) {
+	JsonPackage(Command command, Frame frame) {
 		this.command = command;
 		this.data = frame;
 	}
 
-	public Frame getFrame() {
+	private Frame getFrame() {
 		Frame result = new Frame();
 		Element element = new Element();
 		element.name = this.command.toString();
@@ -66,7 +66,7 @@ public class JsonPackage implements ITransferedData {
 		stream.flush();
 	}
 
-	public void receive(InputStream stream, int timeout) throws IOException, JsonError {
+	void receive(InputStream stream, int timeout) throws IOException, JsonError {
 		byte[] lengthBytes = new byte[3];
 		Helper.read(stream, lengthBytes, timeout);
 		int length = lengthBytes[0] << 16 | lengthBytes[1] << 8 | lengthBytes[2];
@@ -88,7 +88,7 @@ public class JsonPackage implements ITransferedData {
 		}
 	}
 
-	public void finish() {
+	void finish() {
 
 	}
 

@@ -95,9 +95,11 @@ public class GraficFileHandler {
 		} catch (IOException | XmlError | XMLStreamException e1) {
 			logger.error("Warning: Read error on grafics.xml file. A new one will be created.");
 			result = new AllSolvisGrafics();
-		} catch ( Throwable e2 ) {
-			LogManager.out(logger, Level.ERROR, "Unexpected error found on reading the grafics.xml, a new on will be cerated.\n"
-					+ "If the error still exits, please conact the developer.", e2.getStackTrace());
+		} catch (Throwable e2) {
+			LogManager.out(logger, Level.ERROR,
+					"Unexpected error found on reading the grafics.xml, a new on will be cerated.\n"
+							+ "If the error still exits, please conact the developer.",
+					e2.getStackTrace());
 			result = new AllSolvisGrafics();
 		}
 

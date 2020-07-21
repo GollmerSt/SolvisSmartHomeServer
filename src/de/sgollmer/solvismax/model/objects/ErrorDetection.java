@@ -60,7 +60,7 @@ public class ErrorDetection {
 	private final Rectangle ddMmYy;
 	private final Collection<ErrorCondition> errorConditions;
 
-	public ErrorDetection(Range leftBorder, Range rightBorder, Range topBorder, Range middleBorder, Range bottomBorder,
+	private ErrorDetection(Range leftBorder, Range rightBorder, Range topBorder, Range middleBorder, Range bottomBorder,
 			Rectangle hhMm, Rectangle ddMmYy, Collection<ErrorCondition> errorConditions) {
 		this.leftBorder = leftBorder;
 		this.rightBorder = rightBorder;
@@ -75,12 +75,12 @@ public class ErrorDetection {
 	public enum Type {
 		NONE, HOME_NONE, MESSAGE_BOX, ERROR_BUTTON
 	}
-	
-	public Type getType(SolvisScreen screen ) {
+
+	public Type getType(SolvisScreen screen) {
 		return this.getType(screen, false);
 	}
 
-	private Type getType(SolvisScreen screen, boolean isHome ) {
+	private Type getType(SolvisScreen screen, boolean isHome) {
 
 		MyImage image = screen.getImage();
 
@@ -148,14 +148,14 @@ public class ErrorDetection {
 			return Type.MESSAGE_BOX;
 		}
 
-		if (isHome || screen.getSolvis().getHomeScreen().equals(screen.get())) {
-			OcrRectangle ocrRectangle = new OcrRectangle(image, this.hhMm) ;
-			if ( ocrRectangle.getWidth() == 0 || ocrRectangle.getHeight() == 0 ) {
+		if (isHome || screen.getSolvis().getHomeScreen().equals(SolvisScreen.get(screen))) {
+			OcrRectangle ocrRectangle = new OcrRectangle(image, this.hhMm);
+			if (ocrRectangle.getWidth() == 0 || ocrRectangle.getHeight() == 0) {
 				return Type.HOME_NONE;
 			}
 			String hhmm = ocrRectangle.getString();
-			ocrRectangle = new OcrRectangle(image, this.ddMmYy) ;
-			if ( ocrRectangle.getWidth() == 0 || ocrRectangle.getHeight() == 0 ) {
+			ocrRectangle = new OcrRectangle(image, this.ddMmYy);
+			if (ocrRectangle.getWidth() == 0 || ocrRectangle.getHeight() == 0) {
 				return Type.HOME_NONE;
 			}
 			String ddMMYY = ocrRectangle.getString();
@@ -176,7 +176,7 @@ public class ErrorDetection {
 		return upper.getLower() - lower.getHigher();
 	}
 
-	public static class Creator extends CreatorByXML<ErrorDetection> {
+	static class Creator extends CreatorByXML<ErrorDetection> {
 
 		private Range leftBorder;
 		private Range rightBorder;
@@ -187,7 +187,7 @@ public class ErrorDetection {
 		private Rectangle ddMmYy;
 		private final Collection<ErrorCondition> errorConditions = new ArrayList<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -255,24 +255,24 @@ public class ErrorDetection {
 		private final String channelId;
 		private final boolean errorValue;
 
-		public ErrorCondition(String channelId, boolean errorValue) {
+		private ErrorCondition(String channelId, boolean errorValue) {
 			this.channelId = channelId;
 			this.errorValue = errorValue;
 		}
 
-		public String getChannelId() {
+		private String getChannelId() {
 			return this.channelId;
 		}
 
-		public boolean getErrorValue() {
+		private boolean getErrorValue() {
 			return this.errorValue;
 		}
 
-		public static class Creator extends CreatorByXML<ErrorCondition> {
+		private static class Creator extends CreatorByXML<ErrorCondition> {
 			private String channelId;
 			private boolean value;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
@@ -305,7 +305,7 @@ public class ErrorDetection {
 		}
 	}
 
-	public void instantiate(Solvis solvis) {
+	void instantiate(Solvis solvis) {
 		Execute execute = new Execute(solvis);
 		solvis.registerObserver(execute);
 	}
@@ -314,7 +314,7 @@ public class ErrorDetection {
 
 		private Collection<SolvisData> errorSpecificDatas = new ArrayList<>();
 
-		public Execute(Solvis solvis) {
+		private Execute(Solvis solvis) {
 			for (ErrorCondition condition : ErrorDetection.this.errorConditions) {
 				String name = condition.getChannelId();
 				SolvisData data = solvis.getAllSolvisData().get(name);
@@ -361,20 +361,16 @@ public class ErrorDetection {
 			private final boolean isHome;
 			private final String name;
 
-			public Test(boolean isHome, String name) {
+			private Test(boolean isHome, String name) {
 				this.isHome = isHome;
 				this.name = name;
 			}
 		}
 
-		Collection<Test> names = Arrays.asList(	//
-				new Test(false, "Stoerung 1.png"),
-				new Test(false, "Stoerung 2.png"),
-				new Test(false, "Stoerung 3.png"),
-				new Test(false, "Stoerung 4.png"),
-				new Test(false, "Stoerung 5.png"),
-				new Test(true, "Stoerung h keine.png"),
-				new Test(true, "Stoerung h1.bmp"),
+		Collection<Test> names = Arrays.asList( //
+				new Test(false, "Stoerung 1.png"), new Test(false, "Stoerung 2.png"), new Test(false, "Stoerung 3.png"),
+				new Test(false, "Stoerung 4.png"), new Test(false, "Stoerung 5.png"),
+				new Test(true, "Stoerung h keine.png"), new Test(true, "Stoerung h1.bmp"),
 				new Test(true, "Stoerung h2.png"));
 
 		BufferedImage image = null;
@@ -391,10 +387,10 @@ public class ErrorDetection {
 			}
 
 			MyImage myImage = new MyImage(image);
-			
-			SolvisScreen screen = new SolvisScreen(myImage, null) ;
-			
-			Type type = errorDetection.getType(screen, test.isHome) ;
+
+			SolvisScreen screen = new SolvisScreen(myImage, null);
+
+			Type type = errorDetection.getType(screen, test.isHome);
 
 			System.out.println(file.getName() + " errorType? " + type.name());
 		}

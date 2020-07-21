@@ -15,7 +15,7 @@ import de.sgollmer.solvismax.error.JsonError;
 public class Frame implements IValue {
 	protected final List<Element> elements = new ArrayList<>();
 
-	public void add(Element element) {
+	void add(Element element) {
 		this.elements.add(element);
 	}
 
@@ -83,11 +83,11 @@ public class Frame implements IValue {
 
 	}
 
-	public Element get(int i) {
+	Element get(int i) {
 		return this.elements.get(i);
 	}
 
-	public int size() {
+	int size() {
 		return this.elements.size();
 	}
 

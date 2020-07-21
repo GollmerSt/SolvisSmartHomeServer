@@ -8,12 +8,12 @@
 package de.sgollmer.solvismax.imagepatternrecognition.image;
 
 public class Maxima {
-	private final int coord ;
-	private final int value ;
-	
-	public Maxima( int x, int value ) {
-		this.coord = x ;
-		this.value = value ;
+	private final int coord;
+	private final int value;
+
+	public Maxima(int x, int value) {
+		this.coord = x;
+		this.value = value;
 	}
 
 	/**
@@ -30,4 +30,3 @@ public class Maxima {
 		return this.value;
 	}
 }
-

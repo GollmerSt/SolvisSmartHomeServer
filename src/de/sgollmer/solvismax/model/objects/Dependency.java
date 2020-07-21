@@ -22,11 +22,11 @@ public class Dependency implements IAssigner {
 		this.dataId = dataId;
 	}
 
-	public String getDataId() {
+	String getDataId() {
 		return this.dataId;
 	}
 
-	public String getId() {
+	String getId() {
 		return this.id;
 	}
 

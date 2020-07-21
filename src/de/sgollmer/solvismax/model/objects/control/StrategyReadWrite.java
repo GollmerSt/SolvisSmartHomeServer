@@ -40,7 +40,7 @@ public class StrategyReadWrite extends StrategyRead {
 	private final int most;
 	private final GuiModification guiModification;
 
-	public StrategyReadWrite(int increment, int divisor, int least, int most, GuiModification guiModification) {
+	private StrategyReadWrite(int increment, int divisor, int least, int most, GuiModification guiModification) {
 		super(divisor, guiModification);
 		this.increment = increment;
 		this.least = least;
@@ -65,10 +65,10 @@ public class StrategyReadWrite extends StrategyRead {
 				return data;
 			}
 			int current = data.get();
-			
+
 			goal = Math.max(goal, this.least);
 			goal = Math.min(goal, this.most);
-			
+
 			int value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment))
 					/ (2 * this.increment);
 
@@ -109,7 +109,7 @@ public class StrategyReadWrite extends StrategyRead {
 		}
 	}
 
-	public static class Creator extends CreatorByXML<StrategyReadWrite> {
+	static class Creator extends CreatorByXML<StrategyReadWrite> {
 
 		private int divisor = 1;
 		private int increment;
@@ -117,7 +117,7 @@ public class StrategyReadWrite extends StrategyRead {
 		private int most;
 		private GuiModification guiModification = null;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -197,12 +197,12 @@ public class StrategyReadWrite extends StrategyRead {
 		return singleData;
 	}
 
-	public static class GuiModification extends GuiRead implements IAssigner {
+	private static class GuiModification extends GuiRead implements IAssigner {
 		private final boolean wrapAround;
 		private final TouchPoint upper;
 		private final TouchPoint lower;
 
-		public GuiModification(String format, boolean wrapAround, TouchPoint upper, TouchPoint lower) {
+		private GuiModification(String format, boolean wrapAround, TouchPoint upper, TouchPoint lower) {
 			super(format);
 			this.wrapAround = wrapAround;
 			this.upper = upper;
@@ -219,14 +219,14 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 		}
 
-		public static class Creator extends CreatorByXML<GuiModification> {
+		private static class Creator extends CreatorByXML<GuiModification> {
 
 			private String format;
 			private boolean wrapAround = false;
 			private TouchPoint upper;
 			private TouchPoint lower;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 

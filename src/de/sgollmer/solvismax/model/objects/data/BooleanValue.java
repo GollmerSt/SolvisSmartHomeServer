@@ -7,7 +7,7 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
-import de.sgollmer.solvismax.model.objects.backup.Measurement;
+import de.sgollmer.solvismax.Constants;
 
 public class BooleanValue extends SingleData<Boolean> {
 
@@ -53,7 +53,7 @@ public class BooleanValue extends SingleData<Boolean> {
 
 	@Override
 	public String getXmlId() {
-		return Measurement.XML_MEASUREMENT_BOOLEAN;
+		return Constants.XmlStrings.XML_MEASUREMENT_BOOLEAN;
 	}
 
 	@Override

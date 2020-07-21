@@ -18,15 +18,13 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.error.XmlError;
-import de.sgollmer.solvismax.helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
 import de.sgollmer.solvismax.model.objects.configuration.SolvisTypes;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
-import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -66,7 +64,7 @@ public class SolvisDescription {
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
-	public SolvisDescription(SolvisTypes types, Configurations configurations, ScreenSaver saver, AllScreens screens,
+	private SolvisDescription(SolvisTypes types, Configurations configurations, ScreenSaver saver, AllScreens screens,
 			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
 			AllPreparations allPreparations, ClockMonitor clock, AllDurations durations, Miscellaneous miscellaneous,
 			ErrorDetection errorDetection, Service service) {
@@ -254,7 +252,7 @@ public class SolvisDescription {
 
 		private final Collection<ScreenGraficDescription> grafics = new ArrayList<>();
 
-		public CreatorScreenGrafics(String id, BaseCreator<?> creator) {
+		private CreatorScreenGrafics(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -317,11 +315,8 @@ public class SolvisDescription {
 		return this.dataDescriptions;
 	}
 
-	/**
-	 * @return the durations
-	 */
-	public AllDurations getDurations() {
-		return this.durations;
+	public Duration getDuration(String id) {
+		return this.durations.get(id);
 	}
 
 	public Miscellaneous getMiscellaneous() {
@@ -332,9 +327,9 @@ public class SolvisDescription {
 		return this.fallBack;
 	}
 
-	public int getConfigurations(Solvis solvis, Reference<Screen> current) throws IOException {
+	public int getConfigurations(Solvis solvis) throws IOException {
 		int configurationMask = this.types.getConfiguration(solvis.getType());
-		return configurationMask | this.configurations.get(solvis, current);
+		return configurationMask | this.configurations.get(solvis);
 	}
 
 	public AllPreparations getPreparations() {

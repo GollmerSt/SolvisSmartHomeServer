@@ -13,6 +13,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
@@ -24,11 +25,6 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Measurement {
-
-	public static final String XML_MEASUREMENT_BOOLEAN = "BooleanValue";
-	public static final String XML_MEASUREMENT_INTEGER = "IntegerValue";
-	public static final String XML_MEASUREMENT_STRING = "StringValue";
-	public static final String XML_MEASUREMENT_MODE = "ModeValue";
 
 	private final String id;
 	private final SingleData<?> data;
@@ -45,12 +41,12 @@ public class Measurement {
 		return this.data;
 	}
 
-	public static class Creator extends CreatorByXML<Measurement> {
+	static class Creator extends CreatorByXML<Measurement> {
 
 		private String id;
 		private SingleData<?> data;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -73,10 +69,10 @@ public class Measurement {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_MEASUREMENT_BOOLEAN:
-				case XML_MEASUREMENT_INTEGER:
-				case XML_MEASUREMENT_MODE:
-				case XML_MEASUREMENT_STRING:
+				case Constants.XmlStrings.XML_MEASUREMENT_BOOLEAN:
+				case Constants.XmlStrings.XML_MEASUREMENT_INTEGER:
+				case Constants.XmlStrings.XML_MEASUREMENT_MODE:
+				case Constants.XmlStrings.XML_MEASUREMENT_STRING:
 					return new ValueCreator(id, getBaseCreator());
 			}
 			return null;
@@ -85,10 +81,10 @@ public class Measurement {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_MEASUREMENT_BOOLEAN:
-				case XML_MEASUREMENT_INTEGER:
-				case XML_MEASUREMENT_MODE:
-				case XML_MEASUREMENT_STRING:
+				case Constants.XmlStrings.XML_MEASUREMENT_BOOLEAN:
+				case Constants.XmlStrings.XML_MEASUREMENT_INTEGER:
+				case Constants.XmlStrings.XML_MEASUREMENT_MODE:
+				case Constants.XmlStrings.XML_MEASUREMENT_STRING:
 					this.data = (SingleData<?>) created;
 			}
 
@@ -100,7 +96,7 @@ public class Measurement {
 
 		StringBuilder text = new StringBuilder();
 
-		public ValueCreator(String id, BaseCreator<?> creator) {
+		private ValueCreator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -112,11 +108,11 @@ public class Measurement {
 		public SingleData<?> create() throws XmlError, IOException {
 			final String dataString = this.text.toString();
 			switch (this.getId()) {
-				case XML_MEASUREMENT_BOOLEAN:
+				case Constants.XmlStrings.XML_MEASUREMENT_BOOLEAN:
 					return new BooleanValue(Boolean.parseBoolean(dataString), -1);
-				case XML_MEASUREMENT_INTEGER:
+				case Constants.XmlStrings.XML_MEASUREMENT_INTEGER:
 					return new IntegerValue(Integer.parseInt(dataString), -1);
-				case XML_MEASUREMENT_MODE:
+				case Constants.XmlStrings.XML_MEASUREMENT_MODE:
 					return new ModeValue<IMode>(new IMode() {
 
 						@Override
@@ -124,7 +120,7 @@ public class Measurement {
 							return dataString;
 						}
 					}, -1);
-				case XML_MEASUREMENT_STRING:
+				case Constants.XmlStrings.XML_MEASUREMENT_STRING:
 					return new StringData(dataString, -1);
 			}
 			return null;
@@ -146,7 +142,7 @@ public class Measurement {
 
 	}
 
-	public void writeXml(XMLStreamWriter writer) throws XMLStreamException {
+	void writeXml(XMLStreamWriter writer) throws XMLStreamException {
 
 		writer.writeAttribute("id", this.id);
 		writer.writeStartElement(this.data.getXmlId());

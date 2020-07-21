@@ -114,13 +114,13 @@ public class Instances {
 	}
 
 	public Collection<Solvis> getUnits() {
-		return this.units ;
+		return this.units;
 	}
 
 	public Solvis getUnit(String unitId) {
-		for ( Solvis solvis : this.units ) {
-			if ( unitId.equals(solvis.getUnit().getId())) {
-				return solvis ;
+		for (Solvis solvis : this.units) {
+			if (unitId.equals(solvis.getUnit().getId())) {
+				return solvis;
 			}
 		}
 		return null;

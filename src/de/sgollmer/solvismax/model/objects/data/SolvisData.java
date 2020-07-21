@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.model.objects.data;
 import java.util.Calendar;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
-import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.log.LogManager;
@@ -91,10 +91,6 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	public String getId() {
 		return this.description.getId();
-	}
-
-	public AllSolvisData getDatas() {
-		return this.datas;
 	}
 
 	private void setData(SingleData<?> data) {
@@ -221,7 +217,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return this.data;
 	}
 
-//	public SingleValue toSingleValue() {
+//	private SingleValue toSingleValue() {
 //		return this.toSingleValue(this.data);
 //	}
 
@@ -283,11 +279,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (this.data == null) {
 			return null;
 		}
-		String value ;
+		String value;
 		if (this.data instanceof IntegerValue && this.getDescription().getDivisor() != 1) {
 			value = Double.toString((double) this.data.getInt() / this.getDescription().getDivisor());
 		} else {
-			value =this.data.toString();
+			value = this.data.toString();
 		}
 		return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getId()), value, 0, true);
 	}

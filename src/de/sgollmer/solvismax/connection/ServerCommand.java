@@ -8,7 +8,7 @@
 package de.sgollmer.solvismax.connection;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
-import de.sgollmer.solvismax.connection.mqtt.Mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.ArrayValue;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.model.Solvis;
@@ -16,7 +16,7 @@ import de.sgollmer.solvismax.model.Solvis;
 public enum ServerCommand {
 	BACKUP(true), //
 	RESTART(true), //
-	TERMINATE(true, false ), //
+	TERMINATE(true, false), //
 	SCREEN_RESTORE_INHIBIT(false), //
 	SCREEN_RESTORE_ENABLE(false), //
 	COMMAND_OPTIMIZATION_INHIBIT(false), //
@@ -38,7 +38,7 @@ public enum ServerCommand {
 		this(general, true);
 	}
 
-	public boolean isGeneral() {
+	boolean isGeneral() {
 		return this.general;
 	}
 

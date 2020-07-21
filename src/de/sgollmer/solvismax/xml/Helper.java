@@ -18,7 +18,7 @@ public class Helper {
 	public static class IntegerValue {
 		private final java.lang.Integer integer;
 
-		public IntegerValue(java.lang.Integer i) {
+		private IntegerValue(java.lang.Integer i) {
 			this.integer = i;
 		}
 

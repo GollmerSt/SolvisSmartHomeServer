@@ -28,7 +28,7 @@ public class AllScreens implements IScreenLearnable {
 	private final String homeId;
 	private final Map<String, OfConfigs<Screen>> screens;
 
-	public AllScreens(String homeId, Map<String, OfConfigs<Screen>> screens) {
+	private AllScreens(String homeId, Map<String, OfConfigs<Screen>> screens) {
 		this.homeId = homeId;
 		this.screens = screens;
 	}
@@ -57,18 +57,18 @@ public class AllScreens implements IScreenLearnable {
 		return null;
 	}
 
-	public void assign(SolvisDescription description) {
+	void assign(SolvisDescription description) {
 		for (OfConfigs<Screen> screenConf : this.screens.values()) {
 			screenConf.assign(description);
 		}
 	}
 
-	public static class Creator extends CreatorByXML<AllScreens> {
+	static class Creator extends CreatorByXML<AllScreens> {
 
 		private String homeId;
 		private final Map<String, OfConfigs<Screen>> screens = new HashMap<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 

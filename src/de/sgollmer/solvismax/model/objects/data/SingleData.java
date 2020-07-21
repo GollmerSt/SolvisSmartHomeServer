@@ -19,14 +19,13 @@ public abstract class SingleData<T> {
 		return this.timeStamp;
 	}
 
-	// public SingleData average( Collection< SingleData > values ) ;
 	public abstract Integer getInt();
 
-	public SingleData<T> create(int value, long timeStamp, boolean fastChange) {
+	SingleData<T> create(int value, long timeStamp, boolean fastChange) {
 		return this.create(value, timeStamp);
 	}
 
-	public abstract SingleData<T> create(int value, long timeStamp);
+	abstract SingleData<T> create(int value, long timeStamp);
 
 	public abstract String getXmlId();
 
@@ -34,7 +33,7 @@ public abstract class SingleData<T> {
 
 	public abstract T get();
 
-	public boolean isFastChange() {
+	boolean isFastChange() {
 		return false;
 	}
 }

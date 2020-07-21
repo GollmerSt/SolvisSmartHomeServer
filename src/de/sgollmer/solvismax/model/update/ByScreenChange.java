@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ByScreenChange extends Strategy<ByScreenChange> {
 
-	public static ByScreenChange getInstance() {
+	private static ByScreenChange getInstance() {
 		return ByScreenChangeHolder.INSTANCE;
 	}
 
@@ -36,13 +36,13 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 		return true;
 	}
 
-	public static class Creator extends UpdateCreator<ByScreenChange> {
+	static class Creator extends UpdateCreator<ByScreenChange> {
 
-		public Creator() {
+		Creator() {
 			super(null, null);
 		}
 
-		public Creator(String id, BaseCreator<?> creator) {
+		private Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 

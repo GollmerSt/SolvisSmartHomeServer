@@ -40,7 +40,7 @@ public class HeaterLoops implements IConfiguration {
 	private final String screenRef;
 	private final Collection<Rectangle> buttons;
 
-	public HeaterLoops(String screenRef, Rectangle hk1, Rectangle hk2, Rectangle hk3) {
+	private HeaterLoops(String screenRef, Rectangle hk1, Rectangle hk2, Rectangle hk3) {
 		this.screenRef = screenRef;
 		this.buttons = Arrays.asList(hk1, hk2, hk3);
 
@@ -69,18 +69,18 @@ public class HeaterLoops implements IConfiguration {
 		return this.getConfiguration(solvis.getCurrentScreen());
 	}
 
-	public String getScreenRef() {
+	private String getScreenRef() {
 		return this.screenRef;
 	}
 
-	public static class Creator extends CreatorByXML<HeaterLoops> {
+	static class Creator extends CreatorByXML<HeaterLoops> {
 
 		private String screenRef;
 		private Rectangle hk1;
 		private Rectangle hk2;
 		private Rectangle hk3;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -128,7 +128,8 @@ public class HeaterLoops implements IConfiguration {
 
 	}
 
-	public MyImage getTestImage() throws IOException {
+	@SuppressWarnings("unused")
+	private MyImage getTestImage() throws IOException {
 
 		File parent = new File("testFiles\\images");
 

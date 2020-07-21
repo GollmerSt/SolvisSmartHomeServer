@@ -28,7 +28,7 @@ public class OcrRectangle extends MyImage {
 
 	private Collection<Ocr> parts = null;
 
-	public OcrRectangle(MyImage image, Coordinate upperLeft, Coordinate lowerRight) {
+	private OcrRectangle(MyImage image, Coordinate upperLeft, Coordinate lowerRight) {
 		super(image, upperLeft, lowerRight, true);
 		this.split();
 	}
@@ -38,7 +38,7 @@ public class OcrRectangle extends MyImage {
 		this.split();
 	}
 
-	public OcrRectangle(MyImage image) {
+	private OcrRectangle(MyImage image) {
 		super(image);
 		this.split();
 	}
@@ -86,8 +86,8 @@ public class OcrRectangle extends MyImage {
 			builder.append(ocr.toChar());
 		}
 		String result = builder.toString();
-		
-		//logger.debug("String detected by OCR: " + result );
+
+		// logger.debug("String detected by OCR: " + result );
 
 		return result;
 	}
@@ -165,7 +165,7 @@ public class OcrRectangle extends MyImage {
 	public static void main(String[] args) {
 
 		File parent = new File("testFiles\\images");
-		
+
 		File file = new File(parent, "4 Solar.png");
 
 		BufferedImage bufferedImage = null;
@@ -180,10 +180,10 @@ public class OcrRectangle extends MyImage {
 		OcrRectangle rectangle = new OcrRectangle(myImage, new Coordinate(170, 30), new Coordinate(235, 40));
 
 		String returnTemperature = rectangle.getString();
-		
-		System.out.println("ReturnTemperature is: " + returnTemperature );
-		
-		//-----------------------------------------------
+
+		System.out.println("ReturnTemperature is: " + returnTemperature);
+
+		// -----------------------------------------------
 
 		file = new File(parent, "bildschirmschoner.png");
 
@@ -292,7 +292,6 @@ public class OcrRectangle extends MyImage {
 
 		System.out.println("Burner starts is " + brennerStarts);
 
-
 		// -------------------------------------------------------------
 
 		file = new File(parent, "-4 fein.png");
@@ -311,8 +310,9 @@ public class OcrRectangle extends MyImage {
 
 		System.out.println("Feineinstellung Soll: [-4], Ist: " + feineinstellung);
 	}
-	
-	public static void dummy() {
+
+	@SuppressWarnings("unused")
+	private static void dummy() {
 		logger.debug("Nur ein Dummy");
 	}
 

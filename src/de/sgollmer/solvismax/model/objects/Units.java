@@ -38,7 +38,7 @@ public class Units {
 
 	private final Collection<Unit> units;
 
-	public Units(Collection<Unit> units) {
+	private Units(Collection<Unit> units) {
 		this.units = units;
 	}
 
@@ -107,7 +107,7 @@ public class Units {
 		private final Features features;
 		private final int ignoredFrameThicknesScreenSaver;
 
-		public Unit(String id, String type, String url, String account, CryptAes password, int configOrMask,
+		private Unit(String id, String type, String url, String account, CryptAes password, int configOrMask,
 				int defaultAverageCount, int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms,
 				int forcedUpdateInterval_ms, int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
 				int releaseBlockingAfterUserAccess_ms, int releaseBlockingAfterServiceAccess_ms,
@@ -160,7 +160,7 @@ public class Units {
 			return this.watchDogTime_ms;
 		}
 
-		public static class Creator extends CreatorByXML<Unit> {
+		private static class Creator extends CreatorByXML<Unit> {
 
 			private String id;
 			private String type;
@@ -183,7 +183,7 @@ public class Units {
 			private Features features;
 			private int ignoredFrameThicknesScreenSaver;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
@@ -364,7 +364,7 @@ public class Units {
 		private final boolean clearErrorMessageAfterMail;
 		private final boolean onlyMeasurements;
 
-		public Features(boolean clockTuning, boolean equipmentTimeSynchronisation, boolean updateAfterUserAccess,
+		private Features(boolean clockTuning, boolean equipmentTimeSynchronisation, boolean updateAfterUserAccess,
 				boolean detectServiceAccess, boolean powerOffIsServiceAccess, boolean sendMailOnError,
 				boolean clearErrorMessageAfterMail, boolean onlyMeasurements) {
 			this.clockTuning = clockTuning;
@@ -409,7 +409,7 @@ public class Units {
 			return this.sendMailOnError;
 		}
 
-		public static class Creator extends CreatorByXML<Features> {
+		private static class Creator extends CreatorByXML<Features> {
 
 			private boolean clockTuning;
 			private boolean equipmentTimeSynchronisation;
@@ -420,7 +420,7 @@ public class Units {
 			private boolean clearErrorMessageAfterMail;
 			private boolean onlyMeasurements;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 

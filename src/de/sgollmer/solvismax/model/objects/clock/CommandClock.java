@@ -20,7 +20,7 @@ public class CommandClock extends Command {
 	private final ClockMonitor.IAdjustStrategy strategy;
 	private final NextAdjust nextAdjust;
 
-	public CommandClock(ClockMonitor.IAdjustStrategy strategy, NextAdjust nextAdjust) {
+	CommandClock(ClockMonitor.IAdjustStrategy strategy, NextAdjust nextAdjust) {
 		this.strategy = strategy;
 		this.nextAdjust = nextAdjust;
 	}
@@ -46,12 +46,8 @@ public class CommandClock extends Command {
 		return true;
 	}
 
-	public NextAdjust getNextAdjust() {
+	NextAdjust getNextAdjust() {
 		return this.nextAdjust;
-	}
-
-	public ClockMonitor.IAdjustStrategy getStrategy() {
-		return this.strategy;
 	}
 
 	@Override

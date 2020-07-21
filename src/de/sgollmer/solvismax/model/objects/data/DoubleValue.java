@@ -49,25 +49,25 @@ public class DoubleValue extends SingleData<Double> {
 	}
 
 	@Override
-	public boolean isFastChange() {
+	boolean isFastChange() {
 		return false;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if ( !(obj instanceof SingleData)) {
-			return false ;
+		if (!(obj instanceof SingleData)) {
+			return false;
 		}
-		double cmp ;
-		double maxEqualDiff = Math.abs(this.value) * Constants.PRECISION_DOUBLE ;
+		double cmp;
+		double maxEqualDiff = Math.abs(this.value) * Constants.PRECISION_DOUBLE;
 		if (obj instanceof DoubleValue) {
-			cmp = ((DoubleValue) obj).value ;
-		} else if (obj instanceof IntegerValue ) {
-			cmp = ((IntegerValue) obj).get() ;
+			cmp = ((DoubleValue) obj).value;
+		} else if (obj instanceof IntegerValue) {
+			cmp = ((IntegerValue) obj).get();
 		} else {
-			return false ;
+			return false;
 		}
-		double diff = this.value - cmp ;
+		double diff = this.value - cmp;
 		return Math.abs(diff) < maxEqualDiff;
 	}
 

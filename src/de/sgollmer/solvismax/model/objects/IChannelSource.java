@@ -19,8 +19,8 @@ import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public interface IChannelSource extends IAssigner, IGraficsLearnable {
-	
-	public ChannelDescription getRestoreChannel( Solvis solvis) ;
+
+	public ChannelDescription getRestoreChannel(Solvis solvis);
 
 	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException;
 

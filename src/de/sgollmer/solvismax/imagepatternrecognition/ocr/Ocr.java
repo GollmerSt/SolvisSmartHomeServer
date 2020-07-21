@@ -27,17 +27,17 @@ public class Ocr extends MyImage {
 	private Maxima[] maximaX = new Maxima[] { new Maxima(0, 0), new Maxima(0, 0) };
 	private Maxima[] maximaY = new Maxima[] { new Maxima(0, 0), new Maxima(0, 0) };
 
-	public Ocr(BufferedImage image) {
+	private Ocr(BufferedImage image) {
 		super(image);
 		this.processing(false);
 	}
 
-	public Ocr(MyImage image) {
+	private Ocr(MyImage image) {
 		super(image);
 		this.processing(false);
 	}
 
-	public Ocr(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta) {
+	Ocr(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta) {
 		super(image, topLeft, bottomRight, createImageMeta);
 
 		this.processing(true);
@@ -87,7 +87,7 @@ public class Ocr extends MyImage {
 		private final BlackWhite blackWhite;
 		private final int rotated90Degree;
 
-		public Next(BlackWhite blackWhite, int rotated90Degree) {
+		private Next(BlackWhite blackWhite, int rotated90Degree) {
 			this.blackWhite = blackWhite;
 			this.rotated90Degree = rotated90Degree;
 		}
@@ -98,12 +98,12 @@ public class Ocr extends MyImage {
 		private Coordinate black;
 		private Coordinate white;
 
-		public BlackWhite(Coordinate black, Coordinate white) {
+		private BlackWhite(Coordinate black, Coordinate white) {
 			this.black = black;
 			this.white = white;
 		}
 
-		public Next nextCicle() {
+		private Next nextCicle() {
 			Coordinate diff = this.white.diff(this.black);
 			diff = new Coordinate(-diff.getY(), diff.getX());
 			BlackWhite newBlackWhite = new BlackWhite(this.black.add(diff), this.white.add(diff));
@@ -121,7 +121,7 @@ public class Ocr extends MyImage {
 			}
 		}
 
-		public BlackWhite nextMonoton(boolean left) {
+		private BlackWhite nextMonoton(boolean left) {
 			Coordinate diff = this.white.diff(this.black);
 			diff = new Coordinate(left ? diff.getY() : -diff.getY(), diff.getX() > 0 ? diff.getX() : -diff.getX());
 			BlackWhite newBlackWhite = new BlackWhite(this.black.add(diff), this.white.add(diff));
@@ -173,7 +173,7 @@ public class Ocr extends MyImage {
 		private final Coordinate average;
 		private final List<Coordinate> rotations180Degrees;
 
-		public AnalyseResult(boolean closedStructure, Coordinate average, List<Coordinate> rotations180Degrees) {
+		private AnalyseResult(boolean closedStructure, Coordinate average, List<Coordinate> rotations180Degrees) {
 			this.closedStructure = closedStructure;
 			this.average = average;
 			this.rotations180Degrees = rotations180Degrees;
@@ -278,11 +278,11 @@ public class Ocr extends MyImage {
 		}
 	}
 
-	public char toChar() {
+	char toChar() {
 		// - Erkennung von 4, geschlossene Struktur obere Hälfte, waagerechtes
 		// Maximum 3/4 * Breite, nahe Mitte
-		
-		if ( this.getHeight() == 0 || this.getWidth() == 0 ) {
+
+		if (this.getHeight() == 0 || this.getWidth() == 0) {
 			return 0x00;
 		}
 
@@ -327,7 +327,7 @@ public class Ocr extends MyImage {
 		}
 
 		AnalyseResult middle = this.analyse(new Coordinate(this.getWidth() / 2, this.getHeight() / 2));
-		if ( middle.closedStructure) {
+		if (middle.closedStructure) {
 			return '°';
 		}
 
@@ -356,8 +356,7 @@ public class Ocr extends MyImage {
 		}
 
 		if (this.getHistogramX().get(0) > this.getHeight() * 4 / 5
-				&& this.getHistogramY().get(0) > this.getWidth() * 4 / 5
-				&& this.getHeight() >= 2 * getWidth() ) {
+				&& this.getHistogramY().get(0) > this.getWidth() * 4 / 5 && this.getHeight() >= 2 * getWidth()) {
 			return '[';
 		}
 

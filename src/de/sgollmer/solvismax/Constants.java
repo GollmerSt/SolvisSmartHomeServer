@@ -7,6 +7,8 @@
 
 package de.sgollmer.solvismax;
 
+import de.sgollmer.solvismax.objects.Coordinate;
+
 public class Constants {
 	public static final int DEBUG_USER_ACCESS_TIME = 60000;
 	/**
@@ -19,8 +21,8 @@ public class Constants {
 	public static final String TINY_LOG_CONFIG_FILE = "tinylog.properties";
 	public static final String TINY_LOG_FILE_PROPERTY_PREFIX = "writer";
 	public static final String TINY_LOG_FILE_PROPERTY_SUFFIX = ".file";
-	
-	public static final int MIN_TOUCH_TIME = 100 ;
+
+	public static final int MIN_TOUCH_TIME = 100;
 
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
 	public static final String RESOURCE_PATH = "data";
@@ -74,6 +76,13 @@ public class Constants {
 
 	public static final int MODBUS_SLAVE_ID = 1;
 
+	public static class XmlStrings {
+		public static final String XML_MEASUREMENT_BOOLEAN = "BooleanValue";
+		public static final String XML_MEASUREMENT_INTEGER = "IntegerValue";
+		public static final String XML_MEASUREMENT_STRING = "StringValue";
+		public static final String XML_MEASUREMENT_MODE = "ModeValue";
+	}
+
 	public static class ExitCodes {
 		public static final int OK = 0;
 		public static final int READING_CONFIGURATION_FAIL = 10;
@@ -93,12 +102,12 @@ public class Constants {
 
 	public static class Mqtt {
 		public static final String[] CMND_SUFFIXES = new String[] { //
-				"/+/server/cmnd", //	Server commands
-				"/+/online",//
-				"/+/+/server/cmnd", //	Server commands
-				"/+/+/+/cmnd", //	SET
-				"/+/+/+/update", //	GET
-				//"/#"
+				"/+/server/cmnd", // Server commands
+				"/+/online", //
+				"/+/+/server/cmnd", // Server commands
+				"/+/+/+/cmnd", // SET
+				"/+/+/+/update", // GET
+				// "/#"
 		};
 		public static final String DATA_SUFFIX = "/data";
 		public static final String META_SUFFIX = "/meta";
@@ -112,5 +121,7 @@ public class Constants {
 		public static final int MAX_CONNECTION_REPEAT_TIME = 120000;
 
 	}
+
+	public static final Coordinate RELEASE_COORDINATE = new Coordinate(260, 260);
 
 }

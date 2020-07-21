@@ -23,7 +23,7 @@ public class ConfigurationMasks {
 
 	private final Collection<ConfigurationMask> masks;
 
-	public ConfigurationMasks(Collection<ConfigurationMask> masks) {
+	private ConfigurationMasks(Collection<ConfigurationMask> masks) {
 		this.masks = masks;
 	}
 
@@ -85,20 +85,20 @@ public class ConfigurationMasks {
 
 	}
 
-	public static class ConfigurationMask {
+	private static class ConfigurationMask {
 		private final int andMask;
 		private final int cmpMask;
 
-		public ConfigurationMask(int andMask, int cmpMask) {
+		private ConfigurationMask(int andMask, int cmpMask) {
 			this.andMask = andMask;
 			this.cmpMask = cmpMask;
 		}
 
-		public boolean isInConfiguration(int configurationMask) {
+		private boolean isInConfiguration(int configurationMask) {
 			return this.cmpMask == (configurationMask & this.andMask);
 		}
 
-		public boolean isVerified(ConfigurationMask mask) {
+		private boolean isVerified(ConfigurationMask mask) {
 			int andMask = this.andMask & mask.andMask;
 			return 0 != ((this.cmpMask ^ mask.cmpMask) & andMask);
 		}
@@ -109,12 +109,12 @@ public class ConfigurationMasks {
 					+ Integer.toString(this.cmpMask, 16);
 		}
 
-		public static class Creator extends CreatorByXML<ConfigurationMask> {
+		private static class Creator extends CreatorByXML<ConfigurationMask> {
 
 			private int andMask;
 			private int cmpMask;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 

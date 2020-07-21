@@ -24,6 +24,9 @@ Version 01.01.00
     18.07.2020  Erfolgt eine Fehlermeldung im Home-Screen, blieb diese trotz aktiviertem Feature
                 ClearErrorMessageAfterMail sichtbar.
                 
+    20.07.2020  Das Feature UpdateAfterUserAccess war immer aktiviert, auf wenn es in der base.xml scheinbar
+                deaktiviert war.
+                
 
 
 Version 01.00.15

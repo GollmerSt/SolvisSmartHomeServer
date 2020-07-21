@@ -37,7 +37,7 @@ public class StrategyRead implements IStrategy {
 	protected final int divisor;
 	private final GuiRead guiRead;
 
-	public StrategyRead(int divisor, GuiRead guiRead) {
+	protected StrategyRead(int divisor, GuiRead guiRead) {
 		this.divisor = divisor;
 		this.guiRead = guiRead;
 	}
@@ -48,13 +48,14 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, IControlAccess controlAccess, boolean optional) throws IOException {
+	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, IControlAccess controlAccess, boolean optional)
+			throws IOException {
 		Integer i;
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
 			String s = ocr.getString();
-			String formated = this.guiRead.format.getString(s);
+			String formated = this.guiRead.getFormat().getString(s);
 			if (formated == null) {
 				if (optional) {
 					i = null;
@@ -80,12 +81,12 @@ public class StrategyRead implements IStrategy {
 		return this.divisor;
 	}
 
-	public static class Creator extends CreatorByXML<StrategyRead> {
+	static class Creator extends CreatorByXML<StrategyRead> {
 
 		private int divisor = 1;
 		private GuiRead guiRead = null;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -163,21 +164,21 @@ public class StrategyRead implements IStrategy {
 		return null;
 	}
 
-	public static class GuiRead {
+	protected static class GuiRead {
 		protected final Format format;
 
-		public GuiRead(String format) {
+		protected GuiRead(String format) {
 			this.format = new Format(format);
 		}
 
-		public Format getFormat() {
+		private Format getFormat() {
 			return this.format;
 		}
 
-		public static class Creator extends CreatorByXML<GuiRead> {
+		private static class Creator extends CreatorByXML<GuiRead> {
 			private String format;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 

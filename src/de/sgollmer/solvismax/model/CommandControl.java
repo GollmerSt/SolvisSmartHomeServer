@@ -31,7 +31,7 @@ public class CommandControl extends Command {
 	private int writeFailCount = 0;
 	private int readFailCount = 0;
 
-	public CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) {
+	CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) {
 		this.modbus = description.isModbus(solvis);
 		this.setValue = setValue;
 		this.description = description;
@@ -47,17 +47,17 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public boolean isInhibit() {
+	protected boolean isInhibit() {
 		return this.inhibit;
 	}
 
 	@Override
-	public void setInhibit(boolean inhibit) {
+	protected void setInhibit(boolean inhibit) {
 		this.inhibit = inhibit;
 	}
 
 	@Override
-	public Screen getScreen(Solvis solvis) {
+	protected Screen getScreen(Solvis solvis) {
 		return this.screen;
 	}
 
@@ -153,13 +153,13 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public synchronized boolean toEndOfQueue() {
+	protected synchronized boolean toEndOfQueue() {
 		int cmp = Constants.COMMAND_TO_QUEUE_END_AFTER_N_FAILURES;
 		return this.writeFailCount >= cmp || this.readFailCount >= cmp;
 	}
 
 	@Override
-	public Handling getHandling(Command queueEntry, Solvis solvis) {
+	protected Handling getHandling(Command queueEntry, Solvis solvis) {
 		if (!(queueEntry instanceof CommandControl) || queueEntry.isInhibit()) {
 			// new Handling(inQueueInhibit, inhibitAdd, insert)
 			return new Handling(false, false, false);
@@ -213,17 +213,17 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public boolean isModbus() {
+	protected boolean isModbus() {
 		return this.modbus;
 	}
 
 	@Override
-	public boolean isWriting() {
+	protected boolean isWriting() {
 		return this.setValue != null && !this.inhibit;
 	}
 
 	@Override
-	public void notExecuted() {
+	protected void notExecuted() {
 	}
 
 	@Override
@@ -233,7 +233,8 @@ public class CommandControl extends Command {
 		}
 		CommandControl control = (CommandControl) queueCommand;
 		if (this.modbus) {
-			return !this.isInhibit() && this.description == control.description && (!this.isWriting() || control.isWriting());
+			return !this.isInhibit() && this.description == control.description
+					&& (!this.isWriting() || control.isWriting());
 		}
 		if (!control.isInhibit() && control.screen == this.screen) {
 			return !this.isWriting() || control.isWriting() && control.description == this.description;

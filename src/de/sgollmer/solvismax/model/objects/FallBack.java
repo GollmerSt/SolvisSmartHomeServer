@@ -34,16 +34,16 @@ public class FallBack implements IAssigner {
 	private final FallBack lastChance;
 
 	private interface IFallBackObject extends IAssigner {
-		public void execute(Solvis solvis) throws IOException;
+		void execute(Solvis solvis) throws IOException;
 	}
 
-	public FallBack(Collection<IFallBackObject> sequence, FallBack lastChance) {
+	private FallBack(Collection<IFallBackObject> sequence, FallBack lastChance) {
 		this.sequence = sequence;
 		this.lastChance = lastChance;
 	}
 
 	public void execute(Solvis solvis, boolean lastChance) throws IOException {
-		if (lastChance && this.lastChance != null ) {
+		if (lastChance && this.lastChance != null) {
 			this.lastChance.execute(solvis, false);
 		} else {
 			for (IFallBackObject obj : this.sequence) {
@@ -57,19 +57,19 @@ public class FallBack implements IAssigner {
 		for (IFallBackObject obj : this.sequence) {
 			obj.assign(description);
 		}
-		if ( this.lastChance != null ) {
+		if (this.lastChance != null) {
 			this.lastChance.assign(description);
 		}
 
 	}
 
-	public static class Creator extends CreatorByXML<FallBack> {
+	static class Creator extends CreatorByXML<FallBack> {
 
 		private Collection<IFallBackObject> sequence = new ArrayList<>();
 		private FallBack lastChance = null;
 		private final boolean inner;
 
-		public Creator(String id, BaseCreator<?> creator, boolean inner) {
+		Creator(String id, BaseCreator<?> creator, boolean inner) {
 			super(id, creator);
 			this.inner = inner;
 		}
@@ -118,9 +118,9 @@ public class FallBack implements IAssigner {
 
 	}
 
-	public static class ScreenRef extends de.sgollmer.solvismax.model.objects.screen.ScreenRef
+	private static class ScreenRef extends de.sgollmer.solvismax.model.objects.screen.ScreenRef
 			implements IFallBackObject {
-		public ScreenRef(String id) {
+		private ScreenRef(String id) {
 			super(id);
 		}
 
@@ -136,9 +136,9 @@ public class FallBack implements IAssigner {
 			solvis.send(screen.getTouchPoint());
 		}
 
-		public static class Creator extends de.sgollmer.solvismax.model.objects.screen.ScreenRef.Creator {
+		private static class Creator extends de.sgollmer.solvismax.model.objects.screen.ScreenRef.Creator {
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
@@ -151,16 +151,16 @@ public class FallBack implements IAssigner {
 
 	}
 
-	public static class Back implements IFallBackObject {
+	private static class Back implements IFallBackObject {
 
 		@Override
 		public void execute(Solvis solvis) throws IOException {
 			solvis.sendBack();
 		}
 
-		public static class Creator extends CreatorByXML<Back> {
+		private static class Creator extends CreatorByXML<Back> {
 
-			public Creator(String id, BaseCreator<?> creator) {
+			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
 			}
 

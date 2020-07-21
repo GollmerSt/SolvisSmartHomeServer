@@ -23,7 +23,7 @@ public class AllPreparations {
 
 	private final Collection<Preparation> preparations;
 
-	public AllPreparations(Collection<Preparation> preparations) {
+	private AllPreparations(Collection<Preparation> preparations) {
 		this.preparations = preparations;
 	}
 
@@ -36,11 +36,11 @@ public class AllPreparations {
 		return null;
 	}
 
-	public static class Creator extends CreatorByXML<AllPreparations> {
+	static class Creator extends CreatorByXML<AllPreparations> {
 
 		private final Collection<Preparation> preparations = new ArrayList<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -78,7 +78,7 @@ public class AllPreparations {
 	public static class PreparationRef {
 		private final String preparationId;
 
-		public PreparationRef(String preparationId) {
+		private PreparationRef(String preparationId) {
 			this.preparationId = preparationId;
 		}
 

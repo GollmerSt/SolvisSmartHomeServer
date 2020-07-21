@@ -36,7 +36,6 @@ public class Measurement extends ChannelSource {
 	private final Strategy type;
 	private final int divisor;
 	private final boolean average;
-	private final boolean dynamic;
 	private final int delayAfterSwitchingOn;
 	private final Collection<Field> fields;
 
@@ -95,20 +94,18 @@ public class Measurement extends ChannelSource {
 	// 130B0F Datum 15.11.2019
 	// 49AB00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-	public Measurement(Strategy type, int divisor, boolean average, boolean dynamic, int delayAfterSwitchingOn,
+	private Measurement(Strategy type, int divisor, boolean average, int delayAfterSwitchingOn,
 			Collection<Field> fields) {
 		this.type = type;
 		this.divisor = divisor;
 		this.average = average;
-		this.dynamic = dynamic;
 		this.delayAfterSwitchingOn = delayAfterSwitchingOn;
 		this.fields = fields;
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis)
-			throws ErrorPowerOn, IOException {
-		
+	public boolean getValue(SolvisData dest, Solvis solvis) throws ErrorPowerOn, IOException {
+
 		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
 			dest.setSingleData(null);
 			return true;
@@ -137,10 +134,6 @@ public class Measurement extends ChannelSource {
 		return this.divisor;
 	}
 
-	public boolean isDynamic() {
-		return this.dynamic;
-	}
-
 	@Override
 	public void instantiate(Solvis solvis) {
 
@@ -151,7 +144,6 @@ public class Measurement extends ChannelSource {
 		private Strategy type;
 		private int divisor = 1;
 		private boolean average = false;
-		private boolean dynamic = false;
 		private int delayAfterSwitchingOn = -1;
 		private final Collection<Field> fields = new ArrayList<>(2);
 
@@ -172,9 +164,6 @@ public class Measurement extends ChannelSource {
 				case "average":
 					this.average = Boolean.parseBoolean(value);
 					break;
-				case "dynamic":
-					this.dynamic = Boolean.parseBoolean(value);
-					break;
 				case "delayAfterSwitchingOn_ms":
 					this.delayAfterSwitchingOn = Integer.parseInt(value);
 					break;
@@ -184,8 +173,7 @@ public class Measurement extends ChannelSource {
 
 		@Override
 		public Measurement create() throws XmlError {
-			return new Measurement(this.type, this.divisor, this.average, this.dynamic, this.delayAfterSwitchingOn,
-					this.fields);
+			return new Measurement(this.type, this.divisor, this.average, this.delayAfterSwitchingOn, this.fields);
 		}
 
 		@Override
@@ -249,10 +237,6 @@ public class Measurement extends ChannelSource {
 	@Override
 	public boolean isBoolean() {
 		return this.type.isBoolean();
-	}
-
-	public int getDelayAfterSwitchingOn() {
-		return this.delayAfterSwitchingOn;
 	}
 
 	@Override

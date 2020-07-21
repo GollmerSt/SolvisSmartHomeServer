@@ -37,7 +37,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 	private final String readIntervalId;
 	private final boolean hourly;
 
-	public EquipmentOnOff(String equipmentId, String calculatedId, int factor, String checkIntervalId,
+	private EquipmentOnOff(String equipmentId, String calculatedId, int factor, String checkIntervalId,
 			String readIntervalId, boolean hourly) {
 		this.equipmentId = equipmentId;
 		this.calculatedId = calculatedId;
@@ -47,7 +47,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		this.hourly = hourly;
 	}
 
-	public EquipmentOnOff() {
+	private EquipmentOnOff() {
 		this(null, null, -1, null, null, false);
 	}
 
@@ -68,7 +68,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			readInterval = solvis.getDuration(this.readIntervalId).getTime_ms();
 		}
 
-		new Executable(solvis, toUpdate, equipment, calculatedValue, this.factor, checkInterval, readInterval, this.hourly);
+		new Executable(solvis, toUpdate, equipment, calculatedValue, this.factor, checkInterval, readInterval,
+				this.hourly);
 
 	}
 
@@ -93,8 +94,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		private boolean lastEquipmentState = false;
 		private boolean screenRestore = true;
 
-		public Executable(Solvis solvis, SolvisData toUpdate, SolvisData equipment, SolvisData calculatedValue, int factor,
-				int checkInterval, int readInterval, boolean hourly) {
+		private Executable(Solvis solvis, SolvisData toUpdate, SolvisData equipment, SolvisData calculatedValue,
+				int factor, int checkInterval, int readInterval, boolean hourly) {
 			this.solvis = solvis;
 			this.toUpdate = toUpdate;
 			this.equipment = equipment;
@@ -204,7 +205,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 	}
 
-	public static class Creator extends UpdateCreator<EquipmentOnOff> {
+	static class Creator extends UpdateCreator<EquipmentOnOff> {
 
 		private String equipmentId;
 		private String calculatedId;
@@ -213,11 +214,11 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		private String readIntervalId;
 		private boolean hourly = false;
 
-		public Creator() {
+		Creator() {
 			super(null, null);
 		}
 
-		public Creator(String id, BaseCreator<?> creator) {
+		private Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 

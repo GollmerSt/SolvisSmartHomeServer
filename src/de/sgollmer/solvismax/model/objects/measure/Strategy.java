@@ -32,11 +32,11 @@ public enum Strategy {
 		this.numeric = numeric;
 	}
 
-	public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws ErrorPowerOn {
+	boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws ErrorPowerOn {
 		return this.type.get(destin, fields, data);
 	}
 
-	public boolean isBoolean() {
+	boolean isBoolean() {
 		return this.type.isBoolean();
 	}
 
@@ -71,14 +71,14 @@ public enum Strategy {
 		}
 	}
 
-	public boolean isNumeric() {
+	boolean isNumeric() {
 		return this.numeric;
 	}
 
 	private static class Integer implements IStrategyClass {
 		private final boolean signed;
 
-		public Integer(boolean signed) {
+		private Integer(boolean signed) {
 			this.signed = signed;
 		}
 

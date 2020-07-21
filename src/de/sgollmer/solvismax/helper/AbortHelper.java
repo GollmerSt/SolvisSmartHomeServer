@@ -23,7 +23,7 @@ public class AbortHelper {
 	}
 
 	private boolean abort = false;
-	private Collection< Object > syncObjects = new ArrayList<>() ;
+	private Collection<Object> syncObjects = new ArrayList<>();
 
 	public synchronized void sleep(int time) throws TerminationException {
 		if (this.abort) {
@@ -43,14 +43,14 @@ public class AbortHelper {
 			throw new TerminationException();
 		}
 		try {
-			synchronized( this) {
-				this.syncObjects.add(syncObject) ;
+			synchronized (this) {
+				this.syncObjects.add(syncObject);
 			}
 			synchronized (syncObject) {
 				syncObject.wait(time);
 			}
-			synchronized( this) {
-				this.syncObjects.remove(syncObject) ;
+			synchronized (this) {
+				this.syncObjects.remove(syncObject);
 			}
 		} catch (InterruptedException e) {
 		}
@@ -62,15 +62,13 @@ public class AbortHelper {
 	public synchronized void abort() {
 		this.abort = true;
 		this.notifyAll();
-		for ( Object obj : this.syncObjects ) {
+		for (Object obj : this.syncObjects) {
 			obj.notifyAll();
 		}
 	}
-	
-	public boolean isAborted() {
+
+	public boolean isAbort() {
 		return this.abort;
 	}
-	
-	
 
 }

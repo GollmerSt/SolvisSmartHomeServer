@@ -167,24 +167,24 @@ public class Distributor extends Observable<JsonPackage> {
 		}
 	}
 
-	public void abort() {
+	private void abort() {
 		this.aliveThread.abort();
 		if (this.periodicBurstThread != null) {
 			this.periodicBurstThread.abort();
 		}
 	}
 
-	public SolvisDataObserver getSolvisDataObserver() {
+	private SolvisDataObserver getSolvisDataObserver() {
 		return this.solvisDataObserver;
 	}
 
-	public ConnectionStateObserver getConnectionStateObserver() {
+	private ConnectionStateObserver getConnectionStateObserver() {
 		return this.connectionStateObserver;
 	}
 
 	private class AliveThread extends Thread {
 
-		public AliveThread() {
+		private AliveThread() {
 			super("Alive thread");
 		}
 
@@ -217,12 +217,12 @@ public class Distributor extends Observable<JsonPackage> {
 			}
 		}
 
-		public synchronized void trigger() {
+		private synchronized void trigger() {
 			this.triggered = true;
 			this.notifyAll();
 		}
 
-		public synchronized void abort() {
+		private synchronized void abort() {
 			this.abort = true;
 			this.triggered = true; // disable send alive
 			this.notifyAll();
@@ -234,7 +234,7 @@ public class Distributor extends Observable<JsonPackage> {
 
 		private boolean abort;
 
-		public PeriodicBurstThread() {
+		private PeriodicBurstThread() {
 			super("PeriodicBurst");
 		}
 
@@ -270,14 +270,14 @@ public class Distributor extends Observable<JsonPackage> {
 			}
 		}
 
-		public synchronized void abort() {
+		private synchronized void abort() {
 			this.abort = true;
 			this.notifyAll();
 		}
 	}
 
 	public void setBurstUpdate(boolean burstUpdate) {
-		boolean send ;
+		boolean send;
 		Collection<SolvisData> collection = null;
 		synchronized (this) {
 			send = this.burstUpdate;
@@ -294,12 +294,8 @@ public class Distributor extends Observable<JsonPackage> {
 		logger.debug("Burst update " + comment);
 	}
 
-	public SolvisStateObserver getSolvisStateObserver() {
+	private SolvisStateObserver getSolvisStateObserver() {
 		return this.solvisStateObserver;
-	}
-
-	public HumanAccessObserver getUserAccessObserver() {
-		return this.humanAccessObserver;
 	}
 
 	public void register(Solvis solvis) {
@@ -318,11 +314,11 @@ public class Distributor extends Observable<JsonPackage> {
 		this.aliveThread.start();
 	}
 
-	public interface IMeasurements {
+	private interface IMeasurements {
 		public void add(SolvisData data);
 
 		public boolean isEmpty();
 
-		public Collection<SolvisData> cloneAndClear();
+		Collection<SolvisData> cloneAndClear();
 	}
 }

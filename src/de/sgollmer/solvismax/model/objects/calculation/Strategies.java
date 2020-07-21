@@ -29,7 +29,7 @@ public enum Strategies {
 		this.name = name;
 	}
 
-	public static Strategies getByName(String name) {
+	static Strategies getByName(String name) {
 		for (Strategies strategy : Strategies.values()) {
 			if (strategy.name.equals(name)) {
 				return strategy;
@@ -38,35 +38,35 @@ public enum Strategies {
 		return null;
 	}
 
-	public static abstract class Strategy<T extends Strategy<?>> implements IAssigner {
+	 static abstract class Strategy<T extends Strategy<?>> implements IAssigner {
 
 		protected final Calculation calculation;
 
-		public Strategy( Calculation calculation ) {
+		protected Strategy( Calculation calculation ) {
 			this.calculation = calculation ;
 		}
 
-		public abstract T create( Calculation calculation);
+		protected abstract T create( Calculation calculation);
 
-		public abstract boolean isWriteable();
+		abstract boolean isWriteable();
 
-		public SingleData<?> setValue(Solvis solvis, SolvisData value) {
+		SingleData<?> setValue(Solvis solvis, SolvisData value) {
 			return null; // i.g. is directly set via solvis data
 		}
 
-		public boolean getValue(SolvisData dest, Solvis solvis) {
+		boolean getValue(SolvisData dest, Solvis solvis) {
 			return true; // i.g. solvis data contains the current value
 		}
 
-		public abstract void instantiate(Solvis solvis);
+		abstract void instantiate(Solvis solvis);
 		
-		public Collection< IMode > getModes() {
+		Collection< IMode > getModes() {
 			return null ;
 		}
 
-		public abstract Double getAccuracy() ;
+		abstract Double getAccuracy() ;
 
-		public abstract boolean isBoolean() ;
+		abstract boolean isBoolean() ;
 
 	}
 

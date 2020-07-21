@@ -38,7 +38,7 @@ public class Solar implements IConfiguration {
 	private final int maxTemperatureX10;
 	private final Collection<Rectangle> rectangles = new ArrayList<>();
 
-	public Solar(String screenRef, String format, int maxTemperatureX10, Rectangle returnTemperature,
+	private Solar(String screenRef, String format, int maxTemperatureX10, Rectangle returnTemperature,
 			Rectangle outgoingTemperature) {
 		this.screenRef = screenRef;
 		this.format = new Format(format);
@@ -47,7 +47,7 @@ public class Solar implements IConfiguration {
 		this.rectangles.add(returnTemperature);
 	}
 
-	public static class Creator extends CreatorByXML<Solar> {
+	static class Creator extends CreatorByXML<Solar> {
 
 		private String screenRef;
 		private String format;
@@ -55,7 +55,7 @@ public class Solar implements IConfiguration {
 		private Rectangle returnTemperature;
 		private Rectangle outgoingTemperature;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -114,7 +114,7 @@ public class Solar implements IConfiguration {
 			OcrRectangle ocr = new OcrRectangle(image, rectangle);
 			String scanned = ocr.getString();
 			String intString = this.format.getString(scanned);
-			if (intString == null ) {
+			if (intString == null) {
 				logger.error("Scanned string <" + scanned + "> doesn't fit the regular expression");
 				return 0x00;
 			}

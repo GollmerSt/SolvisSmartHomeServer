@@ -18,11 +18,11 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class MixerPosition0 extends Strategy<MixerPosition0> {
 
-	public MixerPosition0(Calculation calculation) {
+	private MixerPosition0(Calculation calculation) {
 		super(calculation);
 	}
 
-	public MixerPosition0() {
+	MixerPosition0() {
 		super(null);
 	}
 
@@ -32,16 +32,16 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	public boolean isWriteable() {
+	boolean isWriteable() {
 		return false;
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
+	void instantiate(Solvis solvis) {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
-		if ( result.getSingleData() == null ) {
+		if (result.getSingleData() == null) {
 			result.setBoolean(false, -1);
 		}
 
@@ -61,7 +61,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		private final SolvisData pumpOn;
 		private final SolvisData mixerClosing;
 
-		public Executable(SolvisData result, SolvisData pumpOn, SolvisData mixerClosing) {
+		private Executable(SolvisData result, SolvisData pumpOn, SolvisData mixerClosing) {
 			this.result = result;
 			this.pumpOn = pumpOn;
 			this.mixerClosing = mixerClosing;
@@ -93,12 +93,12 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	public Double getAccuracy() {
+	Double getAccuracy() {
 		return null;
 	}
 
 	@Override
-	public boolean isBoolean() {
+	boolean isBoolean() {
 		return true;
 	}
 

@@ -13,10 +13,11 @@ public class TypeError extends Error {
 	 */
 	private static final long serialVersionUID = -3880012451025478665L;
 
-	public TypeError( String message ) {
-		super(message) ;
+	public TypeError(String message) {
+		super(message);
 	}
-	public TypeError( Throwable throwable ) {
-		super(throwable) ;
+
+	public TypeError(Throwable throwable) {
+		super(throwable);
 	}
 }

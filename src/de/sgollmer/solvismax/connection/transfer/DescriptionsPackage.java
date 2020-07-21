@@ -12,7 +12,7 @@ import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions;
 import de.sgollmer.solvismax.model.objects.OfConfigs;
 
-public class DescriptionsPackage extends JsonPackage implements ISendData{
+public class DescriptionsPackage extends JsonPackage implements ISendData {
 
 	public DescriptionsPackage(AllChannelDescriptions descriptions, int configurationMask) {
 		this.command = Command.DESCRIPTIONS;

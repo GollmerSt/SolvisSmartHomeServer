@@ -568,14 +568,6 @@
 				<documentation>Mittelwertbildung</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="dynamic" type="boolean">
-			<annotation>
-				<documentation>
-					False: wenn nur einmalig gelesen True: wenn zyklisch
-					gelesen
-				</documentation>
-			</annotation>
-		</attribute>
 		<attribute name="delayAfterSwitchingOn_ms" type="int"
 			use="optional">
 			<annotation>

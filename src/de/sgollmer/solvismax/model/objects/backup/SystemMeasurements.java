@@ -21,19 +21,19 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class SystemMeasurements {
-	
+
 	private static final String XML_MEASUREMENTS_MEASUREMENT = "Measurement";
 
-	private final String id ;
+	private final String id;
 	private final Collection<Measurement> measurements;
-	private Solvis owner ;
+	private Solvis owner;
 
-	public SystemMeasurements(String id, Collection<Measurement> measurements) {
-		this.id = id ;
+	private SystemMeasurements(String id, Collection<Measurement> measurements) {
+		this.id = id;
 		this.measurements = measurements;
 	}
 
-	public SystemMeasurements( String id ) {
+	SystemMeasurements(String id) {
 		this(id, new ArrayList<>());
 	}
 
@@ -45,21 +45,21 @@ public class SystemMeasurements {
 		this.measurements.add(measurement);
 	}
 
-	public static class Creator extends CreatorByXML<SystemMeasurements> {
+	static class Creator extends CreatorByXML<SystemMeasurements> {
 
-		private String id ;
+		private String id;
 		private final Collection<Measurement> measurements = new ArrayList<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
 		public void setAttribute(QName name, String value) {
-			switch ( name.getLocalPart() ) {
+			switch (name.getLocalPart()) {
 				case "id":
-					this.id = value ;
-					break ;
+					this.id = value;
+					break;
 			}
 		}
 
@@ -73,7 +73,7 @@ public class SystemMeasurements {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_MEASUREMENTS_MEASUREMENT:
-					return new Measurement.Creator(id, this.getBaseCreator() );
+					return new Measurement.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -90,31 +90,31 @@ public class SystemMeasurements {
 
 	}
 
-	public void writeXml(XMLStreamWriter writer) throws XMLStreamException {
+	void writeXml(XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeAttribute("id", this.id);
-		for ( Measurement measurement: this.measurements ) {
+		for (Measurement measurement : this.measurements) {
 			writer.writeStartElement(XML_MEASUREMENTS_MEASUREMENT);
 			measurement.writeXml(writer);
 			writer.writeEndElement();
 
 		}
-		
+
 	}
 
-	public String getId() {
+	String getId() {
 		return this.id;
 	}
 
-	public Solvis getOwner() {
+	Solvis getOwner() {
 		return this.owner;
 	}
 
-	public void setOwner(Solvis owner) {
+	void setOwner(Solvis owner) {
 		this.owner = owner;
 	}
 
 	public void clear() {
 		this.measurements.clear();
-		
+
 	}
 }
