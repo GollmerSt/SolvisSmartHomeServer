@@ -1,7 +1,7 @@
 ########################################################################################################################
 #
 # Attention! This file isn't in the FHEM repository, a private one is used.
-# $Id: 73_SolvisClient.pm 257 2020-06-09 18:32:38Z stefa_000 $
+# $Id: 73_SolvisClient.pm 277 2020-07-19 16:00:49Z stefa_000 $
 #
 #  (c) 2019-2020 Copyright: Stefan Gollmer (Stefan dot Gollmer at gmail dot com)
 #  All rights reserved
@@ -20,6 +20,9 @@
 #   00.02.07    21.05.2020  SCMP77              GUI_COMMANDS_ENABLE/DISABLE was incorrectly sent on reconnection
 #   00.02.08    25.05.2020  SCMP77              Some variables moved to helper (should not be visible in Web-Interface)
 #   00.02.09    05.06.2020  SCMP77              Set of a binary value now possible, Implementation of a min time between connection
+#   00.02.10    10.06.2020  SCMP77              ReadyFn simplified, reconnect on JSON errors
+#   00.02.11    02.07.2020  SCMP77              Set bug fixed
+#   00.02.12    19.07.2020  SCMP77              Server compile time is written to the log
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -56,6 +59,7 @@ use constant WATCH_DOG_INTERVAL => 300 ;        #Violates 'ProhibitConstantPragm
                                                 # Andernfalls wird die Verbindung neu aufgebaut
 use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 2 ; #Violates 'ProhibitConstantPragma'
 use constant RECONNECT_AFTER_DISMISS => 30 ;    #Violates 'ProhibitConstantPragma'
+use constant RECONNECT_AFTER_TRANSFER_ERROR => 30 ;    #Violates 'ProhibitConstantPragma'
 
 use constant MIN_CONNECTION_INTERVAL => 5 ;    #Violates 'ProhibitConstantPragma'
 
@@ -257,11 +261,6 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
 
     $self->{DeviceName}  = $url;    #Für DevIO, Name fest vorgegeben
         
-    $self->{helper}{ConnectionError} = undef ;
-    $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
-    $self->{helper}{ConnectionOngoingByReady} = _FALSE_ ;
-    $self->{helper}{TimeOfLastConnectionAttempt} = 0 ;
-
     if( $init_done ) {
         my $result = Connect( $self, 0 );
     } else {
@@ -348,11 +347,6 @@ sub Connect {
     my $reopen = shift ;
     my $byReady = shift ;
     
-    if ( $self->{ConnectionOngoing} ) {
-        Log( $self, 3, "Connection still ongoing");
-        return "Connection still ongoing" ;
-    }
-
     my $connectedSub = $reopen?\&SendReconnectionData:\&SendConnectionData ;
 
     if (defined(DevIo_IsOpen($self))) {
@@ -360,43 +354,12 @@ sub Connect {
         
         DevIo_CloseDev($self) ;
     }
-
-    my $error = DevIo_OpenDev($self, $reopen, $connectedSub, \&ConnectCallback );
-
-    $self->{helper}{ConnectionOngoingByReady} = $byReady ;
-    $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
-
+    
     $self->{helper}{BUFFER} = '' ;
 
-    return $error;
+    return DevIo_OpenDev($self, $reopen, $connectedSub );
 
 } # end Connect
-
-
-
-#####################################
-#
-#       Callback after connection war tried 
-#
-sub ConnectCallback {
-    my $self = shift ;
-    my $error = shift ;
-    
-    $self->{helper}{ConnectionError} = $error ;
-    
-    if ( $self->{helper}{ConnectionOngoingByReady} ) {
-        $self->{helper}{ConnectionByReadyFinished} = _TRUE_ ;
-    }
-    
-    $self->{helper}{ConnectionOngoingByReady} = _FALSE_ ;
-    
-    if ( defined($error) ) {
-        Log( $self, 4, "Connection error: $error");
-    }
-
-    return ;
-
-} # end ConnectCallback
 
 
 
@@ -446,34 +409,14 @@ sub Ready {
     
     my $now = time ;
 
-    
-    if ( $self->{helper}{TimeOfLastConnectionAttempt} + MIN_CONNECTION_INTERVAL > $now) {
-        return 'Connection ongoing';
+    if ( defined( $self->{helper}{NEXT_OPEN} ) && $self->{helper}{NEXT_OPEN} > $now) {
+        return ;
     }
 
-    if ( $self->{helper}{ConnectionOngoingByReady} ) {
-        return 'Connection still ongoing' ;
-    }
-
-    my $error = $self->{helper}{ConnectionError} ;
+    $self->{helper}{NEXT_OPEN} = $now + MIN_CONNECTION_INTERVAL;
     
-    $self->{helper}{ConnectionError} = $error ;
-    
-    my $isOpen = DevIo_IsOpen($self);
-        
-    if ( $self->{helper}{ConnectionByReadyFinished} ) {
-        $self->{helper}{ConnectionByReadyFinished} = _FALSE_ ;
-        if($isOpen || defined($error)) {
-            return $error
-        }
-    }
-    
-    if(!$isOpen) {
-        $self->{helper}{TimeOfLastConnectionAttempt} = $now ;
-        Log( $self, 4, 'Reconnection try');
-        $error = Connect($self, 1) ; # reopen
-    }
-    return 'Connection ongoing';
+    Log( $self, 4, 'Reconnection try');
+    return Connect($self, 1) ; # reopen
 
 } # end Ready
 
@@ -522,16 +465,17 @@ sub Read {
         $self->{helper}{BUFFER} = $parts[4] ;
 
         Log($self, 5, "Package encoded: $parts[3]");
-		
-		my $receivedData = {} ;
-		
-		eval {
-			$receivedData = decode_json ($parts[3]);
-		};
-		if ( $@ ne '' ) {
-			Log($self, 3, "Error on receiving JSON package occured, package ignored: $@");
-			return ;
-		}
+        
+        my $receivedData = {} ;
+        
+        eval {
+            $receivedData = decode_json ($parts[3]);
+        };
+        if ( $@ ) {
+            Log($self, 3, "Error on receiving JSON package occured: $@, try reconnection");         
+            ReconnectAfterDismiss($self, RECONNECT_AFTER_TRANSFER_ERROR);
+            return ;
+        }
 
         ExecuteCommand($self, $receivedData) ;
     }
@@ -609,8 +553,15 @@ sub Connected {
             Log($self, 3, "Format version $formatVersion of client is deprecated, use a newer client, if available.");
             $self->{INFO} = 'Format version is deprecated' ;
         }
+		
+		my $buildDate = '';
+		if ( defined($connected->{BuildDate})) {
+			$buildDate = ", build date: $connected->{BuildDate}" ;
+		}
         
-        Log($self, 3, "Server version: $self->{VERSION_SERVER}") ;
+        Log($self, 3, "Server version: $self->{VERSION_SERVER}$buildDate") ;
+		
+		
     }
     return ;
 } # end Connected
@@ -899,7 +850,7 @@ sub CreateSetParams {
                 }
                 $setParameters .=$count ;
             }
-        } elsif ( defined ($ChannelDescriptions{$channel}{IsBoolean}) ) {
+        } elsif ( defined ($ChannelDescriptions{$channel}{IsBoolean}) && $ChannelDescriptions{$channel}{IsBoolean} != _FALSE_ ) {
             $setParameters .= ':off,on' ;
         }
     }
@@ -1063,7 +1014,7 @@ sub Set {
                     Log($self, 5, 'Mode 1: '.join(' ', $modes[0]));
                     return "unknown value $value choose one of " . join(' ', @modes);
                 }
-            } elsif ( defined ($ChannelDescriptions{$channel}{IsBoolean}) ) {
+            } elsif ( defined ($ChannelDescriptions{$channel}{IsBoolean}) && $ChannelDescriptions{$channel}{IsBoolean} != _FALSE_ ) {
                 if ( $value eq "on" ) {
                     $value = \1;
                 } elsif ( $value eq "off" ) {
@@ -1306,8 +1257,8 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Solltemperatur Nacht Heizkreis 2</td></tr>
                     <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 2 (-5 ... 5)</td></tr>
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 2(0 ... 90%)</td></tr>
-					<tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
-					<tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
+                    <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
+                    <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1392,10 +1343,10 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Temperaturfeineinstellung Heizkreis 2 (-5 ... 5)</td></tr>
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 2(0 ... 90%)</td></tr>
                     <tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Sollwert der Vorlauftemperatur Heizkreis 2</td></tr>
-					<tr><td align="right" valign="top"><code>C24.LaufzeitSolarpumpe</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe (A01)</td></tr>
-					<tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe 2 (A02)</td></tr>
-					<tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
-					<tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
+                    <tr><td align="right" valign="top"><code>C24.LaufzeitSolarpumpe</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe (A01)</td></tr>
+                    <tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe 2 (A02)</td></tr>
+                    <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
+                    <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1607,8 +1558,8 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C14.Nachttemperatur_HK2</code> : </td><td align="left" valign="top">Set temperature night heating circuit 2</td></tr>
                     <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 2 (-5 ... 5)</td></tr>
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top"> room influence of heating circuit 2 (0 ... 90%)</td></tr>
-					<tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
-					<tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
+                    <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
+                    <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1690,10 +1641,10 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C15.TemperaturFeineinstellung_HK2</code> : </td><td align="left" valign="top">Fine temperature adjustment heating circuit 2 (-5 ... 5)</td></tr>
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">room influence of heating circuit 2 (0 ... 90%)</td></tr>
                     <tr><td align="right" valign="top"><code>C17.Vorlauf_Soll_HK2</code> : </td><td align="left" valign="top">Setpoint of the flow temperature heating circuit 2</td></tr>
-					<tr><td align="right" valign="top"><code>C24.LaufzeitSolarpumpe</code> : </td><td align="left" valign="top">Running time of the solar pump (A01)</td></tr>
-					<tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Running time of the solar pump 2 (A02)</td></tr>
-					<tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
-					<tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
+                    <tr><td align="right" valign="top"><code>C24.LaufzeitSolarpumpe</code> : </td><td align="left" valign="top">Running time of the solar pump (A01)</td></tr>
+                    <tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Running time of the solar pump 2 (A02)</td></tr>
+                    <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
+                    <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1807,7 +1758,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.09",
+  "version": "v00.02.12",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
