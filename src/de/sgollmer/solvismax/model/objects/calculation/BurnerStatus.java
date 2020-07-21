@@ -119,7 +119,6 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 	@Override
 	Collection<IMode> getModes() {
-		// TODO muss noch in die Meta-daten
 		return Arrays.asList(Status.values());
 	}
 

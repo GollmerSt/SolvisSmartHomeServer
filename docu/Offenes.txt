@@ -154,11 +154,11 @@ Erledigt:
 15. -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:55438
 
 
-
-Jun 07 10:38:59 Rp3Fhem java[18765]: Exception in thread "main" java.lang.NullPointerException
-Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.objects.data.SolvisData.<init>(SolvisData.java:41)
-Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.objects.AllSolvisData.get(AllSolvisData.java:54)
-Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.objects.AllSolvisData.restoreSpecialMeasurements(AllSolvisData.java:128)
-Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.Solvis.init(Solvis.java:240)
-Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.Instances.init(Instances.java:74)
-Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.Main.main(Main.java:190)
+16. Erledigt, trat auf, wenn der Kanalname geändert wurde und Alter war noch im Backup-File
+	Jun 07 10:38:59 Rp3Fhem java[18765]: Exception in thread "main" java.lang.NullPointerException
+	Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.objects.data.SolvisData.<init>(SolvisData.java:41)
+	Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.objects.AllSolvisData.get(AllSolvisData.java:54)
+	Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.objects.AllSolvisData.restoreSpecialMeasurements(AllSolvisData.java:128)
+	Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.Solvis.init(Solvis.java:240)
+	Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.Instances.init(Instances.java:74)
+	Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.Main.main(Main.java:190)

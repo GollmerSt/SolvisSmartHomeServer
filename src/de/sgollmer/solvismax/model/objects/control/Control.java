@@ -460,11 +460,7 @@ public class Control extends ChannelSource {
 		}
 
 		boolean prepare(Solvis solvis) throws IOException, TerminationException {
-			if (this.preparation == null) {
-				return true;
-			} else {
-				return this.preparation.execute(solvis);
-			}
+			return Preparation.prepare(this.preparation, solvis);
 		}
 
 		@Override

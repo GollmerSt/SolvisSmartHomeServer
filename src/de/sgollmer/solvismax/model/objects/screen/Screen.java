@@ -121,16 +121,6 @@ public class Screen implements IScreenLearnable, Comparable<Screen>, OfConfigs.I
 		return this.id.hashCode();
 	}
 
-	@SuppressWarnings("unused")
-	// TODO warum?
-	private boolean prepare(Solvis solvis) throws IOException, TerminationException {
-		if (this.preparation == null) {
-			return true;
-		} else {
-			return this.preparation.execute(solvis);
-		}
-	}
-
 	private Preparation getPreparation() {
 		return this.preparation;
 	}
@@ -261,10 +251,7 @@ public class Screen implements IScreenLearnable, Comparable<Screen>, OfConfigs.I
 		}
 
 		private boolean execute(Solvis solvis) throws IOException, TerminationException {
-			boolean success = true;
-			if (this.preparation != null) {
-				success = this.preparation.execute(solvis);
-			}
+			boolean success = Preparation.prepare(this.preparation, solvis);
 			if (success) {
 				solvis.send(this.touchPoint);
 			}
