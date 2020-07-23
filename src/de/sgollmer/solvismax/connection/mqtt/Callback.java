@@ -18,6 +18,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.connection.ServerStatus;
+import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
 import de.sgollmer.solvismax.error.TypeError;
 import de.sgollmer.solvismax.model.Solvis;
@@ -63,8 +64,11 @@ final class Callback implements MqttCallbackExtended {
 					this.mqtt.publish(solvis.getHumanAccess().getMqttData(solvis));
 				}
 				this.mqtt.publish(ServerStatus.ONLINE.getMqttData());
+				Mqtt.logger.info("New MQTT connection handling successfull");
 			} catch (MqttException e) {
 				Mqtt.logger.error("Error: Mqtt exception occured", e);
+			} catch (MqttConnectionLost e) {
+				Mqtt.logger.error("Connection lost on reconnection");
 			}
 		}
 	}

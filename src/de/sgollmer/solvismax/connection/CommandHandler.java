@@ -40,7 +40,7 @@ public class CommandHandler {
 	private final Instances instances;
 	private int nextClientId = Long.hashCode(System.currentTimeMillis());
 	private boolean abort = false;
-
+	
 	public CommandHandler(Instances instances) {
 		this.instances = instances;
 		this.clients = new ArrayList<>();
@@ -175,7 +175,7 @@ public class CommandHandler {
 			ClientAssignments assignments = this.get(client);
 			if (online) {
 				if (assignments != null) {
-					assignments.reconnect(null);
+					assignments.reconnect(client);
 				} else {
 					this.createClientAssignments(client);
 				}
@@ -305,26 +305,16 @@ public class CommandHandler {
 
 	private synchronized ClientAssignments get(IClient client) {
 		for (ClientAssignments assignments : this.clients) {
-			if (assignments.getClient().equals(client)) {
+			IClient cmp = assignments.getClient();
+			if (cmp == null) {
+				logger.error("Error in client list. Client not defined");
+			} else if (assignments.getClient().equals(client)) {
 				return assignments;
 			}
 		}
 		return null;
 	}
 
-//	public ClientAssignments get(int clientId) {
-//		return this.get(Integer.toString(clientId));
-//	}
-//
-//	public synchronized ClientAssignments get(String clientId) {
-//		for (ClientAssignments assignments : this.clients) {
-//			if (assignments.getClientId().contentEquals(clientId)) {
-//				return assignments;
-//			}
-//		}
-//		return null;
-//	}
-//
 	private synchronized ClientAssignments unregister(ClientAssignments assignments) {
 		for (Iterator<ClientAssignments> it = this.clients.iterator(); it.hasNext();) {
 			ClientAssignments assignmentsC = it.next();
@@ -358,13 +348,17 @@ public class CommandHandler {
 			}
 			assignments.setClosingThread(new ClosingThread(assignments));
 			assignments.getClosingThread().submit();
-			assignments.setClient(null);
+			//assignments.setClient(null);	//TODO: wird vermutlich nicht benötigt, bei Server-Client wird client neu
+											// geschrieben, bei MQTT darf Client nicht gelöscht werden
+			
 		}
 	}
 
 	synchronized void clientClosed(Client client) {
 		ClientAssignments assignments = this.get(client);
-		this.clientClosed(assignments);
+		if (assignments != null) {
+			this.clientClosed(assignments);
+		}
 	}
 
 	class ClosingThread extends Helper.Runnable implements Runnable {

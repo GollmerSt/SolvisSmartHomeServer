@@ -8,7 +8,6 @@ Offene Aufgaben:
 
 
 
-
 Erledigt:
 
 2. Der Solvis-Name muss noch definierbar sein
@@ -162,3 +161,97 @@ Erledigt:
 	Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.Solvis.init(Solvis.java:240)
 	Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.model.Instances.init(Instances.java:74)
 	Jun 07 10:38:59 Rp3Fhem java[18765]:         at de.sgollmer.solvismax.Main.main(Main.java:190)
+
+	
+17. Dead lock (kein echter) im Zusammenhang mit Mqtt. Verbindung wird immer neu aufgebaut.
+	Ursache ist einen Null-Pointer-Exception im Zusammenhang mit einem Buffer-Überlauf des Brokers. Durch den vollen Buffer des Brokers
+	werden keine weiteren Daten angenommen, es gibt kein PUBACK und nach einer zeit wird die Verbindung 
+	neu versucht, dann aber wieder Null-Pointer-Exception
+    
+    Log, wenn deadlock aufgetreten ist:
+    
+    	[2020-07-22 15:08:42,455] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT successfull
+		[2020-07-22 15:10:42,486] ERROR de.sgollmer.solvismax.connection.mqtt.Mqtt - Error: Mqtt exception occured: org.eclipse.paho.client.mqttv3.MqttException: Timed out waiting for a response from the server
+		        at org.eclipse.paho.client.mqttv3.internal.ExceptionHelper.createMqttException(ExceptionHelper.java:31)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientState.checkForActivity(ClientState.java:747)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientComms.checkForActivity(ClientComms.java:818)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientComms.checkForActivity(ClientComms.java:804)
+		        at org.eclipse.paho.client.mqttv3.TimerPingSender$PingTask.run(TimerPingSender.java:79)
+		        at java.base/java.util.TimerThread.mainLoop(Timer.java:556)
+		        at java.base/java.util.TimerThread.run(Timer.java:506)
+		[2020-07-22 15:10:42,497] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: false
+		[2020-07-22 15:10:42,497] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT broker lost
+		[2020-07-22 15:10:42,502] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+    	 
+	Vorgeschichte:
+	
+		Es trat auf, als ich die VM vom IOBroker in den Standby geschickt habe (12:14:37,404).
+	
+		[2020-07-22 06:52:35,367] INFO de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler - Backup of measurements written.
+		[2020-07-22 07:44:06,422] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: true
+		[2020-07-22 07:44:06,424] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+		[2020-07-22 07:52:35,376] INFO de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler - Backup of measurements written.
+		[2020-07-22 08:52:35,390] INFO de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler - Backup of measurements written.
+		[2020-07-22 09:52:35,405] INFO de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler - Backup of measurements written.
+		[2020-07-22 10:52:35,419] INFO de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler - Backup of measurements written.
+		[2020-07-22 11:52:35,434] INFO de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler - Backup of measurements written.
+		[2020-07-22 12:14:37,404] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: false
+		[2020-07-22 12:14:37,405] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+		[2020-07-22 12:14:37,428] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT broker lost
+		[2020-07-22 12:14:38,746] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT successfull
+		[2020-07-22 12:14:38,875] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: false
+		[2020-07-22 12:14:38,877] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+		[2020-07-22 12:14:38,896] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT broker lost
+		[2020-07-22 12:14:40,209] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT successfull
+		[2020-07-22 12:14:40,332] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: false
+		[2020-07-22 12:14:40,333] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+		[2020-07-22 12:14:40,347] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT broker lost
+		[2020-07-22 12:14:41,660] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT successfull
+		[2020-07-22 12:14:41,813] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: false
+		[2020-07-22 12:14:41,814] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+		[2020-07-22 12:14:41,821] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT broker lost
+		[2020-07-22 12:14:43,132] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT successfull
+		[2020-07-22 12:14:43,252] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: false
+		[2020-07-22 12:14:43,252] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+		[2020-07-22 12:14:43,259] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT broker lost
+		[2020-07-22 12:14:44,570] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT successfull
+		[2020-07-22 12:14:44,708] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: false
+		[2020-07-22 12:14:44,709] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+		[2020-07-22 12:14:44,719] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT broker lost
+		[2020-07-22 12:14:46,033] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT successfull
+		[2020-07-22 12:16:46,245] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT broker lost
+		[2020-07-22 12:16:46,234] ERROR de.sgollmer.solvismax.connection.mqtt.Mqtt - Error: Mqtt exception occured: org.eclipse.paho.client.mqttv3.MqttException: Timed out waiting for a response from the ser$
+		        at org.eclipse.paho.client.mqttv3.internal.ExceptionHelper.createMqttException(ExceptionHelper.java:31)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientState.checkForActivity(ClientState.java:747)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientComms.checkForActivity(ClientComms.java:818)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientComms.checkForActivity(ClientComms.java:804)
+		        at org.eclipse.paho.client.mqttv3.TimerPingSender$PingTask.run(TimerPingSender.java:79)
+		        at java.base/java.util.TimerThread.mainLoop(Timer.java:556)
+		        at java.base/java.util.TimerThread.run(Timer.java:506)
+		[2020-07-22 12:16:46,258] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: false
+		[2020-07-22 12:16:46,260] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+		[2020-07-22 12:16:47,564] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT successfull
+		[2020-07-22 12:18:47,577] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT broker lost
+		[2020-07-22 12:18:47,577] ERROR de.sgollmer.solvismax.connection.mqtt.Mqtt - Error: Mqtt exception occured: org.eclipse.paho.client.mqttv3.MqttException: Timed out waiting for a response from the ser$
+		        at org.eclipse.paho.client.mqttv3.internal.ExceptionHelper.createMqttException(ExceptionHelper.java:31)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientState.checkForActivity(ClientState.java:747)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientComms.checkForActivity(ClientComms.java:818)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientComms.checkForActivity(ClientComms.java:804)
+		        at org.eclipse.paho.client.mqttv3.TimerPingSender$PingTask.run(TimerPingSender.java:79)
+		        at java.base/java.util.TimerThread.mainLoop(Timer.java:556)
+		        at java.base/java.util.TimerThread.run(Timer.java:506)
+		[2020-07-22 12:18:47,585] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Topic <SolvisSmartHomeServer/IoBroker/online> with received message: false
+		[2020-07-22 12:18:47,587] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <CLIENT_ONLINE> received
+		[2020-07-22 12:18:48,899] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Connection to MQTT successfull
+		[2020-07-22 12:20:48,915] ERROR de.sgollmer.solvismax.connection.mqtt.Mqtt - Error: Mqtt exception occured: org.eclipse.paho.client.mqttv3.MqttException: Timed out waiting for a response from the ser$
+		        at org.eclipse.paho.client.mqttv3.internal.ExceptionHelper.createMqttException(ExceptionHelper.java:31)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientState.checkForActivity(ClientState.java:747)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientComms.checkForActivity(ClientComms.java:818)
+		        at org.eclipse.paho.client.mqttv3.internal.ClientComms.checkForActivity(ClientComms.java:804)
+		        at org.eclipse.paho.client.mqttv3.TimerPingSender$PingTask.run(TimerPingSender.java:79)
+		        at java.base/java.util.TimerThread.mainLoop(Timer.java:556)
+		        at java.base/java.util.TimerThread.run(Timer.java:506)
+
+
+
+		

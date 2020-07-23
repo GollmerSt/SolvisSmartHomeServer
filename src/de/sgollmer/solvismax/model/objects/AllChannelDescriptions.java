@@ -24,6 +24,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
@@ -278,7 +279,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		return result;
 	}
 
-	void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException {
+	void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException, MqttConnectionLost {
 		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
 			ChannelDescription meta = descriptionsC.get(solvis);
 			if (meta != null) {

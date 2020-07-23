@@ -243,13 +243,13 @@ public class Main {
 
 			@Override
 			public void run() {
+				AbortHelper.getInstance().abort();
 				instances.abort();
 				commandHandler.abort();
 				mqtt.abort();
 				if (server != null) {
 					server.abort();
 				}
-				AbortHelper.getInstance().abort();
 				logger.info("Server terminated");
 				logManager.shutdown();
 			}

@@ -17,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.logging.LoggerFactory;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import de.sgollmer.solvismax.Constants;
@@ -26,6 +27,7 @@ import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.ServerStatus;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.crypt.Ssl;
+import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.log.LogManager;
@@ -76,6 +78,8 @@ public class Mqtt {
 		this.publishQoS = publishQoS;
 		this.subscribeQoS = subscribeQoS;
 		this.ssl = ssl;
+		
+		LoggerFactory.setLogger("de.sgollmer.solvismax.connection.mqtt.Logger");
 	}
 
 	public static class Creator extends CreatorByXML<Mqtt> {
@@ -192,6 +196,8 @@ public class Mqtt {
 				Mqtt.this.publish(data.getMqttData());
 			} catch (MqttException e) {
 				logger.error("Error on mqtt publish <" + data.getId() + "> of unit <" + this.unit.getId() + ">:", e);
+			} catch (MqttConnectionLost e) {
+				logger.debug("No MQTT connection publish <" + data.getId() + ">");
 			}
 		}
 	}
@@ -210,6 +216,8 @@ public class Mqtt {
 				Mqtt.this.publish(data.getMqttData());
 			} catch (MqttException e) {
 				logger.error("Error on mqtt publish <Status> of unit <" + this.unit.getId() + ">:", e);
+			} catch (MqttConnectionLost e) {
+				logger.debug("No MQTT connection publish <Status>");
 			}
 		}
 
@@ -230,6 +238,8 @@ public class Mqtt {
 			} catch (MqttException e) {
 				logger.error("Error on mqtt publish <HumannAccess> of unit <" + this.solvis.getUnit().getId() + ">:",
 						e);
+			} catch (MqttConnectionLost e) {
+				logger.debug("No MQTT connection publish <HumannAccess>");
 			}
 		}
 
@@ -237,11 +247,7 @@ public class Mqtt {
 
 	MqttCallbackExtended callback = new Callback(this);
 
-	public synchronized void publish(MqttData data) throws MqttException {
-		if (this.client == null || !this.client.isConnected()) {
-			logger.debug("Not connected, message not delivered");
-			return;
-		}
+	public synchronized void publish(MqttData data) throws MqttException, MqttConnectionLost {
 		if (data == null) {
 			return;
 		}
@@ -254,6 +260,10 @@ public class Mqtt {
 		builder.append('/');
 		builder.append(data.topicSuffix);
 		String topic = builder.toString();
+		if (this.client == null || !this.client.isConnected()) {
+			logger.debug("Not connected, message not delivered");
+			throw new MqttConnectionLost();
+		}
 		this.client.publish(topic, message);
 		logger.debug("Messsage was sent to <" + topic + ">, data: " + message.toString());
 
@@ -264,6 +274,8 @@ public class Mqtt {
 			this.publish(new MqttData(clientId + Constants.Mqtt.ERROR, message, 0, false));
 		} catch (MqttException e) {
 			logger.error("Can't deliver error message to iClient: " + message);
+		} catch (MqttConnectionLost e) {
+			logger.debug("No MQTT connection publish erro message");
 		}
 	}
 
@@ -316,7 +328,11 @@ public class Mqtt {
 
 		if (this.client.isConnected()) {
 			try {
-				this.publish(this.getLastWill());
+				try {
+					this.publish(this.getLastWill());
+				} catch (MqttConnectionLost e) {
+					logger.debug("Can't deliver value of last will at disconnection");
+				}
 				this.client.disconnect();
 				this.client.close();
 			} catch (MqttException e) {

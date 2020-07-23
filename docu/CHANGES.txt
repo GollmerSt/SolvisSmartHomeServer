@@ -1,5 +1,19 @@
 Ä N D E R U N G E N
 
+Version 01.01.01
+
+    22.07.2020  Wird die MQTT-Verbindung zum SmartHomeServer hart getrennt, bewirkte der in diesem Fall
+                vom Broker gesendete "LastWill" eine Null-Pointer-Exception, so dass die MQTT-Schnittstelle
+                des Servers nicht mehr reagierte.
+                
+                Die IoBroker-Objektliste enthielt noch überflüssige Objekte.
+                
+    23.07.2020  Die Logging-Daten der MQTT-Library werden nun ebenfalls in den Log des Servers geschrieben
+    			vorher wurden sie auf die Console geschrieben, bzw. bei einem im Hintergrund laufenden Server
+    			verschwanden sie im Nirvana
+                
+
+
 Version 01.01.00
 
     seit 19.06.2020  Implementation der MQTT-Schnittstelle
@@ -26,6 +40,8 @@ Version 01.01.00
                 
     20.07.2020  Das Feature UpdateAfterUserAccess war immer aktiviert, auf wenn es in der base.xml scheinbar
                 deaktiviert war.
+                
+    			MQTT-Schnittstellen-Implementation abgeschlossen.
                 
 
 

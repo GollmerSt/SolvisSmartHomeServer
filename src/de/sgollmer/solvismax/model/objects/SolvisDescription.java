@@ -17,6 +17,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
+import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
@@ -349,7 +350,7 @@ public class SolvisDescription {
 		this.errorDetection.instantiate(solvis);
 	}
 
-	public void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException {
+	public void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException, MqttConnectionLost {
 		this.getChannelDescriptions().sendToMqtt(solvis, mqtt);
 	}
 
