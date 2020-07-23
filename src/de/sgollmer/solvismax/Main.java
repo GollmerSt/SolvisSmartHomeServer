@@ -9,6 +9,8 @@ package de.sgollmer.solvismax;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,12 +39,31 @@ import de.sgollmer.solvismax.xml.XmlStreamReader;
 
 public class Main {
 
-	private static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
+	public static Main getInstance() {
+		Main main = MainHolder.INSTANCE;
+		return main;
+	}
 
-	private static ILogger logger;
+	private static class MainHolder {
+
+		private static final Main INSTANCE = new Main();
+	}
+
+	private static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
 	private static Level LEARN;
 
-	public static void main(String[] args) {
+	private ILogger logger;
+	private String startTime;
+	private boolean shutdownExecuted = false;
+	private Instances instances = null;
+	private CommandHandler commandHandler = null;
+	private Server server = null;
+	private Mqtt mqtt = null;
+
+	private void execute(String[] args) {
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+		this.startTime = format.format(new Date());
 
 		String createTaskName = null;
 		boolean onBoot = false;
@@ -98,7 +119,7 @@ public class Main {
 		}
 
 		BaseData baseData = null;
-		final LogManager logManager = LogManager.getInstance();
+		LogManager logManager = LogManager.getInstance();
 		try {
 			XmlStreamReader.Result<BaseData> base = new BaseControlFileReader().read();
 			if (base == null) {
@@ -129,14 +150,14 @@ public class Main {
 			LogManager.exit(0);
 		}
 
-		logger = logManager.getLogger(Main.class);
+		this.logger = logManager.getLogger(Main.class);
 
 		String serverStart = "Server started, Version " + Version.getInstance().getVersion();
 		if (Version.getInstance().getBuildDate() != null) {
 			serverStart += ", compiled at " + Version.getInstance().getBuildDate();
 		}
 
-		logger.info(serverStart);
+		this.logger.info(serverStart);
 		LEARN = Level.getLevel("LEARN");
 		boolean learn = false;
 
@@ -154,15 +175,15 @@ public class Main {
 
 				switch (command) {
 					case "server-terminate":
-						logger.info("server-terminate");
-						Main.serverTerminateAndExit(baseData);
+						this.logger.info("Termination started");
+						this.serverTerminateAndExit(baseData);
 						break;
 					case "server-learn":
 						learn = true;
 						break;
 					case "server-restart":
-						logger.info("server-restart");
-						Main.serverRestartAndExit(baseData, value);
+						this.logger.info("Restart started");
+						this.serverRestartAndExit(baseData, value);
 						break;
 					case "test-mail":
 						try {
@@ -173,7 +194,7 @@ public class Main {
 							baseData.getExceptionMail().send("Test mail", "This is a test mail", null);
 							System.exit(Constants.ExitCodes.OK);
 						} catch (Throwable e) {
-							logger.error("Mailing error", e);
+							this.logger.error("Mailing error", e);
 							System.exit(Constants.ExitCodes.MAILING_ERROR);
 						}
 						break;
@@ -194,24 +215,22 @@ public class Main {
 			System.exit(ExitCodes.SERVER_PORT_IN_USE);
 		}
 
-		Instances tempInstances = null;
-
 		try {
-			tempInstances = new Instances(baseData, learn);
+			this.instances = new Instances(baseData, learn);
 		} catch (IOException | XmlError | XMLStreamException e) {
-			logger.error("Exception on reading configuration occured, cause:", e);
+			this.logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
 		if (learn) {
 			try {
-				boolean learned = tempInstances.learn();
+				boolean learned = this.instances.learn();
 				if (!learned) {
-					logger.log(LEARN, "Nothing to learn!");
+					this.logger.log(LEARN, "Nothing to learn!");
 				}
 			} catch (IOException | XmlError | XMLStreamException | LearningError e) {
-				logger.error("Exception on reading configuration or learning files occured, cause:", e);
+				this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
 				e.printStackTrace();
 				System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 			}
@@ -219,46 +238,38 @@ public class Main {
 		}
 
 		try {
-			tempInstances.init();
+			this.instances.init();
 		} catch (IOException | XmlError | XMLStreamException e) {
-			logger.error("Exception on reading configuration occured, cause:", e);
+			this.logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		} catch (LearningError e2) {
-			logger.error(e2.getMessage());
+			this.logger.error(e2.getMessage());
 			System.exit(ExitCodes.LEARNING_NECESSARY);
 		}
 
-		final Instances instances = tempInstances;
-		final CommandHandler commandHandler = new CommandHandler(instances);
-		Server server = new Server(serverSocket, commandHandler, instances.getSolvisDescription().getMiscellaneous());
-		Mqtt mqtt = baseData.getMqtt();
+		this.commandHandler = new CommandHandler(this.instances);
+		this.server = new Server(serverSocket, this.commandHandler,
+				this.instances.getSolvisDescription().getMiscellaneous());
+		this.mqtt = baseData.getMqtt();
 		try {
-			mqtt.connect(instances, commandHandler);
+			this.mqtt.connect(this.instances, this.commandHandler);
 		} catch (MqttException e) {
-			logger.error("Error: Mqtt connection error", e);
+			this.logger.error("Error: Mqtt connection error", e);
 			System.exit(Constants.ExitCodes.MQTT_ERROR);
 		}
 		Runnable runnable = new Runnable() {
 
 			@Override
 			public void run() {
-				AbortHelper.getInstance().abort();
-				instances.abort();
-				commandHandler.abort();
-				mqtt.abort();
-				if (server != null) {
-					server.abort();
-				}
-				logger.info("Server terminated");
-				logManager.shutdown();
+				Main.this.shutDownHandling(true);
 			}
 		};
 
 		Runtime.getRuntime().addShutdownHook(new Thread(runnable));
 
-		instances.initialized();
-		server.start();
+		this.instances.initialized();
+		this.server.start();
 
 		System.out.println(serverStart);
 
@@ -266,11 +277,11 @@ public class Main {
 
 	}
 
-	private static void serverRestartAndExit(BaseData baseData, String agentlibOption) {
+	private void serverRestartAndExit(BaseData baseData, String agentlibOption) {
 		try {
 			long unsuccessfullTime = System.currentTimeMillis() + Constants.MAX_WAIT_TIME_TERMINATING_OTHER_SERVER;
 			ServerSocket serverSocket = null;
-			logger.info("Wait for server termination");
+			this.logger.info("Wait for server termination");
 			while (System.currentTimeMillis() < unsuccessfullTime && serverSocket == null) {
 				try {
 					serverSocket = new ServerSocket(baseData.getPort());
@@ -285,19 +296,19 @@ public class Main {
 
 			}
 			if (serverSocket != null) {
-				logger.info("Server terminated");
 				Restart restart = new Restart();
 				restart.startMainProcess(agentlibOption);
-				System.exit(ExitCodes.OK);
 			} else {
-				System.err.println("Restart not possible, server still running");
+				this.logger.error("Restart not possible, server still running");
 			}
 		} catch (Throwable e) {
-			logger.info("Unexpected error on restart: " + e.getMessage());
+			this.logger.info("Unexpected error on restart: " + e.getMessage());
 		}
+		this.logger.info("Restart finished (started at " + this.startTime + ")");
+		LogManager.exit(ExitCodes.OK);
 	}
 
-	private static void serverTerminateAndExit(BaseData baseData) {
+	private void serverTerminateAndExit(BaseData baseData) {
 		int port = baseData.getPort();
 		TerminateClient client = new TerminateClient(port);
 		try {
@@ -307,8 +318,44 @@ public class Main {
 			System.err.println("Terminate not successfull.");
 			LogManager.exit(ExitCodes.SERVER_TERMINATION_FAIL);
 		}
-		System.exit(ExitCodes.OK);
+		this.logger.info("Termination finished (started at " + this.startTime + ")");
+		LogManager.exit(ExitCodes.OK);
 
+	}
+
+	public void restart() {
+		this.shutDownHandling(false);
+		Restart restart = new Restart();
+		restart.startRestartProcess();
+		this.logger.info("Server terminated (started at " + Main.this.startTime + ")");
+		LogManager.exit(ExitCodes.OK);
+	}
+
+	void shutDownHandling(boolean out) {
+		if (this.shutdownExecuted) {
+			return;
+		}
+		this.shutdownExecuted = true;
+		AbortHelper.getInstance().abort();
+		if (this.instances != null) {
+			this.instances.abort();
+		}
+		if (this.commandHandler != null) {
+			this.commandHandler.abort();
+		}
+		if (this.mqtt != null) {
+			this.mqtt.abort();
+		}
+		if (this.server != null) {
+			this.server.abort();
+		}
+		if (out) {
+			this.logger.info("Server terminated (started at " + Main.this.startTime + ")");
+		}
+	}
+
+	public static void main(String[] args) {
+		Main.getInstance().execute(args);
 	}
 
 }

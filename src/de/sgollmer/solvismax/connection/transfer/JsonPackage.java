@@ -69,7 +69,8 @@ public class JsonPackage implements ITransferedData {
 	void receive(InputStream stream, int timeout) throws IOException, JsonError {
 		byte[] lengthBytes = new byte[3];
 		Helper.read(stream, lengthBytes, timeout);
-		int length = lengthBytes[0] << 16 | lengthBytes[1] << 8 | lengthBytes[2];
+		int length = ((int) lengthBytes[0] & 0xff) << 16 | ((int) lengthBytes[1] & 0xff) << 8
+				| ((int) lengthBytes[2] & 0xff);
 
 		byte[] receivedData = new byte[length];
 		Helper.read(stream, receivedData, timeout);

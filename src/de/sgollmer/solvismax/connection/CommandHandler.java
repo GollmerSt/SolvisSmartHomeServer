@@ -15,7 +15,7 @@ import java.util.Iterator;
 import javax.xml.stream.XMLStreamException;
 
 import de.sgollmer.solvismax.Constants.ExitCodes;
-import de.sgollmer.solvismax.Restart;
+import de.sgollmer.solvismax.Main;
 import de.sgollmer.solvismax.connection.Server.Client;
 import de.sgollmer.solvismax.connection.transfer.Command;
 import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
@@ -40,7 +40,7 @@ public class CommandHandler {
 	private final Instances instances;
 	private int nextClientId = Long.hashCode(System.currentTimeMillis());
 	private boolean abort = false;
-	
+
 	public CommandHandler(Instances instances) {
 		this.instances = instances;
 		this.clients = new ArrayList<>();
@@ -298,9 +298,10 @@ public class CommandHandler {
 
 	private void terminate(boolean restart) {
 		if (restart) {
-			new Restart().startRestartProcess();
+			Main.getInstance().restart();
+		} else {
+			System.exit(ExitCodes.OK);
 		}
-		System.exit(ExitCodes.OK);
 	}
 
 	private synchronized ClientAssignments get(IClient client) {
@@ -348,9 +349,10 @@ public class CommandHandler {
 			}
 			assignments.setClosingThread(new ClosingThread(assignments));
 			assignments.getClosingThread().submit();
-			//assignments.setClient(null);	//TODO: wird vermutlich nicht benötigt, bei Server-Client wird client neu
-											// geschrieben, bei MQTT darf Client nicht gelöscht werden
-			
+			// assignments.setClient(null); //TODO: wird vermutlich nicht benötigt, bei
+			// Server-Client wird client neu
+			// geschrieben, bei MQTT darf Client nicht gelöscht werden
+
 		}
 	}
 

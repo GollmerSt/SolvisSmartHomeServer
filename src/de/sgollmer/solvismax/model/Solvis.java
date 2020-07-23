@@ -190,7 +190,7 @@ public class Solvis {
 		if (result == null) {
 			return null;
 		} else {
-			return (long) result[0] << 16L | (long) result[1];
+			return ((long) result[0] & 0xffff) << 16L | ((long) result[1] & 0xffff);
 		}
 	}
 

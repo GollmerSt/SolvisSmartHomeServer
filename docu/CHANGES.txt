@@ -11,6 +11,9 @@ Version 01.01.01
     23.07.2020  Die Logging-Daten der MQTT-Library werden nun ebenfalls in den Log des Servers geschrieben
     			vorher wurden sie auf die Console geschrieben, bzw. bei einem im Hintergrund laufenden Server
     			verschwanden sie im Nirvana
+    			
+    			Fataler Fehler: Beim Empfang von Daten des Clients konnte eine negative Datenpaket-Länge
+    			entstehen.
                 
 
 

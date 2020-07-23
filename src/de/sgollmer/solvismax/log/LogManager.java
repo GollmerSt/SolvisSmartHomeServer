@@ -179,15 +179,19 @@ public class LogManager {
 		if (!logManager.initialized && logManager.delayedErrorMessages.isEmpty()) {
 			boolean error = logManager.outputDelayedMessages();
 			if (error) {
+				logManager.shutdown();
 				System.exit(logManager.getExitCode());
 			}
 		}
+		logManager.shutdown();
 		System.exit(errorCode);
 	}
 
 	public void shutdown() {
 		try {
-			this.loggerBase.shutdown();
+			if (this.initialized) {
+				this.loggerBase.shutdown();
+			}
 		} catch (InterruptedException e) {
 		}
 	}
