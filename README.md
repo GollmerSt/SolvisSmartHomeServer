@@ -60,3 +60,6 @@ einen Objektliste, die die notwendigen Objekte definiert, wenn man den IoBroker-
 ## Ausführliche Dokumentation
 Eine umfangreiche Dokumentation der Installion, Interfaces, Arbeitsweise etc. findet sich hier:
 [SolvisSmartHomeServer.pdf](https://raw.githubusercontent.com/GollmerSt/SolvisSmartHomeServer/master/docu/SolvisSmartHomeServer.pdf)
+
+## License
+This program is licensed under GPL-3.0
