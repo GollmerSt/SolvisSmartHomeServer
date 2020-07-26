@@ -5,8 +5,8 @@ Dieses Programm ist ein eigenständiges Java-Programm, das als Service/Task im H
 an verschiedene SmartHome-Systeme, wie FHEM, IoBroker, OpenHab etc.. Ziel war nicht nur ein Monitoring der Anlage sondern auch die Einstellung
 der wichtigsten Anlageparameter wie Soll-Temperaturen, Raumabhängigkeit, Anlagemodus usw. zu ermöglichen.
 
-Bisher mir bekannte Lösungen liefern nur die Messwerten/Zuständen der Solvis-Anlagen an die SmartHome-Systeme. Dabei wird ein XML-String, den man
-über das WebInterface der SolvisControl abfragen interpretiert. Der SolvisSmartHomeServer nutzt ebenfalls diese Schnittstelle.
+Bisher mir bekannte Lösungen liefern nur die Messwerten/Zuständen der Solvis-Anlagen an die SmartHome-Systeme. Dabei wird ein XML-String interpretiert,
+der über das WebInterface der SolvisRemote abgefragt wird. Der SolvisSmartHomeServer nutzt ebenfalls diese Schnittstelle.
 Eine Steuerung der Anlage mit dieser Schnittstelle ist jedoch nicht möglich.
 
 Erst bei neueren Anlagen hat die Firma Solvis die Steuermöglichkeit über das Modbus-Interface realisiert. Ältere Anlagen bleiben dabei außen vor.
@@ -30,16 +30,16 @@ durch die Buttons auf der linken Seite.
 ### Features
 * Auslesen der Messwerte der Sensoren
 * Einstellung der Anlagenparameter wie Temperatur-Sollwerte, Raumabhängigkeiten etc.
-* Monitoring der Solvis-Uhr und mit entsprechender Nachjustierung.
+* Monitoring der Solvis-Uhr mit entsprechender Nachjustierung.
 * Erkennen eines Fehlerzustandes der Anlage. Im Fehlerfall kann optional eine Mail versendet werden.
 Wird der Fehler als Fehlerscreen von der Anlage angezeigt, wird an die Mail die Hardcopy des Bildschirmes angehängt.
 * Es werden Anwender und Service-Zugriffe auf den Touchscreen der SolvisControl erkannt und nach beenden die möglicherweise
 veränderten Anlagenparameter wieder erneut gelesen.
 * Anbindung über MQTT, damit ist das System in SmartHome-Systeme ohne speziellen Client möglich.
-Voraussetzung ist nur eine MQTT-Schnittstelle(-Erweiterung) im SmartHome-System.
-* Zusätzliche Anbindung über eine Client-Server-Verbindung
-* Daten zwischen Server-Client werden im JSON-Format ausgetauscht
-* Es können sich max. 50 Clients mit dem Server verbinden
+Voraussetzung ist nur eine MQTT-Schnittstelle(-Erweiterung) im SmartHome-System sowie einem MQTT-Broker (z.B. Mosquitto).
+* Zusätzliche Möglichkeit der Anbindung über eine Client-Server-Verbindung
+  * Daten zwischen Server-Client werden im JSON-Format ausgetauscht
+  * Es können sich max. 50 Clients mit dem Server verbinden
 * Leichte Anpassungsmöglichkeit an vorhandene Anlage über XML-Files. Die XML Schema sind mit enthalten, so dass Anpassung mittels XML-Editor (z.B. integriert in Eclipse) stark vereinfacht wird
 
 ### Voraussetzungen
@@ -53,12 +53,12 @@ Die Anbindung an das SmartHome-System werden durch zwei verschiedene Interfaces 
 1. Eine proprietäre Server-Client-Schnittstelle. Diese Schnittstelle erfordert auf der SmartHomeSystem-Seite einen speziellen Client.
 Ein solcher existiert bisher nur für das FHEM-SmartHome-System
 
-Vom Funktionsumfang he gibt es zwischen beiden Interfaces keine Unterschiede. Anfangs gab es nur die propritäre Server-Client-Schnittstelle.
+Vom Funktionsumfang her gibt es zwischen beiden Interfaces keine Unterschiede. Anfangs gab es nur die propritäre Server-Client-Schnittstelle.
 Um bei SmartHome-Systemen nicht auf ein spezielles Modul angewiesen zu sein, wurde die MQTT-Schnittstelle zusätzlich implementiert. Für die
 meisten SmartHome-System gibt es für die MQTT-Schnittstelle entsprechende Module.
 
-Im Installationspaket enthalten sind Anpassungen an die SmartHomeSysteme FHEM und IoBroker. Für FHEM existiert ein Client-Modul, für IOBroker existiert
-einen Objektliste, die die notwendigen Objekte definiert, wenn man den IoBroker-MQTT-Client nutzt.
+Im Installationspaket enthalten sind Anpassungen an die SmartHomeSysteme FHEM und IoBroker. Für FHEM existiert ein Client-Modul, für IOBroker 
+eine Objektliste, welche die notwendigen Objekte definiert, wenn man den IoBroker-MQTT-Client nutzt.
 
 ## Ausführliche Dokumentation
 Eine umfangreiche Dokumentation der Installion, Interfaces, Arbeitsweise etc. findet sich hier:
