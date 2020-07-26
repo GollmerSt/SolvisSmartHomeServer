@@ -13,8 +13,16 @@ Bei älteren Anlagen gibt es nur die Möglichkeit der Steuerung über die Web-Ob
 (es ist eine Pixelkopie der SolvisControl an der Anlage). Die Steuerung darüber erfolgt über Maus-Klicks auf bestimmte Koordinaten auf diesem GUI,
 die Rückmeldung erfolgt ebenfalls nur grafisch über das GUI.
 
+### Funktionsweise der Einstellung der Anlageparameter
+
 Dieses Projekt nutzt diesen Weg mittels eines OCRs um die aktuellen Werte grafisch aus der Web-Oberfläche zu ermitteln
 und entsprechend dem angeforderten Wert mittels simulierter Maus-Clicks auf die entsprechenden Koordinaten zu änden.
+
+![Gui](https://raw.githubusercontent.com/GollmerSt/SolvisSmartHomeServer/master/docu/images/Hierarchie/1%20Heizung.png)
+
+So wird bei einer Änderung der Feineinstellung die 0 in den eckigen Klammern im oben angezeigten "Home-Screen" erkannt und abhängig vom einzustellenden Wert
+die Plus/Minus-Buttons auf der rechten Seite solange betätigt, bis der richtige Wert zwischen den eckigen Klammern erscheint. Ist der zu ändernde Wert nicht
+auf dem "Home-Screen", so wird automatisch der entsprechende Screen angefahren. Das erfolgt z.B. durch die Buttons auf der linken Seite.
 
 ### Features
 * Auslesen der Messwerte der Sensoren
