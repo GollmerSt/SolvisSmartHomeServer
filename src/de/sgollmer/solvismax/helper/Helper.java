@@ -137,4 +137,23 @@ public class Helper {
 		}
 
 	}
+	
+	public static String replaceEnvironments( String in) {
+		if ( !System.getProperty("os.name").toUpperCase().contains("WINDOW") ) {
+			return in;
+		}
+		String work = in;
+		StringBuilder builder = new StringBuilder();
+		Pattern pattern = Pattern.compile("(.*?)%(.*?)%(.*?)");
+		Matcher matcher = pattern.matcher(work);
+		while ( matcher.matches()) {
+			builder.append(matcher.group(1));
+			String env = System.getenv(matcher.group(2));
+			builder.append(env);
+			work = matcher.group(3);
+			matcher = pattern.matcher(work);
+		}
+		builder.append(work);
+		return builder.toString();
+	}
 }

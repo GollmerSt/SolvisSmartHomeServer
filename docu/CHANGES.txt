@@ -1,5 +1,14 @@
 Ä N D E R U N G E N
 
+Version 01.01.02
+
+    25.07.2020  Start-Parameter --base.xml hinzugefügt. Damit können auch die Base-Konfiguration aus einem Pfad
+                verwendet werden, der nicht im Strat-Pfad des Servers liegt.
+                
+    25.07.2020  Ant-File Anpassungen zur besseren Release-Package-Generierung
+                
+
+
 Version 01.01.01
 
     22.07.2020  Wird die MQTT-Verbindung zum SmartHomeServer hart getrennt, bewirkte der in diesem Fall
@@ -9,11 +18,11 @@ Version 01.01.01
                 Die IoBroker-Objektliste enthielt noch überflüssige Objekte.
                 
     23.07.2020  Die Logging-Daten der MQTT-Library werden nun ebenfalls in den Log des Servers geschrieben
-    			vorher wurden sie auf die Console geschrieben, bzw. bei einem im Hintergrund laufenden Server
-    			verschwanden sie im Nirvana
-    			
-    			Fataler Fehler: Beim Empfang von Daten des Clients konnte eine negative Datenpaket-Länge
-    			entstehen.
+                vorher wurden sie auf die Console geschrieben, bzw. bei einem im Hintergrund laufenden Server
+                verschwanden sie im Nirvana
+                
+                Fataler Fehler: Beim Empfang von Daten des Clients konnte eine negative Datenpaket-Länge
+                entstehen.
                 
 
 
@@ -44,7 +53,7 @@ Version 01.01.00
     20.07.2020  Das Feature UpdateAfterUserAccess war immer aktiviert, auf wenn es in der base.xml scheinbar
                 deaktiviert war.
                 
-    			MQTT-Schnittstellen-Implementation abgeschlossen.
+                MQTT-Schnittstellen-Implementation abgeschlossen.
                 
 
 

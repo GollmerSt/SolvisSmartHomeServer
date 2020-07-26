@@ -30,16 +30,20 @@ public class BaseControlFileReader {
 	private static final String XML_ROOT_ID = "BaseData";
 
 	private final File parent;
+	private final File baseXml;
 
-	public BaseControlFileReader() {
+	public BaseControlFileReader(String baseXmlString) {
 		this.parent = FileHelper.getJarDir(BaseControlFileReader.class);
+		if (baseXmlString == null) {
+			this.baseXml = new File(this.parent, NAME_XML_BASEFILE);
+		} else {
+			this.baseXml = new File(de.sgollmer.solvismax.helper.Helper.replaceEnvironments(baseXmlString));
+		}
 	}
 
 	public XmlStreamReader.Result<BaseData> read() throws IOException, XmlError, XMLStreamException {
 
-		File xml = new File(this.parent, NAME_XML_BASEFILE);
-
-		FileInputStream source = new FileInputStream(xml);
+		FileInputStream source = new FileInputStream(this.baseXml);
 
 		XmlStreamReader<BaseData> reader = new XmlStreamReader<>();
 
@@ -64,13 +68,13 @@ public class BaseControlFileReader {
 			return null;
 		}
 
-		source = new FileInputStream(xml);
-		return reader.read(source, rootId, new BaseData.Creator(rootId), xml.getName());
+		source = new FileInputStream(this.baseXml);
+		return reader.read(source, rootId, new BaseData.Creator(rootId), this.baseXml.getName());
 	}
 
 	public static void main(String[] args) throws IOException, XmlError, XMLStreamException {
 
-		BaseControlFileReader reader = new BaseControlFileReader();
+		BaseControlFileReader reader = new BaseControlFileReader(null);
 		reader.read();
 	}
 

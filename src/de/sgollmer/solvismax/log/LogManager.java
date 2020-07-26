@@ -17,6 +17,8 @@ import java.util.Collection;
 
 public class LogManager {
 
+	private final String loggerName = "TinyLog"; // Possibilities: "Log4j2", "TinyLog"
+
 	public static LogManager getInstance() {
 		LogManager logManager = LogManagerHolder.INSTANCE;
 		return logManager;
@@ -102,10 +104,24 @@ public class LogManager {
 		}
 	}
 
-	private ILogger loggerBase = new TinyLog.LoggerTiny();
+	private final ILogger loggerBase;
+
 	private Collection<DelayedMessage> delayedErrorMessages = new ArrayList<>();
 	private int delayedErrorCode = -1;
 	private boolean initialized = false;
+
+	private LogManager() {
+		switch (this.loggerName) {
+			case "TinyLog":
+				this.loggerBase = new TinyLog.LoggerTiny();
+				break;
+			case "Log4j2":
+				this.loggerBase = new Logger4j2.Logger();
+				break;
+			default:
+				this.loggerBase = null;
+		}
+	}
 
 	public LogErrors createInstance(String path) throws IOException {
 		boolean successfull = this.loggerBase.createInstance(path);

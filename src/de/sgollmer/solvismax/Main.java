@@ -10,7 +10,11 @@ package de.sgollmer.solvismax;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,9 +70,13 @@ public class Main {
 		this.startTime = format.format(new Date());
 
 		String createTaskName = null;
+		String baseXml = null;
 		boolean onBoot = false;
 
-		for (String arg : args) {
+		Collection<String> argCollection = new ArrayList<>( Arrays.asList(args));
+
+		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
+			String arg = it.next();
 			Matcher matcher = cmdPattern.matcher(arg);
 			if (!matcher.matches()) {
 				System.err.println("Unknowwn argument: " + arg);
@@ -79,6 +87,8 @@ public class Main {
 				if (matcher.groupCount() >= 3) {
 					value = matcher.group(3);
 				}
+
+				boolean found = true;
 
 				switch (command) {
 					case "string-to-crypt":
@@ -104,6 +114,15 @@ public class Main {
 						break;
 					case "onBoot":
 						onBoot = true;
+						break;
+					case "base-xml":
+						baseXml = value;
+						break;
+					default:
+						found = false;
+				}
+				if ( found) {
+					it.remove();
 				}
 			}
 		}
@@ -121,7 +140,7 @@ public class Main {
 		BaseData baseData = null;
 		LogManager logManager = LogManager.getInstance();
 		try {
-			XmlStreamReader.Result<BaseData> base = new BaseControlFileReader().read();
+			XmlStreamReader.Result<BaseData> base = new BaseControlFileReader(baseXml).read();
 			if (base == null) {
 				throw new XmlError("");
 			}
@@ -161,7 +180,8 @@ public class Main {
 		LEARN = Level.getLevel("LEARN");
 		boolean learn = false;
 
-		for (String arg : args) {
+		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
+			String arg = it.next();
 			Matcher matcher = cmdPattern.matcher(arg);
 			if (!matcher.matches()) {
 				System.err.println("Unknowwn argument: " + arg);

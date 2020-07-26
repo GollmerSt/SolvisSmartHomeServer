@@ -14,7 +14,8 @@ import java.util.jar.Manifest;
 
 public class Version {
 
-	private String buildDate = null;
+	private String serverVersion = "01.01.02";
+	private String appendix = "modbus alpha, MQTT beta";
 
 	public static Version getInstance() {
 		Version version = VersionHolder.INSTANCE;
@@ -27,7 +28,11 @@ public class Version {
 	}
 
 	public String getVersion() {
-		return "01.01.01, modbus alpha, MQTT beta";
+		if (this.appendix != null) {
+			return this.serverVersion + ", " + this.appendix;
+		} else {
+			return this.serverVersion;
+		}
 	}
 
 	public String getServerFormatVersion() {
@@ -37,6 +42,8 @@ public class Version {
 	public String getMqttFormatVersion() {
 		return "01.00";
 	}
+
+	private String buildDate = null;
 
 	public String getBuildDate() {
 		if (this.buildDate == null) {
