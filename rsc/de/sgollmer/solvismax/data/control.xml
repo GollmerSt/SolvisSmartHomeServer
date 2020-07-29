@@ -369,185 +369,170 @@
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<!-- WICHTIG: Vor Learning muss unbedingt Anlagenstatus Warmwasser ausgewählt 
 			worden sein -->
+		<tns:ScreenSequence id="Anlagenstatus"
+			backId="Sonstiges 1" previousId="Sonstiges 1">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="85" />
+			</tns:TouchPoint>
+			<tns:ScreenRef id="Anlagenstatus Solar" />
+			<tns:ScreenRef id="Anlagenstatus WW" />
+			<tns:ScreenRef id="Anlagenstatus HK" />
+		</tns:ScreenSequence>
 		<!-- SolvisMax-Definitionen für Anlagenstatus -->
 		<tns:Screen id="Anlagenstatus WW" backId="Sonstiges 1"
-			previousId="Sonstiges 1" alternativePreviousId="Anlagenstatus HK"
-			ignoreChanges="true">
-			<tns:ConfigurationMasks>
-				<tns:ConfigurationMask andMask="0x03000008"
-					compareMask="0x01000000" />
-			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
-			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint
-				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="230" Y="120" />
-			</tns:AlternativeTouchPoint>
-			<tns:ScreenGrafic id="Anlagenstatus WW">
-				<tns:Field>
-					<tns:TopLeft X="120" Y="75" />
-					<tns:BottomRight X="150" Y="105" />
-				</tns:Field>
-			</tns:ScreenGrafic>
-		</tns:Screen>
-		<tns:Screen id="Anlagenstatus WW" backId="Sonstiges 1"
-			previousId="Sonstiges 1" alternativePreviousId="Anlagenstatus Solar"
-			ignoreChanges="true">
-			<tns:ConfigurationMasks>
-				<tns:ConfigurationMask andMask="0x03000008"
-					compareMask="0x01000008" />
-			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
-			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint
-				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="230" Y="120" />
-			</tns:AlternativeTouchPoint>
-			<tns:ScreenGrafic id="Anlagenstatus WW">
-				<tns:Field>
-					<tns:TopLeft X="120" Y="75" />
-					<tns:BottomRight X="150" Y="105" />
-				</tns:Field>
-			</tns:ScreenGrafic>
-		</tns:Screen>
-		<tns:Screen id="Anlagenstatus HK" backId="Sonstiges 1"
-			previousId="Anlagenstatus WW" alternativePreviousId="Sonstiges 1"
-			ignoreChanges="true">
+			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x03000000"
 					compareMask="0x01000000" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Standard"
+			<tns:SequenceUp pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="15" Y="120" />
+			</tns:SequenceUp>
+			<tns:SequenceDown pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="230" Y="120" />
-			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint
-				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
-			</tns:AlternativeTouchPoint>
+			</tns:SequenceDown>
+			<tns:ScreenGrafic id="Anlagenstatus WW">
+				<tns:Field>
+					<tns:TopLeft X="120" Y="75" />
+					<tns:BottomRight X="150" Y="105" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+			<tns:MustBeWhite>
+				<tns:TopLeft X="100" Y="15" />
+				<tns:BottomRight X="130" Y="40" />
+			</tns:MustBeWhite>
+		</tns:Screen>
+		<tns:Screen id="Anlagenstatus HK" backId="Sonstiges 1"
+			previousId="Anlagenstatus" ignoreChanges="true">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x03000000"
+					compareMask="0x01000000" />
+			</tns:ConfigurationMasks>
+			<tns:SequenceUp pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="15" Y="120" />
+			</tns:SequenceUp>
+			<tns:SequenceDown pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="230" Y="120" />
+			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus HK">
 				<tns:Field>
 					<tns:TopLeft X="96" Y="13" />
 					<tns:BottomRight X="125" Y="40" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+			<tns:MustBeWhite>
+				<tns:TopLeft X="195" Y="30" />
+				<tns:BottomRight X="235" Y="105" />
+			</tns:MustBeWhite>
 		</tns:Screen>
 		<tns:Screen id="Anlagenstatus Solar" backId="Sonstiges 1"
-			previousId="Anlagenstatus HK" alternativePreviousId="Sonstiges 1"
-			ignoreChanges="true">
+			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x03000008"
 					compareMask="0x01000008" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Standard"
+			<tns:SequenceUp pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="15" Y="120" />
+			</tns:SequenceUp>
+			<tns:SequenceDown pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="230" Y="120" />
-			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint
-				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
-			</tns:AlternativeTouchPoint>
+			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus Solar">
 				<tns:Field>
 					<tns:TopLeft X="195" Y="12" />
 					<tns:BottomRight X="239" Y="50" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+			<tns:MustBeWhite>
+				<tns:TopLeft X="90" Y="35" />
+				<tns:BottomRight X="130" Y="75" />
+			</tns:MustBeWhite>
 		</tns:Screen>
 		<!-- SolvisBen-Definitionen für Anlagenstatus -->
 		<tns:Screen id="Anlagenstatus WW" backId="Sonstiges 1"
-			previousId="Sonstiges 1" alternativePreviousId="Anlagenstatus HK"
-			ignoreChanges="true">
-			<tns:ConfigurationMasks>
-				<tns:ConfigurationMask andMask="0x03000008"
-					compareMask="0x02000000" />
-			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
-			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint
-				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="230" Y="120" />
-			</tns:AlternativeTouchPoint>
-			<tns:ScreenGrafic id="Anlagenstatus WW">
-				<tns:Field>
-					<tns:TopLeft X="107" Y="80" />
-					<tns:BottomRight X="125" Y="125" />
-				</tns:Field>
-			</tns:ScreenGrafic>
-		</tns:Screen>
-		<tns:Screen id="Anlagenstatus WW" backId="Sonstiges 1"
-			previousId="Sonstiges 1" alternativePreviousId="Anlagenstatus Solar"
-			ignoreChanges="true">
-			<tns:ConfigurationMasks>
-				<tns:ConfigurationMask andMask="0x03000008"
-					compareMask="0x02000008" />
-			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
-			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint
-				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="230" Y="120" />
-			</tns:AlternativeTouchPoint>
-			<tns:ScreenGrafic id="Anlagenstatus WW">
-				<tns:Field>
-					<tns:TopLeft X="107" Y="80" />
-					<tns:BottomRight X="125" Y="125" />
-				</tns:Field>
-			</tns:ScreenGrafic>
-		</tns:Screen>
-		<tns:Screen id="Anlagenstatus HK" backId="Sonstiges 1"
-			previousId="Anlagenstatus WW" alternativePreviousId="Sonstiges 1"
-			ignoreChanges="true">
+			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x03000000"
 					compareMask="0x02000000" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Standard"
+			<tns:SequenceUp pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="15" Y="120" />
+			</tns:SequenceUp>
+			<tns:SequenceDown pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="230" Y="120" />
-			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint
-				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
-			</tns:AlternativeTouchPoint>
+			</tns:SequenceDown>
+			<tns:ScreenGrafic id="Anlagenstatus WW">
+				<tns:Field>
+					<tns:TopLeft X="107" Y="80" />
+					<tns:BottomRight X="125" Y="125" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+			<tns:MustBeWhite>
+				<tns:TopLeft X="45" Y="30" />
+				<tns:BottomRight X="75" Y="85" />
+			</tns:MustBeWhite>
+		</tns:Screen>
+		<tns:Screen id="Anlagenstatus HK" backId="Sonstiges 1"
+			previousId="Anlagenstatus" ignoreChanges="true">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x03000000"
+					compareMask="0x02000000" />
+			</tns:ConfigurationMasks>
+			<tns:SequenceUp pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="15" Y="120" />
+			</tns:SequenceUp>
+			<tns:SequenceDown pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="230" Y="120" />
+			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus HK">
 				<tns:Field>
 					<tns:TopLeft X="90" Y="13" />
 					<tns:BottomRight X="125" Y="40" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+			<tns:MustBeWhite>
+				<tns:TopLeft X="205" Y="30" />
+				<tns:BottomRight X="235" Y="110" />
+			</tns:MustBeWhite>
 		</tns:Screen>
 		<tns:Screen id="Anlagenstatus Solar" backId="Sonstiges 1"
-			previousId="Anlagenstatus HK" alternativePreviousId="Sonstiges 1"
-			ignoreChanges="true">
+			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x03000008"
 					compareMask="0x02000008" />
 			</tns:ConfigurationMasks>
-			<tns:TouchPoint pushTimeRefId="Standard"
+			<tns:SequenceUp pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="15" Y="120" />
+			</tns:SequenceUp>
+			<tns:SequenceDown pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="230" Y="120" />
-			</tns:TouchPoint>
-			<tns:AlternativeTouchPoint
-				pushTimeRefId="Standard" releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="220" Y="85" />
-			</tns:AlternativeTouchPoint>
+			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus Solar">
 				<tns:Field>
 					<tns:TopLeft X="185" Y="12" />
 					<tns:BottomRight X="237" Y="45" />
 				</tns:Field>
 			</tns:ScreenGrafic>
+			<tns:MustBeWhite>
+				<tns:TopLeft X="85" Y="35" />
+				<tns:BottomRight X="120" Y="80" />
+			</tns:MustBeWhite>
 		</tns:Screen>
 		<tns:Screen id="Tagestemperatur_HK1" backId="Home"
 			previousId="Home">
