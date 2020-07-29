@@ -45,6 +45,7 @@ Voraussetzung ist nur eine MQTT-Schnittstelle(-Erweiterung) im SmartHome-System 
 ### Voraussetzungen
 * Solvis-Heizungsanlage (SolvisMax/SolvisBen) mit einer SolvisControl2 und SolvisRemote.
 * PC/Raspberry o.ä. mit Linux oder Windows, mit JRE >= 1.8.
+* Ein Smart-Home-System wie FHEM, IoBroker, OpenHab o.ä. mit MQTT Schnittstelle.
 
 ### Interfaces zu SmartHomeSystemen
 Die Anbindung an das SmartHome-System werden durch zwei verschiedene Interfaces ermöglicht:
