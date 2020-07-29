@@ -57,7 +57,7 @@ public class ControlFileReader {
 		boolean success = true;
 
 		if (!this.parent.exists()) {
-			success = this.parent.mkdir();
+			success = FileHelper.mkdir(this.parent);
 		}
 
 		if (!success) {
