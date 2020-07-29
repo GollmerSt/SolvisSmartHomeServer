@@ -152,4 +152,14 @@ public class FileHelper {
 		}
 		return success;
 	}
+
+	public static boolean mkdir(File directory) {
+		if (directory.isDirectory() || directory == null) {
+			return true;
+		}
+		if (!mkdir(directory.getParentFile())) {
+			return false;
+		}
+		return directory.mkdir();
+	}
 }
