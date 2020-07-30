@@ -37,7 +37,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class Screen implements IScreenLearnable, Comparable<Screen>, OfConfigs.IElement<Screen> {
+public class Screen implements IScreen, IScreenLearnable, Comparable<Screen>, OfConfigs.IElement<Screen> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(Screen.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
@@ -97,6 +97,7 @@ public class Screen implements IScreenLearnable, Comparable<Screen>, OfConfigs.I
 	/**
 	 * @return the id
 	 */
+	@Override
 	public String getId() {
 		return this.id;
 	}
