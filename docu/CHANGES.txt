@@ -1,5 +1,11 @@
 Ä N D E R U N G E N
 
+Version 01.01.03 rc2
+
+    30.07.2020  Das Verschlüsseln von Passwörtern über das Startmenü funktionierte unter Windows noch nicht.
+                
+
+
 Version 01.01.03 rc1
 
     29.07.2020  Das Writeable-Verzeichnis wurde nicht rekursiv erzeugt. Daher wurden notwendige Verzeicnisse
