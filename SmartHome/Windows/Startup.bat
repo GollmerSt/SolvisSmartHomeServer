@@ -5,35 +5,39 @@ set paras=
 set java=java
 set pause=pause
 
-if "%1" == "learn" (
+goto start_%1
+
+:start_learn
 	set paras="--server-learn"
 	set java=java
 	set pause=pause
-)
+	goto continue
 
-if "%1" == "terminate" (
+:start_terminate
 	set paras="--server-terminate"
 	set java=javaw
 	set pause=
-)
+	goto continue
 
-if "%1" == "crypt" (
-	set /p "toCrypt=Zu verschluesselnder String eingeben: "
-	set paras="--string-to-crypt=%toCrypt%"
+:start_crypt
+	set /p toCrypt="Zu verschluesselnden String eingeben: "
+	set paras=--string-to-crypt="%toCrypt%"
 	set java=java
 	set pause=pause
-)
-if "%1" == "dos" (
-	set java=java
-	set pause=
-)
+	goto continue
 
-if "%1" == "" (
+:start_dos
+	set java=java
+	set pause=pause
+	goto continue
+
+:start_
 	ping localhost -n 5 > NUL
 	set java=javaw
 	set pause=
-)
+	goto continue
 
-%java% -jar SolvisSmartHomeServer.jar %paras%
+:continue
+	%java% -jar SolvisSmartHomeServer.jar %paras%
 
-%pause%
+	%pause%
