@@ -57,7 +57,7 @@ public class Main {
 	private static Level LEARN;
 
 	private ILogger logger;
-	private String startTime;
+	private String startTime = null;
 	private boolean shutdownExecuted = false;
 	private Instances instances = null;
 	private CommandHandler commandHandler = null;
@@ -66,14 +66,11 @@ public class Main {
 
 	private void execute(String[] args) {
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-		this.startTime = format.format(new Date());
-
 		String createTaskName = null;
 		String baseXml = null;
 		boolean onBoot = false;
 
-		Collection<String> argCollection = new ArrayList<>( Arrays.asList(args));
+		Collection<String> argCollection = new ArrayList<>(Arrays.asList(args));
 
 		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
 			String arg = it.next();
@@ -121,7 +118,7 @@ public class Main {
 					default:
 						found = false;
 				}
-				if ( found) {
+				if (found) {
 					it.remove();
 				}
 			}
@@ -243,6 +240,11 @@ public class Main {
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
+		this.waitForValidTime();
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+		this.startTime = format.format(new Date());
+
 		if (learn) {
 			try {
 				boolean learned = this.instances.learn();
@@ -324,7 +326,7 @@ public class Main {
 		} catch (Throwable e) {
 			this.logger.info("Unexpected error on restart: " + e.getMessage());
 		}
-		this.logger.info("Restart finished (started at " + this.startTime + ")");
+		this.logger.info("Restart finished");
 		LogManager.exit(ExitCodes.OK);
 	}
 
@@ -338,7 +340,7 @@ public class Main {
 			System.err.println("Terminate not successfull.");
 			LogManager.exit(ExitCodes.SERVER_TERMINATION_FAIL);
 		}
-		this.logger.info("Termination finished (started at " + this.startTime + ")");
+		this.logger.info("Termination finished.");
 		LogManager.exit(ExitCodes.OK);
 
 	}
@@ -376,6 +378,24 @@ public class Main {
 
 	public static void main(String[] args) {
 		Main.getInstance().execute(args);
+	}
+
+	private void waitForValidTime() {
+		long timeOfLastBackup = this.instances.getBackupHandler().getTimeOfLastBackup();
+		int waitTime = 1000;
+		boolean waiting = false;
+		int currentWaitTime = 0;
+		for (; currentWaitTime < Constants.MAX_WAIT_TIME_ON_STARTUP
+				&& timeOfLastBackup > System.currentTimeMillis(); currentWaitTime += waitTime) {
+			if (!waiting) {
+				waiting = true;
+				this.logger.info("Waiting for valid system time");
+			}
+			AbortHelper.getInstance().sleep(waitTime);
+		}
+		if (waiting) {
+			this.logger.info("Valid system time detected after " + currentWaitTime/1000 + "s.");
+		}
 	}
 
 }
