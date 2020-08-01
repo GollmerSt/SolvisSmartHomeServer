@@ -71,6 +71,31 @@ ioBroker | Objektliste für das ioBroker-Modul MQTT Client
 
 Weitere sind in Vorbereitung
 
+### Installation
+Die genauen Installationsanweisungen enthält die unten angehängte ausführliche Dokumentation. Hier daher nur ein grober Überblick.
+
+Das Release beinhaltet normalerweise immer 2 unterschiedliche Installationspakete:
+* Installationspaket für Linux mit einem Makefile, das der Installation dient
+* Installationspaket für Windows mit einem Installer
+
+**Vor** der Ausführung der Installationspakete ist es wichtig, dass bereits Java installiert ist, da die Installation selber schon Java-Programme
+ausführen. Ich verwende unter Windows die Oracle-Java-Version 1.8, oder die OpenJDK ab 8, aktuell 14. Unter Linux habe ich bisher die Version
+ab JDK 8 verwendet, vom Funktionsumfang müsste noch die Version 7 gehen.
+
+Der Ablauf der Installation sollte folgendermaßen ablaufen:
+
+1. Installation von Java
+1. Herunterladen und Auspacken des Zip-File-Release in einem Ordner
+1. Unter Windows Aufruf des Installers
+1. Kopieren des base.xml.new unter dem Namen base.xml
+1. Anpassen des base.xml (Solvis-IP, Passwörter, etc.), in einer zukünftigen Version werde ich hier einen Konfigurator noch zur Verfügung stellen
+1. Aufruf des Learning (über Startmenü unter Windows oder über das Makefile unter Linux). Ein Learning ist notwendig, da die unterschiedlichen
+Screens grafisch erkannt werden. Je nach eingestellter Sprache unterscheiden sich die Screens entsprechend. Auch die Erkennung der Symbole (Standby,
+Nacht, Tag etc.) wird hierbei vom Screen gelesen und gemerkt.
+1. Start des Servers
+
+Die genaue Vorgehensweise muss man aus der folgenden Dokumentation entnommen werden:
+
 ## Ausführliche Dokumentation
 Eine umfangreiche Dokumentation der Installation, Interfaces, Arbeitsweise etc. findet sich hier:
 [SolvisSmartHomeServer.pdf](https://raw.githubusercontent.com/GollmerSt/SolvisSmartHomeServer/master/docu/SolvisSmartHomeServer.pdf)
