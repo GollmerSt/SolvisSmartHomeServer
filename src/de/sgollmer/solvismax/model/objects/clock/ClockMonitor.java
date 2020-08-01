@@ -17,10 +17,13 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.HelperError;
-import de.sgollmer.solvismax.error.LearningError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.HelperException;
+import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.helper.Helper.AverageInt;
@@ -33,12 +36,13 @@ import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.OfConfigs;
+import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.data.DateValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -77,8 +81,8 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	private final TouchPoint ok;
 	private final DisableClockSetting disableClockSetting;
 
-	private OfConfigs<Screen> screen = null;
-	private OfConfigs<Screen> okScreen = null;
+	private OfConfigs<IScreen> screen = null;
+	private OfConfigs<IScreen> okScreen = null;
 
 	static {
 		CALENDAR_2018 = Calendar.getInstance();
@@ -102,9 +106,9 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
-		this.screen = description.getScreens().get(this.screenId);
-		this.okScreen = description.getScreens().get(this.okScreenId);
+	public void assign(SolvisDescription description) throws XmlException, AssignmentException {
+		this.screen = description.getScreens().getScreen(this.screenId);
+		this.okScreen = description.getScreens().getScreen(this.okScreenId);
 		if (this.upper != null) {
 			this.upper.assign(description);
 		}
@@ -248,7 +252,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		}
 
 		@Override
-		public ClockMonitor create() throws XmlError, IOException {
+		public ClockMonitor create() throws XmlException, IOException {
 			return new ClockMonitor(this.modbusWrite, this.timeChannelId, this.screenId, this.okScreenId,
 					this.secondsScan, this.dateParts, this.upper, this.lower, this.ok, this.disableClockSetting);
 		}
@@ -361,76 +365,77 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			String burnerId = ClockMonitor.this.disableClockSetting.getBurnerId();
 			String hotWaterPumpId = ClockMonitor.this.disableClockSetting.getHotWaterPumpId();
 			boolean helper = false;
-			if (burnerId.equals(channelId) || helper) {
-				this.burner = helper || data.getBool();
-				this.adjustementDisableHandling();
-			} else if (hotWaterPumpId != null && hotWaterPumpId.equals(channelId)) {
-				this.hotWaterPump = data.getBool();
-				this.adjustementDisableHandling();
-			} else if (data.getId().equals(ClockMonitor.this.timeChannelId)) {
-				DateValue dateValue = (DateValue) data.getSingleData();
+			try {
+				if (burnerId.equals(channelId) || helper) {
+					this.burner = helper || data.getBool();
+					this.adjustementDisableHandling();
+				} else if (hotWaterPumpId != null && hotWaterPumpId.equals(channelId)) {
+					this.hotWaterPump = data.getBool();
+					this.adjustementDisableHandling();
+				} else if (data.getId().equals(ClockMonitor.this.timeChannelId)) {
+					DateValue dateValue = (DateValue) data.getSingleData();
 
-				if (this.adjustmentTypeRequestPending != AdjustmentType.NONE) {
-					return;
-				}
-
-				Calendar solvisDate = dateValue.get();
-				long timeStamp = dateValue.getTimeStamp();
-
-				if (timeStamp < CALENDAR_2018.getTimeInMillis()) {
-					return;
-				}
-
-				Calendar checkSeasonChange = (Calendar) solvisDate.clone();
-				checkSeasonChange.setTimeInMillis(timeStamp);
-				int hour = checkSeasonChange.get(Calendar.HOUR_OF_DAY);
-				checkSeasonChange.add(Calendar.HOUR_OF_DAY, 2);
-				int seasonDiff = checkSeasonChange.get(Calendar.HOUR_OF_DAY) - hour;
-				seasonDiff = seasonDiff < 0 ? seasonDiff + 24 : seasonDiff;
-				if (seasonDiff != 2) {
-					return;
-				}
-
-				int diff = (int) (solvisDate.getTimeInMillis() - timeStamp);
-
-				// logger.info( "SolvisDate: " + solvisDate.getTimeInMillis() + ", timeStamp: "
-				// + timeStamp + ", diff: " + diff);
-
-				if (this.averageDiff.size() > 0 && Math.abs(this.averageDiff.get() - diff) > 2000) { // clock was
-																										// manually
-																										// adjusted
-					// logger.info( "Fehler erkannt");
-					this.averageDiff.clear();
-					this.averageDiff.put(diff);
-				}
-
-				this.averageDiff.put(diff);
-
-				if (!this.averageDiff.isFilled()) {
-					return;
-				}
-
-				diff = this.averageDiff.get();
-
-				if (Math.abs(diff) > 30500) {
-					if (this.solvis.getUnit().isModbus()) {
-						long now = System.currentTimeMillis();
-						try {
-							this.solvis.writeUnsignedIntegerModbusData(ClockMonitor.this.modbusWrite, now / 1000L);
-							logger.info("Setting of the clock via modbus successfull");
-						} catch (IOException e) {
-							logger.error("Setting of the clock via modbus not successfull");
-						}
-					} else {
-						this.adjustmentTypeRequestPending = AdjustmentType.NORMAL;
-						NextAdjust nextAdjust = calculateNextAdjustTime(dateValue, this.solvis);
-						if (this.adjustmentThread != null) {
-							this.adjustmentThread.abort();
-						}
-						this.sheduleAdjustment(this.strategyAdjust, nextAdjust);
+					if (this.adjustmentTypeRequestPending != AdjustmentType.NONE) {
+						return;
 					}
-					return;
-				}
+
+					Calendar solvisDate = dateValue.get();
+					long timeStamp = dateValue.getTimeStamp();
+
+					if (timeStamp < CALENDAR_2018.getTimeInMillis()) {
+						return;
+					}
+
+					Calendar checkSeasonChange = (Calendar) solvisDate.clone();
+					checkSeasonChange.setTimeInMillis(timeStamp);
+					int hour = checkSeasonChange.get(Calendar.HOUR_OF_DAY);
+					checkSeasonChange.add(Calendar.HOUR_OF_DAY, 2);
+					int seasonDiff = checkSeasonChange.get(Calendar.HOUR_OF_DAY) - hour;
+					seasonDiff = seasonDiff < 0 ? seasonDiff + 24 : seasonDiff;
+					if (seasonDiff != 2) {
+						return;
+					}
+
+					int diff = (int) (solvisDate.getTimeInMillis() - timeStamp);
+
+					// logger.info( "SolvisDate: " + solvisDate.getTimeInMillis() + ", timeStamp: "
+					// + timeStamp + ", diff: " + diff);
+
+					if (this.averageDiff.size() > 0 && Math.abs(this.averageDiff.get() - diff) > 2000) { // clock was
+																											// manually
+																											// adjusted
+						// logger.info( "Fehler erkannt");
+						this.averageDiff.clear();
+						this.averageDiff.put(diff);
+					}
+
+					this.averageDiff.put(diff);
+
+					if (!this.averageDiff.isFilled()) {
+						return;
+					}
+
+					diff = this.averageDiff.get();
+
+					if (Math.abs(diff) > 30500) {
+						if (this.solvis.getUnit().isModbus()) {
+							long now = System.currentTimeMillis();
+							try {
+								this.solvis.writeUnsignedIntegerModbusData(ClockMonitor.this.modbusWrite, now / 1000L);
+								logger.info("Setting of the clock via modbus successfull");
+							} catch (IOException | ModbusException e) {
+								logger.error("Setting of the clock via modbus not successfull");
+							}
+						} else {
+							this.adjustmentTypeRequestPending = AdjustmentType.NORMAL;
+							NextAdjust nextAdjust = calculateNextAdjustTime(dateValue, this.solvis);
+							if (this.adjustmentThread != null) {
+								this.adjustmentThread.abort();
+							}
+							this.sheduleAdjustment(this.strategyAdjust, nextAdjust);
+						}
+						return;
+					}
 
 //				if (!this.solvis.getUnit().getFeatures().isClockFineTuning()
 //						|| this.adjustmentTypeRequestPending == AdjustmentType.NORMAL
@@ -454,6 +459,9 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 //
 //				this.adjustmentTypeRequestPending = AdjustmentType.FINE;
 //				this.sheduleAdjustment(strategyFineAdjust, nextAdjust);
+				}
+			} catch (TypeException e) {
+				logger.error("Type error, update ignored", e);
 			}
 		}
 
@@ -472,7 +480,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private class StrategyAdjust implements IAdjustStrategy {
 
 			@Override
-			public boolean execute(NextAdjust nextAdjust) throws IOException {
+			public boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException {
 				int configurationMask = Executable.this.solvis.getConfigurationMask();
 				Calendar adjustmentCalendar = Calendar.getInstance();
 				long now = adjustmentCalendar.getTimeInMillis();
@@ -482,7 +490,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 				}
 				adjustmentCalendar.setTimeInMillis(nextAdjust.solvisAdjustTime);
 				boolean success = false;
-				Screen clockAdjustScreen = ClockMonitor.this.screen.get(configurationMask);
+				Screen clockAdjustScreen = (Screen) ClockMonitor.this.screen.get(configurationMask);
 				if (clockAdjustScreen == null) {
 					logger.error("Clock adjust screen not defined in the current configuration. Adjustment terminated");
 					Executable.this.adjustmentTypeRequestPending = AdjustmentType.NONE;
@@ -499,11 +507,11 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 							int offset = part.solvisOrigin - part.calendarOrigin;
 							boolean adjusted = false;
 							for (int repeat = 0; !adjusted && repeat < Constants.SET_REPEATS + 1; ++repeat) {
-								ClockMonitor.this.screen.get(configurationMask).goTo(Executable.this.solvis);
+								clockAdjustScreen.goTo(Executable.this.solvis);
 								Integer solvisData = part.getValue(Executable.this.solvis);
 								if (solvisData == null) {
 									logger.error("Setting of the solvis clock failed, it will be tried again.");
-									throw new HelperError();
+									throw new HelperException();
 								} else {
 									int diff = adjustmentCalendar.get(part.calendarInt) + offset - solvisData;
 									int steps;
@@ -529,10 +537,10 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 							}
 							if (!adjusted) {
 								success = false;
-								throw new HelperError();
+								throw new HelperException();
 							}
 						}
-					} catch (HelperError he) {
+					} catch (HelperException he) {
 						success = false;
 					}
 				}
@@ -547,7 +555,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 					if (Executable.this.adjustmentEnable && time < nextAdjust.realAdjustTime
 							- Constants.SETTING_TIME_RANGE_LOWER + Constants.SETTING_TIME_RANGE_UPPER) {
 						Executable.this.solvis.send(ClockMonitor.this.ok);
-						Screen screen = SolvisScreen.get(Executable.this.solvis.getCurrentScreen());
+						IScreen screen = SolvisScreen.get(Executable.this.solvis.getCurrentScreen());
 						if (screen != ClockMonitor.this.okScreen.get(configurationMask)) {
 							success = false;
 						}
@@ -713,13 +721,13 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, LearningError {
-		Screen screen = this.screen.get(solvis);
+	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException {
+		Screen screen = (Screen) this.screen.get(solvis);
 		if (screen == null) {
 			String error = "Learning of the clock screens not possible, rejected."
 					+ "Screens undefined in the current configuration. Check the control.xml!";
 			logger.error(error);
-			throw new LearningError(error);
+			throw new LearningException(error);
 		}
 		boolean finished = false;
 		for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
@@ -727,7 +735,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 				if (repeat == 1) {
 					logger.log(LEARN, "Learning of clock not successfull, try it again.");
 				}
-				this.screen.get(solvis).goTo(solvis);
+				screen.goTo(solvis);
 				finished = true;
 				for (DatePart part : this.dateParts) {
 					solvis.send(part.touch);
@@ -745,7 +753,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		if (!finished) {
 			String error = "Learning of clock not possible, rekjected.";
 			logger.error(error);
-			throw new LearningError(error);
+			throw new LearningException(error);
 		}
 	}
 
@@ -766,7 +774,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			return this.calendarInt;
 		}
 
-		private void assign(SolvisDescription description) {
+		private void assign(SolvisDescription description) throws AssignmentException {
 			if (this.touch != null) {
 				this.touch.assign(description);
 			}
@@ -810,7 +818,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			}
 
 			@Override
-			public DatePart create() throws XmlError, IOException {
+			public DatePart create() throws XmlException, IOException {
 				return new DatePart(this.rectangle, this.touch, this.screenGrafic, this.calendarInt,
 						this.calendarOrigin, this.solvisOrigin);
 			}
@@ -910,7 +918,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			}
 
 			@Override
-			public DisableClockSetting create() throws XmlError, IOException {
+			public DisableClockSetting create() throws XmlException, IOException {
 				return new DisableClockSetting(this.burnerId, this.hotWaterPumpId);
 			}
 

@@ -12,10 +12,11 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.TypeError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
@@ -48,12 +49,12 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws AssignmentException {
 		Duration pushTimeDuration = description.getDuration(this.pushTimeId);
 		Duration releaseTimeDuration = description.getDuration(this.releaseTimeId);
 
 		if (pushTimeDuration == null || releaseTimeDuration == null) {
-			throw new AssignmentError("Duration time not found");
+			throw new AssignmentException("Duration time not found");
 		}
 		this.pushTime = pushTimeDuration.getTime_ms();
 		this.releaseTime = releaseTimeDuration.getTime_ms();
@@ -61,7 +62,7 @@ public class StrategyButton implements IStrategy {
 
 	@Override
 	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess,
-			boolean optional) throws TerminationException, IOException {
+			boolean optional) throws TerminationException, IOException, ModbusException {
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			Button button = new Button(solvisScreen.getImage(), rectangle, this.pushTime, this.releaseTime);
@@ -74,10 +75,10 @@ public class StrategyButton implements IStrategy {
 
 	@Override
 	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
-			throws IOException, TerminationException, TypeError {
+			throws IOException, TerminationException, TypeException, ModbusException {
 		Boolean bool = value.getBoolean();
 		if (bool == null) {
-			throw new TypeError("Wrong value type");
+			throw new TypeException("Wrong value type");
 		}
 		if (controlAccess.isModbus()) {
 			solvis.writeUnsignedShortModbusData((ModbusAccess) controlAccess, bool ? 1 : 0);
@@ -136,7 +137,7 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public BooleanValue interpretSetData(SingleData<?> singleData) throws TypeError {
+	public BooleanValue interpretSetData(SingleData<?> singleData) throws TypeException {
 		if (singleData instanceof BooleanValue) {
 			return (BooleanValue) singleData;
 		} else if (singleData instanceof StringData) {
@@ -180,7 +181,7 @@ public class StrategyButton implements IStrategy {
 		}
 
 		@Override
-		public StrategyButton create() throws XmlError, IOException {
+		public StrategyButton create() throws XmlException, IOException {
 			return new StrategyButton(this.invert, this.pushTimeId, this.releaseTimeId);
 		}
 

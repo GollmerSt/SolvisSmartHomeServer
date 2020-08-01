@@ -11,7 +11,9 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.XmlException;
 
 public abstract class CreatorByXML<T> {
 
@@ -40,10 +42,12 @@ public abstract class CreatorByXML<T> {
 	 * Wird mit EndElement aufgerufen.
 	 * 
 	 * @return
-	 * @throws XmlError
+	 * @throws XmlException
+	 * @throws AssignmentException 
+	 * @throws ReferenceException 
 	 */
 
-	public abstract T create() throws XmlError, IOException;
+	public abstract T create() throws XmlException, IOException, AssignmentException, ReferenceException;
 
 	/**
 	 * Wird aufgerufen, wenn ein nested Tag erkannt wurde
@@ -62,8 +66,9 @@ public abstract class CreatorByXML<T> {
 	 * 
 	 * @param creator
 	 * @param created
+	 * @throws XmlException 
 	 */
-	public abstract void created(CreatorByXML<?> creator, Object created);
+	public abstract void created(CreatorByXML<?> creator, Object created) throws XmlException;
 
 	public BaseCreator<?> getBaseCreator() {
 		return this.creator;
@@ -99,7 +104,7 @@ public abstract class CreatorByXML<T> {
 			}
 
 			@Override
-			public StringElement create() throws XmlError, IOException {
+			public StringElement create() throws XmlException, IOException {
 				return new StringElement(this.builder.toString());
 			}
 

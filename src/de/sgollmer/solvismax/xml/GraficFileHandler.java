@@ -18,8 +18,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.FileError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.FileException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
@@ -51,7 +51,7 @@ public class GraficFileHandler {
 		this.parent = parent;
 	}
 
-	private void copyFiles() throws IOException {
+	private void copyFiles() throws IOException, FileException {
 
 		boolean success = true;
 
@@ -60,7 +60,7 @@ public class GraficFileHandler {
 		}
 
 		if (!success) {
-			throw new FileError("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
+			throw new FileException("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
 		}
 
 		File xsd = new File(this.parent, NAME_XSD_GRAFICSFILE);
@@ -69,7 +69,7 @@ public class GraficFileHandler {
 
 	}
 
-	public AllSolvisGrafics read() throws IOException, XmlError, XMLStreamException {
+	public AllSolvisGrafics read() throws IOException, XmlException, XMLStreamException, FileException {
 
 		this.copyFiles();
 
@@ -92,7 +92,7 @@ public class GraficFileHandler {
 
 			result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName()).getTree();
 
-		} catch (IOException | XmlError | XMLStreamException e1) {
+		} catch (IOException | XmlException | XMLStreamException e1) {
 			logger.error("Warning: Read error on grafics.xml file. A new one will be created.");
 			result = new AllSolvisGrafics();
 		} catch (Throwable e2) {
@@ -106,7 +106,7 @@ public class GraficFileHandler {
 		return result;
 	}
 
-	public void write(AllSolvisGrafics grafics) throws IOException, XMLStreamException {
+	public void write(AllSolvisGrafics grafics) throws IOException, XMLStreamException, FileException {
 		this.copyFiles();
 
 		File output = new File(this.parent, NAME_XML_GRAFICSFILE);

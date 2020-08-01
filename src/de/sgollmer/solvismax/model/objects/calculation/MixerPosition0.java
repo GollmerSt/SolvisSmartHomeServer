@@ -7,7 +7,11 @@
 
 package de.sgollmer.solvismax.model.objects.calculation;
 
-import de.sgollmer.solvismax.error.AssignmentError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
@@ -17,6 +21,8 @@ import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class MixerPosition0 extends Strategy<MixerPosition0> {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(MixerPosition0.class);
 
 	private MixerPosition0(Calculation calculation) {
 		super(calculation);
@@ -37,7 +43,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	void instantiate(Solvis solvis) {
+	void instantiate(Solvis solvis) throws AssignmentException, DependencyException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
@@ -49,6 +55,10 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 
 		SolvisData pumpOn = dependencies.get(allData, "pumpOn");
 		SolvisData mixerClosing = dependencies.get(allData, "mixerClosing");
+
+		if (result == null || pumpOn == null || mixerClosing == null) {
+			throw new AssignmentException("Assignment error: Dependencies not assigned");
+		}
 
 		Executable executable = new Executable(result, pumpOn, mixerClosing);
 
@@ -71,13 +81,18 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 
 		@Override
 		public void update(SolvisData data, Object source) {
-			if (this.result == null || this.pumpOn == null || this.mixerClosing == null) {
-				throw new AssignmentError("Assignment error: Dependencies not assigned");
-			}
 
-			boolean result = this.result.getBool();
-			boolean mixer = this.mixerClosing.getBool();
-			boolean pump = this.pumpOn.getBool();
+			boolean result;
+			boolean mixer;
+			boolean pump;
+			try {
+				result = this.result.getBool();
+				mixer = this.mixerClosing.getBool();
+				pump = this.pumpOn.getBool();
+			} catch (TypeException e) {
+				logger.error("Type error, update ignored", e);
+				return;
+			}
 
 			result = !pump && !mixer;
 

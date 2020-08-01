@@ -37,7 +37,7 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.crypt.CryptAes;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -102,7 +102,7 @@ public class Mail {
 			}
 
 			@Override
-			public Recipient create() throws XmlError, IOException {
+			public Recipient create() throws XmlException, IOException {
 				return new Recipient(this.name, this.address, this.type);
 			}
 

@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.connection.transfer;
 import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions;
-import de.sgollmer.solvismax.model.objects.OfConfigs;
+import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 
 public class DescriptionsPackage extends JsonPackage implements ISendData {
 

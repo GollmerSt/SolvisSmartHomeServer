@@ -7,13 +7,13 @@
 
 package de.sgollmer.solvismax.error;
 
-public class DependencyError extends Error {
+public class PowerOnException extends Exception {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 883291412939229936L;
+	private static final long serialVersionUID = -4006254151177444694L;
 
-	public DependencyError(String message) {
+	public PowerOnException(String message) {
 		super(message);
 	}
 }

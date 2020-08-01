@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.connection.transfer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.sgollmer.solvismax.error.JsonError;
+import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
@@ -45,7 +45,7 @@ public class SingleValue implements IValue {
 	}
 
 	@Override
-	public int from(String json, int position) throws JsonError {
+	public int from(String json, int position) throws JsonException {
 		String sub = json.substring(position);
 		String group = null;
 		Matcher m = STRING.matcher(sub);
@@ -79,7 +79,7 @@ public class SingleValue implements IValue {
 			this.data = null;
 			return position + group.length();
 		} else {
-			throw new JsonError("Valid single value vcan't be detected");
+			throw new JsonException("Valid single value vcan't be detected");
 		}
 	}
 

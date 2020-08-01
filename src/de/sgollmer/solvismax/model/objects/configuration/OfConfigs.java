@@ -5,22 +5,26 @@
  * 
  ************************************************************************/
 
-package de.sgollmer.solvismax.model.objects;
+package de.sgollmer.solvismax.model.objects.configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.IAssigner;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 
-public class OfConfigs<E extends OfConfigs.IElement<E>> {
+public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner {
 	private final Collection<E> elements = new ArrayList<>(1);
 
-	void verifyAndAdd(E element) throws XmlError {
+	public void verifyAndAdd(E element) throws XmlException {
 		for (E e : this.elements) {
 			if (!element.isConfigurationVerified(e)) {
 				element.isConfigurationVerified(e);
-				throw new XmlError("Configuration mask of screen <" + element.getName() + "> isn't unique.");
+				throw new XmlException("Configuration mask of screen <" + element.getName() + "> isn't unique.");
 			}
 		}
 		this.elements.add(element);
@@ -41,8 +45,17 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> {
 	public E get(Solvis solvis) {
 		return this.get(solvis.getConfigurationMask());
 	}
+	
+	public static Object get(int configurationMask, OfConfigs<?> ofConfigs ) {
+		if ( ofConfigs == null ) {
+			return null ;
+		} else {
+			return ofConfigs.get(configurationMask);
+		}
+	}
 
-	void assign(SolvisDescription description) {
+	@Override
+	public void assign(SolvisDescription description)  throws XmlException, AssignmentException, ReferenceException{
 		for (E e : this.elements) {
 			e.assign(description);
 		}
@@ -52,7 +65,7 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> {
 		return this.elements;
 	}
 
-	E getIfSingle() {
+	public E getIfSingle() {
 		if (this.elements.size() == 1) {
 			return this.elements.iterator().next();
 		} else {
@@ -60,12 +73,10 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> {
 		}
 	}
 
-	public interface IElement<E> {
+	public interface IElement<E> extends IAssigner{
 		public boolean isConfigurationVerified(E e);
 
 		public boolean isInConfiguration(int configurationMask);
-
-		public void assign(SolvisDescription description);
 
 		public String getName();
 	}

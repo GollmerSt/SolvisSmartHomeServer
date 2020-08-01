@@ -13,7 +13,9 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
@@ -95,7 +97,7 @@ public class UpdateStrategies implements IAssigner {
 		}
 
 		@Override
-		public UpdateStrategies create() throws XmlError, IOException {
+		public UpdateStrategies create() throws XmlException, IOException {
 			return new UpdateStrategies(this.updateStrategies);
 		}
 
@@ -129,7 +131,7 @@ public class UpdateStrategies implements IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
 		for (Strategy<?> strategy : this.strategies) {
 			strategy.assign(description);
 		}

@@ -9,7 +9,7 @@ package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
 
-import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.PowerOnException;
 
 public class CommandScreenRestore extends Command {
 
@@ -20,7 +20,7 @@ public class CommandScreenRestore extends Command {
 	}
 
 	@Override
-	protected boolean execute(Solvis solvis) throws IOException, ErrorPowerOn {
+	protected boolean execute(Solvis solvis) throws IOException, PowerOnException {
 		solvis.screenRestore(this.enable);
 		return true;
 	}

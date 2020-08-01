@@ -12,8 +12,9 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -73,13 +74,13 @@ public class Preparation implements IAssigner {
 		}
 	}
 
-	static class Creator extends CreatorByXML<Preparation> {
+	public static class Creator extends CreatorByXML<Preparation> {
 
 		private String id;
 		private TouchPoint touchPoint;
 		private ScreenGraficDescription screenGrafic;
 
-		Creator(String id, BaseCreator<?> creator) {
+		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -93,7 +94,7 @@ public class Preparation implements IAssigner {
 		}
 
 		@Override
-		public Preparation create() throws XmlError, IOException {
+		public Preparation create() throws XmlException, IOException {
 			return new Preparation(this.id, this.touchPoint, this.screenGrafic);
 		}
 
@@ -127,7 +128,7 @@ public class Preparation implements IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws AssignmentException {
 		if (this.touchPoint != null) {
 			this.touchPoint.assign(description);
 		}

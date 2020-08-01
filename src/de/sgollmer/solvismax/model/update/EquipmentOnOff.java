@@ -10,7 +10,8 @@ package de.sgollmer.solvismax.model.update;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.CommandControl;
@@ -118,8 +119,15 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		}
 
 		private void updateByControl(SolvisData data, Object source) {
-			int controlData = data.getInt();
-			int calcData = this.calculatedValue.getInt();
+			int controlData;
+			int calcData;
+			try {
+				controlData = data.getInt();
+				calcData = this.calculatedValue.getInt();
+			} catch (TypeException e) {
+				logger.error("Type exception, update ignored", e);
+				return;
+			}
 
 			boolean update = false;
 
@@ -157,9 +165,15 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			}
 			long time = System.currentTimeMillis();
 
-			boolean equipmentOn = data.getBool();
-
-			int currentCalcValue = this.calculatedValue.getInt();
+			boolean equipmentOn;
+			int currentCalcValue;
+			try {
+				equipmentOn = data.getBool();
+				currentCalcValue = this.calculatedValue.getInt();
+			} catch (TypeException e) {
+				logger.error("Type exception, update ignored", e);
+				return;
+			}
 
 			boolean screenRestore = true;
 
@@ -246,7 +260,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		}
 
 		@Override
-		public EquipmentOnOff create() throws XmlError {
+		public EquipmentOnOff create() throws XmlException {
 			return new EquipmentOnOff(this.equipmentId, this.calculatedId, this.factor, this.checkIntervalId,
 					this.readIntervalId, this.hourly);
 		}

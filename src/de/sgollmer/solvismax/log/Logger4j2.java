@@ -19,7 +19,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.LogManager;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.FileError;
+import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.helper.FileHelper;
 
 /**
@@ -112,7 +112,7 @@ public class Logger4j2 {
 		}
 
 		@Override
-		public boolean createInstance(String pathName) throws IOException {
+		public boolean createInstance(String pathName) throws IOException, FileException {
 			return new Logger4j2(pathName).setConfiguration();
 		}
 
@@ -183,7 +183,7 @@ public class Logger4j2 {
 		this.parent = parent;
 	}
 
-	private void copyFiles() throws IOException {
+	private void copyFiles() throws IOException, FileException {
 
 		boolean success = true;
 
@@ -192,7 +192,7 @@ public class Logger4j2 {
 		}
 
 		if (!success) {
-			throw new FileError("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
+			throw new FileException("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
 		}
 
 		File xml = new File(this.parent, Constants.LOG4J_CONFIG_FILE);
@@ -204,7 +204,7 @@ public class Logger4j2 {
 
 	}
 
-	private boolean setConfiguration() throws IOException {
+	private boolean setConfiguration() throws IOException, FileException {
 
 		copyFiles();
 

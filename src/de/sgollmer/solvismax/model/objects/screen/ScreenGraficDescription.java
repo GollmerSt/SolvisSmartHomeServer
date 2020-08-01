@@ -11,7 +11,8 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
@@ -111,7 +112,7 @@ public class ScreenGraficDescription implements IScreenCompare, IAssigner {
 		}
 
 		@Override
-		public ScreenGraficDescription create() throws XmlError {
+		public ScreenGraficDescription create() throws XmlException {
 			return new ScreenGraficDescription(this.id, this.exact, this.rectangle);
 		}
 
@@ -140,7 +141,7 @@ public class ScreenGraficDescription implements IScreenCompare, IAssigner {
 	public void assign(SolvisDescription description) {
 	}
 
-	public void learn(Solvis solvis) throws IOException {
+	public void learn(Solvis solvis) throws IOException, TerminationException {
 		MyImage image = solvis.getCurrentScreen().getImage();
 		if (this.exact) {
 			image = new MyImage(image, this.rectangle, true);

@@ -17,7 +17,9 @@ import javax.xml.stream.XMLStreamException;
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Main;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
@@ -41,7 +43,8 @@ public class BaseControlFileReader {
 		}
 	}
 
-	public XmlStreamReader.Result<BaseData> read() throws IOException, XmlError, XMLStreamException {
+	public XmlStreamReader.Result<BaseData> read()
+			throws IOException, XmlException, XMLStreamException, AssignmentException, ReferenceException {
 
 		FileInputStream source = new FileInputStream(this.baseXml);
 
@@ -72,7 +75,8 @@ public class BaseControlFileReader {
 		return reader.read(source, rootId, new BaseData.Creator(rootId), this.baseXml.getName());
 	}
 
-	public static void main(String[] args) throws IOException, XmlError, XMLStreamException {
+	public static void main(String[] args)
+			throws IOException, XmlException, XMLStreamException, AssignmentException, ReferenceException {
 
 		BaseControlFileReader reader = new BaseControlFileReader(null);
 		reader.read();

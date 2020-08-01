@@ -15,7 +15,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficData;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -96,7 +96,7 @@ public class SystemGrafics implements IXmlWriteable {
 		}
 
 		@Override
-		public SystemGrafics create() throws XmlError, IOException {
+		public SystemGrafics create() throws XmlException, IOException {
 
 			return new SystemGrafics(this.id, this.configurationMask, this.graficDatas);
 		}

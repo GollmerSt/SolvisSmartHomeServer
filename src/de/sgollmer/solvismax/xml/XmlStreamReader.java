@@ -27,7 +27,9 @@ import javax.xml.validation.Validator;
 import org.xml.sax.SAXParseException;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
@@ -61,12 +63,13 @@ public class XmlStreamReader<D> {
 	}
 
 	public Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId)
-			throws IOException, XmlError, XMLStreamException {
+			throws IOException, XmlException, XMLStreamException, AssignmentException, ReferenceException {
 		return this.read(inputStream, rootId, rootCreator, streamId, false);
 	}
 
 	private Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId,
-			boolean hashOnly) throws IOException, XmlError, XMLStreamException {
+			boolean hashOnly)
+			throws IOException, XmlException, XMLStreamException, AssignmentException, ReferenceException {
 
 		final HashContainer hash = new HashContainer();
 
@@ -75,7 +78,7 @@ public class XmlStreamReader<D> {
 		try {
 			reader = inputFactory.createXMLEventReader(inputStream);
 		} catch (XMLStreamException e2) {
-			throw new XmlError(e2, "Unexpected error on opening the file \"" + streamId + "\"");
+			throw new XmlException(e2, "Unexpected error on opening the file \"" + streamId + "\"");
 		}
 
 		D destination = null;
@@ -85,7 +88,7 @@ public class XmlStreamReader<D> {
 			try {
 				ev = reader.nextEvent();
 			} catch (XMLStreamException e1) {
-				throw new XmlError(e1, "XML syntax error in file \"" + streamId + "\"");
+				throw new XmlException(e1, "XML syntax error in file \"" + streamId + "\"");
 			}
 			switch (ev.getEventType()) {
 				case XMLStreamConstants.START_ELEMENT:
@@ -109,7 +112,8 @@ public class XmlStreamReader<D> {
 	}
 
 	private <T> T create(CreatorByXML<T> creator, XMLEventReader reader, XMLEvent startEvent, String streamId,
-			HashContainer hash, boolean hashOnly) throws XmlError, IOException {
+			HashContainer hash, boolean hashOnly)
+			throws XmlException, IOException, AssignmentException, ReferenceException {
 
 		for (@SuppressWarnings("unchecked")
 		Iterator<Attribute> it = startEvent.asStartElement().getAttributes(); it.hasNext();) {
@@ -127,7 +131,7 @@ public class XmlStreamReader<D> {
 			try {
 				ev = reader.nextEvent();
 			} catch (XMLStreamException e1) {
-				throw new XmlError(e1, "XML syntax error in file \"" + streamId + "\"");
+				throw new XmlException(e1, "XML syntax error in file \"" + streamId + "\"");
 			}
 			try {
 				switch (ev.getEventType()) {
@@ -148,8 +152,8 @@ public class XmlStreamReader<D> {
 						hash.put(text);
 						creator.addCharacters(text);
 				}
-			} catch (XmlError e) {
-				throw new XmlError(
+			} catch (XmlException e) {
+				throw new XmlException(
 						"XML error on line " + ev.getLocation().getLineNumber() + " occured:\n" + e.getMessage());
 			}
 		}
@@ -167,7 +171,7 @@ public class XmlStreamReader<D> {
 		}
 
 		@Override
-		public Object create() throws XmlError {
+		public Object create() throws XmlException {
 			return null;
 		}
 

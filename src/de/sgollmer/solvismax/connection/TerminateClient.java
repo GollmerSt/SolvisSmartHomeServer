@@ -18,6 +18,7 @@ import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
 import de.sgollmer.solvismax.connection.transfer.ServerCommandPackage;
+import de.sgollmer.solvismax.error.JsonException;
 
 public class TerminateClient {
 
@@ -27,7 +28,7 @@ public class TerminateClient {
 		this.port = port;
 	}
 
-	public boolean connectAndTerminateOtherServer() throws UnknownHostException, IOException {
+	public boolean connectAndTerminateOtherServer() throws UnknownHostException, IOException, JsonException {
 		Socket socket = null;
 		try {
 			socket = new Socket("localhost", this.port);

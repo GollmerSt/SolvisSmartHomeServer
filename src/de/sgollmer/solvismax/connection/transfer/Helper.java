@@ -10,7 +10,8 @@ package de.sgollmer.solvismax.connection.transfer;
 import java.io.IOException;
 import java.io.InputStream;
 
-import de.sgollmer.solvismax.error.JsonError;
+import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -20,11 +21,11 @@ public class Helper {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
 
-	static char charAt(String json, int position) throws JsonError {
+	static char charAt(String json, int position) throws JsonException {
 		try {
 			return json.charAt(position);
 		} catch (IndexOutOfBoundsException e) {
-			throw new JsonError("Unexpected end of json string reached");
+			throw new JsonException("Unexpected end of json string reached");
 		}
 	}
 
@@ -77,13 +78,16 @@ public class Helper {
 		@Override
 		public void run() {
 			synchronized (this) {
-				AbortHelper.getInstance().sleepAndLock(this.timeout, this);
+				try {
+					AbortHelper.getInstance().sleepAndLock(this.timeout, this);
 				if (!this.abort) {
 					try {
 						this.inputStream.close();
 						logger.error("Timeout while client to server transfer");
 					} catch (IOException e) {
 					}
+				}
+				} catch (TerminationException e1) {
 				}
 			}
 		}

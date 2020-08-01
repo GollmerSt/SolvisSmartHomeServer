@@ -9,7 +9,7 @@ package de.sgollmer.solvismax.model.objects;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
@@ -58,7 +58,7 @@ public class Duration {
 		}
 
 		@Override
-		public Duration create() throws XmlError {
+		public Duration create() throws XmlException {
 			return new Duration(this.id, this.time_ms);
 		}
 

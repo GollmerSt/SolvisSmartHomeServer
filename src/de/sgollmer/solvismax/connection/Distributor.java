@@ -17,6 +17,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -264,7 +265,11 @@ public class Distributor extends Observable<JsonPackage> {
 					}
 				} catch (Throwable e) {
 					logger.error("Error was thrown in periodic burst thread. Cause: ", e);
-					AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
+					try {
+						AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
+					} catch (TerminationException e1) {
+						return;
+					}
 				}
 
 			}

@@ -12,8 +12,11 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.TypeError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
@@ -25,7 +28,7 @@ import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -73,7 +76,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
+	public void instantiate(Solvis solvis) throws AssignmentException, DependencyException {
 		this.strategy.instantiate(solvis);
 	}
 
@@ -104,7 +107,7 @@ public class Calculation extends ChannelSource {
 		}
 
 		@Override
-		public Calculation create() throws XmlError {
+		public Calculation create() throws XmlException {
 			return new Calculation(this.strategy, this.dependencies);
 		}
 
@@ -129,7 +132,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
 		this.dependencies.assign(description);
 		if (this.strategy != null) {
 			this.strategy.assign(description);
@@ -147,7 +150,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public Screen getScreen(int configurationMask) {
+	public IScreen getScreen(int configurationMask) {
 		return null;
 	}
 
@@ -167,7 +170,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
 		return null;
 	}
 

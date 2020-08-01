@@ -10,7 +10,11 @@ package de.sgollmer.solvismax.model.objects.calculation;
 import java.util.Arrays;
 import java.util.Collection;
 
-import de.sgollmer.solvismax.error.AssignmentError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
@@ -21,6 +25,8 @@ import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class BurnerStatus extends Strategy<BurnerStatus> {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(BurnerStatus.class);
 
 	BurnerStatus() {
 		super(null);
@@ -56,7 +62,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	}
 
 	@Override
-	void instantiate(Solvis solvis) {
+	void instantiate(Solvis solvis) throws AssignmentException, DependencyException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		Dependencies dependencies = this.calculation.getDependencies();
 
@@ -69,6 +75,9 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		SolvisData burnerLevel1On = dependencies.get(allData, "burnerLevel1On");
 		SolvisData burnerLevel2On = dependencies.get(allData, "burnerLevel2On");
 
+		if (result == null || burnerLevel1On == null || burnerLevel2On == null) {
+			throw new AssignmentException("Assignment error: Dependencies not assigned");
+		}
 		Executable executable = new Executable(result, burnerLevel1On, burnerLevel2On);
 
 		executable.update(burnerLevel1On, this);
@@ -91,14 +100,18 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 		@Override
 		public void update(SolvisData data, Object source) {
-			if (this.result == null || this.burnerLevel1On == null || this.burnerLevel2On == null) {
-				throw new AssignmentError("Assignment error: Dependencies not assigned");
-			}
 
 			Status result = null;
 
-			boolean level1 = this.burnerLevel1On.getBool();
-			boolean level2 = this.burnerLevel2On.getBool();
+			boolean level1;
+			boolean level2;
+			try {
+				level1 = this.burnerLevel1On.getBool();
+				level2 = this.burnerLevel2On.getBool();
+			} catch (TypeException e) {
+				logger.error("Type error, update ignored", e);
+				return;
+			}
 
 			if (level2) {
 				result = Status.LEVEL2;

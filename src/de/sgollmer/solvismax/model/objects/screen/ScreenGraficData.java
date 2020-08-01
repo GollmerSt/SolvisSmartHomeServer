@@ -19,7 +19,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -82,7 +82,7 @@ public class ScreenGraficData implements IXmlWriteable {
 		}
 
 		@Override
-		public ScreenGraficData create() throws XmlError, IOException {
+		public ScreenGraficData create() throws XmlException, IOException {
 			byte[] bytes = Base64.getDecoder().decode(this.base64.toString());
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 			BufferedImage image = ImageIO.read(bis);

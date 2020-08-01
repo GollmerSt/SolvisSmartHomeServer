@@ -11,7 +11,8 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
@@ -50,7 +51,7 @@ public class ModeEntry implements IAssigner, IMode {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws AssignmentException {
 		if (this.guiSet != null) {
 			this.guiSet.assign(description);
 		}
@@ -77,7 +78,7 @@ public class ModeEntry implements IAssigner, IMode {
 		}
 
 		@Override
-		public ModeEntry create() throws XmlError, IOException {
+		public ModeEntry create() throws XmlException, IOException {
 			return new ModeEntry(this.id, this.guiSet, this.modbusValue);
 		}
 
@@ -140,7 +141,7 @@ public class ModeEntry implements IAssigner, IMode {
 		}
 
 		@Override
-		public void assign(SolvisDescription description) {
+		public void assign(SolvisDescription description) throws AssignmentException {
 			if (this.touch != null) {
 				this.touch.assign(description);
 			}
@@ -168,7 +169,7 @@ public class ModeEntry implements IAssigner, IMode {
 			}
 
 			@Override
-			public GuiSet create() throws XmlError, IOException {
+			public GuiSet create() throws XmlException, IOException {
 				return new GuiSet(this.touch, this.grafic);
 			}
 

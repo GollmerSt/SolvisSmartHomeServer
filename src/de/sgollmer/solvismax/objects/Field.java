@@ -9,7 +9,7 @@ package de.sgollmer.solvismax.objects;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
@@ -52,7 +52,7 @@ public class Field {
 		}
 
 		@Override
-		public Field create() throws XmlError {
+		public Field create() throws XmlException {
 			return new Field(this.position, this.length);
 		}
 

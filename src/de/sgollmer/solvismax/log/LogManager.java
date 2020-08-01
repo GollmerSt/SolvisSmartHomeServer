@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import de.sgollmer.solvismax.error.FileException;
+
 public class LogManager {
 
 	private final String loggerName = "TinyLog"; // Possibilities: "Log4j2", "TinyLog"
@@ -54,7 +56,7 @@ public class LogManager {
 	public interface ILogger {
 		public ILogger create(Class<?> clazz);
 
-		public boolean createInstance(String path) throws IOException;
+		public boolean createInstance(String path) throws IOException, FileException;
 
 		public void shutdown() throws InterruptedException;
 
@@ -123,7 +125,7 @@ public class LogManager {
 		}
 	}
 
-	public LogErrors createInstance(String path) throws IOException {
+	public LogErrors createInstance(String path) throws IOException, FileException {
 		boolean successfull = this.loggerBase.createInstance(path);
 		if (!successfull) {
 			return LogErrors.INIT;

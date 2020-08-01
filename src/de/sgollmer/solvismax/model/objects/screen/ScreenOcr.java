@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
@@ -57,7 +57,7 @@ public class ScreenOcr implements IScreenCompare {
 		}
 
 		@Override
-		public ScreenOcr create() throws XmlError, IOException {
+		public ScreenOcr create() throws XmlException, IOException {
 			return new ScreenOcr(this.rectangle, this.value);
 		}
 

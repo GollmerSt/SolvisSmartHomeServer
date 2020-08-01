@@ -14,7 +14,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
@@ -61,7 +61,7 @@ public class Measurement {
 		}
 
 		@Override
-		public Measurement create() throws XmlError, IOException {
+		public Measurement create() throws XmlException, IOException {
 			return new Measurement(this.id, this.data);
 		}
 
@@ -105,7 +105,7 @@ public class Measurement {
 		}
 
 		@Override
-		public SingleData<?> create() throws XmlError, IOException {
+		public SingleData<?> create() throws XmlException, IOException {
 			final String dataString = this.text.toString();
 			switch (this.getId()) {
 				case Constants.XmlStrings.XML_MEASUREMENT_BOOLEAN:

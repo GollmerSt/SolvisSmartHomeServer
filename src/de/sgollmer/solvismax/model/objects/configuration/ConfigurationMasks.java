@@ -13,7 +13,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -60,7 +60,7 @@ public class ConfigurationMasks {
 		}
 
 		@Override
-		public ConfigurationMasks create() throws XmlError, IOException {
+		public ConfigurationMasks create() throws XmlException, IOException {
 			return new ConfigurationMasks(this.masks);
 		}
 
@@ -132,7 +132,7 @@ public class ConfigurationMasks {
 			}
 
 			@Override
-			public ConfigurationMask create() throws XmlError, IOException {
+			public ConfigurationMask create() throws XmlException, IOException {
 				return new ConfigurationMask(this.andMask, this.cmpMask);
 			}
 

@@ -23,14 +23,21 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
-import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen.ScreenTouch;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -44,7 +51,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	private Map<Integer, Collection<ChannelDescription>> updateControlChannelsSequences = new HashMap<>();
 	private Map<Integer, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>();
 
-	private void addDescription(ChannelDescription description) {
+	private void addDescription(ChannelDescription description) throws XmlException {
 		OfConfigs<ChannelDescription> channelConf = this.descriptions.get(description.getId());
 		if (channelConf == null) {
 			channelConf = new OfConfigs<ChannelDescription>();
@@ -67,7 +74,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
 		for (OfConfigs<ChannelDescription> channelConf : this.descriptions.values()) {
 			channelConf.assign(description);
 		}
@@ -91,7 +98,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		}
 
 		@Override
-		public AllChannelDescriptions create() throws XmlError {
+		public AllChannelDescriptions create() throws XmlException {
 			return this.descriptions;
 		}
 
@@ -105,7 +112,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_CHANNEL_DESCRIPTION:
 					this.descriptions.addDescription((ChannelDescription) created);
@@ -116,7 +123,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException {
+	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException, ModbusException {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
 			if (description != null && description instanceof IGraficsLearnable) {
@@ -125,7 +132,8 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		}
 	}
 
-	public void measure(Solvis solvis, AllSolvisData datas) throws IOException, ErrorPowerOn {
+	public void measure(Solvis solvis, AllSolvisData datas)
+			throws IOException, PowerOnException, TerminationException, ModbusException {
 		solvis.clearMeasuredData();
 		solvis.getMeasureData();
 		solvis.getDistributor().setBurstUpdate(true);
@@ -142,7 +150,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		solvis.getDistributor().setBurstUpdate(false);
 	}
 
-	public void init(Solvis solvis) throws IOException {
+	public void init(Solvis solvis) throws IOException, AssignmentException, DependencyException {
 		AllSolvisData datas = solvis.getAllSolvisData();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
@@ -221,8 +229,8 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 			@Override
 			public int compare(ChannelDescription o1, ChannelDescription o2) {
 
-				List<ScreenTouch> p1 = o1.getScreen(mask).getPreviosScreens(mask);
-				List<ScreenTouch> p2 = o2.getScreen(mask).getPreviosScreens(mask);
+				List<ScreenTouch> p1 = o1.getScreen(mask).getPreviousScreens(mask);
+				List<ScreenTouch> p2 = o2.getScreen(mask).getPreviousScreens(mask);
 
 				if (p1.size() == 0 && p2.size() == 0) {
 					return 0;
@@ -265,12 +273,12 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	}
 
-	public Collection<ChannelDescription> getChannelDescriptions(Screen screen, Solvis solvis) {
+	public Collection<ChannelDescription> getChannelDescriptions(IScreen screen, Solvis solvis) {
 		Collection<ChannelDescription> result = new ArrayList<>();
 		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
 			ChannelDescription description = descriptionsC.get(solvis);
 			if (description != null) {
-				Screen channelScreen = descriptionsC.get(solvis).getScreen(solvis.getConfigurationMask());
+				IScreen channelScreen = descriptionsC.get(solvis).getScreen(solvis.getConfigurationMask());
 				if (channelScreen != null && screen == channelScreen) {
 					result.add(description);
 				}

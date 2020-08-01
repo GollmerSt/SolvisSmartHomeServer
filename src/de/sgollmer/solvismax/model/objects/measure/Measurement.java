@@ -13,9 +13,10 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.ErrorPowerOn;
-import de.sgollmer.solvismax.error.TypeError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
+import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
@@ -33,7 +34,7 @@ public class Measurement extends ChannelSource {
 
 	private static final String XML_FIELD = "Field";
 
-	private final Strategy type;
+	private final IType type;
 	private final int divisor;
 	private final boolean average;
 	private final int delayAfterSwitchingOn;
@@ -94,17 +95,20 @@ public class Measurement extends ChannelSource {
 	// 130B0F Datum 15.11.2019
 	// 49AB00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-	private Measurement(Strategy type, int divisor, boolean average, int delayAfterSwitchingOn,
-			Collection<Field> fields) {
+	private Measurement(String channelId, Strategy type, int divisor, boolean average, int delayAfterSwitchingOn,
+			Collection<Field> fields) throws XmlException {
 		this.type = type;
 		this.divisor = divisor;
 		this.average = average;
 		this.delayAfterSwitchingOn = delayAfterSwitchingOn;
 		this.fields = fields;
+		if (!this.type.validate(fields)) {
+			throw new XmlException("XML-Error: File is not valid of measurement <" + channelId + ">.");
+		}
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) throws ErrorPowerOn, IOException {
+	public boolean getValue(SolvisData dest, Solvis solvis) throws PowerOnException, IOException {
 
 		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
 			dest.setSingleData(null);
@@ -141,14 +145,16 @@ public class Measurement extends ChannelSource {
 
 	public static class Creator extends CreatorByXML<Measurement> {
 
+		private String channelId;
 		private Strategy type;
 		private int divisor = 1;
 		private boolean average = false;
 		private int delayAfterSwitchingOn = -1;
 		private final Collection<Field> fields = new ArrayList<>(2);
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(String channelId, String id, BaseCreator<?> creator) {
 			super(id, creator);
+			this.channelId = channelId;
 		}
 
 		@Override
@@ -172,8 +178,8 @@ public class Measurement extends ChannelSource {
 		}
 
 		@Override
-		public Measurement create() throws XmlError {
-			return new Measurement(this.type, this.divisor, this.average, this.delayAfterSwitchingOn, this.fields);
+		public Measurement create() throws XmlException {
+			return new Measurement(this.channelId, this.type, this.divisor, this.average, this.delayAfterSwitchingOn, this.fields);
 		}
 
 		@Override
@@ -240,7 +246,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
 		return null;
 	}
 
@@ -257,6 +263,17 @@ public class Measurement extends ChannelSource {
 	@Override
 	protected SingleData<?> createSingleData(String value) {
 		return null;
+	}
+
+	interface IType {
+		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
+				throws PowerOnException;
+
+		public boolean isNumeric();
+
+		public boolean isBoolean();
+
+		public boolean validate(Collection<Field> fields);
 	}
 
 }

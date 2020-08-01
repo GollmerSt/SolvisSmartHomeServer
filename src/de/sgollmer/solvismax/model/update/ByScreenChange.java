@@ -9,7 +9,7 @@ package de.sgollmer.solvismax.model.update;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.Strategy;
@@ -52,7 +52,7 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 		}
 
 		@Override
-		public ByScreenChange create() throws XmlError {
+		public ByScreenChange create() throws XmlException {
 			return ByScreenChange.getInstance();
 		}
 

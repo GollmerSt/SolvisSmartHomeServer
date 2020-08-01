@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 
 public class Helper {
 
@@ -39,7 +39,7 @@ public class Helper {
 			}
 
 			@Override
-			public IntegerValue create() throws XmlError, IOException {
+			public IntegerValue create() throws XmlException, IOException {
 				if (this.builder.length() > 0) {
 					return new IntegerValue(Integer.decode(this.builder.toString()));
 				} else {

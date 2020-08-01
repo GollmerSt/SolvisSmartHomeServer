@@ -14,9 +14,11 @@ import java.util.ListIterator;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.TypeError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
@@ -57,7 +59,7 @@ public class StrategyMode implements IStrategy {
 
 	@Override
 	public ModeValue<ModeEntry> getValue(SolvisScreen source, Solvis solvis, IControlAccess controlAccess,
-			boolean optional) throws IOException {
+			boolean optional) throws IOException, ModbusException {
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			MyImage image = new MyImage(source.getImage(), rectangle, true);
@@ -90,9 +92,9 @@ public class StrategyMode implements IStrategy {
 
 	@Override
 	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
-			throws IOException, TerminationException, TypeError {
+			throws IOException, TerminationException, TypeException, ModbusException {
 		if (value.getMode() == null) {
-			throw new TypeError("Wrong value type");
+			throw new TypeException("Wrong value type");
 		}
 		IMode valueMode = value.getMode().get();
 		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
@@ -107,7 +109,7 @@ public class StrategyMode implements IStrategy {
 			}
 		}
 		if (mode == null) {
-			throw new TypeError("Unknown value");
+			throw new TypeException("Unknown value");
 		}
 		if (!controlAccess.isModbus()) {
 			solvis.send(mode.getGuiSet().getTouch());
@@ -141,7 +143,7 @@ public class StrategyMode implements IStrategy {
 		}
 
 		@Override
-		public StrategyMode create() throws XmlError {
+		public StrategyMode create() throws XmlException {
 			return new StrategyMode(this.modes);
 		}
 
@@ -168,7 +170,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws AssignmentException {
 		for (ModeEntry mode : this.modes) {
 			mode.assign(description);
 		}
@@ -198,7 +200,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis, IControlAccess controlAccess) {
+	public boolean learn(Solvis solvis, IControlAccess controlAccess) throws ModbusException, TerminationException {
 		boolean successfull = true;
 		for (ModeEntry mode : this.getModes()) {
 			try {
@@ -241,11 +243,11 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
 		return this.interpretSetData(singleData.toString());
 	}
 
-	private SingleData<?> interpretSetData(String value) throws TypeError {
+	private SingleData<?> interpretSetData(String value) throws TypeException {
 		IMode setMode = null;
 		for (IMode mode : this.getModes()) {
 			if (mode.getName().equals(value)) {
@@ -254,7 +256,7 @@ public class StrategyMode implements IStrategy {
 			}
 		}
 		if (setMode == null) {
-			throw new TypeError("Mode <" + value + "> is unknown");
+			throw new TypeException("Mode <" + value + "> is unknown");
 		}
 		return new ModeValue<IMode>(setMode, -1);
 	}
@@ -274,7 +276,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value) throws TypeError {
+	public SingleData<?> createSingleData(String value) throws TypeException {
 		return this.interpretSetData(value);
 	}
 }

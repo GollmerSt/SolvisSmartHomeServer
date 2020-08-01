@@ -9,7 +9,7 @@ package de.sgollmer.solvismax.objects;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -45,9 +45,9 @@ public class Coordinate implements Cloneable {
 		}
 
 		@Override
-		public Coordinate create() {
+		public Coordinate create() throws XmlException {
 			if (this.x == null || this.y == null) {
-				throw new XmlError("Coordinates missing");
+				throw new XmlException("Coordinates missing");
 			}
 			return new Coordinate(this.x, this.y);
 		}

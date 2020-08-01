@@ -7,7 +7,7 @@
 
 package de.sgollmer.solvismax.error;
 
-public class TerminationException extends Error {
+public class TerminationException extends Exception {
 
 	/**
 	 * 

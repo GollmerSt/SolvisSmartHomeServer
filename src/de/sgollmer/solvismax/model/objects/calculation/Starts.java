@@ -7,7 +7,11 @@
 
 package de.sgollmer.solvismax.model.objects.calculation;
 
-import de.sgollmer.solvismax.error.AssignmentError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Dependencies;
@@ -17,6 +21,8 @@ import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class Starts extends Strategy<Starts> {
+	private static final ILogger logger = LogManager.getInstance().getLogger(Starts.class);
+
 	private Starts(Calculation calculation) {
 		super(calculation);
 	}
@@ -36,7 +42,7 @@ public class Starts extends Strategy<Starts> {
 	}
 
 	@Override
-	void instantiate(Solvis solvis) {
+	void instantiate(Solvis solvis) throws AssignmentException, DependencyException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
@@ -48,6 +54,9 @@ public class Starts extends Strategy<Starts> {
 
 		SolvisData equipmentOn = dependencies.get(allData, "equipmentOn");
 
+		if (result == null || equipmentOn == null) {
+			throw new AssignmentException("Assignment error: Dependencies not assigned");
+		}
 		Executable executable = new Executable(result, equipmentOn);
 
 		executable.update(equipmentOn, this);
@@ -65,16 +74,17 @@ public class Starts extends Strategy<Starts> {
 
 		@Override
 		public void update(SolvisData data, Object source) {
-			if (this.result == null || this.equipmentOn == null) {
-				throw new AssignmentError("Assignment error: Dependencies not assigned");
-			}
 
-			boolean equipmentOn = data.getBool();
-
-			if (equipmentOn) {
-				int result = this.result.getInt();
-				++result;
-				this.result.setInteger(result, data.getTimeStamp());
+			try {
+				boolean equipmentOn = data.getBool();
+				if (equipmentOn) {
+					int result = this.result.getInt();
+					++result;
+					this.result.setInteger(result, data.getTimeStamp());
+				}
+			} catch (TypeException e) {
+				logger.error("Type error, update ignored", e);
+				return;
 			}
 
 		}

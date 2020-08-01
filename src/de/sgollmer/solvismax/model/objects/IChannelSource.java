@@ -10,23 +10,30 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.Collection;
 
-import de.sgollmer.solvismax.error.TypeError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 
 public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public ChannelDescription getRestoreChannel(Solvis solvis);
 
-	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException;
+	public boolean getValue(SolvisData dest, Solvis solvis)
+			throws IOException, PowerOnException, TerminationException, ModbusException;
 
-	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException;
+	public SingleData<?> setValue(Solvis solvis, SolvisData value)
+			throws IOException, TerminationException, ModbusException;
 
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError;
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
 
 	public boolean isWriteable();
 
@@ -38,7 +45,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public boolean isBoolean();
 
-	public void instantiate(Solvis solvis);
+	public void instantiate(Solvis solvis) throws AssignmentException, DependencyException;
 
 	public Type getType();
 
@@ -48,7 +55,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public Collection<? extends IMode> getModes();
 
-	public Screen getScreen(int configurationMask);
+	public IScreen getScreen(int configurationMask);
 
 	public UpperLowerStep getUpperLowerStep();
 

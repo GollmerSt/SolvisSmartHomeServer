@@ -9,7 +9,7 @@ package de.sgollmer.solvismax.objects;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
@@ -77,7 +77,7 @@ public class Rectangle {
 		}
 
 		@Override
-		public Rectangle create() throws XmlError {
+		public Rectangle create() throws XmlException {
 			return new Rectangle(this.name, this.invertFunction, this.topLeft, this.bottomRight);
 		}
 

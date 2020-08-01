@@ -15,7 +15,8 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
@@ -23,7 +24,7 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Command.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class SolvisWorkers {
@@ -36,7 +37,7 @@ public class SolvisWorkers {
 	private ControlWorkerThread controlsThread = null;
 	private MeasurementsWorkerThread measurementsThread = null;
 	private Collection<Command> commandsOfScreen = new ArrayList<>();
-	private Screen commandScreen = null;
+	private IScreen commandScreen = null;
 	private long timeCommandScreen = System.currentTimeMillis();
 	private final boolean controlEnable;
 
@@ -137,7 +138,7 @@ public class SolvisWorkers {
 							logger.debug("Command <" + commandString + "> executed "
 									+ (success ? "" : "not " + "successfull"));
 						}
-					} catch (IOException | ErrorPowerOn e) {
+					} catch (IOException | PowerOnException | ModbusException e) {
 						success = false;
 					} catch (TerminationException e3) {
 						return;
@@ -296,9 +297,10 @@ public class SolvisWorkers {
 
 	}
 
-	private boolean execute(Command command) throws IOException, TerminationException, ErrorPowerOn {
+	private boolean execute(Command command)
+			throws IOException, TerminationException, PowerOnException, ModbusException {
 		if (!command.isModbus() || command.isWriting()) {
-			Screen commandScreen = command.getScreen(this.solvis);
+			IScreen commandScreen = command.getScreen(this.solvis);
 			if (commandScreen != null) {
 				long now = System.currentTimeMillis();
 
@@ -337,7 +339,7 @@ public class SolvisWorkers {
 			this.controlsThread.push(new Command() {
 
 				@Override
-				public boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn {
+				public boolean execute(Solvis solvis) throws IOException, TerminationException, PowerOnException {
 					SolvisWorkers.this.controlsThread.commandOptimization(true);
 					return true;
 				}
@@ -447,7 +449,7 @@ public class SolvisWorkers {
 						SolvisWorkers.this.solvis.measure();
 						SolvisWorkers.this.solvis.getSolvisState().connected();
 					} catch (IOException e1) {
-					} catch (ErrorPowerOn e2) {
+					} catch (PowerOnException e2) {
 						SolvisWorkers.this.solvis.getSolvisState().remoteConnected();
 					}
 
@@ -462,7 +464,11 @@ public class SolvisWorkers {
 					}
 				} catch (Throwable e) {
 					logger.error("Error was thrown in measurements worker thread. Cause: ", e);
-					AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
+					try {
+						AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
+					} catch (TerminationException e1) {
+						return;
+					}
 				}
 
 			}

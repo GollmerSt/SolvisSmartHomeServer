@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.connection.transfer;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.sgollmer.solvismax.error.JsonError;
+import de.sgollmer.solvismax.error.JsonException;
 
 public class Frame implements IValue {
 	protected final List<Element> elements = new ArrayList<>();
@@ -46,7 +46,7 @@ public class Frame implements IValue {
 	}
 
 	@Override
-	public int from(String json, int position) throws JsonError {
+	public int from(String json, int position) throws JsonException {
 		while (Character.isWhitespace(Helper.charAt(json, position))) {
 			++position;
 		}
@@ -54,7 +54,7 @@ public class Frame implements IValue {
 		if (c == '{') {
 			++position;
 		} else {
-			throw new JsonError("Wrong character <" + c + "> at starting of a frame");
+			throw new JsonException("Wrong character <" + c + "> at starting of a frame");
 		}
 		boolean finished = false;
 		while (!finished) {
@@ -74,7 +74,7 @@ public class Frame implements IValue {
 					if (Character.isWhitespace(c)) {
 						++position;
 					} else {
-						throw new JsonError("Wrong character <" + c + "> at end of a frame");
+						throw new JsonException("Wrong character <" + c + "> at end of a frame");
 					}
 			}
 		}

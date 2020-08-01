@@ -17,7 +17,7 @@ import org.tinylog.configuration.Configuration;
 import org.tinylog.provider.ProviderRegistry;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.FileError;
+import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.helper.FileHelper;
 
 public class TinyLog {
@@ -46,7 +46,7 @@ public class TinyLog {
 		}
 
 		@Override
-		public boolean createInstance(String path) throws IOException {
+		public boolean createInstance(String path) throws IOException, FileException {
 			return new TinyLog(path).setConfiguration();
 		}
 
@@ -179,7 +179,7 @@ public class TinyLog {
 		this.parent = parent;
 	}
 
-	private void copyFiles() throws IOException {
+	private void copyFiles() throws IOException, FileException {
 
 		boolean success = true;
 
@@ -188,7 +188,7 @@ public class TinyLog {
 		}
 
 		if (!success) {
-			throw new FileError("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
+			throw new FileException("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
 		}
 
 		File xml = new File(this.parent, Constants.TINY_LOG_CONFIG_FILE);
@@ -199,7 +199,7 @@ public class TinyLog {
 
 	}
 
-	private boolean setConfiguration() throws IOException {
+	private boolean setConfiguration() throws IOException, FileException {
 
 		copyFiles();
 

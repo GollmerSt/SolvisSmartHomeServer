@@ -16,7 +16,7 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.IAccountInfo;
 import de.sgollmer.solvismax.crypt.CryptAes;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
@@ -59,7 +59,7 @@ public class Units {
 		}
 
 		@Override
-		public Units create() throws XmlError, IOException {
+		public Units create() throws XmlException, IOException {
 			return new Units(this.units);
 		}
 
@@ -262,7 +262,7 @@ public class Units {
 			}
 
 			@Override
-			public Unit create() throws XmlError, IOException {
+			public Unit create() throws XmlException, IOException {
 				return new Unit(this.id, this.type, this.url, this.account, this.password, this.configOrMask,
 						this.defaultAverageCount, this.measurementHysteresisFactor,
 						this.defaultReadMeasurementsInterval_ms, this.forcedUpdateInterval_ms,
@@ -429,7 +429,7 @@ public class Units {
 			}
 
 			@Override
-			public Features create() throws XmlError, IOException {
+			public Features create() throws XmlException, IOException {
 				return new Features(this.clockTuning, this.equipmentTimeSynchronisation, this.updateAfterUserAccess,
 						this.detectServiceAccess, this.powerOffIsServiceAccess, this.sendMailOnError,
 						this.clearErrorMessageAfterMail, this.onlyMeasurements);

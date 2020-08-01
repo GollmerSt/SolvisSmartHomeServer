@@ -14,8 +14,10 @@ import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -32,10 +34,10 @@ public class Configurations {
 		this.configurations = configurations;
 	}
 
-	public int get(Solvis solvis) throws IOException {
+	public int get(Solvis solvis) throws IOException, TerminationException {
 
 		solvis.gotoHome(true);
-		Screen current = solvis.getHomeScreen();
+		IScreen current = solvis.getHomeScreen();
 
 		int configurationMask = 0;
 		Screen home = solvis.getHomeScreen();
@@ -43,7 +45,7 @@ public class Configurations {
 		Collection<LearnScreen> learnConfigurationScreens = new ArrayList<>();
 		for (Iterator<IConfiguration> it = this.configurations.iterator(); it.hasNext();) {
 			IConfiguration configuration = it.next();
-			Screen screen = configuration.getScreen(solvis);
+			IScreen screen = configuration.getScreen(solvis);
 			if (screen == home) {
 				homeConfiguration = configuration;
 			} else {
@@ -59,7 +61,7 @@ public class Configurations {
 			current = home;
 		}
 		for (IConfiguration configuration : this.configurations) {
-			Screen screen = configuration.getScreen(solvis);
+			IScreen screen = configuration.getScreen(solvis);
 			if (screen != home) {
 				screen.gotoLearning(solvis, current, learnConfigurationScreens);
 				screen.learn(solvis, learnConfigurationScreens, 0);
@@ -73,9 +75,9 @@ public class Configurations {
 	}
 
 	interface IConfiguration {
-		int getConfiguration(Solvis solvis) throws IOException;
+		int getConfiguration(Solvis solvis) throws IOException, TerminationException;
 
-		Screen getScreen(Solvis solvis);
+		IScreen getScreen(Solvis solvis);
 	}
 
 	public static class Creator extends CreatorByXML<Configurations> {
@@ -91,7 +93,7 @@ public class Configurations {
 		}
 
 		@Override
-		public Configurations create() throws XmlError, IOException {
+		public Configurations create() throws XmlException, IOException {
 			return new Configurations(this.configurations);
 		}
 

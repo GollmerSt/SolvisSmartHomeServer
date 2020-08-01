@@ -18,12 +18,13 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations.IConfiguration;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -65,7 +66,7 @@ public class HeaterLoops implements IConfiguration {
 	}
 
 	@Override
-	public int getConfiguration(Solvis solvis) throws IOException {
+	public int getConfiguration(Solvis solvis) throws IOException, TerminationException {
 		return this.getConfiguration(solvis.getCurrentScreen());
 	}
 
@@ -94,7 +95,7 @@ public class HeaterLoops implements IConfiguration {
 		}
 
 		@Override
-		public HeaterLoops create() throws XmlError, IOException {
+		public HeaterLoops create() throws XmlException, IOException {
 			return new HeaterLoops(this.screenRef, this.hk1, this.hk2, this.hk3);
 		}
 
@@ -142,7 +143,7 @@ public class HeaterLoops implements IConfiguration {
 	}
 
 	@Override
-	public Screen getScreen(Solvis solvis) {
+	public IScreen getScreen(Solvis solvis) {
 		return solvis.getSolvisDescription().getScreens().get(this.getScreenRef(), 0);
 	}
 

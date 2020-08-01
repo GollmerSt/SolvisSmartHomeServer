@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.connection.transfer;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import de.sgollmer.solvismax.error.JsonError;
+import de.sgollmer.solvismax.error.JsonException;
 
 public class ArrayValue implements IValue {
 
@@ -36,10 +36,10 @@ public class ArrayValue implements IValue {
 	}
 
 	@Override
-	public int from(String json, int position) throws JsonError {
+	public int from(String json, int position) throws JsonException {
 		char c = Helper.charAt(json, position);
 		if (c != '[') {
-			throw new JsonError("Wrong character <" + c + "> at starting of a element");
+			throw new JsonException("Wrong character <" + c + "> at starting of a element");
 		}
 		++position;
 

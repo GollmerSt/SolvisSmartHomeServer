@@ -13,7 +13,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import de.sgollmer.solvismax.connection.ITransferedData;
-import de.sgollmer.solvismax.error.JsonError;
+import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
@@ -66,7 +66,7 @@ public class JsonPackage implements ITransferedData {
 		stream.flush();
 	}
 
-	void receive(InputStream stream, int timeout) throws IOException, JsonError {
+	void receive(InputStream stream, int timeout) throws IOException, JsonException {
 		byte[] lengthBytes = new byte[3];
 		Helper.read(stream, lengthBytes, timeout);
 		int length = ((int) lengthBytes[0] & 0xff) << 16 | ((int) lengthBytes[1] & 0xff) << 8

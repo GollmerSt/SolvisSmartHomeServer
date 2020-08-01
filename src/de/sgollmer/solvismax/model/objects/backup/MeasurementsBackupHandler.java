@@ -19,8 +19,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.FileError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.FileException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager;
@@ -42,7 +45,8 @@ public class MeasurementsBackupHandler {
 	private final BackupThread thread;
 	private boolean xsdWritten = false;
 
-	public MeasurementsBackupHandler(String pathName, int measurementsBackupTime_ms) {
+	public MeasurementsBackupHandler(String pathName, int measurementsBackupTime_ms)
+			throws FileException, ReferenceException {
 		File parent;
 
 		if (pathName == null) {
@@ -59,12 +63,12 @@ public class MeasurementsBackupHandler {
 		this.thread = new BackupThread(this, measurementsBackupTime_ms);
 		try {
 			this.read();
-		} catch (IOException | XmlError | XMLStreamException e) {
+		} catch (IOException | XmlException | XMLStreamException | AssignmentException e) {
 			logger.warn("Error on reading the BackupFile detected", e);
 		}
 	}
 
-	private void copyFiles() throws IOException {
+	private void copyFiles() throws IOException, FileException {
 
 		boolean success = true;
 
@@ -73,7 +77,7 @@ public class MeasurementsBackupHandler {
 		}
 
 		if (!success) {
-			throw new FileError("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
+			throw new FileException("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
 		}
 
 		if (!this.xsdWritten) {
@@ -86,7 +90,8 @@ public class MeasurementsBackupHandler {
 		}
 	}
 
-	public void read() throws IOException, XmlError, XMLStreamException {
+	public void read() throws IOException, XmlException, XMLStreamException, AssignmentException, FileException,
+			ReferenceException {
 
 		this.copyFiles();
 
@@ -115,7 +120,7 @@ public class MeasurementsBackupHandler {
 
 	}
 
-	public void write() throws IOException, XMLStreamException {
+	public void write() throws IOException, XMLStreamException, FileException {
 
 		this.update();
 
@@ -174,7 +179,11 @@ public class MeasurementsBackupHandler {
 					}
 				} catch (Throwable e) {
 					logger.error("Error was thrown in backup thread. Cause: ", e);
-					AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
+					try {
+						AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
+					} catch (TerminationException e1) {
+						return;
+					}
 				}
 
 			}
@@ -187,7 +196,7 @@ public class MeasurementsBackupHandler {
 			}
 			try {
 				this.handler.write();
-			} catch (IOException | XMLStreamException e) {
+			} catch (IOException | XMLStreamException | FileException e) {
 			}
 		}
 	}

@@ -17,8 +17,11 @@ import javax.xml.namespace.QName;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
+import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
@@ -68,7 +71,8 @@ public class SolvisDescription {
 	private SolvisDescription(SolvisTypes types, Configurations configurations, ScreenSaver saver, AllScreens screens,
 			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
 			AllPreparations allPreparations, ClockMonitor clock, AllDurations durations, Miscellaneous miscellaneous,
-			ErrorDetection errorDetection, Service service) {
+			ErrorDetection errorDetection, Service service)
+			throws XmlException, AssignmentException, ReferenceException {
 		this.types = types;
 		this.configurations = configurations;
 		this.saver = saver;
@@ -86,7 +90,7 @@ public class SolvisDescription {
 		this.process();
 	}
 
-	private void process() {
+	private void process() throws XmlException, AssignmentException, ReferenceException {
 		if (this.saver != null) {
 			this.saver.assign(this);
 		}
@@ -153,7 +157,7 @@ public class SolvisDescription {
 		}
 
 		@Override
-		public SolvisDescription create() throws XmlError {
+		public SolvisDescription create() throws XmlException, AssignmentException, ReferenceException {
 			return new SolvisDescription(this.types, this.configurations, this.saver, this.screens, this.fallBack,
 					this.screenGrafics, this.dataDescriptions, this.allPreparations, this.clock, this.durations,
 					this.miscellaneous, this.errorDetection, this.service);
@@ -263,7 +267,7 @@ public class SolvisDescription {
 		}
 
 		@Override
-		public Collection<ScreenGraficDescription> create() throws XmlError {
+		public Collection<ScreenGraficDescription> create() throws XmlException {
 			return this.grafics;
 		}
 
@@ -328,7 +332,7 @@ public class SolvisDescription {
 		return this.fallBack;
 	}
 
-	public int getConfigurations(Solvis solvis) throws IOException {
+	public int getConfigurations(Solvis solvis) throws IOException, TerminationException {
 		int configurationMask = this.types.getConfiguration(solvis.getType());
 		return configurationMask | this.configurations.get(solvis);
 	}

@@ -9,11 +9,11 @@ package de.sgollmer.solvismax.xml;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 
 public class ArrayXml<A extends ArrayXml.IElement<A>> {
 
@@ -21,19 +21,19 @@ public class ArrayXml<A extends ArrayXml.IElement<A>> {
 		public CreatorByXML<C> getCreator(String name, BaseCreator<?> creator);
 	}
 
-	private final Collection<A> array;
+	private final List<A> array;
 
-	private ArrayXml(Collection<A> array) {
+	private ArrayXml(List<A> array) {
 		this.array = array;
 	}
 
-	public Collection<A> getArray() {
+	public List<A> getArray() {
 		return this.array;
 	}
 
 	public static class Creator<B extends IElement<B>> extends CreatorByXML<ArrayXml<B>> {
 
-		private final Collection<B> array = new ArrayList<>();
+		private final List<B> array = new ArrayList<>();
 		private final B parent;
 		private final String xmlName;
 
@@ -48,7 +48,7 @@ public class ArrayXml<A extends ArrayXml.IElement<A>> {
 		}
 
 		@Override
-		public ArrayXml<B> create() throws XmlError, IOException {
+		public ArrayXml<B> create() throws XmlException, IOException {
 			return new ArrayXml<B>(this.array);
 		}
 

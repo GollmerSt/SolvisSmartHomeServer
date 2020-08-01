@@ -15,8 +15,14 @@ import javax.xml.stream.XMLStreamException;
 
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.connection.SolvisConnection;
-import de.sgollmer.solvismax.error.LearningError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.FileException;
+import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -35,7 +41,8 @@ public class Instances {
 	private final Hashes xmlHash;
 	private final String writeablePath;
 
-	public Instances(BaseData baseData, boolean learn) throws IOException, XmlError, XMLStreamException {
+	public Instances(BaseData baseData, boolean learn) throws IOException, XmlException, XMLStreamException,
+			AssignmentException, FileException, ReferenceException {
 		this.baseData = baseData;
 		this.writeablePath = baseData.getWritablePath();
 		this.graficDatas = new GraficFileHandler(this.writeablePath).read();
@@ -56,7 +63,8 @@ public class Instances {
 		this.backupHandler.start();
 	}
 
-	public boolean learn() throws IOException, LearningError, XMLStreamException {
+	public boolean learn() throws IOException, LearningException, XMLStreamException, FileException,
+			TerminationException, ModbusException {
 		boolean nothingToLearn = true;
 		for (Solvis solvis : this.units) {
 			solvis.learning();
@@ -66,12 +74,12 @@ public class Instances {
 		return !nothingToLearn;
 	}
 
-	public boolean init() throws IOException, XmlError, XMLStreamException, LearningError {
+	public boolean init() throws IOException, XMLStreamException, LearningException, AssignmentException, DependencyException {
 		for (Solvis solvis : this.units) {
 			if (!solvis.getGrafics().isEmpty()) {
 				solvis.init();
 			} else {
-				throw new LearningError("Learning is necessary, start parameter \"--server-learn\" must be used.");
+				throw new LearningException("Learning is necessary, start parameter \"--server-learn\" must be used.");
 			}
 		}
 		return true;
@@ -86,7 +94,7 @@ public class Instances {
 		return null;
 	}
 
-	private Solvis createSolvisInstance(Unit unit) throws IOException, XmlError, XMLStreamException, LearningError {
+	private Solvis createSolvisInstance(Unit unit) throws IOException, XmlException, XMLStreamException {
 		Miscellaneous misc = this.solvisDescription.getMiscellaneous();
 		SolvisConnection connection = new SolvisConnection(unit.getUrl(), unit, misc.getSolvisConnectionTimeout_ms(),
 				misc.getSolvisReadTimeout_ms(), misc.getPowerOffDetectedAfterIoErrors(),
@@ -109,7 +117,7 @@ public class Instances {
 		this.backupHandler.writeAndAbort();
 	}
 
-	public void backupMeasurements() throws IOException, XMLStreamException {
+	public void backupMeasurements() throws IOException, XMLStreamException, FileException {
 		this.backupHandler.write();
 	}
 

@@ -10,14 +10,15 @@ package de.sgollmer.solvismax.model;
 import java.io.IOException;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 
 public class CommandControl extends Command {
 
@@ -25,7 +26,7 @@ public class CommandControl extends Command {
 
 	private final ChannelDescription description;
 	private final SingleData<?> setValue;
-	private final Screen screen;
+	private final IScreen screen;
 	private final boolean modbus;
 	private boolean inhibit = false;
 	private int writeFailCount = 0;
@@ -57,11 +58,11 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	protected Screen getScreen(Solvis solvis) {
+	protected IScreen getScreen(Solvis solvis) {
 		return this.screen;
 	}
 
-	private boolean save(Solvis solvis) throws IOException, ErrorPowerOn {
+	private boolean save(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException {
 		ChannelDescription restoreChannel = this.description.getRestoreChannel(solvis);
 		if (restoreChannel == null || this.isModbus()) {
 			return true;
@@ -74,7 +75,7 @@ public class CommandControl extends Command {
 		return success;
 	}
 
-	private boolean restore(Solvis solvis) throws IOException, ErrorPowerOn {
+	private boolean restore(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException {
 		ChannelDescription restoreChannel = this.description.getRestoreChannel(solvis);
 		if (restoreChannel == null || this.isModbus()) {
 			return true;
@@ -88,7 +89,7 @@ public class CommandControl extends Command {
 		return success;
 	}
 
-	private boolean write(Solvis solvis) throws IOException, TerminationException {
+	private boolean write(Solvis solvis) throws IOException, TerminationException, ModbusException {
 		SolvisData data = solvis.getAllSolvisData().get(this.description);
 		SolvisData clone = data.clone();
 		clone.setSingleData(this.setValue);
@@ -106,7 +107,7 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public boolean execute(Solvis solvis) throws IOException, ErrorPowerOn {
+	public boolean execute(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException {
 
 		int maxFailCnt = Constants.COMMAND_IGNORED_AFTER_N_FAILURES;
 

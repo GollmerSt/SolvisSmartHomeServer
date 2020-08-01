@@ -7,7 +7,7 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-import de.sgollmer.solvismax.error.JsonError;
+import de.sgollmer.solvismax.error.JsonException;
 
 public class Element {
 	protected String name;
@@ -31,13 +31,13 @@ public class Element {
 		return builder.toString();
 	}
 
-	int from(String json, int position) throws JsonError {
+	int from(String json, int position) throws JsonException {
 		while (Character.isWhitespace(Helper.charAt(json, position))) {
 			++position;
 		}
 		char c = Helper.charAt(json, position);
 		if (c != '"') {
-			throw new JsonError("Wrong character <" + c + "> at starting of a element");
+			throw new JsonException("Wrong character <" + c + "> at starting of a element");
 		}
 		++position;
 		boolean endFound = false;
@@ -45,7 +45,7 @@ public class Element {
 		while (!endFound) {
 			end = json.indexOf("\"", position);
 			if (end < 0) {
-				throw new JsonError("End of name not found");
+				throw new JsonException("End of name not found");
 			}
 			if (Helper.charAt(json, end - 1) == '\\') {
 				position = end + 1;
@@ -59,7 +59,7 @@ public class Element {
 			++position;
 		}
 		if (Helper.charAt(json, position) != ':') {
-			throw new JsonError("End of name not found");
+			throw new JsonException("End of name not found");
 		}
 		++position;
 		while (Character.isWhitespace(Helper.charAt(json, position))) {

@@ -18,9 +18,11 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.connection.ServerStatus;
+import de.sgollmer.solvismax.error.ClientAssignmentException;
+import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
-import de.sgollmer.solvismax.error.TypeError;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -111,7 +113,7 @@ final class Callback implements MqttCallbackExtended {
 								"Error: Channel <" + subscribeData.getChannelId() + "> not writable.");
 						return;
 					}
-				} catch (TypeError e) {
+				} catch (TypeException e) {
 					this.mqtt.publishError(subscribeData.getClientId(), "Error: Value error, value: " + string);
 					return;
 				}
@@ -123,7 +125,7 @@ final class Callback implements MqttCallbackExtended {
 				this.mqtt.commandHandler.commandFromClient(subscribeData,
 						this.mqtt.new Client(subscribeData.getClientId()));
 			}
-		} catch (IOException e) {
+		} catch (IOException | ClientAssignmentException | JsonException e) {
 			Mqtt.logger.error("Error: On command handling", e);
 		}
 	}

@@ -13,7 +13,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -28,6 +28,9 @@ public class AllPreparations {
 	}
 
 	public Preparation get(String id) {
+		if ( id == null ) {
+			return null;
+		}
 		for (Preparation preparation : this.preparations) {
 			if (preparation.getId().equals(id)) {
 				return preparation;
@@ -49,7 +52,7 @@ public class AllPreparations {
 		}
 
 		@Override
-		public AllPreparations create() throws XmlError, IOException {
+		public AllPreparations create() throws XmlException, IOException {
 			return new AllPreparations(this.preparations);
 		}
 
@@ -104,7 +107,7 @@ public class AllPreparations {
 			}
 
 			@Override
-			public PreparationRef create() throws XmlError, IOException {
+			public PreparationRef create() throws XmlException, IOException {
 				return new PreparationRef(this.preparationId);
 			}
 

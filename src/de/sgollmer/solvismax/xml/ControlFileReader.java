@@ -16,8 +16,10 @@ import javax.xml.stream.XMLStreamException;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Main;
-import de.sgollmer.solvismax.error.FileError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.FileException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
@@ -52,7 +54,7 @@ public class ControlFileReader {
 		this.parent = parent;
 	}
 
-	private void copyFiles(boolean copyXml) throws IOException {
+	private void copyFiles(boolean copyXml) throws IOException, FileException {
 
 		boolean success = true;
 
@@ -61,7 +63,7 @@ public class ControlFileReader {
 		}
 
 		if (!success) {
-			throw new FileError("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
+			throw new FileException("Error on creating directory <" + this.parent.getAbsolutePath() + ">");
 		}
 
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
@@ -115,7 +117,8 @@ public class ControlFileReader {
 
 	}
 
-	public Result read(Hashes former, boolean learn) throws IOException, XmlError, XMLStreamException {
+	public Result read(Hashes former, boolean learn) throws IOException, XmlException, XMLStreamException,
+			AssignmentException, FileException, ReferenceException {
 
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
 

@@ -9,9 +9,10 @@ package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
 
-import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 
 public abstract class Command {
 
@@ -22,9 +23,12 @@ public abstract class Command {
 	 * @return true if successfull
 	 * @throws IOException
 	 * @throws TerminationException
-	 * @throws ErrorPowerOn
+	 * @throws PowerOnException
+	 * @throws FieldException
+	 * @throws ModbusException
 	 */
-	protected abstract boolean execute(Solvis solvis) throws IOException, TerminationException, ErrorPowerOn;
+	protected abstract boolean execute(Solvis solvis)
+			throws IOException, TerminationException, PowerOnException, ModbusException;
 
 	protected abstract void notExecuted();
 
@@ -34,7 +38,7 @@ public abstract class Command {
 	 * @param solvis
 	 * @return screen
 	 */
-	protected Screen getScreen(Solvis solvis) {
+	protected IScreen getScreen(Solvis solvis) {
 		return null;
 	}
 

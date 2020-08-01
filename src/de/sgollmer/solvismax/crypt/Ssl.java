@@ -12,7 +12,7 @@ import java.io.IOException;
 import javax.net.ssl.SSLSocketFactory;
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -61,7 +61,7 @@ public class Ssl {
 		}
 
 		@Override
-		public Ssl create() throws XmlError, IOException {
+		public Ssl create() throws XmlException, IOException {
 			return new Ssl(this.enable, this.caFilePath, this.clientCrtFilePath, this.clientKeyFilePath);
 		}
 

@@ -20,7 +20,8 @@ import java.util.regex.Matcher;
 import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.log.LogManager;
@@ -37,7 +38,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ErrorDetection {
 
-	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(ErrorDetection.class);
 
 	private static final String XML_LEFT_BORDER = "LeftBorder";
 	private static final String XML_RIGHT_BORDER = "RightBorder";
@@ -196,7 +197,7 @@ public class ErrorDetection {
 		}
 
 		@Override
-		public ErrorDetection create() throws XmlError, IOException {
+		public ErrorDetection create() throws XmlException, IOException {
 			return new ErrorDetection(this.leftBorder, this.rightBorder, this.topBorder, this.middleBorder,
 					this.bottomBorder, this.hhMm, this.ddMmYy, this.errorConditions);
 		}
@@ -290,7 +291,7 @@ public class ErrorDetection {
 			}
 
 			@Override
-			public ErrorCondition create() throws XmlError, IOException {
+			public ErrorCondition create() throws XmlException, IOException {
 				return new ErrorCondition(this.channelId, this.value);
 			}
 
@@ -332,7 +333,13 @@ public class ErrorDetection {
 			for (ErrorCondition condition : ErrorDetection.this.errorConditions) {
 				String channelId = condition.getChannelId();
 				if (channelId.equals(data.getDescription().getId())) {
-					boolean error = data.getBool() == condition.getErrorValue();
+					boolean error;
+					try {
+						error = data.getBool() == condition.getErrorValue();
+					} catch (TypeException e) {
+						logger.error("Type error, update ignored", e);
+						return;
+					}
 					data.getSolvis().getSolvisState().setError(error, data.getDescription());
 				}
 			}

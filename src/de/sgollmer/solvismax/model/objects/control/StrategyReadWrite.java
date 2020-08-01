@@ -11,9 +11,11 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.TypeError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
@@ -55,7 +57,7 @@ public class StrategyReadWrite extends StrategyRead {
 
 	@Override
 	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData setValue)
-			throws IOException, TerminationException {
+			throws IOException, TerminationException, ModbusException, TypeException {
 		if (controlAccess instanceof GuiAccess) {
 			Integer goal = setValue.getInteger();
 			IntegerValue data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
@@ -141,7 +143,7 @@ public class StrategyReadWrite extends StrategyRead {
 		}
 
 		@Override
-		public StrategyReadWrite create() throws XmlError {
+		public StrategyReadWrite create() throws XmlException {
 			return new StrategyReadWrite(this.increment, this.divisor, this.least, this.most, this.guiModification);
 		}
 
@@ -168,7 +170,7 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws AssignmentException {
 		if (this.guiModification != null) {
 			this.guiModification.assign(description);
 		}
@@ -181,7 +183,7 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
 		if (singleData instanceof StringData) {
 			String string = (String) singleData.get();
 			try {
@@ -191,7 +193,7 @@ public class StrategyReadWrite extends StrategyRead {
 					return new IntegerValue(Integer.parseInt(string), 0);
 				}
 			} catch (NumberFormatException e) {
-				throw new TypeError(e);
+				throw new TypeException(e);
 			}
 		}
 		return singleData;
@@ -210,7 +212,7 @@ public class StrategyReadWrite extends StrategyRead {
 		}
 
 		@Override
-		public void assign(SolvisDescription description) {
+		public void assign(SolvisDescription description) throws AssignmentException {
 			if (this.upper != null) {
 				this.upper.assign(description);
 			}
@@ -242,7 +244,7 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 
 			@Override
-			public GuiModification create() throws XmlError, IOException {
+			public GuiModification create() throws XmlException, IOException {
 				return new GuiModification(this.format, this.wrapAround, this.upper, this.lower);
 			}
 
@@ -273,16 +275,16 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public boolean isXmlValid(boolean modbus) throws TypeError {
+	public boolean isXmlValid(boolean modbus) {
 		return modbus || this.guiModification != null;
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value) {
+	public SingleData<?> createSingleData(String value) throws TypeException {
 		try {
 			return new IntegerValue(Integer.parseInt(value), -1);
 		} catch (NumberFormatException e) {
-			throw new TypeError(e);
+			throw new TypeException(e);
 		}
 	}
 }

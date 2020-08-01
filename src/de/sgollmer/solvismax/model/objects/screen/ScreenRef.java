@@ -11,19 +11,31 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.objects.IAssigner;
-import de.sgollmer.solvismax.model.objects.OfConfigs;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
+/**
+ * A reference to the screens of all configurations, ensuring that they are of
+ * the screen type.
+ * 
+ * @author stefa_000
+ *
+ */
+
 public class ScreenRef implements IAssigner {
 	private final String id;
-	private OfConfigs<Screen> screen = null;
+	private OfConfigs<IScreen> screen = null;
 
 	protected ScreenRef(String id) {
 		this.id = id;
+	}
+
+	public ScreenRef() {
+		this.id = null;
 	}
 
 	protected String getId() {
@@ -49,7 +61,7 @@ public class ScreenRef implements IAssigner {
 		}
 
 		@Override
-		public ScreenRef create() throws XmlError, IOException {
+		public ScreenRef create() throws XmlException, IOException {
 			return new ScreenRef(this.id);
 		}
 
@@ -65,12 +77,12 @@ public class ScreenRef implements IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
-		this.screen = description.getScreens().get(this.id);
+	public void assign(SolvisDescription description) throws XmlException {
+		this.screen = description.getScreens().getScreen(this.id);
 
 	}
 
-	public OfConfigs<Screen> getScreen() {
+	public OfConfigs<IScreen> getScreen() {
 		return this.screen;
 	}
 

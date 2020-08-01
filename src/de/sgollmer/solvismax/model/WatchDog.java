@@ -14,6 +14,7 @@ import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.ConnectionStatus;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -61,7 +62,7 @@ public class WatchDog {
 							processEvent(Event.POWER_ON, null);
 							break;
 					}
-				} catch (IOException e) {
+				} catch (IOException | TerminationException e) {
 				}
 			}
 		}
@@ -194,7 +195,11 @@ public class WatchDog {
 						&& event == Event.SET_ERROR_BY_MESSAGE;
 
 				if (clearErrorMessage) {
-					this.solvis.sendBack();
+					try {
+						this.solvis.sendBack();
+					} catch (TerminationException e) {
+						return;
+					}
 				}
 
 				this.abort = !this.humanAccess.mustWait() && (clearErrorMessage || event != Event.SET_ERROR_BY_MESSAGE);
@@ -217,6 +222,8 @@ public class WatchDog {
 						}
 					}
 				}
+			} catch (TerminationException e) {
+				return;
 			}
 		}
 
@@ -245,7 +252,7 @@ public class WatchDog {
 		return event;
 	}
 
-	private boolean isHumanAccess(SolvisScreen screen) throws IOException {
+	private boolean isHumanAccess(SolvisScreen screen) throws IOException, TerminationException {
 		boolean humanAccess = false;
 		if (!screen.imagesEquals(WatchDog.this.solvis.getCurrentScreen(false))) {
 
@@ -269,7 +276,7 @@ public class WatchDog {
 		return humanAccess;
 	}
 
-	private void processEvent(Event event, SolvisScreen realScreen) throws IOException {
+	private void processEvent(Event event, SolvisScreen realScreen) throws IOException, TerminationException {
 		HumanAccess current = this.humanAccess;
 		long currentTime = System.currentTimeMillis();
 		switch (event) {
@@ -346,7 +353,7 @@ public class WatchDog {
 		processHumanAccess(current);
 	}
 
-	private void processHumanAccess(HumanAccess current) throws IOException {
+	private void processHumanAccess(HumanAccess current) throws IOException, TerminationException {
 		if (this.humanAccess != HumanAccess.UNKNOWN) {
 			if (this.humanAccess == current) {
 				return;

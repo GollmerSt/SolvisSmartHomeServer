@@ -22,8 +22,10 @@ import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
-import de.sgollmer.solvismax.error.JsonError;
-import de.sgollmer.solvismax.error.TypeError;
+import de.sgollmer.solvismax.error.ClientAssignmentException;
+import de.sgollmer.solvismax.error.FileException;
+import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -47,7 +49,8 @@ public class CommandHandler {
 
 	}
 
-	public boolean commandFromClient(ITransferedData receivedData, IClient client) throws IOException {
+	public boolean commandFromClient(ITransferedData receivedData, IClient client)
+			throws IOException, ClientAssignmentException, JsonException {
 		Command command = receivedData.getCommand();
 		if (command == null) {
 			return false;
@@ -88,7 +91,8 @@ public class CommandHandler {
 		return abortConnection;
 	}
 
-	private void executeServerCommand(ITransferedData receivedData, IClient client) throws IOException {
+	private void executeServerCommand(ITransferedData receivedData, IClient client)
+			throws IOException, ClientAssignmentException {
 		ServerCommand command;
 		String commandString = (String) receivedData.getSingleData().get();
 		try {
@@ -122,7 +126,9 @@ public class CommandHandler {
 				try {
 					this.instances.backupMeasurements();
 				} catch (XMLStreamException e) {
-					logger.error("XMLStream error while writing the backup file");
+					logger.error("XMLStream error while writing the backup file",e);
+				} catch (FileException e) {
+					logger.error("File error while writing the backup file",e);
 				}
 				break;
 			case SCREEN_RESTORE_INHIBIT:
@@ -253,7 +259,8 @@ public class CommandHandler {
 
 	}
 
-	private void disconnect(ITransferedData receivedData, IClient client, boolean shutdown) {
+	private void disconnect(ITransferedData receivedData, IClient client, boolean shutdown)
+			throws ClientAssignmentException {
 		if (!(client instanceof Client)) {
 			logger.error("Client doesn't exists. Disconnection ignored.");
 			return;
@@ -270,7 +277,7 @@ public class CommandHandler {
 		}
 	}
 
-	private void set(ITransferedData receivedDat, IClient client) {
+	private void set(ITransferedData receivedDat, IClient client) throws JsonException {
 		Solvis solvis = receivedDat.getSolvis();
 		if (solvis == null) {
 			solvis = client.getSolvis();
@@ -280,8 +287,8 @@ public class CommandHandler {
 		logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");
 		try {
 			singleData = description.interpretSetData(singleData);
-		} catch (TypeError e) {
-			throw new JsonError(e.getMessage() + " Located in revceived Json package.");
+		} catch (TypeException e) {
+			throw new JsonException(e.getMessage() + " Located in revceived Json package.");
 		}
 		solvis.setFromExternal(description, singleData);
 	}
@@ -316,7 +323,7 @@ public class CommandHandler {
 		return null;
 	}
 
-	private synchronized ClientAssignments unregister(ClientAssignments assignments) {
+	private synchronized ClientAssignments unregister(ClientAssignments assignments) throws ClientAssignmentException {
 		for (Iterator<ClientAssignments> it = this.clients.iterator(); it.hasNext();) {
 			ClientAssignments assignmentsC = it.next();
 			if (assignmentsC == assignments) {
@@ -381,7 +388,11 @@ public class CommandHandler {
 				} catch (InterruptedException e) {
 				}
 				if (!this.abort) {
-					unregister(this.assignments);
+					try {
+						unregister(this.assignments);
+					} catch (ClientAssignmentException e) {
+						logger.error("ClientAssignmentError, client missed",e);
+					}
 				}
 			}
 		}

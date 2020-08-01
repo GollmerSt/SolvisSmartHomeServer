@@ -13,7 +13,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -39,7 +39,7 @@ public class SolvisTypes {
 		}
 
 		@Override
-		public SolvisTypes create() throws XmlError, IOException {
+		public SolvisTypes create() throws XmlException, IOException {
 			return new SolvisTypes(this.types);
 		}
 
@@ -99,7 +99,7 @@ public class SolvisTypes {
 			}
 
 			@Override
-			public Type create() throws XmlError, IOException {
+			public Type create() throws XmlException, IOException {
 				return new Type(this.id, this.configuration);
 			}
 

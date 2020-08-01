@@ -14,7 +14,7 @@ import javax.mail.MessagingException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.crypt.CryptAes;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
@@ -109,7 +109,7 @@ public class ExceptionMail {
 		}
 
 		@Override
-		public ExceptionMail create() throws XmlError, IOException {
+		public ExceptionMail create() throws XmlException, IOException {
 			if (this.valid) {
 				return new ExceptionMail(this.name, this.from, this.password, this.securityType, this.provider,
 						this.port, this.recipients);

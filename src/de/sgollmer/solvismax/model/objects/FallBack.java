@@ -13,8 +13,10 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
@@ -34,7 +36,7 @@ public class FallBack implements IAssigner {
 	private final FallBack lastChance;
 
 	private interface IFallBackObject extends IAssigner {
-		void execute(Solvis solvis) throws IOException;
+		void execute(Solvis solvis) throws IOException, TerminationException;
 	}
 
 	private FallBack(Collection<IFallBackObject> sequence, FallBack lastChance) {
@@ -42,7 +44,7 @@ public class FallBack implements IAssigner {
 		this.lastChance = lastChance;
 	}
 
-	public void execute(Solvis solvis, boolean lastChance) throws IOException {
+	public void execute(Solvis solvis, boolean lastChance) throws IOException, TerminationException {
 		if (lastChance && this.lastChance != null) {
 			this.lastChance.execute(solvis, false);
 		} else {
@@ -53,7 +55,7 @@ public class FallBack implements IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
 		for (IFallBackObject obj : this.sequence) {
 			obj.assign(description);
 		}
@@ -79,7 +81,7 @@ public class FallBack implements IAssigner {
 		}
 
 		@Override
-		public FallBack create() throws XmlError, IOException {
+		public FallBack create() throws XmlException, IOException {
 			return new FallBack(this.sequence, this.lastChance);
 		}
 
@@ -126,7 +128,7 @@ public class FallBack implements IAssigner {
 
 		@Override
 		public void execute(Solvis solvis) throws IOException, TerminationException {
-			Screen screen = this.getScreen().getIfSingle();
+			Screen screen = (Screen) this.getScreen().getIfSingle();
 
 			if (screen == null) {
 				logger.error("The screen < " + this.getId()
@@ -143,7 +145,7 @@ public class FallBack implements IAssigner {
 			}
 
 			@Override
-			public ScreenRef create() throws XmlError, IOException {
+			public ScreenRef create() throws XmlException, IOException {
 				return new ScreenRef(this.id);
 			}
 
@@ -154,7 +156,7 @@ public class FallBack implements IAssigner {
 	private static class Back implements IFallBackObject {
 
 		@Override
-		public void execute(Solvis solvis) throws IOException {
+		public void execute(Solvis solvis) throws IOException, TerminationException {
 			solvis.sendBack();
 		}
 
@@ -170,7 +172,7 @@ public class FallBack implements IAssigner {
 			}
 
 			@Override
-			public Back create() throws XmlError, IOException {
+			public Back create() throws XmlException, IOException {
 				return new Back();
 			}
 

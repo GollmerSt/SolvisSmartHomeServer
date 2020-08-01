@@ -9,7 +9,7 @@ package de.sgollmer.solvismax.model.objects;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
@@ -53,7 +53,7 @@ public class Dependency implements IAssigner {
 		}
 
 		@Override
-		public Dependency create() throws XmlError {
+		public Dependency create() throws XmlException {
 			return new Dependency(this.id, this.dataId);
 		}
 

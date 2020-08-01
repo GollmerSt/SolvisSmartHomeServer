@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.sgollmer.solvismax.connection.CommandHandler.ClosingThread;
-import de.sgollmer.solvismax.error.ClientAssignmentError;
+import de.sgollmer.solvismax.error.ClientAssignmentException;
 import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Solvis;
 
@@ -103,10 +103,10 @@ public class ClientAssignments {
 		}
 	}
 
-	void enableGuiCommands(Solvis solvis, boolean enable) {
+	void enableGuiCommands(Solvis solvis, boolean enable) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
-			throw new ClientAssignmentError("Error: Client assignment error");
+			throw new ClientAssignmentException("Error: Client assignment error");
 		}
 		if (enable != state.isCommandEnable()) {
 			state.setCommandEnable(enable);
@@ -115,10 +115,10 @@ public class ClientAssignments {
 
 	}
 
-	void screenRestoreEnable(Solvis solvis, boolean enable) {
+	void screenRestoreEnable(Solvis solvis, boolean enable) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
-			throw new ClientAssignmentError("Error: Client assignment error");
+			throw new ClientAssignmentException("Error: Client assignment error");
 		}
 		if (enable != state.isScreenRestoreEnable()) {
 			state.setScreenRestoreEnable(enable);
@@ -126,10 +126,10 @@ public class ClientAssignments {
 		}
 	}
 
-	void optimizationEnable(Solvis solvis, boolean enable) {
+	void optimizationEnable(Solvis solvis, boolean enable) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
-			throw new ClientAssignmentError("Error: Client assignment error");
+			throw new ClientAssignmentException("Error: Client assignment error");
 		}
 		if (enable != state.isOptimizationEnable()) {
 			this.getState().setOptimizationEnable(enable);
@@ -137,7 +137,7 @@ public class ClientAssignments {
 		}
 	}
 
-	void clientClosed() {
+	void clientClosed() throws ClientAssignmentException {
 		for (Solvis solvis : this.states.keySet()) {
 			this.enableGuiCommands(solvis, true);
 			this.optimizationEnable(solvis, true);
@@ -145,18 +145,18 @@ public class ClientAssignments {
 		}
 	}
 
-	void serviceReset(Solvis solvis) {
+	void serviceReset(Solvis solvis) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
-			throw new ClientAssignmentError("Error: Client assignment error");
+			throw new ClientAssignmentException("Error: Client assignment error");
 		}
 		solvis.serviceReset();
 	}
 
-	void updateControlChannels(Solvis solvis) {
+	void updateControlChannels(Solvis solvis) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
-			throw new ClientAssignmentError("Error: Client assignment error");
+			throw new ClientAssignmentException("Error: Client assignment error");
 		}
 		solvis.updateControlChannels();
 

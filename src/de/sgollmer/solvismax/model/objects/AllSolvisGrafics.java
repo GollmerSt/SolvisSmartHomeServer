@@ -15,7 +15,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.ControlFileReader.Hashes;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -100,7 +100,7 @@ public class AllSolvisGrafics implements IXmlWriteable {
 		}
 
 		@Override
-		public AllSolvisGrafics create() throws XmlError, IOException {
+		public AllSolvisGrafics create() throws XmlException, IOException {
 			return new AllSolvisGrafics(this.systems, this.controlResourceHashCode, this.controlFileHashCode);
 		}
 

@@ -13,7 +13,8 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.Helper.Format;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
@@ -21,7 +22,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations.IConfiguration;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -76,7 +77,7 @@ public class Solar implements IConfiguration {
 		}
 
 		@Override
-		public Solar create() throws XmlError, IOException {
+		public Solar create() throws XmlException, IOException {
 			return new Solar(this.screenRef, this.format, this.maxTemperatureX10, this.returnTemperature,
 					this.outgoingTemperature);
 		}
@@ -108,7 +109,7 @@ public class Solar implements IConfiguration {
 	}
 
 	@Override
-	public int getConfiguration(Solvis solvis) throws IOException {
+	public int getConfiguration(Solvis solvis) throws IOException, TerminationException {
 		MyImage image = solvis.getCurrentScreen().getImage();
 		for (Rectangle rectangle : this.rectangles) {
 			OcrRectangle ocr = new OcrRectangle(image, rectangle);
@@ -126,7 +127,7 @@ public class Solar implements IConfiguration {
 	}
 
 	@Override
-	public Screen getScreen(Solvis solvis) {
+	public IScreen getScreen(Solvis solvis) {
 		return solvis.getSolvisDescription().getScreens().get(this.screenRef, 0);
 	}
 

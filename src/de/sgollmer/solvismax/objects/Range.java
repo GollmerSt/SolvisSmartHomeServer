@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -55,7 +55,7 @@ public class Range {
 		}
 
 		@Override
-		public Range create() throws XmlError, IOException {
+		public Range create() throws XmlException, IOException {
 			return new Range(this.lower, this.higher);
 		}
 

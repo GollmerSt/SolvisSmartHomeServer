@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.connection.transfer;
 import java.io.IOException;
 import java.io.InputStream;
 
-import de.sgollmer.solvismax.error.JsonError;
+import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 
@@ -62,7 +62,7 @@ public class ReceivedPackageCreator {
 		return result;
 	}
 
-	public JsonPackage receive(InputStream stream, int timeout) throws IOException, JsonError {
+	public JsonPackage receive(InputStream stream, int timeout) throws IOException, JsonException {
 		JsonPackage receivedPackage = new JsonPackage();
 		receivedPackage.receive(stream, timeout);
 		JsonPackage result = this.toSpecificPackage(receivedPackage);

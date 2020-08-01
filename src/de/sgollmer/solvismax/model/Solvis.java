@@ -17,10 +17,12 @@ import de.sgollmer.solvismax.connection.Distributor;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
-import de.sgollmer.solvismax.error.ErrorPowerOn;
-import de.sgollmer.solvismax.error.LearningError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.XmlError;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
@@ -45,6 +47,7 @@ import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.History;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -69,7 +72,7 @@ public class Solvis {
 	private final int echoInhibitTime_ms;
 	private int configurationMask = 0;
 	private SolvisScreen currentScreen = null;
-	private Screen savedScreen = null;
+	private IScreen savedScreen = null;
 	private Screen home = null;
 	private SolvisMeasurements measureData = null;
 	private boolean screenSaverActive = false;
@@ -118,11 +121,11 @@ public class Solvis {
 		this.currentScreen = screen;
 	}
 
-	public SolvisScreen getCurrentScreen() throws IOException {
+	public SolvisScreen getCurrentScreen() throws IOException, TerminationException {
 		return this.getCurrentScreen(true);
 	}
 
-	SolvisScreen getCurrentScreen(boolean screensaverOff) throws IOException {
+	SolvisScreen getCurrentScreen(boolean screensaverOff) throws IOException, TerminationException {
 		if (this.screenSaverActive && screensaverOff) {
 			this.resetSreensaver();
 			this.screenSaverActive = false;
@@ -138,7 +141,7 @@ public class Solvis {
 		return screen;
 	}
 
-	private boolean forceCurrentScreen(Screen current) throws IOException {
+	private boolean forceCurrentScreen(Screen current) throws IOException, TerminationException {
 		this.getCurrentScreen();
 		this.currentScreen.forceScreen(current);
 		return true;
@@ -148,7 +151,7 @@ public class Solvis {
 		this.currentScreen = null;
 	}
 
-	public SolvisMeasurements getMeasureData() throws IOException, ErrorPowerOn {
+	public SolvisMeasurements getMeasureData() throws IOException, PowerOnException {
 		SolvisMeasurements result = null;
 		synchronized (this.solvisMeasureObject) {
 			if (this.measureData == null) {
@@ -157,7 +160,7 @@ public class Solvis {
 				this.measureData = new SolvisMeasurements(measurements.getTimeStamp(), hexString.substring(12));
 				if (hexString.substring(0, 6).equals("000000")) {
 					this.getSolvisState().remoteConnected();
-					throw new ErrorPowerOn("Power on detected");
+					throw new PowerOnException("Power on detected");
 				}
 			}
 			result = this.measureData;
@@ -171,7 +174,7 @@ public class Solvis {
 		}
 	}
 
-	public Integer readUnsignedShortModbusData(ModbusAccess access) throws IOException {
+	public Integer readUnsignedShortModbusData(ModbusAccess access) throws IOException, ModbusException {
 		int[] result = this.connection.readModbus(access, 1);
 		if (result == null) {
 			return null;
@@ -180,12 +183,12 @@ public class Solvis {
 		}
 	}
 
-	public boolean writeUnsignedShortModbusData(ModbusAccess access, int data) throws IOException {
+	public boolean writeUnsignedShortModbusData(ModbusAccess access, int data) throws IOException, ModbusException {
 		return this.connection.writeModbus(access, new int[] { data });
 	}
 
 	@SuppressWarnings("unused")
-	private Long readUnsignedIntegerModbusData(ModbusAccess access) throws IOException {
+	private Long readUnsignedIntegerModbusData(ModbusAccess access) throws IOException, ModbusException {
 		int[] result = this.connection.readModbus(access, 2);
 		if (result == null) {
 			return null;
@@ -194,7 +197,7 @@ public class Solvis {
 		}
 	}
 
-	public boolean writeUnsignedIntegerModbusData(ModbusAccess access, long data) throws IOException {
+	public boolean writeUnsignedIntegerModbusData(ModbusAccess access, long data) throws IOException, ModbusException {
 		int[] writeData = new int[] { (int) (data >> 16L), (int) (data & 0xffffL) };
 		return this.connection.writeModbus(access, writeData);
 	}
@@ -234,16 +237,16 @@ public class Solvis {
 		this.clearCurrentScreen();
 	}
 
-	public void gotoHome() throws IOException {
+	public void gotoHome() throws IOException, TerminationException {
 		this.gotoHome(false);
 	}
 
-	public void gotoHome(boolean lastChance) throws IOException {
+	public void gotoHome(boolean lastChance) throws IOException, TerminationException {
 		this.getHistory().set(null);
 		this.solvisDescription.getFallBack().execute(this, lastChance);
 	}
 
-	void init() throws IOException, XmlError, XMLStreamException {
+	void init() throws IOException, XMLStreamException, AssignmentException, DependencyException {
 		this.configurationMask = this.getGrafics().getConfigurationMask();
 
 		synchronized (this.solvisMeasureObject) {
@@ -273,7 +276,7 @@ public class Solvis {
 		this.getSolvisDescription().getChannelDescriptions().updateControlChannels(this);
 	}
 
-	void measure() throws IOException, ErrorPowerOn {
+	void measure() throws IOException, PowerOnException, TerminationException, ModbusException {
 		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData());
 		}
@@ -326,8 +329,8 @@ public class Solvis {
 		return this.humanAccess;
 	}
 
-	void saveScreen() throws IOException {
-		Screen current = SolvisScreen.get(this.getCurrentScreen(false));
+	void saveScreen() throws IOException, TerminationException {
+		IScreen current = SolvisScreen.get(this.getCurrentScreen(false));
 		if (current == null) {
 			current = SolvisScreen.get(this.getCurrentScreen());
 		}
@@ -341,8 +344,8 @@ public class Solvis {
 
 	}
 
-	void restoreScreen() throws IOException {
-		Screen screen = this.savedScreen;
+	void restoreScreen() throws IOException, TerminationException {
+		IScreen screen = this.savedScreen;
 		if (screen != null) {
 			screen.goTo(this);
 			logger.info("Screen <" + screen.getId() + "> restored");
@@ -374,7 +377,7 @@ public class Solvis {
 		return this.grafics;
 	}
 
-	void learning() throws IOException, LearningError {
+	void learning() throws IOException, LearningException, TerminationException, ModbusException {
 		this.getGrafics().clear();
 		logger.log(LEARN, "Learning started.");
 		this.initConfigurationMask();
@@ -517,7 +520,11 @@ public class Solvis {
 					}
 				} catch (Throwable e) {
 					logger.error("Error was thrown in measurement update thread. Cause: ", e);
-					AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
+					try {
+						AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
+					} catch (TerminationException e1) {
+						return;
+					}
 				}
 			}
 		}
@@ -608,7 +615,7 @@ public class Solvis {
 	public Screen getHomeScreen() {
 		if (this.home == null) {
 			String homeId = this.solvisDescription.getScreens().getHomeId();
-			this.home = this.solvisDescription.getScreens().get(homeId, this.getConfigurationMask());
+			this.home = (Screen) this.solvisDescription.getScreens().get(homeId, this.getConfigurationMask());
 		}
 		return this.home;
 	}
@@ -646,7 +653,7 @@ public class Solvis {
 
 	}
 
-	SynchronizedScreenResult getSyncronizedRealScreen() throws IOException {
+	SynchronizedScreenResult getSyncronizedRealScreen() throws IOException, TerminationException {
 
 		SolvisScreen lastRealScreen = this.lastRealScreen;
 		boolean isSynchronized = false;

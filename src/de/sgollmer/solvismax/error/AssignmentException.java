@@ -7,13 +7,13 @@
 
 package de.sgollmer.solvismax.error;
 
-public class ReferenceError extends Error {
+public class AssignmentException extends Exception {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5082138054873699405L;
+	private static final long serialVersionUID = 4720096278131552334L;
 
-	public ReferenceError(String message) {
+	public AssignmentException(String message) {
 		super(message);
 	}
 }

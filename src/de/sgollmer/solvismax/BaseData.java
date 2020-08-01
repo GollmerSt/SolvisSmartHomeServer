@@ -12,7 +12,7 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.model.objects.Units;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -101,7 +101,7 @@ public class BaseData {
 		}
 
 		@Override
-		public BaseData create() throws XmlError, IOException {
+		public BaseData create() throws XmlException, IOException {
 			return new BaseData(this.executionData.timeZone, this.executionData.port,
 					this.executionData.writeablePathWindows, this.executionData.writablePathLinux,
 					this.executionData.echoInhibitTime_ms, this.units, this.exceptionMail, this.mqtt);
@@ -196,7 +196,7 @@ public class BaseData {
 			}
 
 			@Override
-			public ExecutionData create() throws XmlError, IOException {
+			public ExecutionData create() throws XmlException, IOException {
 				return new ExecutionData(this.timeZone, this.port, this.writeablePathWindows, this.writablePathLinux,
 						this.echoInhibitTime_ms);
 			}

@@ -12,7 +12,7 @@ import java.util.Calendar;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
-import de.sgollmer.solvismax.error.TypeError;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
@@ -134,7 +134,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		this.setData(new IntegerValue(integer, timeStamp));
 	}
 
-	public Integer getInteger() {
+	public Integer getInteger() throws TypeException {
 		SingleData<?> data = this.data;
 		if (data == null) {
 			return null;
@@ -145,10 +145,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		} else if ((data instanceof IntegerValue)) {
 			return ((IntegerValue) data).get();
 		}
-		throw new TypeError("TypeError: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
+		throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
 	}
 
-	public int getInt() {
+	public int getInt() throws TypeException {
 		Integer value = this.getInteger();
 		if (value == null) {
 			value = 0;
@@ -166,17 +166,17 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	}
 
-	public Boolean getBoolean() {
+	public Boolean getBoolean() throws TypeException {
 		SingleData<?> data = this.data;
 		if (data == null) {
 			return null;
 		} else if (!(data instanceof BooleanValue)) {
-			throw new TypeError("TypeError: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
+			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
 		return ((BooleanValue) data).get();
 	}
 
-	public boolean getBool() {
+	public boolean getBool() throws TypeException {
 		Boolean bool = this.getBoolean();
 		if (bool == null) {
 			bool = false;

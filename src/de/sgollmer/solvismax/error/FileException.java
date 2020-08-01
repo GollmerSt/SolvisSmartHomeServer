@@ -7,15 +7,13 @@
 
 package de.sgollmer.solvismax.error;
 
-public class ClientAssignmentError extends Error {
-
+public class FileException extends Exception {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2359380940110046650L;
+	private static final long serialVersionUID = -3664781253838549023L;
 
-	public ClientAssignmentError(String message) {
+	public FileException(String message) {
 		super(message);
 	}
-
 }

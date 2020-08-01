@@ -34,7 +34,8 @@ import com.intelligt.modbus.jlibmodbus.tcp.TcpParameters;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
-import de.sgollmer.solvismax.error.ModbusError;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -115,7 +116,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	}
 
-	private InputStream connect(String suffix) throws IOException {
+	private InputStream connect(String suffix) throws IOException, TerminationException {
 		try {
 			this.connectTime = System.currentTimeMillis();
 			MyAuthenticator authenticator = new MyAuthenticator();
@@ -139,7 +140,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 	}
 
-	public BufferedImage getScreen() throws IOException {
+	public BufferedImage getScreen() throws IOException, TerminationException {
 		BufferedImage image;
 		try {
 			synchronized (this) {
@@ -174,7 +175,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	}
 
-	public SolvisMeasurements getMeasurements() throws IOException {
+	public SolvisMeasurements getMeasurements() throws IOException, TerminationException {
 		StringBuilder builder = new StringBuilder();
 		long timeStamp = 0;
 		try {
@@ -232,7 +233,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 	}
 
-	public void sendButton(Button button) throws IOException {
+	public void sendButton(Button button) throws IOException, TerminationException {
 		String buttonString = "/Taster.CGI?taste=" + button.getButtonUrl() + "&i="
 				+ Math.round((Math.random() * 99999999));
 		try {
@@ -246,7 +247,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.calculateMaxResponseTime();
 	}
 
-	public void sendTouch(Coordinate coord) throws IOException {
+	public void sendTouch(Coordinate coord) throws IOException, TerminationException {
 		int x = coord.getX() * 2;
 		int y = coord.getY() * 2;
 		String touchString = "/Touch.CGI?x=" + x + "&y=" + y;
@@ -271,7 +272,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.calculateMaxResponseTime();
 	}
 
-	public void sendRelease() throws IOException {
+	public void sendRelease() throws IOException, TerminationException {
 		this.sendTouch(Constants.RELEASE_COORDINATE);
 	}
 
@@ -290,7 +291,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 	}
 
-	private void handleExceptionAndThrow(Throwable e) throws IOException {
+	private void handleExceptionAndThrow(Throwable e) throws IOException, TerminationException {
 		if (this.urlConnection != null) {
 			try {
 				this.urlConnection.disconnect();
@@ -352,7 +353,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		return this.modbusMaster.isConnected();
 	}
 
-	public int[] readModbus(ModbusAccess modbusAccess, int quantity) throws IOException {
+	public int[] readModbus(ModbusAccess modbusAccess, int quantity) throws IOException, ModbusException {
 		try {
 			if (this.modbusConnect()) {
 				int[] registers = null;
@@ -369,12 +370,12 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				return registers;
 			}
 		} catch (Throwable e) {
-			throw new ModbusError("Modbus error " + e.getClass() + ":" + e.getMessage(), e);
+			throw new ModbusException("Modbus error " + e.getClass() + ":" + e.getMessage(), e);
 		}
 		return null;
 	}
 
-	public boolean writeModbus(ModbusAccess modbusAccess, int[] datas) throws IOException {
+	public boolean writeModbus(ModbusAccess modbusAccess, int[] datas) throws IOException, ModbusException {
 		try {
 			if (this.modbusConnect()) {
 				switch (modbusAccess.getType()) {
@@ -388,7 +389,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			}
 			return false;
 		} catch (Throwable e) {
-			throw new ModbusError("Modbus error " + e.getClass() + ":" + e.getMessage(), e);
+			throw new ModbusException("Modbus error " + e.getClass() + ":" + e.getMessage(), e);
 		}
 	}
 

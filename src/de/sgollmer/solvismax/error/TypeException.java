@@ -7,13 +7,17 @@
 
 package de.sgollmer.solvismax.error;
 
-public class JsonError extends Error {
+public class TypeException extends Exception {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1025819644153485401L;
+	private static final long serialVersionUID = -3880012451025478665L;
 
-	public JsonError(String message) {
+	public TypeException(String message) {
 		super(message);
+	}
+
+	public TypeException(Throwable throwable) {
+		super(throwable);
 	}
 }

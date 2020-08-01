@@ -15,7 +15,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -64,7 +64,7 @@ public class SystemMeasurements {
 		}
 
 		@Override
-		public SystemMeasurements create() throws XmlError, IOException {
+		public SystemMeasurements create() throws XmlException, IOException {
 			return new SystemMeasurements(this.id, this.measurements);
 		}
 

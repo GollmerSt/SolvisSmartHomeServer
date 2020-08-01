@@ -29,7 +29,7 @@ import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.crypt.Ssl;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Instances;
@@ -138,7 +138,7 @@ public class Mqtt {
 		}
 
 		@Override
-		public Mqtt create() throws XmlError, IOException {
+		public Mqtt create() throws XmlException, IOException {
 			return new Mqtt(this.enable, this.brokerUrl, this.port, this.userName, this.passwordCrypt, this.topicPrefix,
 					this.idPrefix, this.publishQoS, this.subscribeQoS, this.ssl);
 		}

@@ -12,7 +12,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
@@ -45,7 +45,7 @@ public class AllDurations {
 		}
 
 		@Override
-		public AllDurations create() throws XmlError {
+		public AllDurations create() throws XmlException {
 			return this.durations;
 		}
 

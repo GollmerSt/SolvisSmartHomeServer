@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax.model.objects;
 
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public abstract class ChannelSource implements IChannelSource {
@@ -32,5 +33,5 @@ public abstract class ChannelSource implements IChannelSource {
 		return false;
 	}
 
-	protected abstract SingleData<?> createSingleData(String value);
+	protected abstract SingleData<?> createSingleData(String value) throws TypeException;
 }

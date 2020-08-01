@@ -12,8 +12,11 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.TypeError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.Helper.Format;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
@@ -49,7 +52,7 @@ public class StrategyRead implements IStrategy {
 
 	@Override
 	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, IControlAccess controlAccess, boolean optional)
-			throws IOException {
+			throws IOException, ModbusException {
 		Integer i;
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
@@ -72,7 +75,8 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value) throws IOException {
+	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+			throws IOException, TerminationException, ModbusException, TypeException {
 		return null;
 	}
 
@@ -101,7 +105,7 @@ public class StrategyRead implements IStrategy {
 		}
 
 		@Override
-		public StrategyRead create() throws XmlError {
+		public StrategyRead create() throws XmlException {
 			return new StrategyRead(this.divisor, this.guiRead);
 		}
 
@@ -127,7 +131,7 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws AssignmentException {
 	}
 
 	@Override
@@ -160,7 +164,7 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
 		return null;
 	}
 
@@ -193,7 +197,7 @@ public class StrategyRead implements IStrategy {
 			}
 
 			@Override
-			public GuiRead create() throws XmlError, IOException {
+			public GuiRead create() throws XmlException, IOException {
 				return new GuiRead(this.format);
 			}
 
@@ -221,7 +225,7 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value) {
+	public SingleData<?> createSingleData(String value) throws TypeException {
 		return null;
 	}
 

@@ -28,8 +28,15 @@ import de.sgollmer.solvismax.connection.Server;
 import de.sgollmer.solvismax.connection.TerminateClient;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.crypt.CryptAes;
-import de.sgollmer.solvismax.error.LearningError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.FileException;
+import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
@@ -73,7 +80,7 @@ public class Main {
 		String baseXml = null;
 		boolean onBoot = false;
 
-		Collection<String> argCollection = new ArrayList<>( Arrays.asList(args));
+		Collection<String> argCollection = new ArrayList<>(Arrays.asList(args));
 
 		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
 			String arg = it.next();
@@ -121,7 +128,7 @@ public class Main {
 					default:
 						found = false;
 				}
-				if ( found) {
+				if (found) {
 					it.remove();
 				}
 			}
@@ -142,10 +149,10 @@ public class Main {
 		try {
 			XmlStreamReader.Result<BaseData> base = new BaseControlFileReader(baseXml).read();
 			if (base == null) {
-				throw new XmlError("");
+				throw new XmlException("");
 			}
 			baseData = base.getTree();
-		} catch (IOException | XmlError | XMLStreamException e) {
+		} catch (IOException | XmlException | XMLStreamException | AssignmentException | ReferenceException e) {
 			e.printStackTrace();
 			logManager.addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "base.xml couldn't be read.", Main.class,
 					ExitCodes.READING_CONFIGURATION_FAIL));
@@ -158,7 +165,7 @@ public class Main {
 
 		try {
 			error = logManager.createInstance(path);
-		} catch (IOException e) {
+		} catch (IOException | FileException e) {
 			error = LogErrors.INIT;
 			e.printStackTrace();
 		}
@@ -237,7 +244,8 @@ public class Main {
 
 		try {
 			this.instances = new Instances(baseData, learn);
-		} catch (IOException | XmlError | XMLStreamException e) {
+		} catch (IOException | XmlException | XMLStreamException | AssignmentException | FileException
+				| ReferenceException e) {
 			this.logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
@@ -249,7 +257,8 @@ public class Main {
 				if (!learned) {
 					this.logger.log(LEARN, "Nothing to learn!");
 				}
-			} catch (IOException | XmlError | XMLStreamException | LearningError e) {
+			} catch (IOException | XMLStreamException | LearningException | FileException | TerminationException
+					| ModbusException e) {
 				this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
 				e.printStackTrace();
 				System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
@@ -259,11 +268,11 @@ public class Main {
 
 		try {
 			this.instances.init();
-		} catch (IOException | XmlError | XMLStreamException e) {
+		} catch (IOException | AssignmentException | XMLStreamException | DependencyException e) {
 			this.logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
-		} catch (LearningError e2) {
+		} catch (LearningException e2) {
 			this.logger.error(e2.getMessage());
 			System.exit(ExitCodes.LEARNING_NECESSARY);
 		}
@@ -333,7 +342,7 @@ public class Main {
 		TerminateClient client = new TerminateClient(port);
 		try {
 			client.connectAndTerminateOtherServer();
-		} catch (IOException e) {
+		} catch (IOException | JsonException e) {
 			e.printStackTrace();
 			System.err.println("Terminate not successfull.");
 			LogManager.exit(ExitCodes.SERVER_TERMINATION_FAIL);

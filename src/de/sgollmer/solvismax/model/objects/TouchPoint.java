@@ -9,8 +9,8 @@ package de.sgollmer.solvismax.model.objects;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -56,7 +56,7 @@ public class TouchPoint implements IAssigner {
 		}
 
 		@Override
-		public TouchPoint create() throws XmlError {
+		public TouchPoint create() throws XmlException {
 			return new TouchPoint(this.coordinate, this.pushTimeId, this.releaseTimeId);
 		}
 
@@ -82,12 +82,12 @@ public class TouchPoint implements IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws AssignmentException {
 		Duration pushTimeDuration = description.getDuration(this.pushTimeId);
 		Duration releaseTimeDuration = description.getDuration(this.releaseTimeId);
 
 		if (pushTimeDuration == null || releaseTimeDuration == null) {
-			throw new AssignmentError("Duration time not found");
+			throw new AssignmentException("Duration time not found");
 		}
 		this.pushTime = pushTimeDuration.getTime_ms();
 		this.releaseTime = releaseTimeDuration.getTime_ms();

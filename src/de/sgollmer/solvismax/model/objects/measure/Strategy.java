@@ -12,38 +12,36 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
-import de.sgollmer.solvismax.error.ErrorPowerOn;
-import de.sgollmer.solvismax.error.FieldError;
+import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.measure.Measurement.IType;
 import de.sgollmer.solvismax.objects.Field;
 
-public enum Strategy {
+public enum Strategy implements IType {
 
-	DATE(new Date(), false), UNSIGNED(new Integer(false), true), SIGNED(new Integer(true), true),
-	BOOLEAN(new Boolean(), false);
+	DATE(new Date()), UNSIGNED(new Integer(false)), SIGNED(new Integer(true)), BOOLEAN(new Boolean());
 
 	// private static final Logger logger = LogManager.getLogger(Strategy.class);
 
-	private final IStrategyClass type;
-	private final boolean numeric;
+	private final IType type;
 
-	private Strategy(IStrategyClass type, boolean numeric) {
+	private Strategy(IType type) {
 		this.type = type;
-		this.numeric = numeric;
 	}
 
-	boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws ErrorPowerOn {
+	@Override
+	public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws PowerOnException {
 		return this.type.get(destin, fields, data);
 	}
 
-	boolean isBoolean() {
+	@Override
+	public boolean isBoolean() {
 		return this.type.isBoolean();
 	}
 
-	private interface IStrategyClass {
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws ErrorPowerOn;
-
-		public boolean isBoolean();
+	@Override
+	public boolean validate(Collection<Field> fields) {
+		return this.type.validate(fields);
 	}
 
 	private static long toInt(String data) {
@@ -71,11 +69,12 @@ public enum Strategy {
 		}
 	}
 
-	boolean isNumeric() {
-		return this.numeric;
+	@Override
+	public boolean isNumeric() {
+		return this.type.isNumeric();
 	}
 
-	private static class Integer implements IStrategyClass {
+	private static class Integer implements IType {
 		private final boolean signed;
 
 		private Integer(boolean signed) {
@@ -83,11 +82,9 @@ public enum Strategy {
 		}
 
 		@Override
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws ErrorPowerOn {
+		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
+				throws PowerOnException {
 			Field field = getFirst(fields);
-			if (field == null) {
-				throw new FieldError("Field <std> unknown");
-			}
 			String sub = field.subString(data.getHexString());
 			long result = toInt(sub);
 			if (this.signed) {
@@ -105,16 +102,24 @@ public enum Strategy {
 			return false;
 		}
 
-	}
-
-	private static class Boolean implements IStrategyClass {
+		@Override
+		public boolean validate(Collection<Field> fields) {
+			return fields.size() == 1;
+		}
 
 		@Override
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws ErrorPowerOn {
+		public boolean isNumeric() {
+			return true;
+		}
+
+	}
+
+	private static class Boolean implements IType {
+
+		@Override
+		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
+				throws PowerOnException {
 			Field field = getFirst(fields);
-			if (field == null) {
-				throw new FieldError("Field <std> unknown");
-			}
 			String sub = field.subString(data.getHexString());
 			boolean result = toInt(sub) > 0;
 			destin.setBoolean(result, data.getTimeStamp());
@@ -126,9 +131,19 @@ public enum Strategy {
 			return true;
 		}
 
+		@Override
+		public boolean validate(Collection<Field> fields) {
+			return fields.size() == 1;
+		}
+
+		@Override
+		public boolean isNumeric() {
+			return false;
+		}
+
 	}
 
-	private static class Date implements IStrategyClass {
+	private static class Date implements IType {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) {
@@ -154,6 +169,20 @@ public enum Strategy {
 
 		@Override
 		public boolean isBoolean() {
+			return false;
+		}
+
+		@Override
+		public boolean validate(Collection<Field> fields) {
+			int length = 0;
+			for (Iterator<Field> it = fields.iterator(); it.hasNext();) {
+				length += it.next().getLength();
+			}
+			return length == 12;
+		}
+
+		@Override
+		public boolean isNumeric() {
 			return false;
 		}
 	}

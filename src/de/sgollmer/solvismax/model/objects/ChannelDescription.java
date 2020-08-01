@@ -14,19 +14,25 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
-import de.sgollmer.solvismax.error.ErrorPowerOn;
+import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.TypeError;
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.calculation.Calculation;
 import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
+import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.measure.Measurement;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.IScreen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -61,18 +67,20 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.getId();
 	}
 
-	public boolean getValue(Solvis solvis) throws IOException, ErrorPowerOn, TerminationException {
+	public boolean getValue(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
 		return this.getValue(data, solvis);
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, ErrorPowerOn, TerminationException {
+	public boolean getValue(SolvisData dest, Solvis solvis)
+			throws IOException, PowerOnException, TerminationException, ModbusException {
 		return this.channelSource.getValue(dest, solvis);
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+	public SingleData<?> setValue(Solvis solvis, SolvisData value)
+			throws IOException, TerminationException, ModbusException {
 		return this.channelSource.setValue(solvis, value);
 	}
 
@@ -106,7 +114,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
 		if (this.channelSource != null) {
 			this.channelSource.assign(description);
 		}
@@ -114,7 +122,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
+	public void instantiate(Solvis solvis) throws AssignmentException, DependencyException {
 		this.channelSource.instantiate(solvis);
 
 	}
@@ -147,7 +155,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		}
 
 		@Override
-		public ChannelDescription create() throws XmlError {
+		public ChannelDescription create() throws XmlException {
 			ChannelDescription description = new ChannelDescription(this.id, this.buffered, this.unit,
 					this.configurationMasks, this.channelSource);
 			this.channelSource.setDescription(description);
@@ -163,7 +171,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 				case XML_CONTROL:
 					return new Control.Creator(source, this.getBaseCreator());
 				case XML_MEASUREMENT:
-					return new Measurement.Creator(source, this.getBaseCreator());
+					return new Measurement.Creator(this.id, source, this.getBaseCreator());
 				case XML_CALCULATION:
 					return new Calculation.Creator(source, this.getBaseCreator());
 			}
@@ -188,7 +196,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException {
+	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException, ModbusException {
 		this.channelSource.learn(solvis);
 
 	}
@@ -199,7 +207,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public Screen getScreen(int configurationMask) {
+	public IScreen getScreen(int configurationMask) {
 		return this.channelSource.getScreen(configurationMask);
 	}
 
@@ -236,7 +244,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeError {
+	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
 		return this.channelSource.interpretSetData(singleData);
 	}
 

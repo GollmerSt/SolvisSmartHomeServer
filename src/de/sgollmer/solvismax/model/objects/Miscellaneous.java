@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlError;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -98,7 +98,7 @@ public class Miscellaneous {
 		}
 
 		@Override
-		public Miscellaneous create() throws XmlError, IOException {
+		public Miscellaneous create() throws XmlException, IOException {
 			return new Miscellaneous(this.measurementsBackupTime_ms, this.powerOffDetectedAfterIoErrors,
 					this.powerOffDetectedAfterTimeout_ms, this.unsuccessfullWaitTime_ms, this.connectionHoldTime_ms,
 					this.solvisConnectionTimeout_ms, this.solvisReadTimeout_ms, this.clientTimeoutTime_ms);
