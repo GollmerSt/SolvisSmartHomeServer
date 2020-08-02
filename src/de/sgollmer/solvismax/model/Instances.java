@@ -134,4 +134,8 @@ public class Instances {
 		}
 		return null;
 	}
+
+	public MeasurementsBackupHandler getBackupHandler() {
+		return this.backupHandler;
+	}
 }

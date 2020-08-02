@@ -23,6 +23,7 @@ public class Constants {
 	public static final String TINY_LOG_FILE_PROPERTY_SUFFIX = ".file";
 
 	public static final int MIN_TOUCH_TIME = 100;
+	public static final int MAX_WAIT_TIME_ON_STARTUP = 120000;
 
 	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
 	public static final String RESOURCE_PATH = "data";

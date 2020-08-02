@@ -44,6 +44,7 @@ public class MeasurementsBackupHandler {
 	private final Measurements measurements = new Measurements();
 	private final BackupThread thread;
 	private boolean xsdWritten = false;
+	private long timeOfLastBackup = -1 ;
 
 	public MeasurementsBackupHandler(String pathName, int measurementsBackupTime_ms)
 			throws FileException, ReferenceException {
@@ -100,6 +101,8 @@ public class MeasurementsBackupHandler {
 		if (!xml.exists()) {
 			return;
 		}
+		
+		this.timeOfLastBackup =xml.lastModified() ; 
 
 		InputStream source = new FileInputStream(xml);
 
@@ -212,6 +215,10 @@ public class MeasurementsBackupHandler {
 
 	public SystemMeasurements getSystemMeasurements(String id) {
 		return this.measurements.get(id);
+	}
+	
+	public long getTimeOfLastBackup() {
+		return this.timeOfLastBackup;
 	}
 
 }

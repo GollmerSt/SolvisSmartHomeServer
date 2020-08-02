@@ -1,5 +1,12 @@
 Ä N D E R U N G E N
 
+Version 01.01.03 rc3
+
+    31.07.2020  Beim Programmstart wird auf einen valide Systemzeit gewartet, max. nur 120s. Eine valide
+                Systemzeit liegt dann vor, wenn das Datum des Backup-Files älter als die aktuelle Zeit ist.
+                
+
+
 Version 01.01.03 rc2
 
     30.07.2020  Das Verschlüsseln von Passwörtern über das Startmenü funktionierte unter Windows noch nicht.
