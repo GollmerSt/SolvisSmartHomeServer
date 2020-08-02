@@ -32,7 +32,7 @@ import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.measure.Measurement;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -207,7 +207,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public IScreen getScreen(int configurationMask) {
+	public AbstractScreen getScreen(int configurationMask) {
 		return this.channelSource.getScreen(configurationMask);
 	}
 

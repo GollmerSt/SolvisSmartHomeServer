@@ -33,12 +33,12 @@ public class Helper {
 		int transfered = 0;
 		Runnable runnable = null;
 		while (transfered < bytes.length) {
-			
+
 			int cnt;
 			try {
 				cnt = in.read(bytes, transfered, bytes.length - transfered);
 			} catch (IOException e) {
-				if ( AbortHelper.getInstance().isAbort()) {
+				if (AbortHelper.getInstance().isAbort()) {
 					return;
 				} else {
 					throw e;
@@ -80,13 +80,13 @@ public class Helper {
 			synchronized (this) {
 				try {
 					AbortHelper.getInstance().sleepAndLock(this.timeout, this);
-				if (!this.abort) {
-					try {
-						this.inputStream.close();
-						logger.error("Timeout while client to server transfer");
-					} catch (IOException e) {
+					if (!this.abort) {
+						try {
+							this.inputStream.close();
+							logger.error("Timeout while client to server transfer");
+						} catch (IOException e) {
+						}
 					}
-				}
 				} catch (TerminationException e1) {
 				}
 			}

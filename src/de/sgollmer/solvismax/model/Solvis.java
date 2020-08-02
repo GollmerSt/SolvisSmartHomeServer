@@ -47,7 +47,7 @@ import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.History;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -72,7 +72,7 @@ public class Solvis {
 	private final int echoInhibitTime_ms;
 	private int configurationMask = 0;
 	private SolvisScreen currentScreen = null;
-	private IScreen savedScreen = null;
+	private AbstractScreen savedScreen = null;
 	private Screen home = null;
 	private SolvisMeasurements measureData = null;
 	private boolean screenSaverActive = false;
@@ -136,7 +136,7 @@ public class Solvis {
 		return this.currentScreen;
 	}
 
-	private SolvisScreen getRealScreen() throws IOException {
+	private SolvisScreen getRealScreen() throws IOException, TerminationException {
 		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()), this);
 		return screen;
 	}
@@ -151,7 +151,7 @@ public class Solvis {
 		this.currentScreen = null;
 	}
 
-	public SolvisMeasurements getMeasureData() throws IOException, PowerOnException {
+	public SolvisMeasurements getMeasureData() throws IOException, PowerOnException, TerminationException {
 		SolvisMeasurements result = null;
 		synchronized (this.solvisMeasureObject) {
 			if (this.measureData == null) {
@@ -330,7 +330,7 @@ public class Solvis {
 	}
 
 	void saveScreen() throws IOException, TerminationException {
-		IScreen current = SolvisScreen.get(this.getCurrentScreen(false));
+		AbstractScreen current = SolvisScreen.get(this.getCurrentScreen(false));
 		if (current == null) {
 			current = SolvisScreen.get(this.getCurrentScreen());
 		}
@@ -345,7 +345,7 @@ public class Solvis {
 	}
 
 	void restoreScreen() throws IOException, TerminationException {
-		IScreen screen = this.savedScreen;
+		AbstractScreen screen = this.savedScreen;
 		if (screen != null) {
 			screen.goTo(this);
 			logger.info("Screen <" + screen.getId() + "> restored");
@@ -563,9 +563,9 @@ public class Solvis {
 		return this.defaultReadMeasurementsInterval_ms;
 	}
 
-	private void initConfigurationMask() throws TerminationException {
+	private void initConfigurationMask() throws TerminationException, LearningException {
 		boolean connected = false;
-		this.configurationMask = 0;
+		this.configurationMask = 0; // must be zero! In case of learning HomeScreen and Info-Screen
 		long time = -1;
 		long lastErrorOutTime = -1;
 		while (!connected) {

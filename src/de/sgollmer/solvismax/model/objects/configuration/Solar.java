@@ -22,7 +22,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations.IConfiguration;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -127,7 +127,7 @@ public class Solar implements IConfiguration {
 	}
 
 	@Override
-	public IScreen getScreen(Solvis solvis) {
+	public AbstractScreen getScreen(Solvis solvis) {
 		return solvis.getSolvisDescription().getScreens().get(this.screenRef, 0);
 	}
 

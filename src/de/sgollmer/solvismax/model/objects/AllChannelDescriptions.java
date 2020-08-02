@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -27,18 +26,17 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.DependencyException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
-import de.sgollmer.solvismax.model.objects.screen.Screen.ScreenTouch;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -222,63 +220,32 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	}
 
+	private static class OptimizeComparator implements Comparator<ChannelDescription> {
+
+		private final AbstractScreen.OptimizeComparator comp;
+
+		public OptimizeComparator(int mask) {
+			this.comp = new AbstractScreen.OptimizeComparator(mask);
+		}
+
+		@Override
+		public int compare(ChannelDescription o1, ChannelDescription o2) {
+			return this.comp.compare(o1.getScreen(this.comp.getMask()), o2.getScreen(this.comp.getMask()));
+		}
+	}
+
 	private void optimize(List<ChannelDescription> descriptions, int mask) {
 
-		Collections.sort(descriptions, new Comparator<ChannelDescription>() {
-
-			@Override
-			public int compare(ChannelDescription o1, ChannelDescription o2) {
-
-				List<ScreenTouch> p1 = o1.getScreen(mask).getPreviousScreens(mask);
-				List<ScreenTouch> p2 = o2.getScreen(mask).getPreviousScreens(mask);
-
-				if (p1.size() == 0 && p2.size() == 0) {
-					return 0;
-				}
-
-				if (p1.size() == 0) {
-					return 1;
-				} else if (p2.size() == 0) {
-					return -1;
-				}
-
-				ListIterator<ScreenTouch> i1 = p1.listIterator(p1.size());
-				ListIterator<ScreenTouch> i2 = p2.listIterator(p2.size());
-
-				int cmp;
-
-				while (i1.hasPrevious()) {
-					if (i2.hasPrevious()) {
-						ScreenTouch s1 = i1.previous();
-						ScreenTouch s2 = i2.previous();
-						cmp = s1.getScreen().compareTo(s2.getScreen());
-						if (cmp != 0) {
-							if (i1.hasPrevious()) {
-								return -1;
-							} else if (i2.hasPrevious()) {
-								return 1;
-							}
-							return cmp;
-						}
-					} else {
-						return -1;
-					}
-				}
-				if (i2.hasPrevious()) {
-					return 1;
-				}
-				return 0;
-			}
-		});
+		Collections.sort(descriptions, new OptimizeComparator( mask));
 
 	}
 
-	public Collection<ChannelDescription> getChannelDescriptions(IScreen screen, Solvis solvis) {
+	public Collection<ChannelDescription> getChannelDescriptions(AbstractScreen screen, Solvis solvis) {
 		Collection<ChannelDescription> result = new ArrayList<>();
 		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
 			ChannelDescription description = descriptionsC.get(solvis);
 			if (description != null) {
-				IScreen channelScreen = descriptionsC.get(solvis).getScreen(solvis.getConfigurationMask());
+				AbstractScreen channelScreen = descriptionsC.get(solvis).getScreen(solvis.getConfigurationMask());
 				if (channelScreen != null && screen == channelScreen) {
 					result.add(description);
 				}

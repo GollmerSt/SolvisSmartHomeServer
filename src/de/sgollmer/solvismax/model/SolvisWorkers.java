@@ -24,7 +24,7 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Command.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class SolvisWorkers {
@@ -37,7 +37,7 @@ public class SolvisWorkers {
 	private ControlWorkerThread controlsThread = null;
 	private MeasurementsWorkerThread measurementsThread = null;
 	private Collection<Command> commandsOfScreen = new ArrayList<>();
-	private IScreen commandScreen = null;
+	private AbstractScreen commandScreen = null;
 	private long timeCommandScreen = System.currentTimeMillis();
 	private final boolean controlEnable;
 
@@ -300,7 +300,7 @@ public class SolvisWorkers {
 	private boolean execute(Command command)
 			throws IOException, TerminationException, PowerOnException, ModbusException {
 		if (!command.isModbus() || command.isWriting()) {
-			IScreen commandScreen = command.getScreen(this.solvis);
+			AbstractScreen commandScreen = command.getScreen(this.solvis);
 			if (commandScreen != null) {
 				long now = System.currentTimeMillis();
 

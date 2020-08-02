@@ -10,7 +10,6 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 
@@ -18,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -26,7 +26,6 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
 import de.sgollmer.solvismax.model.objects.configuration.SolvisTypes;
-import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable.LearnScreen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -114,20 +113,10 @@ public class SolvisDescription {
 		}
 	}
 
-	public Collection<LearnScreen> getLearnScreens(Solvis solvis) {
-		Collection<LearnScreen> learnScreens = new ArrayList<>();
-		this.screens.createAndAddLearnScreen(null, learnScreens, solvis);
-		for (Iterator<LearnScreen> itOuter = learnScreens.iterator(); itOuter.hasNext();) {
-			LearnScreen outer = itOuter.next();
-			for (Iterator<LearnScreen> itInner = itOuter; itInner.hasNext();) {
-				LearnScreen inner = itInner.next();
-				if (inner.getDescription().getId().equals(outer.getDescription().getId())) {
-					itOuter.remove();
-					break;
-				}
-			}
-		}
-		return learnScreens;
+	public Collection<ScreenGraficDescription> getLearnGrafics(Solvis solvis) {
+		Collection<ScreenGraficDescription> learnGrafics = new ArrayList<>();
+		this.screens.addLearnScreenGrafics(learnGrafics, solvis);
+		return learnGrafics;
 	}
 
 	public static class Creator extends BaseCreator<SolvisDescription> {
@@ -332,7 +321,7 @@ public class SolvisDescription {
 		return this.fallBack;
 	}
 
-	public int getConfigurations(Solvis solvis) throws IOException, TerminationException {
+	public int getConfigurations(Solvis solvis) throws IOException, TerminationException, LearningException {
 		int configurationMask = this.types.getConfiguration(solvis.getType());
 		return configurationMask | this.configurations.get(solvis);
 	}

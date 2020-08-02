@@ -43,8 +43,8 @@ public abstract class CreatorByXML<T> {
 	 * 
 	 * @return
 	 * @throws XmlException
-	 * @throws AssignmentException 
-	 * @throws ReferenceException 
+	 * @throws AssignmentException
+	 * @throws ReferenceException
 	 */
 
 	public abstract T create() throws XmlException, IOException, AssignmentException, ReferenceException;
@@ -66,7 +66,7 @@ public abstract class CreatorByXML<T> {
 	 * 
 	 * @param creator
 	 * @param created
-	 * @throws XmlException 
+	 * @throws XmlException
 	 */
 	public abstract void created(CreatorByXML<?> creator, Object created) throws XmlException;
 

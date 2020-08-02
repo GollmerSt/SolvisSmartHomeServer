@@ -78,7 +78,7 @@ public class Mqtt {
 		this.publishQoS = publishQoS;
 		this.subscribeQoS = subscribeQoS;
 		this.ssl = ssl;
-		
+
 		LoggerFactory.setLogger("de.sgollmer.solvismax.connection.mqtt.Logger");
 	}
 

@@ -42,7 +42,7 @@ import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.data.DateValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -81,8 +81,8 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	private final TouchPoint ok;
 	private final DisableClockSetting disableClockSetting;
 
-	private OfConfigs<IScreen> screen = null;
-	private OfConfigs<IScreen> okScreen = null;
+	private OfConfigs<AbstractScreen> screen = null;
+	private OfConfigs<AbstractScreen> okScreen = null;
 
 	static {
 		CALENDAR_2018 = Calendar.getInstance();
@@ -555,7 +555,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 					if (Executable.this.adjustmentEnable && time < nextAdjust.realAdjustTime
 							- Constants.SETTING_TIME_RANGE_LOWER + Constants.SETTING_TIME_RANGE_UPPER) {
 						Executable.this.solvis.send(ClockMonitor.this.ok);
-						IScreen screen = SolvisScreen.get(Executable.this.solvis.getCurrentScreen());
+						AbstractScreen screen = SolvisScreen.get(Executable.this.solvis.getCurrentScreen());
 						if (screen != ClockMonitor.this.okScreen.get(configurationMask)) {
 							success = false;
 						}

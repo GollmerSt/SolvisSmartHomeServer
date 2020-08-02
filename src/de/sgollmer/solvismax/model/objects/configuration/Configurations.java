@@ -14,12 +14,13 @@ import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
-import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable.LearnScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -34,37 +35,37 @@ public class Configurations {
 		this.configurations = configurations;
 	}
 
-	public int get(Solvis solvis) throws IOException, TerminationException {
+	public int get(Solvis solvis) throws IOException, TerminationException, LearningException {
 
 		solvis.gotoHome(true);
-		IScreen current = solvis.getHomeScreen();
+		AbstractScreen current = solvis.getHomeScreen();
 
 		int configurationMask = 0;
 		Screen home = solvis.getHomeScreen();
 		IConfiguration homeConfiguration = null;
-		Collection<LearnScreen> learnConfigurationScreens = new ArrayList<>();
+		Collection<ScreenGraficDescription> learnConfigurationScreens = new ArrayList<>();
 		for (Iterator<IConfiguration> it = this.configurations.iterator(); it.hasNext();) {
 			IConfiguration configuration = it.next();
-			IScreen screen = configuration.getScreen(solvis);
+			AbstractScreen screen = configuration.getScreen(solvis);
 			if (screen == home) {
 				homeConfiguration = configuration;
 			} else {
-				screen.createAndAddLearnScreen(null, learnConfigurationScreens, solvis);
+				screen.addLearnScreenGrafics(learnConfigurationScreens, solvis);
 			}
 		}
 		if (homeConfiguration != null) {
-			Collection<LearnScreen> learnHomeScreen = new ArrayList<>();
-			home.createAndAddLearnScreen(null, learnHomeScreen, solvis);
+			Collection<ScreenGraficDescription> learnHomeScreen = new ArrayList<>();
+			home.addLearnScreenGrafics(learnHomeScreen, solvis);
 			home.gotoLearning(solvis, current, learnHomeScreen);
-			home.learn(solvis, learnHomeScreen, 0);
+			home.learn(solvis, learnHomeScreen);
 			configurationMask |= homeConfiguration.getConfiguration(solvis);
 			current = home;
 		}
 		for (IConfiguration configuration : this.configurations) {
-			IScreen screen = configuration.getScreen(solvis);
+			AbstractScreen screen = configuration.getScreen(solvis);
 			if (screen != home) {
 				screen.gotoLearning(solvis, current, learnConfigurationScreens);
-				screen.learn(solvis, learnConfigurationScreens, 0);
+				screen.learn(solvis, learnConfigurationScreens);
 				configurationMask |= configuration.getConfiguration(solvis);
 				current = screen;
 			}
@@ -77,7 +78,7 @@ public class Configurations {
 	interface IConfiguration {
 		int getConfiguration(Solvis solvis) throws IOException, TerminationException;
 
-		IScreen getScreen(Solvis solvis);
+		AbstractScreen getScreen(Solvis solvis);
 	}
 
 	public static class Creator extends CreatorByXML<Configurations> {

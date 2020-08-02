@@ -373,7 +373,7 @@
 		<!-- WICHTIG: Vor Learning muss unbedingt Anlagenstatus Warmwasser ausgewählt 
 			worden sein -->
 		<tns:ScreenSequence id="Anlagenstatus"
-			backId="Sonstiges 1" previousId="Sonstiges 1">
+			previousId="Sonstiges 1">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="85" />

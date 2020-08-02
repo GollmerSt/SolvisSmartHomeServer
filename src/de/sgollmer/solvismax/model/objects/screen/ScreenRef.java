@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
@@ -28,7 +29,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ScreenRef implements IAssigner {
 	private final String id;
-	private OfConfigs<IScreen> screen = null;
+	private OfConfigs<AbstractScreen> screen = null;
 
 	protected ScreenRef(String id) {
 		this.id = id;
@@ -82,8 +83,22 @@ public class ScreenRef implements IAssigner {
 
 	}
 
-	public OfConfigs<IScreen> getScreen() {
+	public OfConfigs<AbstractScreen> getScreen() {
 		return this.screen;
+	}
+
+	public AbstractScreen getScreen( Solvis solvis) {
+		if ( this.screen == null ) {
+			return null ;
+		}
+		return this.screen.get(solvis);
+	}
+
+	public AbstractScreen getScreen( int configurationMask) {
+		if ( this.screen == null ) {
+			return null ;
+		}
+		return this.screen.get(configurationMask);
 	}
 
 }

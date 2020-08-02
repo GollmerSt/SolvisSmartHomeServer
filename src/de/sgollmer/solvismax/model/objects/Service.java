@@ -15,7 +15,7 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenRef;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -30,12 +30,12 @@ public class Service implements IAssigner {
 		this.serviceScreenRefs = serviceScreenRefs;
 	}
 
-	public boolean isServiceScreen(IScreen screen, Solvis solvis) {
+	public boolean isServiceScreen(AbstractScreen screen, Solvis solvis) {
 		if (screen == null) {
 			return false;
 		}
 		for (ScreenRef ref : this.serviceScreenRefs) {
-			IScreen cmp = ref.getScreen().get(solvis);
+			AbstractScreen cmp = ref.getScreen().get(solvis);
 			if (cmp != null && cmp == screen) {
 				return true;
 			}

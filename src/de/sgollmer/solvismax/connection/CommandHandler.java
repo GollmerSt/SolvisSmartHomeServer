@@ -126,9 +126,9 @@ public class CommandHandler {
 				try {
 					this.instances.backupMeasurements();
 				} catch (XMLStreamException e) {
-					logger.error("XMLStream error while writing the backup file",e);
+					logger.error("XMLStream error while writing the backup file", e);
 				} catch (FileException e) {
-					logger.error("File error while writing the backup file",e);
+					logger.error("File error while writing the backup file", e);
 				}
 				break;
 			case SCREEN_RESTORE_INHIBIT:
@@ -391,7 +391,7 @@ public class CommandHandler {
 					try {
 						unregister(this.assignments);
 					} catch (ClientAssignmentException e) {
-						logger.error("ClientAssignmentError, client missed",e);
+						logger.error("ClientAssignmentError, client missed", e);
 					}
 				}
 			}

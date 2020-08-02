@@ -74,7 +74,8 @@ public class Instances {
 		return !nothingToLearn;
 	}
 
-	public boolean init() throws IOException, XMLStreamException, LearningException, AssignmentException, DependencyException {
+	public boolean init()
+			throws IOException, XMLStreamException, LearningException, AssignmentException, DependencyException {
 		for (Solvis solvis : this.units) {
 			if (!solvis.getGrafics().isEmpty()) {
 				solvis.init();

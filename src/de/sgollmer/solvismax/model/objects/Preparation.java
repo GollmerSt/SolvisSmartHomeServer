@@ -134,12 +134,12 @@ public class Preparation implements IAssigner {
 		}
 
 	}
-	
-	public static boolean prepare( Preparation preparation, Solvis solvis ) throws IOException, TerminationException {
-		if ( preparation == null ) {
-			return true ;
+
+	public static boolean prepare(Preparation preparation, Solvis solvis) throws IOException, TerminationException {
+		if (preparation == null) {
+			return true;
 		} else {
-			return preparation.execute(solvis) ;
+			return preparation.execute(solvis);
 		}
 	}
 

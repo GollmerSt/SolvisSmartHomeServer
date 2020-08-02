@@ -15,19 +15,19 @@ public class SolvisScreen {
 	private final Solvis solvis;
 	private final MyImage image;
 	private boolean scanned = false;
-	private IScreen screen = null;
+	private AbstractScreen screen = null;
 
 	public SolvisScreen(MyImage image, Solvis solvis) {
 		this.image = image;
 		this.solvis = solvis;
 	}
 
-	public IScreen get() {
+	public AbstractScreen get() {
 		if (this.screen == null && !this.scanned) {
 			this.screen = this.solvis.getSolvisDescription().getScreens().getScreen(this.image, this.solvis);
 			this.scanned = true;
 		}
-		if ( !this.screen.isScreen() ) {
+		if (this.screen != null && !this.screen.isScreen()) {
 			throw new FatalError("Only an object of type Screen is allowed.");
 		}
 		return this.screen;
@@ -46,7 +46,7 @@ public class SolvisScreen {
 		this.scanned = true;
 	}
 
-	public static IScreen get(SolvisScreen screen) {
+	public static AbstractScreen get(SolvisScreen screen) {
 		if (screen == null) {
 			return null;
 		}

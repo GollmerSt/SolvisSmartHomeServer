@@ -21,7 +21,7 @@ import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 
 public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
@@ -55,7 +55,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public Collection<? extends IMode> getModes();
 
-	public IScreen getScreen(int configurationMask);
+	public AbstractScreen getScreen(int configurationMask);
 
 	public UpperLowerStep getUpperLowerStep();
 

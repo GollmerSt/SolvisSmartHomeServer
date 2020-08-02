@@ -28,7 +28,7 @@ public class AllPreparations {
 	}
 
 	public Preparation get(String id) {
-		if ( id == null ) {
+		if (id == null) {
 			return null;
 		}
 		for (Preparation preparation : this.preparations) {

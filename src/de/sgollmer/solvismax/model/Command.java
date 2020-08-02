@@ -12,7 +12,7 @@ import java.io.IOException;
 import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 
 public abstract class Command {
 
@@ -38,7 +38,7 @@ public abstract class Command {
 	 * @param solvis
 	 * @return screen
 	 */
-	protected IScreen getScreen(Solvis solvis) {
+	protected AbstractScreen getScreen(Solvis solvis) {
 		return null;
 	}
 

@@ -263,25 +263,25 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	public void trace(int level, String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable ex) {
 		switch (level) {
 			case CONFIG:
-				this.config(sourceClass, sourceMethod, msg, inserts,ex);
+				this.config(sourceClass, sourceMethod, msg, inserts, ex);
 				break;
 			case FINE:
-				this.fine(sourceClass, sourceMethod, msg, inserts,ex);
+				this.fine(sourceClass, sourceMethod, msg, inserts, ex);
 				break;
 			case FINER:
-				this.finer(sourceClass, sourceMethod, msg, inserts,ex);
+				this.finer(sourceClass, sourceMethod, msg, inserts, ex);
 				break;
 			case FINEST:
-				this.finest(sourceClass, sourceMethod, msg, inserts,ex);
+				this.finest(sourceClass, sourceMethod, msg, inserts, ex);
 				break;
 			case INFO:
-				this.info(sourceClass, sourceMethod, msg, inserts,ex);
+				this.info(sourceClass, sourceMethod, msg, inserts, ex);
 				break;
 			case SEVERE:
-				this.severe(sourceClass, sourceMethod, msg, inserts,ex);
+				this.severe(sourceClass, sourceMethod, msg, inserts, ex);
 				break;
 			case WARNING:
-				this.warning(sourceClass, sourceMethod, msg, inserts,ex);
+				this.warning(sourceClass, sourceMethod, msg, inserts, ex);
 				break;
 		}
 	}

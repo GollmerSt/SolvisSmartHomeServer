@@ -19,8 +19,10 @@ import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
+import de.sgollmer.solvismax.model.objects.screen.ScreenSequence;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -28,29 +30,30 @@ import de.sgollmer.solvismax.xml.BaseCreator;
 public class AllScreens implements IScreenLearnable {
 
 	private static final String XML_SCREEN = "Screen";
+	private static final String XML_SCREEN_SEQUENCE = "ScreenSequence";
 
 	private final String homeId;
-	private final Map<String, OfConfigs<IScreen>> screens;
+	private final Map<String, OfConfigs<AbstractScreen>> screens;
 
-	private AllScreens(String homeId, Map<String, OfConfigs<IScreen>> screens) {
+	private AllScreens(String homeId, Map<String, OfConfigs<AbstractScreen>> screens) {
 		this.homeId = homeId;
 		this.screens = screens;
 	}
 
-	public OfConfigs<IScreen> get(String id) {
+	public OfConfigs<AbstractScreen> get(String id) {
 		return this.screens.get(id);
 	}
 
 	/**
-	 * Get the Screen of all configurations ensuring the type of Screen 
+	 * Get the Screen of all configurations ensuring the type of Screen
 	 * 
-	 * @param id	screen Id
-	 * @return		Scrreen result of all configurations
+	 * @param id screen Id
+	 * @return Scrreen result of all configurations
 	 * @throws XmlException
 	 */
-	public OfConfigs<IScreen> getScreen(String id) throws XmlException {
-		OfConfigs<IScreen> screens = this.screens.get(id);
-		for (IScreen screen : screens.getElements()) {
+	public OfConfigs<AbstractScreen> getScreen(String id) throws XmlException {
+		OfConfigs<AbstractScreen> screens = this.screens.get(id);
+		for (AbstractScreen screen : screens.getElements()) {
 			if (!screen.isScreen()) {
 				throw new XmlException("<" + screen.getId() + "> mut be type of Screen");
 			}
@@ -58,8 +61,8 @@ public class AllScreens implements IScreenLearnable {
 		return screens;
 	}
 
-	public IScreen get(String id, int configurationMask) {
-		OfConfigs<IScreen> screens = this.screens.get(id);
+	public AbstractScreen get(String id, int configurationMask) {
+		OfConfigs<AbstractScreen> screens = this.screens.get(id);
 		if (screens == null) {
 			return null;
 		} else {
@@ -67,10 +70,10 @@ public class AllScreens implements IScreenLearnable {
 		}
 	}
 
-	public IScreen getScreen(MyImage image, Solvis solvis) {
+	public AbstractScreen getScreen(MyImage image, Solvis solvis) {
 		int configurationMask = solvis.getConfigurationMask();
-		for (OfConfigs<IScreen> screenConf : this.screens.values()) {
-			IScreen screen = screenConf.get(configurationMask);
+		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
+			AbstractScreen screen = screenConf.get(configurationMask);
 			if (screen != null && screen.isScreen(image, solvis) && screen.isScreen()) {
 				return (Screen) screen;
 			}
@@ -79,12 +82,12 @@ public class AllScreens implements IScreenLearnable {
 	}
 
 	void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
-		for (OfConfigs<IScreen> screenConf : this.screens.values()) {
+		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
 			screenConf.assign(description);
 		}
 
-		OfConfigs<IScreen> homeScreenConfig = this.screens.get(this.homeId);
-		for (IScreen screen : homeScreenConfig.getElements()) {
+		OfConfigs<AbstractScreen> homeScreenConfig = this.screens.get(this.homeId);
+		for (AbstractScreen screen : homeScreenConfig.getElements()) {
 			if (!screen.isScreen()) {
 				throw new XmlException("Home screen <" + this.homeId + "must be a Screen element");
 			}
@@ -94,16 +97,16 @@ public class AllScreens implements IScreenLearnable {
 	static class Creator extends CreatorByXML<AllScreens> {
 
 		private String homeId;
-		private final Map<String, OfConfigs<IScreen>> screens = new HashMap<>();
+		private final Map<String, OfConfigs<AbstractScreen>> screens = new HashMap<>();
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
-		private void add(Screen screen) throws XmlException {
-			OfConfigs<IScreen> screenConf = this.screens.get(screen.getId());
+		private void add(AbstractScreen screen) throws XmlException {
+			OfConfigs<AbstractScreen> screenConf = this.screens.get(screen.getId());
 			if (screenConf == null) {
-				screenConf = new OfConfigs<IScreen>();
+				screenConf = new OfConfigs<AbstractScreen>();
 				this.screens.put(screen.getId(), screenConf);
 			}
 			screenConf.verifyAndAdd(screen);
@@ -124,11 +127,13 @@ public class AllScreens implements IScreenLearnable {
 		}
 
 		@Override
-		public CreatorByXML<Screen> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_SCREEN:
-					return new Screen.Creator(name.getLocalPart(), this.getBaseCreator());
+					return new Screen.Creator(id, this.getBaseCreator());
+				case XML_SCREEN_SEQUENCE:
+					return new ScreenSequence.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -137,7 +142,10 @@ public class AllScreens implements IScreenLearnable {
 		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_SCREEN:
-					this.add((Screen) created);
+					this.add((AbstractScreen) created);
+					break;
+				case XML_SCREEN_SEQUENCE:
+					this.add((AbstractScreen) created);
 					break;
 			}
 		}
@@ -145,19 +153,14 @@ public class AllScreens implements IScreenLearnable {
 	}
 
 	@Override
-	public void createAndAddLearnScreen(LearnScreen learnScreen, Collection<LearnScreen> learnScreens, Solvis solvis) {
+	public void addLearnScreenGrafics(Collection<ScreenGraficDescription> learnScreens, Solvis solvis) {
 		int configurationMask = solvis.getConfigurationMask();
-		for (OfConfigs<IScreen> screenConf : this.screens.values()) {
-			IScreen screen = screenConf.get(configurationMask);
+		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
+			AbstractScreen screen = screenConf.get(configurationMask);
 			if (screen != null) {
-				screen.createAndAddLearnScreen(null, learnScreens, solvis);
+				screen.addLearnScreenGrafics(learnScreens, solvis);
 			}
 		}
-	}
-
-	@Override
-	public void learn(Solvis solvis) {
-
 	}
 
 	public String getHomeId() {

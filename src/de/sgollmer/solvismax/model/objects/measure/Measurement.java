@@ -15,6 +15,7 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
@@ -108,7 +109,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) throws PowerOnException, IOException {
+	public boolean getValue(SolvisData dest, Solvis solvis) throws PowerOnException, IOException, TerminationException {
 
 		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
 			dest.setSingleData(null);

@@ -18,10 +18,8 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public enum Strategies {
-	RUNTIME(new RunTime(), "runtime"),
-	STARTS(new Starts(), "starts"),
-	BURNER_STATUS(new BurnerStatus(), "burnerStatus"),
-	MIXER_POSITION_0(new MixerPosition0(), "mixerPosition0");
+	RUNTIME(new RunTime(), "runtime"), STARTS(new Starts(), "starts"),
+	BURNER_STATUS(new BurnerStatus(), "burnerStatus"), MIXER_POSITION_0(new MixerPosition0(), "mixerPosition0");
 
 	private final Strategy<?> strategy;
 	private final String name;
@@ -40,15 +38,15 @@ public enum Strategies {
 		return null;
 	}
 
-	 static abstract class Strategy<T extends Strategy<?>> implements IAssigner {
+	static abstract class Strategy<T extends Strategy<?>> implements IAssigner {
 
 		protected final Calculation calculation;
 
-		protected Strategy( Calculation calculation ) {
-			this.calculation = calculation ;
+		protected Strategy(Calculation calculation) {
+			this.calculation = calculation;
 		}
 
-		protected abstract T create( Calculation calculation);
+		protected abstract T create(Calculation calculation);
 
 		abstract boolean isWriteable();
 
@@ -61,20 +59,20 @@ public enum Strategies {
 		}
 
 		abstract void instantiate(Solvis solvis) throws AssignmentException, DependencyException;
-		
-		Collection< IMode > getModes() {
-			return null ;
+
+		Collection<IMode> getModes() {
+			return null;
 		}
 
-		abstract Double getAccuracy() ;
+		abstract Double getAccuracy();
 
-		abstract boolean isBoolean() ;
+		abstract boolean isBoolean();
 
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Strategy create( Calculation calculation ) {
-		return this.strategy.create( calculation );
+	public Strategy create(Calculation calculation) {
+		return this.strategy.create(calculation);
 	}
 
 }

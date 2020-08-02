@@ -24,7 +24,7 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations.IConfiguration;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -143,7 +143,7 @@ public class HeaterLoops implements IConfiguration {
 	}
 
 	@Override
-	public IScreen getScreen(Solvis solvis) {
+	public AbstractScreen getScreen(Solvis solvis) {
 		return solvis.getSolvisDescription().getScreens().get(this.getScreenRef(), 0);
 	}
 

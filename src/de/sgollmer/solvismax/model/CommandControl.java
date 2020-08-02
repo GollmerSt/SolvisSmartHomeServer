@@ -18,7 +18,7 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 
 public class CommandControl extends Command {
 
@@ -26,7 +26,7 @@ public class CommandControl extends Command {
 
 	private final ChannelDescription description;
 	private final SingleData<?> setValue;
-	private final IScreen screen;
+	private final AbstractScreen screen;
 	private final boolean modbus;
 	private boolean inhibit = false;
 	private int writeFailCount = 0;
@@ -58,7 +58,7 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	protected IScreen getScreen(Solvis solvis) {
+	protected AbstractScreen getScreen(Solvis solvis) {
 		return this.screen;
 	}
 

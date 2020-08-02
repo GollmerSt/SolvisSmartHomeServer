@@ -45,17 +45,17 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner {
 	public E get(Solvis solvis) {
 		return this.get(solvis.getConfigurationMask());
 	}
-	
-	public static Object get(int configurationMask, OfConfigs<?> ofConfigs ) {
-		if ( ofConfigs == null ) {
-			return null ;
+
+	public static Object get(int configurationMask, OfConfigs<?> ofConfigs) {
+		if (ofConfigs == null) {
+			return null;
 		} else {
 			return ofConfigs.get(configurationMask);
 		}
 	}
 
 	@Override
-	public void assign(SolvisDescription description)  throws XmlException, AssignmentException, ReferenceException{
+	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
 		for (E e : this.elements) {
 			e.assign(description);
 		}
@@ -73,7 +73,7 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner {
 		}
 	}
 
-	public interface IElement<E> extends IAssigner{
+	public interface IElement<E> extends IAssigner {
 		public boolean isConfigurationVerified(E e);
 
 		public boolean isInConfiguration(int configurationMask);

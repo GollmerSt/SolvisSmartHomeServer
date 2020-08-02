@@ -1392,7 +1392,6 @@
 		</sequence>
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="previousId" type="string" use="required"></attribute>
-		<attribute name="backId" type="string" use="required"></attribute>
 		<attribute name="wrapArround" type="boolean" use="optional">
 			<annotation>
 				<documentation>True, wenn die Sequenz bei SequenceUp nach dem letzten Element zum ersten geht</documentation>

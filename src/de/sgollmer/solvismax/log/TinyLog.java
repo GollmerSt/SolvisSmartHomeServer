@@ -184,7 +184,8 @@ public class TinyLog {
 		boolean success = true;
 
 		if (!this.parent.exists()) {
-			success = FileHelper.mkdir(this.parent);;
+			success = FileHelper.mkdir(this.parent);
+			;
 		}
 
 		if (!success) {

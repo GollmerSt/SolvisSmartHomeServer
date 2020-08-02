@@ -19,10 +19,14 @@ import java.util.Collection;
 import java.util.List;
 
 import de.sgollmer.solvismax.helper.ImageHelper;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
 
 public class MyImage {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(MyImage.class);
 
 	private final BufferedImage image;
 	protected Coordinate origin;
@@ -373,6 +377,21 @@ public class MyImage {
 
 	public final Coordinate getImageSize() {
 		return new Coordinate(this.image.getWidth(), this.image.getHeight());
+	}
+
+	public boolean isWhite(Rectangle rectangle) {
+		if (this.meta == null) {
+			logger.error("isWhite was tried to execute on an MyImage object without meta informations");
+			return false;
+		}
+		for (int x = rectangle.getTopLeft().getX(); x <= rectangle.getBottomRight().getX(); ++x) {
+			for (int y = rectangle.getTopLeft().getY(); y <= rectangle.getBottomRight().getY(); ++y) {
+				if (this.isLight(x, y) == rectangle.isInvertFunction()) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 }

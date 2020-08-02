@@ -37,7 +37,7 @@ import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.IScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.model.update.UpdateStrategies;
@@ -273,7 +273,7 @@ public class Control extends ChannelSource {
 	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException, ModbusException {
 		if (!this.getControlAccess(solvis).isModbus() && this.strategy.mustBeLearned()) {
 			SingleData<?> data = null;
-			IScreen screen = this.guiAccess.getScreen().get(solvis);
+			AbstractScreen screen = this.guiAccess.getScreen().get(solvis);
 			if (screen == null) {
 				String error = "Learning of <" + this.getDescription().getId()
 						+ "> not possible, rejected. Screen undefined"
@@ -330,7 +330,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public IScreen getScreen(int configurationMask) {
+	public AbstractScreen getScreen(int configurationMask) {
 		return this.guiAccess.getScreen().get(configurationMask);
 	}
 
@@ -360,7 +360,7 @@ public class Control extends ChannelSource {
 		private final String preparationId;
 		private final String restoreChannelId;
 
-		private OfConfigs<IScreen> screen = null;
+		private OfConfigs<AbstractScreen> screen = null;
 		private Preparation preparation = null;
 		private OfConfigs<ChannelDescription> restoreChannel = null;
 
@@ -375,7 +375,7 @@ public class Control extends ChannelSource {
 			return this.valueRectangle;
 		}
 
-		private OfConfigs<IScreen> getScreen() {
+		private OfConfigs<AbstractScreen> getScreen() {
 			return this.screen;
 		}
 
