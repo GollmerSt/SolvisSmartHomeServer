@@ -248,7 +248,11 @@ public class Main {
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
-		this.waitForValidTime();
+		try {
+			this.waitForValidTime();
+		} catch (TerminationException e1) {
+			System.exit(ExitCodes.OK);
+		}
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 		this.startTime = format.format(new Date());
@@ -259,11 +263,13 @@ public class Main {
 				if (!learned) {
 					this.logger.log(LEARN, "Nothing to learn!");
 				}
-			} catch (IOException | XMLStreamException | LearningException | FileException | TerminationException
+			} catch (IOException | XMLStreamException | LearningException | FileException
 					| ModbusException e) {
 				this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
 				e.printStackTrace();
 				System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
+			} catch (TerminationException e) {
+				System.exit(ExitCodes.OK);
 			}
 			System.exit(ExitCodes.OK);
 		}
@@ -389,7 +395,7 @@ public class Main {
 		Main.getInstance().execute(args);
 	}
 
-	private void waitForValidTime() {
+	private void waitForValidTime() throws TerminationException {
 		long timeOfLastBackup = this.instances.getBackupHandler().getTimeOfLastBackup();
 		int waitTime = 1000;
 		boolean waiting = false;
