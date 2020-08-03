@@ -19,6 +19,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
+import de.sgollmer.solvismax.error.ConnectionClosedException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -140,6 +141,8 @@ public class Server {
 					abortConnection = Server.this.commandHandler.commandFromClient(jsonPackage, this);
 				}
 
+			} catch (ConnectionClosedException e) {
+				logger.info(e.getMessage());
 			} catch (Throwable e) {
 				if (!Server.this.abort) {
 					logger.info("Client connection closed. cause:", e);

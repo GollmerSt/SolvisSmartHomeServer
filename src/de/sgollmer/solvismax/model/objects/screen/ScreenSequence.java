@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.model.objects.screen;
 
 import java.io.IOException;
@@ -25,6 +32,17 @@ import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
+
+/**
+ * 
+ * @author stefa_000
+ * 
+ *         At SolvisControl 2, this class represents a sequence of screens that
+ *         are called up in a specific order. However, it is not determined
+ *         which screen appears when you call up the sequence (e.g. system
+ *         status).
+ *
+ */
 
 public class ScreenSequence extends AbstractScreen {
 
@@ -108,7 +126,7 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public boolean isScreen(MyImage image, Solvis solvis) {
+	public boolean isMatchingScreen(MyImage image, Solvis solvis) {
 		return false;
 	}
 
@@ -197,23 +215,28 @@ public class ScreenSequence extends AbstractScreen {
 			if (current.isToBeLearning(solvis)) {
 				current.learn(solvis, descriptions);
 			}
-			TouchPoint touch;
-			if (down) {
-				touch = current.getSequenceDown();
-				if (touch == null) {
-					down = false;
-				}
-			} else {
-				touch = current.getSequenceUp();
-				if (touch == null) {
-					throw new LearningException("Not all screens in the sequence could be learned. XML-Error?");
-				}
-			}
 
-			if (touch != null) {
-				solvis.send(touch);
+			if (this.isToBeLearning(solvis)) {
+				TouchPoint touch;
+				if (down) {
+					touch = current.getSequenceDown();
+					if (touch == null) {
+						down = false;
+					}
+				} else {
+					touch = current.getSequenceUp();
+					if (touch == null) {
+						throw new LearningException("Not all screens in the sequence could be learned. XML-Error?");
+					}
+				}
+
+				if (touch != null) {
+					solvis.send(touch);
+				}
 			}
 		}
+		
+		start.goTo(solvis) ;
 
 	}
 
@@ -231,10 +254,10 @@ public class ScreenSequence extends AbstractScreen {
 
 	private AbstractScreen getMatching(Solvis solvis) throws IOException, TerminationException, LearningException {
 		AbstractScreen result = null;
-		SolvisScreen current = solvis.getCurrentScreen();
+		MyImage current = SolvisScreen.getImage(solvis.getCurrentScreen());
 		for (ScreenRef screenRef : this.screenRefs) {
 			AbstractScreen screen = screenRef.getScreen(solvis);
-			if (screen != null && screen.isWhiteMatching(current)) {
+			if (screen != null && screen.isMatchingWOGrafics(current, solvis)) {
 				if (result != null) {
 					throw new LearningException("Screen of sequence is not unique");
 				}
@@ -380,14 +403,14 @@ public class ScreenSequence extends AbstractScreen {
 				Screen screen = (Screen) screenList.get(ix);
 				TouchPoint touch = delta < 0 ? screen.getSequenceUp() : screen.getSequenceDown();
 
-				allPreviousScreenTouches.add(new ScreenTouch(next, touch, screen.getPreparation()));
+				allPreviousScreenTouches.add(new ScreenTouch(screen, touch, screen.getPreparation()));
 			}
 		}
 
 	}
 
 	@Override
-	public boolean isWhiteMatching(SolvisScreen screen) {
+	public boolean isMatchingWOGrafics(MyImage image, Solvis solvis) {
 		return false;
 	}
 

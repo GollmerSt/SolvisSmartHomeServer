@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ScreenOcr implements IScreenCompare {
+public class ScreenOcr implements IScreenPartCompare {
 
 	private static final String XML_FIELD = "Field";
 

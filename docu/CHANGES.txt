@@ -1,5 +1,13 @@
 Ä N D E R U N G E N
 
+Version 01.02.00 rc1
+
+    01.08.2000  Einige Fehlerklassen müssen auf Exception basieren
+    
+    03.08.2000	Das Learning wurde umfangreich überarbeitet. Es ist nun nicht mehr notwendig vor dem Learning
+                Den Anlagenstatus auf den WW-Kreislauf zu stellen.
+
+
 Version 01.01.03 rc3
 
     31.07.2020  Beim Programmstart wird auf einen valide Systemzeit gewartet, max. nur 120s. Eine valide

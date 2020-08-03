@@ -74,7 +74,7 @@ public class AllScreens implements IScreenLearnable {
 		int configurationMask = solvis.getConfigurationMask();
 		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
 			AbstractScreen screen = screenConf.get(configurationMask);
-			if (screen != null && screen.isScreen(image, solvis) && screen.isScreen()) {
+			if (screen != null && screen.isMatchingScreen(image, solvis) && screen.isScreen()) {
 				return (Screen) screen;
 			}
 		}

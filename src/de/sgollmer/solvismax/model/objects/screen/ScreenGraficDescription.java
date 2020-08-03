@@ -25,7 +25,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ScreenGraficDescription implements IScreenCompare, IAssigner {
+public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(ScreenGraficDescription.class);
 	private static final Level LEARN = Level.getLevel("LEARN");

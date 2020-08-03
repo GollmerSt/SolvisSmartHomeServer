@@ -68,10 +68,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private final TouchPoint sequenceUp;
 	private final TouchPoint sequenceDown;
 
-	private final Collection<IScreenCompare> screenCompares = new ArrayList<>();
+	private final Collection<IScreenPartCompare> screenCompares;
 	private final Collection<String> screenGraficRefs;
 	private final Collection<Rectangle> ignoreRectangles;
-	private final Collection<Rectangle> mustBeWhiteRectangles;
 	private final String preparationId;
 	private final String lastPreparationId;
 	private Preparation lastPreparation = null;
@@ -82,9 +81,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	private Screen(String id, String previousId, String alternativePreviousId, String backId, boolean ignoreChanges,
 			ConfigurationMasks configurationMasks, TouchPoint touchPoint, TouchPoint sequenceUp,
-			TouchPoint sequenceDown, Collection<String> screenGraficRefs, Collection<ScreenOcr> ocrs,
-			Collection<Rectangle> ignoreRectangles, Collection<Rectangle> mustBeWhiteRectangles, String preparationId,
-			String lastPreparationId) {
+			TouchPoint sequenceDown, Collection<String> screenGraficRefs, Collection<IScreenPartCompare> screenCompares,
+			Collection<Rectangle> ignoreRectangles, String preparationId, String lastPreparationId) {
 		super(id, previousId, configurationMasks);
 		this.alternativePreviousId = alternativePreviousId;
 		this.backId = backId;
@@ -93,9 +91,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		this.sequenceUp = sequenceUp;
 		this.sequenceDown = sequenceDown;
 		this.screenGraficRefs = screenGraficRefs;
-		this.screenCompares.addAll(ocrs);
+		this.screenCompares = screenCompares;
 		this.ignoreRectangles = ignoreRectangles;
-		this.mustBeWhiteRectangles = mustBeWhiteRectangles;
 		this.preparationId = preparationId;
 		this.lastPreparationId = lastPreparationId;
 	}
@@ -214,12 +211,22 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public boolean isScreen(MyImage image, Solvis solvis) {
+	public boolean isMatchingScreen(MyImage image, Solvis solvis) {
 		if (this.lastPreparation != null && solvis.getHistory().getLastPreparation() != this.lastPreparation) {
 			return false;
 		}
-		for (IScreenCompare grafic : this.screenCompares) {
-			if (!grafic.isElementOf(image, solvis)) {
+		for (IScreenPartCompare screenPart : this.screenCompares) {
+			if (!screenPart.isElementOf(image, solvis)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean isMatchingWOGrafics(MyImage image, Solvis solvis) {
+		for (IScreenPartCompare screenPart : this.screenCompares) {
+			if (!(screenPart instanceof ScreenGraficDescription) && !screenPart.isElementOf(image, solvis)) {
 				return false;
 			}
 		}
@@ -228,7 +235,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	public boolean isLearned(Solvis solvis) {
 
-		for (IScreenCompare cmp : this.screenCompares) {
+		for (IScreenPartCompare cmp : this.screenCompares) {
 			if (cmp instanceof ScreenGraficDescription) {
 				if (!((ScreenGraficDescription) cmp).isLearned(solvis)) {
 					return false;
@@ -268,10 +275,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private TouchPoint touchPoint = null;
 		private TouchPoint sequenceUp = null;
 		private TouchPoint sequenceDown = null;
-		private Collection<String> screenGraficRefs = new ArrayList<>();
-		private Collection<ScreenOcr> screenOcr = new ArrayList<>();
+		private final Collection<String> screenGraficRefs = new ArrayList<>();
+		private final Collection<IScreenPartCompare> screenCompares = new ArrayList<>();
 		private List<Rectangle> ignoreRectangles = null;
-		private Collection<Rectangle> mustBeWhiteRectangles = null;
 		private String preparationId = null;
 		private String lastPreparationId;
 
@@ -324,8 +330,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				});
 			return new Screen(this.id, this.previousId, this.alternativePreviousId, this.backId, this.ignoreChanges,
 					this.configurationMasks, this.touchPoint, this.sequenceUp, this.sequenceDown, this.screenGraficRefs,
-					this.screenOcr, this.ignoreRectangles, this.mustBeWhiteRectangles, this.preparationId,
-					this.lastPreparationId);
+					this.screenCompares, this.ignoreRectangles,
+					this.preparationId, this.lastPreparationId);
 		}
 
 		@Override
@@ -347,8 +353,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				case XML_SCREEN_OCR:
 					return new ScreenOcr.Creator(id, getBaseCreator());
 				case XML_IGNORE_RECTANGLE:
-				case XML_MUST_BE_WHITE:
 					return new Rectangle.Creator(id, getBaseCreator());
+				case XML_MUST_BE_WHITE:
+					return new WhiteGraficRectangle.Creator(id, getBaseCreator());
 				case XML_PREPARATION_REF:
 					return new PreparationRef.Creator(id, getBaseCreator());
 				case XML_LAST_PREPARATION_REF:
@@ -381,19 +388,16 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					this.screenGraficRefs.add((String) created);
 					break;
 				case XML_SCREEN_OCR:
-					this.screenOcr.add((ScreenOcr) created);
+					this.screenCompares.add((ScreenOcr) created);
+					break;
+				case XML_MUST_BE_WHITE:
+					this.screenCompares.add((WhiteGraficRectangle) created);
 					break;
 				case XML_IGNORE_RECTANGLE:
 					if (this.ignoreRectangles == null) {
 						this.ignoreRectangles = new ArrayList<>();
 					}
 					this.ignoreRectangles.add((Rectangle) created);
-					break;
-				case XML_MUST_BE_WHITE:
-					if (this.mustBeWhiteRectangles == null) {
-						this.mustBeWhiteRectangles = new ArrayList<>();
-					}
-					this.mustBeWhiteRectangles.add((Rectangle) created);
 					break;
 				case XML_PREPARATION_REF:
 					this.preparationId = ((PreparationRef) created).getPreparationId();
@@ -441,7 +445,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	@Override
 	public void addLearnScreenGrafics(Collection<ScreenGraficDescription> descriptions, Solvis solvis) {
-		for (IScreenCompare cmp : this.screenCompares) {
+		for (IScreenPartCompare cmp : this.screenCompares) {
 			if (cmp instanceof ScreenGraficDescription) {
 				ScreenGraficDescription description = (ScreenGraficDescription) cmp;
 				if (!description.isLearned(solvis) && !descriptions.contains(description)) {
@@ -455,7 +459,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		Collection<ScreenGraficDescription> learnGrafics = solvis.getSolvisDescription().getLearnGrafics(solvis);
 		while (learnGrafics.size() > 0) {
 			solvis.getHomeScreen().learn(solvis, learnGrafics);
-			solvis.gotoHome();
+//			solvis.gotoHome();
 		}
 	}
 
@@ -469,9 +473,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
 			success = true;
 			try {
-				for (IScreenCompare screenCompare : this.screenCompares) {
-					if (screenCompare instanceof ScreenGraficDescription) {
-						ScreenGraficDescription description = (ScreenGraficDescription) screenCompare;
+				for (IScreenPartCompare screenPartCompare : this.screenCompares) {
+					if (screenPartCompare instanceof ScreenGraficDescription) {
+						ScreenGraficDescription description = (ScreenGraficDescription) screenPartCompare;
 						if (!description.isLearned(solvis)) {
 							description.learn(solvis);
 							descriptions.remove(description);
@@ -775,24 +779,54 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		return this.sequenceDown;
 	}
 
-	@Override
-	public boolean isWhiteMatching(SolvisScreen screen) {
-		MyImage image = SolvisScreen.getImage(screen);
-		if (image == null) {
-			return false;
+	private static class WhiteGraficRectangle implements IScreenPartCompare {
+		
+		private Rectangle rectangle;
+
+		public WhiteGraficRectangle(Rectangle rectangle) {
+			this.rectangle = rectangle;
 		}
-		if (this.mustBeWhiteRectangles == null) {
-			logger.warn(
-					"isWhiteMatching calles on a screen without mut be whit rectangles. Check the \"control.xml\" file");
-			;
-			return false;
+
+		@Override
+		public boolean isElementOf(MyImage image, Solvis solvis) {
+			return image.isWhite(this.rectangle);
 		}
-		for (Rectangle rectangle : this.mustBeWhiteRectangles) {
-			if (!image.isWhite(rectangle)) {
-				return false;
+		
+		public static class Creator extends CreatorByXML<WhiteGraficRectangle> {
+			
+			private final Rectangle.Creator rectangeleCreator ; ;
+
+			public Creator(String id, BaseCreator<?> creator) {
+				super(id, creator);
+				this.rectangeleCreator = new Rectangle.Creator(id, creator);
 			}
+
+			@Override
+			public void setAttribute(QName name, String value) {
+				this.rectangeleCreator.setAttribute(name, value);
+				
+			}
+
+			@Override
+			public WhiteGraficRectangle create()
+					throws XmlException, IOException, AssignmentException, ReferenceException {
+				Rectangle rectangle = this.rectangeleCreator.create();
+				return new WhiteGraficRectangle(rectangle);
+			}
+
+			@Override
+			public CreatorByXML<?> getCreator(QName name) {
+				return this.rectangeleCreator.getCreator(name);
+			}
+
+			@Override
+			public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+				this.rectangeleCreator.created(creator, created);
+				
+			}
+			
 		}
-		return true;
+
 	}
 
 }

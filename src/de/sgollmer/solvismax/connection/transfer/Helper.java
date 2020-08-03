@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.connection.transfer;
 import java.io.IOException;
 import java.io.InputStream;
 
+import de.sgollmer.solvismax.error.ConnectionClosedException;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -49,7 +50,7 @@ public class Helper {
 					throw new IOException("Not enough bytes received (transfered: " + transfered + ", target: "
 							+ bytes.length + "). Connection closed?");
 				} else {
-					throw new IOException("Connection closed.");
+					throw new ConnectionClosedException("Connection closed by client.");
 				}
 			}
 			transfered += cnt;

@@ -37,10 +37,25 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 		return this.id;
 	}
 
+	/**
+	 * This method tests whether it is the Screen class.
+	 * 
+	 * @return True if class of type Screen
+	 */
 	public abstract boolean isScreen();
 
-	public abstract boolean isScreen(MyImage image, Solvis solvis);
+	/**
+	 * This method checks that the image matches the screen.
+	 * 
+	 * @param image
+	 * @param solvis	
+	 * @return	True if matches
+	 */
+	public abstract boolean isMatchingScreen(MyImage image, Solvis solvis);
 
+	public abstract boolean isMatchingWOGrafics(MyImage image, Solvis solvis) ;
+
+	
 	public void addNextScreen(AbstractScreen nextScreen) {
 		this.nextScreens.add(nextScreen);
 //
@@ -183,8 +198,6 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 		}
 		return false;
 	}
-
-	public abstract boolean isWhiteMatching(SolvisScreen screen);
 
 	@Override
 	public boolean isInConfiguration(int configurationMask) {
