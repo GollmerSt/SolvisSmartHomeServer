@@ -519,13 +519,13 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 						} catch (LearningTerminationException e) {
 							throw e;
 						} catch (IOException e) {
-							logger.log(LEARN, "Screen <" + this.getId()
+							logger.log(LEARN, "Screen <" + nextScreen.getId()
 									+ "> not learned in case of IOEexception, will be tried again.", e);
 							if (cnt <= 0) {
 								throw e;
 							}
 						} catch (LearningException e) {
-							logger.log(LEARN, "Screen <" + this.getId() + "> not learned. " + e.getMessage());
+							logger.log(LEARN, "Screen <" + nextScreen.getId() + "> not learned. " + e.getMessage());
 						}
 						if (!success) {
 							solvis.sendBack();

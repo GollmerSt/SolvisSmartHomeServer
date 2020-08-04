@@ -9,6 +9,11 @@ Version 01.02.00 rc1
                 
                 Wenn während des Lernvorganges beim Wiederherstellen der Einstellungen eine IO-Exception erfolgte,
                 brach der Lernvorgang komplett ab. Nun wird der 3 mal versucht die Einstellung zu wiederholen.
+                
+    04.08.2020  Weitere Optimierung des Lernvorganges um ihn sicherer gegen Verbindungsabbrüche zur Solvis-Anlage
+                zu machen.
+                
+                Beim Anlernvorgang wurde ein falscher Screen-Name bei einer IoException gemeldet
 
 
 Version 01.01.03 rc3
