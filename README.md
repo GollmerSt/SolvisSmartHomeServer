@@ -97,5 +97,4 @@ Nacht, Tag etc.) wird hierbei vom Screen gelesen und gemerkt.
 Die genaue Vorgehensweise muss man aus der folgenden Dokumentation entnommen werden:
 
 ## Ausführliche Dokumentation
-Eine umfangreiche Dokumentation der Installation, Interfaces, Arbeitsweise etc. findet sich hier:
-[SolvisSmartHomeServer.pdf](https://raw.githubusercontent.com/GollmerSt/SolvisSmartHomeServer/master/docu/SolvisSmartHomeServer.pdf)
+Eine umfangreiche Dokumentation der Installation, Interfaces, Arbeitsweise etc. findet sich [in der Wiki](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki).
