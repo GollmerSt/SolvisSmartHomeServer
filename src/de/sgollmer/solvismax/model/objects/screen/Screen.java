@@ -507,7 +507,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			for (AbstractScreen nextScreen : this.getNextScreen(solvis)) {
 				if (nextScreen.isToBeLearning(solvis)) {
 					success = false;
-					for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
+					for (int cnt = LEARN_REPEAT_COUNT; cnt >= 0 && !success; --cnt) {
 						try {
 							if (nextScreen.gotoLearning(solvis, current, descriptions)) {
 								nextScreen.learn(solvis, descriptions);

@@ -11,6 +11,8 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import org.tinylog.Logger;
+
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -40,13 +42,25 @@ public class Preparation implements IAssigner {
 	}
 
 	public boolean execute(Solvis solvis) throws IOException, TerminationException {
-		solvis.getHistory().set(this);
-		if (this.screenGrafic.isElementOf(solvis.getCurrentScreen().getImage(), solvis)) {
-			return true;
-		} else {
-			solvis.send(this.touchPoint);
-			return this.screenGrafic.isElementOf(solvis.getCurrentScreen().getImage(), solvis);
+		boolean success = false;
+		for (int c = 0; c < Constants.PREPARATION_REPEATS && !success; ++c) {
+			try {
+				if (this.screenGrafic.isElementOf(solvis.getCurrentScreen().getImage(), solvis)) {
+					success = true;
+				} else {
+					solvis.send(this.touchPoint);
+					success = this.screenGrafic.isElementOf(solvis.getCurrentScreen().getImage(), solvis);
+				}
+			} catch (IOException e) {
+			}
+			if (!success && c == 0) {
+				Logger.error("Preparation not successfull, will be tried again");
+			}
 		}
+		if (success) {
+			solvis.getHistory().set(this);
+		}
+		return success;
 	}
 
 	/**

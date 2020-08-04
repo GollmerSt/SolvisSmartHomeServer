@@ -34,6 +34,7 @@ public class Constants {
 	 */
 	public static final int FAIL_REPEATS = 3;
 	public static final int SET_REPEATS = 3;
+	public static final int PREPARATION_REPEATS = 3;
 	public static final int MAX_GOTO_DEEPTH = 5;
 	public static final int LEARNING_RETRIES = 10;
 	public static final int COMMAND_TO_QUEUE_END_AFTER_N_FAILURES = 3;

@@ -397,7 +397,14 @@ public class Solvis {
 		Screen.learnScreens(this);
 		this.solvisDescription.getClock().learn(this);
 		this.solvisDescription.getChannelDescriptions().learn(this);
-		this.getHomeScreen().goTo(this);
+		boolean success = false;
+		for (int cnt = 0; cnt < Constants.FAIL_REPEATS && !success; --cnt) {
+			try {
+				this.getHomeScreen().goTo(this);
+				success = true;
+			} catch (IOException e) {
+			}
+		}
 		logger.log(LEARN, "Learning finished.");
 	}
 

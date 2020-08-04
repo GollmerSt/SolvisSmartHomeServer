@@ -84,7 +84,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException, TerminationException, ModbusException {
+	public boolean getValue(SolvisData destin, Solvis solvis)
+			throws IOException, TerminationException, ModbusException {
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return false;
@@ -100,7 +101,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException, ModbusException {
+	public SingleData<?> setValue(Solvis solvis, SolvisData value)
+			throws IOException, TerminationException, ModbusException {
 
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
@@ -109,7 +111,10 @@ public class Control extends ChannelSource {
 		SingleData<?> setValue = null;
 		try {
 			for (int c = 0; c < Constants.SET_REPEATS + 1 && setValue == null; ++c) {
-				setValue = this.strategy.setValue(solvis, this.getControlAccess(solvis), value);
+				try {
+					setValue = this.strategy.setValue(solvis, this.getControlAccess(solvis), value);
+				} catch (IOException e) {
+				}
 				if (setValue == null && c == 1) {
 					logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
 							+ " failed, set will be tried again.");
@@ -130,7 +135,7 @@ public class Control extends ChannelSource {
 
 	private boolean guiPrepare(Solvis solvis, IControlAccess controlAccess) throws IOException, TerminationException {
 		if (!controlAccess.isModbus()) {
-			((Screen)this.guiAccess.getScreen().get(solvis)).goTo(solvis);
+			((Screen) this.guiAccess.getScreen().get(solvis)).goTo(solvis);
 			if (!this.guiAccess.prepare(solvis)) {
 				return false;
 			}
@@ -281,9 +286,22 @@ public class Control extends ChannelSource {
 				logger.error(error);
 				throw new LearningException(error);
 			}
+			SolvisScreen saved = null;
 			boolean finished = false;
-			screen.goTo(solvis);
-			SolvisScreen saved = solvis.getCurrentScreen();
+			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
+				try {
+					screen.goTo(solvis);
+					saved = solvis.getCurrentScreen();
+					finished = true;
+				} catch (IOException e) {
+					if (repeat < Constants.LEARNING_RETRIES - 1) {
+						logger.log(LEARN, "Going to <" + screen.getId() + "> not successfull, will be retried");
+					} else {
+						throw e;
+					}
+				}
+			}
+			finished = false;
 			for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
 				screen.goTo(solvis);
 				if (this.guiAccess.getPreparation() != null) {

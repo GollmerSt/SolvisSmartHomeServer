@@ -6,6 +6,9 @@ Version 01.02.00 rc1
     
     03.08.2000	Das Learning wurde umfangreich überarbeitet. Es ist nun nicht mehr notwendig vor dem Learning
                 Den Anlagenstatus auf den WW-Kreislauf zu stellen.
+                
+                Wenn während des Lernvorganges beim Wiederherstellen der Einstellungen eine IO-Exception erfolgte,
+                brach der Lernvorgang komplett ab. Nun wird der 3 mal versucht die Einstellung zu wiederholen.
 
 
 Version 01.01.03 rc3

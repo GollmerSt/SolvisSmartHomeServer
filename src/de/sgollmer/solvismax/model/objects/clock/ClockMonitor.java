@@ -732,22 +732,38 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		boolean finished = false;
 		for (int repeat = 0; repeat < Constants.LEARNING_RETRIES && !finished; ++repeat) {
 			try {
-				if (repeat == 1) {
+				if (repeat > 0) {
 					logger.log(LEARN, "Learning of clock not successfull, try it again.");
 				}
 				screen.goTo(solvis);
 				finished = true;
 				for (DatePart part : this.dateParts) {
-					solvis.send(part.touch);
-					solvis.clearCurrentScreen();
-					part.screenGrafic.learn(solvis);
-					if (part.getValue(solvis) == null) {
-						finished = false;
-						break;
+					if (!part.screenGrafic.isLearned(solvis)) {
+						MyImage former = new MyImage(SolvisScreen.getImage(solvis.getCurrentScreen()), part.rectangle,
+								false);
+						solvis.send(part.touch);
+						MyImage current = new MyImage(SolvisScreen.getImage(solvis.getCurrentScreen()), part.rectangle,
+								false);
+						if (former.equals(current)) {
+							finished = false;
+							break;
+						}
+						part.screenGrafic.learn(solvis);
+						if (part.getValue(solvis) == null) {
+							finished = false;
+							break;
+						}
 					}
 				}
 			} catch (IOException e) {
 				finished = false;
+			}
+			if (!finished) {
+				if (repeat > Constants.LEARNING_RETRIES / 2) {
+					solvis.gotoHome(true);
+				} else {
+					solvis.sendBack();
+				}
 			}
 		}
 		if (!finished) {
