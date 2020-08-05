@@ -386,7 +386,7 @@ public class MyImage {
 		}
 		for (int x = rectangle.getTopLeft().getX(); x <= rectangle.getBottomRight().getX(); ++x) {
 			for (int y = rectangle.getTopLeft().getY(); y <= rectangle.getBottomRight().getY(); ++y) {
-				if (this.isLight(x, y) == rectangle.isInvertFunction()) {
+				if (!this.isLight(x, y)) {
 					return false;
 				}
 			}

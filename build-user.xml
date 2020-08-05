@@ -121,25 +121,26 @@
 			<copy todir="${private.dir}">
 				<fileset file="${fhem.pm}" casesensitive="yes" />
 				<fileset file="${iobroker.client.json}" casesensitive="yes" />
-				<fileset file="${linux.systemd}" casesensitive="yes" />
-				<fileset file="${linux.systemdD}" casesensitive="yes" />
 				<fileset file="${myBase.xml}" casesensitive="yes" />
 				<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
-				<fileset file="${makefile}" casesensitive="yes" />
 			</copy>
+			<fixcrlf file="${linux.systemd}" destdir="${private.dir}" eol="lf"></fixcrlf>
+			<fixcrlf file="${linux.systemdD}" destdir="${private.dir}" eol="lf"></fixcrlf>
+			<fixcrlf file="${makefile}" destdir="${private.dir}" eol="lf"></fixcrlf>
 		</target>
 		<target depends="Build for me" name="Build users">
 			<copy todir="${pubLinux.dir}">
 				<fileset file="${private.dir}/${dist.base}.jar" casesensitive="yes" />
-				<fileset file="${fhem.pm}" casesensitive="yes" />
 				<fileset file="${iobroker.client.json}" casesensitive="yes" />
-				<fileset file="${linux.systemd}" casesensitive="yes" />
-				<fileset file="${linux.systemdD}" casesensitive="yes" />
 				<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
-				<fileset file="${makefile}" casesensitive="yes" />
 				<fileset file="${pdf}" casesensitive="yes" />
 				<fileset file="${changes}" casesensitive="yes" />
 			</copy>
+			<fixcrlf file="${fhem.pm}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
+			<fixcrlf file="${linux.systemd}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
+			<fixcrlf file="${linux.systemdD}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
+			<fixcrlf file="${makefile}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
+			<fixcrlf file="${changes}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
 			<copy file="${pubBaseDir}/base.xml" tofile="${pubLinux.dir}/base.xml.new" />
 			<zip destfile="${zip.dir}/SolvisSmartHomeServer linux ${version}.zip" basedir="${pubLinux.dir}" />
 			<exec executable="${innoSetup}" dir="${iss.dir}">

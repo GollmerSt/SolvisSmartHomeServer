@@ -429,8 +429,12 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 			<tns:MustBeWhite>
-				<tns:TopLeft X="195" Y="30" />
-				<tns:BottomRight X="235" Y="105" />
+				<tns:TopLeft X="200" Y="24" />
+				<tns:BottomRight X="235" Y="30" />
+			</tns:MustBeWhite>
+			<tns:MustBeWhite invertFunction="true">
+				<tns:TopLeft X="70" Y="35" />
+				<tns:BottomRight X="80" Y="50" />
 			</tns:MustBeWhite>
 		</tns:Screen>
 		<tns:Screen id="Anlagenstatus Solar" backId="Sonstiges 1"

@@ -1,5 +1,19 @@
 Ä N D E R U N G E N
 
+Version 01.02.00 rc2
+
+    05.08.2020  Bei einer Solvis-Anlage mit zusätzlichen Wärmeerzeugern (Festbrennstoffkessel/Wärmepumpe/Pellets etc.)
+                wurde der Anlagestatus "Heizkreise" nicht erkannt. Die MustBeWhite-Felder wurden entsprechend
+                korrigiert.
+                
+                Linux-Paket-Generierung verbessert. Es wurden in das Paket versehentlich Dateien reingepackt,
+                bei denen EOL CR/LF waren (Windows entsprechend).
+                
+                Dem Makefile wurde um den Aufrufparameter uninstallAll erweitert. Wird das aufgerufen, werden
+                auch die Dateien gelöscht, die vom SolvisSmartHomeServer selber angelegt wurden. Dann sind auch
+                die angelernten Grafiken, die Log-Dateien etc. gelöscht. 
+
+
 Version 01.02.00 rc1
 
     01.08.2000  Einige Fehlerklassen müssen auf Exception basieren

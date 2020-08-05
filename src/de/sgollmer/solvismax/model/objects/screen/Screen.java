@@ -789,7 +789,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 		@Override
 		public boolean isElementOf(MyImage image, Solvis solvis) {
-			return image.isWhite(this.rectangle);
+			return image.isWhite(this.rectangle) != this.rectangle.isInvertFunction();
 		}
 		
 		public static class Creator extends CreatorByXML<WhiteGraficRectangle> {

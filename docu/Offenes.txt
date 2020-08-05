@@ -6,41 +6,10 @@ Offene Aufgaben:
      beim Senden der Kanal-Namen zum Cient mitberücksichtigt sein, ohne dass eine Verbindung zur
      Solvis-Anklage vorliegen muss
 
-18. Abbruch des Lernvorganges kurz vor dem Ende, beim Einstellen von Standby:
-
-		17:43:52,726|LEARN|Screen grafic <ModeStandby> learned.
-		17:43:55,256|LEARN|Screen grafic <ModeTimer> learned.
-		17:44:15,381|ERROR|de.sgollmer.solvismax.Main - Exception on reading configuration or learning files occured, cause:: java.io.IOException: Connection refused (Connection refused)
-		        at de.sgollmer.solvismax.connection.SolvisConnection.handleExceptionAndThrow(SolvisConnection.java:313)
-		        at de.sgollmer.solvismax.connection.SolvisConnection.sendTouch(SolvisConnection.java:268)
-		        at de.sgollmer.solvismax.model.Solvis.send(Solvis.java:218)
-		        at de.sgollmer.solvismax.model.Solvis.send(Solvis.java:214)
-		        at de.sgollmer.solvismax.model.objects.control.StrategyMode.setValue(StrategyMode.java:115)
-		        at de.sgollmer.solvismax.model.objects.control.Control.setValue(Control.java:112)
-		        at de.sgollmer.solvismax.model.objects.control.Control.learn(Control.java:316)
-		        at de.sgollmer.solvismax.model.objects.ChannelDescription.learn(ChannelDescription.java:200)
-		        at de.sgollmer.solvismax.model.objects.AllChannelDescriptions.learn(AllChannelDescriptions.java:128)
-		        at de.sgollmer.solvismax.model.Solvis.learning(Solvis.java:399)
-		        at de.sgollmer.solvismax.model.Instances.learn(Instances.java:70)
-		        at de.sgollmer.solvismax.Main.execute(Main.java:262)
-		        at de.sgollmer.solvismax.Main.main(Main.java:395)
-		java.io.IOException: Connection refused (Connection refused)
-		        at de.sgollmer.solvismax.connection.SolvisConnection.handleExceptionAndThrow(SolvisConnection.java:313)
-		        at de.sgollmer.solvismax.connection.SolvisConnection.sendTouch(SolvisConnection.java:268)
-		        at de.sgollmer.solvismax.model.Solvis.send(Solvis.java:218)
-		        at de.sgollmer.solvismax.model.Solvis.send(Solvis.java:214)
-		        at de.sgollmer.solvismax.model.objects.control.StrategyMode.setValue(StrategyMode.java:115)
-		        at de.sgollmer.solvismax.model.objects.control.Control.setValue(Control.java:112)
-		        at de.sgollmer.solvismax.model.objects.control.Control.learn(Control.java:316)
-		        at de.sgollmer.solvismax.model.objects.ChannelDescription.learn(ChannelDescription.java:200)
-		        at de.sgollmer.solvismax.model.objects.AllChannelDescriptions.learn(AllChannelDescriptions.java:128)
-		        at de.sgollmer.solvismax.model.Solvis.learning(Solvis.java:399)
-		        at de.sgollmer.solvismax.model.Instances.learn(Instances.java:70)
-		        at de.sgollmer.solvismax.Main.execute(Main.java:262)
-		        at de.sgollmer.solvismax.Main.main(Main.java:395)
-		Makefile:99: recipe for target 'learnDebug' failed
-
-	Warum erscheint keine Meldung, dass mehrfach versucht wurde?
+19. Makefile-Problem: Nach uninstall bleiben die vom Programm erzeugten Dateien noch bestehen. 
+    Mit AWK das base.xml scannen, um den Pfad zu ermitteln und zu löschen.
+    
+20. Das Linux-paket enthält aktuell dateienn mit CR+LF, die müssen mit FixCRLF in LF umgewandelt werden.
 
 Erledigt:
 
@@ -286,6 +255,40 @@ Erledigt:
 		        at java.base/java.util.TimerThread.mainLoop(Timer.java:556)
 		        at java.base/java.util.TimerThread.run(Timer.java:506)
 
+18. Abbruch des Lernvorganges kurz vor dem Ende, beim Einstellen von Standby:
 
+		17:43:52,726|LEARN|Screen grafic <ModeStandby> learned.
+		17:43:55,256|LEARN|Screen grafic <ModeTimer> learned.
+		17:44:15,381|ERROR|de.sgollmer.solvismax.Main - Exception on reading configuration or learning files occured, cause:: java.io.IOException: Connection refused (Connection refused)
+		        at de.sgollmer.solvismax.connection.SolvisConnection.handleExceptionAndThrow(SolvisConnection.java:313)
+		        at de.sgollmer.solvismax.connection.SolvisConnection.sendTouch(SolvisConnection.java:268)
+		        at de.sgollmer.solvismax.model.Solvis.send(Solvis.java:218)
+		        at de.sgollmer.solvismax.model.Solvis.send(Solvis.java:214)
+		        at de.sgollmer.solvismax.model.objects.control.StrategyMode.setValue(StrategyMode.java:115)
+		        at de.sgollmer.solvismax.model.objects.control.Control.setValue(Control.java:112)
+		        at de.sgollmer.solvismax.model.objects.control.Control.learn(Control.java:316)
+		        at de.sgollmer.solvismax.model.objects.ChannelDescription.learn(ChannelDescription.java:200)
+		        at de.sgollmer.solvismax.model.objects.AllChannelDescriptions.learn(AllChannelDescriptions.java:128)
+		        at de.sgollmer.solvismax.model.Solvis.learning(Solvis.java:399)
+		        at de.sgollmer.solvismax.model.Instances.learn(Instances.java:70)
+		        at de.sgollmer.solvismax.Main.execute(Main.java:262)
+		        at de.sgollmer.solvismax.Main.main(Main.java:395)
+		java.io.IOException: Connection refused (Connection refused)
+		        at de.sgollmer.solvismax.connection.SolvisConnection.handleExceptionAndThrow(SolvisConnection.java:313)
+		        at de.sgollmer.solvismax.connection.SolvisConnection.sendTouch(SolvisConnection.java:268)
+		        at de.sgollmer.solvismax.model.Solvis.send(Solvis.java:218)
+		        at de.sgollmer.solvismax.model.Solvis.send(Solvis.java:214)
+		        at de.sgollmer.solvismax.model.objects.control.StrategyMode.setValue(StrategyMode.java:115)
+		        at de.sgollmer.solvismax.model.objects.control.Control.setValue(Control.java:112)
+		        at de.sgollmer.solvismax.model.objects.control.Control.learn(Control.java:316)
+		        at de.sgollmer.solvismax.model.objects.ChannelDescription.learn(ChannelDescription.java:200)
+		        at de.sgollmer.solvismax.model.objects.AllChannelDescriptions.learn(AllChannelDescriptions.java:128)
+		        at de.sgollmer.solvismax.model.Solvis.learning(Solvis.java:399)
+		        at de.sgollmer.solvismax.model.Instances.learn(Instances.java:70)
+		        at de.sgollmer.solvismax.Main.execute(Main.java:262)
+		        at de.sgollmer.solvismax.Main.main(Main.java:395)
+		Makefile:99: recipe for target 'learnDebug' failed
+
+	Warum erscheint keine Meldung, dass mehrfach versucht wurde?
 
 		
