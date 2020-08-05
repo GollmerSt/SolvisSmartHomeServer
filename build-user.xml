@@ -66,109 +66,109 @@
 		<pathelement location="lib/mailapi-1.6.2.jar" />
 		<pathelement location="lib/smtp-1.6.2.jar" />
 		<pathelement location="lib/javax.activation-1.2.0.jar" />
-		<pathelement location="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar"/>
-		</path>
-		<target name="init">
-			<mkdir dir="${bin.dir}" />
-			<copy includeemptydirs="false" todir="${bin.dir}">
-				<fileset dir="src">
-					<exclude name="**/*.launch" />
-					<exclude name="**/*.java" />
-				</fileset>
-			</copy>
-			<copy includeemptydirs="false" todir="${bin.dir}">
-				<fileset dir="rsc">
-					<exclude name="**/*.launch" />
-					<exclude name="**/*.java" />
-				</fileset>
-			</copy>
-		</target>
-		<target depends="build" name="createjar">
-			<jar destfile="${private.dir}/temp/${dist.base}_woLib.jar" basedir="${bin.dir}" />
-		</target>
-		<target name="createLog4jJar" if="${isLog4j}">
-			<jar destfile="${private.dir}/temp/logger.jar">
-				<zipfileset src="lib/log4j-1.2-api-2.13.2.jar" />
-				<zipfileset src="lib/log4j-api-2.13.2.jar" />
-				<zipfileset src="lib/log4j-core-2.13.2.jar" />
-			</jar>
-		</target>
-		<target name="createTinyLogJar" if="${isTinyLog}">
-			<jar destfile="${private.dir}/temp/logger.jar">
-				<zipfileset src="lib/tinylog-api-2.1.2.jar" />
-				<zipfileset src="lib/tinylog-impl-2.1.2.jar" />
-			</jar>
-		</target>
-		<target depends="createjar,createLog4jJar,createTinyLogJar" name="Build for me">
-			<jar jarfile="${private.dir}/${dist.base}.jar">
-				<zipfileset src="${private.dir}/temp/${dist.base}_woLib.jar" excludes="META-INF/*" />
-				<zipfileset src="lib/jlibmodbus-1.2.9.7.jar" />
-				<zipfileset src="lib/mailapi-1.6.2.jar" />
-				<zipfileset src="lib/smtp-1.6.2.jar" />
-				<zipfileset src="lib/javax.activation-1.2.0.jar" />
-				<zipfileset src="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" />
-				<zipfileset src="${private.dir}/temp/logger.jar" />
-				<manifest>
-					<attribute name="Main-Class" value="de.sgollmer.solvismax.Main" />
-					<attribute name="Built-Date" value="${TODAY}" />
-				</manifest>
-			</jar>
-			<copy todir="${private.dir}">
-				<fileset dir="${bin.dir}" casesensitive="yes">
-					<include name="base.xml" />
-				</fileset>
-			</copy>
-			<copy todir="${private.dir}">
-				<fileset file="${fhem.pm}" casesensitive="yes" />
-				<fileset file="${iobroker.client.json}" casesensitive="yes" />
-				<fileset file="${myBase.xml}" casesensitive="yes" />
-				<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
-			</copy>
-			<fixcrlf file="${linux.systemd}" destdir="${private.dir}" eol="lf"></fixcrlf>
-			<fixcrlf file="${linux.systemdD}" destdir="${private.dir}" eol="lf"></fixcrlf>
-			<fixcrlf file="${makefile}" destdir="${private.dir}" eol="lf"></fixcrlf>
-		</target>
-		<target depends="Build for me" name="Build users">
-			<copy todir="${pubLinux.dir}">
-				<fileset file="${private.dir}/${dist.base}.jar" casesensitive="yes" />
-				<fileset file="${iobroker.client.json}" casesensitive="yes" />
-				<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
-				<fileset file="${pdf}" casesensitive="yes" />
-				<fileset file="${changes}" casesensitive="yes" />
-			</copy>
-			<fixcrlf file="${fhem.pm}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
-			<fixcrlf file="${linux.systemd}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
-			<fixcrlf file="${linux.systemdD}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
-			<fixcrlf file="${makefile}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
-			<fixcrlf file="${changes}" destdir="${pubLinux.dir}" eol="lf"></fixcrlf>
-			<copy file="${pubBaseDir}/base.xml" tofile="${pubLinux.dir}/base.xml.new" />
-			<zip destfile="${zip.dir}/SolvisSmartHomeServer linux ${version}.zip" basedir="${pubLinux.dir}" />
-			<exec executable="${innoSetup}" dir="${iss.dir}">
-				<arg value="/cc" />
-				<arg value="${iss}" />
-			</exec>
-			<copy todir="${pubWindows.dir}">
-				<fileset file="${fhem.pm}" casesensitive="yes" />
-				<fileset file="${iobroker.client.json}" casesensitive="yes" />
-				<fileset file="${pdf}" casesensitive="yes" />
-				<fileset file="${changes}" casesensitive="yes" />
-			</copy>
-			<zip destfile="${zip.dir}/SolvisSmartHomeServer windows ${version}.zip" basedir="${pubWindows.dir}" />
-		</target>
-		<target name="clean">
-			<delete dir="${bin.dir}" />
-			<delete dir="${private.dir}" />
-			<delete dir="${pubLinux.dir}" />
-			<delete dir="${pubWindows.dir}" />
-			<delete dir="${zip.dir}" />
-		</target>
-		<target depends="build-project" name="build" />
-		<target depends="init" name="build-project">
-			<echo message="${ant.project.name}: ${ant.file}" />
-			<javac debug="true" debuglevel="${debuglevel}" encoding="Cp1252" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}">
-				<src path="src" />
-				<src path="rsc" />
-				<classpath refid="SolvisMax.classpath" />
-			</javac>
-		</target>
-	</project>
+		<pathelement location="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" />
+	</path>
+	<target name="init">
+		<mkdir dir="${bin.dir}" />
+		<copy includeemptydirs="false" todir="${bin.dir}">
+			<fileset dir="src">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<copy includeemptydirs="false" todir="${bin.dir}">
+			<fileset dir="rsc">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+	<target depends="build" name="createjar">
+		<jar destfile="${private.dir}/temp/${dist.base}_woLib.jar" basedir="${bin.dir}" />
+	</target>
+	<target name="createLog4jJar" if="${isLog4j}">
+		<jar destfile="${private.dir}/temp/logger.jar">
+			<zipfileset src="lib/log4j-1.2-api-2.13.2.jar" />
+			<zipfileset src="lib/log4j-api-2.13.2.jar" />
+			<zipfileset src="lib/log4j-core-2.13.2.jar" />
+		</jar>
+	</target>
+	<target name="createTinyLogJar" if="${isTinyLog}">
+		<jar destfile="${private.dir}/temp/logger.jar">
+			<zipfileset src="lib/tinylog-api-2.1.2.jar" />
+			<zipfileset src="lib/tinylog-impl-2.1.2.jar" />
+		</jar>
+	</target>
+	<target depends="createjar,createLog4jJar,createTinyLogJar" name="Build for me">
+		<jar jarfile="${private.dir}/${dist.base}.jar">
+			<zipfileset src="${private.dir}/temp/${dist.base}_woLib.jar" excludes="META-INF/*" />
+			<zipfileset src="lib/jlibmodbus-1.2.9.7.jar" />
+			<zipfileset src="lib/mailapi-1.6.2.jar" />
+			<zipfileset src="lib/smtp-1.6.2.jar" />
+			<zipfileset src="lib/javax.activation-1.2.0.jar" />
+			<zipfileset src="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" />
+			<zipfileset src="${private.dir}/temp/logger.jar" />
+			<manifest>
+				<attribute name="Main-Class" value="de.sgollmer.solvismax.Main" />
+				<attribute name="Built-Date" value="${TODAY}" />
+			</manifest>
+		</jar>
+		<copy todir="${private.dir}">
+			<fileset dir="${bin.dir}" casesensitive="yes">
+				<include name="base.xml" />
+			</fileset>
+		</copy>
+		<copy todir="${private.dir}">
+			<fileset file="${iobroker.client.json}" casesensitive="yes" />
+			<fileset file="${myBase.xml}" casesensitive="yes" />
+			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
+		</copy>
+		<fixcrlf file="${fhem.pm}" destdir="${private.dir}" eol="lf" />
+		<fixcrlf file="${linux.systemd}" destdir="${private.dir}" eol="lf" />
+		<fixcrlf file="${linux.systemdD}" destdir="${private.dir}" eol="lf" />
+		<fixcrlf file="${makefile}" destdir="${private.dir}" eol="lf" />
+	</target>
+	<target depends="Build for me" name="Build users">
+		<copy todir="${pubLinux.dir}">
+			<fileset file="${private.dir}/${dist.base}.jar" casesensitive="yes" />
+			<fileset file="${iobroker.client.json}" casesensitive="yes" />
+			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
+			<fileset file="${pdf}" casesensitive="yes" />
+			<fileset file="${changes}" casesensitive="yes" />
+		</copy>
+		<fixcrlf file="${fhem.pm}" destdir="${pubLinux.dir}" eol="lf" />
+		<fixcrlf file="${linux.systemd}" destdir="${pubLinux.dir}" eol="lf" />
+		<fixcrlf file="${linux.systemdD}" destdir="${pubLinux.dir}" eol="lf" />
+		<fixcrlf file="${makefile}" destdir="${pubLinux.dir}" eol="lf" />
+		<fixcrlf file="${changes}" destdir="${pubLinux.dir}" eol="lf" />
+		<copy file="${pubBaseDir}/base.xml" tofile="${pubLinux.dir}/base.xml.new" />
+		<zip destfile="${zip.dir}/SolvisSmartHomeServer linux ${version}.zip" basedir="${pubLinux.dir}" />
+		<exec executable="${innoSetup}" dir="${iss.dir}">
+			<arg value="/cc" />
+			<arg value="${iss}" />
+		</exec>
+		<copy todir="${pubWindows.dir}">
+			<fileset file="${fhem.pm}" casesensitive="yes" />
+			<fileset file="${iobroker.client.json}" casesensitive="yes" />
+			<fileset file="${pdf}" casesensitive="yes" />
+			<fileset file="${changes}" casesensitive="yes" />
+		</copy>
+		<zip destfile="${zip.dir}/SolvisSmartHomeServer windows ${version}.zip" basedir="${pubWindows.dir}" />
+	</target>
+	<target name="clean">
+		<delete dir="${bin.dir}" />
+		<delete dir="${private.dir}" />
+		<delete dir="${pubLinux.dir}" />
+		<delete dir="${pubWindows.dir}" />
+		<delete dir="${zip.dir}" />
+	</target>
+	<target depends="build-project" name="build" />
+	<target depends="init" name="build-project">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" encoding="Cp1252" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}">
+			<src path="src" />
+			<src path="rsc" />
+			<classpath refid="SolvisMax.classpath" />
+		</javac>
+	</target>
+</project>

@@ -11,8 +11,11 @@ Version 01.02.00 rc2
                 
                 Dem Makefile wurde um den Aufrufparameter uninstallAll erweitert. Wird das aufgerufen, werden
                 auch die Dateien gelöscht, die vom SolvisSmartHomeServer selber angelegt wurden. Dann sind auch
-                die angelernten Grafiken, die Log-Dateien etc. gelöscht. 
-
+                die angelernten Grafiken, die Log-Dateien etc. gelöscht.
+                
+                Im Goto-Screen wurde einen IOException nicht richig abgefangen, daher wurde im Learn-Vorgang
+                bei einer IOException im Goto der angelernte Screen nicht richtig überprüft.
+                
 
 Version 01.02.00 rc1
 

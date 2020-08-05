@@ -44,8 +44,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private static final ILogger logger = LogManager.getInstance().getLogger(Screen.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
-	private static final int LEARN_REPEAT_COUNT = 3;
-
 	private static final String XML_CONFIGURATION_MASKS = "ConfigurationMasks";
 	private static final String XML_TOUCH_POINT = "TouchPoint";
 	private static final String XML_UP_TOUCH_POINT = "SequenceUp";
@@ -330,8 +328,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				});
 			return new Screen(this.id, this.previousId, this.alternativePreviousId, this.backId, this.ignoreChanges,
 					this.configurationMasks, this.touchPoint, this.sequenceUp, this.sequenceDown, this.screenGraficRefs,
-					this.screenCompares, this.ignoreRectangles,
-					this.preparationId, this.lastPreparationId);
+					this.screenCompares, this.ignoreRectangles, this.preparationId, this.lastPreparationId);
 		}
 
 		@Override
@@ -470,7 +467,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		// Seach all LearnScreens object of current screen and learn the
 		// ScreenGrafic
 		boolean success = false;
-		for (int cnt = LEARN_REPEAT_COUNT; cnt > 0 && !success; --cnt) {
+		for (int cnt = Constants.LEARNING_RETRIES; cnt > 0 && !success; --cnt) {
 			success = true;
 			try {
 				for (IScreenPartCompare screenPartCompare : this.screenCompares) {
@@ -492,7 +489,14 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				}
 			}
 			if (success) {
-				success = this.goTo(solvis);
+				for (int gotoRetries = Constants.FAIL_REPEATS; gotoRetries > 0 && !success; --gotoRetries) {
+					try {
+						success = false;
+						success = this.goTo(solvis);
+					} catch (IOException e) {
+					}
+				}
+
 			}
 		}
 
@@ -507,7 +511,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			for (AbstractScreen nextScreen : this.getNextScreen(solvis)) {
 				if (nextScreen.isToBeLearning(solvis)) {
 					success = false;
-					for (int cnt = LEARN_REPEAT_COUNT; cnt >= 0 && !success; --cnt) {
+					for (int cnt = Constants.LEARNING_RETRIES; cnt >= 0 && !success; --cnt) {
 						try {
 							if (nextScreen.gotoLearning(solvis, current, descriptions)) {
 								nextScreen.learn(solvis, descriptions);
@@ -690,17 +694,31 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public boolean goTo(Solvis solvis) throws IOException, TerminationException {
 
-		for (int cnt = 0; cnt < Constants.MAX_GOTO_DEEPTH + Constants.FAIL_REPEATS
-				&& SolvisScreen.get(solvis.getCurrentScreen()) == null; ++cnt) {
-			solvis.sendBack();
-		}
+		boolean success = false;
+		for (int failCnt = 0; !success && failCnt < Constants.FAIL_REPEATS; ++failCnt) {
+			try {
 
-		if (SolvisScreen.get(solvis.getCurrentScreen()) == null) {
-			solvis.gotoHome(true);
-		}
+				for (int cnt = 0; cnt < Constants.FAIL_REPEATS
+						&& SolvisScreen.get(solvis.getCurrentScreen()) == null; ++cnt) {
+					solvis.sendBack();
+				}
 
-		if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
-			return true;
+				if (SolvisScreen.get(solvis.getCurrentScreen()) == null) {
+					solvis.gotoHome(true);
+				}
+
+				if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
+					return true;
+				}
+				success = true ;
+
+			} catch (IOException e) {
+				logger.info("Goto screen <" + this.getId() + "> not succcessful. Will be retried.");
+			}
+		}
+		
+		if ( !success ) {
+			logger.error("Screen <" + this.getId() + "> not found.");
 		}
 
 		List<ScreenTouch> previousScreens = this.getPreviousScreenTouches(solvis.getConfigurationMask());
@@ -709,31 +727,36 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 		for (int cnt = 0; !gone && cnt < Constants.FAIL_REPEATS; ++cnt) {
 
-			for (int gotoDeepth = 0; !gone && SolvisScreen.get(solvis.getCurrentScreen()) != null
-					& gotoDeepth < Constants.MAX_GOTO_DEEPTH; ++gotoDeepth) {
+			try {
 
-				ScreenTouch foundScreenTouch = null;
-				for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
-					ScreenTouch st = it.next();
-					AbstractScreen previous = st.getScreen();
-					if (previous == SolvisScreen.get(solvis.getCurrentScreen())) {
-						foundScreenTouch = st;
-						break;
+				for (int gotoDeepth = 0; !gone && SolvisScreen.get(solvis.getCurrentScreen()) != null
+						& gotoDeepth < Constants.MAX_GOTO_DEEPTH; ++gotoDeepth) {
+
+					ScreenTouch foundScreenTouch = null;
+					for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
+						ScreenTouch st = it.next();
+						AbstractScreen previous = st.getScreen();
+						if (previous == SolvisScreen.get(solvis.getCurrentScreen())) {
+							foundScreenTouch = st;
+							break;
+						}
+					}
+
+					if (foundScreenTouch == null) {
+						solvis.sendBack();
+					} else {
+						if (!foundScreenTouch.execute(solvis)) {
+							gone = false;
+							break;
+						}
+					}
+
+					if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
+						gone = true;
 					}
 				}
-
-				if (foundScreenTouch == null) {
-					solvis.sendBack();
-				} else {
-					if (!foundScreenTouch.execute(solvis)) {
-						gone = false;
-						break;
-					}
-				}
-
-				if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
-					gone = true;
-				}
+			} catch (IOException e) {
+				gone = false;
 			}
 			if (!gone) {
 				solvis.gotoHome(); // try it from beginning
@@ -780,7 +803,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	private static class WhiteGraficRectangle implements IScreenPartCompare {
-		
+
 		private Rectangle rectangle;
 
 		public WhiteGraficRectangle(Rectangle rectangle) {
@@ -791,10 +814,10 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		public boolean isElementOf(MyImage image, Solvis solvis) {
 			return image.isWhite(this.rectangle) != this.rectangle.isInvertFunction();
 		}
-		
+
 		public static class Creator extends CreatorByXML<WhiteGraficRectangle> {
-			
-			private final Rectangle.Creator rectangeleCreator ; ;
+
+			private final Rectangle.Creator rectangeleCreator;;
 
 			public Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -804,7 +827,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			@Override
 			public void setAttribute(QName name, String value) {
 				this.rectangeleCreator.setAttribute(name, value);
-				
+
 			}
 
 			@Override
@@ -822,9 +845,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			@Override
 			public void created(CreatorByXML<?> creator, Object created) throws XmlException {
 				this.rectangeleCreator.created(creator, created);
-				
+
 			}
-			
+
 		}
 
 	}

@@ -19,14 +19,29 @@ group = dialout
 start = sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar)
 startDebug = sudo -u $(account) $(java) -agentlib:$(javaAgentlib) -jar $(solvisDir)/$(solvisJar)
 startLocal = sudo -u $(account) $(java) -jar $(solvisJar)
+writablePath = `sed -n 's/.*\?writablePathLinux="\([^"]*\)".*/\1/gp' base.xml`
+generatedDir = SolvisServerData
+generatedFiles = control.xml* control.xsd graficData.xml graficData.xsd  measurements.xml   measurements.xsd solvis-error.log* solvis.log* solvis-tiny.log* tinylog.properties log4j2.xml
 
 .SUFFIXES:
 
+eraseGenerated:
+	cd "$(writablePath)/$(generatedDir)" ; \
+	for file in $(generatedFiles) ; do \
+		rm $$file ; \
+	done ; \
+	if [ -z "$$(ls -A .)" ]; then \
+		cd - ; \
+		rm -r "$(writablePath)/$(generatedDir)" ; \
+	fi
 
 install: installSolvis installFHEM
 
 
 uninstall: uninstallSolvis uninstallFHEM
+
+
+uninstallAll: uninstallSolvis uninstallFHEM eraseGenerated
 
 
 copyService: $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
