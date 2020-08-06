@@ -27,11 +27,15 @@ import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.ServerStatus;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.crypt.Ssl;
+import de.sgollmer.solvismax.error.CryptDefaultValueException;
+import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
@@ -101,6 +105,7 @@ public class Mqtt {
 
 		@Override
 		public void setAttribute(QName name, String value) {
+			try {
 			switch (name.getLocalPart()) {
 				case "enable":
 					this.enable = Boolean.parseBoolean(value);
@@ -115,11 +120,7 @@ public class Mqtt {
 					this.userName = value;
 					break;
 				case "passwordCrypt":
-					try {
-						this.passwordCrypt.decrypt(value);
-					} catch (Throwable e) {
-						throw new Error("Decrypt error", e);
-					}
+					this.passwordCrypt.decrypt(value);
 					break;
 				case "topicPrefix":
 					this.topicPrefix = value;
@@ -133,6 +134,16 @@ public class Mqtt {
 				case "subscribeQoS":
 					this.subscribeQoS = Integer.parseInt(value);
 					break;
+			}
+			} catch (CryptDefaultValueException | CryptExeception e) {
+				this.enable = false;
+				String m = "base.xml error of passwordCrypt in Mqtt tag, MQTT disabled: " + e.getMessage();
+				Level level = Level.ERROR;
+				if ( e instanceof CryptDefaultValueException ) {
+					level = Level.WARN;
+				}
+				LogManager.getInstance()
+						.addDelayedErrorMessage(new DelayedMessage(level, m, Mqtt.class, null));
 			}
 
 		}

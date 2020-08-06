@@ -22,6 +22,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.CryptDefaultValueException;
+import de.sgollmer.solvismax.error.CryptExeception;
 
 public class CryptAes {
 
@@ -55,14 +57,24 @@ public class CryptAes {
 		return base64Encoder.encodeToString(encrypted);
 	}
 
-	public void decrypt(String cryptedString) throws NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-		Decoder base64Decoder = Base64.getDecoder();
-		byte[] crypted = base64Decoder.decode(cryptedString);
-		Key aesKey = new SecretKeySpec(CryptAes.cK(), "AES");
-		Cipher cipher = Cipher.getInstance("AES");
-		cipher.init(Cipher.DECRYPT_MODE, aesKey);
-		this.v = cipher.doFinal(crypted);
+	public void decrypt(String cryptedString) throws CryptDefaultValueException, CryptExeception {
+		try {
+			Decoder base64Decoder = Base64.getDecoder();
+			byte[] crypted = base64Decoder.decode(cryptedString);
+			Key aesKey = new SecretKeySpec(CryptAes.cK(), "AES");
+			Cipher cipher = Cipher.getInstance("AES");
+			cipher.init(Cipher.DECRYPT_MODE, aesKey);
+			this.v = cipher.doFinal(crypted);
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException
+				| BadPaddingException | IllegalArgumentException e) {
+			for (String defaultValue : Constants.CRYPT_NOT_CONFIGURED_VALUES) {
+				if (defaultValue.equalsIgnoreCase(cryptedString)) {
+					throw new CryptDefaultValueException();
+				}
+			}
+			throw new CryptExeception();
+		}
+
 	}
 
 	private void cI(String word) {
@@ -106,8 +118,8 @@ public class CryptAes {
 		}
 	}
 
-	public static void main(String[] args) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
-			IllegalBlockSizeException, BadPaddingException {
+	public static void main(String[] args) throws CryptDefaultValueException, CryptExeception,
+			InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		CryptAes aes = new CryptAes();
 		for (int i = 0; i < 100; ++i) {
 			StringBuilder builder = new StringBuilder();

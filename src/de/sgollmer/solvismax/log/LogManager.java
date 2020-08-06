@@ -100,8 +100,10 @@ public class LogManager {
 			this.message = message;
 			this.loggedClass = loggedClass;
 			this.errorCode = errorCode;
-			if (level.isLessSpecificThan(Level.INFO)) {
+			if (level.isLessSpecificThan(Level.WARN)) {
 				System.err.println(message);
+			} else if (level.isLessSpecificThan(Level.INFO)) {
+				System.out.println(message);
 			}
 		}
 	}

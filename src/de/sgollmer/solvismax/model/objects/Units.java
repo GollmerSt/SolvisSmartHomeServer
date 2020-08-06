@@ -16,6 +16,8 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.IAccountInfo;
 import de.sgollmer.solvismax.crypt.CryptAes;
+import de.sgollmer.solvismax.error.CryptDefaultValueException;
+import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
@@ -189,6 +191,7 @@ public class Units {
 
 			@Override
 			public void setAttribute(QName name, String value) {
+				try {
 				switch (name.getLocalPart()) {
 					case "id":
 						this.id = value;
@@ -206,14 +209,7 @@ public class Units {
 						this.configOrMask = Integer.decode(value);
 						break;
 					case "passwordCrypt":
-						try {
 							this.password.decrypt(value);
-						} catch (Throwable e) {
-							String m = "Decrypt error: " + e.getMessage();
-							LogManager.getInstance().addDelayedErrorMessage(
-									new DelayedMessage(Level.ERROR, m, Unit.class, Constants.ExitCodes.CRYPTION_FAIL));
-							System.err.println(m);
-						}
 						break;
 					case "password":
 						this.password.set(value);
@@ -257,6 +253,11 @@ public class Units {
 					case "ignoredFrameThicknesScreenSaver":
 						this.ignoredFrameThicknesScreenSaver = Integer.parseInt(value);
 						break;
+				}
+				} catch (CryptDefaultValueException | CryptExeception e) {
+					String m = "base.xml error of passwordCrypt in Unit tag: " + e.getMessage();
+					LogManager.getInstance().addDelayedErrorMessage(
+							new DelayedMessage(Level.ERROR, m, Unit.class, Constants.ExitCodes.CRYPTION_FAIL));
 				}
 
 			}

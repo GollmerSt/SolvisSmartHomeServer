@@ -78,49 +78,51 @@ public class Constants {
 
 	public static final int MODBUS_SLAVE_ID = 1;
 
-	public static class XmlStrings {
-		public static final String XML_MEASUREMENT_BOOLEAN = "BooleanValue";
-		public static final String XML_MEASUREMENT_INTEGER = "IntegerValue";
-		public static final String XML_MEASUREMENT_STRING = "StringValue";
-		public static final String XML_MEASUREMENT_MODE = "ModeValue";
-	}
+	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
 
-	public static class ExitCodes {
-		public static final int OK = 0;
-		public static final int READING_CONFIGURATION_FAIL = 10;
-		public static final int SERVER_PORT_IN_USE = 11;
-		public static final int SERVER_TERMINATION_FAIL = 12;
-		public static final int RESTART_FAILURE = 13;
-		public static final int LEARNING_FAILED = 14;
-		public static final int LEARNING_NECESSARY = 15;
-		public static final int ARGUMENT_FAIL = 16;
-		public static final int CRYPTION_FAIL = 17;
-		public static final int MAILING_ERROR = 18;
-		public static final int BASE_XML_ERROR = 19;
-		public static final int XML_VERIFICATION_ERROR = 20;
-		public static final int MQTT_ERROR = 21;
-		public static final int TASK_CREATING_ERROR = 22;
-	}
+public static class XmlStrings {
+	public static final String XML_MEASUREMENT_BOOLEAN = "BooleanValue";
+	public static final String XML_MEASUREMENT_INTEGER = "IntegerValue";
+	public static final String XML_MEASUREMENT_STRING = "StringValue";
+	public static final String XML_MEASUREMENT_MODE = "ModeValue";
+}
 
-	public static class Mqtt {
-		public static final String[] CMND_SUFFIXES = new String[] { //
-				"/+/server/cmnd", // Server commands
-				"/+/online", //
-				"/+/+/server/cmnd", // Server commands
-				"/+/+/+/cmnd", // SET
-				"/+/+/+/update", // GET
-				// "/#"
-		};
-		public static final String DATA_SUFFIX = "/data";
-		public static final String META_SUFFIX = "/meta";
-		public static final String SERVER_PREFIX = "server";
-		public static final String ONLINE_STATUS = "/online";
-		public static final String STATUS = "/status";
-		public static final String HUMAN_ACCESS = "/human_access";
-		public static final String ERROR = "/error";
-		public static final int MAX_INFLIGHT = 200;
-		public static final int MIN_CONNECTION_REPEAT_TIME = 1000;
-		public static final int MAX_CONNECTION_REPEAT_TIME = 120000;
+public static class ExitCodes {
+	public static final int OK = 0;
+	public static final int READING_CONFIGURATION_FAIL = 10;
+	public static final int SERVER_PORT_IN_USE = 11;
+	public static final int SERVER_TERMINATION_FAIL = 12;
+	public static final int RESTART_FAILURE = 13;
+	public static final int LEARNING_FAILED = 14;
+	public static final int LEARNING_NECESSARY = 15;
+	public static final int ARGUMENT_FAIL = 16;
+	public static final int CRYPTION_FAIL = 17;
+	public static final int MAILING_ERROR = 18;
+	public static final int BASE_XML_ERROR = 19;
+	public static final int XML_VERIFICATION_ERROR = 20;
+	public static final int MQTT_ERROR = 21;
+	public static final int TASK_CREATING_ERROR = 22;
+}
+
+public static class Mqtt {
+	public static final String[] CMND_SUFFIXES = new String[] { //
+			"/+/server/cmnd", // Server commands
+			"/+/online", //
+			"/+/+/server/cmnd", // Server commands
+			"/+/+/+/cmnd", // SET
+			"/+/+/+/update", // GET
+			// "/#"
+	};
+	public static final String DATA_SUFFIX = "/data";
+	public static final String META_SUFFIX = "/meta";
+	public static final String SERVER_PREFIX = "server";
+	public static final String ONLINE_STATUS = "/online";
+	public static final String STATUS = "/status";
+	public static final String HUMAN_ACCESS = "/human_access";
+	public static final String ERROR = "/error";
+	public static final int MAX_INFLIGHT = 200;
+	public static final int MIN_CONNECTION_REPEAT_TIME = 1000;
+	public static final int MAX_CONNECTION_REPEAT_TIME = 120000;
 
 	}
 

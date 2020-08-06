@@ -501,7 +501,7 @@
 		<attribute name="brokerUrl" type="tns:Url" use="required"></attribute>
 		<attribute name="port" type="int" use="required"></attribute>
 		<attribute name="userName" type="string"></attribute>
-		<attribute name="password" type="string"></attribute>
+		<attribute name="passwordCrypt" type="string"></attribute>
 		<attribute name="topicPrefix" use="required">
 			<simpleType>
 				<restriction base="string">

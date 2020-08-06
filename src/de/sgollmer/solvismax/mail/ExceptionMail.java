@@ -14,16 +14,17 @@ import javax.mail.MessagingException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.crypt.CryptAes;
+import de.sgollmer.solvismax.error.CryptDefaultValueException;
+import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
-import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
 import de.sgollmer.solvismax.model.SolvisState.MailInfo;
-import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.xml.ArrayXml;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -80,11 +81,7 @@ public class ExceptionMail {
 						this.from = value;
 						break;
 					case "passwordCrypt":
-						try {
-							this.password.decrypt(value);
-						} catch (Throwable e) {
-							throw new Error("Decrypt error", e);
-						}
+						this.password.decrypt(value);
 						break;
 					case "securityType":
 						try {
@@ -100,11 +97,15 @@ public class ExceptionMail {
 						this.port = Integer.parseInt(value);
 						break;
 				}
-			} catch (Throwable e) {
+			} catch (CryptDefaultValueException | CryptExeception e) {
 				this.valid = false;
-				String m = "base.xml error: " + e.getMessage();
-				LogManager.getInstance().addDelayedErrorMessage(new DelayedMessage(Level.ERROR, m, Unit.class, null));
-				System.err.println(m);
+				String m = "base.xml error of passwordCrypt in Mail tag, mail disabled: " + e.getMessage();
+				Level level = Level.ERROR;
+				if ( e instanceof CryptDefaultValueException ) {
+					level = Level.WARN;
+				}
+				LogManager.getInstance()
+						.addDelayedErrorMessage(new DelayedMessage(level, m, ExceptionMail.class, null));
 			}
 		}
 

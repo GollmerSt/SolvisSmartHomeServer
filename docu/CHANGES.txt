@@ -1,5 +1,10 @@
 Ä N D E R U N G E N
 
+Version 01.02.00
+
+    06.08.2020  Decrypt-Fehlermeldungen verbessert
+                
+
 Version 01.02.00 rc2
 
     05.08.2020  Bei einer Solvis-Anlage mit zusätzlichen Wärmeerzeugern (Festbrennstoffkessel/Wärmepumpe/Pellets etc.)
