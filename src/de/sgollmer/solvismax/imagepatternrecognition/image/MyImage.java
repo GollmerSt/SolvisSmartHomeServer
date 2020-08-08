@@ -14,9 +14,14 @@ import java.awt.image.MultiPixelPackedSampleModel;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.mail.util.ByteArrayDataSource;
 
 import de.sgollmer.solvismax.helper.ImageHelper;
 import de.sgollmer.solvismax.log.LogManager;
@@ -392,6 +397,15 @@ public class MyImage {
 			}
 		}
 		return true;
+	}
+
+	public ByteArrayDataSource getByteArrayDataSource() throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ImageIO.write(this.image, "png", baos);
+		baos.flush();
+		byte[] imageBytes = baos.toByteArray();
+		baos.close();
+		return new ByteArrayDataSource(imageBytes, "image/png");
 	}
 
 }

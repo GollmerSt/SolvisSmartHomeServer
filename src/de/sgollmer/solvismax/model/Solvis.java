@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -86,11 +87,12 @@ public class Solvis {
 	private final boolean delayAfterSwitchingOnEnable;
 	private final Unit unit;
 	private final ExceptionMail exceptionMail;
+	private final File writePath;
 	private final History history = new History();
 
 	Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, ExceptionMail exceptionMail,
-			int echoInhibitTime_ms) {
+			int echoInhibitTime_ms, File writePath) {
 		this.unit = unit;
 		this.type = unit.getType();
 		this.defaultReadMeasurementsInterval_ms = unit.getDefaultReadMeasurementsInterval_ms();
@@ -110,6 +112,7 @@ public class Solvis {
 		this.timeZone = timeZone;
 		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
 		this.exceptionMail = exceptionMail;
+		this.writePath = writePath;
 	}
 
 	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
@@ -691,5 +694,9 @@ public class Solvis {
 
 	private int getEchoInhibitTime_ms() {
 		return this.echoInhibitTime_ms;
+	}
+
+	public File getWritePath() {
+		return this.writePath;
 	}
 }

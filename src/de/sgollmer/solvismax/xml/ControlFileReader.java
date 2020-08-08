@@ -38,20 +38,17 @@ public class ControlFileReader {
 
 	private final File parent;
 
-	public ControlFileReader(String pathName) {
-		File parent;
+	public ControlFileReader(File path) {
 
-		if (pathName == null) {
-			pathName = System.getProperty("user.home");
+		if (path == null) {
+			String pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
 				pathName = System.getenv("APPDATA");
 			}
-
+			path = new File(pathName);
 		}
 
-		pathName += File.separator + Constants.RESOURCE_DESTINATION_PATH;
-		parent = new File(pathName);
-		this.parent = parent;
+		this.parent = new File(path, Constants.RESOURCE_DESTINATION_PATH);
 	}
 
 	private void copyFiles(boolean copyXml) throws IOException, FileException {

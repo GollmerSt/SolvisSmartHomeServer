@@ -162,4 +162,49 @@ public class FileHelper {
 		}
 		return directory.mkdir();
 	}
+
+	public static boolean canDelete(File file) {
+		if (!file.exists() || file == null) {
+			return true;
+		}
+		if (file.isDirectory()) {
+			for (File child : file.listFiles()) {
+				if (!canDelete(child)) {
+					return false;
+				}
+			}
+		}
+		return file.canWrite();
+
+	}
+
+	public static boolean rmDir(File file) {
+		if (!canDelete(file)) {
+			return false;
+		}
+		if (!file.exists() || file == null) {
+			return true;
+		}
+		if (file.isDirectory()) {
+			for (File child : file.listFiles()) {
+				rmDir(child);
+			}
+		}
+		file.delete();
+		return true;
+
+	}
+
+	public static String makeOSCompatible(String child) {
+
+		String[] parts = child.split("/|<|>|:|\"|\\\\|\\||\\?|\\*|\\s");
+		StringBuilder builder = new StringBuilder();
+		for (String part : parts) {
+			if (builder.length() != 0) {
+				builder.append("-");
+			}
+			builder.append(part);
+		}
+		return builder.toString();
+	}
 }

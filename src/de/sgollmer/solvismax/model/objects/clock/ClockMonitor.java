@@ -742,12 +742,14 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 						MyImage former = new MyImage(SolvisScreen.getImage(solvis.getCurrentScreen()), part.rectangle,
 								false);
 						solvis.send(part.touch);
-						MyImage current = new MyImage(SolvisScreen.getImage(solvis.getCurrentScreen()), part.rectangle,
+						SolvisScreen currentScreen = solvis.getCurrentScreen();
+						MyImage current = new MyImage(SolvisScreen.getImage(currentScreen), part.rectangle,
 								false);
 						if (former.equals(current)) {
 							finished = false;
 							break;
 						}
+						currentScreen.writeLearningImage(screen.getId()+"__"+part.screenGrafic.getId());
 						part.screenGrafic.learn(solvis);
 						if (part.getValue(solvis) == null) {
 							finished = false;

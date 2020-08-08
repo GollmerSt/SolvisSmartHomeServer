@@ -46,22 +46,20 @@ public class MeasurementsBackupHandler {
 	private boolean xsdWritten = false;
 	private long timeOfLastBackup = -1 ;
 
-	public MeasurementsBackupHandler(String pathName, int measurementsBackupTime_ms)
+	public MeasurementsBackupHandler(File path, int measurementsBackupTime_ms)
 			throws FileException, ReferenceException {
-		File parent;
 
-		if (pathName == null) {
-			pathName = System.getProperty("user.home");
+		if (path == null) {
+			String pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
 				pathName = System.getenv("APPDATA");
 			}
-
+			path = new File(pathName);
 		}
 
-		pathName += File.separator + Constants.RESOURCE_DESTINATION_PATH;
-		parent = new File(pathName);
-		this.parent = parent;
+		this.parent = new File(path, Constants.RESOURCE_DESTINATION_PATH);
 		this.thread = new BackupThread(this, measurementsBackupTime_ms);
+
 		try {
 			this.read();
 		} catch (IOException | XmlException | XMLStreamException | AssignmentException e) {

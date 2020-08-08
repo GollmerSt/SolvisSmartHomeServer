@@ -183,12 +183,7 @@ public class Mail {
 
 		if (image != null) {
 			messageBodyPart = new MimeBodyPart();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write(image.getImage(), "png", baos);
-			baos.flush();
-			byte[] imageBytes = baos.toByteArray();
-			baos.close();
-			ByteArrayDataSource bds = new ByteArrayDataSource(imageBytes, "image/png");
+			ByteArrayDataSource bds = image.getByteArrayDataSource();
 			messageBodyPart.setDataHandler(new DataHandler(bds));
 			messageBodyPart.setFileName("SolvisScreen.png");
 			messageBodyPart.setHeader("Content-ID", "<image>");

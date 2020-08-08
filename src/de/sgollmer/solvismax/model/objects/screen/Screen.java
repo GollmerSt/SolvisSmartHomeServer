@@ -469,6 +469,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		boolean success = false;
 		for (int cnt = Constants.LEARNING_RETRIES; cnt > 0 && !success; --cnt) {
 			success = true;
+			solvis.getCurrentScreen().writeLearningImage( this.id );
 			try {
 				for (IScreenPartCompare screenPartCompare : this.screenCompares) {
 					if (screenPartCompare instanceof ScreenGraficDescription) {

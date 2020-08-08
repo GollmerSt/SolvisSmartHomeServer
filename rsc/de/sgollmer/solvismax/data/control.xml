@@ -829,13 +829,13 @@
 				<tns:BottomRight X="215" Y="120" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
-		<tns:Screen id="Uhrzeit / Datum" backId="Sonstiges 3"
+		<tns:Screen id="Uhrzeit/Datum" backId="Sonstiges 3"
 			previousId="Sonstiges 3">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="40" />
 			</tns:TouchPoint>
-			<tns:ScreenGrafic id="Uhrzeit / Datum">
+			<tns:ScreenGrafic id="Uhrzeit/Datum">
 				<tns:Field>
 					<tns:TopLeft X="55" Y="0" />
 					<tns:BottomRight X="185" Y="18" />
@@ -846,8 +846,8 @@
 				<tns:BottomRight X="150" Y="95" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
-		<tns:Screen id="Zeiteinstellung" backId="Uhrzeit / Datum"
-			previousId="Uhrzeit / Datum">
+		<tns:Screen id="Zeiteinstellung" backId="Uhrzeit/Datum"
+			previousId="Uhrzeit/Datum">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="110" />
@@ -2026,7 +2026,7 @@
 		</tns:Preparation>
 	</tns:Preparations>
 	<tns:Clock timeChannelId="X06.UhrzeitSolvis"
-		screenId="Zeiteinstellung" okScreenId="Uhrzeit / Datum">
+		screenId="Zeiteinstellung" okScreenId="Uhrzeit/Datum">
 		<tns:ModbusWrite address="0x8000" type="Holding" />
 		<tns:Year least="2008">
 			<tns:Rectangle>
