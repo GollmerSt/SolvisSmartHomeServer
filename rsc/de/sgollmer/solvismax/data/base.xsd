@@ -510,7 +510,6 @@
 			</simpleType>
 		</attribute>
 		<attribute name="idPrefix" type="string" use="required"></attribute>
-		<attribute name="subscribeSuffix" type="string"></attribute>
 		<attribute name="publishQoS" use="required"
 			type="tns:MqttQoS">
 		</attribute>
