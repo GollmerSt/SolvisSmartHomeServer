@@ -14,7 +14,7 @@ import java.util.jar.Manifest;
 
 public class Version {
 
-	private String serverVersion = "01.02.00";
+	private String serverVersion = "01.02.01";
 	private String appendix = "modbus alpha, MQTT beta";
 
 	public static Version getInstance() {

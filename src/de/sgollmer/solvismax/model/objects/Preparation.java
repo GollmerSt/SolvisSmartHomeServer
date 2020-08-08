@@ -19,6 +19,7 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -76,6 +77,8 @@ public class Preparation implements IAssigner {
 		if (!this.isLearned(solvis)) {
 			solvis.send(this.touchPoint);
 			solvis.send(this.touchPoint);
+			SolvisScreen currentScreen = solvis.getCurrentScreen();
+			currentScreen.writeLearningImage(this.id);
 			this.screenGrafic.learn(solvis);
 			solvis.getHistory().set(this);
 			return true;

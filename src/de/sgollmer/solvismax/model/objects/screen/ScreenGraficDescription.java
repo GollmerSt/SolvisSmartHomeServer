@@ -47,6 +47,14 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 		return this.isElementOf(image, solvis, false);
 	}
 
+	/**
+	 * 
+	 * @param image          Image which is be checked
+	 * @param solvis
+	 * @param cmpNoRectangle If true, the checked image is completely checked
+	 *                       against the grafic of the description
+	 * @return
+	 */
 	public boolean isElementOf(MyImage image, Solvis solvis, boolean cmpNoRectangle) {
 		if (!isLearned(solvis)) {
 			return false;
@@ -59,15 +67,18 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 		if (cmp == null) { // not learned
 			return false;
 		}
-		if (!cmpNoRectangle) {
-			image = new MyImage(image, this.rectangle, true);
-		}
 		if (this.exact) {
-			return ((MyImage) image).equals(((MyImage) cmp));
+			if (!cmpNoRectangle) {
+				image = new MyImage(image, this.rectangle, true);
+			}
 		} else {
-			image = new Pattern(image);
-			return image.equals(cmp);
+			if (cmpNoRectangle) {
+				image = new Pattern(image);
+			} else {
+				image = new Pattern(image, this.rectangle);
+			}
 		}
+		return image.equals(cmp);
 	}
 
 	public boolean isLearned(Solvis solvis) {

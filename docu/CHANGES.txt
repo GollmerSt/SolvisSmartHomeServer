@@ -2,6 +2,16 @@
 
 Version 01.02.00
 
+    08.08.2020  Beim Learning werden nun immer die Bildschirme in den Ordner "SolvisServerData/learned_images"
+                des im base.xml angegebenen beschreibbaren Pfad geschrieben. Dies dient der einfacheren
+                Analyse von Learning-Problemen bei z.B. anderen bisher unbekannten Anlagekonfigurationen.
+                Da die Bilddateien sich leicht komprimieren lassen (2 kByte/Bild) und daher sehr wenig Platz
+                einnehmen, wurde auf einen speziellen Debug-Mode hierfür verzichtet.
+                
+                
+
+Version 01.02.00
+
     06.08.2020  Decrypt-Fehlermeldungen verbessert
                 
 
@@ -26,7 +36,7 @@ Version 01.02.00 rc1
 
     01.08.2000  Einige Fehlerklassen müssen auf Exception basieren
     
-    03.08.2000	Das Learning wurde umfangreich überarbeitet. Es ist nun nicht mehr notwendig vor dem Learning
+    03.08.2000  Das Learning wurde umfangreich überarbeitet. Es ist nun nicht mehr notwendig vor dem Learning
                 Den Anlagenstatus auf den WW-Kreislauf zu stellen.
                 
                 Wenn während des Lernvorganges beim Wiederherstellen der Einstellungen eine IO-Exception erfolgte,
