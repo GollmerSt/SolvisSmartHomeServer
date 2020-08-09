@@ -24,6 +24,7 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Command.Handling;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
+import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
@@ -295,6 +296,20 @@ public class SolvisWorkers {
 			}
 		}
 
+		public synchronized boolean willBeModified(SolvisData data) {
+			for (ListIterator<Command> it = this.queue.listIterator(this.queue.size()); it.hasPrevious();) {
+				Command command = it.previous();
+				if (command instanceof CommandControl) {
+					CommandControl control = (CommandControl) command;
+					if (control.isWriting() && control.getDescription() == data.getDescription()
+							&& !control.getSetValue().equals(data.getSingleData())) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
 	}
 
 	private boolean execute(Command command)
@@ -483,6 +498,10 @@ public class SolvisWorkers {
 	void serviceReset() {
 		this.watchDog.serviceReset();
 
+	}
+
+	public boolean willBeModified(SolvisData data) {
+		return this.controlsThread.willBeModified(data);
 	}
 
 }

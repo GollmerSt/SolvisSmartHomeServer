@@ -8,6 +8,12 @@ Version 01.02.00
                 Da die Bilddateien sich leicht komprimieren lassen (2 kByte/Bild) und daher sehr wenig Platz
                 einnehmen, wurde auf einen speziellen Debug-Mode hierfür verzichtet.
                 
+    09.08.2020  Wenn mehrfach hintereinander vom Anwender über die Server-Client- bzw. MQTT-Schnittstelle
+                der gleiche Sollwert verändert wurde, wurde bisher jede Änderung einzeln nach der wirklichen
+                Änderung an der SolvisControl zurückgesendet. Wenn man z.B. die WW-Temperatur von 65°C auf 10°C
+                stellt und direkt anschließend auf 40°C, so wurde nach ca. 100s 10°C zurückgesendet und dann nach
+                etwa weiteren 60s die endgültige Temperatur von 40°C gemeldet. Die Meldung der noch nicht
+                endgültigen Einstellung (hier 10°C) wird nun unterdrückt.
                 
 
 Version 01.02.00
@@ -28,7 +34,7 @@ Version 01.02.00 rc2
                 auch die Dateien gelöscht, die vom SolvisSmartHomeServer selber angelegt wurden. Dann sind auch
                 die angelernten Grafiken, die Log-Dateien etc. gelöscht.
                 
-                Im Goto-Screen wurde einen IOException nicht richig abgefangen, daher wurde im Learn-Vorgang
+                Im Goto-Screen wurde einen IOException nicht richtig abgefangen, daher wurde im Learn-Vorgang
                 bei einer IOException im Goto der angelernte Screen nicht richtig überprüft.
                 
 
@@ -71,7 +77,7 @@ Version 01.01.03 rc1
 Version 01.01.02
 
     25.07.2020  Start-Parameter --base.xml hinzugefügt. Damit können auch die Base-Konfiguration aus einem Pfad
-                verwendet werden, der nicht im Strat-Pfad des Servers liegt.
+                verwendet werden, der nicht im Start-Pfad des Servers liegt.
                 
     25.07.2020  Ant-File Anpassungen zur besseren Release-Package-Generierung
                 
@@ -87,7 +93,7 @@ Version 01.01.01
                 
     23.07.2020  Die Logging-Daten der MQTT-Library werden nun ebenfalls in den Log des Servers geschrieben
                 vorher wurden sie auf die Console geschrieben, bzw. bei einem im Hintergrund laufenden Server
-                verschwanden sie im Nirvana
+                verschwanden sie im Nirwana
                 
                 Fataler Fehler: Beim Empfang von Daten des Clients konnte eine negative Datenpaket-Länge
                 entstehen.
@@ -100,9 +106,9 @@ Version 01.01.00
     
     19.06.2020  Echo inhibit realisiert:
                 Wenn innerhalb der echoInhibitTime_ms der gleiche Wert erneut vom Client gesetzt wird,
-                wird er itgnoriert.
+                wird er ignoriert.
                 
-    04.07.2000  Der SET-Befehl des FHEM-Cklient funktionierte nur bei Boolean-Werten.
+    04.07.2000  Der SET-Befehl des FHEM-Client funktionierte nur bei Boolean-Werten.
                 
     05.07.2000  Der HumanAccess-Mode wurde bei einer neuen Verbindung nicht übertragen.           
 
@@ -115,7 +121,7 @@ Version 01.01.00
                 
     17.07.2020  Retain-Flag darf bei Client-Fehlermeldungen nicht gesetzt sein.
     
-    18.07.2020  Erfolgt eine Fehlermeldung im Home-Screen, blieb diese trotz aktiviertem Feature
+    18.07.2020  Erfolgt eine Fehlermeldung auf dem Home-Screen, blieb diese trotz aktiviertem Feature
                 ClearErrorMessageAfterMail sichtbar.
                 
     20.07.2020  Das Feature UpdateAfterUserAccess war immer aktiviert, auf wenn es in der base.xml scheinbar
@@ -144,7 +150,7 @@ Version 01.00.14
                 Automatischen Restart von FHEM wieder ausgebaut, und durch eine Erinnerungs-
                 Meldung ersetzt.
                 
-                Ein fehlerhaft enpfangenes JSON-Paket brachte den Client und damit FHEM zum
+                Ein fehlerhaft empfangenes JSON-Paket brachte den Client und damit FHEM zum
                 Absturz. Der Client wurde so geändert, dass das fehlerhafte JSON-Paket
                 ignoriert wird.
 
@@ -167,7 +173,7 @@ Version 01.00.13
     06.06.2020  Es ist nun auch die WW-Zirkulationspumpe steuerbar. "C26.Warmwasserzirkulation_Puls"
                 und "C27.Warmwasserzirkulation_Zeit" sind hinzu gekommen. Da bei das Aktivieren dieser
                 Parameter bei Anlagen ohne Zirkulationspumpe zu Fehlermeldungen führen, konnten diese
-                nivr wie bisher durch Betätigung im Learn-Modus angelernt werden. Stattdessen wurde
+                nur wie bisher durch Betätigung im Learn-Modus angelernt werden. Stattdessen wurde
                 ein neuer Algorithmus (Strategie "TypeButton") notwendig, der auch ohne Learning den
                 Zustand eines Buttons ermitteln kann.
                 
@@ -202,7 +208,7 @@ Version 01.00.11
     25.05.2020  Es wurde erkannt, dass bei dem Setzen des Tag-/Nacht-Sollwerte der lange
                 Tastendruck manchmal als kurzer interpretiert wird. Das hat zur Folge, dass der
                 Anlagenmodus verändert wird! Der Anlagenmodus wird nun vor diesen Befehlen
-                gesichert und danch wieder restauriert. 
+                gesichert und danach wieder restauriert. 
 
 
 Version 01.00.10
@@ -419,7 +425,7 @@ Version 00.11.01
                 ermittelt und entsprechend korrigiert. Dazu wird das rechte Aufeinandertreffen
                 der Linien zwischen den Wasser- und Solarbuttons des Home-Screen hergenommen.
                 
-    18.02.2020  Neues Features:
+    18.02.2020  Neue Features:
                 Service-User-Zugriffe werden nun über die Bildschirme "Schornsteinfeger",
                 "Nutzerauswahl", "Nutzerauswahl Codeeingabe" erkannt. Die GUI-Befehle sind
                 unterdrückt, solange die SolvisControl diese Bildschirme anzeigt. Außerdem hat das
@@ -432,7 +438,7 @@ Version 00.11.01
                 Der User kann nun über die base.xml bestimmen, welche GUI-Features des Servers
                 aktiviert sein sollen. Die base.xml wurde dazu um ein "Feature"-Element erweitert.
                 Die im Paket mitgelieferte base.xml hat sämtliche GUI Features deaktiviert!
-                Auf diese Weise greift der Server erstmal nicht aktiv in die Bedienung ein.
+                Auf diese Weise greift der Server erst mal nicht aktiv in die Bedienung ein.
                 Der User bestimmt, was er freischalten will.
                 
                 Fhem-Client um das Attribut "GuiCommandsEnabled" ergänzt. Ist dieses Attribut auf
@@ -506,7 +512,7 @@ Version 00.10.03
     06.02.2020  control.xml korrigiert. Bei der Konfiguration SolvisMax + Solarmodul war der
                 Bildschirm des Solar-Anlagenstatus nicht definiert
                 
-                Bei fehlenden Definition eines Bildschirmreferenz kam es zu einer Null-Pointer-
+                Bei fehlender Definition eines Bildschirmreferenz kam es zu einer Null-Pointer-
                 Exception. Es erscheint nun eine sinnvolle Fehlermeldung.
     
     
@@ -515,7 +521,7 @@ Version 00.10.03
 Version 00.10.02
 
     20.01.2020  Clock-Fine-Tuning implementiert. Man kann die Solvis-Uhr doch genauer einstellen,
-                wenn man mehrfach auf den OK-Button der Zeieinstellung drückt. Jedes Stellen der
+                wenn man mehrfach auf den OK-Button der Zeiteinstellung drückt. Jedes Stellen der
                 Uhr, bewirkt, dass die Zeit kurz "angehalten" wird. Das kann man nutzen, wenn die 
                 Solvis-Uhr genauer eingestellt werden soll, ist aber mehr eine Spielerei
                 (Wer benötigt eine genau gehende Solvis-Anlagen-Uhr, der ein Smarthome-System
@@ -539,7 +545,7 @@ Version 00.10.02
                 Datum angezeigt wird, sondern ein Button mit einem Achtung-Zeichen.
 
                 
-    29.01.2020  Contol-Command-Optimierung deaktivierbar
+    29.01.2020  Control-Command-Optimierung deaktivierbar
 
     
     30.01.2020  Bug im Uhr-Abgleich behoben. Es wurde nicht beachtet, dass zum Zeitpunkt der Uhreinstellung
@@ -558,7 +564,7 @@ Version 00.10.02
                   "Wenn man die Uhrzeit verstellt, kann es passieren, dass Timer unkontrolliert
                    überlaufen und die Funktionen dann neu gestartet werden. Das ist aber kein
                    Fehler, sondern eine Reaktion auf die geänderten Parameter."
-                Das hat zur Folge, dass ein laufender Brenner stoppt und der Mischer erstmal auf
+                Das hat zur Folge, dass ein laufender Brenner stoppt und der Mischer erst mal auf
                 die Null-Position zurück fährt. Auch behält die Anlage nicht die Einstellung der
                 WW-Pumpe, sie geht - wie beim  Einschalten - auf den Modus "Auto". Aus
                 Sicherheitsgründen ist das Stellen der Uhr nun abhängig vom Brenner, wenn er

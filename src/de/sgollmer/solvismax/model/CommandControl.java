@@ -243,4 +243,12 @@ public class CommandControl extends Command {
 			return false;
 		}
 	}
+
+	public ChannelDescription getDescription() {
+		return this.description;
+	}
+
+	public SingleData<?> getSetValue() {
+		return this.setValue;
+	}
 }

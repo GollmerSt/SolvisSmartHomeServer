@@ -111,7 +111,9 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 		if (data != null && !data.equals(this.data)) {
 			this.data = data;
-			this.notify(this, source);
+			if (!this.description.isWriteable() || !this.datas.getSolvis().willBeModified(this)) {
+				this.notify(this, source);
+			}
 			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
 		}
 		if (this.continousObservable != null) {

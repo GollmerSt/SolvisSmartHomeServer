@@ -699,4 +699,8 @@ public class Solvis {
 	public File getWritePath() {
 		return this.writePath;
 	}
+
+	public boolean willBeModified( SolvisData data) {
+		return this.worker.willBeModified(data);
+	}
 }
