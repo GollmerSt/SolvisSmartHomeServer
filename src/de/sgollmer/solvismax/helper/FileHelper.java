@@ -61,7 +61,7 @@ public class FileHelper {
 			writeDirectory = System.getenv("APPDATA");
 		}
 
-		writeDirectory += File.separator + Constants.RESOURCE_DESTINATION_PATH;
+		writeDirectory += File.separator + Constants.Pathes.RESOURCE_DESTINATION;
 
 		File directory = new File(writeDirectory);
 
@@ -78,7 +78,7 @@ public class FileHelper {
 		// System.out.println("Write not possible") ;
 		// }
 
-		FileHelper.copyFromResource(Constants.RESOURCE_PATH + '/' + "graficData.xsd", file);
+		FileHelper.copyFromResource(Constants.Pathes.RESOURCE + '/' + "graficData.xsd", file);
 	}
 
 	/**

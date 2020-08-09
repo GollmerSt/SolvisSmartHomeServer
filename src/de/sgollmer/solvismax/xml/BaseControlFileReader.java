@@ -52,7 +52,7 @@ public class BaseControlFileReader {
 
 		String rootId = XML_ROOT_ID;
 
-		String resourcePath = Constants.RESOURCE_PATH + '/' + NAME_XSD_BASEFILE;
+		String resourcePath = Constants.Pathes.RESOURCE + '/' + NAME_XSD_BASEFILE;
 		InputStream xsd = Main.class.getResourceAsStream(resourcePath);
 
 		if (xsd == null) {

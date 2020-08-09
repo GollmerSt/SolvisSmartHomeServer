@@ -13,8 +13,8 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.DependencyException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
+import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.data.IMode;
-import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public enum Strategies {
@@ -50,7 +50,7 @@ public enum Strategies {
 
 		abstract boolean isWriteable();
 
-		SingleData<?> setValue(Solvis solvis, SolvisData value) {
+		SetResult setValue(Solvis solvis, SolvisData value) {
 			return null; // i.g. is directly set via solvis data
 		}
 

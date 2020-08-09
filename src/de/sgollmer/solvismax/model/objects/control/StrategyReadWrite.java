@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -19,6 +20,8 @@ import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
+import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
+import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
@@ -56,7 +59,7 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData setValue)
+	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData setValue)
 			throws IOException, TerminationException, ModbusException, TypeException {
 		if (controlAccess instanceof GuiAccess) {
 			Integer goal = setValue.getInteger();
@@ -64,7 +67,7 @@ public class StrategyReadWrite extends StrategyRead {
 			if (data == null) {
 				return null;
 			} else if (data.get() == null) {
-				return data;
+				return new SetResult(Status.NO_SUCCESS, data);
 			}
 			int current = data.get();
 
@@ -75,7 +78,7 @@ public class StrategyReadWrite extends StrategyRead {
 					/ (2 * this.increment);
 
 			if (current == value) {
-				return data;
+				return new SetResult(Status.SUCCESS, data);
 			}
 
 			int[] dist = new int[3];
@@ -101,10 +104,22 @@ public class StrategyReadWrite extends StrategyRead {
 				point = this.guiModification.upper;
 			}
 
-			for (int c = 0; c < Math.abs(minDist) / this.increment; ++c) {
+			int touches = Math.abs(minDist) / this.increment;
+			boolean interrupt = false;
+
+			if (touches > Constants.INTERRUPT_AFTER_N_TOUCHES) {
+				touches = Constants.INTERRUPT_AFTER_N_TOUCHES;
+				interrupt = true;
+			}
+
+			for (int c = 0; c < touches; ++c) {
 				solvis.send(point);
 			}
-			return null;
+			if (interrupt) {
+				return new SetResult(Status.INTERRUPTED, data);
+			} else {
+				return null;
+			}
 		} else {
 			solvis.writeUnsignedShortModbusData((ModbusAccess) controlAccess, setValue.getInteger());
 			return null;

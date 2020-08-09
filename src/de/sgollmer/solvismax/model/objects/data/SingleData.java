@@ -36,4 +36,5 @@ public abstract class SingleData<T> {
 	boolean isFastChange() {
 		return false;
 	}
+
 }

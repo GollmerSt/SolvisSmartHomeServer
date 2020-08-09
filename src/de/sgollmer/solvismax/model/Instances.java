@@ -69,8 +69,8 @@ public class Instances {
 	public boolean learn() throws IOException, LearningException, XMLStreamException, FileException,
 			TerminationException, ModbusException {
 		boolean nothingToLearn = true;
-		File learnDesination = new File( this.writeablePath, Constants.RESOURCE_DESTINATION_PATH);
-		learnDesination = new File( learnDesination, Constants.LEARN_DESTINATION_PATH);
+		File learnDesination = new File( this.writeablePath, Constants.Pathes.RESOURCE_DESTINATION);
+		learnDesination = new File( learnDesination, Constants.Pathes.LEARN_DESTINATION);
 		FileHelper.rmDir(learnDesination);
 		FileHelper.mkdir(learnDesination);
 		for (Solvis solvis : this.units) {

@@ -101,21 +101,21 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, SolvisData value)
+	public SetResult setValue(Solvis solvis, SolvisData value)
 			throws IOException, TerminationException, ModbusException {
 
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return null;
 		}
-		SingleData<?> setValue = null;
+		SetResult setResult = null;
 		try {
-			for (int c = 0; c < Constants.SET_REPEATS + 1 && setValue == null; ++c) {
+			for (int c = 0; c < Constants.SET_REPEATS + 1 && setResult == null; ++c) {
 				try {
-					setValue = this.strategy.setValue(solvis, this.getControlAccess(solvis), value);
+					setResult = this.strategy.setValue(solvis, this.getControlAccess(solvis), value);
 				} catch (IOException e) {
 				}
-				if (setValue == null && c == 1) {
+				if (setResult == null && c == 1) {
 					logger.error("Setting of <" + this.getDescription().getId() + "> to " + value
 							+ " failed, set will be tried again.");
 				}
@@ -125,12 +125,12 @@ public class Control extends ChannelSource {
 					+ ">. Setting ignored");
 			return null;
 		}
-		if (setValue == null) {
+		if (setResult == null) {
 			logger.error("Setting of <" + this.getDescription().getId() + "> not successfull");
-		} else {
+		} else if ( setResult.getStatus() == Status.SUCCESS){
 			logger.info("Channel <" + this.description.getId() + "> is set to " + value.toString() + ">.");
 		}
-		return setValue;
+		return setResult;
 	}
 
 	private boolean guiPrepare(Solvis solvis, IControlAccess controlAccess) throws IOException, TerminationException {

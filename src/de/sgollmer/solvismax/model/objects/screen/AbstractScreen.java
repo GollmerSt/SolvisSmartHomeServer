@@ -146,7 +146,7 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	/**
 	 * 
 	 * @param next                     Should be selected
-	 * @param allPreviousScreenTouches (write) Previous screen touchs of the screen,
+	 * @param allPreviousScreenTouches (write) Previous screen touches of the screen,
 	 *                                 who should be selected
 	 * @param configurationMask        Configuration mask
 	 */

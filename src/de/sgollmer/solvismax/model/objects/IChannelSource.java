@@ -30,7 +30,29 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	public boolean getValue(SolvisData dest, Solvis solvis)
 			throws IOException, PowerOnException, TerminationException, ModbusException;
 
-	public SingleData<?> setValue(Solvis solvis, SolvisData value)
+	public enum Status {
+		SUCCESS, INTERRUPTED, NO_SUCCESS, UNKNOWN
+	}
+
+	public static class SetResult {
+		private final Status status;
+		private final SingleData<?> data;
+
+		public SetResult(Status status, SingleData<?> data) {
+			this.status = status;
+			this.data = data;
+		}
+
+		public Status getStatus() {
+			return this.status;
+		}
+
+		public SingleData<?> getData() {
+			return this.data;
+		}
+	}
+
+	public SetResult setValue(Solvis solvis, SolvisData value)
 			throws IOException, TerminationException, ModbusException;
 
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;

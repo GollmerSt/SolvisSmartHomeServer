@@ -12,6 +12,7 @@ import java.io.IOException;
 import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 
 public abstract class Command {
@@ -27,7 +28,7 @@ public abstract class Command {
 	 * @throws FieldException
 	 * @throws ModbusException
 	 */
-	protected abstract boolean execute(Solvis solvis)
+	protected abstract Status execute(Solvis solvis)
 			throws IOException, TerminationException, PowerOnException, ModbusException;
 
 	protected abstract void notExecuted();

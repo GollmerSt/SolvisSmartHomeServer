@@ -9,11 +9,16 @@ Version 01.02.00
                 einnehmen, wurde auf einen speziellen Debug-Mode hierfür verzichtet.
                 
     09.08.2020  Wenn mehrfach hintereinander vom Anwender über die Server-Client- bzw. MQTT-Schnittstelle
-                der gleiche Sollwert verändert wurde, wurde bisher jede Änderung einzeln nach der wirklichen
+                der gleiche Sollwert verändert wird, wurde bisher jede Änderung einzeln nach der wirklichen
                 Änderung an der SolvisControl zurückgesendet. Wenn man z.B. die WW-Temperatur von 65°C auf 10°C
                 stellt und direkt anschließend auf 40°C, so wurde nach ca. 100s 10°C zurückgesendet und dann nach
                 etwa weiteren 60s die endgültige Temperatur von 40°C gemeldet. Die Meldung der noch nicht
                 endgültigen Einstellung (hier 10°C) wird nun unterdrückt.
+                
+                Bei Wertänderungen, welche mehr als 5 Bildschirmtouches benötigen, wird nun nach jeweils
+                5 Touches eine Unterbrechung ermöglicht. Hat man sich z.B. bei der WW-Temperatur geirrt
+                und sie auf 10°C gestellt, so kann man sie korrigieren und die Korrektur wirkt nach spätestens
+                5 Touches. 
                 
 
 Version 01.02.00
@@ -453,7 +458,7 @@ Version 00.11.01
     22.02.2020  Die Ermittlung des Origins wurde wieder ausgebaut, da die Berücksichtigung der
                 Kalibrierung in der SolvisControl nicht auf allen Bildschirmen berücksichtigt wird.
                 So sind die Bilder des Anlagenstatus unabhängig von der Kalibrierung. Rein theoretisch
-                hätte man das berücksichtigen können, aber da es sich bei der Touchscrenn-Kalibrierung
+                hätte man das berücksichtigen können, aber da es sich bei der TouchScreen-Kalibrierung
                 es sich nur um wenige Pixel handelt, welche das Bild verschoben sein kann, muss
                 dieser Einfluss grundsätzlich bei der Definition der Abmessungen der Grafiken
                 beachtet werden. Die Bildschirmschoner-Erkennung wurde angepasst, die äußeren

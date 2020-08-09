@@ -50,7 +50,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, SolvisData value) {
+	public SetResult setValue(Solvis solvis, SolvisData value) {
 		return this.strategy.setValue(solvis, value);
 	}
 

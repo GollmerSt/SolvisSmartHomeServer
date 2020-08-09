@@ -15,6 +15,7 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
+import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -27,7 +28,7 @@ public interface IStrategy extends IAssigner {
 	SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess, boolean optional)
 			throws TerminationException, IOException, ModbusException;
 
-	SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeException, ModbusException;
 
 	boolean isWriteable();

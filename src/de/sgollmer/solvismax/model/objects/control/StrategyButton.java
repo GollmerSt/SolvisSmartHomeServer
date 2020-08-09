@@ -19,6 +19,8 @@ import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
+import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -74,7 +76,7 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeException, ModbusException {
 		Boolean bool = value.getBoolean();
 		if (bool == null) {
@@ -88,7 +90,7 @@ public class StrategyButton implements IStrategy {
 					((GuiAccess) controlAccess).getValueRectangle(), this.pushTime, this.releaseTime);
 			boolean cmp = button.isSelected() ^ this.invert;
 			if (cmp == bool) {
-				return new BooleanValue(cmp, System.currentTimeMillis());
+				return new SetResult(Status.SUCCESS, new BooleanValue(cmp, System.currentTimeMillis()));
 			}
 			button.set(solvis, bool);
 		}

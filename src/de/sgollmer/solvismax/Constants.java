@@ -25,9 +25,6 @@ public class Constants {
 	public static final int MIN_TOUCH_TIME = 100;
 	public static final int MAX_WAIT_TIME_ON_STARTUP = 120000;
 
-	public static final String RESOURCE_DESTINATION_PATH = "SolvisServerData";
-	public static final String LEARN_DESTINATION_PATH = "learned_images";
-	public static final String RESOURCE_PATH = "data";
 	public static final int SCREEN_SAVER_IGNORED_FRAME_SIZE = 3;
 	public static final int CRYPT_PREVIOUS = 233;
 	/**
@@ -80,6 +77,13 @@ public class Constants {
 	public static final int MODBUS_SLAVE_ID = 1;
 
 	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
+	
+	public static class Pathes {
+		public static final String RESOURCE_DESTINATION = "SolvisServerData";
+		public static final String LEARN_DESTINATION = "learned_images";
+		public static final String RESOURCE = "data";
+		
+	}
 
 	public static class XmlStrings {
 		public static final String XML_MEASUREMENT_BOOLEAN = "BooleanValue";
@@ -128,5 +132,6 @@ public class Constants {
 	}
 
 	public static final Coordinate RELEASE_COORDINATE = new Coordinate(260, 260);
+	public static final int INTERRUPT_AFTER_N_TOUCHES = 5;
 
 }

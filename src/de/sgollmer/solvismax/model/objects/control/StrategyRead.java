@@ -21,6 +21,7 @@ import de.sgollmer.solvismax.helper.Helper.Format;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
@@ -75,7 +76,7 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, ModbusException, TypeException {
 		return null;
 	}

@@ -178,7 +178,7 @@ public class Logger4j2 {
 
 		}
 
-		pathName += File.separator + Constants.RESOURCE_DESTINATION_PATH;
+		pathName += File.separator + Constants.Pathes.RESOURCE_DESTINATION;
 		parent = new File(pathName);
 		this.parent = parent;
 	}
@@ -198,7 +198,7 @@ public class Logger4j2 {
 		File xml = new File(this.parent, Constants.LOG4J_CONFIG_FILE);
 
 		if (!xml.exists()) {
-			FileHelper.copyFromResource(Constants.RESOURCE_PATH + '/' + Constants.LOG4J_CONFIG_FILE, xml,
+			FileHelper.copyFromResource(Constants.Pathes.RESOURCE + '/' + Constants.LOG4J_CONFIG_FILE, xml,
 					"****LogPath****", this.parent.getAbsolutePath());
 		}
 

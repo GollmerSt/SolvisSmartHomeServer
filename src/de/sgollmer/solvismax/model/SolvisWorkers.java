@@ -22,6 +22,7 @@ import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Command.Handling;
+import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -86,7 +87,7 @@ public class SolvisWorkers {
 			}
 
 			while (!this.abort) {
-				boolean success;
+				Status status;
 				Command command = null;
 				SolvisState.State state = SolvisWorkers.this.solvis.getSolvisState().getState();
 				if (state == SolvisState.State.SOLVIS_CONNECTED || state == SolvisState.State.ERROR) {
@@ -111,7 +112,7 @@ public class SolvisWorkers {
 					if (this.abort) {
 						return;
 					}
-					success = true;
+					status = Status.SUCCESS;
 
 					try {
 						if (command != null
@@ -135,25 +136,29 @@ public class SolvisWorkers {
 						if (command != null && !command.isInhibit()) {
 							String commandString = command.toString();
 							logger.debug("Command <" + commandString + "> will be executed");
-							success = execute(command);
-							logger.debug("Command <" + commandString + "> executed "
-									+ (success ? "" : "not " + "successfull"));
+							status = execute(command);
+							if (status == Status.INTERRUPTED) {
+								logger.debug("Command <" + commandString + "> was interrupted. will be continued.");
+							} else {
+								logger.debug("Command <" + commandString + "> executed "
+										+ (status == Status.NO_SUCCESS ? "not " : "" + "successfull"));
+							}
 						}
 					} catch (IOException | PowerOnException | ModbusException e) {
-						success = false;
+						status = Status.NO_SUCCESS;
 					} catch (TerminationException e3) {
 						return;
 					} catch (Throwable e4) {
 						logger.error("Unknown error detected", e4);
-						success = true;
+						status = Status.SUCCESS;
 					}
 				} else {
-					success = false;
+					status = Status.NO_SUCCESS;
 					stateChanged = true;
 				}
 				synchronized (this) {
 					if (command != null) {
-						if (success) {
+						if (status == Status.SUCCESS) {
 							this.removeCommand(command);
 						} else {
 							if (command.toEndOfQueue()) {
@@ -161,7 +166,7 @@ public class SolvisWorkers {
 							}
 						}
 					}
-					if (!success) {
+					if (status == Status.NO_SUCCESS) {
 						try {
 							this.wait(unsuccessfullWaitTime);
 							if (SolvisWorkers.this.solvis.getSolvisState().isConnected()) {
@@ -312,7 +317,7 @@ public class SolvisWorkers {
 
 	}
 
-	private boolean execute(Command command)
+	private Status execute(Command command)
 			throws IOException, TerminationException, PowerOnException, ModbusException {
 		if (!command.isModbus() || command.isWriting()) {
 			AbstractScreen commandScreen = command.getScreen(this.solvis);
@@ -345,7 +350,7 @@ public class SolvisWorkers {
 
 			return command.execute(this.solvis);
 		} else {
-			return true;
+			return Status.SUCCESS;
 		}
 	}
 
@@ -354,9 +359,9 @@ public class SolvisWorkers {
 			this.controlsThread.push(new Command() {
 
 				@Override
-				public boolean execute(Solvis solvis) throws IOException, TerminationException, PowerOnException {
+				public Status execute(Solvis solvis) throws IOException, TerminationException, PowerOnException {
 					SolvisWorkers.this.controlsThread.commandOptimization(true);
-					return true;
+					return Status.SUCCESS;
 				}
 
 				@Override

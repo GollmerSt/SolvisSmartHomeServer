@@ -45,7 +45,7 @@ public class GraficFileHandler {
 			writePath = new File(pathName);
 		}
 
-		this.parent = new File(writePath, Constants.RESOURCE_DESTINATION_PATH);
+		this.parent = new File(writePath, Constants.Pathes.RESOURCE_DESTINATION);
 	}
 
 	private void copyFiles() throws IOException, FileException {
@@ -62,7 +62,7 @@ public class GraficFileHandler {
 
 		File xsd = new File(this.parent, NAME_XSD_GRAFICSFILE);
 
-		FileHelper.copyFromResource(Constants.RESOURCE_PATH + '/' + NAME_XSD_GRAFICSFILE, xsd);
+		FileHelper.copyFromResource(Constants.Pathes.RESOURCE + '/' + NAME_XSD_GRAFICSFILE, xsd);
 
 	}
 

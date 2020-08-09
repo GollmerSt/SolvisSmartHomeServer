@@ -13,6 +13,7 @@ import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Command;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor.NextAdjust;
 
 public class CommandClock extends Command {
@@ -26,9 +27,9 @@ public class CommandClock extends Command {
 	}
 
 	@Override
-	public boolean execute(Solvis solvis) throws IOException, TerminationException, PowerOnException {
+	public Status execute(Solvis solvis) throws IOException, TerminationException, PowerOnException {
 		this.strategy.execute(this.nextAdjust);
-		return true;
+		return Status.SUCCESS;
 	}
 
 	@Override

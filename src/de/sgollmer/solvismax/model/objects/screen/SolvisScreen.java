@@ -77,8 +77,8 @@ public class SolvisScreen {
 	}
 
 	public void writeLearningImage(String id) {
-		File parent = new File(this.solvis.getWritePath(), Constants.RESOURCE_DESTINATION_PATH);
-		parent = new File(parent, Constants.LEARN_DESTINATION_PATH);
+		File parent = new File(this.solvis.getWritePath(), Constants.Pathes.RESOURCE_DESTINATION);
+		parent = new File(parent, Constants.Pathes.LEARN_DESTINATION);
 		String baseName = this.solvis.getUnit().getId() + "__" + id + "__";
 		int cnt = 0;
 		boolean found = true;

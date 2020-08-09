@@ -79,7 +79,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, SolvisData value)
+	public SetResult setValue(Solvis solvis, SolvisData value)
 			throws IOException, TerminationException, ModbusException {
 		return this.channelSource.setValue(solvis, value);
 	}

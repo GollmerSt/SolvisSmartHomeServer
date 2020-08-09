@@ -26,6 +26,8 @@ import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
+import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
@@ -91,7 +93,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeException, ModbusException {
 		if (value.getMode() == null) {
 			throw new TypeException("Wrong value type");
@@ -99,7 +101,7 @@ public class StrategyMode implements IStrategy {
 		IMode valueMode = value.getMode().get();
 		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 		if (cmp != null && value.getMode().equals(cmp)) {
-			return cmp;
+			return new SetResult(Status.SUCCESS, cmp);
 		}
 		ModeEntry mode = null;
 		for (ModeEntry m : this.modes) {
@@ -207,7 +209,7 @@ public class StrategyMode implements IStrategy {
 				solvis.send(mode.getGuiSet().getTouch());
 				ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
 				SolvisScreen currentScreen = solvis.getCurrentScreen();
-				currentScreen.writeLearningImage(currentScreen.get().getId() + "__" + grafic.getId() );
+				currentScreen.writeLearningImage(currentScreen.get().getId() + "__" + grafic.getId());
 				grafic.learn(solvis);
 				solvis.clearCurrentScreen();
 				SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
