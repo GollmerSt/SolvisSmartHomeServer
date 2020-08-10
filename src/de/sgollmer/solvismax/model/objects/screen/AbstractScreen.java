@@ -258,9 +258,9 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 					cmp = s1.getScreen().compareTo(s2.getScreen());
 					if (cmp != 0) {
 						if (i1.hasPrevious()) {
-							return 1;
-						} else if (i2.hasPrevious()) {
 							return -1;
+						} else if (i2.hasPrevious()) {
+							return 1;
 						}
 						return cmp;
 					}

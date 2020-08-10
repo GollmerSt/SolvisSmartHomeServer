@@ -1549,7 +1549,7 @@
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
 					<tns:GuiModification format="^(\d+)..$"
-						wrapAround="true">
+						wrapAround="false">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="225" Y="15" />
@@ -1583,7 +1583,7 @@
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
 					<tns:GuiModification format="^(\d+)..$"
-						wrapAround="true">
+						wrapAround="false">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="225" Y="15" />
@@ -1788,7 +1788,7 @@
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
 					<tns:GuiModification format="^(\d+)..$"
-						wrapAround="true">
+						wrapAround="false">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="225" Y="15" />
@@ -1822,7 +1822,7 @@
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
 					<tns:GuiModification format="^(\d+)..$"
-						wrapAround="true">
+						wrapAround="false">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="225" Y="15" />
@@ -2133,7 +2133,7 @@
 		<tns:Duration id="ValueChange" time_ms="2000" />
 		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neues 
 			Fenster ausgewählt wurde -->
-		<tns:Duration id="WindowChange" time_ms="3000" />
+		<tns:Duration id="WindowChange" time_ms="3500" />
 		<!-- Zeitintervall für den Check der Zählfunktionen, um die berechneten 
 			Werte zu synchronisieren -->
 		<tns:Duration id="checkCalculation" time_ms="86400000" />

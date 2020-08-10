@@ -206,9 +206,15 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.getType();
 	}
 
+
 	@Override
 	public AbstractScreen getScreen(int configurationMask) {
 		return this.channelSource.getScreen(configurationMask);
+	}
+
+	@Override
+	public AbstractScreen getScreen(Solvis solvis) {
+		return this.channelSource.getScreen(solvis.getConfigurationMask());
 	}
 
 	@Override

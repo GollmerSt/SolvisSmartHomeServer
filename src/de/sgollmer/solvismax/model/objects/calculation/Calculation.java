@@ -155,6 +155,11 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
+	public AbstractScreen getScreen(Solvis solvis) {
+		return null;
+	}
+
+	@Override
 	public Collection<? extends IMode> getModes() {
 		return null;
 	}

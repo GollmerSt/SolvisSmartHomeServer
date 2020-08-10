@@ -224,6 +224,11 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
+	public Screen getScreen(Solvis solvis) {
+		return null;
+	}
+
+	@Override
 	public Collection<? extends IMode> getModes() {
 		return null;
 	}

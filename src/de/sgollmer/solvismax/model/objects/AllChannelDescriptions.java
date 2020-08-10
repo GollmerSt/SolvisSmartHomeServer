@@ -10,9 +10,8 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +36,7 @@ import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -184,7 +184,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 					descriptions.add(description);
 				}
 			}
-			this.optimize((List<ChannelDescription>) descriptions, configurationMask);
+			descriptions = this.optimize((List<ChannelDescription>) descriptions, solvis);
 
 			this.updateControlChannelsSequences.put(configurationMask, descriptions);
 		}
@@ -209,7 +209,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 					descriptions.add(description);
 				}
 			}
-			this.optimize((List<ChannelDescription>) descriptions, configurationMask);
+			descriptions = this.optimize((List<ChannelDescription>) descriptions, solvis);
 
 			this.updateByScreenChangeSequences.put(configurationMask, descriptions);
 		}
@@ -220,23 +220,32 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	}
 
-	private static class OptimizeComparator implements Comparator<ChannelDescription> {
+	private Collection<ChannelDescription> optimize(List<ChannelDescription> descriptions, Solvis solvis) {
 
-		private final AbstractScreen.OptimizeComparator comp;
+		Collection<ChannelDescription> toFind = new ArrayList<>(descriptions);
 
-		public OptimizeComparator(int mask) {
-			this.comp = new AbstractScreen.OptimizeComparator(mask);
-		}
+		Collection<ChannelDescription> optimized = new ArrayList<>(descriptions.size());
 
-		@Override
-		public int compare(ChannelDescription o1, ChannelDescription o2) {
-			return this.comp.compare(o1.getScreen(this.comp.getMask()), o2.getScreen(this.comp.getMask()));
-		}
+		this.buildOptimized(solvis.getHomeScreen(), toFind, optimized, solvis);
+
+		return optimized;
 	}
 
-	private void optimize(List<ChannelDescription> descriptions, int mask) {
+	private void buildOptimized(Screen start, Collection<ChannelDescription> toFind,
+			Collection<ChannelDescription> destin, Solvis solvis) {
 
-		Collections.sort(descriptions, new OptimizeComparator( mask));
+		for (Iterator<ChannelDescription> it = toFind.iterator(); it.hasNext();) {
+			ChannelDescription oneToFind = it.next();
+			if (oneToFind.getScreen(solvis) == start) {
+				destin.add(oneToFind);
+				it.remove();
+			}
+		}
+		for (AbstractScreen next : start.getNextScreens(solvis)) {
+			if (next instanceof Screen) {
+				this.buildOptimized((Screen) next, toFind, destin, solvis);
+			}
+		}
 
 	}
 

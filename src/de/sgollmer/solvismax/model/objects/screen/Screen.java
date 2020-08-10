@@ -509,7 +509,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		if (descriptions.size() > 0) { // Yes
 			AbstractScreen current = this;
 			// next screens could contain ScreenSequence
-			for (AbstractScreen nextScreen : this.getNextScreen(solvis)) {
+			for (AbstractScreen nextScreen : this.getNextScreens(solvis)) {
 				if (nextScreen.isToBeLearning(solvis)) {
 					success = false;
 					for (int cnt = Constants.LEARNING_RETRIES; cnt >= 0 && !success; --cnt) {
@@ -553,7 +553,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		if (!this.isLearned(solvis)) {
 			return true;
 		}
-		for (AbstractScreen screen : this.getNextScreen(solvis)) {
+		for (AbstractScreen screen : this.getNextScreens(solvis)) {
 			if (screen.isToBeLearning(solvis)) {
 				return true;
 			}
@@ -676,7 +676,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		return (AbstractScreen) OfConfigs.get(configurationMask, this.backScreen);
 	}
 
-	private Collection<AbstractScreen> getNextScreen(Solvis solvis) {
+	public Collection<AbstractScreen> getNextScreens(Solvis solvis) {
 		int mask = solvis.getConfigurationMask();
 		List<AbstractScreen> result = new ArrayList<>(3);
 		for (AbstractScreen screen : this.nextScreens) {
@@ -760,8 +760,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				gone = false;
 			}
 			if (!gone) {
-				solvis.gotoHome(); // try it from beginning
 				logger.info("Goto screen <" + this.getId() + "> not succcessful. Will be retried.");
+				solvis.gotoHome(); // try it from beginning
 			}
 		}
 		if (!gone) {

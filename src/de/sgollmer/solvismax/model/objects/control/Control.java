@@ -353,6 +353,11 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
+	public AbstractScreen getScreen(Solvis solvis) {
+		return this.guiAccess.getScreen().get(solvis);
+	}
+
+	@Override
 	public Collection<? extends IMode> getModes() {
 		return this.strategy.getModes();
 	}

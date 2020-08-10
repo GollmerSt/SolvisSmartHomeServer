@@ -22,7 +22,15 @@ Version 01.02.00
                 
     10.08.2020  Da nun Set-Befehle vorzeitig abgebrochen werden können, musste der Restore-Mechanismus angepasst
                 werden. Zur Erinnerung: Das Auslesen/Setzen der Solltempersturen von Tag/Nacht bewirkte manchmal,
-                dass der Heizkreiszustand sich verändert hatte. 
+                dass der Heizkreiszustand sich verändert hatte.
+                
+                Die maximale Goto-Tiefe war nicht aureichend, dadurch wurde das Auslesen der Werte des
+                Heizkreises 1 beim esten Versuch immer abgebrochen, erst der 2te, bei der die Goto-Tiefe geringer
+                ist, funktionierte dann.
+                
+                Die Wartezeit bei einem Bildschirmwechsel von 3s war etwas knapp, sie wurde auf 3,5s erhöht.
+                
+                Reihenfolge beim Update der GUI-Channels optimiert. 
                 
 
 Version 01.02.00

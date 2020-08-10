@@ -79,6 +79,8 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public AbstractScreen getScreen(int configurationMask);
 
+	public AbstractScreen getScreen(Solvis solvis);
+
 	public UpperLowerStep getUpperLowerStep();
 
 	public boolean isModbus(Solvis solvis);
