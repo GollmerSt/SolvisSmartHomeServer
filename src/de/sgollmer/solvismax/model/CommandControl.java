@@ -8,6 +8,9 @@
 package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.ModbusException;
@@ -33,6 +36,7 @@ public class CommandControl extends Command {
 	private boolean inhibit = false;
 	private int writeFailCount = 0;
 	private int readFailCount = 0;
+	private Collection<ChannelDescription> readChannels = null;
 
 	CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) {
 		this.modbus = description.isModbus(solvis);
@@ -62,33 +66,6 @@ public class CommandControl extends Command {
 	@Override
 	protected AbstractScreen getScreen(Solvis solvis) {
 		return this.screen;
-	}
-
-	private boolean save(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException {
-		ChannelDescription restoreChannel = this.description.getRestoreChannel(solvis);
-		if (restoreChannel == null || this.isModbus()) {
-			return true;
-		}
-		Status status = Status.UNKNOWN;
-		CommandControl save = new CommandControl(restoreChannel, solvis);
-		for (int cnt = 0; status != Status.SUCCESS && cnt < Constants.COMMAND_IGNORED_AFTER_N_FAILURES; ++cnt) {
-			status = save.execute(solvis);
-		}
-		return status == Status.SUCCESS;
-	}
-
-	private boolean restore(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException {
-		ChannelDescription restoreChannel = this.description.getRestoreChannel(solvis);
-		if (restoreChannel == null || this.isModbus()) {
-			return true;
-		}
-		Status status = Status.UNKNOWN;
-		SolvisData data = solvis.getAllSolvisData().get(restoreChannel);
-		CommandControl restore = new CommandControl(restoreChannel, data.getSingleData(), solvis);
-		for (int cnt = 0; status != Status.SUCCESS && cnt < Constants.COMMAND_IGNORED_AFTER_N_FAILURES; ++cnt) {
-			status = restore.execute(solvis);
-		}
-		return status == Status.SUCCESS;
 	}
 
 	private Status write(Solvis solvis) throws IOException, TerminationException, ModbusException {
@@ -124,13 +101,6 @@ public class CommandControl extends Command {
 
 		int maxFailCnt = Constants.COMMAND_IGNORED_AFTER_N_FAILURES;
 
-		if (!this.save(solvis)) {
-			this.writeFailCount = maxFailCnt;
-			logger.error("Save of channel <" + this.description.getRestoreChannel(solvis).getId()
-					+ "> not successfull. Aborted.");
-			return Status.NO_SUCCESS;
-		}
-
 		Status writeStatus = Status.SUCCESS;
 
 		if (this.isWriting() && this.writeFailCount < maxFailCnt) {
@@ -145,9 +115,23 @@ public class CommandControl extends Command {
 				readSuccess = this.description.getValue(solvis);
 
 			} else {
-				for (ChannelDescription description : solvis.getSolvisDescription().getChannelDescriptions()
-						.getChannelDescriptions(this.screen, solvis)) {
-					readSuccess &= description.getValue(solvis);
+				Collection<ChannelDescription> readChannels = solvis.getSolvisDescription().getChannelDescriptions()
+						.getChannelDescriptions(this.screen, solvis);
+
+				if (this.isWriting()) {
+					this.readChannels = new ArrayList<>(readChannels.size() + 1);
+					this.readChannels.add(this.description);
+				} else {
+					this.readChannels = new ArrayList<>(readChannels.size());
+				}
+				for (Iterator<ChannelDescription> it = readChannels.iterator(); it.hasNext();) {
+					ChannelDescription description = it.next();
+					boolean success = description.getValue(solvis);
+					if (success) {
+						this.readChannels.add(this.description);
+						it.remove();
+					}
+					readSuccess &= success;
 				}
 			}
 			if (!readSuccess) {
@@ -157,12 +141,6 @@ public class CommandControl extends Command {
 					readSuccess = true;
 				}
 			}
-		}
-		if (!this.restore(solvis)) {
-			this.writeFailCount = maxFailCnt;
-			logger.error("Restore of channel <" + this.description.getRestoreChannel(solvis).getId()
-					+ "> not successfull. Aborted.");
-			readSuccess = false;
 		}
 
 		if (writeStatus == Status.SUCCESS && !readSuccess) {
@@ -199,11 +177,19 @@ public class CommandControl extends Command {
 				if (sameScreen) {
 
 					if (queueEntry.isWriting()) {
+						
 						if (this.description == qCmp.description && this.isWriting()) {
 							inQueueInhibit = true;
 						}
 						inhibitAdd = !this.isWriting();
 						insert = true;
+						
+					} else if (queueEntry.getRestoreChannel(solvis) != null) {
+						
+						if (this.description == qCmp.description ) {
+							inQueueInhibit = true ;
+						}
+						
 					} else {
 						inQueueInhibit = true;
 					}
@@ -270,4 +256,15 @@ public class CommandControl extends Command {
 	public SingleData<?> getSetValue() {
 		return this.setValue;
 	}
+
+	@Override
+	Collection<ChannelDescription> getReadChannels() {
+		return this.readChannels;
+	}
+
+	@Override
+	ChannelDescription getRestoreChannel(Solvis solvis) {
+		return this.description.getRestoreChannel(solvis);
+	}
+
 }

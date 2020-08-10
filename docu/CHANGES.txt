@@ -18,7 +18,11 @@ Version 01.02.00
                 Bei Wertänderungen, welche mehr als 5 Bildschirmtouches benötigen, wird nun nach jeweils
                 5 Touches eine Unterbrechung ermöglicht. Hat man sich z.B. bei der WW-Temperatur geirrt
                 und sie auf 10°C gestellt, so kann man sie korrigieren und die Korrektur wirkt nach spätestens
-                5 Touches. 
+                5 Touches.
+                
+    10.08.2020  Da nun Set-Befehle vorzeitig abgebrochen werden können, musste der Restore-Mechanismus angepasst
+                werden. Zur Erinnerung: Das Auslesen/Setzen der Solltempersturen von Tag/Nacht bewirkte manchmal,
+                dass der Heizkreiszustand sich verändert hatte. 
                 
 
 Version 01.02.00

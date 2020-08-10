@@ -387,6 +387,8 @@ public class CommandHandler {
 					this.wait(delay);
 				} catch (InterruptedException e) {
 				}
+			}
+			synchronized (CommandHandler.this) {
 				if (!this.abort) {
 					try {
 						unregister(this.assignments);

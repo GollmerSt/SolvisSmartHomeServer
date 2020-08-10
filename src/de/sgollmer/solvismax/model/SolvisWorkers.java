@@ -22,6 +22,7 @@ import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Command.Handling;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
@@ -62,6 +63,7 @@ public class SolvisWorkers {
 	private class ControlWorkerThread extends Thread {
 
 		private LinkedList<Command> queue = new LinkedList<>();
+		private Collection<ChannelDescription> channelsOfQueueRead = new ArrayList<>();
 		private boolean abort = false;
 		private int screenRestoreInhibitCnt = 0;
 		private int optimizationInhibitCnt = 0;
@@ -93,6 +95,7 @@ public class SolvisWorkers {
 				if (state == SolvisState.State.SOLVIS_CONNECTED || state == SolvisState.State.ERROR) {
 					synchronized (this) {
 						if (this.queue.isEmpty() || this.commandDisableCount > 0 || !SolvisWorkers.this.controlEnable) {
+							this.channelsOfQueueRead.clear();
 							if (!queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
 								restoreScreen = true;
 								queueWasEmpty = true;
@@ -134,15 +137,9 @@ public class SolvisWorkers {
 							SolvisWorkers.this.solvis.getHomeScreen().goTo(SolvisWorkers.this.solvis);
 						}
 						if (command != null && !command.isInhibit()) {
-							String commandString = command.toString();
-							logger.debug("Command <" + commandString + "> will be executed");
-							status = execute(command);
-							if (status == Status.INTERRUPTED) {
-								logger.debug("Command <" + commandString + "> was interrupted. will be continued.");
-							} else {
-								logger.debug("Command <" + commandString + "> executed "
-										+ (status == Status.NO_SUCCESS ? "not " : "" + "successfull"));
-							}
+							ExecutedCommand executedCommand = this.processCommand(command);
+							command = executedCommand.command;
+							status = executedCommand.status;
 						}
 					} catch (IOException | PowerOnException | ModbusException e) {
 						status = Status.NO_SUCCESS;
@@ -180,6 +177,44 @@ public class SolvisWorkers {
 			}
 		}
 
+		private class ExecutedCommand {
+			private final Command command;
+			private final Status status;
+
+			public ExecutedCommand(Command command, Status status) {
+				this.command = command;
+				this.status = status;
+			}
+		}
+
+		private ExecutedCommand processCommand(Command command)
+				throws IOException, TerminationException, PowerOnException, ModbusException {
+			Command executeCommand = command;
+			ChannelDescription restoreChannel = command.getRestoreChannel(SolvisWorkers.this.solvis);
+			if (restoreChannel != null && !this.channelsOfQueueRead.contains(restoreChannel)) {
+				executeCommand = new CommandControl(restoreChannel, SolvisWorkers.this.solvis);
+				this.insertCommand(executeCommand, command, false);
+			}
+			String commandString = executeCommand.toString();
+			logger.debug("Command <" + commandString + "> will be executed");
+			Status status = execute(executeCommand);
+			this.channelsOfQueueRead.addAll(executeCommand.getReadChannels()) ;
+			if (status == Status.INTERRUPTED) {
+				logger.debug("Command <" + commandString + "> was interrupted. will be continued.");
+			} else {
+				restoreChannel = executeCommand.getRestoreChannel(SolvisWorkers.this.solvis);
+				if (restoreChannel != null) {
+					SolvisData data = SolvisWorkers.this.solvis.getAllSolvisData().get(restoreChannel);
+					CommandControl restoreCommand = new CommandControl(restoreChannel, data.getSingleData(),
+							SolvisWorkers.this.solvis);
+					this.insertCommand(restoreCommand, executeCommand, true);
+				}
+				logger.debug("Command <" + commandString + "> executed "
+						+ (status == Status.NO_SUCCESS ? "not " : "" + "successfull"));
+			}
+			return new ExecutedCommand(executeCommand, status);
+		}
+
 		private synchronized void removeCommand(Command command) {
 			boolean deleted = false;
 			for (Iterator<Command> it = this.queue.iterator(); it.hasNext() && !deleted;) {
@@ -187,6 +222,20 @@ public class SolvisWorkers {
 				if (command == cmp) {
 					it.remove();
 					deleted = true;
+				}
+			}
+		}
+
+		private synchronized void insertCommand(Command command, Command reference, boolean after) {
+			if (command == null) {
+				return;
+			}
+			for (int idx = 0; idx < this.queue.size(); ++idx) {
+				Command cmp = this.queue.get(idx);
+				if (reference == cmp) {
+					idx = after ? idx + 1 : idx;
+					this.queue.add(idx, command);
+					break;
 				}
 			}
 		}

@@ -8,10 +8,12 @@
 package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 
@@ -61,9 +63,22 @@ public abstract class Command {
 	};
 
 	public static class Handling {
+		/**
+		 * True: The Execution of the command within the queue isn't necessary, because
+		 * the effect of new command is overwriting the effect of the old one.
+		 */
 		private final boolean inQueueInhibt;
+		/**
+		 * True: New command is ignored, because he is redundant
+		 */
 		private final boolean inhibitAdd;
+		/**
+		 * True: The new command must inserted after queue command
+		 */
 		private final boolean insert;
+		/**
+		 * True: no previous entries are of interest 
+		 */
 		private final boolean mustFinished;
 
 		/**
@@ -79,6 +94,16 @@ public abstract class Command {
 			this(inQueueInhibit, inhibitAppend, insert, false);
 		}
 
+		/**
+		 * 
+		 * @param inQueueInhibit True: The Execution of the command within the queue
+		 *                       isn't necessary, because the effect of new command is
+		 *                       overwriting the effect of the old one.
+		 * @param inhibitAppend  True: New command is ignored, because he is redundant
+		 * @param insert         True: The new command must inserted after queue command
+		 * @param mustFinished   True: no previous entries are of interest
+		 */
+		
 		Handling(boolean inQueueInhibt, boolean inhibitAdd, boolean insert, boolean mustFinished) {
 			this.inQueueInhibt = inQueueInhibt;
 			this.inhibitAdd = inhibitAdd;
@@ -147,5 +172,13 @@ public abstract class Command {
 	 */
 	protected boolean canBeIgnored(Command queueCommand) {
 		return false;
+	}
+
+	ChannelDescription getRestoreChannel(Solvis solvis) {
+		return null;
+	}
+
+	Collection<ChannelDescription> getReadChannels() {
+		return null;
 	}
 }
