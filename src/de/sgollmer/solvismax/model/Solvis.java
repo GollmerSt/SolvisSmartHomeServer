@@ -302,13 +302,27 @@ public class Solvis {
 		this.worker.push(command);
 	}
 
-	public void setFromExternal(ChannelDescription description, SingleData<?> singleData) {
+	/**
+	 * 
+	 * 
+	 * @param description
+	 * @param singleData
+	 * 
+	 * @return	True: Command was ignored to prevent feedback loops
+	 */
+	public boolean setFromExternal(ChannelDescription description, SingleData<?> singleData) {
+
+		boolean ignored;
 
 		SolvisData current = this.getAllSolvisData().get(description);
 		if (current.getSentTimeStamp() + this.getEchoInhibitTime_ms() < System.currentTimeMillis()
 				|| !current.getSingleData().equals(singleData)) {
 			this.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData, this));
+			ignored = false;
+		} else {
+			ignored = true;
 		}
+		return ignored;
 	}
 
 	public ChannelDescription getChannelDescription(String description) {
@@ -700,7 +714,7 @@ public class Solvis {
 		return this.writePath;
 	}
 
-	public boolean willBeModified( SolvisData data) {
+	public boolean willBeModified(SolvisData data) {
 		return this.worker.willBeModified(data);
 	}
 }

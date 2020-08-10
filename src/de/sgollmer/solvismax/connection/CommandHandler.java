@@ -284,13 +284,17 @@ public class CommandHandler {
 		}
 		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
 		SingleData<?> singleData = receivedDat.getSingleData();
-		logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");
 		try {
 			singleData = description.interpretSetData(singleData);
 		} catch (TypeException e) {
 			throw new JsonException(e.getMessage() + " Located in revceived Json package.");
 		}
-		solvis.setFromExternal(description, singleData);
+		boolean ignored = solvis.setFromExternal(description, singleData);
+		if ( ignored) {
+			logger.info("Setting the channel <" + description.getId() + "> ignored to prevent feedback loops.");
+		} else {
+			logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");
+		}
 	}
 
 	private void get(ITransferedData receivedDat, IClient client) {
