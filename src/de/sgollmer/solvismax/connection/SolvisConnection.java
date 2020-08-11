@@ -280,7 +280,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.errorCount = 0;
 		this.firstTimeout = 0;
 
-		this.solvisState.connected();
+		this.solvisState.setConnected();
 
 		switch (this.solvisState.getState()) {
 			case POWER_OFF:
@@ -304,9 +304,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 		if (this.errorCount >= this.powerOffDetectedAfterIoErrors
 				&& System.currentTimeMillis() > this.firstTimeout + this.powerOffDetectedAfterTimeout_ms) {
-			this.solvisState.powerOff();
+			this.solvisState.setPowerOff();
 		} else {
-			this.solvisState.disconnected();
+			this.solvisState.setDisconnected();
 			;
 		}
 		AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_IO_ERROR);

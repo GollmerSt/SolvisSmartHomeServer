@@ -72,6 +72,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private final String preparationId;
 	private final String lastPreparationId;
 	private Preparation lastPreparation = null;
+	private final boolean noRestore;
 
 	private OfConfigs<AbstractScreen> previousScreen = null;
 	private OfConfigs<AbstractScreen> alternativePreviousScreen = null;
@@ -80,7 +81,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private Screen(String id, String previousId, String alternativePreviousId, String backId, boolean ignoreChanges,
 			ConfigurationMasks configurationMasks, TouchPoint touchPoint, TouchPoint sequenceUp,
 			TouchPoint sequenceDown, Collection<String> screenGraficRefs, Collection<IScreenPartCompare> screenCompares,
-			Collection<Rectangle> ignoreRectangles, String preparationId, String lastPreparationId) {
+			Collection<Rectangle> ignoreRectangles, String preparationId, String lastPreparationId, boolean noRestore) {
 		super(id, previousId, configurationMasks);
 		this.alternativePreviousId = alternativePreviousId;
 		this.backId = backId;
@@ -93,6 +94,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		this.ignoreRectangles = ignoreRectangles;
 		this.preparationId = preparationId;
 		this.lastPreparationId = lastPreparationId;
+		this.noRestore = noRestore;
 	}
 
 	/**
@@ -278,6 +280,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private List<Rectangle> ignoreRectangles = null;
 		private String preparationId = null;
 		private String lastPreparationId;
+		private boolean noRestore = false;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -307,6 +310,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				case "ignoreChanges":
 					this.ignoreChanges = Boolean.parseBoolean(value);
 					break;
+				case "noRestore":
+					this.noRestore = Boolean.parseBoolean(value);
+					break;
 			}
 
 		}
@@ -328,7 +334,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				});
 			return new Screen(this.id, this.previousId, this.alternativePreviousId, this.backId, this.ignoreChanges,
 					this.configurationMasks, this.touchPoint, this.sequenceUp, this.sequenceDown, this.screenGraficRefs,
-					this.screenCompares, this.ignoreRectangles, this.preparationId, this.lastPreparationId);
+					this.screenCompares, this.ignoreRectangles, this.preparationId, this.lastPreparationId,
+					this.noRestore);
 		}
 
 		@Override
@@ -469,7 +476,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		boolean success = false;
 		for (int cnt = Constants.LEARNING_RETRIES; cnt > 0 && !success; --cnt) {
 			success = true;
-			solvis.getCurrentScreen().writeLearningImage( this.id );
+			solvis.getCurrentScreen().writeLearningImage(this.id);
 			try {
 				for (IScreenPartCompare screenPartCompare : this.screenCompares) {
 					if (screenPartCompare instanceof ScreenGraficDescription) {
@@ -711,14 +718,14 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
 					return true;
 				}
-				success = true ;
+				success = true;
 
 			} catch (IOException e) {
 				logger.info("Goto screen <" + this.getId() + "> not succcessful. Will be retried.");
 			}
 		}
-		
-		if ( !success ) {
+
+		if (!success) {
 			logger.error("Screen <" + this.getId() + "> not found.");
 		}
 
@@ -801,6 +808,11 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	public TouchPoint getSequenceDown() {
 		return this.sequenceDown;
+	}
+
+	@Override
+	public boolean isNoRestore() {
+		return this.noRestore;
 	}
 
 	private static class WhiteGraficRectangle implements IScreenPartCompare {

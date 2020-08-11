@@ -28,10 +28,15 @@
 			</element>
 
 			<sequence>
-				<element name="SequenceUp" type="tns:TouchPoint" maxOccurs="1" minOccurs="0"></element>
-				<element name="SequenceDown" type="tns:TouchPoint" maxOccurs="1" minOccurs="0"></element>
+				<element name="SequenceUp" type="tns:TouchPoint"
+					maxOccurs="1" minOccurs="0">
+				</element>
+				<element name="SequenceDown" type="tns:TouchPoint"
+					maxOccurs="1" minOccurs="0">
+				</element>
 			</sequence>
-			<element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="unbounded" minOccurs="0">
+			<element name="ScreenOcr" type="tns:ScreenOcr"
+				maxOccurs="unbounded" minOccurs="0">
 				<annotation>
 					<documentation>
 						Wenn sich der Bildschirm aus erkennbaren Zeichen
@@ -39,7 +44,8 @@
 					</documentation>
 				</annotation>
 			</element>
-            <element name="ScreenGraficRef" type="tns:ScreenGraficRef" maxOccurs="unbounded" minOccurs="0">
+			<element name="ScreenGraficRef" type="tns:ScreenGraficRef"
+				maxOccurs="unbounded" minOccurs="0">
 				<annotation>
 					<documentation>
 						Wenn sich der Bildschirm aus einem
@@ -48,7 +54,8 @@
 					</documentation>
 				</annotation>
 			</element>
-            <element name="ScreenGrafic" type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0">
+			<element name="ScreenGrafic" type="tns:ScreenGrafic"
+				maxOccurs="unbounded" minOccurs="0">
 				<annotation>
 					<documentation>
 						Wenn sich der Bildschirm aus einem
@@ -56,7 +63,8 @@
 					</documentation>
 				</annotation>
 			</element>
-            <element name="IgnoreRectangle" type="tns:Rectangle" maxOccurs="unbounded" minOccurs="0">
+			<element name="IgnoreRectangle" type="tns:Rectangle"
+				maxOccurs="unbounded" minOccurs="0">
 				<annotation>
 					<documentation>
 						Zur Erkennung von Useraktivitäten, Änderungen
@@ -78,7 +86,8 @@
 					</documentation>
 				</annotation>
 			</element>
-            <element name="MustBeWhite" type="tns:Rectangle" maxOccurs="unbounded" minOccurs="0">
+			<element name="MustBeWhite" type="tns:Rectangle"
+				maxOccurs="unbounded" minOccurs="0">
 				<annotation>
 					<documentation>
 						Dieses rechteck wird nur im Lernvorgang geprüft,
@@ -90,9 +99,11 @@
 					</documentation>
 				</annotation>
 			</element>
-            <element name="PreparationRef" type="tns:PreparationRef" maxOccurs="1" minOccurs="0">
+			<element name="PreparationRef" type="tns:PreparationRef"
+				maxOccurs="1" minOccurs="0">
 			</element>
-            <element name="LastPreparationRef" type="tns:PreparationRef" maxOccurs="1" minOccurs="0">
+			<element name="LastPreparationRef" type="tns:PreparationRef"
+				maxOccurs="1" minOccurs="0">
 				<annotation>
 					<documentation>
 						Sollte der Screeninhalt nicht eindeutig sein
@@ -104,7 +115,7 @@
 					</documentation>
 				</annotation>
 			</element>
-        </sequence>
+		</sequence>
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="previousId" type="string" use="required">
 			<annotation>
@@ -118,17 +129,16 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="ignoreChanges" type="boolean"
-			use="optional">
+		<attribute name="ignoreChanges" type="boolean" use="optional">
 			<annotation>
 				<documentation>
 					Zur Erkennung von Useraktivitäten, Änderungen auf
 					diesem Screen werden nicht als Useraktivität
-					registriert. Default:
-					false
+					registriert. Default: false
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="noRestore" type="boolean" use="optional"></attribute>
 	</complexType>
 
 

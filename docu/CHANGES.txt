@@ -30,7 +30,11 @@ Version 01.02.00
                 
                 Die Wartezeit bei einem Bildschirmwechsel von 3s war etwas knapp, sie wurde auf 3,5s erhöht.
                 
-                Reihenfolge beim Update der GUI-Channels optimiert. 
+                Reihenfolge beim Update der GUI-Channels optimiert.
+                
+    11.08.2020  Ist nach einem Anwenderzugriff die Sollwertvorgaben für Nacht-/Tages-Temperaturen ausgewählt
+                geblieben, darf nicht - nach dem Holen der GUI-Werte - dieser Bildschirm wieder restauriert werden,
+                da es dabei möglich ist, dass sich der Heizkreismodus verstellt (siehe auch Änderung vom 25.05.2020).
                 
 
 Version 01.02.00

@@ -124,19 +124,19 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 		return true;
 	}
 
-	public void powerOff() {
+	public void setPowerOff() {
 		this.setState(State.POWER_OFF);
 	}
 
-	public void connected() {
+	public void setConnected() {
 		this.setState(State.SOLVIS_CONNECTED);
 	}
 
-	public void disconnected() {
+	public void setDisconnected() {
 		this.setState(State.SOLVIS_DISCONNECTED);
 	}
 
-	void remoteConnected() {
+	void setRemoteConnected() {
 		this.setState(State.REMOTE_CONNECTED);
 	}
 

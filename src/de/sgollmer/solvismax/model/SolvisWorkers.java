@@ -516,10 +516,10 @@ public class SolvisWorkers {
 
 					try {
 						SolvisWorkers.this.solvis.measure();
-						SolvisWorkers.this.solvis.getSolvisState().connected();
+						SolvisWorkers.this.solvis.getSolvisState().setConnected();
 					} catch (IOException e1) {
 					} catch (PowerOnException e2) {
-						SolvisWorkers.this.solvis.getSolvisState().remoteConnected();
+						SolvisWorkers.this.solvis.getSolvisState().setRemoteConnected();
 					}
 
 					synchronized (this) {

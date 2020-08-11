@@ -278,5 +278,9 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 			return this.mask;
 		}
 	}
+	
+	public boolean isNoRestore() {
+		return false;
+	}
 
 }

@@ -539,7 +539,7 @@
 			</tns:MustBeWhite>
 		</tns:Screen>
 		<tns:Screen id="Tagestemperatur_HK1" backId="Home"
-			previousId="Home">
+			previousId="Home" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
@@ -558,7 +558,7 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Tagestemperatur_HK1" backId="Home"
-			previousId="Home">
+			previousId="Home" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -581,7 +581,7 @@
 			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen id="TagestemperaturSelected_HK1" backId="Home"
-			previousId="Tagestemperatur_HK1">
+			previousId="Tagestemperatur_HK1" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
@@ -600,7 +600,7 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="TagestemperaturSelected_HK1" backId="Home"
-			previousId="Tagestemperatur_HK1">
+			previousId="Tagestemperatur_HK1" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -622,7 +622,7 @@
 			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen id="Tagestemperatur_HK2" backId="Home"
-			previousId="Home">
+			previousId="Home" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -643,7 +643,7 @@
 			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
 		<tns:Screen id="TagestemperaturSelected_HK2" backId="Home"
-			previousId="Tagestemperatur_HK2">
+			previousId="Tagestemperatur_HK2" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -663,7 +663,7 @@
 			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
 		<tns:Screen id="Nachttemperatur_HK1" backId="Home"
-			previousId="Home">
+			previousId="Home" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
@@ -682,7 +682,7 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Nachttemperatur_HK1" backId="Home"
-			previousId="Home">
+			previousId="Home" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -705,7 +705,7 @@
 			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen id="NachttemperaturSelected_HK1" backId="Home"
-			previousId="Nachttemperatur_HK1">
+			previousId="Nachttemperatur_HK1" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
@@ -724,7 +724,7 @@
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="NachttemperaturSelected_HK1" backId="Home"
-			previousId="Nachttemperatur_HK1">
+			previousId="Nachttemperatur_HK1" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -746,7 +746,7 @@
 			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
 		<tns:Screen id="Nachttemperatur_HK2" backId="Home"
-			previousId="Home">
+			previousId="Home" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -767,7 +767,7 @@
 			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
 		<tns:Screen id="NachttemperaturSelected_HK2" backId="Home"
-			previousId="Nachttemperatur_HK2">
+			previousId="Nachttemperatur_HK2" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />

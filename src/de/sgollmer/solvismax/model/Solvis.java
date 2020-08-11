@@ -162,7 +162,7 @@ public class Solvis {
 				String hexString = measurements.getHexString();
 				this.measureData = new SolvisMeasurements(measurements.getTimeStamp(), hexString.substring(12));
 				if (hexString.substring(0, 6).equals("000000")) {
-					this.getSolvisState().remoteConnected();
+					this.getSolvisState().setRemoteConnected();
 					throw new PowerOnException("Power on detected");
 				}
 			}
@@ -308,7 +308,7 @@ public class Solvis {
 	 * @param description
 	 * @param singleData
 	 * 
-	 * @return	True: Command was ignored to prevent feedback loops
+	 * @return True: Command was ignored to prevent feedback loops
 	 */
 	public boolean setFromExternal(ChannelDescription description, SingleData<?> singleData) {
 
@@ -364,6 +364,9 @@ public class Solvis {
 	void restoreScreen() throws IOException, TerminationException {
 		AbstractScreen screen = this.savedScreen;
 		if (screen != null) {
+			if (screen.isNoRestore()) {
+				screen = this.getHomeScreen();
+			}
 			screen.goTo(this);
 			logger.info("Screen <" + screen.getId() + "> restored");
 		}
