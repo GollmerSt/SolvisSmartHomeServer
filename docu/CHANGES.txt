@@ -36,6 +36,11 @@ Version 01.02.00
                 geblieben, darf nicht - nach dem Holen der GUI-Werte - dieser Bildschirm wieder restauriert werden,
                 da es dabei möglich ist, dass sich der Heizkreismodus verstellt (siehe auch Änderung vom 25.05.2020).
                 
+                Meldet die Solvis-Anlage einen Fehler auf der SolvisControl2 wird nun - neben der Möglichkeit des
+                Mailversandes die Hardcopy in den Ordner "SolvisErrorImages" abgelegt. Bei mehr als 100 abgelegte
+                Images werden die ältestebn gelöscht. Wie schon oben erwähnt ist die Dateigröße pro Image max. 2 kByte.
+                Bei 100 Dateien sind das weniger als 200 kByte.
+                
 
 Version 01.02.00
 

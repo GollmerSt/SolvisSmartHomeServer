@@ -57,7 +57,7 @@ public class MeasurementsBackupHandler {
 			path = new File(pathName);
 		}
 
-		this.parent = new File(path, Constants.Pathes.RESOURCE_DESTINATION);
+		this.parent = new File(path, Constants.Files.RESOURCE_DESTINATION);
 		this.thread = new BackupThread(this, measurementsBackupTime_ms);
 
 		try {
@@ -83,7 +83,7 @@ public class MeasurementsBackupHandler {
 
 			File xsd = new File(this.parent, NAME_XSD_MEASUREMENTS_FILE);
 
-			FileHelper.copyFromResource(Constants.Pathes.RESOURCE + '/' + NAME_XSD_MEASUREMENTS_FILE, xsd);
+			FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + NAME_XSD_MEASUREMENTS_FILE, xsd);
 
 			this.xsdWritten = true;
 		}

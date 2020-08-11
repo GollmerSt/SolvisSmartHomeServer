@@ -7,11 +7,8 @@
 
 package de.sgollmer.solvismax.model;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.mail.MessagingException;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.ISendData;
@@ -22,10 +19,11 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.WatchDog.Event;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
+import de.sgollmer.solvismax.model.objects.Observer.IObserverableError;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
-public class SolvisState extends Observable<SolvisState> implements ISendData {
+public class SolvisState extends Observable<SolvisState> implements ISendData, IObserverableError {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisState.class);
 
@@ -35,6 +33,7 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 	private Set<ChannelDescription> errorChannels = new HashSet<>();
 	private boolean error = false;
 	private long timeOfLastSwitchingOn = -1;
+	private Boolean notifyError = false;
 
 	SolvisState(Solvis solvis) {
 		this.solvis = solvis;
@@ -95,33 +94,38 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 		String errorName = description == null ? "Message box" : description.getId();
 		boolean last = this.error;
 		this.error = this.errorScreen != null || !this.errorChannels.isEmpty();
-		MailInfo mailInfo = null;
+		SolvisErrorInfo solvisErrorInfo = null;
 		if (errorChangeState != ErrorChanged.NONE) {
 			String message = "The Solvis system \"" + this.solvis.getUnit().getId() + "\" reports: ";
-			if (errorChangeState == ErrorChanged.SET) {
-				message += " Error: " + errorName + " occured.";
-			} else {
+			boolean cleared = errorChangeState != ErrorChanged.SET;
+			if (cleared) {
 				message += errorName + " cleared.";
+			} else {
+				message += " Error: " + errorName + " occured.";
 			}
 			logger.info(message);
-			mailInfo = new MailInfo(SolvisScreen.getImage(this.errorScreen), message);
+			solvisErrorInfo = new SolvisErrorInfo(this.solvis, SolvisScreen.getImage(this.errorScreen), message,
+					cleared);
 		}
 		if (!this.error && last) {
 			String message = "All errors of Solvis system \"" + this.solvis.getUnit().getId() + "\" cleared.";
 			logger.info(message);
-			mailInfo = new MailInfo(SolvisScreen.getImage(this.errorScreen), message);
+			solvisErrorInfo = new SolvisErrorInfo(this.solvis, SolvisScreen.getImage(this.errorScreen), message, true);
 		}
-		if (mailInfo != null) {
+		if (solvisErrorInfo != null) {
 			this.notify(this);
-			if (this.solvis.getExceptionMail() != null && this.solvis.getFeatures().isSendMailOnError()) {
-				try {
-					this.solvis.getExceptionMail().send(mailInfo);
-				} catch (MessagingException | IOException e) {
-					return false;
-				}
+			this.notifyError = false;
+			this.solvis.notifySolvisErrorObserver(solvisErrorInfo, this);
+			if (this.notifyError) {
+				return false;
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public synchronized void setException(Exception e) {
+		this.notifyError = true;
 	}
 
 	public void setPowerOff() {
@@ -174,13 +178,21 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 		return this.timeOfLastSwitchingOn;
 	}
 
-	public static class MailInfo {
+	public static class SolvisErrorInfo {
+		private final Solvis solvis;
 		private final MyImage image;
 		private final String message;
+		private final boolean cleared;
 
-		private MailInfo(MyImage image, String message) {
+		private SolvisErrorInfo(Solvis solvis, MyImage image, String message, boolean cleared) {
+			this.solvis = solvis;
 			this.image = image;
 			this.message = message;
+			this.cleared = cleared;
+		}
+
+		public Solvis getSolvis() {
+			return this.solvis;
 		}
 
 		public MyImage getImage() {
@@ -189,6 +201,10 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 
 		public String getMessage() {
 			return this.message;
+		}
+
+		public boolean isCleared() {
+			return this.cleared;
 		}
 	}
 
@@ -207,5 +223,4 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 	public MqttData getMqttData() {
 		return new MqttData(this.solvis, Constants.Mqtt.STATUS, this.getState().name(), 0, true);
 	}
-
 }

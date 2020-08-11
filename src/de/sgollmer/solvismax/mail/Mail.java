@@ -7,12 +7,7 @@
 
 package de.sgollmer.solvismax.mail;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,8 +15,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.imageio.ImageIO;
 import javax.mail.Authenticator;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
@@ -36,6 +29,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -185,7 +179,7 @@ public class Mail {
 			messageBodyPart = new MimeBodyPart();
 			ByteArrayDataSource bds = image.getByteArrayDataSource();
 			messageBodyPart.setDataHandler(new DataHandler(bds));
-			messageBodyPart.setFileName("SolvisScreen.png");
+			messageBodyPart.setFileName(Constants.Files.SOLVIS_SCREEN);
 			messageBodyPart.setHeader("Content-ID", "<image>");
 			multipart.addBodyPart(messageBodyPart);
 		}
@@ -200,34 +194,5 @@ public class Mail {
 		logger.info("Email was sent.");
 	}
 
-	@SuppressWarnings("unused")
-	private static class ImageDataSource implements DataSource {
-
-		private BufferedImage image;
-
-		@Override
-		public String getContentType() {
-			return "image/png";
-		}
-
-		@Override
-		public InputStream getInputStream() throws IOException {
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			ImageIO.write(this.image, "png", os);
-			os.flush();
-			InputStream is = new ByteArrayInputStream(os.toByteArray());
-			return is;
-		}
-
-		@Override
-		public String getName() {
-			return "SolvisScreen.png";
-		}
-
-		@Override
-		public OutputStream getOutputStream() throws IOException {
-			return null;
-		}
-	}
 
 }

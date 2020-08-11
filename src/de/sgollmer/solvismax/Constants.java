@@ -7,6 +7,8 @@
 
 package de.sgollmer.solvismax;
 
+import java.util.regex.Pattern;
+
 import de.sgollmer.solvismax.objects.Coordinate;
 
 public class Constants {
@@ -77,12 +79,20 @@ public class Constants {
 	public static final int MODBUS_SLAVE_ID = 1;
 
 	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
-	
-	public static class Pathes {
+
+	public static class Files {
 		public static final String RESOURCE_DESTINATION = "SolvisServerData";
-		public static final String LEARN_DESTINATION = "learned_images";
+		public static final String LEARN_DESTINATION = "LearnedImages";
+		public static final String SOLVIS_ERROR_DESTINATION = "SolvisErrorImages";
 		public static final String RESOURCE = "data";
-		
+		public static final String ERROR_SCREEN_PREFIX = "ErrorScreen-";
+		public static final String GRAFIC_SUFFIX = "png";
+
+		public static final String SOLVIS_SCREEN = "SolvisScreen." + Files.GRAFIC_SUFFIX;
+
+		public static final Pattern ERROR_SCREEN_REGEX = Pattern
+				.compile(Files.ERROR_SCREEN_PREFIX + "\\d+\\." + Files.GRAFIC_SUFFIX);
+		public static final int MAX_NUMBER_OF_ERROR_SCREENS = 100;
 	}
 
 	public static class XmlStrings {

@@ -29,6 +29,7 @@ import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.ErrorDetection.WriteErrorScreens;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.xml.ControlFileReader;
@@ -43,6 +44,7 @@ public class Instances {
 	private final AllSolvisGrafics graficDatas;
 	private final Hashes xmlHash;
 	private final File writeablePath;
+	private final WriteErrorScreens writeErrorScreens ;
 
 	public Instances(BaseData baseData, boolean learn) throws IOException, XmlException, XMLStreamException,
 			AssignmentException, FileException, ReferenceException {
@@ -55,6 +57,7 @@ public class Instances {
 		this.xmlHash = result.getHashes();
 		this.backupHandler = new MeasurementsBackupHandler(this.writeablePath,
 				this.solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
+		this.writeErrorScreens = new WriteErrorScreens(this);
 
 		for (Unit xmlUnit : baseData.getUnits().getUnits()) {
 			Solvis solvis = this.createSolvisInstance(xmlUnit);
@@ -69,8 +72,8 @@ public class Instances {
 	public boolean learn() throws IOException, LearningException, XMLStreamException, FileException,
 			TerminationException, ModbusException {
 		boolean nothingToLearn = true;
-		File learnDesination = new File( this.writeablePath, Constants.Pathes.RESOURCE_DESTINATION);
-		learnDesination = new File( learnDesination, Constants.Pathes.LEARN_DESTINATION);
+		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
+		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);
 		FileHelper.rmDir(learnDesination);
 		FileHelper.mkdir(learnDesination);
 		for (Solvis solvis : this.units) {
@@ -109,8 +112,11 @@ public class Instances {
 				misc.getPowerOffDetectedAfterTimeout_ms(), unit.isFwLth2_21_02A());
 		String timeZone = this.baseData.getTimeZone();
 		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId(), this.xmlHash),
-				connection, this.backupHandler, timeZone, this.baseData.getExceptionMail(),
-				this.baseData.getEchoInhibitTime_ms(), this.writeablePath);
+				connection, this.backupHandler, timeZone, this.baseData.getEchoInhibitTime_ms(), this.writeablePath);
+		if (this.baseData.getExceptionMail() != null && solvis.getFeatures().isSendMailOnError()) {
+			solvis.registerSolvisErrorObserver(this.baseData.getExceptionMail());
+		}
+		solvis.registerSolvisErrorObserver(this.writeErrorScreens);
 		return solvis;
 	}
 
@@ -144,5 +150,9 @@ public class Instances {
 
 	public MeasurementsBackupHandler getBackupHandler() {
 		return this.backupHandler;
+	}
+
+	public File getWritePath() {
+		return this.writeablePath;
 	}
 }

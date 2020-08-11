@@ -47,4 +47,8 @@ public class Observer<D> {
 		public void update(D data, Object source);
 	}
 
+	public interface IObserverableError {
+		public void setException(Exception e);
+	}
+
 }

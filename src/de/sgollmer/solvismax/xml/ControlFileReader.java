@@ -48,7 +48,7 @@ public class ControlFileReader {
 			path = new File(pathName);
 		}
 
-		this.parent = new File(path, Constants.Pathes.RESOURCE_DESTINATION);
+		this.parent = new File(path, Constants.Files.RESOURCE_DESTINATION);
 	}
 
 	private void copyFiles(boolean copyXml) throws IOException, FileException {
@@ -66,12 +66,12 @@ public class ControlFileReader {
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
 
 		if (copyXml) {
-			FileHelper.copyFromResource(Constants.Pathes.RESOURCE + '/' + NAME_XML_CONTROLFILE, xml);
+			FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + NAME_XML_CONTROLFILE, xml);
 		}
 
 		File xsd = new File(this.parent, NAME_XSD_CONTROLFILE);
 
-		FileHelper.copyFromResource(Constants.Pathes.RESOURCE + '/' + NAME_XSD_CONTROLFILE, xsd);
+		FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + NAME_XSD_CONTROLFILE, xsd);
 
 	}
 
@@ -148,7 +148,7 @@ public class ControlFileReader {
 				mustWrite = true;
 			}
 			if (mustVerify) {
-				String xsdPath = Constants.Pathes.RESOURCE + '/' + NAME_XSD_CONTROLFILE;
+				String xsdPath = Constants.Files.RESOURCE + '/' + NAME_XSD_CONTROLFILE;
 				InputStream xsd = Main.class.getResourceAsStream(xsdPath);
 				boolean validated = reader.validate(new FileInputStream(xml), xsd);
 				if (!validated) {
@@ -164,7 +164,7 @@ public class ControlFileReader {
 			mustWrite = true;
 		}
 
-		String resourcePath = Constants.Pathes.RESOURCE + '/' + NAME_XML_CONTROLFILE;
+		String resourcePath = Constants.Files.RESOURCE + '/' + NAME_XML_CONTROLFILE;
 		InputStream source = Main.class.getResourceAsStream(resourcePath);
 		XmlStreamReader.Result<SolvisDescription> xmlFromResource = reader.read(source, rootId,
 				new SolvisDescription.Creator(rootId), NAME_XML_CONTROLFILE);

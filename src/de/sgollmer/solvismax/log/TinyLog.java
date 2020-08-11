@@ -174,7 +174,7 @@ public class TinyLog {
 
 		}
 
-		pathName += File.separator + Constants.Pathes.RESOURCE_DESTINATION;
+		pathName += File.separator + Constants.Files.RESOURCE_DESTINATION;
 		parent = new File(pathName);
 		this.parent = parent;
 	}
@@ -195,7 +195,7 @@ public class TinyLog {
 		File xml = new File(this.parent, Constants.TINY_LOG_CONFIG_FILE);
 
 		if (!xml.exists()) {
-			FileHelper.copyFromResource(Constants.Pathes.RESOURCE + '/' + Constants.TINY_LOG_CONFIG_FILE, xml);
+			FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + Constants.TINY_LOG_CONFIG_FILE, xml);
 		}
 
 	}

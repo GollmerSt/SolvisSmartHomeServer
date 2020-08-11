@@ -20,17 +20,17 @@ import de.sgollmer.solvismax.connection.SolvisConnection.Button;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.DependencyException;
-import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
+import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -47,8 +47,8 @@ import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -83,16 +83,16 @@ public class Solvis {
 	private final Distributor distributor;
 	private final MeasurementUpdateThread measurementUpdateThread;
 	private final Observable<Boolean> abortObservable = new Observable<>();
+	private final Observable<SolvisErrorInfo> solvisErrorObservable = new Observable<>();
 	private final String timeZone;
 	private final boolean delayAfterSwitchingOnEnable;
 	private final Unit unit;
-	private final ExceptionMail exceptionMail;
 	private final File writePath;
 	private final History history = new History();
 
 	Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
-			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, ExceptionMail exceptionMail,
-			int echoInhibitTime_ms, File writePath) {
+			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms,
+			File writePath) {
 		this.unit = unit;
 		this.type = unit.getType();
 		this.defaultReadMeasurementsInterval_ms = unit.getDefaultReadMeasurementsInterval_ms();
@@ -111,7 +111,6 @@ public class Solvis {
 		this.measurementUpdateThread = new MeasurementUpdateThread(unit);
 		this.timeZone = timeZone;
 		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
-		this.exceptionMail = exceptionMail;
 		this.writePath = writePath;
 	}
 
@@ -344,6 +343,14 @@ public class Solvis {
 
 	public HumanAccess getHumanAccess() {
 		return this.humanAccess;
+	}
+
+	public void registerSolvisErrorObserver(IObserver<SolvisErrorInfo> observer) {
+		this.solvisErrorObservable.register(observer);
+	}
+
+	public void notifySolvisErrorObserver(SolvisErrorInfo info, Object source) {
+		this.solvisErrorObservable.notify(info, source);
 	}
 
 	void saveScreen() throws IOException, TerminationException {
@@ -703,10 +710,6 @@ public class Solvis {
 			AbortHelper.getInstance().sleep(Constants.WAIT_AFTER_FIRST_ASYNC_DETECTION);
 		}
 		return null;
-	}
-
-	ExceptionMail getExceptionMail() {
-		return this.exceptionMail;
 	}
 
 	private int getEchoInhibitTime_ms() {

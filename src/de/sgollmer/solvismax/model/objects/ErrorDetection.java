@@ -20,13 +20,17 @@ import java.util.regex.Matcher;
 import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -342,6 +346,39 @@ public class ErrorDetection {
 					}
 					data.getSolvis().getSolvisState().setError(error, data.getDescription());
 				}
+			}
+
+		}
+
+	}
+
+	public static class WriteErrorScreens implements IObserver<SolvisErrorInfo> {
+
+		private final File parent;
+
+		public WriteErrorScreens(Instances instances) {
+			File parent = new File(instances.getWritePath(), Constants.Files.RESOURCE_DESTINATION);
+			this.parent = new File(parent, Constants.Files.SOLVIS_ERROR_DESTINATION);
+			FileHelper.mkdir(this.parent);
+		}
+
+		@Override
+		public void update(SolvisErrorInfo info, Object source) {
+			if (info.isCleared()) {
+				return;
+			}
+			Collection<File> files = FileHelper.getSortedbyDate(this.parent, Constants.Files.ERROR_SCREEN_REGEX);
+			int toDelete = files.size() - Constants.Files.MAX_NUMBER_OF_ERROR_SCREENS;
+			for (Iterator<File> it = files.iterator(); it.hasNext() && toDelete >= 0; --toDelete) {
+				it.next().delete();
+			}
+			String name = Constants.Files.ERROR_SCREEN_PREFIX + Long.toString(System.currentTimeMillis() / 100) + '.'
+					+ Constants.Files.GRAFIC_SUFFIX;
+			File file = new File(this.parent, name);
+			try {
+				info.getImage().writeWhole(file);
+			} catch (IOException e) {
+				logger.error("Error on writing the error image <" + name + ">.");
 			}
 
 		}

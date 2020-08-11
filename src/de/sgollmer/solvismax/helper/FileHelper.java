@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.helper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +18,13 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Main;
@@ -61,7 +69,7 @@ public class FileHelper {
 			writeDirectory = System.getenv("APPDATA");
 		}
 
-		writeDirectory += File.separator + Constants.Pathes.RESOURCE_DESTINATION;
+		writeDirectory += File.separator + Constants.Files.RESOURCE_DESTINATION;
 
 		File directory = new File(writeDirectory);
 
@@ -78,7 +86,7 @@ public class FileHelper {
 		// System.out.println("Write not possible") ;
 		// }
 
-		FileHelper.copyFromResource(Constants.Pathes.RESOURCE + '/' + "graficData.xsd", file);
+		FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + "graficData.xsd", file);
 	}
 
 	/**
@@ -206,5 +214,25 @@ public class FileHelper {
 			builder.append(part);
 		}
 		return builder.toString();
+	}
+
+	public static Collection<File> getSortedbyDate(File parent, final Pattern regex) {
+		List<File> files = new ArrayList<>(Arrays.asList(parent.listFiles(new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String name) {
+				Matcher matcher = regex.matcher(name);
+				return matcher.matches();
+			}
+		})));
+		files.sort(new Comparator<File>() {
+
+			@Override
+			public int compare(File o1, File o2) {
+				long diff = o1.lastModified() - o2.lastModified();
+				return diff > 0 ? 1 : diff == 0 ? 0 : -1;
+			}
+		});
+		return files;
 	}
 }

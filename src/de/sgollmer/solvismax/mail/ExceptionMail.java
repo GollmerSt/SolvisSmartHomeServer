@@ -24,12 +24,14 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
-import de.sgollmer.solvismax.model.SolvisState.MailInfo;
+import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
+import de.sgollmer.solvismax.model.objects.Observer.IObserverableError;
 import de.sgollmer.solvismax.xml.ArrayXml;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ExceptionMail {
+public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 
 	private static ILogger logger = null;
 
@@ -148,7 +150,20 @@ public class ExceptionMail {
 				this.recipients, image);
 	}
 
-	public void send(MailInfo info) throws MessagingException, IOException {
-		this.send(info.getMessage(), "", info.getImage());
+//	public void send(SolvisErrorInfo info) throws MessagingException, IOException {
+//		this.send(info.getMessage(), "", info.getImage());
+//	}
+//
+	@Override
+	public void update(SolvisErrorInfo info, Object source) {
+		try {
+			this.send(info.getMessage(), "", info.getImage());
+		} catch (MessagingException | IOException e) {
+			logger.error("Mail <" + info.getMessage() + "> couldn't be sent: ", e);
+			if ( source instanceof IObserverableError ) {
+				((IObserverableError)source).setException(e);
+			}
+		}
+		
 	}
 }

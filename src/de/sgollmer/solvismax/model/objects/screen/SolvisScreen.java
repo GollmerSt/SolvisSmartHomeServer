@@ -7,11 +7,8 @@
 
 package de.sgollmer.solvismax.model.objects.screen;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FatalError;
@@ -77,8 +74,8 @@ public class SolvisScreen {
 	}
 
 	public void writeLearningImage(String id) {
-		File parent = new File(this.solvis.getWritePath(), Constants.Pathes.RESOURCE_DESTINATION);
-		parent = new File(parent, Constants.Pathes.LEARN_DESTINATION);
+		File parent = new File(this.solvis.getWritePath(), Constants.Files.RESOURCE_DESTINATION);
+		parent = new File(parent, Constants.Files.LEARN_DESTINATION);
 		String baseName = this.solvis.getUnit().getId() + "__" + id + "__";
 		int cnt = 0;
 		boolean found = true;
@@ -89,9 +86,8 @@ public class SolvisScreen {
 			found = file.exists();
 			++cnt;
 		}
-		BufferedImage bi = this.image.getImage();
 		try {
-			ImageIO.write(bi, "png", file);
+			this.image.writeWhole(file);
 		} catch (IOException e) {
 			logger.error("Error on writing the image of the learned screen <" + id + ">.");
 		}
