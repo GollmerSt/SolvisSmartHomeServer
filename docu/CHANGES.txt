@@ -41,6 +41,9 @@ Version 01.02.00
                 Images werden die ältestebn gelöscht. Wie schon oben erwähnt ist die Dateigröße pro Image max. 2 kByte.
                 Bei 100 Dateien sind das weniger als 200 kByte.
                 
+                Die Mode-Umschaltung dauert etwas länger als 2s. Dadurch läuft der lernvorgang nicht immer sauber
+                durch. Zeit auf 2,5s geändert.
+                
 
 Version 01.02.00
 
