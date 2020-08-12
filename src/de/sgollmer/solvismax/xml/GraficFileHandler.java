@@ -62,7 +62,7 @@ public class GraficFileHandler {
 
 		File xsd = new File(this.parent, NAME_XSD_GRAFICSFILE);
 
-		FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + NAME_XSD_GRAFICSFILE, xsd);
+		FileHelper.copyFromResourceText(Constants.Files.RESOURCE + '/' + NAME_XSD_GRAFICSFILE, xsd);
 
 	}
 
@@ -87,7 +87,7 @@ public class GraficFileHandler {
 
 		try {
 
-			result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName()).getTree();
+			result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName());
 
 		} catch (IOException | XmlException | XMLStreamException e1) {
 			logger.error("Warning: Read error on grafics.xml file. A new one will be created.");

@@ -21,6 +21,7 @@ import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.helper.FileHelper.ChecksumInputStream;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -66,12 +67,12 @@ public class ControlFileReader {
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
 
 		if (copyXml) {
-			FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + NAME_XML_CONTROLFILE, xml);
+			FileHelper.copyFromResourceBinary(Constants.Files.RESOURCE + '/' + NAME_XML_CONTROLFILE, xml);
 		}
 
 		File xsd = new File(this.parent, NAME_XSD_CONTROLFILE);
 
-		FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + NAME_XSD_CONTROLFILE, xsd);
+		FileHelper.copyFromResourceText(Constants.Files.RESOURCE + '/' + NAME_XSD_CONTROLFILE, xsd);
 
 	}
 
@@ -80,9 +81,9 @@ public class ControlFileReader {
 		private final SolvisDescription solvisDescription;
 		private final Hashes hashes;
 
-		private Result(XmlStreamReader.Result<SolvisDescription> result, int resourceHash) {
-			this.solvisDescription = result.getTree();
-			this.hashes = new Hashes(resourceHash, result.getHash());
+		private Result(SolvisDescription description, int resourceHash, int resultHash) {
+			this.solvisDescription = description;
+			this.hashes = new Hashes(resourceHash, resultHash);
 		}
 
 		public Hashes getHashes() {
@@ -122,7 +123,8 @@ public class ControlFileReader {
 		XmlStreamReader<SolvisDescription> reader = new XmlStreamReader<>();
 		String rootId = XML_ROOT_ID;
 
-		XmlStreamReader.Result<SolvisDescription> xmlFromFile = null;
+		SolvisDescription fromFile = null;
+		ChecksumInputStream inputStreamFromFile = new ChecksumInputStream(new FileInputStream(xml));
 
 		boolean mustWrite = false; // Wenn im Verzeichnis nicht vorhanden, nicht lesbar oder älter
 									// oder Checksumme unbekannt
@@ -130,23 +132,43 @@ public class ControlFileReader {
 
 		Throwable e = null;
 
+		String resourcePath = Constants.Files.RESOURCE + '/' + NAME_XML_CONTROLFILE;
+		ChecksumInputStream resource = new ChecksumInputStream(Main.class.getResourceAsStream(resourcePath));
+		SolvisDescription fromResource = reader.read(resource, rootId,
+				new SolvisDescription.Creator(rootId), NAME_XML_CONTROLFILE);
+
+		int newResourceHash = resource.getHash();
+		int fileHash = 0;
+
 		boolean xmlExits = xml.exists();
 		if (xmlExits) {
 
-			boolean mustVerify = false; // Wenn zu verifizieren
+			boolean mustVerify = true; // Wenn zu verifizieren
 
 			try {
 
-				xmlFromFile = reader.read(new FileInputStream(xml), rootId, new SolvisDescription.Creator(rootId),
+				fromFile = reader.read(inputStreamFromFile, rootId, new SolvisDescription.Creator(rootId),
 						xml.getName());
-				mustVerify = xmlFromFile.getHash() != former.getFileHash();
-				modifiedByUser = former.getFileHash() == null || former.getResourceHash() != xmlFromFile.getHash();
+
 			} catch (Throwable e1) {
+				inputStreamFromFile.close();
 				e = e1;
-				modifiedByUser = true;
-				mustVerify = true;
 				mustWrite = true;
 			}
+			
+			fileHash = inputStreamFromFile.getHash();
+			
+			if ( former.getFileHash() != null ) {
+				mustWrite =  newResourceHash != former.getResourceHash() ;
+				modifiedByUser = fileHash != former.getResourceHash();
+				mustVerify = fileHash != former.getFileHash();
+			} else {
+				mustWrite = true;
+				modifiedByUser = newResourceHash != inputStreamFromFile.getHash();
+				mustVerify = true;
+			}
+			
+			
 			if (mustVerify) {
 				String xsdPath = Constants.Files.RESOURCE + '/' + NAME_XSD_CONTROLFILE;
 				InputStream xsd = Main.class.getResourceAsStream(xsdPath);
@@ -162,18 +184,8 @@ public class ControlFileReader {
 
 		} else {
 			mustWrite = true;
+			modifiedByUser = false;
 		}
-
-		String resourcePath = Constants.Files.RESOURCE + '/' + NAME_XML_CONTROLFILE;
-		InputStream source = Main.class.getResourceAsStream(resourcePath);
-		XmlStreamReader.Result<SolvisDescription> xmlFromResource = reader.read(source, rootId,
-				new SolvisDescription.Creator(rootId), NAME_XML_CONTROLFILE);
-
-		int newResourceHash = xmlFromResource.getHash();
-
-		mustWrite |= former.getResourceHash() == null || newResourceHash != former.getResourceHash();
-		// wenn alter Resource-Hash nicht vorhanden oder Resource-Hashs unterscheiden
-		// sich
 
 		if (mustWrite && learn || !xmlExits) {
 
@@ -190,16 +202,16 @@ public class ControlFileReader {
 			}
 
 			this.copyFiles(true);
-			return new Result(xmlFromResource, newResourceHash);
+			return new Result(fromResource, newResourceHash, newResourceHash);
 		} else if (mustWrite) {
-			return new Result(xmlFromResource, newResourceHash);
+			return new Result(fromResource, newResourceHash,newResourceHash);
 		} else if (e != null) {
 			logger.error(
 					"Error on reading control.xml. Learning is necessary, start parameter \"--server-learn\" must be used.");
 			LogManager.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
 			return null;
 		} else {
-			return new Result(xmlFromFile, newResourceHash);
+			return new Result(fromFile, newResourceHash, fileHash);
 		}
 	}
 

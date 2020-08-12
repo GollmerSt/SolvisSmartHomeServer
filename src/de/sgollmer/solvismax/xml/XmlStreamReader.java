@@ -36,43 +36,17 @@ import de.sgollmer.solvismax.log.LogManager.Level;
 
 public class XmlStreamReader<D> {
 
-	public static class Result<T> {
-		private final T tree;
-		private final int hash;
-
-		private Result(T tree, int hash) {
-			this.tree = tree;
-			this.hash = hash;
-		}
-
-		public T getTree() {
-			return this.tree;
-		}
-
-		int getHash() {
-			return this.hash;
-		}
-	}
-
-	private static class HashContainer {
-		private int hash = 61;
-
-		private void put(Object obj) {
-			this.hash = 397 * this.hash + 43 * obj.hashCode();
-		}
-	}
-
-	public Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId)
+	public D read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId)
 			throws IOException, XmlException, XMLStreamException, AssignmentException, ReferenceException {
 		return this.read(inputStream, rootId, rootCreator, streamId, false);
 	}
 
-	private Result<D> read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId,
+	private D read(InputStream inputStream, String rootId, BaseCreator<D> rootCreator, String streamId,
 			boolean hashOnly)
 			throws IOException, XmlException, XMLStreamException, AssignmentException, ReferenceException {
 
-		final HashContainer hash = new HashContainer();
-
+//		final HashContainer hash = new HashContainer();
+		
 		XMLEventReader reader = null;
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		try {
@@ -93,13 +67,13 @@ public class XmlStreamReader<D> {
 			switch (ev.getEventType()) {
 				case XMLStreamConstants.START_ELEMENT:
 					QName name = ev.asStartElement().getName();
-					hash.put(name);
+//					hash.put(name);
 					String localName = name.getLocalPart();
 					if (localName.equals(rootId) || hashOnly) {
-						destination = this.create(rootCreator, reader, ev, streamId, hash, hashOnly);
+						destination = this.create(rootCreator, reader, ev, streamId, hashOnly);
 					} else {
 						NullCreator nullCreator = new NullCreator(localName, rootCreator);
-						this.create(nullCreator, reader, ev, streamId, hash, hashOnly);
+						this.create(nullCreator, reader, ev, streamId, hashOnly);
 					}
 					break;
 			}
@@ -108,20 +82,20 @@ public class XmlStreamReader<D> {
 
 		inputStream.close();
 
-		return new Result<D>(destination, hash.hash);
+		return destination;
 	}
 
 	private <T> T create(CreatorByXML<T> creator, XMLEventReader reader, XMLEvent startEvent, String streamId,
-			HashContainer hash, boolean hashOnly)
+			boolean hashOnly)
 			throws XmlException, IOException, AssignmentException, ReferenceException {
 
 		for (@SuppressWarnings("unchecked")
 		Iterator<Attribute> it = startEvent.asStartElement().getAttributes(); it.hasNext();) {
 			Attribute attr = it.next();
 			QName name = attr.getName();
-			hash.put(name);
+//			hash.put(name);
 			String value = attr.getValue();
-			hash.put(value);
+//			hash.put(value);
 			creator.setAttribute(name, value);
 		}
 
@@ -140,16 +114,16 @@ public class XmlStreamReader<D> {
 						break;
 					case XMLStreamConstants.START_ELEMENT:
 						QName name = ev.asStartElement().getName();
-						hash.put(name);
+//						hash.put(name);
 						CreatorByXML<?> child = creator.getCreator(name);
 						if (child == null || hashOnly) {
 							child = new NullCreator(name.getLocalPart(), creator.getBaseCreator());
 						}
-						creator.created(child, this.create(child, reader, ev, streamId, hash, hashOnly));
+						creator.created(child, this.create(child, reader, ev, streamId, hashOnly));
 						break;
 					case XMLStreamConstants.CHARACTERS:
 						String text = ev.asCharacters().getData();
-						hash.put(text);
+//						hash.put(text);
 						creator.addCharacters(text);
 				}
 			} catch (XmlException e) {

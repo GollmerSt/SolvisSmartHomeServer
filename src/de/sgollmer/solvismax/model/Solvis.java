@@ -31,6 +31,7 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
+import de.sgollmer.solvismax.model.SolvisState.State;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -248,6 +249,28 @@ public class Solvis {
 		this.solvisDescription.getFallBack().execute(this, lastChance);
 	}
 
+	private class UpdateControlAfterPowerOn implements IObserver<SolvisState> {
+		private boolean powerOff = true;
+
+		@Override
+		public void update(SolvisState data, Object source) {
+			boolean update = false;
+			synchronized (this) {
+				State state = data.getState();
+				if (this.powerOff & state == State.SOLVIS_CONNECTED) {
+					this.powerOff = false;
+					update = true;
+				} else if (state == State.POWER_OFF) {
+					this.powerOff = true;
+				}
+			}
+			if (update) {
+				Solvis.this.updateControlChannels();
+			}
+		}
+
+	}
+
 	void init() throws IOException, XMLStreamException, AssignmentException, DependencyException {
 		this.configurationMask = this.getGrafics().getConfigurationMask();
 
@@ -257,10 +280,12 @@ public class Solvis {
 		SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.unit.getId());
 		this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 		this.worker.init();
-		this.updateControlChannels();
 		this.worker.start();
 		this.getDistributor().register(this);
 		this.getSolvisDescription().instantiate(this);
+		UpdateControlAfterPowerOn updateControlAfterPowerOn = new UpdateControlAfterPowerOn();
+		this.solvisState.register(updateControlAfterPowerOn);
+		updateControlAfterPowerOn.update(this.solvisState, null);
 		this.registerScreenChangedByHumanObserver(new IObserver<WatchDog.HumanAccess>() {
 
 			@Override

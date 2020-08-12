@@ -195,7 +195,7 @@ public class TinyLog {
 		File xml = new File(this.parent, Constants.TINY_LOG_CONFIG_FILE);
 
 		if (!xml.exists()) {
-			FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + Constants.TINY_LOG_CONFIG_FILE, xml);
+			FileHelper.copyFromResourceText(Constants.Files.RESOURCE + '/' + Constants.TINY_LOG_CONFIG_FILE, xml);
 		}
 
 	}

@@ -81,6 +81,7 @@ public class Constants {
 	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
 
 	public static class Files {
+		public static final int INPUT_BUFFER_SIZE = 8192;
 		public static final String RESOURCE_DESTINATION = "SolvisServerData";
 		public static final String LEARN_DESTINATION = "LearnedImages";
 		public static final String SOLVIS_ERROR_DESTINATION = "SolvisErrorImages";

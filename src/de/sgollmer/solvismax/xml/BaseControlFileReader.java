@@ -43,7 +43,7 @@ public class BaseControlFileReader {
 		}
 	}
 
-	public XmlStreamReader.Result<BaseData> read()
+	public BaseData read()
 			throws IOException, XmlException, XMLStreamException, AssignmentException, ReferenceException {
 
 		FileInputStream source = new FileInputStream(this.baseXml);

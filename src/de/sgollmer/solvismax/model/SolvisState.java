@@ -90,7 +90,7 @@ public class SolvisState extends Observable<SolvisState> implements ISendData, I
 		return processError(changed, null);
 	}
 
-	private boolean processError(ErrorChanged errorChangeState, ChannelDescription description) {
+	private synchronized boolean processError(ErrorChanged errorChangeState, ChannelDescription description) {
 		String errorName = description == null ? "Message box" : description.getId();
 		boolean last = this.error;
 		this.error = this.errorScreen != null || !this.errorChannels.isEmpty();
@@ -144,7 +144,7 @@ public class SolvisState extends Observable<SolvisState> implements ISendData, I
 		this.setState(State.REMOTE_CONNECTED);
 	}
 
-	public State getState() {
+	public synchronized State getState() {
 		if (this.error) {
 			return State.ERROR;
 		} else if (this.state == State.UNDEFINED) {
@@ -154,7 +154,7 @@ public class SolvisState extends Observable<SolvisState> implements ISendData, I
 		}
 	}
 
-	private void setState(State state) {
+	private synchronized void setState(State state) {
 		if (this.state != state) {
 			if (state == State.SOLVIS_CONNECTED) {
 				switch (this.state) {

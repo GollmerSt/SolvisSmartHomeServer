@@ -44,6 +44,14 @@ Version 01.02.00
                 Die Mode-Umschaltung dauert etwas länger als 2s. Dadurch läuft der lernvorgang nicht immer sauber
                 durch. Zeit auf 2,5s geändert.
                 
+    12.08.2020  Nach einem Power-Off werden immer sämtliche Contol-Register-Werte über das GUI neu gelesen.
+                Die Power-Off-Erkennung ist in Wirklichkeit ein Off-Line der Anlage von min. 3 Minuten. Ob die
+                Anlage ausgeschaltet wurde oder nur nicht vom Netz aus zugänglich kann der Server nicht erkennen.
+                Daher ist es notwendig nach dem "Power-On" alle nur über das Gui lesbaren Werte (Cxx) neu zu holen.
+                
+                Vorbereitung um Learning automatisch anzustoßen: Checksumme zur Controlfile-Überwachung unabhängig
+                nun unabhängig vom XML-File Reader.
+                
 
 Version 01.02.00
 

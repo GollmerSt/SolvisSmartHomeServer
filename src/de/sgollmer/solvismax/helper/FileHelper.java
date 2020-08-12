@@ -9,11 +9,13 @@ package de.sgollmer.solvismax.helper;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -23,15 +25,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Main;
 
 public class FileHelper {
 
-	public static void copyFromResource(String resourcePath, File destination) throws IOException {
+	public static void copyFromResourceText(String resourcePath, File destination) throws IOException {
 		FileHelper.copyFromResource(resourcePath, destination, null, null);
 	}
 
@@ -62,6 +64,25 @@ public class FileHelper {
 		}
 	}
 
+	public static void copyFromResourceBinary(String resourcePath, File destination) throws IOException {
+
+		InputStream inputStream = Main.class.getResourceAsStream(resourcePath);
+		OutputStream outputStream = new FileOutputStream(destination);
+
+		boolean finished = false;
+
+		byte[] buffer = new byte[Constants.Files.INPUT_BUFFER_SIZE];
+
+		while (!finished) {
+			int cnt = inputStream.read(buffer);
+			outputStream.write(buffer, 0, cnt);
+			finished = cnt < buffer.length;
+		}
+
+		outputStream.flush();
+		outputStream.close();
+	}
+
 	public static void main(String[] args) throws IOException {
 
 		String writeDirectory = System.getProperty("user.home");
@@ -86,7 +107,7 @@ public class FileHelper {
 		// System.out.println("Write not possible") ;
 		// }
 
-		FileHelper.copyFromResource(Constants.Files.RESOURCE + '/' + "graficData.xsd", file);
+		FileHelper.copyFromResourceText(Constants.Files.RESOURCE + '/' + "graficData.xsd", file);
 	}
 
 	/**
@@ -234,5 +255,107 @@ public class FileHelper {
 			}
 		});
 		return files;
+	}
+
+	public static class ChecksumInputStream extends InputStream {
+
+		private final InputStream inputStream;
+		private byte[] inputBuffer = null;
+		private int hash = 61;
+		private int hashSave = 0;
+
+		private void hash(int out) {
+			this.hash = 397 * this.hash + 43 * Integer.hashCode(out);
+		}
+
+		public ChecksumInputStream(InputStream comp) {
+			this.inputStream = comp;
+		}
+
+		@Override
+		public int available() throws IOException {
+			return this.inputStream.available();
+		}
+
+		@Override
+		public void close() throws IOException {
+			try {
+				this.skip(null);
+			} catch (IOException e) {
+			}
+			this.inputStream.close();
+		}
+
+		@Override
+		public void mark(int readlimit) {
+			this.hashSave = this.hash;
+			this.inputStream.mark(readlimit);
+		}
+
+		@Override
+		public boolean markSupported() {
+			return this.inputStream.markSupported();
+		}
+
+		@Override
+		public int read() throws IOException {
+			int out = this.inputStream.read();
+			if (out >= 0) {
+				this.hash(out);
+			}
+			return out;
+		}
+
+		@Override
+		public int read(byte[] array) throws IOException {
+			return this.read(array, 0, array.length);
+		}
+
+		@Override
+		public int read(byte[] array, int off, int len) throws IOException {
+			int cnt = this.inputStream.read(array, off, len);
+			for (int i = off; i < cnt + off; ++i) {
+				this.hash(array[i]);
+			}
+			return cnt;
+		}
+
+		@Override
+		public void reset() throws IOException {
+			this.inputStream.reset();
+			this.hash = this.hashSave;
+		}
+
+		@Override
+		public long skip(long n) throws IOException {
+			return this.skip(Long.valueOf(n));
+		}
+
+		private long skip(Long n) throws IOException {
+			if (n != null && n < 0) {
+				return 0;
+			}
+			if (this.inputBuffer == null) {
+				this.inputBuffer = new byte[Constants.Files.INPUT_BUFFER_SIZE];
+			}
+			long current = 0;
+			int len;
+			if (n == null) {
+				len = this.inputBuffer.length;
+			} else {
+				len = (int) Math.min(n, this.inputBuffer.length);
+			}
+			int cnt = this.inputBuffer.length;
+
+			while ((n == null || current < n) && cnt >= len) {
+				cnt = this.read(this.inputBuffer, 0, len);
+				current += cnt;
+			}
+			return current;
+		}
+
+		public int getHash() {
+			return this.hash;
+		}
 	}
 }

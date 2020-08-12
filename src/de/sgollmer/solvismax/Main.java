@@ -46,7 +46,6 @@ import de.sgollmer.solvismax.log.LogManager.LogErrors;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.windows.Task;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
-import de.sgollmer.solvismax.xml.XmlStreamReader;
 
 public class Main {
 
@@ -144,11 +143,10 @@ public class Main {
 		BaseData baseData = null;
 		LogManager logManager = LogManager.getInstance();
 		try {
-			XmlStreamReader.Result<BaseData> base = new BaseControlFileReader(baseXml).read();
-			if (base == null) {
+			baseData = new BaseControlFileReader(baseXml).read();
+			if (baseData == null) {
 				throw new XmlException("");
 			}
-			baseData = base.getTree();
 		} catch (IOException | XmlException | XMLStreamException | AssignmentException | ReferenceException e) {
 			e.printStackTrace();
 			logManager.addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "base.xml couldn't be read.", Main.class,
@@ -263,18 +261,20 @@ public class Main {
 				if (!learned) {
 					this.logger.log(LEARN, "Nothing to learn!");
 				}
-			} catch (IOException | XMLStreamException | LearningException | FileException
-					| ModbusException e) {
+			} catch (IOException | XMLStreamException | LearningException | FileException | ModbusException e) {
 				this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
 				e.printStackTrace();
 				System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 			} catch (TerminationException e) {
 				System.exit(ExitCodes.OK);
 			}
+//		if (learn) {
 			System.exit(ExitCodes.OK);
 		}
 
-		try {
+		try
+
+		{
 			this.instances.init();
 		} catch (IOException | AssignmentException | XMLStreamException | DependencyException e) {
 			this.logger.error("Exception on reading configuration occured, cause:", e);
@@ -409,7 +409,7 @@ public class Main {
 			AbortHelper.getInstance().sleep(waitTime);
 		}
 		if (waiting) {
-			this.logger.info("Valid system time detected after " + currentWaitTime/1000 + "s.");
+			this.logger.info("Valid system time detected after " + currentWaitTime / 1000 + "s.");
 		}
 	}
 
