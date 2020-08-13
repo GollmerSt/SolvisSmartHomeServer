@@ -144,5 +144,6 @@ public class Constants {
 
 	public static final Coordinate RELEASE_COORDINATE = new Coordinate(260, 260);
 	public static final int INTERRUPT_AFTER_N_TOUCHES = 5;
+	public static final boolean OVERWWRITE_ONLY_ON_LEARN = false;
 
 }

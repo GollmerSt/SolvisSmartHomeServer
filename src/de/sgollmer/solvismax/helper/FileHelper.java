@@ -261,8 +261,8 @@ public class FileHelper {
 
 		private final InputStream inputStream;
 		private byte[] inputBuffer = null;
-		private int hash = 61;
-		private int hashSave = 0;
+		private long hash = 61;
+		private long hashSave = 0;
 
 		private void hash(int out) {
 			this.hash = 397 * this.hash + 43 * Integer.hashCode(out);
@@ -354,7 +354,7 @@ public class FileHelper {
 			return current;
 		}
 
-		public int getHash() {
+		public long getHash() {
 			return this.hash;
 		}
 	}

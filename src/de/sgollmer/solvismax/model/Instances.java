@@ -45,6 +45,7 @@ public class Instances {
 	private final Hashes xmlHash;
 	private final File writeablePath;
 	private final WriteErrorScreens writeErrorScreens ;
+	private final boolean mustLearn;
 
 	public Instances(BaseData baseData, boolean learn) throws IOException, XmlException, XMLStreamException,
 			AssignmentException, FileException, ReferenceException {
@@ -54,6 +55,7 @@ public class Instances {
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
 		ControlFileReader.Result result = reader.read(this.graficDatas.getControlHashCodes(), learn);
 		this.solvisDescription = result.getSolvisDescription();
+		this.mustLearn = result.mustLearn();
 		this.xmlHash = result.getHashes();
 		this.backupHandler = new MeasurementsBackupHandler(this.writeablePath,
 				this.solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
@@ -69,21 +71,23 @@ public class Instances {
 		this.backupHandler.start();
 	}
 
-	public boolean learn() throws IOException, LearningException, XMLStreamException, FileException,
+	public void learn( boolean force ) throws IOException, LearningException, XMLStreamException, FileException,
 			TerminationException, ModbusException {
-		boolean nothingToLearn = true;
+		boolean learned = true;
 		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
 		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);
 		FileHelper.rmDir(learnDesination);
 		FileHelper.mkdir(learnDesination);
 		for (Solvis solvis : this.units) {
-			solvis.learning();
-			nothingToLearn = false;
+			solvis.learning(); 
+			learned = true;
+		}
+		if ( learned ) {
+			//this.graficDatas.
 			new GraficFileHandler(this.writeablePath).write(this.graficDatas);
 		}
-		return !nothingToLearn;
 	}
-
+		
 	public boolean init()
 			throws IOException, XMLStreamException, LearningException, AssignmentException, DependencyException {
 		for (Solvis solvis : this.units) {
@@ -154,5 +158,9 @@ public class Instances {
 
 	public File getWritePath() {
 		return this.writeablePath;
+	}
+
+	public boolean mustLearn() {
+		return this.mustLearn;
 	}
 }

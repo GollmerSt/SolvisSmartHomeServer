@@ -60,8 +60,6 @@ public class Main {
 	}
 
 	private static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
-	private static Level LEARN;
-
 	private ILogger logger;
 	private String startTime = null;
 	private boolean shutdownExecuted = false;
@@ -179,7 +177,7 @@ public class Main {
 		}
 
 		this.logger.info(serverStart);
-		LEARN = Level.getLevel("LEARN");
+		Level.getLevel("LEARN");
 		boolean learn = false;
 
 		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
@@ -255,12 +253,10 @@ public class Main {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 		this.startTime = format.format(new Date());
 
-		if (learn) {
+		if (learn || this.instances.mustLearn()) {
+
 			try {
-				boolean learned = this.instances.learn();
-				if (!learned) {
-					this.logger.log(LEARN, "Nothing to learn!");
-				}
+				this.instances.learn(learn);
 			} catch (IOException | XMLStreamException | LearningException | FileException | ModbusException e) {
 				this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
 				e.printStackTrace();
@@ -268,8 +264,9 @@ public class Main {
 			} catch (TerminationException e) {
 				System.exit(ExitCodes.OK);
 			}
-//		if (learn) {
-			System.exit(ExitCodes.OK);
+			if (learn) {
+				System.exit(ExitCodes.OK);
+			}
 		}
 
 		try

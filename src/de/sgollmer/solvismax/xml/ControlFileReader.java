@@ -30,8 +30,6 @@ import de.sgollmer.solvismax.model.objects.control.Control;
 
 public class ControlFileReader {
 	
-	private static final boolean OVERWWRITE_ONLY_ON_LEARN = true;
-
 	private static final ILogger logger = LogManager.getInstance().getLogger(Control.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
@@ -82,10 +80,12 @@ public class ControlFileReader {
 
 		private final SolvisDescription solvisDescription;
 		private final Hashes hashes;
+		private final boolean mustLearn;
 
-		private Result(SolvisDescription description, int resourceHash, int resultHash) {
+		private Result(SolvisDescription description, long resourceHash, long resultHash, boolean mustLearn) {
 			this.solvisDescription = description;
 			this.hashes = new Hashes(resourceHash, resultHash);
+			this.mustLearn = mustLearn;
 		}
 
 		public Hashes getHashes() {
@@ -96,22 +96,26 @@ public class ControlFileReader {
 			return this.solvisDescription;
 		}
 
+		public boolean mustLearn() {
+			return this.mustLearn;
+		}
+
 	}
 
 	public static class Hashes {
-		private final Integer resourceHash;
-		private final Integer fileHash;
+		private final Long resourceHash;
+		private final Long fileHash;
 
-		public Hashes(Integer resourceHash, Integer fileHash) {
+		public Hashes(Long resourceHash, Long fileHash) {
 			this.resourceHash = resourceHash;
 			this.fileHash = fileHash;
 		}
 
-		public Integer getResourceHash() {
+		public Long getResourceHash() {
 			return this.resourceHash;
 		}
 
-		public Integer getFileHash() {
+		public Long getFileHash() {
 			return this.fileHash;
 		}
 
@@ -128,9 +132,11 @@ public class ControlFileReader {
 		SolvisDescription fromFile = null;
 		ChecksumInputStream inputStreamFromFile = new ChecksumInputStream(new FileInputStream(xml));
 
-		boolean mustWrite = false; // Wenn im Verzeichnis nicht vorhanden, nicht lesbar oder älter
+		boolean mustWrite; // Wenn im Verzeichnis nicht vorhanden, nicht lesbar oder älter
 									// oder Checksumme unbekannt
-		boolean modifiedByUser = false; // Wenn vom User modifiziert oder nicht lesbar
+		boolean modifiedByUser; // Wenn vom User modifiziert oder nicht lesbar
+		
+		boolean mustLearn;
 
 		Throwable e = null;
 
@@ -139,8 +145,8 @@ public class ControlFileReader {
 		SolvisDescription fromResource = reader.read(resource, rootId,
 				new SolvisDescription.Creator(rootId), NAME_XML_CONTROLFILE);
 
-		int newResourceHash = resource.getHash();
-		int fileHash = 0;
+		long newResourceHash = resource.getHash();
+		long fileHash = 0;
 
 		boolean xmlExits = xml.exists();
 		if (xmlExits) {
@@ -164,9 +170,11 @@ public class ControlFileReader {
 				mustWrite =  newResourceHash != former.getResourceHash() ;
 				modifiedByUser = fileHash != former.getResourceHash();
 				mustVerify = fileHash != former.getFileHash();
+				mustLearn = fileHash != former.getFileHash();
 			} else {
 				mustWrite = true;
 				modifiedByUser = newResourceHash != inputStreamFromFile.getHash();
+				mustLearn = true;
 				mustVerify = true;
 			}
 			
@@ -187,9 +195,10 @@ public class ControlFileReader {
 		} else {
 			mustWrite = true;
 			modifiedByUser = false;
+			mustLearn = true;
 		}
 
-		if (mustWrite && (learn || !OVERWWRITE_ONLY_ON_LEARN)) {
+		if (mustWrite && (learn || !Constants.OVERWWRITE_ONLY_ON_LEARN)) {
 
 			if (modifiedByUser) {
 
@@ -204,16 +213,16 @@ public class ControlFileReader {
 			}
 
 			this.copyFiles(true);
-			return new Result(fromResource, newResourceHash, newResourceHash);
+			return new Result(fromResource, newResourceHash, newResourceHash, mustLearn);
 		} else if (mustWrite) {
-			return new Result(fromResource, newResourceHash,newResourceHash);
+			return new Result(fromResource, newResourceHash,newResourceHash, mustLearn);
 		} else if (e != null) {
 			logger.error(
 					"Error on reading control.xml. Learning is necessary, start parameter \"--server-learn\" must be used.");
 			LogManager.exit(Constants.ExitCodes.READING_CONFIGURATION_FAIL);
 			return null;
 		} else {
-			return new Result(fromFile, newResourceHash, fileHash);
+			return new Result(fromFile, newResourceHash, fileHash, mustLearn);
 		}
 	}
 
