@@ -58,7 +58,7 @@ public class MyImage {
 		this.ignoreRectangles = null;
 	}
 
-	protected MyImage(MyImage image) {
+	public MyImage(MyImage image) {
 		this.image = image.image;
 		this.origin = image.origin;
 		this.size = image.size;

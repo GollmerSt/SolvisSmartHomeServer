@@ -29,6 +29,8 @@ import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
 
 public class ControlFileReader {
+	
+	private static final boolean OVERWWRITE_ONLY_ON_LEARN = true;
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(Control.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
@@ -187,7 +189,7 @@ public class ControlFileReader {
 			modifiedByUser = false;
 		}
 
-		if (mustWrite && learn || !xmlExits) {
+		if (mustWrite && (learn || !OVERWWRITE_ONLY_ON_LEARN)) {
 
 			if (modifiedByUser) {
 

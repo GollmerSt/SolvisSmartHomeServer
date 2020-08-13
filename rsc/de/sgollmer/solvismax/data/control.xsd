@@ -1074,45 +1074,40 @@
 	</simpleType>
 
 	<complexType name="ErrorDetection">
-		<sequence>
+        <annotation>
+        	<documentation>Beschreibung zur Fehlererkennung. Die Border-Werte sind Promille-Werte bezogen auf die Abmessungen des Bildschirmes.</documentation>
+        </annotation>
+        <sequence>
 			<element name="LeftBorder" type="tns:Range" maxOccurs="1"
 				minOccurs="1">
 				<annotation>
-					<documentation>
-						Linker Rahmen der Fehlermeldung
+					<documentation>Suchbereich für den linken Rahmen
 					</documentation>
 				</annotation>
 			</element>
 			<element name="RightBorder" type="tns:Range" maxOccurs="1"
 				minOccurs="1">
 				<annotation>
-					<documentation>
-						Rechter Rahmen der Fehlermeldung
-					</documentation>
+					<documentation>Suchbereich für den rechten Rahmen</documentation>
 				</annotation>
 			</element>
 			<element name="TopBorder" type="tns:Range" maxOccurs="1"
 				minOccurs="1">
 				<annotation>
-					<documentation>
-						Oberer Rahmen der Fehlermeldung
+					<documentation>Suchbereich für den oberen Rahmen
 					</documentation>
 				</annotation>
 			</element>
 			<element name="MiddleBorder" type="tns:Range" maxOccurs="1"
 				minOccurs="1">
 				<annotation>
-					<documentation>
-						Mittlerer Rahmen der Fehlermeldung
-					</documentation>
+					<documentation>Suchbereich für die Unterteilung zwischen Überschrift und Fehlertext</documentation>
 				</annotation>
 			</element>
 			<element name="BottomBorder" type="tns:Range" maxOccurs="1"
 				minOccurs="1">
 				<annotation>
-					<documentation>
-						Unterer Rahmen der Fehlermeldung
-					</documentation>
+					<documentation>Suchbereich für den unteren Rahmen</documentation>
 				</annotation>
 			</element>
 			<element name="HhMm" type="tns:Rectangle" maxOccurs="1"
@@ -1158,12 +1153,12 @@
 		</annotation>
 		<attribute name="lowerLimit" type="int" use="required">
 			<annotation>
-				<documentation>Relativ mit 1000 multipliziert</documentation>
+				<documentation>Relativ in Promille</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="higherLimit" type="int" use="required">
 			<annotation>
-				<documentation>Relativ mit 1000 multipliziert</documentation>
+				<documentation>Relativ in Promille</documentation>
 			</annotation>
 		</attribute>
 	</complexType>
