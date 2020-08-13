@@ -2,6 +2,7 @@ SHELL = /bin/sh
 fhemDir = /opt/fhem
 fhemModul = 73_SolvisClient.pm
 fhemCommand = ./contrib/commandref_join.pl -noWarnings
+fhemCommandRef = $(fhemDir)/docs/commandref.html
 serviceFhem = fhem.service
 fhemRestart = 0
 solvisDir = /opt/SolvisSmartHomeServer
@@ -20,28 +21,35 @@ start = sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar)
 startDebug = sudo -u $(account) $(java) -agentlib:$(javaAgentlib) -jar $(solvisDir)/$(solvisJar)
 startLocal = sudo -u $(account) $(java) -jar $(solvisJar)
 writablePath = `sed -n 's/.*\?writablePathLinux="\([^"]*\)".*/\1/gp' base.xml`
-generatedDir = SolvisServerData
+generatedBaseDir = SolvisServerData
 generatedFiles = control.xml* control.xsd graficData.xml graficData.xsd  measurements.xml   measurements.xsd solvis-error.log* solvis.log* solvis-tiny.log* tinylog.properties log4j2.xml
+generatedDirs = SolvisErrorImages LearnedImages
 
 .SUFFIXES:
 
 eraseGenerated:
-	cd "$(writablePath)/$(generatedDir)" ; \
+	cd "$(writablePath)/$(generatedBaseDir)" ; \
 	for file in $(generatedFiles) ; do \
 		rm $$file ; \
 	done ; \
+	for dir in $(generatedDirs) ; do \
+		rm -r $$dir ; \
+	done ; \
 	if [ -z "$$(ls -A .)" ]; then \
 		cd - ; \
-		rm -r "$(writablePath)/$(generatedDir)" ; \
+		rm -r "$(writablePath)/$(generatedBaseDir)" ; \
 	fi
 
 install: installSolvis installFHEM
 
 
+
 uninstall: uninstallSolvis uninstallFHEM
 
 
-uninstallAll: uninstallSolvis uninstallFHEM eraseGenerated
+
+uninstallAll: uninstallSolvis eraseGenerated uninstallFHEM
+
 
 
 copyService: $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
@@ -53,43 +61,56 @@ installService: installSolvis
 	systemctl start $(service)
 
 
+
 installDebugService: installSolvis
 	systemctl enable $(serviceDebug)
 	systemctl start $(serviceDebug)
-	
-	
+
+
+
 stopServices:
 	-systemctl stop $(service)
 	-systemctl stop $(serviceDebug)
+
 
 
 uninstallService: stopServices
 	systemctl disable $(service)
 
 
+
 uninstallDebugService: stopServices
 	systemctl disable $(serviceDebug)
 
 
-installFHEM: $(fhemDir)/FHEM/$(fhemModul)
+
+installFHEM: $(fhemCommandRef) 
 
 
-uninstallFHEM:	
+
+uninstallFHEM: rmFHEMModul createCommandRef	
+
+
+
+rmFHEMModul:
 	rm $(fhemDir)/FHEM/$(fhemModul)
-	cd $(fhemDir);sudo -u $(account) $(perl) $(fhemCommand)
+
 
 
 uninstallSolvis: uninstallService uninstallDebugService
 	rm $(solvisDir)/$(solvisJar)
 	rm $(systemD)/$(service).service
 	rm $(systemD)/$(serviceDebug).service
-	
+
+
 
 installSolvis: $(solvisDir)/$(solvisJar) $(solvisDir)/$(baseXml).xml  $(solvisDir)/$(baseXml).xsd copyService
 
 
+
 update: stopServices install
 	systemctl start $(service)
+
 
 
 updateDebug: stopServices install
@@ -101,13 +122,16 @@ learn: stopServices install
 	systemctl start $(service)
 
 
+
 testmail:
 	$(startLocal) --test-mail
-	
-	
+
+
+
 crypt:
 	@read -p "Enter the word to be encrypted:" password; \
 	$(startLocal) --string-to-crypt=$$password
+
 
 
 learnDebug: stopServices install
@@ -115,12 +139,15 @@ learnDebug: stopServices install
 	systemctl start $(serviceDebug)
 
 
+
 debugServer: stopServices installSolvis
 	$(startDebug)
-	
+
+
 
 terminate: stopServices installSolvis
 	$(start) --server-terminate
+
 
 
 foreground: stopServices installSolvis
@@ -128,14 +155,23 @@ foreground: stopServices installSolvis
 
 
 
-
 $(solvisDir):
 	mkdir $@
+
+
+
+$(fhemCommandRef):$(fhemDir)/FHEM/$(fhemModul)
+	make createCommandRef
+
 
 
 $(fhemDir)/FHEM/$(fhemModul): $(fhemModul)
 	cp $< $@
 	chown -c $(account):$(group) $@
+
+
+
+createCommandRef:
 	cd $(fhemDir); sudo -u $(account) $(perl) $(fhemCommand)
 	@echo
 	@echo "******************************"
@@ -149,8 +185,9 @@ $(fhemDir)/FHEM/$(fhemModul): $(fhemModul)
 $(solvisDir)/$(solvisJar): $(solvisJar) $(solvisDir)
 	cp $< $@
 	chown -c $(account):$(group) $@
-	
-	
+
+
+
 $(solvisDir)/$(baseXml).xml : $(baseXml).xml
 	if [ -f "$@" ] ; then \
 		mv $@ $<.old ; \
@@ -159,16 +196,19 @@ $(solvisDir)/$(baseXml).xml : $(baseXml).xml
 	cp $< $@
 	chown -c $(account):$(group) $@
 	chmod 600 $@
-	
-	
+
+
+
 $(solvisDir)/$(baseXml).xsd : $(baseXml).xsd
 	cp $< $@
 	chown -c $(account):$(group) $@
 
 
+
 $(systemD)/$(service).service: $(service).service
 	cp $< $@
 	systemctl daemon-reload
+
 
 
 $(systemD)/$(serviceDebug).service: $(serviceDebug).service

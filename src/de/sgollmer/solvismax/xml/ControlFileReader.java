@@ -130,7 +130,7 @@ public class ControlFileReader {
 		String rootId = XML_ROOT_ID;
 
 		SolvisDescription fromFile = null;
-		ChecksumInputStream inputStreamFromFile = new ChecksumInputStream(new FileInputStream(xml));
+		ChecksumInputStream inputStreamFromFile ;
 
 		boolean mustWrite; // Wenn im Verzeichnis nicht vorhanden, nicht lesbar oder älter
 									// oder Checksumme unbekannt
@@ -150,6 +150,8 @@ public class ControlFileReader {
 
 		boolean xmlExits = xml.exists();
 		if (xmlExits) {
+
+			inputStreamFromFile = new ChecksumInputStream(new FileInputStream(xml));
 
 			boolean mustVerify = true; // Wenn zu verifizieren
 
