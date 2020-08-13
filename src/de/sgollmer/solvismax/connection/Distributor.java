@@ -39,12 +39,12 @@ public class Distributor extends Observable<JsonPackage> {
 		private Collection<SolvisData> measurements = new ArrayList<>();
 
 		@Override
-		public void add(SolvisData data) {
+		public synchronized void add(SolvisData data) {
 			this.measurements.add(data);
 		}
 
 		@Override
-		public Collection<SolvisData> cloneAndClear() {
+		public synchronized Collection<SolvisData> cloneAndClear() {
 			Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements);
 			this.measurements.clear();
 			return collection;
@@ -60,14 +60,14 @@ public class Distributor extends Observable<JsonPackage> {
 		private Map<String, SolvisData> measurements = new HashMap<>();
 
 		@Override
-		public Collection<SolvisData> cloneAndClear() {
+		public synchronized Collection<SolvisData> cloneAndClear() {
 			Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements.values());
 			this.measurements.clear();
 			return collection;
 		}
 
 		@Override
-		public void add(SolvisData data) {
+		public synchronized void add(SolvisData data) {
 			this.measurements.put(data.getId(), data);
 		}
 
@@ -99,6 +99,9 @@ public class Distributor extends Observable<JsonPackage> {
 
 		@Override
 		public void update(SolvisData data, Object source) {
+
+			Collection<SolvisData> toSend = null;
+
 			synchronized (Distributor.this) {
 
 				boolean buffered = data.getDescription().isBuffered() && Distributor.this.periodicBurstThread != null;
@@ -116,9 +119,12 @@ public class Distributor extends Observable<JsonPackage> {
 				} else {
 					Distributor.this.collectedMeasurements.add(data);
 					if (!Distributor.this.burstUpdate) {
-						sendCollection(Distributor.this.collectedMeasurements.cloneAndClear());
+						toSend = Distributor.this.collectedMeasurements.cloneAndClear();
 					}
 				}
+			}
+			if (toSend != null) {
+				Distributor.this.sendCollection(toSend);
 			}
 		}
 	}

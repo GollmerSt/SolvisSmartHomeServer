@@ -52,6 +52,12 @@ Version 01.02.00
                 Vorbereitung um Learning automatisch anzustoﬂen: Checksumme zur Controlfile-‹berwachung unabh‰ngig
                 nun unabh‰ngig vom XML-File Reader.
                 
+    13.08.2020  Wenn das Learning erforderlich ist, erfolgt es nun automatisch.
+    
+                Einen Deadlock-Problem gefixt, der dann auftritt, wenn man versucht einen Soll-Wert zu ‰ndern oder 
+                abzufragen, wenn fast gleichzeitig einen vorherige Abfrage nicht einwandfrei abl‰uft und wiederholt
+                werden muss. 
+                
 
 Version 01.02.00
 

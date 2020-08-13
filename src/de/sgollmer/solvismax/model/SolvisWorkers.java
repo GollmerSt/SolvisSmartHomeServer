@@ -153,8 +153,8 @@ public class SolvisWorkers {
 					status = Status.NO_SUCCESS;
 					stateChanged = true;
 				}
-				synchronized (this) {
-					if (command != null) {
+				if (command != null) {
+					synchronized (this) {
 						if (status == Status.SUCCESS) {
 							this.removeCommand(command);
 						} else {
@@ -163,15 +163,17 @@ public class SolvisWorkers {
 							}
 						}
 					}
-					if (status == Status.NO_SUCCESS) {
-						try {
+				}
+				if (status == Status.NO_SUCCESS) {
+					try {
+						synchronized (this) {
 							this.wait(unsuccessfullWaitTime);
-							if (SolvisWorkers.this.solvis.getSolvisState().isConnected()) {
-								SolvisWorkers.this.watchDog.execute();
-								executeWatchDog = false;
-							}
-						} catch (InterruptedException e) {
 						}
+						if (SolvisWorkers.this.solvis.getSolvisState().isConnected()) {
+							SolvisWorkers.this.watchDog.execute();
+							executeWatchDog = false;
+						}
+					} catch (InterruptedException e) {
 					}
 				}
 			}
@@ -198,7 +200,7 @@ public class SolvisWorkers {
 			String commandString = executeCommand.toString();
 			logger.debug("Command <" + commandString + "> will be executed");
 			Status status = execute(executeCommand);
-			this.channelsOfQueueRead.addAll(executeCommand.getReadChannels()) ;
+			this.channelsOfQueueRead.addAll(executeCommand.getReadChannels());
 			if (status == Status.INTERRUPTED) {
 				logger.debug("Command <" + commandString + "> was interrupted. will be continued.");
 			} else {
