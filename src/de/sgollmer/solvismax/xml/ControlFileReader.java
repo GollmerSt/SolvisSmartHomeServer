@@ -170,12 +170,12 @@ public class ControlFileReader {
 			
 			if ( former.getFileHash() != null ) {
 				mustWrite =  newResourceHash != former.getResourceHash() ;
-				modifiedByUser = fileHash != former.getResourceHash();
+				modifiedByUser = fileHash != former.getResourceHash() && fileHash != newResourceHash;
 				mustVerify = fileHash != former.getFileHash();
-				mustLearn = fileHash != former.getFileHash();
+				mustLearn = fileHash != former.getFileHash() || mustWrite ;
 			} else {
 				mustWrite = true;
-				modifiedByUser = newResourceHash != inputStreamFromFile.getHash();
+				modifiedByUser = fileHash != newResourceHash;
 				mustLearn = true;
 				mustVerify = true;
 			}
