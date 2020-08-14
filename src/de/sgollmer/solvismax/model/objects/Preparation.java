@@ -160,4 +160,17 @@ public class Preparation implements IAssigner {
 		}
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Preparation)) {
+			return false;
+		}
+		return this.id.equals(((Preparation) o).getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
+	}
+
 }

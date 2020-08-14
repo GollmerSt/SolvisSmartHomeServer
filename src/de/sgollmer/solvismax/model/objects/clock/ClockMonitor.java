@@ -751,6 +751,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 						}
 						currentScreen.writeLearningImage(screen.getId()+"__"+part.screenGrafic.getId());
 						part.screenGrafic.learn(solvis);
+						part.screenGrafic.writeLearningImage(solvis);
 						if (part.getValue(solvis) == null) {
 							finished = false;
 							break;

@@ -1,6 +1,17 @@
 Ä N D E R U N G E N
 
-Version 01.02.00
+Version 01.02.02
+
+    14.08.2020  Die Images, welche beim Learning abgespeichert werden, wurden erweitert.
+                Es werden nun die Bildschirmbereiche, welche aus den Snapshots zur eigentlichen Identifikation
+                herangezogen werden gespeichert.
+                
+                Mit Hilfe der obigen Änderung wurden die Bildschirmbereiche noch optimiert.
+                
+                Das Learning wurde nicht in allen erforderlichen Fällen automatisch angestoßen. Gefixt.
+
+
+Version 01.02.01
 
     08.08.2020  Beim Learning werden nun immer die Bildschirme in den Ordner "SolvisServerData/learned_images"
                 des im base.xml angegebenen beschreibbaren Pfad geschrieben. Dies dient der einfacheren

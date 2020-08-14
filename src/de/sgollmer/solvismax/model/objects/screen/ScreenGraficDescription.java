@@ -7,12 +7,15 @@
 
 package de.sgollmer.solvismax.model.objects.screen;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
@@ -171,11 +174,35 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 		solvis.getGrafics().put(this.id, image);
 		logger.log(LEARN, "Screen grafic <" + this.getId() + "> learned.");
 	}
-
+	
 	public void setRectangle(Rectangle rectangle) {
 		if (rectangle != null) {
 			this.rectangle = rectangle;
 		}
 	}
 
+	public void writeLearningImage(Solvis solvis) {
+		ScreenGraficData data = solvis.getGrafics().get(this.id);
+		if ( data == null ) {
+			logger.info("Warning: Image of graphic <" + this.id + " not defined!");
+			return;
+		}
+		File parent = new File(solvis.getWritePath(), Constants.Files.RESOURCE_DESTINATION);
+		parent = new File(parent, Constants.Files.LEARN_DESTINATION);
+		String baseName = solvis.getUnit().getId() + "__graphic__" + this.id + "__";
+		int cnt = 0;
+		boolean found = true;
+		File file = null;
+		while (found) {
+			String name = FileHelper.makeOSCompatible( baseName + Integer.toString(cnt) + ".png");
+			file = new File(parent, name);
+			found = file.exists();
+			++cnt;
+		}
+		try {
+			data.getImage().write(file);
+		} catch (IOException e) {
+			logger.error("Error on writing the image of the learned graphic <" + this.id + ">.");
+		}
+	}
 }

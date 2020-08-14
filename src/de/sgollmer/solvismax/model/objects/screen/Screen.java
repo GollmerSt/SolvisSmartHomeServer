@@ -483,6 +483,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 						ScreenGraficDescription description = (ScreenGraficDescription) screenPartCompare;
 						if (!description.isLearned(solvis)) {
 							description.learn(solvis);
+							description.writeLearningImage(solvis);
 							descriptions.remove(description);
 						}
 					}

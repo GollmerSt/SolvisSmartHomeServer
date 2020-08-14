@@ -409,9 +409,14 @@ public class MyImage {
 		baos.close();
 		return new ByteArrayDataSource(imageBytes, "image/" + Constants.Files.GRAFIC_SUFFIX);
 	}
-	
-	public void writeWhole( File file ) throws IOException {
+
+	public void writeWhole(File file) throws IOException {
 		ImageIO.write(this.image, Constants.Files.GRAFIC_SUFFIX, file);
 	}
-	
+
+	public void write(File file) throws IOException {
+		ImageIO.write(this.image.getSubimage(this.origin.getX(), this.origin.getY(), this.getWidth(), this.getHeight()),
+				Constants.Files.GRAFIC_SUFFIX, file);
+	}
+
 }

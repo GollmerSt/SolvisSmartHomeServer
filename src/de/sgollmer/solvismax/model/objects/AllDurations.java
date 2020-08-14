@@ -13,17 +13,24 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
 public class AllDurations {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(AllPreparations.class);
 
 	private final static String XML_DURATION = "Duration";
 
 	private Map<String, Duration> durations = new HashMap<>();
 
 	private void add(Duration duration) {
-		this.durations.put(duration.getId(), duration);
+		Duration former = this.durations.put(duration.getId(), duration);
+		if ( former != null ) {
+			logger.error("Duration <" + duration.getId() + "> not unique.");
+		}
 	}
 
 	Duration get(String id) {

@@ -91,6 +91,5 @@ public class SolvisScreen {
 		} catch (IOException e) {
 			logger.error("Error on writing the image of the learned screen <" + id + ">.");
 		}
-
 	}
 }

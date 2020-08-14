@@ -14,12 +14,15 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class AllPreparations {
 
 	private static final String XML_PREPARATION = "Preparation";
+	private static final ILogger logger = LogManager.getInstance().getLogger(AllPreparations.class);
 
 	private final Collection<Preparation> preparations;
 
@@ -70,6 +73,10 @@ public class AllPreparations {
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
 				case XML_PREPARATION:
+					Preparation p = (Preparation) created ;
+					if ( this.preparations.contains(p)) {
+						logger.error("Preparation <" + p.getId() + "> is not unique.");
+					}
 					this.preparations.add((Preparation) created);
 					break;
 			}
