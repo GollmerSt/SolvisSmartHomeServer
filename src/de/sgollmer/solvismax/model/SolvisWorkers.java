@@ -200,7 +200,9 @@ public class SolvisWorkers {
 			String commandString = executeCommand.toString();
 			logger.debug("Command <" + commandString + "> will be executed");
 			Status status = execute(executeCommand);
-			this.channelsOfQueueRead.addAll(executeCommand.getReadChannels());
+			if (executeCommand.getReadChannels() != null) {
+				this.channelsOfQueueRead.addAll(executeCommand.getReadChannels());
+			}
 			if (status == Status.INTERRUPTED) {
 				logger.debug("Command <" + commandString + "> was interrupted. will be continued.");
 			} else {
