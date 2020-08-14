@@ -9,6 +9,8 @@ Version 01.02.02
                 Mit Hilfe der obigen Änderung wurden die Bildschirmbereiche noch optimiert.
                 
                 Das Learning wurde nicht in allen erforderlichen Fällen automatisch angestoßen. Gefixt.
+                
+                BugFix: Nach Ende des Clock-Adjustment trat eine Nullpointer-Exception auf.
 
 
 Version 01.02.01
