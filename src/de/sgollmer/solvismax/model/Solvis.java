@@ -303,6 +303,10 @@ public class Solvis {
 		this.getSolvisDescription().getChannelDescriptions().updateControlChannels(this);
 	}
 
+	public void updateReadOnlyControlChannels() {
+		this.getSolvisDescription().getChannelDescriptions().updateReadOnlyControlChannels(this);
+	}
+
 	void measure() throws IOException, PowerOnException, TerminationException, ModbusException {
 		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData());

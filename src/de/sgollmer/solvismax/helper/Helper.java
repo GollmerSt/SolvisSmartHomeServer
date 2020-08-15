@@ -156,4 +156,16 @@ public class Helper {
 		builder.append(work);
 		return builder.toString();
 	}
+
+	public static class Reference<R> {
+		private final R reference;
+
+		public Reference(R reference) {
+			this.reference = reference;
+		}
+
+		public R get() {
+			return this.reference;
+		}
+	}
 }

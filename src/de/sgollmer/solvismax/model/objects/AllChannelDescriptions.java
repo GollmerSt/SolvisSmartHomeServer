@@ -30,6 +30,7 @@ import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
@@ -44,10 +45,11 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	private static final String XML_CHANNEL_DESCRIPTION = "ChannelDescription";
 
-	private Map<String, OfConfigs<ChannelDescription>> descriptions = new HashMap<>();
+	private Map<String, OfConfigs<ChannelDescription>> descriptions = new HashMap<>(3);
 
-	private Map<Integer, Collection<ChannelDescription>> updateControlChannelsSequences = new HashMap<>();
-	private Map<Integer, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>();
+	private Map<Integer, Collection<ChannelDescription>> updateControlChannelsSequences = new HashMap<>(3);
+	private Map<Integer, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>(3);
+	private Map<Integer, Collection<ChannelDescription>> updateReadOnlyControlChannelsSequences = new HashMap<>(3);
 
 	private void addDescription(ChannelDescription description) throws XmlException {
 		OfConfigs<ChannelDescription> channelConf = this.descriptions.get(description.getId());
@@ -171,53 +173,69 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 //	private Map<ConfigurationMask, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>();
 
 	public void updateControlChannels(Solvis solvis) {
-		final int configurationMask = solvis.getConfigurationMask();
 
-		Collection<ChannelDescription> descriptions = this.updateControlChannelsSequences.get(configurationMask);
+		this.updateChannels(solvis, Type.ALL_CONTROL,
+				new Reference<Map<Integer, Collection<ChannelDescription>>>(this.updateControlChannelsSequences));
+	}
 
-		if (descriptions == null) {
-			descriptions = new ArrayList<>();
-			for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
-				ChannelDescription description = confDescriptions.get(solvis);
-				if (description != null && description.getType() == IChannelSource.Type.CONTROL
-						&& description.isInConfiguration(configurationMask) && !description.isModbus(solvis)) {
-					descriptions.add(description);
-				}
-			}
-			descriptions = this.optimize((List<ChannelDescription>) descriptions, solvis);
+	public void updateReadOnlyControlChannels(Solvis solvis) {
 
-			this.updateControlChannelsSequences.put(configurationMask, descriptions);
-		}
-
-		for (ChannelDescription description : descriptions) {
-			solvis.execute(new CommandControl(description, solvis));
-		}
-
+		this.updateChannels(solvis, Type.READONLY, new Reference<Map<Integer, Collection<ChannelDescription>>>(
+				this.updateReadOnlyControlChannelsSequences));
 	}
 
 	public void updateByHumanAccessFinished(Solvis solvis) {
-		final int configurationMask = solvis.getConfigurationMask();
 
-		Collection<ChannelDescription> descriptions = this.updateByScreenChangeSequences.get(configurationMask);
+		this.updateChannels(solvis, Type.SCREEN_DEPENDEND,
+				new Reference<Map<Integer, Collection<ChannelDescription>>>(this.updateByScreenChangeSequences));
+	}
+
+	private enum Type {
+		ALL_CONTROL, READONLY, WRITEABLE, SCREEN_DEPENDEND
+	}
+
+	private void updateChannels(Solvis solvis, Type type,
+			Reference<Map<Integer, Collection<ChannelDescription>>> destin) {
+
+		int configurationMask = solvis.getConfigurationMask();
+
+		Collection<ChannelDescription> descriptions = destin.get().get(configurationMask);
 
 		if (descriptions == null) {
+			
 			descriptions = new ArrayList<>();
+
 			for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
 				ChannelDescription description = confDescriptions.get(solvis);
-				if (description != null && description.isScreenChangeDependend()
-						&& description.isInConfiguration(configurationMask) && !description.isModbus(solvis)) {
-					descriptions.add(description);
+				if (description != null && description.isInConfiguration(configurationMask)
+						&& !description.isModbus(solvis)) {
+					boolean add = false;
+					switch (type) {
+						case ALL_CONTROL:
+							add = description.getType() == IChannelSource.Type.CONTROL;
+							break;
+						case READONLY:
+							add = !description.isWriteable() && description.getType() == IChannelSource.Type.CONTROL;
+							break;
+						case WRITEABLE:
+							add = description.isWriteable() && description.getType() == IChannelSource.Type.CONTROL;
+							break;
+						case SCREEN_DEPENDEND:
+							add = description.isScreenChangeDependend();
+					}
+					if (add) {
+						descriptions.add(description);
+					}
 				}
 			}
 			descriptions = this.optimize((List<ChannelDescription>) descriptions, solvis);
-
-			this.updateByScreenChangeSequences.put(configurationMask, descriptions);
+			destin.get().put(configurationMask, descriptions);
 		}
 
 		for (ChannelDescription description : descriptions) {
 			solvis.execute(new CommandControl(description, solvis));
 		}
-
+		return;
 	}
 
 	private Collection<ChannelDescription> optimize(List<ChannelDescription> descriptions, Solvis solvis) {

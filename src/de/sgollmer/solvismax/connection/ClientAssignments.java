@@ -158,7 +158,7 @@ public class ClientAssignments {
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
 		}
-		solvis.updateControlChannels();
+		solvis.updateReadOnlyControlChannels();
 
 	}
 

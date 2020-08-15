@@ -1,5 +1,12 @@
 Ä N D E R U N G E N
 
+Version 01.02.03
+
+    15.08.2020  Bei dem Server-Befehl "UPDATE_CHANNELS" ist es ausreichend, die Read-Only-Channels zu lesen.
+                Die anderen Kanäle sind immer aktuell, da sie nur durch den Anwender verändert werden können.
+                Der Anwenderzugriff wird separat überwacht und sind immer aktuell. 
+
+
 Version 01.02.02
 
     14.08.2020  Die Images, welche beim Learning abgespeichert werden, wurden erweitert.
