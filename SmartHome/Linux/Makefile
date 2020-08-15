@@ -113,11 +113,16 @@ update: stopServices install
 
 
 
-updateDebug: stopServices install
+updateSolvis: stopServices installSolvis
+	systemctl start $(service)
+
+
+
+updateDebug: stopServices installSolvis
 	systemctl start $(serviceDebug)
 
 
-learn: stopServices install
+learn: stopServices installSolvis
 	$(start) --server-learn
 	systemctl start $(service)
 
@@ -134,7 +139,7 @@ crypt:
 
 
 
-learnDebug: stopServices install
+learnDebug: stopServices installSolvis
 	$(start) --server-learn
 	systemctl start $(serviceDebug)
 
