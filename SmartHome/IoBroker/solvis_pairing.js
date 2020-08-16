@@ -12,7 +12,7 @@ var channels = [
 	'C10:Raumeinfluss_HK1',
 	'C12:Anlagenmodus_HK2',
 	'C13:Tagestemperatur_HK2',
-	'C14:Nachttemperatur_HK2.',
+	'C14:Nachttemperatur_HK2',
 	'C15:TemperaturFeineinstellung_HK2',
 	'C16:Raumeinfluss_HK2',
 	'C18:Anlagenmodus_HK3',
@@ -21,7 +21,7 @@ var channels = [
 	'C21:TemperaturFeineinstellung_HK3',
 	'C22:Raumeinfluss_HK3',
 	'C26:Warmwasserzirkulation_Puls',
-	'C27:Warmwasserzirkulation_Zeit.data'
+	'C27:Warmwasserzirkulation_Zeit'
 ]
 
 

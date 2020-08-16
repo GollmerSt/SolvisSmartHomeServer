@@ -17,6 +17,7 @@
 	<property name="changes" value="docu/CHANGES.txt" />
 	<property name="fhem.pm" value="SmartHome/FHEM/73_SolvisClient.pm" />
 	<property name="iobroker.client.json" value="SmartHome/IoBroker/mqtt-client.0.SolvisSmartHomeServer.json" />
+	<property name="iobroker.javascript" value="SmartHome/IoBroker/solvis_pairing.js" />
 	<property name="makefile" value="SmartHome/Linux/Makefile" />
 	<property name="linux.systemd" value="SmartHome/Linux/SolvisSmartHomeServer.service" />
 	<property name="linux.systemdD" value="SmartHome/Linux/DebugSolvisSmartHomeServer.service" />
@@ -120,6 +121,7 @@
 		</copy>
 		<copy todir="${private.dir}">
 			<fileset file="${iobroker.client.json}" casesensitive="yes" />
+			<fileset file="${iobroker.javascript}" casesensitive="yes" />
 			<fileset file="${myBase.xml}" casesensitive="yes" />
 			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
 		</copy>
@@ -132,6 +134,7 @@
 		<copy todir="${pubLinux.dir}">
 			<fileset file="${private.dir}/${dist.base}.jar" casesensitive="yes" />
 			<fileset file="${iobroker.client.json}" casesensitive="yes" />
+			<fileset file="${iobroker.javascript}" casesensitive="yes" />
 			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 			<fileset file="${changes}" casesensitive="yes" />
@@ -150,6 +153,7 @@
 		<copy todir="${pubWindows.dir}">
 			<fileset file="${fhem.pm}" casesensitive="yes" />
 			<fileset file="${iobroker.client.json}" casesensitive="yes" />
+			<fileset file="${iobroker.javascript}" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 			<fileset file="${changes}" casesensitive="yes" />
 		</copy>
