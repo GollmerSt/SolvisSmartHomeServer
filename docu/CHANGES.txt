@@ -2,9 +2,17 @@
 
 Version 01.02.03
 
+    16.08.2020  control.xml um die Definitionen des 3. Heizkreises ergänzt. Die ioBroker-Objektliste
+                entsprechend ergänzt.
+
     15.08.2020  Bei dem Server-Befehl "UPDATE_CHANNELS" ist es ausreichend, die Read-Only-Channels zu lesen.
                 Die anderen Kanäle sind immer aktuell, da sie nur durch den Anwender verändert werden können.
-                Der Anwenderzugriff wird separat überwacht und sind immer aktuell. 
+                Der Anwenderzugriff wird separat überwacht und sind immer aktuell.
+                
+    16.08.2020  Bugfix: Bei einem nicht passenden SET-Wert wurde zwar der nächst mögliche Wert als Sollwert
+                gesetzt, der wirklich eingestellte Wert wurde jedoch nicht an die Clients/MQTT-Broker verteilt.
+                
+                ioBroker-Script zum Pairing der Solvis-Objekte erstellt.
 
 
 Version 01.02.02

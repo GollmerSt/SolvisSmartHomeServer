@@ -31,7 +31,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 			throws IOException, PowerOnException, TerminationException, ModbusException;
 
 	public enum Status {
-		SUCCESS, INTERRUPTED, NO_SUCCESS, UNKNOWN
+		SUCCESS, INTERRUPTED, NO_SUCCESS, UNKNOWN, VALUE_VIOLATION
 	}
 
 	public static class SetResult {

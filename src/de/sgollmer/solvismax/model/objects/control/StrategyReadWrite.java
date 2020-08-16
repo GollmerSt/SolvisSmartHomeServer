@@ -62,7 +62,7 @@ public class StrategyReadWrite extends StrategyRead {
 	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData setValue)
 			throws IOException, TerminationException, ModbusException, TypeException {
 		if (controlAccess instanceof GuiAccess) {
-			Integer goal = setValue.getInteger();
+			Integer target = setValue.getInteger();
 			IntegerValue data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 			if (data == null) {
 				return null;
@@ -71,14 +71,14 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 			int current = data.get();
 
-			goal = Math.max(goal, this.least);
+			int goal = Math.max(target, this.least);
 			goal = Math.min(goal, this.most);
 
 			int value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment))
 					/ (2 * this.increment);
 
 			if (current == value) {
-				return new SetResult(Status.SUCCESS, data);
+				return new SetResult(target == current ?Status.SUCCESS:Status.VALUE_VIOLATION, data);
 			}
 
 			int[] dist = new int[3];

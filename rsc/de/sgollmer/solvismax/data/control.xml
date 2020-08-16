@@ -369,7 +369,104 @@
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
-
+		<tns:Screen id="Heizkreis3 1_5" backId="Heizkreise"
+			previousId="Heizkreise" ignoreChanges="true">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="20" Y="65" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="31/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="13" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+		</tns:Screen>
+		<tns:Screen id="Heizkreis3 2_5" backId="Heizkreise"
+			previousId="Heizkreis3 1_5">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="32/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="13" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+		</tns:Screen>
+		<tns:Screen id="Heizkreis3 3_5" backId="Heizkreise"
+			previousId="Heizkreis3 2_5">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="33/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="13" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+		</tns:Screen>
+		<tns:Screen id="Heizkreis3 5_5" backId="Heizkreise"
+			previousId="Heizkreis3 1_5">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="35/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="13" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="145" Y="15" />
+				<tns:BottomRight X="205" Y="65" />
+			</tns:IgnoreRectangle>
+		</tns:Screen>
+		<tns:Screen id="Heizkreis3 4_5" backId="Heizkreise"
+			previousId="Heizkreis3 5_5">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="34/5">
+				<tns:Field>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="13" />
+				</tns:Field>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="145" Y="15" />
+				<tns:BottomRight X="205" Y="65" />
+			</tns:IgnoreRectangle>
+		</tns:Screen>
 		<tns:ScreenSequence id="Anlagenstatus"
 			previousId="Sonstiges 1">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -582,9 +679,8 @@
 			<tns:ScreenGraficRef
 				refId="TagestemperaturSelected" />
 		</tns:Screen>
-		<tns:Screen id="
-				TagestemperaturSelected_HK1 "
-			backId="Home" previousId="Tagestemperatur_HK1" noRestore="true">
+		<tns:Screen id="TagestemperaturSelected_HK1" backId="Home"
+			previousId="Tagestemperatur_HK1" noRestore="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -630,6 +726,37 @@
 			<tns:ScreenGraficRef
 				refId="TagestemperaturSelected" />
 			<tns:LastPreparationRef refId="Button_HK2" />
+		</tns:Screen>
+		<tns:Screen id="Tagestemperatur_HK3" backId="Home"
+			previousId="Home" noRestore="true">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Lang"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="95" Y="105" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Tagestemperatur" />
+			<tns:ScreenGraficRef
+				refId="TagestemperaturNotSelected" />
+			<tns:PreparationRef refId="Button_HK3" />
+			<tns:LastPreparationRef refId="Button_HK3" />
+		</tns:Screen>
+		<tns:Screen id="TagestemperaturSelected_HK3" backId="Home"
+			previousId="Tagestemperatur_HK3" noRestore="true">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="80" Y="45" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Tagestemperatur" />
+			<tns:ScreenGraficRef
+				refId="TagestemperaturSelected" />
+			<tns:LastPreparationRef refId="Button_HK3" />
 		</tns:Screen>
 		<tns:Screen id="Nachttemperatur_HK1" backId="Home"
 			previousId="Home" noRestore="true">
@@ -724,6 +851,37 @@
 			<tns:ScreenGraficRef
 				refId="NachttemperaturSelected" />
 			<tns:LastPreparationRef refId="Button_HK2" />
+		</tns:Screen>
+		<tns:Screen id="Nachttemperatur_HK3" backId="Home"
+			previousId="Home" noRestore="true">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Lang"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="125" Y="105" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Nachttemperatur" />
+			<tns:ScreenGraficRef
+				refId="NachttemperaturNotSelected" />
+			<tns:PreparationRef refId="Button_HK3" />
+			<tns:LastPreparationRef refId="Button_HK3" />
+		</tns:Screen>
+		<tns:Screen id="NachttemperaturSelected_HK3" backId="Home"
+			previousId="Nachttemperatur_HK3" noRestore="true">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="80" Y="45" />
+			</tns:TouchPoint>
+			<tns:ScreenGraficRef refId="Nachttemperatur" />
+			<tns:ScreenGraficRef
+				refId="NachttemperaturSelected" />
+			<tns:LastPreparationRef refId="Button_HK3" />
 		</tns:Screen>
 		<tns:Screen id="Sonstiges_Nutzerauswahl"
 			backId="Sonstiges 2" previousId="Sonstiges 2">
@@ -1888,6 +2046,218 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
+			id="C18.Anlagenmodus_HK3">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0D02" type="Holding" />
+				<tns:GuiAccess screenId="Home">
+					<tns:CurrentValue>
+						<tns:TopLeft X="133" Y="37" />
+						<tns:BottomRight X="155" Y="58" />
+					</tns:CurrentValue>
+					<tns:PreparationRef refId="Button_HK3" />
+				</tns:GuiAccess>
+				<tns:TypeMode>
+					<tns:ModeEntry id="Tag">
+						<tns:ModbusValue>3</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ModeChange">
+								<tns:Coordinate X="95" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeTag" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Nacht">
+						<tns:ModbusValue>4</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ModeChange">
+								<tns:Coordinate X="125" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeNacht" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Standby">
+						<tns:ModbusValue>5</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ModeChange">
+								<tns:Coordinate X="160" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeStandby" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Timer">
+						<tns:ModbusValue>2</tns:ModbusValue>
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="ModeChange">
+								<tns:Coordinate X="60" Y="110" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="ModeTimer" />
+						</tns:GuiSet>
+					</tns:ModeEntry>
+				</tns:TypeMode>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C19.Tagestemperatur_HK3" unit="°C">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0D04" type="Holding" />
+				<tns:GuiAccess screenId="TagestemperaturSelected_HK3"
+					restoreChannelId="C18.Anlagenmodus_HK3">
+					<tns:CurrentValue>
+						<tns:TopLeft X="55" Y="30" />
+						<tns:BottomRight X="110" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="30"
+					least="0">
+					<tns:GuiModification format="^(\d+)..$"
+						wrapAround="false">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="15" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C20.Nachttemperatur_HK3" unit="°C">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:Control>
+				<tns:ModbusAccess address="0x0D05" type="Holding" />
+				<tns:GuiAccess screenId="NachttemperaturSelected_HK3"
+					restoreChannelId="C18.Anlagenmodus_HK3">
+					<tns:CurrentValue>
+						<tns:TopLeft X="55" Y="30" />
+						<tns:BottomRight X="110" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="30"
+					least="0">
+					<tns:GuiModification format="^(\d+)..$"
+						wrapAround="false">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="15" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="225" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C21.TemperaturFeineinstellung_HK3">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:Control>
+				<tns:GuiAccess screenId="Home">
+					<tns:CurrentValue>
+						<tns:TopLeft X="112" Y="40" />
+						<tns:BottomRight X="132" Y="55" />
+					</tns:CurrentValue>
+					<tns:PreparationRef refId="Button_HK3" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="5"
+					least="-5">
+					<tns:GuiModification format="^.(-{0,1}\d+).$">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="20" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="50" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C22.Raumeinfluss_HK3" unit="%">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:Control optional="true">
+				<tns:GuiAccess screenId="Heizkreis3 4_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="160" Y="75" />
+						<tns:BottomRight X="185" Y="87" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="10" most="90"
+					least="10">
+					<tns:GuiModification format="^(\d+).$"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="200" Y="80" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:ScreenChange />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C23.Vorlauf_Soll_HK3" unit="°C">
+			<tns:ConfigurationMasks>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:ConfigurationMasks>
+			<tns:Control optional="true">
+				<tns:GuiAccess screenId="Heizkreis3 4_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="45" />
+						<tns:BottomRight X="190" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="^([+-]{0,1}\d+)..$" />
+				</tns:TypeRead>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
 			id="C24.LaufzeitSolarpumpe" unit="h">
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Zaehlfunktion">
@@ -1988,6 +2358,18 @@
 				<tns:Field>
 					<tns:TopLeft X="47" Y="32" />
 					<tns:BottomRight X="76" Y="62" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Preparation>
+		<tns:Preparation id="Button_HK3">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="60" Y="75" />
+			</tns:TouchPoint>
+			<tns:ScreenGrafic id="Button_HK3">
+				<tns:Field>
+					<tns:TopLeft X="47" Y="62" />
+					<tns:BottomRight X="76" Y="92" />
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Preparation>

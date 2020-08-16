@@ -83,7 +83,8 @@ public class CommandControl extends Command {
 		} else {
 			switch (setResult.getStatus()) {
 				case SUCCESS:
-					data.setSingleData(setResult.getData());
+				case VALUE_VIOLATION:
+					data.setSingleData(setResult);
 					this.setValue = null;
 					return Status.SUCCESS;
 				case NO_SUCCESS:
@@ -143,7 +144,7 @@ public class CommandControl extends Command {
 			}
 		}
 
-		if (writeStatus == Status.SUCCESS && !readSuccess) {
+		if ((writeStatus == Status.SUCCESS) && !readSuccess) {
 			return Status.NO_SUCCESS;
 		} else {
 			return writeStatus;
@@ -177,19 +178,19 @@ public class CommandControl extends Command {
 				if (sameScreen) {
 
 					if (queueEntry.isWriting()) {
-						
+
 						if (this.description == qCmp.description && this.isWriting()) {
 							inQueueInhibit = true;
 						}
 						inhibitAdd = !this.isWriting();
 						insert = true;
-						
+
 					} else if (queueEntry.getRestoreChannel(solvis) != null) {
-						
-						if (this.description == qCmp.description ) {
-							inQueueInhibit = true ;
+
+						if (this.description == qCmp.description) {
+							inQueueInhibit = true;
 						}
-						
+
 					} else {
 						inQueueInhibit = true;
 					}

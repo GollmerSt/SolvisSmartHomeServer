@@ -112,7 +112,7 @@ public class Measurement extends ChannelSource {
 	public boolean getValue(SolvisData dest, Solvis solvis) throws PowerOnException, IOException, TerminationException {
 
 		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
-			dest.setSingleData(null);
+			dest.setSingleData((SingleData<?>) null);
 			return true;
 		} else {
 			return this.type.get(dest, this.fields, solvis.getMeasureData());

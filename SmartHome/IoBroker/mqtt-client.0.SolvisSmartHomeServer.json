@@ -3079,6 +3079,1366 @@
       "ownerGroup": "system.group.administrator"
     }
   },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C12:Anlagenmodus_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C12:Anlagenmodus_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C12:Anlagenmodus_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C12:Anlagenmodus_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C12:Anlagenmodus_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C12:Anlagenmodus_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C13:Tagestemperatur_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C13:Tagestemperatur_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594745362888,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C13:Tagestemperatur_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C13:Tagestemperatur_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594745362888,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C13:Tagestemperatur_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C13:Tagestemperatur_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C14:Nachttemperatur_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C14:Nachttemperatur_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958189,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C14:Nachttemperatur_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C14:Nachttemperatur_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958189,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C14:Nachttemperatur_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C14:Nachttemperatur_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C15:TemperaturFeineinstellung_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C15:TemperaturFeineinstellung_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C15:TemperaturFeineinstellung_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C15:TemperaturFeineinstellung_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C15:TemperaturFeineinstellung_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C15:TemperaturFeineinstellung_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C16:Raumeinfluss_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C16:Raumeinfluss_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C16:Raumeinfluss_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C16:Raumeinfluss_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C16:Raumeinfluss_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C16:Raumeinfluss_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C17:Vorlauf_Soll_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C17:Vorlauf_Soll_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C17:Vorlauf_Soll_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C17:Vorlauf_Soll_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C17:Vorlauf_Soll_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C17:Vorlauf_Soll_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C17:Vorlauf_Soll_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C17:Vorlauf_Soll_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C18:Anlagenmodus_HK3.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C18:Anlagenmodus_HK3/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C18:Anlagenmodus_HK3/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C18:Anlagenmodus_HK3.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C18:Anlagenmodus_HK3.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C18:Anlagenmodus_HK3/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C18:Anlagenmodus_HK3/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C18:Anlagenmodus_HK3.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C18:Anlagenmodus_HK3.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C18:Anlagenmodus_HK3/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C18:Anlagenmodus_HK3/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C18:Anlagenmodus_HK3.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C19:Tagestemperatur_HK3.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C19:Tagestemperatur_HK3/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C19:Tagestemperatur_HK3/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594745362888,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C19:Tagestemperatur_HK3.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C19:Tagestemperatur_HK3.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C19:Tagestemperatur_HK3/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C19:Tagestemperatur_HK3/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594745362888,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C19:Tagestemperatur_HK3.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C19:Tagestemperatur_HK3.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C19:Tagestemperatur_HK3/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C19:Tagestemperatur_HK3/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C19:Tagestemperatur_HK3.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C20:Nachttemperatur_HK3.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C20:Nachttemperatur_HK3/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C20:Nachttemperatur_HK3/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958189,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C20:Nachttemperatur_HK3.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C20:Nachttemperatur_HK3.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C20:Nachttemperatur_HK3/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C20:Nachttemperatur_HK3/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958189,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C20:Nachttemperatur_HK3.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C20:Nachttemperatur_HK3.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C20:Nachttemperatur_HK3/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C20:Nachttemperatur_HK3/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C20:Nachttemperatur_HK3.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C21:TemperaturFeineinstellung_HK3.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C21:TemperaturFeineinstellung_HK3/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C21:TemperaturFeineinstellung_HK3/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C21:TemperaturFeineinstellung_HK3.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C21:TemperaturFeineinstellung_HK3.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C21:TemperaturFeineinstellung_HK3/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C21:TemperaturFeineinstellung_HK3/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C21:TemperaturFeineinstellung_HK3.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C21:TemperaturFeineinstellung_HK3.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C21:TemperaturFeineinstellung_HK3/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C21:TemperaturFeineinstellung_HK3/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958195,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C21:TemperaturFeineinstellung_HK3.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C22:Raumeinfluss_HK3.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C22:Raumeinfluss_HK3/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C22:Raumeinfluss_HK3/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C22:Raumeinfluss_HK3.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C22:Raumeinfluss_HK3.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C22:Raumeinfluss_HK3/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C22:Raumeinfluss_HK3/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C22:Raumeinfluss_HK3.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C22:Raumeinfluss_HK3.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C22:Raumeinfluss_HK3/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C22:Raumeinfluss_HK3/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C22:Raumeinfluss_HK3.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C23:Vorlauf_Soll_HK3.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C23:Vorlauf_Soll_HK3/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C23:Vorlauf_Soll_HK3/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C23:Vorlauf_Soll_HK3.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C23:Vorlauf_Soll_HK3.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C23:Vorlauf_Soll_HK3/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C23:Vorlauf_Soll_HK3/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C23:Vorlauf_Soll_HK3.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
   "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C24:LaufzeitSolarpumpe.data": {
     "type": "state",
     "role": "text",
@@ -3152,6 +4512,86 @@
     "user": "system.user.admin",
     "ts": 1594741958195,
     "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C24:LaufzeitSolarpumpe.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C25:LaufzeitSolarpumpe2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C25:LaufzeitSolarpumpe2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C25:LaufzeitSolarpumpe2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C25:LaufzeitSolarpumpe2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C25:LaufzeitSolarpumpe2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C25:LaufzeitSolarpumpe2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C25:LaufzeitSolarpumpe2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958140,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C25:LaufzeitSolarpumpe2.meta",
     "acl": {
       "object": 1636,
       "state": 1636,
@@ -6392,686 +7832,6 @@
     "user": "system.user.admin",
     "ts": 1594741958139,
     "_id": "mqtt-client.0.SolvisSmartHomeServer.server.online",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.meta": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "meta",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C12:Anlagenmodus_HK2/meta",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C12:Anlagenmodus_HK2/meta"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958195,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.meta",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.data": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C12:Anlagenmodus_HK2/data",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C12:Anlagenmodus_HK2/data"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958195,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.data",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.cmnd": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": false,
-      "write": true,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C12:Anlagenmodus_HK2/cmnd",
-          "publish": true,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": false,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": false
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C12:Anlagenmodus_HK2/cmnd"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958195,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C12:Anlagenmodus_HK2.cmnd",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.meta": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "meta",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C13:Tagestemperatur_HK2/meta",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C13:Tagestemperatur_HK2/meta"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958140,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.meta",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.data": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C13:Tagestemperatur_HK2/data",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C13:Tagestemperatur_HK2/data"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594745362888,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.data",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.cmnd": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": false,
-      "write": true,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C13:Tagestemperatur_HK2/cmnd",
-          "publish": true,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": false,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": false
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C13:Tagestemperatur_HK2/cmnd"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594745362888,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C13:Tagestemperatur_HK2.cmnd",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.meta": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "meta",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C14:Nachttemperatur_HK2/meta",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C14:Nachttemperatur_HK2/meta"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958188,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.meta",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.data": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C14:Nachttemperatur_HK2/data",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C14:Nachttemperatur_HK2/data"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958189,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.data",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.cmnd": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": false,
-      "write": true,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C14:Nachttemperatur_HK2/cmnd",
-          "publish": true,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": false,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": false
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C14:Nachttemperatur_HK2/cmnd"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958189,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C14:Nachttemperatur_HK2.cmnd",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.meta": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "meta",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C15:TemperaturFeineinstellung_HK2/meta",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C15:TemperaturFeineinstellung_HK2/meta"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958195,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.meta",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.data": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C15:TemperaturFeineinstellung_HK2/data",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C15:TemperaturFeineinstellung_HK2/data"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958195,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.data",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.meta": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "meta",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C16:Raumeinfluss_HK2/meta",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C16:Raumeinfluss_HK2/meta"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958188,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.meta",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.data": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C16:Raumeinfluss_HK2/data",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C16:Raumeinfluss_HK2/data"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958188,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.data",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.cmnd": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": false,
-      "write": true,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C16:Raumeinfluss_HK2/cmnd",
-          "publish": true,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": false,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": false
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C16:Raumeinfluss_HK2/cmnd"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958188,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C16:Raumeinfluss_HK2.cmnd",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C17:Vorlauf_Soll_HK2.meta": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "meta",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C17:Vorlauf_Soll_HK2/meta",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C17:Vorlauf_Soll_HK2/meta"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958140,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C17:Vorlauf_Soll_HK2.meta",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C17:Vorlauf_Soll_HK2.data": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": true,
-      "write": false,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/mySolvis/C17:Vorlauf_Soll_HK2/data",
-          "publish": false,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": true,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": true
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/mySolvis/C17:Vorlauf_Soll_HK2/data"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958140,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C17:Vorlauf_Soll_HK2.data",
-    "acl": {
-      "object": 1636,
-      "state": 1636,
-      "owner": "system.user.admin",
-      "ownerGroup": "system.group.administrator"
-    }
-  },
-  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.cmnd": {
-    "type": "state",
-    "role": "text",
-    "common": {
-      "name": "data",
-      "type": "mixed",
-      "read": false,
-      "write": true,
-      "desc": "created from topic",
-      "custom": {
-        "mqtt-client.0": {
-          "enabled": true,
-          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C15:TemperaturFeineinstellung_HK2/cmnd",
-          "publish": true,
-          "pubChangesOnly": false,
-          "pubAsObject": false,
-          "qos": 0,
-          "retain": false,
-          "subscribe": false,
-          "subChangesOnly": false,
-          "subAsObject": false,
-          "subQos": 0,
-          "setAck": false
-        }
-      }
-    },
-    "native": {
-      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C15:TemperaturFeineinstellung_HK2/cmnd"
-    },
-    "from": "system.adapter.mqtt-client.0",
-    "user": "system.user.admin",
-    "ts": 1594741958195,
-    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C15:TemperaturFeineinstellung_HK2.cmnd",
     "acl": {
       "object": 1636,
       "state": 1636,

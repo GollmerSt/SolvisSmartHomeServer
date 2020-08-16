@@ -19,6 +19,8 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
+import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
+import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
@@ -94,10 +96,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	private void setData(SingleData<?> data) {
-		this.setData(data, this);
+		this.setData(data, this, Status.SUCCESS);
 	}
 
-	private synchronized void setData(SingleData<?> data, Object source) {
+	private synchronized void setData(SingleData<?> data, Object source, Status status) {
 
 		if (data == null || data.get() == null) {
 			this.data = null;
@@ -109,9 +111,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 			data = this.average.getAverage(data);
 		}
 
-		if (data != null && !data.equals(this.data)) {
+		if (data != null && (!data.equals(this.data) || status == Status.VALUE_VIOLATION )) {
 			this.data = data;
-			if (!this.description.isWriteable() || !this.datas.getSolvis().willBeModified(this)) {
+			if (!this.description.isWriteable() || !this.datas.getSolvis().willBeModified(this)
+					|| status == Status.VALUE_VIOLATION) {
 				this.notify(this, source);
 			}
 			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
@@ -129,7 +132,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	public void setInteger(Integer integer, long timeStamp, Object source) {
-		this.setData(new IntegerValue(integer, timeStamp), source);
+		this.setData(new IntegerValue(integer, timeStamp), source, Status.SUCCESS);
 	}
 
 	public void setInteger(Integer integer, long timeStamp) {
@@ -197,6 +200,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		} else {
 			return null;
 		}
+	}
+
+	public void setSingleData(SetResult data) {
+		this.setData(data.getData(), this, data.getStatus());;
 	}
 
 	public void setSingleData(SingleData<?> data) {

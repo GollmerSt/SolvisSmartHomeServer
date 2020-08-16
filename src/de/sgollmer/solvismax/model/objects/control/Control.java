@@ -128,7 +128,7 @@ public class Control extends ChannelSource {
 		if (setResult == null) {
 			logger.error("Setting of <" + this.getDescription().getId() + "> not successfull");
 		} else if ( setResult.getStatus() == Status.SUCCESS){
-			logger.info("Channel <" + this.description.getId() + "> is set to " + value.toString() + ">.");
+			logger.info("Channel <" + this.description.getId() + "> is set to " + setResult.getData().toString() + ">.");
 		}
 		return setResult;
 	}
