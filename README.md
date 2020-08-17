@@ -1,8 +1,11 @@
 # SolvisSmartHomeServer
 ## Überblick
 
-Dieses Programm ist ein eigenständiges Java-Programm, das als Service/Task/Daemon im Hintergrund läuft. Es dient der Anbindung einer Solvis-Heizungsanlage
-mit einer Solvis Control 2 an verschiedene SmartHome-Systeme, wie FHEM, ioBroker, OpenHab etc.. Ziel war nicht nur ein Monitoring der Anlage zu ermöglichen sondern auch die Einstellung der wichtigsten Anlageparameter wie z. B. Soll-Temperaturen, Raumabhängigkeit, Anlagemodus.
+Dieses Programnm dient der Anbindung der SolvisMax 6 und 7 mit SolvisControl2 in Kombination der SolvisRemote an Smart-Home-Systeme wie z.B. Fhem, ioBroker, OpenHAB, Indigo.
+
+Es eignet sich nicht für die neueren Anlagen der SolvisMax7 und SolvisBen, welche mit der neuen SolvisControl3 ausgeliefert werden. Bei diesen sollte man zur Smart-Home-System-Anbindung das Modbus-Interface nutzen.
+
+Dieses Programm ist ein eigenständiges Java-Programm, das als Service/Task/Daemon im Hintergrund läuft. Ziel war nicht nur ein Monitoring der Anlage zu ermöglichen sondern auch die Einstellung der wichtigsten Anlageparameter wie z. B. Soll-Temperaturen, Raumabhängigkeit, Anlagemodus.
 
 Die bisher mir bekannten Lösungen liefern nur die Messwerte/Zustände einer Solvis-Anlagen an die SmartHome-Systeme. Dabei wird ein XML-String interpretiert,
 der über das WebInterface der SolvisRemote abgefragt wird. Der SolvisSmartHomeServer nutzt ebenfalls diese Schnittstelle.
