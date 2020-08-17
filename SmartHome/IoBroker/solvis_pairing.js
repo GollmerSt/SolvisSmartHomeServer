@@ -24,62 +24,139 @@ var channels = [
 	'C27:Warmwasserzirkulation_Zeit'
 ]
 
+if ( getState('mqtt-client.0.info.connection') ) {
+    init();
+} else {
+    on ({id: 'mqtt-client.0.info.connection', change: 'ne'}, function(obj){
+            var val = obj.state ? obj.state.val : false ;
+            if ( val ) {
+                init();
+            }
+        });
+}
 
-// Beim Starten dem SolvisSmartHomeServer mitteilen, dass ioBroker online ist
-setState(online, 'true'); 
+function init() {
 
-channels.forEach(function(channel) {
+    if ( !getState('mqtt-client.0.info.connection') ) {
+        return;
+    }
 
-    var solvisread = solvisPath + channel + '.data';
+    // Beim Starten dem SolvisSmartHomeServer mitteilen, dass ioBroker online ist
+    setState(online, 'true'); 
 
-    var solviswrite = solvisPath + channel + '.cmnd';
+    channels.forEach(function(channel) {
 
-    var combined = 'javascript.0.' + solvis + '.' + channel + '.rw';
-	
+        var solvisread = solvisPath + channel + '.data';
 
-	//kombiniertes Objekt erzeugen
+        var solviswrite = solvisPath + channel + '.cmnd';
 
-    createState(combined);
+        var combined = 'javascript.0.' + solvis + '.' + channel + '.rw';
+        
 
- 
+        //kombiniertes Objekt erzeugen
 
-    // Initialen Wert aus Solvis in die kombinierte Objekt schreiben:
+        createState(combined);
 
-    setState(combined, getState(solvisread).val, true);
+    
 
- 
+        // Initialen Wert aus Solvis in die kombinierte Objekt schreiben:
 
-    // Wert wird durch Solvis geändert:
+        setState(combined, getState(solvisread).val, true);
 
-    on({id: solvisread}, function(obj) {
+    
 
-        var val = obj.state ? obj.state.val : '';
+        // Wert wird durch Solvis geändert:
 
-        if (val != getState(combined).val) {
-            setState(combined, (obj.state ? obj.state.val : ''), true);
-        }
+        on({id: solvisread}, function(obj) {
 
+            var val = obj.state ? obj.state.val : '';
+
+            if (val != getState(combined).val) {
+                setState(combined, (obj.state ? obj.state.val : ''), true);
+            }
+
+
+        });
+
+    
+
+        // Wert wird durch ioBroker web.0 geändert:
+
+        on({id: combined, change: 'ne'}, function(obj) {
+
+            //if ((obj.state ? obj.state.from : '') == 'system.adapter.web.0') {
+
+                setState(solviswrite, (obj.state ? (obj.state.val === true ? 1 : (obj.state.val === false ? 0 : obj.state.val)) : ''), false);
+
+            //}
+
+        });
+
+        // Beim Beenden dem SolvisSmartHomeServer mitteilen, dass ioBroker offline ist
+        onStop (function(){
+            setState(online, 'false');
+        }, 2000);
 
     });
+    
 
- 
 
-    // Wert wird durch ioBroker web.0 geändert:
+    // Beim Starten dem SolvisSmartHomeServer mitteilen, dass ioBroker online ist
+    setState(online, 'true'); 
 
-    on({id: combined, change: 'ne'}, function(obj) {
+    channels.forEach(function(channel) {
 
-        //if ((obj.state ? obj.state.from : '') == 'system.adapter.web.0') {
+        var solvisread = solvisPath + channel + '.data';
 
-            setState(solviswrite, (obj.state ? (obj.state.val === true ? 1 : (obj.state.val === false ? 0 : obj.state.val)) : ''), false);
+        var solviswrite = solvisPath + channel + '.cmnd';
 
-        //}
+        var combined = 'javascript.0.' + solvis + '.' + channel + '.rw';
+        
+
+        //kombiniertes Objekt erzeugen
+
+        createState(combined);
+
+    
+
+        // Initialen Wert aus Solvis in die kombinierte Objekt schreiben:
+
+        setState(combined, getState(solvisread).val, true);
+
+    
+
+        // Wert wird durch Solvis geändert:
+
+        on({id: solvisread}, function(obj) {
+
+            var val = obj.state ? obj.state.val : '';
+
+            if (val != getState(combined).val) {
+                setState(combined, (obj.state ? obj.state.val : ''), true);
+            }
+
+
+        });
+
+    
+
+        // Wert wird durch ioBroker web.0 geändert:
+
+        on({id: combined, change: 'ne'}, function(obj) {
+
+            //if ((obj.state ? obj.state.from : '') == 'system.adapter.web.0') {
+
+                setState(solviswrite, (obj.state ? (obj.state.val === true ? 1 : (obj.state.val === false ? 0 : obj.state.val)) : ''), false);
+
+            //}
+
+        });
+
+        // Beim Beenden dem SolvisSmartHomeServer mitteilen, dass ioBroker offline ist
+        onStop (function(){
+            setState(online, 'false');
+        }, 2000);
 
     });
-
-    // Beim Beenden dem SolvisSmartHomeServer mitteilen, dass ioBroker offline ist
-    onStop (function(){
-        setState(online, 'false');
-    }, 2000);
-
-});
+}
 

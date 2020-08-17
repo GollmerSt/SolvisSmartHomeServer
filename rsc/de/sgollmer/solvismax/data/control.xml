@@ -211,7 +211,7 @@
 			previousId="Heizkreis1 1_5">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="225" Y="25" />
+				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="12/5">
 				<tns:Field>
@@ -225,7 +225,7 @@
 			previousId="Heizkreis1 2_5">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="225" Y="25" />
+				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="13/5">
 				<tns:Field>
@@ -297,7 +297,7 @@
 			</tns:ConfigurationMasks>
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="225" Y="25" />
+				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="22/5">
 				<tns:Field>
@@ -315,7 +315,7 @@
 			</tns:ConfigurationMasks>
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="225" Y="25" />
+				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="23/5">
 				<tns:Field>
@@ -395,7 +395,7 @@
 			</tns:ConfigurationMasks>
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="225" Y="25" />
+				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="32/5">
 				<tns:Field>
@@ -413,7 +413,7 @@
 			</tns:ConfigurationMasks>
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="225" Y="25" />
+				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="33/5">
 				<tns:Field>
