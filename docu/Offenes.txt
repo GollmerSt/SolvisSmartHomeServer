@@ -5,11 +5,11 @@ Offene Aufgaben:
      Diese Konfiguration könnte mit in die Backup-Daten gespeichert werden, dadurch könnte schon
      beim Senden der Kanal-Namen zum Cient mitberücksichtigt sein, ohne dass eine Verbindung zur
      Solvis-Anklage vorliegen muss
-
-19. Makefile-Problem: Nach uninstall bleiben die vom Programm erzeugten Dateien noch bestehen. 
-    Mit AWK das base.xml scannen, um den Pfad zu ermitteln und zu löschen.
-    
-20. Das Linux-paket enthält aktuell dateienn mit CR+LF, die müssen mit FixCRLF in LF umgewandelt werden.
+     
+2. Tool schreiben, dass mittels der bace.xsd die base.xml editieren kann. Dieses tool muss sowohl
+     einen Text- als such grafische Oberfläche besitzen. Als 3. Möglichkeit wäre ein WebInterface
+     denkbar, vielleicht in Form einer WebPage auf GitHub mit JavaScript.
+     Vielleicht auch https://github.com/michmech/xonomy
 
 Erledigt:
 
@@ -290,5 +290,10 @@ Erledigt:
 		Makefile:99: recipe for target 'learnDebug' failed
 
 	Warum erscheint keine Meldung, dass mehrfach versucht wurde?
+
+19. Makefile-Problem: Nach uninstall bleiben die vom Programm erzeugten Dateien noch bestehen. 
+    Mit AWK das base.xml scannen, um den Pfad zu ermitteln und zu löschen.
+    
+20. Das Linux-paket enthält aktuell dateienn mit CR+LF, die müssen mit FixCRLF in LF umgewandelt werden.
 
 		

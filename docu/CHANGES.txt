@@ -17,6 +17,8 @@ Version 01.02.03
     17.08.2020  Ein mustSave-Attribut in der control.xml eingeführt. Mittels dieses Attributs kann man zur Analyse
                 ein Abspeichern eines Screens während des Learnings erzwingen, auch wenn er zum Learning nicht
                 erforderlich ist.
+                
+    18.08.2020  Die 3 der Heizkreisüberschrift wurde fälschlicherweise als 1 erkannt
 
 
 Version 01.02.02

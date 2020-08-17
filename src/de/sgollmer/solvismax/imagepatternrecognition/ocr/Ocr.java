@@ -375,10 +375,7 @@ public class Ocr extends MyImage {
 			return 'h';
 		}
 
-		if (this.maximaX[0].getValue() == this.getHeight()) {
-			// if ( this.maximaX[0].getCoord() >= this.getWidth() - 2 &&
-			// this.maximaX[0].getValue() > this.getHeight() * 3 / 4 ) {
-			// - Erkennung von 1, senkrechtes Maximum = Höhe, rechts
+		if (this.maximaX[0].getValue() == this.getHeight() && lower.rotations180Degrees.size() == 0) {
 			return '1';
 		}
 
@@ -445,9 +442,9 @@ public class Ocr extends MyImage {
 		File parent = new File("testFiles\\images");
 
 		Collection<String> names = Arrays.asList("0.png", "1.png", "1 small.png", "2.png", "3.png", "3 grey.png",
-				"4.png", "4 black.png", "4 small.png", "4 Feineinstellung.png", "5.png", "6.png", "7.png", "8.png",
-				"9.png", "9 grey small.png", "minus.png", "minus2.png", "plus.png", "doppelpunkt.png", "punkt.png",
-				"punkt small.png", "h small.png", "grad.png", "C.png", "square bracket left.png",
+				"3 von HK.png", "4.png", "4 black.png", "4 small.png", "4 Feineinstellung.png", "5.png", "6.png",
+				"7.png", "8.png", "9.png", "9 grey small.png", "minus.png", "minus2.png", "plus.png", "doppelpunkt.png",
+				"punkt.png", "punkt small.png", "h small.png", "grad.png", "C.png", "square bracket left.png",
 				"square bracket right.png", "slash.png", "percent.png", "percent grey.png");
 
 		BufferedImage image = null;

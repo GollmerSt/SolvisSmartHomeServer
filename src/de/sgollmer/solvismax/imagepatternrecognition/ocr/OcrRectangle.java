@@ -236,6 +236,8 @@ public class OcrRectangle extends MyImage {
 		System.out.println("Time is: " + uhrzeit + ", date is " + date + ", temperature is " + temperature
 				+ ", adjustment is " + adjust);
 
+		// -------------------------------------------------------------
+
 		file = new File(parent, "raumeinfluss.png");
 
 		try {
@@ -255,6 +257,26 @@ public class OcrRectangle extends MyImage {
 		String raumeinfluss = rectangle.getString();
 
 		System.out.println("ScreenId is: " + screenId + ", raumeinfluss is " + raumeinfluss);
+
+		// -------------------------------------------------------------
+
+		file = new File(parent, "mySolvis__Heizkreis3-1_5__0.png");
+
+		try {
+			bufferedImage = ImageIO.read(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		myImage = new MyImage(bufferedImage);
+
+		rectangle = new OcrRectangle(myImage, new Coordinate(162, 2), new Coordinate(198, 13));
+
+		screenId = rectangle.getString();
+
+		rectangle = new OcrRectangle(myImage, new Coordinate(150, 75), new Coordinate(190, 88));
+
+		System.out.println("ScreenId is: " + screenId);
 
 		// -------------------------------------------------------------
 
