@@ -254,7 +254,7 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 		<tns:Screen id="Heizkreis1 4_5" backId="Heizkreise"
-			previousId="Heizkreis1 5_5">
+			previousId="Heizkreis1 5_5" mustSave="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
@@ -348,7 +348,7 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 		<tns:Screen id="Heizkreis2 4_5" backId="Heizkreise"
-			previousId="Heizkreis2 5_5">
+			previousId="Heizkreis2 5_5" mustSave="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -446,7 +446,7 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 		<tns:Screen id="Heizkreis3 4_5" backId="Heizkreise"
-			previousId="Heizkreis3 5_5">
+			previousId="Heizkreis3 5_5" mustSave="true">
 			<tns:ConfigurationMasks>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />

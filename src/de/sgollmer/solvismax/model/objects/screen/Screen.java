@@ -61,6 +61,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private final String backId;
 
 	private final boolean ignoreChanges;
+	private final boolean mustSave;
 
 	private final TouchPoint touchPoint;
 	private final TouchPoint sequenceUp;
@@ -79,13 +80,14 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private OfConfigs<AbstractScreen> backScreen = null;
 
 	private Screen(String id, String previousId, String alternativePreviousId, String backId, boolean ignoreChanges,
-			ConfigurationMasks configurationMasks, TouchPoint touchPoint, TouchPoint sequenceUp,
+			boolean mustSave, ConfigurationMasks configurationMasks, TouchPoint touchPoint, TouchPoint sequenceUp,
 			TouchPoint sequenceDown, Collection<String> screenGraficRefs, Collection<IScreenPartCompare> screenCompares,
 			Collection<Rectangle> ignoreRectangles, String preparationId, String lastPreparationId, boolean noRestore) {
 		super(id, previousId, configurationMasks);
 		this.alternativePreviousId = alternativePreviousId;
 		this.backId = backId;
 		this.ignoreChanges = ignoreChanges;
+		this.mustSave = mustSave;
 		this.touchPoint = touchPoint;
 		this.sequenceUp = sequenceUp;
 		this.sequenceDown = sequenceDown;
@@ -271,6 +273,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private String alternativePreviousId = null;
 		private String backId;
 		private boolean ignoreChanges;
+		private boolean mustSave = false;
 		private ConfigurationMasks configurationMasks;
 		private TouchPoint touchPoint = null;
 		private TouchPoint sequenceUp = null;
@@ -310,6 +313,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				case "ignoreChanges":
 					this.ignoreChanges = Boolean.parseBoolean(value);
 					break;
+				case "mustSave":
+					this.mustSave = Boolean.parseBoolean(value);
+					break;
 				case "noRestore":
 					this.noRestore = Boolean.parseBoolean(value);
 					break;
@@ -333,9 +339,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					}
 				});
 			return new Screen(this.id, this.previousId, this.alternativePreviousId, this.backId, this.ignoreChanges,
-					this.configurationMasks, this.touchPoint, this.sequenceUp, this.sequenceDown, this.screenGraficRefs,
-					this.screenCompares, this.ignoreRectangles, this.preparationId, this.lastPreparationId,
-					this.noRestore);
+					this.mustSave, this.configurationMasks, this.touchPoint, this.sequenceUp, this.sequenceDown,
+					this.screenGraficRefs, this.screenCompares, this.ignoreRectangles, this.preparationId,
+					this.lastPreparationId, this.noRestore);
 		}
 
 		@Override
@@ -476,7 +482,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		boolean success = false;
 		for (int cnt = Constants.LEARNING_RETRIES; cnt > 0 && !success; --cnt) {
 			success = true;
-			solvis.getCurrentScreen().writeLearningImage(this.id);
+			if (!this.isLearned(solvis) || this.mustSave) {
+				solvis.getCurrentScreen().writeLearningImage(this.id);
+			}
 			try {
 				for (IScreenPartCompare screenPartCompare : this.screenCompares) {
 					if (screenPartCompare instanceof ScreenGraficDescription) {
@@ -558,7 +566,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	@Override
 	public boolean isToBeLearning(Solvis solvis) {
-		if (!this.isLearned(solvis)) {
+		if (!this.isLearned(solvis) || this.mustSave) {
 			return true;
 		}
 		for (AbstractScreen screen : this.getNextScreens(solvis)) {

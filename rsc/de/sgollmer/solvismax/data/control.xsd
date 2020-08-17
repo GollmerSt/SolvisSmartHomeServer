@@ -139,6 +139,10 @@
 			</annotation>
 		</attribute>
 		<attribute name="noRestore" type="boolean" use="optional"></attribute>
+		<attribute name="mustSave" type="boolean" use="optional">
+			<annotation>
+				<documentation>Zur Analyse von unterschiedlichen Anlagenkonfigurationene kann man den Bildschirminhalt während des Learnings abspeichern lassen.</documentation>
+			</annotation></attribute>
 	</complexType>
 
 
