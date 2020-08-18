@@ -17,7 +17,7 @@ Bei älteren Anlagen gibt es nur die Möglichkeit der Steuerung über die Web-Ob
 (es ist eine Pixelkopie der SolvisControl2 der Anlage). Die Steuerung darüber erfolgt über Maus-Klicks auf bestimmte Koordinaten auf diesem GUI,
 die Rückmeldung erfolgt ebenfalls nur grafisch über das GUI.
 
-Eine Liste mit der Kanäle findet sich u.a. bei der [MQTT-Beschreibung](Nhttps://github.com/GollmerSt/SolvisSmartHomeServer/wiki/MQTT-Schnittstelle#aktuell-definierte-channels).
+Eine Liste mit der Kanäle findet sich u.a. im Kapitel [MQTT-Schnittstelle](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/MQTT-Schnittstelle#aktuell-definierte-channels).
 
 ### Funktionsweise der Einstellung der Anlageparameter
 
