@@ -193,7 +193,9 @@ public class Server {
 			} catch (InterruptedException e) {
 			}
 			try {
-				this.socket.close();
+				if (this.socket != null) {
+					this.socket.close();
+				}
 			} catch (IOException e) {
 			}
 		}

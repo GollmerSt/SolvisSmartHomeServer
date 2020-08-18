@@ -226,14 +226,8 @@ public class Main {
 			}
 		}
 
-		ServerSocket serverSocket = null;
-
-		try {
-			serverSocket = new ServerSocket(baseData.getPort());
-		} catch (IOException e) {
-			System.err.println("Port " + baseData.getPort() + " is in use.");
-			System.exit(ExitCodes.SERVER_PORT_IN_USE);
-		}
+		ServerSocket serverSocketHelper = this.openSocket(baseData.getPort() + 1);
+		ServerSocket serverSocket = this.openSocket(baseData.getPort());
 
 		try {
 			this.instances = new Instances(baseData, learn);
@@ -255,6 +249,8 @@ public class Main {
 
 		if (learn || this.instances.mustLearn()) {
 
+			this.closeSocket(serverSocket);
+
 			try {
 				this.instances.learn(learn);
 			} catch (IOException | XMLStreamException | LearningException | FileException | ModbusException e) {
@@ -267,11 +263,12 @@ public class Main {
 			if (learn) {
 				System.exit(ExitCodes.OK);
 			}
+			serverSocket = this.openSocket(baseData.getPort());
 		}
 
-		try
+		this.closeSocket(serverSocketHelper);
 
-		{
+		try {
 			this.instances.init();
 		} catch (IOException | AssignmentException | XMLStreamException | DependencyException e) {
 			this.logger.error("Exception on reading configuration occured, cause:", e);
@@ -410,4 +407,22 @@ public class Main {
 		}
 	}
 
+	private ServerSocket openSocket(int port) {
+		ServerSocket serverSocket = null;
+		;
+		try {
+			serverSocket = new ServerSocket(port);
+		} catch (IOException e) {
+			System.err.println("Port " + port + " is in use.");
+			System.exit(ExitCodes.SERVER_PORT_IN_USE);
+		}
+		return serverSocket;
+	}
+
+	private void closeSocket(ServerSocket socket) {
+		try {
+			socket.close();
+		} catch (IOException e) {
+		}
+	}
 }

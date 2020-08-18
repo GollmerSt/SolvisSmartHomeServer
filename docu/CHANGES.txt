@@ -21,6 +21,9 @@ Version 01.02.03
     18.08.2020  Die 3 der Heizkreisüberschrift wurde fälschlicherweise als 1 erkannt
     
                 Fehlerhafte Touch-Koordinaten bei den Bildschirmen 2 und 3 der Heizkreise
+                
+    19.03.2020  Durch die Integration der Lernphase in den normalen Start, trat nach der Learning-Phase in
+                seltenen Fällen eine Nullpointer-Exception auf.
 
 
 Version 01.02.02
