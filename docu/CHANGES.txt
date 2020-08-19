@@ -22,8 +22,12 @@ Version 01.02.03
     
                 Fehlerhafte Touch-Koordinaten bei den Bildschirmen 2 und 3 der Heizkreise
                 
-    19.03.2020  Durch die Integration der Lernphase in den normalen Start, trat nach der Learning-Phase in
+    19.08.2020  Durch die Integration der Lernphase in den normalen Start, trat nach der Learning-Phase in
                 seltenen Fällen eine Nullpointer-Exception auf.
+                
+                Coordinate des Symbold des Anlagenstatus Heizkreis 3 war fehlerhaft
+                
+                Automatische Eingabe des Codes in der Nutzerauswahl realisiert
 
 
 Version 01.02.02
