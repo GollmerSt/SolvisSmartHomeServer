@@ -6,7 +6,7 @@ After=network.target
 [Service]
 User=fhem
 RemainAfterExit=yes
-ExecStart=/usr/bin/java -agentlib:jdwp=transport=dt_socket,suspend=n,server=y,address=0.0.0.0:10736 -jar /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar
+ExecStart=/usr/bin/java -agentlib:jdwp=transport=dt_socket,suspend=n,server=y,address=0.0.0.0:10737 -jar /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar
 ExecStop=/usr/bin/java -jar /opt/SolvisSmartHomeServer/SolvisSmartHomeServer.jar --server-terminate
 
 [Install]
