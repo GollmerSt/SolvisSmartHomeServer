@@ -16,12 +16,13 @@ import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.Ocr;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class UserSelection {
+public class UserSelection implements ISelectScreen {
 
 	private static final String XML_RECTANGLES = "Rectangle";
 	private static final String XML_UPPER = "Upper";
@@ -33,7 +34,8 @@ public class UserSelection {
 		this.digits = digits;
 	}
 
-	public boolean execute(Solvis solvis, Screen startingScreen) throws IOException, TerminationException {
+	@Override
+	public boolean execute(Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException {
 
 		boolean success = false;
 
@@ -81,7 +83,7 @@ public class UserSelection {
 
 	public static class Creator extends CreatorByXML<UserSelection> {
 
-		private Collection<Digit> digits;
+		private final Collection<Digit> digits = new ArrayList<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -110,13 +112,13 @@ public class UserSelection {
 	}
 
 	public static class Digit {
-		private final int value;
+		private final int digit;
 		private final Rectangle rectangle;
 		private final TouchPoint upper;
 		private final TouchPoint lower;
 
-		private Digit(int value, Rectangle rectangle, TouchPoint upper, TouchPoint lower) {
-			this.value = value;
+		private Digit(int digit, Rectangle rectangle, TouchPoint upper, TouchPoint lower) {
+			this.digit = digit;
 			this.rectangle = rectangle;
 			this.upper = upper;
 			this.lower = lower;
@@ -124,45 +126,74 @@ public class UserSelection {
 
 		public boolean exec(Solvis solvis) throws IOException, TerminationException, NumberFormatException {
 
-			int diff = this.value - this.getCurrent(solvis) ;
+			Calc calc = new Calc(this.getCurrent(solvis));
+			boolean adjusted;
 
-			if (diff == 0) {
-				return true;
-			}
-
-			TouchPoint touch;
-
-			if (diff > 0) {
-				touch = this.upper;
+			if (calc.cnt == 0) {
+				adjusted = true;
 			} else {
-				touch = this.lower;
-				diff = -diff;
+				for (int i = 0; i < calc.cnt; ++i) {
+					solvis.send(calc.touch);
+				}
+				adjusted = false;
+			}
+			return adjusted;
+		}
+
+		private class Calc {
+			private final int cnt;
+			private final TouchPoint touch;
+
+			public Calc(int current) {
+				int diff = Digit.this.digit - current;
+				if (diff == 0) {
+					this.cnt = 0;
+					this.touch = null;
+				} else {
+					if (Math.abs(10 - diff) < Math.abs(diff)) {
+						diff -= 10;
+					}
+					TouchPoint touch = Digit.this.upper;
+
+					if (diff < 0) {
+						touch = Digit.this.lower;
+						diff = -diff;
+					}
+					this.cnt = diff;
+					this.touch = touch;
+				}
 			}
 
-			for (int i = 0; i < diff; ++i) {
-				solvis.send(touch);
-			}
-			return false;
 		}
-		
-		public int getCurrent( Solvis solvis) throws IOException, TerminationException, NumberFormatException {
+
+		public int getSettingTime(Solvis solvis) {
+			Calc calc = new Calc(0);
+			return calc.cnt * calc.touch.getSettingTime(solvis);
+		}
+
+		public int getCurrent(Solvis solvis) throws IOException, TerminationException, NumberFormatException {
 			MyImage image = SolvisScreen.getImage(solvis.getCurrentScreen());
 
 			Ocr ocr = new Ocr(image, this.rectangle);
-			int value = Integer.parseInt(ocr.toString());
+			char ch = ocr.toChar();
+
+			int value = Character.digit(ch, 10);
+			if (value < 0) {
+				throw new NumberFormatException("Character <" + ch + "> is not a valid digit");
+			}
 
 			return value;
-			
+
 		}
 
 		public boolean isCode(Solvis solvis) throws IOException, TerminationException, NumberFormatException {
-			return this.value == this.getCurrent(solvis);
+			return this.digit == this.getCurrent(solvis);
 
 		}
 
 		public static class Creator extends CreatorByXML<Digit> {
 
-			private int value;
+			private int digit;
 			private Rectangle rectangle;
 			private TouchPoint upper;
 			private TouchPoint lower;
@@ -174,15 +205,15 @@ public class UserSelection {
 			@Override
 			public void setAttribute(QName name, String value) {
 				switch (name.getLocalPart()) {
-					case "value":
-						this.value = Integer.parseInt(value);
+					case "digit":
+						this.digit = Integer.parseInt(value);
 						break;
 				}
 			}
 
 			@Override
 			public Digit create() throws XmlException, IOException, AssignmentException, ReferenceException {
-				return new Digit(this.value, this.rectangle, this.upper, this.lower);
+				return new Digit(this.digit, this.rectangle, this.upper, this.lower);
 			}
 
 			@Override
@@ -215,5 +246,31 @@ public class UserSelection {
 			}
 
 		}
+
+		public void assign(SolvisDescription description) throws AssignmentException {
+			if (this.upper != null) {
+				this.upper.assign(description);
+			}
+			if (this.lower != null) {
+				this.lower.assign(description);
+			}
+		}
+
+	}
+
+	@Override
+	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+		for (Digit digit : this.digits) {
+			digit.assign(description);
+		}
+	}
+
+	@Override
+	public int getSettingTime(Solvis solvis) {
+		int settingTime = 0;
+		for (Digit digit : this.digits) {
+			settingTime += digit.getSettingTime(solvis);
+		}
+		return settingTime;
 	}
 }

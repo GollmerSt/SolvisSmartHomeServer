@@ -13,7 +13,6 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Preparation;
-import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
@@ -48,31 +47,15 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	 * This method checks that the image matches the screen.
 	 * 
 	 * @param image
-	 * @param solvis	
-	 * @return	True if matches
+	 * @param solvis
+	 * @return True if matches
 	 */
 	public abstract boolean isMatchingScreen(MyImage image, Solvis solvis);
 
-	public abstract boolean isMatchingWOGrafics(MyImage image, Solvis solvis) ;
+	public abstract boolean isMatchingWOGrafics(MyImage image, Solvis solvis);
 
-	
 	public void addNextScreen(AbstractScreen nextScreen) {
 		this.nextScreens.add(nextScreen);
-//
-//		// TODO wozu? Optimierung der Suche abhängig von der Vielfalt der
-//		// Konfigurationen des Back-Vorgängers. Sinnvoll?
-//		int thisBack = 0;
-//		for (AbstractScreen back : nextScreen.getBackScreen().getElements()) {
-//			if (back == this) {
-//				++thisBack;
-//			}
-//		}
-//
-//		if (thisBack > nextScreen.getBackScreen().getElements().size() / 2) {
-//			this.nextScreens.add(0, nextScreen);
-//		} else {
-//			this.nextScreens.add(nextScreen);
-//		}
 	}
 
 	public abstract OfConfigs<AbstractScreen> getBackScreen();
@@ -83,7 +66,7 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	public abstract ConfigurationMasks getConfigurationMasks();
 
-	public abstract TouchPoint getTouchPoint();
+	public abstract ISelectScreen getSelectScreen();
 
 	public abstract boolean gotoLearning(Solvis solvis, AbstractScreen current,
 			Collection<ScreenGraficDescription> desscriptions)
@@ -146,8 +129,8 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	/**
 	 * 
 	 * @param next                     Should be selected
-	 * @param allPreviousScreenTouches (write) Previous screen touches of the screen,
-	 *                                 who should be selected
+	 * @param allPreviousScreenTouches (write) Previous screen touches of the
+	 *                                 screen, who should be selected
 	 * @param configurationMask        Configuration mask
 	 */
 	protected abstract void addToPreviousScreenTouches(AbstractScreen next,
@@ -155,12 +138,12 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	public static class ScreenTouch {
 		private final AbstractScreen screen;
-		private final TouchPoint touchPoint;
+		private final ISelectScreen selectScreen;
 		private final Preparation preparation;
 
-		ScreenTouch(AbstractScreen previous, TouchPoint touchPoint, Preparation preparation) {
+		ScreenTouch(AbstractScreen previous, ISelectScreen selectScreen, Preparation preparation) {
 			this.screen = previous;
-			this.touchPoint = touchPoint;
+			this.selectScreen = selectScreen;
 			this.preparation = preparation;
 		}
 
@@ -168,18 +151,18 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 			return this.screen;
 		}
 
-		TouchPoint getTouchPoint() {
-			return this.touchPoint;
-		}
-
 		Preparation getPreparation() {
 			return this.preparation;
 		}
 
-		boolean execute(Solvis solvis) throws IOException, TerminationException {
+		boolean selectScreen(Solvis solvis, Screen startingScreen) throws IOException, TerminationException {
+			return this.selectScreen.execute(solvis, startingScreen);
+		}
+
+		boolean execute(Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException {
 			boolean success = Preparation.prepare(this.preparation, solvis);
 			if (success) {
-				solvis.send(this.touchPoint);
+				this.selectScreen.execute(solvis, startingScreen);
 			}
 			return success;
 		}
@@ -278,7 +261,7 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 			return this.mask;
 		}
 	}
-	
+
 	public boolean isNoRestore() {
 		return false;
 	}

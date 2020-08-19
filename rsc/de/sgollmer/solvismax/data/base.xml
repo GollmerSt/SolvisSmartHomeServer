@@ -6,6 +6,8 @@
 		port="10735" writablePathLinux="/opt/fhem"
 		writeablePathWindows="C:\JavaPgms\SolvisSmartHomeServer\log"
 		echoInhibitTime_ms="2000" />
+	<!-- Es werden immer 2 Ports belegt, der angegebene und der nächst höhere. 
+		Also hier 107545 und 10736 -->
 	<tns:Units>
 		<!-- Existiert im Solarkreislauf eine zweite Umwaelzpumpe, welche an A07 
 			angeschlossen ist, ist die configOrMask auf "0x10"zu setzen. Dann wird die 

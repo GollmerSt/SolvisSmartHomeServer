@@ -46,9 +46,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	private static final String XML_CONFIGURATION_MASKS = "ConfigurationMasks";
 	private static final String XML_TOUCH_POINT = "TouchPoint";
+	private static final String XML_USER_SELECTION = "UserSelection";
 	private static final String XML_UP_TOUCH_POINT = "SequenceUp";
 	private static final String XML_DOWN_TOUCH_POINT = "SequenceDown";
-	private static final String XML_ALTERNATIVE_TOUCH_POINT = "AlternativeTouchPoint";
 	private static final String XML_SCREEN_GRAFICS = "ScreenGrafic";
 	private static final String XML_SCREEN_GRAFICS_REF = "ScreenGraficRef";
 	private static final String XML_SCREEN_OCR = "ScreenOcr";
@@ -57,13 +57,12 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private static final String XML_PREPARATION_REF = "PreparationRef";
 	private static final String XML_LAST_PREPARATION_REF = "LastPreparationRef";
 
-	private final String alternativePreviousId;
 	private final String backId;
 
 	private final boolean ignoreChanges;
 	private final boolean mustSave;
 
-	private final TouchPoint touchPoint;
+	private final ISelectScreen selectScreen;
 	private final TouchPoint sequenceUp;
 	private final TouchPoint sequenceDown;
 
@@ -74,21 +73,21 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private final String lastPreparationId;
 	private Preparation lastPreparation = null;
 	private final boolean noRestore;
+	private final boolean admin;
 
 	private OfConfigs<AbstractScreen> previousScreen = null;
-	private OfConfigs<AbstractScreen> alternativePreviousScreen = null;
 	private OfConfigs<AbstractScreen> backScreen = null;
 
-	private Screen(String id, String previousId, String alternativePreviousId, String backId, boolean ignoreChanges,
-			boolean mustSave, ConfigurationMasks configurationMasks, TouchPoint touchPoint, TouchPoint sequenceUp,
+	protected Screen(String id, String previousId, String backId, boolean ignoreChanges, boolean mustSave,
+			ConfigurationMasks configurationMasks, ISelectScreen selectScreen, TouchPoint sequenceUp,
 			TouchPoint sequenceDown, Collection<String> screenGraficRefs, Collection<IScreenPartCompare> screenCompares,
-			Collection<Rectangle> ignoreRectangles, String preparationId, String lastPreparationId, boolean noRestore) {
+			Collection<Rectangle> ignoreRectangles, String preparationId, String lastPreparationId, boolean noRestore,
+			boolean admin) {
 		super(id, previousId, configurationMasks);
-		this.alternativePreviousId = alternativePreviousId;
 		this.backId = backId;
 		this.ignoreChanges = ignoreChanges;
 		this.mustSave = mustSave;
-		this.touchPoint = touchPoint;
+		this.selectScreen = selectScreen;
 		this.sequenceUp = sequenceUp;
 		this.sequenceDown = sequenceDown;
 		this.screenGraficRefs = screenGraficRefs;
@@ -97,6 +96,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		this.preparationId = preparationId;
 		this.lastPreparationId = lastPreparationId;
 		this.noRestore = noRestore;
+		this.admin = admin;
 	}
 
 	/**
@@ -158,14 +158,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				ps.addNextScreen(this);
 			}
 		}
-		if (this.alternativePreviousId != null) {
-			this.alternativePreviousScreen = description.getScreens().get(this.alternativePreviousId);
-			if (this.alternativePreviousScreen == null) {
-				throw new ReferenceException("Screen reference < " + this.alternativePreviousId + " > not found");
-			}
-		}
-		if (this.touchPoint != null) {
-			this.touchPoint.assign(description);
+		if (this.selectScreen != null) {
+			this.selectScreen.assign(description);
 		}
 
 		if (this.sequenceDown != null) {
@@ -262,20 +256,19 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	 * @return the touchPoint
 	 */
 	@Override
-	public TouchPoint getTouchPoint() {
-		return this.touchPoint;
+	public ISelectScreen getSelectScreen() {
+		return this.selectScreen;
 	}
 
 	public static class Creator extends CreatorByXML<Screen> {
 
 		private String id;
 		private String previousId;
-		private String alternativePreviousId = null;
 		private String backId;
 		private boolean ignoreChanges;
 		private boolean mustSave = false;
 		private ConfigurationMasks configurationMasks;
-		private TouchPoint touchPoint = null;
+		private ISelectScreen selectScreen = null;
 		private TouchPoint sequenceUp = null;
 		private TouchPoint sequenceDown = null;
 		private final Collection<String> screenGraficRefs = new ArrayList<>();
@@ -284,6 +277,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private String preparationId = null;
 		private String lastPreparationId;
 		private boolean noRestore = false;
+		private boolean admin = false;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -300,11 +294,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 						this.previousId = value;
 					}
 					break;
-				case "alternativePreviousId":
-					if (!value.isEmpty()) {
-						this.alternativePreviousId = value;
-					}
-					break;
 				case "backId":
 					if (!value.isEmpty()) {
 						this.backId = value;
@@ -318,6 +307,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					break;
 				case "noRestore":
 					this.noRestore = Boolean.parseBoolean(value);
+					break;
+				case "admin":
+					this.admin = Boolean.parseBoolean(value);
 					break;
 			}
 
@@ -338,10 +330,10 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 							return 1;
 					}
 				});
-			return new Screen(this.id, this.previousId, this.alternativePreviousId, this.backId, this.ignoreChanges,
-					this.mustSave, this.configurationMasks, this.touchPoint, this.sequenceUp, this.sequenceDown,
+			return new Screen(this.id, this.previousId, this.backId, this.ignoreChanges, this.mustSave,
+					this.configurationMasks, this.selectScreen, this.sequenceUp, this.sequenceDown,
 					this.screenGraficRefs, this.screenCompares, this.ignoreRectangles, this.preparationId,
-					this.lastPreparationId, this.noRestore);
+					this.lastPreparationId, this.noRestore, this.admin);
 		}
 
 		@Override
@@ -354,8 +346,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				case XML_UP_TOUCH_POINT:
 				case XML_DOWN_TOUCH_POINT:
 					return new TouchPoint.Creator(id, this.getBaseCreator());
-				case XML_ALTERNATIVE_TOUCH_POINT:
-					return new TouchPoint.Creator(id, this.getBaseCreator());
+				case XML_USER_SELECTION:
+					return new UserSelection.Creator(id, this.getBaseCreator());
 				case XML_SCREEN_GRAFICS:
 					return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
 				case XML_SCREEN_GRAFICS_REF:
@@ -381,7 +373,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					this.configurationMasks = (ConfigurationMasks) created;
 					break;
 				case XML_TOUCH_POINT:
-					this.touchPoint = (TouchPoint) created;
+				case XML_USER_SELECTION:
+					this.selectScreen = (ISelectScreen) created;
 					break;
 				case XML_UP_TOUCH_POINT:
 					this.sequenceUp = (TouchPoint) created;
@@ -518,8 +511,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		}
 
 		if (!success) {
-			logger.log(LEARN, "Screen <" + this.getId() + "> couldn't be learned.");
-			// TODO Abbrechen?
+			String message = "Screen <" + this.getId() + "> couldn't be learned. Learning terminated.";
+			logger.error(message);
+			throw new LearningTerminationException(message);
 		}
 
 		if (descriptions.size() > 0) { // Yes
@@ -625,7 +619,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 						preparationSuccess = preparation.learn(solvis);
 					}
 					if (preparationSuccess) {
-						solvis.send(foundScreenTouch.getTouchPoint());
+						foundScreenTouch.selectScreen(solvis, this);
 						current = SolvisScreen.get(solvis.getCurrentScreen());
 						if (current == null) {
 							current = next;
@@ -749,11 +743,12 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				for (int gotoDeepth = 0; !gone && SolvisScreen.get(solvis.getCurrentScreen()) != null
 						& gotoDeepth < Constants.MAX_GOTO_DEEPTH; ++gotoDeepth) {
 
+					AbstractScreen current = SolvisScreen.get(solvis.getCurrentScreen());
 					ScreenTouch foundScreenTouch = null;
 					for (Iterator<ScreenTouch> it = previousScreens.iterator(); it.hasNext();) {
 						ScreenTouch st = it.next();
 						AbstractScreen previous = st.getScreen();
-						if (previous == SolvisScreen.get(solvis.getCurrentScreen())) {
+						if (previous == current) {
 							foundScreenTouch = st;
 							break;
 						}
@@ -762,7 +757,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					if (foundScreenTouch == null) {
 						solvis.sendBack();
 					} else {
-						if (!foundScreenTouch.execute(solvis)) {
+						if (!foundScreenTouch.execute(solvis, current)) {
 							gone = false;
 							break;
 						}
@@ -805,10 +800,10 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	protected void addToPreviousScreenTouches(AbstractScreen next, Collection<ScreenTouch> allPreviousScreenTouches,
 			int configurationMask) {
-		TouchPoint touch = next.getTouchPoint();
+		ISelectScreen selectScreen = next.getSelectScreen();
 		Preparation preparation = next.getPreparation();
 
-		allPreviousScreenTouches.add(new ScreenTouch(this, touch, preparation));
+		allPreviousScreenTouches.add(new ScreenTouch(this, selectScreen, preparation));
 	}
 
 	public TouchPoint getSequenceUp() {
@@ -822,6 +817,10 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public boolean isNoRestore() {
 		return this.noRestore;
+	}
+
+	public boolean isAdmin() {
+		return this.admin;
 	}
 
 	private static class WhiteGraficRectangle implements IScreenPartCompare {

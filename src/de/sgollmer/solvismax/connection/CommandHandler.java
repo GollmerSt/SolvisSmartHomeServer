@@ -360,9 +360,6 @@ public class CommandHandler {
 			}
 			assignments.setClosingThread(new ClosingThread(assignments));
 			assignments.getClosingThread().submit();
-			// assignments.setClient(null); //TODO: wird vermutlich nicht benötigt, bei
-			// Server-Client wird client neu
-			// geschrieben, bei MQTT darf Client nicht gelöscht werden
 
 		}
 	}

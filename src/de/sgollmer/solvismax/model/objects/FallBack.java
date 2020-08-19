@@ -21,6 +21,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -135,7 +136,7 @@ public class FallBack implements IAssigner {
 						+ "> is not possible in the FallBack Element of the XML, because it's not unique over all configurations. Ignored");
 			}
 
-			solvis.send(screen.getTouchPoint());
+			screen.getSelectScreen().execute(solvis,SolvisScreen.get(solvis.getCurrentScreen()));
 		}
 
 		private static class Creator extends de.sgollmer.solvismax.model.objects.screen.ScreenRef.Creator {

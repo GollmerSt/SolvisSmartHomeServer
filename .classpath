@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="lib/tinylog-api-2.1.2.jar" sourcepath="C:/Users/stefa_000/AppData/Roaming/JavaLibraries/tinylog-2.1.2/tinylog-api-2.1.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/tinylog-impl-2.1.2.jar" sourcepath="C:/Users/stefa_000/AppData/Roaming/JavaLibraries/tinylog-2.1.2/tinylog-impl-2.1.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" sourcepath="C:/Users/stefa_000/AppData/Roaming/JavaLibraries/paho 1.2.5/org.eclipse.paho.client.mqttv3-1.2.5-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

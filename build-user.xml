@@ -120,12 +120,14 @@
 			</fileset>
 		</copy>
 		<copy todir="${private.dir}">
-			<fileset file="${iobroker.client.json}" casesensitive="yes" />
-			<fileset file="${iobroker.javascript}" casesensitive="yes" />
 			<fileset file="${myBase.xml}" casesensitive="yes" />
 			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
 		</copy>
-		<fixcrlf file="${fhem.pm}" destdir="${private.dir}" eol="lf" />
+		<mkdir dir="${private.dir}/FHEM"/>
+		<fixcrlf file="${fhem.pm}" destdir="${private.dir}/FHEM" eol="lf" />
+		<mkdir dir="${private.dir}/ioBroker"/>
+		<fixcrlf file="${iobroker.client.json}" destdir="${private.dir}/ioBroker" eol="lf" />
+		<fixcrlf file="${iobroker.javascript}" destdir="${private.dir}/ioBroker" eol="lf" />
 		<fixcrlf file="${linux.systemd}" destdir="${private.dir}" eol="lf" />
 		<fixcrlf file="${linux.systemdD}" destdir="${private.dir}" eol="lf" />
 		<fixcrlf file="${makefile}" destdir="${private.dir}" eol="lf" />
@@ -133,29 +135,38 @@
 	<target depends="Build for me" name="Build users">
 		<copy todir="${pubLinux.dir}">
 			<fileset file="${private.dir}/${dist.base}.jar" casesensitive="yes" />
-			<fileset file="${iobroker.client.json}" casesensitive="yes" />
-			<fileset file="${iobroker.javascript}" casesensitive="yes" />
 			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 			<fileset file="${changes}" casesensitive="yes" />
 		</copy>
-		<fixcrlf file="${fhem.pm}" destdir="${pubLinux.dir}" eol="lf" />
+		<mkdir dir="${pubLinux.dir}/FHEM"/>
+		<fixcrlf file="${fhem.pm}" destdir="${pubLinux.dir}/FHEM" eol="lf" />
+		<mkdir dir="${pubLinux.dir}/ioBroker"/>
+		<fixcrlf file="${iobroker.client.json}" destdir="${pubLinux.dir}/ioBroker" eol="lf" />
+		<fixcrlf file="${iobroker.javascript}" destdir="${pubLinux.dir}/ioBroker" eol="lf" />
 		<fixcrlf file="${linux.systemd}" destdir="${pubLinux.dir}" eol="lf" />
 		<fixcrlf file="${linux.systemdD}" destdir="${pubLinux.dir}" eol="lf" />
 		<fixcrlf file="${makefile}" destdir="${pubLinux.dir}" eol="lf" />
 		<fixcrlf file="${changes}" destdir="${pubLinux.dir}" eol="lf" />
 		<copy file="${pubBaseDir}/base.xml" tofile="${pubLinux.dir}/base.xml.new" />
 		<zip destfile="${zip.dir}/SolvisSmartHomeServer linux ${version}.zip" basedir="${pubLinux.dir}" />
+		
+		
 		<exec executable="${innoSetup}" dir="${iss.dir}">
 			<arg value="/cc" />
 			<arg value="${iss}" />
 		</exec>
 		<copy todir="${pubWindows.dir}">
 			<fileset file="${fhem.pm}" casesensitive="yes" />
-			<fileset file="${iobroker.client.json}" casesensitive="yes" />
-			<fileset file="${iobroker.javascript}" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 			<fileset file="${changes}" casesensitive="yes" />
+		</copy>
+		<copy todir="${pubWindows.dir}/FHEM">
+			<fileset file="${fhem.pm}" casesensitive="yes" />
+		</copy>
+		<copy todir="${pubWindows.dir}/ioBroker">
+			<fileset file="${iobroker.client.json}" casesensitive="yes" />
+			<fileset file="${iobroker.javascript}" casesensitive="yes" />
 		</copy>
 		<zip destfile="${zip.dir}/SolvisSmartHomeServer windows ${version}.zip" basedir="${pubWindows.dir}" />
 	</target>

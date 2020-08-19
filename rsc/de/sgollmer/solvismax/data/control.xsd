@@ -14,55 +14,81 @@
 			<element name="ConfigurationMasks" maxOccurs="1"
 				minOccurs="0" type="tns:ConfigurationMasks">
 			</element>
-			<element name="TouchPoint" type="tns:TouchPoint"
-				maxOccurs="1" minOccurs="0">
-				<annotation>
-					<documentation>
-						Bildschirmpunkt des Vorgänger-Bildschirms
-						(previousId), der gedrückt werden muss, um auf
-						den vorliegenden zu gelangen. Können auch
-						mehrere sein (z.B. Main-Bildschirm Auswahl des
-						Heizkreises)
-					</documentation>
-				</annotation>
-			</element>
 
-			<sequence>
-				<element name="SequenceUp" type="tns:TouchPoint"
+			<choice maxOccurs="1" minOccurs="0">
+				<element name="TouchPoint" type="tns:TouchPoint"
 					maxOccurs="1" minOccurs="0">
+					<annotation>
+						<documentation>
+							Bildschirmpunkt des Vorgänger-Bildschirms
+							(previousId), der gedrückt werden muss, um
+							auf den vorliegenden zu gelangen. Können
+							auch mehrere sein (z.B. Main-Bildschirm
+							Auswahl des Heizkreises). Ist der Screen
+							Teil einer Sequenz darf dieser TouchPoint
+							nicht definiert sein.
+						</documentation>
+					</annotation>
 				</element>
-				<element name="SequenceDown" type="tns:TouchPoint"
-					maxOccurs="1" minOccurs="0">
+				<element name="UserSelection"
+					type="tns:UserSelection">
 				</element>
+				<sequence>
+					<element name="SequenceUp" type="tns:TouchPoint"
+						maxOccurs="1" minOccurs="1">
+						<annotation>
+							<documentation>
+								Ist der Screen Teil einer Sequenz wird
+								mit diesem Element der TouchPoint für
+								das vorherige Element definiert.
+							</documentation>
+						</annotation>
+					</element>
+					<element name="SequenceDown" type="tns:TouchPoint"
+						maxOccurs="1" minOccurs="1">
+						<annotation>
+							<documentation>
+								Ist der Screen Teil einer Sequenz wird
+								mit diesem Element der TouchPoint für
+								das nachfolgende Element definiert.
+							</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</choice>
+			<sequence maxOccurs="1" minOccurs="1">
+				<element name="ScreenOcr" type="tns:ScreenOcr"
+					maxOccurs="unbounded" minOccurs="0">
+					<annotation>
+						<documentation>
+							Wenn sich der Bildschirm aus erkennbaren
+							Zeichen bestimmt werden kann
+						</documentation>
+					</annotation>
+				</element>
+				<choice maxOccurs="unbounded" minOccurs="1">
+					<element name="ScreenGrafic" type="tns:ScreenGrafic"
+						maxOccurs="1" minOccurs="1">
+						<annotation>
+							<documentation>
+								Wenn sich der Bildschirm aus einem
+								Bildschirmbereich bestimmt werden kann
+							</documentation>
+						</annotation>
+					</element>
+					<element name="ScreenGraficRef"
+						type="tns:ScreenGraficRef" maxOccurs="1" minOccurs="1">
+						<annotation>
+							<documentation>
+								Wenn sich der Bildschirm aus einem
+								Bildschirmbereich bestimmt werden kann,
+								die Definition erfolgt über eine
+								Refenzierung
+							</documentation>
+						</annotation>
+					</element>
+				</choice>
 			</sequence>
-			<element name="ScreenOcr" type="tns:ScreenOcr"
-				maxOccurs="unbounded" minOccurs="0">
-				<annotation>
-					<documentation>
-						Wenn sich der Bildschirm aus erkennbaren Zeichen
-						bestimmt werden kann
-					</documentation>
-				</annotation>
-			</element>
-			<element name="ScreenGraficRef" type="tns:ScreenGraficRef"
-				maxOccurs="unbounded" minOccurs="0">
-				<annotation>
-					<documentation>
-						Wenn sich der Bildschirm aus einem
-						Bildschirmbereich bestimmt werden kann, die
-						Definition erfolgt über eine Refenzierung
-					</documentation>
-				</annotation>
-			</element>
-			<element name="ScreenGrafic" type="tns:ScreenGrafic"
-				maxOccurs="unbounded" minOccurs="0">
-				<annotation>
-					<documentation>
-						Wenn sich der Bildschirm aus einem
-						Bildschirmbereich bestimmt werden kann
-					</documentation>
-				</annotation>
-			</element>
 			<element name="IgnoreRectangle" type="tns:Rectangle"
 				maxOccurs="unbounded" minOccurs="0">
 				<annotation>
@@ -141,8 +167,15 @@
 		<attribute name="noRestore" type="boolean" use="optional"></attribute>
 		<attribute name="mustSave" type="boolean" use="optional">
 			<annotation>
-				<documentation>Zur Analyse von unterschiedlichen Anlagenkonfigurationene kann man den Bildschirminhalt während des Learnings abspeichern lassen.</documentation>
-			</annotation></attribute>
+				<documentation>
+					Zur Analyse von unterschiedlichen
+					Anlagenkonfigurationene kann man den
+					Bildschirminhalt während des Learnings abspeichern
+					lassen.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="admin" type="boolean"></attribute>
 	</complexType>
 
 
@@ -1380,27 +1413,36 @@
 
 	<complexType name="ScreenSequence">
 		<annotation>
-			<documentation>
-				Definiert eine Sequenz von Screens, welche vom
-				Vorgängerscreen nicht eindeutig ausgewählt werden können
-				(z.B. Anlagenstatus). Der vom Vorgängerscreen
-				ausgewählte Screen ist ein beliebiger dieser Sequenz.
+			<documentation>Definiert eine Sequenz von Screens, welche vom Vorgängerscreen nicht eindeutig ausgewählt werden können (z.B. Anlagenstatus). Der vom Vorgängerscreen ausgewählte Screen ist ein beliebiger dieser Sequenz.
+Es handelt sich dabei um einen Art virtuellerScreen, der einen Vorgänger besitzt.
 			</documentation>
 		</annotation>
 		<sequence>
             <element name="ConfigurationMasks" type="tns:ConfigurationMasks" maxOccurs="1" minOccurs="0">
-						</element>
+                <annotation>
+                	<documentation>Konfigurations-Maske</documentation>
+                </annotation>
+            </element>
             <element name="TouchPoint" type="tns:TouchPoint"
 				maxOccurs="1" minOccurs="1">
-			</element>
+                <annotation>
+                	<documentation>TouchPoint um auf den virtuellen Screen zu kommen</documentation>
+                </annotation>
+            </element>
 			<element name="PreparationRef" type="tns:PreparationRef"
 				maxOccurs="1" minOccurs="0">
 			</element>
             <element name="ScreenRef" type="tns:ScreenRef" maxOccurs="unbounded" minOccurs="0">
 			</element>
 		</sequence>
-		<attribute name="id" type="string" use="required"></attribute>
-		<attribute name="previousId" type="string" use="required"></attribute>
+		<attribute name="id" type="string" use="required">
+			<annotation>
+				<documentation>Id des virtuellen Screens der Sequenz</documentation>
+			</annotation></attribute>
+		<attribute name="previousId" type="string" use="required">
+			<annotation>
+				<documentation>Vorherige Id des Screens</documentation>
+			</annotation></attribute>
 		<attribute name="wrapArround" type="boolean" use="optional">
 			<annotation>
 				<documentation>True, wenn die Sequenz bei SequenceUp nach dem letzten Element zum ersten geht</documentation>
@@ -1412,5 +1454,27 @@
 				name="ConfigurationMask" type="tns:ConfigurationMask">
 			</element>
 		</sequence>
+	</complexType>
+
+	<complexType name="UserSelection">
+		<sequence>
+			<element name="Digit" type="tns:Digit" maxOccurs="4" minOccurs="4"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Digit">
+		<sequence>
+			<element name="Rectangle" type="tns:Rectangle" maxOccurs="1" minOccurs="1"></element>
+			<element name="Upper" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+			<element name="Lower" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+		<attribute name="digit" use="required">
+			<simpleType>
+				<restriction base="int">
+					<minInclusive value="0"></minInclusive>
+					<maxInclusive value="9"></maxInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
 	</complexType>
 </schema>

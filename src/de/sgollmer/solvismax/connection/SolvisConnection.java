@@ -144,7 +144,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		BufferedImage image;
 		try {
 			synchronized (this) {
-				InputStream in = this.connect("/display.bmp?");
+				InputStream in = this.connect(Constants.Solvis.DISPLAY);
 				image = ImageIO.read(in);
 				in.close();
 			}
@@ -180,7 +180,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		long timeStamp = 0;
 		try {
 			synchronized (this) {
-				InputStream in = this.connect("/sc2_val.xml");
+				InputStream in = this.connect(Constants.Solvis.XML);
 				InputStreamReader reader = new InputStreamReader(in);
 
 				timeStamp = System.currentTimeMillis();
@@ -234,7 +234,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	}
 
 	public void sendButton(Button button) throws IOException, TerminationException {
-		String buttonString = "/Taster.CGI?taste=" + button.getButtonUrl() + "&i="
+		String buttonString = Constants.Solvis.TASTER + button.getButtonUrl() + '&' + Constants.Solvis.ID
 				+ Math.round((Math.random() * 99999999));
 		try {
 			synchronized (this) {
@@ -250,7 +250,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	public void sendTouch(Coordinate coord) throws IOException, TerminationException {
 		int x = coord.getX() * 2;
 		int y = coord.getY() * 2;
-		String touchString = "/Touch.CGI?x=" + x + "&y=" + y;
+		String touchString = Constants.Solvis.TOUCH + '?' + Constants.Solvis.X + x + '&' + Constants.Solvis.Y + y;
 		InputStream in = null;
 		synchronized (this) {
 			try {

@@ -79,6 +79,16 @@ public class Constants {
 	public static final int MODBUS_SLAVE_ID = 1;
 
 	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
+	
+	public static class Solvis {
+		public static final String DISPLAY = "/display.bmp?";
+		public static final String XML = "/sc2_val.xml";
+		public static final String TOUCH = "/Touch.CGI?";
+		public static final String X = "x=";
+		public static final String Y = "y=";
+		public static final String TASTER = "/Taster.CGI?taste=" ;
+		public static final String ID = "i=";
+	}
 
 	public static class Files {
 		public static final int INPUT_BUFFER_SIZE = 8192;

@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import de.sgollmer.solvismax.imagepatternrecognition.image.Maxima;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.objects.Coordinate;
+import de.sgollmer.solvismax.objects.Rectangle;
 
 public class Ocr extends MyImage {
 
@@ -43,6 +44,10 @@ public class Ocr extends MyImage {
 		this.processing(true);
 	}
 
+	public Ocr (MyImage image, Rectangle rectangle) {
+		this(image, rectangle.getTopLeft(), rectangle.getBottomRight(), true);
+	}
+	
 	private final void processing(boolean coordinatesChanged) {
 
 		this.createHistograms(true);
@@ -278,7 +283,7 @@ public class Ocr extends MyImage {
 		}
 	}
 
-	char toChar() {
+	public char toChar() {
 		// - Erkennung von 4, geschlossene Struktur obere Hälfte, waagerechtes
 		// Maximum 3/4 * Breite, nahe Mitte
 

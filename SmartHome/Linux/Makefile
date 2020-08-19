@@ -1,6 +1,7 @@
 SHELL = /bin/sh
 fhemDir = /opt/fhem
 fhemModul = 73_SolvisClient.pm
+packageFhemDir = FHEM
 fhemCommand = ./contrib/commandref_join.pl -noWarnings
 fhemCommandRef = $(fhemDir)/docs/commandref.html
 serviceFhem = fhem.service
@@ -170,7 +171,7 @@ $(fhemCommandRef):$(fhemDir)/FHEM/$(fhemModul)
 
 
 
-$(fhemDir)/FHEM/$(fhemModul): $(fhemModul)
+$(fhemDir)/FHEM/$(fhemModul): $(packageFhemDir)/$(fhemModul)
 	cp $< $@
 	chown -c $(account):$(group) $@
 

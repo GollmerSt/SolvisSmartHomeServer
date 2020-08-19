@@ -37,6 +37,7 @@ public class Units {
 	private static final String XMl_SEND_MAIL_ON_ERROR = "SendMailOnError";
 	private static final String XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL = "ClearErrorMessageAfterMail";
 	private static final String XML_ONLY_MEASUREMENT = "OnlyMeasurements";
+	private static final String XML_ADMIN = "Admin";
 
 	private final Collection<Unit> units;
 
@@ -192,68 +193,68 @@ public class Units {
 			@Override
 			public void setAttribute(QName name, String value) {
 				try {
-				switch (name.getLocalPart()) {
-					case "id":
-						this.id = value;
-						break;
-					case "type":
-						this.type = value;
-						break;
-					case "url":
-						this.url = value;
-						break;
-					case "account":
-						this.account = value;
-						break;
-					case "configOrMask":
-						this.configOrMask = Integer.decode(value);
-						break;
-					case "passwordCrypt":
+					switch (name.getLocalPart()) {
+						case "id":
+							this.id = value;
+							break;
+						case "type":
+							this.type = value;
+							break;
+						case "url":
+							this.url = value;
+							break;
+						case "account":
+							this.account = value;
+							break;
+						case "configOrMask":
+							this.configOrMask = Integer.decode(value);
+							break;
+						case "passwordCrypt":
 							this.password.decrypt(value);
-						break;
-					case "password":
-						this.password.set(value);
-						break;
-					case "defaultAverageCount":
-						this.defaultAverageCount = Integer.parseInt(value);
-						break;
-					case "measurementHysteresisFactor":
-						this.measurementHysteresisFactor = Integer.parseInt(value);
-						break;
-					case "defaultReadMeasurementsInterval_ms":
-						this.defaultReadMeasurementsInterval_ms = Integer.parseInt(value);
-						break;
-					case "forcedUpdateInterval_ms":
-						this.forcedUpdateInterval_ms = Integer.parseInt(value);
-						break;
-					case "doubleUpdateInterval_ms":
-						this.doubleUpdateInterval_ms = Integer.parseInt(value);
-						break;
-					case "bufferedInterval_ms":
-						this.bufferedInterval_ms = Integer.parseInt(value);
-						break;
-					case "watchDogTime_ms":
-						this.watchDogTime_ms = Integer.parseInt(value);
-						break;
-					case "releaseBlockingAfterUserAccess_ms":
-						this.releaseBlockingAfterUserAccess_ms = Integer.parseInt(value);
-						break;
-					case "releaseBlockingAfterServiceAccess_ms":
-						this.releaseBlockingAfterServiceAccess_ms = Integer.parseInt(value);
-						break;
-					case "delayAfterSwitchingOnEnable":
-						this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value);
-						break;
-					case "fwLth2_21_02A":
-						this.fwLth2_21_02A = Boolean.parseBoolean(value);
-						break;
-					case "modbus":
-						this.modbus = Boolean.parseBoolean(value);
-						break;
-					case "ignoredFrameThicknesScreenSaver":
-						this.ignoredFrameThicknesScreenSaver = Integer.parseInt(value);
-						break;
-				}
+							break;
+						case "password":
+							this.password.set(value);
+							break;
+						case "defaultAverageCount":
+							this.defaultAverageCount = Integer.parseInt(value);
+							break;
+						case "measurementHysteresisFactor":
+							this.measurementHysteresisFactor = Integer.parseInt(value);
+							break;
+						case "defaultReadMeasurementsInterval_ms":
+							this.defaultReadMeasurementsInterval_ms = Integer.parseInt(value);
+							break;
+						case "forcedUpdateInterval_ms":
+							this.forcedUpdateInterval_ms = Integer.parseInt(value);
+							break;
+						case "doubleUpdateInterval_ms":
+							this.doubleUpdateInterval_ms = Integer.parseInt(value);
+							break;
+						case "bufferedInterval_ms":
+							this.bufferedInterval_ms = Integer.parseInt(value);
+							break;
+						case "watchDogTime_ms":
+							this.watchDogTime_ms = Integer.parseInt(value);
+							break;
+						case "releaseBlockingAfterUserAccess_ms":
+							this.releaseBlockingAfterUserAccess_ms = Integer.parseInt(value);
+							break;
+						case "releaseBlockingAfterServiceAccess_ms":
+							this.releaseBlockingAfterServiceAccess_ms = Integer.parseInt(value);
+							break;
+						case "delayAfterSwitchingOnEnable":
+							this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value);
+							break;
+						case "fwLth2_21_02A":
+							this.fwLth2_21_02A = Boolean.parseBoolean(value);
+							break;
+						case "modbus":
+							this.modbus = Boolean.parseBoolean(value);
+							break;
+						case "ignoredFrameThicknesScreenSaver":
+							this.ignoredFrameThicknesScreenSaver = Integer.parseInt(value);
+							break;
+					}
 				} catch (CryptDefaultValueException | CryptExeception e) {
 					String m = "base.xml error of passwordCrypt in Unit tag: " + e.getMessage();
 					LogManager.getInstance().addDelayedErrorMessage(
@@ -364,10 +365,11 @@ public class Units {
 		private final boolean sendMailOnError;
 		private final boolean clearErrorMessageAfterMail;
 		private final boolean onlyMeasurements;
+		private final boolean admin;
 
 		private Features(boolean clockTuning, boolean equipmentTimeSynchronisation, boolean updateAfterUserAccess,
 				boolean detectServiceAccess, boolean powerOffIsServiceAccess, boolean sendMailOnError,
-				boolean clearErrorMessageAfterMail, boolean onlyMeasurements) {
+				boolean clearErrorMessageAfterMail, boolean onlyMeasurements, boolean admin) {
 			this.clockTuning = clockTuning;
 			this.equipmentTimeSynchronisation = equipmentTimeSynchronisation;
 			this.updateAfterUserAccess = updateAfterUserAccess;
@@ -376,6 +378,7 @@ public class Units {
 			this.sendMailOnError = sendMailOnError;
 			this.clearErrorMessageAfterMail = clearErrorMessageAfterMail;
 			this.onlyMeasurements = onlyMeasurements;
+			this.admin = admin;
 		}
 
 		public boolean isClockTuning() {
@@ -410,6 +413,10 @@ public class Units {
 			return this.sendMailOnError;
 		}
 
+		public boolean isAdmin() {
+			return this.admin;
+		}
+
 		private static class Creator extends CreatorByXML<Features> {
 
 			private boolean clockTuning;
@@ -420,6 +427,7 @@ public class Units {
 			private boolean sendMailOnError;
 			private boolean clearErrorMessageAfterMail;
 			private boolean onlyMeasurements;
+			private boolean admin = false;
 
 			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -433,7 +441,7 @@ public class Units {
 			public Features create() throws XmlException, IOException {
 				return new Features(this.clockTuning, this.equipmentTimeSynchronisation, this.updateAfterUserAccess,
 						this.detectServiceAccess, this.powerOffIsServiceAccess, this.sendMailOnError,
-						this.clearErrorMessageAfterMail, this.onlyMeasurements);
+						this.clearErrorMessageAfterMail, this.onlyMeasurements, this.admin);
 			}
 
 			@Override
@@ -448,6 +456,7 @@ public class Units {
 					case XMl_SEND_MAIL_ON_ERROR:
 					case XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL:
 					case XML_ONLY_MEASUREMENT:
+					case XML_ADMIN:
 						return new StringElement.Creator(id, getBaseCreator());
 				}
 				return null;
@@ -481,6 +490,9 @@ public class Units {
 							break;
 						case XML_ONLY_MEASUREMENT:
 							this.onlyMeasurements = bool;
+							break;
+						case XML_ADMIN:
+							this.admin = bool;
 							break;
 					}
 				} else {

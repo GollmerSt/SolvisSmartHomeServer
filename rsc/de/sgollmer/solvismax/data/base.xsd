@@ -308,9 +308,7 @@
 		</attribute>
 		<attribute name="port" type="int" use="required">
 			<annotation>
-				<documentation>
-					Port, den der Server nutzt, um Command von Client zu
-					empfangen
+				<documentation>Port, den der Server nutzt, um Command von Client zu empfangen. Es wird ebenfalls der nächsthöherer Port genutzt um sicher zu stellen, dass nicht 2 Server gleichzeitig gestartet sind.
 				</documentation>
 			</annotation>
 		</attribute>
@@ -374,8 +372,7 @@
 					<documentation>
 						Nach jedem erkannnten Anwenderzugriff auf dei
 						SolvisControl werden die Anlagen-Werte wieder
-						gelesen. Dies ist
-						erforderlich, weil der
+						gelesen. Dies ist erforderlich, weil der
 						Anwender diese Werte manuell geändert haben
 						könnte.
 					</documentation>
@@ -387,8 +384,7 @@
 					<documentation>
 						Es wird der Zugriff eines Service-Mitarbeiter
 						(Schornsteinfeger/Installateur) erkannt und die
-						Sperrung des
-						GUI-Zugriffs durch den Server
+						Sperrung des GUI-Zugriffs durch den Server
 						erhöht sich auf 60 Minuten.
 					</documentation>
 				</annotation>
@@ -403,20 +399,21 @@
 				</annotation>
 			</element>
 			<element name="SendMailOnError" type="boolean" maxOccurs="1"
-				minOccurs="1"></element>
+				minOccurs="1">
+			</element>
 			<element name="ClearErrorMessageAfterMail" type="boolean"
 				maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="OnlyMeasurements" type="boolean" maxOccurs="1"
-				minOccurs="1">
+			<element name="OnlyMeasurements" type="boolean"
+				maxOccurs="1" minOccurs="1">
 				<annotation>
 					<documentation>
 						Dieses Attribut deaktiviert sämtliche Zugriffe
-						zum
-						GUI der Solvis.
+						zum GUI der Solvis.
 					</documentation>
 				</annotation>
 			</element>
+			<element name="Admin" type="boolean" maxOccurs="1" minOccurs="0"></element>
 		</sequence>
 
 	</complexType>

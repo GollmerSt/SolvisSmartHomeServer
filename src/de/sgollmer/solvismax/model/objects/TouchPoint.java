@@ -7,16 +7,21 @@
 
 package de.sgollmer.solvismax.model.objects;
 
+import java.io.IOException;
+
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.solvismax.model.objects.screen.ISelectScreen;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 import de.sgollmer.solvismax.xml.BaseCreator;
 
-public class TouchPoint implements IAssigner {
+public class TouchPoint implements IAssigner, ISelectScreen {
 
 	private static final String XML_COORDINATE = "Coordinate";
 
@@ -105,8 +110,15 @@ public class TouchPoint implements IAssigner {
 		return this.releaseTime;
 	}
 
+	@Override
 	public int getSettingTime(Solvis solvis) {
 		return this.pushTime + this.releaseTime + solvis.getMaxResponseTime();
+	}
+
+	@Override
+	public boolean execute(Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException {
+		solvis.send(this);
+		return true;
 	}
 
 }

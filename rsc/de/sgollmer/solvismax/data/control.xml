@@ -909,6 +909,73 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
+		<tns:Screen id="Installateur Menü" backId="Home"
+			previousId="Nutzerauswahl">
+			<tns:UserSelection>
+				<tns:Digit digit="0">
+					<tns:Rectangle>
+						<tns:TopLeft X="53" Y="73" />
+						<tns:BottomRight X="72" Y="93" />
+					</tns:Rectangle>
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="65" Y="60" />
+					</tns:Upper>
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="60" Y="105" />
+					</tns:Lower>
+				</tns:Digit>
+				<tns:Digit digit="0">
+					<tns:Rectangle>
+						<tns:TopLeft X="88" Y="73" />
+						<tns:BottomRight X="107" Y="93" />
+					</tns:Rectangle>
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="100" Y="60" />
+					</tns:Upper>
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="100" Y="105" />
+					</tns:Lower>
+				</tns:Digit>
+				<tns:Digit digit="6">
+					<tns:Rectangle>
+						<tns:TopLeft X="123" Y="73" />
+						<tns:BottomRight X="142" Y="93" />
+					</tns:Rectangle>
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="135" Y="60" />
+					</tns:Upper>
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="135" Y="105" />
+					</tns:Lower>
+				</tns:Digit>
+				<tns:Digit digit="4">
+					<tns:Rectangle>
+						<tns:TopLeft X="158" Y="73" />
+						<tns:BottomRight X="177" Y="93" />
+					</tns:Rectangle>
+					<tns:Upper pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="170" Y="60" />
+					</tns:Upper>
+					<tns:Lower pushTimeRefId="Standard"
+						releaseTimeRefId="ValueChange">
+						<tns:Coordinate X="1170" Y="105" />
+					</tns:Lower>
+				</tns:Digit>
+			</tns:UserSelection>
+			<tns:ScreenGrafic id="Installateur Menü">
+				<tns:Field>
+					<tns:TopLeft X="55" Y="2" />
+					<tns:BottomRight X="185" Y="15" />
+				</tns:Field>
+			</tns:ScreenGrafic>
+		</tns:Screen>
 		<tns:Screen id="Zaehlfunktion" backId="Sonstiges 2"
 			previousId="Sonstiges 2">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -1604,7 +1671,7 @@
 				<tns:ModbusAccess address="0x0B02" type="Holding" />
 				<tns:GuiAccess screenId="Home">
 					<tns:CurrentValue>
-						<tns:TopLeft X="133" Y="8" />
+						<tns:TopLeft X="134" Y="8" />
 						<tns:BottomRight X="155" Y="30" />
 					</tns:CurrentValue>
 					<tns:PreparationRef refId="Button_HK1" />
@@ -1843,7 +1910,7 @@
 				<tns:ModbusAccess address="0x0C02" type="Holding" />
 				<tns:GuiAccess screenId="Home">
 					<tns:CurrentValue>
-						<tns:TopLeft X="133" Y="37" />
+						<tns:TopLeft X="134" Y="37" />
 						<tns:BottomRight X="155" Y="58" />
 					</tns:CurrentValue>
 					<tns:PreparationRef refId="Button_HK2" />
@@ -2055,8 +2122,8 @@
 				<tns:ModbusAccess address="0x0D02" type="Holding" />
 				<tns:GuiAccess screenId="Home">
 					<tns:CurrentValue>
-						<tns:TopLeft X="133" Y="37" />
-						<tns:BottomRight X="155" Y="58" />
+						<tns:TopLeft X="134" Y="66" />
+						<tns:BottomRight X="155" Y="87" />
 					</tns:CurrentValue>
 					<tns:PreparationRef refId="Button_HK3" />
 				</tns:GuiAccess>
