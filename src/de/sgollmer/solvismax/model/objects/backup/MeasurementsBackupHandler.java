@@ -131,7 +131,7 @@ public class MeasurementsBackupHandler {
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		OutputStream outputStream = new FileOutputStream(output);
-		XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream);
+		XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream, "UTF-8");
 		writer.writeStartDocument();
 		writer.writeStartElement(XML_MEASUREMENTS);
 		this.measurements.writeXml(writer);

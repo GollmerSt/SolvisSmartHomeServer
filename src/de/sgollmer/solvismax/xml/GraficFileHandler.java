@@ -22,8 +22,8 @@ import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 
@@ -109,7 +109,7 @@ public class GraficFileHandler {
 		File output = new File(this.parent, NAME_XML_GRAFICSFILE);
 
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
-		XMLStreamWriter writer = factory.createXMLStreamWriter(new FileOutputStream(output));
+		XMLStreamWriter writer = factory.createXMLStreamWriter(new FileOutputStream(output), "UTF-8");
 		writer.writeStartDocument();
 		writer.writeStartElement("SolvisGrafics");
 		grafics.writeXml(writer);

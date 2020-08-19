@@ -909,7 +909,7 @@
 				</tns:Field>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen id="Installateur Menü" backId="Home"
+		<tns:Screen id="Installateur Menue" backId="Home"
 			previousId="Nutzerauswahl">
 			<tns:UserSelection>
 				<tns:Digit digit="0">
@@ -969,7 +969,7 @@
 					</tns:Lower>
 				</tns:Digit>
 			</tns:UserSelection>
-			<tns:ScreenGrafic id="Installateur Menü">
+			<tns:ScreenGrafic id="Installateur Menue">
 				<tns:Field>
 					<tns:TopLeft X="55" Y="2" />
 					<tns:BottomRight X="185" Y="15" />
