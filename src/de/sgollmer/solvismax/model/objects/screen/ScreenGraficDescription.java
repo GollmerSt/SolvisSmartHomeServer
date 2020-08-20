@@ -33,7 +33,7 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 	private static final ILogger logger = LogManager.getInstance().getLogger(ScreenGraficDescription.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
-	private static final String XML_FIELD = "Field";
+	private static final String XML_RECTANGLE = "Rectangle";
 
 	private final String id;
 	private final boolean exact;
@@ -134,7 +134,7 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_FIELD:
+				case XML_RECTANGLE:
 					return new Rectangle.Creator(name.getLocalPart(), this.getBaseCreator());
 			}
 			return null;
@@ -143,7 +143,7 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_FIELD:
+				case XML_RECTANGLE:
 					this.rectangle = (Rectangle) created;
 					break;
 			}

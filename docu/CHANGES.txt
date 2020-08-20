@@ -19,7 +19,7 @@ Version 01.02.03
                 erforderlich ist.
                 
     18.08.2020  Die 3 der Heizkreisüberschrift wurde fälschlicherweise als 1 erkannt
-    
+                
                 Fehlerhafte Touch-Koordinaten bei den Bildschirmen 2 und 3 der Heizkreise
                 
     19.08.2020  Durch die Integration der Lernphase in den normalen Start, trat nach der Learning-Phase in
@@ -28,6 +28,8 @@ Version 01.02.03
                 Coordinate des Symbold des Anlagenstatus Heizkreis 3 war fehlerhaft
                 
                 Automatische Eingabe des Codes in der Nutzerauswahl realisiert
+                
+    20.08.2020  Die Rechtecke, welche in dem control.cml noch als "Field" bezeichnet wurden in Rectangle umbenannt.
 
 
 Version 01.02.02

@@ -11,7 +11,7 @@
 		<tns:HeaterLoops screenRef="Home">
 			<tns:HK1Button>
 				<tns:TopLeft X="55" Y="10" />
-				<tns:BottomRight X="65" Y="23" />
+				<tns:BottomRight X="65" Y="23"  />
 			</tns:HK1Button>
 			<tns:HK2Button>
 				<tns:TopLeft X="55" Y="40" />
@@ -70,10 +70,10 @@
 	<tns:Screens homeId="Home">
 		<tns:Screen id="Home" backId="" previousId="">
 			<tns:ScreenGrafic exact="true" id="Home">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="0" Y="8" />
 					<tns:BottomRight X="45" Y="125" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="190" Y="61" />
@@ -90,10 +90,10 @@
 				<tns:Coordinate X="25" Y="40" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic exact="true" id="Warmwasser">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="0" Y="8" />
 					<tns:BottomRight X="45" Y="125" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Zirkulation" backId="Home"
@@ -103,10 +103,10 @@
 				<tns:Coordinate X="25" Y="65" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic exact="true" id="Zirkulation">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="0" Y="8" />
 					<tns:BottomRight X="45" Y="125" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Solar" backId="Home" previousId="Home">
@@ -115,10 +115,10 @@
 				<tns:Coordinate X="25" Y="90" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic exact="true" id="Solar">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="0" Y="8" />
 					<tns:BottomRight X="45" Y="125" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="170" Y="0" />
@@ -133,10 +133,10 @@
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Sonstiges" />
 			<tns:ScreenGrafic exact="true" id="Sonstiges 1">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="90" Y="35" />
 					<tns:BottomRight X="205" Y="50" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Sonstiges 2" backId="Home"
@@ -147,10 +147,10 @@
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Sonstiges" />
 			<tns:ScreenGrafic exact="true" id="Sonstiges 2">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="90" Y="35" />
 					<tns:BottomRight X="205" Y="50" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Sonstiges 3" backId="Home"
@@ -161,10 +161,10 @@
 			</tns:TouchPoint>
 			<tns:ScreenGraficRef refId="Sonstiges" />
 			<tns:ScreenGrafic exact="true" id="Sonstiges 3">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="90" Y="35" />
 					<tns:BottomRight X="205" Y="50" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Schornsteinfeger" backId="Sonstiges 1"
@@ -174,10 +174,10 @@
 				<tns:Coordinate X="220" Y="20" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Schornsteinfeger">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="20" Y="2" />
 					<tns:BottomRight X="190" Y="15" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Heizkreise" backId="Sonstiges 1"
@@ -187,10 +187,10 @@
 				<tns:Coordinate X="220" Y="65" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Heizkreise">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="62" Y="0" />
 					<tns:BottomRight X="155" Y="25" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Heizkreis1 1_5" backId="Heizkreise"
@@ -200,10 +200,10 @@
 				<tns:Coordinate X="20" Y="15" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="11/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
@@ -214,10 +214,10 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="12/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
@@ -228,10 +228,10 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="13/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
@@ -242,10 +242,10 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="15/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
@@ -260,10 +260,10 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="14/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
@@ -282,10 +282,10 @@
 				<tns:Coordinate X="20" Y="45" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="21/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
@@ -300,10 +300,10 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="22/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
@@ -318,10 +318,10 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="23/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
@@ -336,10 +336,10 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="25/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
@@ -358,10 +358,10 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="24/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
@@ -380,10 +380,10 @@
 				<tns:Coordinate X="20" Y="65" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="31/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
@@ -398,10 +398,10 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="32/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
@@ -416,10 +416,10 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="33/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
@@ -434,10 +434,10 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="35/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
@@ -456,10 +456,10 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="34/5">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
@@ -493,10 +493,10 @@
 				<tns:Coordinate X="230" Y="120" />
 			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus WW Max">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="120" Y="75" />
 					<tns:BottomRight X="150" Y="105" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:MustBeWhite>
 				<tns:TopLeft X="100" Y="15" />
@@ -518,10 +518,10 @@
 				<tns:Coordinate X="230" Y="120" />
 			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus HK Max">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="96" Y="13" />
 					<tns:BottomRight X="125" Y="40" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:MustBeWhite>
 				<tns:TopLeft X="200" Y="24" />
@@ -547,10 +547,10 @@
 				<tns:Coordinate X="230" Y="120" />
 			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus Solar Max">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="195" Y="12" />
 					<tns:BottomRight X="239" Y="50" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:MustBeWhite>
 				<tns:TopLeft X="90" Y="35" />
@@ -573,10 +573,10 @@
 				<tns:Coordinate X="230" Y="120" />
 			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus WW Ben">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="107" Y="80" />
 					<tns:BottomRight X="125" Y="125" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:MustBeWhite>
 				<tns:TopLeft X="45" Y="30" />
@@ -598,10 +598,10 @@
 				<tns:Coordinate X="230" Y="120" />
 			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus HK Ben">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="90" Y="13" />
 					<tns:BottomRight X="125" Y="40" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:MustBeWhite>
 				<tns:TopLeft X="205" Y="30" />
@@ -623,10 +623,10 @@
 				<tns:Coordinate X="230" Y="120" />
 			</tns:SequenceDown>
 			<tns:ScreenGrafic id="Anlagenstatus Solar Ben">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="185" Y="12" />
 					<tns:BottomRight X="237" Y="45" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:MustBeWhite>
 				<tns:TopLeft X="85" Y="35" />
@@ -890,10 +890,10 @@
 				<tns:Coordinate X="220" Y="65" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Sonstiges_Nutzerauswahl">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="30" Y="2" />
 					<tns:BottomRight X="205" Y="15" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Nutzerauswahl"
@@ -903,10 +903,10 @@
 				<tns:Coordinate X="220" Y="75" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Nutzerauswahl">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="55" Y="2" />
 					<tns:BottomRight X="200" Y="15" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Installateur Menue" backId="Home"
@@ -970,10 +970,10 @@
 				</tns:Digit>
 			</tns:UserSelection>
 			<tns:ScreenGrafic id="Installateur Menue">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="55" Y="2" />
 					<tns:BottomRight X="185" Y="15" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 		<tns:Screen id="Zaehlfunktion" backId="Sonstiges 2"
@@ -983,10 +983,10 @@
 				<tns:Coordinate X="220" Y="85" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Zaehlfunktion" exact="true">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="35" Y="0" />
 					<tns:BottomRight X="205" Y="15" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="135" Y="15" />
@@ -1000,10 +1000,10 @@
 				<tns:Coordinate X="220" Y="40" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Uhrzeit/Datum">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="55" Y="0" />
 					<tns:BottomRight X="185" Y="18" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="0" Y="30" />
@@ -1017,65 +1017,65 @@
 				<tns:Coordinate X="220" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Zeiteinstellung">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="60" Y="0" />
 					<tns:BottomRight X="175" Y="15" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
 	</tns:Screens>
 	<tns:ScreenGrafics>
 		<tns:ScreenGrafic exact="true" id="Sonstiges">
-			<tns:Field>
+			<tns:Rectangle>
 				<tns:TopLeft X="0" Y="108" />
 				<tns:BottomRight X="45" Y="120" />
-			</tns:Field>
+			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="Heizkreis">
-			<tns:Field>
+			<tns:Rectangle>
 				<tns:TopLeft X="40" Y="0" />
 				<tns:BottomRight X="160" Y="13" />
-			</tns:Field>
+			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="Tagestemperatur" exact="true">
-			<tns:Field>
+			<tns:Rectangle>
 				<tns:TopLeft X="77" Y="80" />
 				<tns:BottomRight X="110" Y="125" />
-			</tns:Field>
+			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="Nachttemperatur" exact="true">
-			<tns:Field>
+			<tns:Rectangle>
 				<tns:TopLeft X="110" Y="80" />
 				<tns:BottomRight X="140" Y="125" />
-			</tns:Field>
+			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="TagestemperaturNotSelected"
 			exact="true">
-			<tns:Field>
+			<tns:Rectangle>
 				<tns:TopLeft X="65" Y="55" />
 				<tns:BottomRight X="105" Y="60" />
-			</tns:Field>
+			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="TagestemperaturSelected"
 			exact="true">
-			<tns:Field>
+			<tns:Rectangle>
 				<tns:TopLeft X="65" Y="55" />
 				<tns:BottomRight X="105" Y="60" />
-			</tns:Field>
+			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="NachttemperaturNotSelected"
 			exact="true">
-			<tns:Field>
+			<tns:Rectangle>
 				<tns:TopLeft X="65" Y="55" />
 				<tns:BottomRight X="105" Y="60" />
-			</tns:Field>
+			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="NachttemperaturSelected"
 			exact="true">
-			<tns:Field>
+			<tns:Rectangle>
 				<tns:TopLeft X="65" Y="55" />
 				<tns:BottomRight X="105" Y="60" />
-			</tns:Field>
+			</tns:Rectangle>
 		</tns:ScreenGrafic>
 	</tns:ScreenGrafics>
 	<tns:FallBack>
@@ -2410,10 +2410,10 @@
 				<tns:Coordinate X="60" Y="15" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Button_HK1">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="47" Y="2" />
 					<tns:BottomRight X="76" Y="32" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Preparation>
 		<tns:Preparation id="Button_HK2">
@@ -2422,10 +2422,10 @@
 				<tns:Coordinate X="60" Y="45" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Button_HK2">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="47" Y="32" />
 					<tns:BottomRight X="76" Y="62" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Preparation>
 		<tns:Preparation id="Button_HK3">
@@ -2434,10 +2434,10 @@
 				<tns:Coordinate X="60" Y="75" />
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Button_HK3">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="47" Y="62" />
 					<tns:BottomRight X="76" Y="92" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Preparation>
 	</tns:Preparations>
@@ -2454,10 +2454,10 @@
 				<tns:Coordinate X="125" Y="70" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_YYYY">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="96" Y="55" />
 					<tns:BottomRight X="101" Y="78" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Year>
 		<tns:Month>
@@ -2470,10 +2470,10 @@
 				<tns:Coordinate X="80" Y="70" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_MM">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="66" Y="55" />
 					<tns:BottomRight X="70" Y="78" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Month>
 		<tns:Day>
@@ -2486,10 +2486,10 @@
 				<tns:Coordinate X="50" Y="70" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_DD">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="64" Y="55" />
 					<tns:BottomRight X="69" Y="78" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Day>
 		<tns:Hour>
@@ -2502,10 +2502,10 @@
 				<tns:Coordinate X="85" Y="40" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_hh">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="95" Y="30" />
 					<tns:BottomRight X="100" Y="55" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Hour>
 		<tns:Minute>
@@ -2518,10 +2518,10 @@
 				<tns:Coordinate X="115" Y="40" />
 			</tns:Touch>
 			<tns:ScreenGrafic id="Zeiteinstellung_min">
-				<tns:Field>
+				<tns:Rectangle>
 					<tns:TopLeft X="97" Y="30" />
 					<tns:BottomRight X="101" Y="55" />
-				</tns:Field>
+				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Minute>
 		<tns:Upper pushTimeRefId="Standard"
