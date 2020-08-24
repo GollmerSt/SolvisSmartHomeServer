@@ -1458,8 +1458,11 @@ Es handelt sich dabei um einen Art virtuellerScreen, der einen Vorgänger besitz
 
 	<complexType name="UserSelection">
 		<sequence>
-			<element name="Digit" type="tns:Digit" maxOccurs="4" minOccurs="4"></element>
+			<element name="Digit" type="tns:Digit" maxOccurs="4"
+				minOccurs="4">
+			</element>
 		</sequence>
+		<attribute name="waitTimeAfterLastDigitRefId" type="string"></attribute>
 	</complexType>
 
 	<complexType name="Digit">

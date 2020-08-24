@@ -911,7 +911,7 @@
 		</tns:Screen>
 		<tns:Screen id="Installateur Menue" backId="Home"
 			previousId="Nutzerauswahl">
-			<tns:UserSelection>
+			<tns:UserSelection waitTimeAfterLastDigitRefId="WindowChange">
 				<tns:Digit digit="0">
 					<tns:Rectangle>
 						<tns:TopLeft X="53" Y="73" />

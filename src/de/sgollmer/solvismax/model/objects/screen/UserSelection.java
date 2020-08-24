@@ -13,9 +13,11 @@ import de.sgollmer.solvismax.error.HelperException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.Ocr;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.objects.Rectangle;
@@ -29,9 +31,13 @@ public class UserSelection implements ISelectScreen {
 	private static final String XML_LOWER = "Lower";
 
 	private final Collection<Digit> digits;
+	private final String waitTimeAfterLastDigitRefId;
 
-	public UserSelection(Collection<Digit> digits) {
+	private int waitTimeAfterLastDigit_ms = 0;
+
+	public UserSelection(Collection<Digit> digits, String waitTimeAfterLastDigitRefId) {
 		this.digits = digits;
+		this.waitTimeAfterLastDigitRefId = waitTimeAfterLastDigitRefId;
 	}
 
 	@Override
@@ -65,6 +71,7 @@ public class UserSelection implements ISelectScreen {
 						adjusted = digit.exec(solvis);
 
 						if (!it.hasNext()) {
+							AbortHelper.getInstance().sleep(this.waitTimeAfterLastDigit_ms);
 							adjusted = SolvisScreen.get(solvis.getCurrentScreen()) != startingScreen;
 						}
 
@@ -84,6 +91,7 @@ public class UserSelection implements ISelectScreen {
 	public static class Creator extends CreatorByXML<UserSelection> {
 
 		private final Collection<Digit> digits = new ArrayList<>();
+		private String waitTimeAfterLastDigitRefId;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -91,11 +99,15 @@ public class UserSelection implements ISelectScreen {
 
 		@Override
 		public void setAttribute(QName name, String value) {
+			switch (name.getLocalPart()) {
+				case "waitTimeAfterLastDigitRefId":
+					this.waitTimeAfterLastDigitRefId = value;
+			}
 		}
 
 		@Override
 		public UserSelection create() throws XmlException, IOException, AssignmentException, ReferenceException {
-			return new UserSelection(this.digits);
+			return new UserSelection(this.digits, this.waitTimeAfterLastDigitRefId);
 		}
 
 		@Override
@@ -260,6 +272,14 @@ public class UserSelection implements ISelectScreen {
 
 	@Override
 	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+		if (this.waitTimeAfterLastDigitRefId != null) {
+			Duration duration = description.getDuration(this.waitTimeAfterLastDigitRefId);
+			if (duration == null) {
+				throw new ReferenceException("Reference <" + this.waitTimeAfterLastDigitRefId + "> unknown.");
+			} else {
+				this.waitTimeAfterLastDigit_ms = duration.getTime_ms();
+			}
+		}
 		for (Digit digit : this.digits) {
 			digit.assign(description);
 		}
@@ -267,7 +287,7 @@ public class UserSelection implements ISelectScreen {
 
 	@Override
 	public int getSettingTime(Solvis solvis) {
-		int settingTime = 0;
+		int settingTime = this.waitTimeAfterLastDigit_ms;
 		for (Digit digit : this.digits) {
 			settingTime += digit.getSettingTime(solvis);
 		}

@@ -30,7 +30,9 @@ Version 01.02.03
                 Automatische Eingabe des Codes in der Nutzerauswahl realisiert
                 
     20.08.2020  Die Rechtecke, welche in dem control.cml noch als "Field" bezeichnet wurden in Rectangle umbenannt.
-
+    
+    24.08.2020  Nach der Code-Eingabe der Nutzerauswahl muss etwas gewartet werden, da ein Bildschirmwechsel erfolgt.
+    
 
 Version 01.02.02
 

@@ -137,7 +137,6 @@
 			<fileset file="${private.dir}/${dist.base}.jar" casesensitive="yes" />
 			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
-			<fileset file="${changes}" casesensitive="yes" />
 		</copy>
 		<mkdir dir="${pubLinux.dir}/FHEM"/>
 		<fixcrlf file="${fhem.pm}" destdir="${pubLinux.dir}/FHEM" eol="lf" />
@@ -157,7 +156,6 @@
 			<arg value="${iss}" />
 		</exec>
 		<copy todir="${pubWindows.dir}">
-			<fileset file="${fhem.pm}" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 			<fileset file="${changes}" casesensitive="yes" />
 		</copy>
