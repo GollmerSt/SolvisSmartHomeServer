@@ -188,8 +188,8 @@
 			</tns:TouchPoint>
 			<tns:ScreenGrafic id="Heizkreise">
 				<tns:Rectangle>
-					<tns:TopLeft X="62" Y="0" />
-					<tns:BottomRight X="155" Y="25" />
+					<tns:TopLeft X="37" Y="0" />
+					<tns:BottomRight X="155" Y="40" />
 				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
@@ -982,10 +982,10 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="85" />
 			</tns:TouchPoint>
-			<tns:ScreenGrafic id="Zaehlfunktion" exact="true">
+			<tns:ScreenGrafic id="Zaehlfunktion">
 				<tns:Rectangle>
 					<tns:TopLeft X="35" Y="0" />
-					<tns:BottomRight X="205" Y="15" />
+					<tns:BottomRight X="205" Y="13" />
 				</tns:Rectangle>
 			</tns:ScreenGrafic>
 			<tns:IgnoreRectangle>

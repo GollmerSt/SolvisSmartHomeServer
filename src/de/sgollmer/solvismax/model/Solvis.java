@@ -25,6 +25,7 @@ import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -66,6 +67,7 @@ public class Solvis {
 	private final SolvisDescription solvisDescription;
 	private final AllSolvisData allSolvisData = new AllSolvisData(this);
 	private final SystemGrafics grafics;
+	private int learningPictureIndex = 0;
 
 	private SolvisWorkers worker;
 
@@ -752,4 +754,36 @@ public class Solvis {
 	public boolean willBeModified(SolvisData data) {
 		return this.worker.willBeModified(data);
 	}
+
+	public String getLearningPictureIndex() {
+		return String.format("%03d", ++this.learningPictureIndex);
+	}
+
+	public void writeLearningImage(SolvisScreen solvisScreen, String id) {
+		this.writeLearningImage(SolvisScreen.getImage(solvisScreen), id);
+	}
+
+	public void writeLearningImage(MyImage image, String id) {
+		if (image == null) {
+			return;
+		}
+		File parent = new File(this.getWritePath(), Constants.Files.RESOURCE_DESTINATION);
+		parent = new File(parent, Constants.Files.LEARN_DESTINATION);
+		String baseName = this.getLearningPictureIndex() + '_' + this.getUnit().getId() + "__" + id + "__";
+		int cnt = 0;
+		boolean found = true;
+		File file = null;
+		while (found) {
+			String name = FileHelper.makeOSCompatible(baseName + Integer.toString(cnt) + ".png");
+			file = new File(parent, name);
+			found = file.exists();
+			++cnt;
+		}
+		try {
+			image.write(file);
+		} catch (IOException e) {
+			logger.error("Error on writing the image of the learned screen <" + id + ">.");
+		}
+	}
+
 }

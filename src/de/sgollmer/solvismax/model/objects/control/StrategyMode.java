@@ -209,9 +209,8 @@ public class StrategyMode implements IStrategy {
 				solvis.send(mode.getGuiSet().getTouch());
 				ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
 				SolvisScreen currentScreen = solvis.getCurrentScreen();
-				currentScreen.writeLearningImage(currentScreen.get().getId() + "__" + grafic.getId());
+				solvis.writeLearningImage(currentScreen, mode.getId() + "__" + grafic.getId());
 				grafic.learn(solvis);
-				grafic.writeLearningImage(solvis);
 				solvis.clearCurrentScreen();
 				SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 				if (data == null || !mode.equals(data.get())) {

@@ -7,19 +7,12 @@
 
 package de.sgollmer.solvismax.model.objects.screen;
 
-import java.io.File;
-import java.io.IOException;
-
-import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FatalError;
-import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
-import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 
 public class SolvisScreen {
-	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisScreen.class);
+	//private static final ILogger logger = LogManager.getInstance().getLogger(SolvisScreen.class);
 
 	private final Solvis solvis;
 	private final MyImage image;
@@ -73,23 +66,4 @@ public class SolvisScreen {
 		return this.image.equals(SolvisScreen.getImage(screen));
 	}
 
-	public void writeLearningImage(String id) {
-		File parent = new File(this.solvis.getWritePath(), Constants.Files.RESOURCE_DESTINATION);
-		parent = new File(parent, Constants.Files.LEARN_DESTINATION);
-		String baseName = this.solvis.getUnit().getId() + "__" + id + "__";
-		int cnt = 0;
-		boolean found = true;
-		File file = null;
-		while (found) {
-			String name = FileHelper.makeOSCompatible( baseName + Integer.toString(cnt) + ".png");
-			file = new File(parent, name);
-			found = file.exists();
-			++cnt;
-		}
-		try {
-			this.image.writeWhole(file);
-		} catch (IOException e) {
-			logger.error("Error on writing the image of the learned screen <" + id + ">.");
-		}
-	}
 }

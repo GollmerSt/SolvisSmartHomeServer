@@ -78,7 +78,7 @@ public class Preparation implements IAssigner {
 			solvis.send(this.touchPoint);
 			solvis.send(this.touchPoint);
 			SolvisScreen currentScreen = solvis.getCurrentScreen();
-			currentScreen.writeLearningImage(this.id);
+			solvis.writeLearningImage(currentScreen, this.id);
 			this.screenGrafic.learn(solvis);
 			solvis.getHistory().set(this);
 			return true;

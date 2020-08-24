@@ -476,7 +476,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		for (int cnt = Constants.LEARNING_RETRIES; cnt > 0 && !success; --cnt) {
 			success = true;
 			if (!this.isLearned(solvis) || this.mustSave) {
-				solvis.getCurrentScreen().writeLearningImage(this.id);
+				solvis.writeLearningImage(solvis.getCurrentScreen(), this.id);
 			}
 			try {
 				for (IScreenPartCompare screenPartCompare : this.screenCompares) {
@@ -484,7 +484,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 						ScreenGraficDescription description = (ScreenGraficDescription) screenPartCompare;
 						if (!description.isLearned(solvis)) {
 							description.learn(solvis);
-							description.writeLearningImage(solvis);
 							descriptions.remove(description);
 						}
 					}

@@ -33,6 +33,11 @@ Version 01.02.03
     
     24.08.2020  Nach der Code-Eingabe der Nutzerauswahl muss etwas gewartet werden, da ein Bildschirmwechsel erfolgt.
     
+                Ein paar Koordinaten zur Bildidentifikation geändert
+                
+                Die Screenshots des Learnings sind nun durchnummeriert um den zeitlichen Ablauf des Learnings
+                leichter nachvollziehen zu können.
+    
 
 Version 01.02.02
 
