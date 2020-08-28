@@ -273,7 +273,7 @@ public class Measurement extends ChannelSource {
 
 	interface IType {
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
-				throws PowerOnException;
+				throws PowerOnException, IOException;
 
 		public boolean isNumeric();
 

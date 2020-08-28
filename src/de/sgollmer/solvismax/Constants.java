@@ -81,6 +81,7 @@ public class Constants {
 	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
 	
 	public static class Solvis {
+		public static final int INPUT_BUFFER_SIZE = 1024;
 		public static final String DISPLAY = "/display.bmp?";
 		public static final String XML = "/sc2_val.xml";
 		public static final String TOUCH = "/Touch.CGI?";

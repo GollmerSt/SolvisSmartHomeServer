@@ -248,9 +248,6 @@ public class Units {
 						case "fwLth2_21_02A":
 							this.fwLth2_21_02A = Boolean.parseBoolean(value);
 							break;
-						case "modbus":
-							this.modbus = Boolean.parseBoolean(value);
-							break;
 						case "ignoredFrameThicknesScreenSaver":
 							this.ignoredFrameThicknesScreenSaver = Integer.parseInt(value);
 							break;

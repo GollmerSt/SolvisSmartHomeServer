@@ -186,10 +186,10 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				timeStamp = System.currentTimeMillis();
 
 				boolean finished = false;
-				int length = 1024;
+				int length = Constants.Solvis.INPUT_BUFFER_SIZE;
 				char[] array = new char[length];
 				while (!finished) {
-					int n = reader.read(array, 0, 1000);
+					int n = reader.read(array, 0, length);
 					if (n < 0) {
 						finished = true;
 					} else {

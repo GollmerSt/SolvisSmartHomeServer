@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax.model.objects.measure;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
@@ -30,7 +31,7 @@ public enum Strategy implements IType {
 	}
 
 	@Override
-	public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws PowerOnException {
+	public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws PowerOnException, IOException {
 		return this.type.get(destin, fields, data);
 	}
 
@@ -44,7 +45,7 @@ public enum Strategy implements IType {
 		return this.type.validate(fields);
 	}
 
-	private static long toInt(String data) {
+	private static Long toInt(String data) {
 
 		long result = 0;
 
@@ -52,12 +53,26 @@ public enum Strategy implements IType {
 
 			char c = data.charAt(2 * i);
 			int b = Character.digit(c, 16);
+			if ( b < 0 ) {
+				return null;
+			}
 			c = data.charAt(2 * i + 1);
+			if (c < 0 ) {
+				return null ;
+			}
 			b = b * 16 + Character.digit(c, 16);
 
-			result = result * 256 + b;
+			result = result << 8 | b;
 		}
 		return result;
+	}
+
+	private static long getValue( String string ) throws IOException {
+		Long value = toInt(string);
+		if ( value == null ) {
+			throw new IOException("Unexpected characters in Solvis XML String"); 
+		}
+		return value;
 	}
 
 	private static Field getFirst(Collection<Field> fields) {
@@ -83,10 +98,10 @@ public enum Strategy implements IType {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
-				throws PowerOnException {
+				throws PowerOnException, IOException {
 			Field field = getFirst(fields);
 			String sub = field.subString(data.getHexString());
-			long result = toInt(sub);
+			long result = getValue(sub);
 			if (this.signed) {
 				long threshold = 1 << (4 * field.getLength() - 1);
 				if (result >= threshold) {
@@ -113,15 +128,15 @@ public enum Strategy implements IType {
 		}
 
 	}
-
+	
 	private static class Boolean implements IType {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
-				throws PowerOnException {
+				throws PowerOnException, IOException {
 			Field field = getFirst(fields);
 			String sub = field.subString(data.getHexString());
-			boolean result = toInt(sub) > 0;
+			boolean result = getValue(sub) > 0;
 			destin.setBoolean(result, data.getTimeStamp());
 			return true;
 		}
@@ -146,18 +161,18 @@ public enum Strategy implements IType {
 	private static class Date implements IType {
 
 		@Override
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) {
+		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws IOException {
 			String str = "";
 			for (Iterator<Field> it = fields.iterator(); it.hasNext();) {
 				str += it.next().subString(data.getHexString());
 			}
-			int second = (int) toInt(str.substring(4, 6));
-			int minute = (int) toInt(str.substring(2, 4));
-			int hour = (int) toInt(str.substring(0, 2));
+			int second = (int) getValue(str.substring(4, 6));
+			int minute = (int) getValue(str.substring(2, 4));
+			int hour = (int) getValue(str.substring(0, 2));
 
-			int year = (int) toInt(str.substring(6, 8)) + 2000;
-			int month = (int) toInt(str.substring(8, 10)) - 1;
-			int date = (int) toInt(str.substring(10, 12));
+			int year = (int) getValue(str.substring(6, 8)) + 2000;
+			int month = (int) getValue(str.substring(8, 10)) - 1;
+			int date = (int) getValue(str.substring(10, 12));
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(year, month, date, hour, minute, second);
