@@ -133,21 +133,32 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	}
 
 	public void measure(Solvis solvis, AllSolvisData datas)
-			throws IOException, PowerOnException, TerminationException, ModbusException {
+			throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
 		solvis.clearMeasuredData();
 		solvis.getMeasureData();
 		solvis.getDistributor().setBurstUpdate(true);
-		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
-			ChannelDescription description = descriptions.get(solvis);
-			if (description != null) {
-				if (description.getType() == IChannelSource.Type.MEASUREMENT) {
-					description.getValue(solvis);
-				} else if (description.isModbus(solvis)) {
-					description.getValue(solvis);
+		try {
+			for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
+				ChannelDescription description = descriptions.get(solvis);
+				if (description != null) {
+					if (description.getType() == IChannelSource.Type.MEASUREMENT) {
+						description.getValue(solvis);
+					} else if (description.isModbus(solvis)) {
+						description.getValue(solvis);
+					}
 				}
 			}
+		} catch (IOException e) {
+			throw e;
+		} catch (PowerOnException e) {
+			throw e;
+		} catch (TerminationException e) {
+			throw e;
+		} catch (ModbusException e) {
+			throw e;
+		} finally {
+			solvis.getDistributor().setBurstUpdate(false);
 		}
-		solvis.getDistributor().setBurstUpdate(false);
 	}
 
 	public void init(Solvis solvis) throws IOException, AssignmentException, DependencyException {
@@ -202,7 +213,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		Collection<ChannelDescription> descriptions = destin.get().get(configurationMask);
 
 		if (descriptions == null) {
-			
+
 			descriptions = new ArrayList<>();
 
 			for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {

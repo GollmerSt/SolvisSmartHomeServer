@@ -10,25 +10,25 @@ package de.sgollmer.solvismax.model.objects.data;
 import de.sgollmer.solvismax.Constants;
 
 public class IntegerValue extends SingleData<Integer> {
-	private final int data;
+	private final Integer data;
 	private final boolean fastChange;
 
-	private IntegerValue(int value, long timeStamp, boolean fastChange) {
+	private IntegerValue(Integer value, long timeStamp, boolean fastChange) {
 		super(timeStamp);
 		this.data = value;
 		this.fastChange = fastChange;
 	}
 
-	public IntegerValue(int value, long timeStamp) {
+	public IntegerValue(Integer value, long timeStamp) {
 		this(value, timeStamp, false);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof IntegerValue) {
-			return this.data == (((IntegerValue) obj).data);
+		if (this.data != null && obj instanceof IntegerValue) {
+			return this.data.equals(((IntegerValue) obj).data);
 		} else if (obj instanceof DoubleValue) {
-			return this.data == ((DoubleValue) obj).getInt();
+			return this.data.equals(((DoubleValue) obj).getInt());
 		} else {
 			return false;
 		}

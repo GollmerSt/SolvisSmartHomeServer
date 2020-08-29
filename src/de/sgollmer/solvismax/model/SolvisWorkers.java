@@ -190,7 +190,7 @@ public class SolvisWorkers {
 		}
 
 		private ExecutedCommand processCommand(Command command)
-				throws IOException, TerminationException, PowerOnException, ModbusException {
+				throws IOException, TerminationException, PowerOnException, ModbusException, NumberFormatException {
 			Command executeCommand = command;
 			ChannelDescription restoreChannel = command.getRestoreChannel(SolvisWorkers.this.solvis);
 			if (restoreChannel != null && !this.channelsOfQueueRead.contains(restoreChannel)) {
@@ -371,7 +371,7 @@ public class SolvisWorkers {
 	}
 
 	private Status execute(Command command)
-			throws IOException, TerminationException, PowerOnException, ModbusException {
+			throws IOException, TerminationException, PowerOnException, ModbusException, NumberFormatException {
 		if (!command.isModbus() || command.isWriting()) {
 			AbstractScreen commandScreen = command.getScreen(this.solvis);
 			if (commandScreen != null) {

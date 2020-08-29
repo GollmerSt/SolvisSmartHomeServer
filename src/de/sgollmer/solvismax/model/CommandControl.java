@@ -98,7 +98,7 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public Status execute(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException {
+	public Status execute(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
 
 		int maxFailCnt = Constants.COMMAND_IGNORED_AFTER_N_FAILURES;
 

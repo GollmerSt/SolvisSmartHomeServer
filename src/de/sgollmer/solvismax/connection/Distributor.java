@@ -34,48 +34,8 @@ public class Distributor extends Observable<JsonPackage> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(Distributor.class);
 
-	private IMeasurements collectedMeasurements = new IMeasurements() {
-
-		private Collection<SolvisData> measurements = new ArrayList<>();
-
-		@Override
-		public synchronized void add(SolvisData data) {
-			this.measurements.add(data);
-		}
-
-		@Override
-		public synchronized Collection<SolvisData> cloneAndClear() {
-			Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements);
-			this.measurements.clear();
-			return collection;
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return this.measurements.isEmpty();
-		}
-	};
-	private IMeasurements collectedBufferedMeasurements = new IMeasurements() {
-
-		private Map<String, SolvisData> measurements = new HashMap<>();
-
-		@Override
-		public synchronized Collection<SolvisData> cloneAndClear() {
-			Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements.values());
-			this.measurements.clear();
-			return collection;
-		}
-
-		@Override
-		public synchronized void add(SolvisData data) {
-			this.measurements.put(data.getId(), data);
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return this.measurements.isEmpty();
-		}
-	};
+	private Measurements collectedMeasurements = new Measurements() ;
+	private Measurements collectedBufferedMeasurements = new Measurements() ;
 	private final SolvisDataObserver solvisDataObserver = new SolvisDataObserver();
 	private final ConnectionStateObserver connectionStateObserver = new ConnectionStateObserver();
 	private final SolvisStateObserver solvisStateObserver = new SolvisStateObserver();
@@ -110,14 +70,14 @@ public class Distributor extends Observable<JsonPackage> {
 						&& data.getTimeStamp() - data.getSentTimeStamp() > Constants.FORCE_UPDATE_AFTER_N_INTERVALS
 								* Distributor.this.bufferedIntervall_ms) {
 					buffered = false;
+					Distributor.this.collectedBufferedMeasurements.remove(data);
 				}
 
 				if (buffered) {
-
 					Distributor.this.collectedBufferedMeasurements.add(data);
 
 				} else {
-					Distributor.this.collectedMeasurements.add(data);
+					Distributor.this.add(data, Distributor.this.collectedMeasurements);
 					if (!Distributor.this.burstUpdate) {
 						toSend = Distributor.this.collectedMeasurements.cloneAndClear();
 					}
@@ -126,6 +86,15 @@ public class Distributor extends Observable<JsonPackage> {
 			if (toSend != null) {
 				Distributor.this.sendCollection(toSend);
 			}
+		}
+	}
+
+	private void add(SolvisData data, Measurements measurements) {
+		SolvisData former = measurements.add(data);
+		if (former != null) {
+			logger.error(
+					"measurements not unique. Timestamps of <" + data.getId() + ">: Former: " + former.getTimeStamp()
+							+ ", New: " + data.getTimeStamp() + ". Former measurement value is ignored");
 		}
 	}
 
@@ -325,11 +294,25 @@ public class Distributor extends Observable<JsonPackage> {
 		this.aliveThread.start();
 	}
 
-	private interface IMeasurements {
-		public void add(SolvisData data);
+	private class Measurements {
+		private Map<String, SolvisData> measurements = new HashMap<>();
 
-		public boolean isEmpty();
+		public synchronized SolvisData add(SolvisData data) {
+			return this.measurements.put(data.getId(),data);
+		}
 
-		Collection<SolvisData> cloneAndClear();
+		public void remove(SolvisData data) {
+			this.measurements.remove(data.getId());
+		}
+
+		public synchronized Collection<SolvisData> cloneAndClear() {
+			Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements.values());
+			this.measurements.clear();
+			return collection;
+		}
+
+		public boolean isEmpty() {
+			return this.measurements.isEmpty();
+		}
 	}
 }

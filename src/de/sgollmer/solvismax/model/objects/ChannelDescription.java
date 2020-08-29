@@ -67,14 +67,15 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.getId();
 	}
 
-	public boolean getValue(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException {
+	public boolean getValue(Solvis solvis)
+			throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
 		return this.getValue(data, solvis);
 	}
 
 	@Override
 	public boolean getValue(SolvisData dest, Solvis solvis)
-			throws IOException, PowerOnException, TerminationException, ModbusException {
+			throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
 		return this.channelSource.getValue(dest, solvis);
 	}
 
@@ -205,7 +206,6 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	public Type getType() {
 		return this.channelSource.getType();
 	}
-
 
 	@Override
 	public AbstractScreen getScreen(int configurationMask) {

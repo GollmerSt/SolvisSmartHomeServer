@@ -45,34 +45,31 @@ public enum Strategy implements IType {
 		return this.type.validate(fields);
 	}
 
-	private static Long toInt(String data) {
+	private static long toInt(String data) throws NumberFormatException{
 
-		long result = 0;
+		Long result = 0L;
 
 		for (int i = data.length() / 2 - 1; i >= 0 / 2; --i) {
 
 			char c = data.charAt(2 * i);
 			int b = Character.digit(c, 16);
 			if ( b < 0 ) {
-				return null;
+				result = null;
+				break;
 			}
 			c = data.charAt(2 * i + 1);
 			if (c < 0 ) {
-				return null ;
+				result = null;
+				break;
 			}
 			b = b * 16 + Character.digit(c, 16);
 
 			result = result << 8 | b;
 		}
-		return result;
-	}
-
-	private static long getValue( String string ) throws IOException {
-		Long value = toInt(string);
-		if ( value == null ) {
-			throw new IOException("Unexpected characters in Solvis XML String"); 
+		if ( result == null ) {
+			throw new NumberFormatException("Unexpected characters in Solvis XML String <" + data + ">."); 
 		}
-		return value;
+		return result;
 	}
 
 	private static Field getFirst(Collection<Field> fields) {
@@ -98,10 +95,10 @@ public enum Strategy implements IType {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
-				throws PowerOnException, IOException {
+				throws PowerOnException, IOException, NumberFormatException {
 			Field field = getFirst(fields);
 			String sub = field.subString(data.getHexString());
-			long result = getValue(sub);
+			long result = toInt(sub);
 			if (this.signed) {
 				long threshold = 1 << (4 * field.getLength() - 1);
 				if (result >= threshold) {
@@ -133,10 +130,10 @@ public enum Strategy implements IType {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
-				throws PowerOnException, IOException {
+				throws PowerOnException, IOException, NumberFormatException {
 			Field field = getFirst(fields);
 			String sub = field.subString(data.getHexString());
-			boolean result = getValue(sub) > 0;
+			boolean result = toInt(sub) > 0;
 			destin.setBoolean(result, data.getTimeStamp());
 			return true;
 		}
@@ -161,18 +158,18 @@ public enum Strategy implements IType {
 	private static class Date implements IType {
 
 		@Override
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws IOException {
+		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws IOException, NumberFormatException {
 			String str = "";
 			for (Iterator<Field> it = fields.iterator(); it.hasNext();) {
 				str += it.next().subString(data.getHexString());
 			}
-			int second = (int) getValue(str.substring(4, 6));
-			int minute = (int) getValue(str.substring(2, 4));
-			int hour = (int) getValue(str.substring(0, 2));
+			int second = (int) toInt(str.substring(4, 6));
+			int minute = (int) toInt(str.substring(2, 4));
+			int hour = (int) toInt(str.substring(0, 2));
 
-			int year = (int) getValue(str.substring(6, 8)) + 2000;
-			int month = (int) getValue(str.substring(8, 10)) - 1;
-			int date = (int) getValue(str.substring(10, 12));
+			int year = (int) toInt(str.substring(6, 8)) + 2000;
+			int month = (int) toInt(str.substring(8, 10)) - 1;
+			int date = (int) toInt(str.substring(10, 12));
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(year, month, date, hour, minute, second);

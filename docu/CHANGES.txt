@@ -37,6 +37,12 @@ Version 01.02.03
                 
                 Die Screenshots des Learnings sind nun durchnummeriert um den zeitlichen Ablauf des Learnings
                 leichter nachvollziehen zu können.
+                
+    29.08.2020  Bei Anlagen ohne Raumthermostat tritt fälschlicherweise eine Null-Pointer-Exception auf. Sie
+                wird auch in älteren Versionen abgefangen, es zeigen sich jedoch irritierende Log-Meldungen.
+                
+                Es treten bei manchen Anlagen auf der Client-Server-Schnittstelle JSON-Format-Fehler auf.
+                Um diesen Fehler besser analysieren zu können, wurden weitere Konsistents-Checks eingebaut.
     
 
 Version 01.02.02

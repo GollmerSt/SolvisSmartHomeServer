@@ -109,7 +109,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) throws PowerOnException, IOException, TerminationException {
+	public boolean getValue(SolvisData dest, Solvis solvis) throws PowerOnException, IOException, TerminationException, NumberFormatException {
 
 		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
 			dest.setSingleData((SingleData<?>) null);
@@ -273,7 +273,7 @@ public class Measurement extends ChannelSource {
 
 	interface IType {
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
-				throws PowerOnException, IOException;
+				throws PowerOnException, IOException, NumberFormatException;
 
 		public boolean isNumeric();
 
