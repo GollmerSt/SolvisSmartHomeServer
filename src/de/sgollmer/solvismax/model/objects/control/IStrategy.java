@@ -43,14 +43,14 @@ public interface IStrategy extends IAssigner {
 
 	void setCurrentRectangle(Rectangle rectangle);
 
+	boolean isXmlValid();
+
 	boolean mustBeLearned();
 
 	boolean learn(Solvis solvis, IControlAccess controlAccess)
 			throws IOException, ModbusException, TerminationException;
 
 	SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
-
-	boolean isXmlValid(boolean modbus);
 
 	boolean isBoolean();
 

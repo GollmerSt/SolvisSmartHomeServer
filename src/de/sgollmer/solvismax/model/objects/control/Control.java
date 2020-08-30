@@ -24,7 +24,6 @@ import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
@@ -54,7 +53,6 @@ public class Control extends ChannelSource {
 	private static final String XML_PREPARATION_REF = "PreparationRef";
 
 	private static final String XML_GUI_ACCESS = "GuiAccess";
-	private static final String XML_MODBUS_ACCESS = "ModbusAccess";
 	private static final String XML_CONTROL_TYPE_READ_WRITE = "TypeReadWrite";
 	private static final String XML_CONTROL_TYPE_READ = "TypeRead";
 	private static final String XML_CONTROL_TYPE_MODE = "TypeMode";
@@ -63,16 +61,14 @@ public class Control extends ChannelSource {
 
 	private final boolean optional;
 	private final GuiAccess guiAccess;
-	private final ModbusAccess modbusAccess;
 
 	private final IStrategy strategy;
 	private final UpdateStrategies updateStrategies;
 
-	private Control(boolean optional, GuiAccess guiAccess, ModbusAccess modbusAccess, IStrategy strategy,
+	private Control(boolean optional, GuiAccess guiAccess, IStrategy strategy,
 			UpdateStrategies updateStrategies) {
 		this.optional = optional;
 		this.guiAccess = guiAccess;
-		this.modbusAccess = modbusAccess;
 		this.strategy = strategy;
 		if (strategy != null) {
 			this.strategy.setCurrentRectangle(guiAccess != null ? guiAccess.valueRectangle : null);
@@ -197,7 +193,6 @@ public class Control extends ChannelSource {
 
 		private boolean optional;
 		private GuiAccess guiAccess;
-		private ModbusAccess modbusAccess;
 		private IStrategy strategy;
 		private UpdateStrategies updateStrategies = null;
 
@@ -216,17 +211,12 @@ public class Control extends ChannelSource {
 
 		@Override
 		public Control create() throws XmlException {
-			if (this.modbusAccess != null && this.modbusAccess.isModbus()) {
-				if (!this.strategy.isXmlValid(true)) {
-					throw new XmlException("Missing modbus value definitions");
-				}
-			}
 			if (this.guiAccess != null) {
-				if (!this.strategy.isXmlValid(false)) {
+				if (!this.strategy.isXmlValid()) {
 					throw new XmlException("Missing gui value definitions");
 				}
 			}
-			return new Control(this.optional, this.guiAccess, this.modbusAccess, this.strategy, this.updateStrategies);
+			return new Control(this.optional, this.guiAccess, this.strategy, this.updateStrategies);
 		}
 
 		@Override
@@ -235,8 +225,6 @@ public class Control extends ChannelSource {
 			switch (id) {
 				case XML_GUI_ACCESS:
 					return new GuiAccess.Creator(id, getBaseCreator());
-				case XML_MODBUS_ACCESS:
-					return new ModbusAccess.Creator(id, getBaseCreator());
 				case XML_CONTROL_TYPE_READ_WRITE:
 					return new StrategyReadWrite.Creator(id, this.getBaseCreator());
 				case XML_CONTROL_TYPE_READ:
@@ -256,9 +244,6 @@ public class Control extends ChannelSource {
 			switch (creator.getId()) {
 				case XML_GUI_ACCESS:
 					this.guiAccess = (GuiAccess) created;
-					break;
-				case XML_MODBUS_ACCESS:
-					this.modbusAccess = (ModbusAccess) created;
 					break;
 				case XML_CONTROL_TYPE_READ_WRITE:
 				case XML_CONTROL_TYPE_READ:
@@ -497,23 +482,11 @@ public class Control extends ChannelSource {
 	}
 
 	private IControlAccess getControlAccess(Solvis solvis) {
-		if (this.isModbus(solvis)) {
-			return this.modbusAccess;
-		} else {
-			return this.guiAccess;
-		}
-	}
-
-	@Override
-	public boolean isModbus(Solvis solvis) {
-		return solvis.getUnit().isModbus() && this.modbusAccess != null && this.modbusAccess.isModbus();
+		return this.guiAccess;
 	}
 
 	@Override
 	public ChannelDescription getRestoreChannel(Solvis solvis) {
-		if (this.isModbus(solvis)) {
-			return null;
-		}
 		if (this.guiAccess.restoreChannel != null) {
 			return this.guiAccess.restoreChannel.get(solvis);
 		}

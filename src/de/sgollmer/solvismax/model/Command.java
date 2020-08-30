@@ -159,14 +159,6 @@ public abstract class Command {
 
 	/**
 	 * 
-	 * @return true if access channel is a modbus channel
-	 */
-	protected boolean isModbus() {
-		return false;
-	}
-
-	/**
-	 * 
 	 * @param command
 	 * @return true both commands write to the same channel
 	 */

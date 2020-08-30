@@ -106,7 +106,6 @@ public class Units {
 		private final int releaseBlockingAfterServiceAccess_ms;
 		private final boolean delayAfterSwitchingOnEnable;
 		private final boolean fwLth2_21_02A;
-		private final boolean modbus;
 		private final Features features;
 		private final int ignoredFrameThicknesScreenSaver;
 
@@ -114,7 +113,7 @@ public class Units {
 				int defaultAverageCount, int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms,
 				int forcedUpdateInterval_ms, int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
 				int releaseBlockingAfterUserAccess_ms, int releaseBlockingAfterServiceAccess_ms,
-				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, boolean modbus, Features features,
+				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, Features features,
 				int ignoredFrameThicknesScreenSaver) {
 			this.id = id;
 			this.type = type;
@@ -133,7 +132,6 @@ public class Units {
 			this.releaseBlockingAfterServiceAccess_ms = releaseBlockingAfterServiceAccess_ms;
 			this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
 			this.fwLth2_21_02A = fwLth2_21_02A;
-			this.modbus = modbus;
 			this.features = features;
 			this.ignoredFrameThicknesScreenSaver = ignoredFrameThicknesScreenSaver;
 		}
@@ -182,7 +180,6 @@ public class Units {
 			private int releaseBlockingAfterServiceAccess_ms;
 			private boolean delayAfterSwitchingOnEnable = false;
 			private boolean fwLth2_21_02A = false;
-			private boolean modbus = false;
 			private Features features;
 			private int ignoredFrameThicknesScreenSaver;
 
@@ -267,7 +264,7 @@ public class Units {
 						this.defaultReadMeasurementsInterval_ms, this.forcedUpdateInterval_ms,
 						this.doubleUpdateInterval_ms, this.bufferedInterval_ms, this.watchDogTime_ms,
 						this.releaseBlockingAfterUserAccess_ms, this.releaseBlockingAfterServiceAccess_ms,
-						this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.modbus, this.features,
+						this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.features,
 						this.ignoredFrameThicknesScreenSaver);
 
 			}
@@ -328,10 +325,6 @@ public class Units {
 
 		public int getDoubleUpdateInterval_ms() {
 			return this.doubleUpdateInterval_ms;
-		}
-
-		public boolean isModbus() {
-			return this.modbus;
 		}
 
 		public int getIgnoredFrameThicknesScreenSaver() {

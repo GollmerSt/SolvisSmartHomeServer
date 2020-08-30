@@ -20,23 +20,19 @@ import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
-import de.sgollmer.solvismax.xml.Helper;
 
 public class ModeEntry implements IAssigner, IMode {
 
 	private static final String XML_GUI_SET = "GuiSet";
-	private static final String XML_MODBUS_VALUE = "ModbusValue";
 	private static final String XML_TOUCH = "Touch";
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
 
 	private final String id;
 	private final GuiSet guiSet;
-	private final Integer modbusValue;
 
-	private ModeEntry(String id, GuiSet guiSet, int modbusValue) {
+	private ModeEntry(String id, GuiSet guiSet) {
 		this.id = id;
 		this.guiSet = guiSet;
-		this.modbusValue = modbusValue;
 	}
 
 	/**
@@ -62,7 +58,6 @@ public class ModeEntry implements IAssigner, IMode {
 
 		private String id;
 		private GuiSet guiSet;
-		private int modbusValue;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -79,7 +74,7 @@ public class ModeEntry implements IAssigner, IMode {
 
 		@Override
 		public ModeEntry create() throws XmlException, IOException {
-			return new ModeEntry(this.id, this.guiSet, this.modbusValue);
+			return new ModeEntry(this.id, this.guiSet);
 		}
 
 		@Override
@@ -88,8 +83,6 @@ public class ModeEntry implements IAssigner, IMode {
 			switch (id) {
 				case XML_GUI_SET:
 					return new GuiSet.Creator(id, this.getBaseCreator());
-				case XML_MODBUS_VALUE:
-					return new Helper.IntegerValue.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -99,9 +92,6 @@ public class ModeEntry implements IAssigner, IMode {
 			switch (creator.getId()) {
 				case XML_GUI_SET:
 					this.guiSet = (GuiSet) created;
-					break;
-				case XML_MODBUS_VALUE:
-					this.modbusValue = ((Helper.IntegerValue) created).toInteger();
 					break;
 			}
 		}
@@ -125,10 +115,6 @@ public class ModeEntry implements IAssigner, IMode {
 	@Override
 	public int hashCode() {
 		return this.id.hashCode();
-	}
-
-	int getModbusValue() {
-		return this.modbusValue;
 	}
 
 	static class GuiSet implements IAssigner {
@@ -201,8 +187,8 @@ public class ModeEntry implements IAssigner, IMode {
 
 	}
 
-	boolean isXmlValid(boolean modbus) {
-		return !modbus && this.guiSet != null || modbus & this.modbusValue != null;
+	boolean isXmlValid() {
+		return this.guiSet != null;
 	}
 
 }

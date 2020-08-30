@@ -20,7 +20,6 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.HelperException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
@@ -30,19 +29,18 @@ import de.sgollmer.solvismax.helper.Helper.AverageInt;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.modbus.ModbusAccess;
+import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
+import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.data.DateValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -56,8 +54,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	private static final Level LEARN = Level.getLevel("LEARN");
 	private static final Calendar CALENDAR_2018;
 
-	private static final String XML_MODBUS_WRITE = "ModbusWrite";
-//	private static final String XML_SECONDS_SCAN = "SecondsScan";
 	private static final String XML_YEAR = "Year";
 	private static final String XML_MONTH = "Month";
 	private static final String XML_DAY = "Day";
@@ -70,7 +66,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
-	private final ModbusAccess modbusWrite;
 	private final String timeChannelId;
 	private final String screenId;
 	private final String okScreenId;
@@ -90,10 +85,9 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		CALENDAR_2018.set(Calendar.MILLISECOND, 0);
 	}
 
-	private ClockMonitor(ModbusAccess modbusWrite, String timeChannelId, String screenId, String okScreenId,
-			Rectangle secondsScan, List<DatePart> dateParts, TouchPoint upper, TouchPoint lower, TouchPoint ok,
+	private ClockMonitor(String timeChannelId, String screenId, String okScreenId, Rectangle secondsScan,
+			List<DatePart> dateParts, TouchPoint upper, TouchPoint lower, TouchPoint ok,
 			DisableClockSetting disableClockSetting) {
-		this.modbusWrite = modbusWrite;
 		this.timeChannelId = timeChannelId;
 		this.screenId = screenId;
 		this.okScreenId = okScreenId;
@@ -217,7 +211,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 	public static class Creator extends CreatorByXML<ClockMonitor> {
 
-		private ModbusAccess modbusWrite;
 		private String timeChannelId;
 		private String screenId;
 		private String okScreenId;
@@ -253,18 +246,14 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 		@Override
 		public ClockMonitor create() throws XmlException, IOException {
-			return new ClockMonitor(this.modbusWrite, this.timeChannelId, this.screenId, this.okScreenId,
-					this.secondsScan, this.dateParts, this.upper, this.lower, this.ok, this.disableClockSetting);
+			return new ClockMonitor(this.timeChannelId, this.screenId, this.okScreenId, this.secondsScan,
+					this.dateParts, this.upper, this.lower, this.ok, this.disableClockSetting);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_MODBUS_WRITE:
-					return new ModbusAccess.Creator(id, getBaseCreator());
-//				case XML_SECONDS_SCAN:
-//					return new Rectangle.Creator(id, getBaseCreator());
 				case XML_YEAR:
 					return new DatePart.Creator(id, getBaseCreator(), Calendar.YEAR, 0, 0);
 				case XML_MONTH:
@@ -288,12 +277,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_MODBUS_WRITE:
-					this.modbusWrite = (ModbusAccess) created;
-					break;
-//				case XML_SECONDS_SCAN:
-//					this.secondsScan = (Rectangle) created;
-//					break;
 				case XML_YEAR:
 					this.dateParts.set(0, (DatePart) created);
 					break;
@@ -418,47 +401,15 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 					diff = this.averageDiff.get();
 
 					if (Math.abs(diff) > 30500) {
-						if (this.solvis.getUnit().isModbus()) {
-							long now = System.currentTimeMillis();
-							try {
-								this.solvis.writeUnsignedIntegerModbusData(ClockMonitor.this.modbusWrite, now / 1000L);
-								logger.info("Setting of the clock via modbus successfull");
-							} catch (IOException | ModbusException e) {
-								logger.error("Setting of the clock via modbus not successfull");
-							}
-						} else {
-							this.adjustmentTypeRequestPending = AdjustmentType.NORMAL;
-							NextAdjust nextAdjust = calculateNextAdjustTime(dateValue, this.solvis);
-							if (this.adjustmentThread != null) {
-								this.adjustmentThread.abort();
-							}
-							this.sheduleAdjustment(this.strategyAdjust, nextAdjust);
+						this.adjustmentTypeRequestPending = AdjustmentType.NORMAL;
+						NextAdjust nextAdjust = calculateNextAdjustTime(dateValue, this.solvis);
+						if (this.adjustmentThread != null) {
+							this.adjustmentThread.abort();
 						}
+						this.sheduleAdjustment(this.strategyAdjust, nextAdjust);
 						return;
 					}
 
-//				if (!this.solvis.getUnit().getFeatures().isClockFineTuning()
-//						|| this.adjustmentTypeRequestPending == AdjustmentType.NORMAL
-//						|| clockAdjustment.getBurstLength() == 0 || (clockAdjustment.getFineLimitLower_ms() < diff
-//								&& diff < clockAdjustment.getFineLimitUpper_ms())) {
-//					return;
-//				}
-//				int delta = diff;
-//				if (delta < 0) {
-//					delta = 60000 + delta;
-//				}
-//
-//				int fineAdjusts = delta / clockAdjustment.getAproximatlySetAjust_ms();
-//				fineAdjusts = fineAdjusts == 0 ? 1 : fineAdjusts;
-//				int burstLength = clockAdjustment.getBurstLength();
-//				fineAdjusts = fineAdjusts > burstLength ? burstLength : fineAdjusts;
-//
-//				long current = System.currentTimeMillis();
-//				long startAdjustTime = calculateNextAdjustmentTime(current, Constants.TIME_FINE_ADJUSTMENT_MS_N);
-//				NextAdjust nextAdjust = new NextAdjust(fineAdjusts, startAdjustTime);
-//
-//				this.adjustmentTypeRequestPending = AdjustmentType.FINE;
-//				this.sheduleAdjustment(strategyFineAdjust, nextAdjust);
 				}
 			} catch (TypeException e) {
 				logger.error("Type error, update ignored", e);
@@ -579,94 +530,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 				Executable.this.adjustmentTypeRequestPending = AdjustmentType.NONE;
 			}
 		}
-
-//		private class StrategyFineAdjust implements AdjustStrategy {
-//
-//			@Override
-//			public boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException {
-//
-//				int configurationMask = solvis.getConfigurationMask();
-//
-//				Screen clockAdjustScreen = screen.get(configurationMask);
-//				Screen okScreen = ClockMonitor.this.okScreen.get(configurationMask);
-//
-//				if (clockAdjustScreen == null) {
-//					logger.error(
-//							"Clock adjust screen not defined in the current configuratiion. Adjustment terminated");
-//					return false;
-//				}
-//
-//				int fineAdjusts = nextAdjust.fineAdjusts;
-//
-//				boolean success = true;
-//
-//				for (; fineAdjusts > 0; --fineAdjusts) {
-//
-//					boolean preparationSuccessfull = false;
-//					for (int repeat = 0; !preparationSuccessfull && repeat < Constants.SET_REPEATS; ++repeat) {
-//						success = false;
-//						if (!okScreen.goTo(solvis)) {
-//							logger.info("Fine tuning not successfull, will be repeated");
-//							continue;
-//						}
-//						int secondsFormer = -1;
-//						int seconds = -1;
-//						boolean finished = false;
-//						for (int repSec = 0; !finished && repSec < Constants.SET_REPEATS + 2; ++repSec) {
-//							secondsFormer = seconds;
-//							OcrRectangle ocr = new OcrRectangle(solvis.getCurrentScreen().getImage(), secondsScan);
-//							String secondsString = ocr.getString();
-//							solvis.clearCurrentScreen();
-//							try {
-//								seconds = Integer.parseInt(secondsString);
-//							} catch (NumberFormatException e) {
-//								seconds = -1;
-//							}
-//							if (seconds >= 0 && secondsFormer == seconds) {
-//								finished = true;
-//							} else {
-//								AbortHelper.getInstance().sleep(100);
-//							}
-//						}
-//						if (!finished) {
-//							logger.info("Fine tuning not successfull, will be repeated");
-//							continue;
-//						}
-//						if (seconds > 45) {
-//							AbortHelper.getInstance().sleep((61 - seconds) * 1000);
-//						}
-//						success = true;
-//						preparationSuccessfull = true;
-//					}
-//					if (!clockAdjustScreen.goTo(solvis)) {
-//						logger.error("Fine tuning not successfull, will be repeated");
-//						success = false;
-//						break;
-//					}
-//					if (!adjustmentEnable) {
-//						success = false;
-//						break;
-//					}
-//					solvis.send(ok);
-//					if (solvis.getCurrentScreen().get() != okScreen) {
-//						logger.error("Fine tuning not successfull, will be repeated");
-//						success = false;
-//						break;
-//					}
-//				}
-//				adjustmentTypeRequestPending = AdjustmentType.NONE;
-//
-//				if (success) {
-//					logger.info("Fine adjustment of the solvis clock successful.");
-//				} else {
-//					logger.error("Fine adjustment of the solvis clock not successful.");
-//
-//				}
-//				averageDiff.clear();
-//				return success;
-//			}
-//
-//		}
 
 		private class ClockAdjustmentThread extends Helper.Runnable {
 

@@ -83,8 +83,6 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public UpperLowerStep getUpperLowerStep();
 
-	public boolean isModbus(Solvis solvis);
-
 	public boolean isScreenChangeDependend();
 
 	public static class UpperLowerStep {

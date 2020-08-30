@@ -19,14 +19,13 @@ import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.Helper.Format;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
-import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
-import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
+import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -54,7 +53,7 @@ public class StrategyRead implements IStrategy {
 	@Override
 	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, IControlAccess controlAccess, boolean optional)
 			throws IOException, ModbusException {
-		Integer i;
+		Integer i = null;
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
@@ -69,8 +68,6 @@ public class StrategyRead implements IStrategy {
 			} else {
 				i = Integer.parseInt(formated);
 			}
-		} else {
-			i = solvis.readUnsignedShortModbusData((ModbusAccess) controlAccess);
 		}
 		return new IntegerValue(i, System.currentTimeMillis());
 	}
@@ -216,7 +213,7 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public boolean isXmlValid(boolean modbus) {
+	public boolean isXmlValid() {
 		return true;
 	}
 

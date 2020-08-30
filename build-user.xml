@@ -58,7 +58,6 @@
 	</tstamp>
 	<path id="SolvisMax.classpath">
 		<pathelement location="bin" />
-		<pathelement location="lib/jlibmodbus-1.2.9.7.jar" />
 		<pathelement location="lib/log4j-1.2-api-2.13.2.jar" />
 		<pathelement location="lib/log4j-api-2.13.2.jar" />
 		<pathelement location="lib/log4j-core-2.13.2.jar" />
@@ -103,7 +102,6 @@
 	<target depends="createjar,createLog4jJar,createTinyLogJar" name="Build for me">
 		<jar jarfile="${private.dir}/${dist.base}.jar">
 			<zipfileset src="${private.dir}/temp/${dist.base}_woLib.jar" excludes="META-INF/*" />
-			<zipfileset src="lib/jlibmodbus-1.2.9.7.jar" />
 			<zipfileset src="lib/mailapi-1.6.2.jar" />
 			<zipfileset src="lib/smtp-1.6.2.jar" />
 			<zipfileset src="lib/javax.activation-1.2.0.jar" />

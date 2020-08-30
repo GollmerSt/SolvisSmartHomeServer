@@ -292,9 +292,6 @@
 		</annotation>
 		<sequence>
 			<sequence>
-				<element name="ModbusAccess" type="tns:ModbusAccess"
-					maxOccurs="1" minOccurs="0">
-				</element>
 				<element name="GuiAccess" type="tns:GuiAccess" maxOccurs="1"
 					minOccurs="0">
 				</element>
@@ -371,7 +368,6 @@
 				(Betriebsstatus, z.B. Standby)</documentation>
 		</annotation>
 		<sequence>
-            <element name="ModbusValue" type="int" maxOccurs="1" minOccurs="0"></element>
             <element name="GuiSet" maxOccurs="1" minOccurs="0">
 				<complexType>
 					<sequence>
@@ -677,8 +673,6 @@
 					maxOccurs="1" minOccurs="1">
 				</element>
 				<sequence minOccurs="1" maxOccurs="1">
-					<element name="Modbus" type="tns:Modbus" maxOccurs="1"
-						minOccurs="0"></element>
 					<choice maxOccurs="1" minOccurs="0">
 						<element name="Measurement" type="tns:Measurement"
 							maxOccurs="1" minOccurs="1">
@@ -985,7 +979,6 @@
 			<documentation>Parameter zum Stellen der Uhr</documentation>
 		</annotation>
 		<sequence>
-			<element name="ModbusWrite" type="tns:ModbusAccess" maxOccurs="1" minOccurs="1"></element>
 			<element name="Year" type="tns:DatePart" maxOccurs="1"
 				minOccurs="1">
 			</element>
@@ -1218,14 +1211,6 @@
 		<attribute name="value" type="boolean" use="required"></attribute>
 	</complexType>
 
-	<complexType name="Modbus">
-		<choice>
-			<element name="TypeRead" type="tns:Read"></element>
-			<element name="TypeValue" type="string"></element>
-			<element name="TypeMode" type="string"></element>
-		</choice>
-		<attribute name="address" type="int" use="required"></attribute>
-	</complexType>
 
 	<complexType name="Read">
 		<sequence>
@@ -1328,25 +1313,6 @@
 		<attribute name="restoreChannelId" type="string" use="optional"></attribute>
 	</complexType>
 
-	<complexType name="ModbusAccess">
-		<attribute name="address" type="tns:UnNBytesHexInt" use="required">
-			<annotation>
-				<documentation>Adresse des Modbus-Registers
-				</documentation>
-			</annotation>
-		</attribute>
-		<attribute name="type" use="required">
-			<annotation>
-				<documentation>Zugriffstyp</documentation>
-			</annotation>
-			<simpleType>
-				<restriction base="string">
-					<enumeration value="Input"></enumeration>
-					<enumeration value="Holding"></enumeration>
-				</restriction>
-			</simpleType>
-		</attribute>
-	</complexType>
 
 	<complexType name="GuiRead">
 		<attribute name="format" type="string" use="required">

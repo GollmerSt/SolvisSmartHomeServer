@@ -143,8 +143,6 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 				if (description != null) {
 					if (description.getType() == IChannelSource.Type.MEASUREMENT) {
 						description.getValue(solvis);
-					} else if (description.isModbus(solvis)) {
-						description.getValue(solvis);
 					}
 				}
 			}
@@ -218,8 +216,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 			for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
 				ChannelDescription description = confDescriptions.get(solvis);
-				if (description != null && description.isInConfiguration(configurationMask)
-						&& !description.isModbus(solvis)) {
+				if (description != null && description.isInConfiguration(configurationMask)) {
 					boolean add = false;
 					switch (type) {
 						case ALL_CONTROL:

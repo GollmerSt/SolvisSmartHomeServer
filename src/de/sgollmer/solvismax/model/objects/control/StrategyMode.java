@@ -22,9 +22,8 @@ import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.modbus.ModbusAccess;
+import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
@@ -79,17 +78,8 @@ public class StrategyMode implements IStrategy {
 					return new ModeValue<ModeEntry>(mode, System.currentTimeMillis());
 				}
 			}
-			return null;
-		} else {
-			int num = solvis.readUnsignedShortModbusData((ModbusAccess) controlAccess);
-			for (ModeEntry mode : this.modes) {
-				if (mode.getModbusValue() == num) {
-					return new ModeValue<ModeEntry>(mode, System.currentTimeMillis());
-				}
-			}
-			logger.error("Error: Unknown modbus mode value <" + num + ">. Check the control.xml");
-			return null;
 		}
+		return null;
 	}
 
 	@Override
@@ -113,11 +103,7 @@ public class StrategyMode implements IStrategy {
 		if (mode == null) {
 			throw new TypeException("Unknown value");
 		}
-		if (!controlAccess.isModbus()) {
-			solvis.send(mode.getGuiSet().getTouch());
-		} else {
-			solvis.writeUnsignedShortModbusData((ModbusAccess) controlAccess, mode.getModbusValue());
-		}
+		solvis.send(mode.getGuiSet().getTouch());
 		return null;
 	}
 
@@ -266,10 +252,10 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public boolean isXmlValid(boolean modbus) {
+	public boolean isXmlValid() {
 		boolean result = true;
 		for (ModeEntry entry : this.modes) {
-			result &= entry.isXmlValid(modbus);
+			result &= entry.isXmlValid();
 		}
 		return result;
 	}

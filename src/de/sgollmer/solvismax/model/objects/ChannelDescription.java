@@ -255,11 +255,6 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public boolean isModbus(Solvis solvis) {
-		return this.channelSource.isModbus(solvis);
-	}
-
-	@Override
 	public boolean isScreenChangeDependend() {
 		return this.channelSource.isScreenChangeDependend();
 	}

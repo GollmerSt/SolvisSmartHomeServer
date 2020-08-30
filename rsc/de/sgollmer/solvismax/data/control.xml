@@ -1465,7 +1465,6 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C01.StartsBrenner">
 			<tns:Control>
-				<tns:ModbusAccess address="0x8301" type="Input" />
 				<tns:GuiAccess screenId="Zaehlfunktion">
 					<tns:CurrentValue>
 						<tns:TopLeft X="145" Y="75" />
@@ -1484,7 +1483,6 @@
 		<tns:ChannelDescription
 			id="C02.LaufzeitBrenner" unit="h">
 			<tns:Control>
-				<tns:ModbusAccess address="0x8300" type="Input" />
 				<tns:GuiAccess screenId="Zaehlfunktion">
 					<tns:CurrentValue>
 						<tns:TopLeft X="145" Y="48" />
@@ -1505,7 +1503,6 @@
 		<tns:ChannelDescription
 			id="C03.LaufzeitAnforderung2" unit="h">
 			<tns:Control optional="true">
-				<tns:ModbusAccess address="0x8302" type="Input" />
 				<tns:GuiAccess screenId="Zaehlfunktion">
 					<tns:CurrentValue>
 						<tns:TopLeft X="145" Y="105" />
@@ -1526,7 +1523,6 @@
 		<tns:ChannelDescription
 			id="C04.WarmwasserPumpe">
 			<tns:Control>
-				<tns:ModbusAccess address="0x0806" type="Holding" />
 				<tns:GuiAccess screenId="Warmwasser">
 					<tns:CurrentValue>
 						<tns:TopLeft X="50" Y="30" />
@@ -1535,7 +1531,6 @@
 				</tns:GuiAccess>
 				<tns:TypeMode>
 					<tns:ModeEntry id="aus">
-						<tns:ModbusValue>99999</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1545,7 +1540,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="an">
-						<tns:ModbusValue>99999</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1555,7 +1549,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="auto">
-						<tns:ModbusValue>99999</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1573,7 +1566,6 @@
 		<tns:ChannelDescription
 			id="C05.WassertemperaturSoll" unit="°C">
 			<tns:Control>
-				<tns:ModbusAccess address="0x0901" type="Holding" />
 				<tns:GuiAccess screenId="Warmwasser">
 					<tns:CurrentValue>
 						<tns:TopLeft X="115" Y="10" />
@@ -1605,7 +1597,6 @@
 					compareMask="0x01" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0B02" type="Holding" />
 				<tns:GuiAccess screenId="Home">
 					<tns:CurrentValue>
 						<tns:TopLeft X="110" Y="50" />
@@ -1614,7 +1605,6 @@
 				</tns:GuiAccess>
 				<tns:TypeMode>
 					<tns:ModeEntry id="Tag">
-						<tns:ModbusValue>3</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ValueChange">
@@ -1624,7 +1614,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Nacht">
-						<tns:ModbusValue>4</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ValueChange">
@@ -1634,7 +1623,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Standby">
-						<tns:ModbusValue>5</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ValueChange">
@@ -1644,7 +1632,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Timer">
-						<tns:ModbusValue>2</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ValueChange">
@@ -1668,7 +1655,6 @@
 					compareMask="0x04" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0B02" type="Holding" />
 				<tns:GuiAccess screenId="Home">
 					<tns:CurrentValue>
 						<tns:TopLeft X="134" Y="8" />
@@ -1678,7 +1664,6 @@
 				</tns:GuiAccess>
 				<tns:TypeMode>
 					<tns:ModeEntry id="Tag">
-						<tns:ModbusValue>3</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1688,7 +1673,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Nacht">
-						<tns:ModbusValue>4</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1698,7 +1682,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Standby">
-						<tns:ModbusValue>5</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1708,7 +1691,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Timer">
-						<tns:ModbusValue>2</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1730,7 +1712,6 @@
 					compareMask="0x01" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0B04" type="Holding" />
 				<tns:GuiAccess screenId="TagestemperaturSelected_HK1"
 					restoreChannelId="C06.Anlagenmodus_HK1">
 					<tns:CurrentValue>
@@ -1764,7 +1745,6 @@
 					compareMask="0x01" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0B05" type="Holding" />
 				<tns:GuiAccess screenId="NachttemperaturSelected_HK1"
 					restoreChannelId="C06.Anlagenmodus_HK1">
 					<tns:CurrentValue>
@@ -1798,8 +1778,6 @@
 					compareMask="0x01" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x7fffffff"
-					type="Holding" />
 				<tns:GuiAccess screenId="Home">
 					<tns:CurrentValue>
 						<tns:TopLeft X="80" Y="50" />
@@ -1907,7 +1885,6 @@
 					compareMask="0x02" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0C02" type="Holding" />
 				<tns:GuiAccess screenId="Home">
 					<tns:CurrentValue>
 						<tns:TopLeft X="134" Y="37" />
@@ -1917,7 +1894,6 @@
 				</tns:GuiAccess>
 				<tns:TypeMode>
 					<tns:ModeEntry id="Tag">
-						<tns:ModbusValue>3</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1927,7 +1903,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Nacht">
-						<tns:ModbusValue>4</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1937,7 +1912,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Standby">
-						<tns:ModbusValue>5</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1947,7 +1921,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Timer">
-						<tns:ModbusValue>2</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -1969,7 +1942,6 @@
 					compareMask="0x02" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0C04" type="Holding" />
 				<tns:GuiAccess screenId="TagestemperaturSelected_HK2"
 					restoreChannelId="C12.Anlagenmodus_HK2">
 					<tns:CurrentValue>
@@ -2003,7 +1975,6 @@
 					compareMask="0x02" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0C05" type="Holding" />
 				<tns:GuiAccess screenId="NachttemperaturSelected_HK2"
 					restoreChannelId="C12.Anlagenmodus_HK2">
 					<tns:CurrentValue>
@@ -2119,7 +2090,6 @@
 					compareMask="0x04" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0D02" type="Holding" />
 				<tns:GuiAccess screenId="Home">
 					<tns:CurrentValue>
 						<tns:TopLeft X="134" Y="66" />
@@ -2129,7 +2099,6 @@
 				</tns:GuiAccess>
 				<tns:TypeMode>
 					<tns:ModeEntry id="Tag">
-						<tns:ModbusValue>3</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -2139,7 +2108,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Nacht">
-						<tns:ModbusValue>4</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -2149,7 +2117,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Standby">
-						<tns:ModbusValue>5</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -2159,7 +2126,6 @@
 						</tns:GuiSet>
 					</tns:ModeEntry>
 					<tns:ModeEntry id="Timer">
-						<tns:ModbusValue>2</tns:ModbusValue>
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
 								releaseTimeRefId="ModeChange">
@@ -2181,7 +2147,6 @@
 					compareMask="0x04" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0D04" type="Holding" />
 				<tns:GuiAccess screenId="TagestemperaturSelected_HK3"
 					restoreChannelId="C18.Anlagenmodus_HK3">
 					<tns:CurrentValue>
@@ -2215,7 +2180,6 @@
 					compareMask="0x04" />
 			</tns:ConfigurationMasks>
 			<tns:Control>
-				<tns:ModbusAccess address="0x0D05" type="Holding" />
 				<tns:GuiAccess screenId="NachttemperaturSelected_HK3"
 					restoreChannelId="C18.Anlagenmodus_HK3">
 					<tns:CurrentValue>
@@ -2443,7 +2407,6 @@
 	</tns:Preparations>
 	<tns:Clock timeChannelId="X06.UhrzeitSolvis"
 		screenId="Zeiteinstellung" okScreenId="Uhrzeit/Datum">
-		<tns:ModbusWrite address="0x8000" type="Holding" />
 		<tns:Year least="2008">
 			<tns:Rectangle>
 				<tns:TopLeft X="101" Y="58" />

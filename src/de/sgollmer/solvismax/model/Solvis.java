@@ -30,7 +30,6 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.SolvisState.State;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
@@ -177,34 +176,6 @@ public class Solvis {
 		synchronized (this.solvisMeasureObject) {
 			this.measureData = null;
 		}
-	}
-
-	public Integer readUnsignedShortModbusData(ModbusAccess access) throws IOException, ModbusException {
-		int[] result = this.connection.readModbus(access, 1);
-		if (result == null) {
-			return null;
-		} else {
-			return result[0];
-		}
-	}
-
-	public boolean writeUnsignedShortModbusData(ModbusAccess access, int data) throws IOException, ModbusException {
-		return this.connection.writeModbus(access, new int[] { data });
-	}
-
-	@SuppressWarnings("unused")
-	private Long readUnsignedIntegerModbusData(ModbusAccess access) throws IOException, ModbusException {
-		int[] result = this.connection.readModbus(access, 2);
-		if (result == null) {
-			return null;
-		} else {
-			return ((long) result[0] & 0xffff) << 16L | ((long) result[1] & 0xffff);
-		}
-	}
-
-	public boolean writeUnsignedIntegerModbusData(ModbusAccess access, long data) throws IOException, ModbusException {
-		int[] writeData = new int[] { (int) (data >> 16L), (int) (data & 0xffffL) };
-		return this.connection.writeModbus(access, writeData);
 	}
 
 	private void resetSreensaver() throws IOException, TerminationException {

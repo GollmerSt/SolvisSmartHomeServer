@@ -43,6 +43,10 @@ Version 01.02.03
                 
                 Es treten bei manchen Anlagen auf der Client-Server-Schnittstelle JSON-Format-Fehler auf.
                 Um diesen Fehler besser analysieren zu können, wurden weitere Konsistents-Checks eingebaut.
+                
+    30.08.2020  Weitere Analyse für den JSON-Fehler implementiert
+    
+                Modbus-Erweiterung entfernt
     
 
 Version 01.02.02

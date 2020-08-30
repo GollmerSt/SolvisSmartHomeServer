@@ -17,7 +17,6 @@ import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
-import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
@@ -78,7 +77,7 @@ public class StrategyReadWrite extends StrategyRead {
 					/ (2 * this.increment);
 
 			if (current == value) {
-				return new SetResult(target == current ?Status.SUCCESS:Status.VALUE_VIOLATION, data);
+				return new SetResult(target == current ? Status.SUCCESS : Status.VALUE_VIOLATION, data);
 			}
 
 			int[] dist = new int[3];
@@ -117,13 +116,9 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 			if (interrupt) {
 				return new SetResult(Status.INTERRUPTED, data);
-			} else {
-				return null;
 			}
-		} else {
-			solvis.writeUnsignedShortModbusData((ModbusAccess) controlAccess, setValue.getInteger());
-			return null;
 		}
+		return null;
 	}
 
 	static class Creator extends CreatorByXML<StrategyReadWrite> {
@@ -290,8 +285,8 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public boolean isXmlValid(boolean modbus) {
-		return modbus || this.guiModification != null;
+	public boolean isXmlValid() {
+		return this.guiModification != null;
 	}
 
 	@Override

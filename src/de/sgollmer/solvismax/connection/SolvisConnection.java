@@ -17,29 +17,19 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.NoRouteToHostException;
 import java.net.PasswordAuthentication;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
 
-import com.intelligt.modbus.jlibmodbus.Modbus;
-import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
-import com.intelligt.modbus.jlibmodbus.master.ModbusMaster;
-import com.intelligt.modbus.jlibmodbus.master.ModbusMasterFactory;
-import com.intelligt.modbus.jlibmodbus.tcp.TcpParameters;
-
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -58,7 +48,6 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private Integer maxResponseTime = null;
 	private int errorCount = 0;;
 	private long firstTimeout = 0;
-	private ModbusMaster modbusMaster = null;
 
 	private long connectTime = -1;
 	private HttpURLConnection urlConnection = null;
@@ -331,66 +320,6 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	public void setSolvisState(SolvisState solvisState) {
 		this.solvisState = solvisState;
-	}
-
-	private boolean modbusConnect() throws UnknownHostException, ModbusIOException {
-
-		if (this.modbusMaster == null) {
-
-			TcpParameters tcpParameters = new TcpParameters();
-
-			// tcp parameters have already set by default as in example
-			tcpParameters.setHost(InetAddress.getByName(this.urlBase));
-			tcpParameters.setKeepAlive(true);
-			tcpParameters.setPort(Modbus.TCP_PORT);
-
-			this.modbusMaster = ModbusMasterFactory.createModbusMasterTCP(tcpParameters);
-		}
-		if (!this.modbusMaster.isConnected()) {
-			this.modbusMaster.connect();
-		}
-
-		return this.modbusMaster.isConnected();
-	}
-
-	public int[] readModbus(ModbusAccess modbusAccess, int quantity) throws IOException, ModbusException {
-		try {
-			if (this.modbusConnect()) {
-				int[] registers = null;
-				switch (modbusAccess.getType()) {
-					case HOLDING:
-						registers = this.modbusMaster.readHoldingRegisters(Constants.MODBUS_SLAVE_ID,
-								modbusAccess.getAddress(), quantity);
-						break;
-					case INPUT:
-						registers = this.modbusMaster.readInputRegisters(Constants.MODBUS_SLAVE_ID,
-								modbusAccess.getAddress(), quantity);
-						break;
-				}
-				return registers;
-			}
-		} catch (Throwable e) {
-			throw new ModbusException("Modbus error " + e.getClass() + ":" + e.getMessage(), e);
-		}
-		return null;
-	}
-
-	public boolean writeModbus(ModbusAccess modbusAccess, int[] datas) throws IOException, ModbusException {
-		try {
-			if (this.modbusConnect()) {
-				switch (modbusAccess.getType()) {
-					case HOLDING:
-						this.modbusMaster.writeMultipleRegisters(Constants.MODBUS_SLAVE_ID, modbusAccess.getAddress(),
-								datas);
-						return true;
-					case INPUT:
-						return false;
-				}
-			}
-			return false;
-		} catch (Throwable e) {
-			throw new ModbusException("Modbus error " + e.getClass() + ":" + e.getMessage(), e);
-		}
 	}
 
 }

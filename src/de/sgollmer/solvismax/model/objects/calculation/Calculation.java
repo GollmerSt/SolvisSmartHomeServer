@@ -180,11 +180,6 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public boolean isModbus(Solvis solvis) {
-		return false;
-	}
-
-	@Override
 	public ChannelDescription getRestoreChannel(Solvis solvis) {
 		return null;
 	}

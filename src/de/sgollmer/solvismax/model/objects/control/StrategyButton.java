@@ -17,12 +17,11 @@ import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
-import de.sgollmer.solvismax.modbus.ModbusAccess;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
-import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
@@ -69,10 +68,8 @@ public class StrategyButton implements IStrategy {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			Button button = new Button(solvisScreen.getImage(), rectangle, this.pushTime, this.releaseTime);
 			return new BooleanValue(button.isSelected() ^ this.invert, System.currentTimeMillis());
-		} else {
-			int num = solvis.readUnsignedShortModbusData((ModbusAccess) controlAccess);
-			return new BooleanValue(num > 0, System.currentTimeMillis());
 		}
+		return null;
 	}
 
 	@Override
@@ -82,18 +79,14 @@ public class StrategyButton implements IStrategy {
 		if (bool == null) {
 			throw new TypeException("Wrong value type");
 		}
-		if (controlAccess.isModbus()) {
-			solvis.writeUnsignedShortModbusData((ModbusAccess) controlAccess, bool ? 1 : 0);
-		} else {
 
-			Button button = new Button(solvis.getCurrentScreen().getImage(),
-					((GuiAccess) controlAccess).getValueRectangle(), this.pushTime, this.releaseTime);
-			boolean cmp = button.isSelected() ^ this.invert;
-			if (cmp == bool) {
-				return new SetResult(Status.SUCCESS, new BooleanValue(cmp, System.currentTimeMillis()));
-			}
-			button.set(solvis, bool);
+		Button button = new Button(solvis.getCurrentScreen().getImage(),
+				((GuiAccess) controlAccess).getValueRectangle(), this.pushTime, this.releaseTime);
+		boolean cmp = button.isSelected() ^ this.invert;
+		if (cmp == bool) {
+			return new SetResult(Status.SUCCESS, new BooleanValue(cmp, System.currentTimeMillis()));
 		}
+		button.set(solvis, bool);
 
 		return null;
 	}
@@ -152,7 +145,7 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public boolean isXmlValid(boolean modbus) {
+	public boolean isXmlValid() {
 		return true;
 	}
 

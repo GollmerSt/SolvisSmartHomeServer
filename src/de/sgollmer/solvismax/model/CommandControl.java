@@ -32,21 +32,15 @@ public class CommandControl extends Command {
 	private final ChannelDescription description;
 	private SingleData<?> setValue;
 	private final AbstractScreen screen;
-	private final boolean modbus;
 	private boolean inhibit = false;
 	private int writeFailCount = 0;
 	private int readFailCount = 0;
 	private Collection<ChannelDescription> readChannels = null;
 
 	CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) {
-		this.modbus = description.isModbus(solvis);
 		this.setValue = setValue;
 		this.description = description;
-		if (this.modbus) {
-			this.screen = null;
-		} else {
-			this.screen = description.getScreen(solvis.getConfigurationMask());
-		}
+		this.screen = description.getScreen(solvis.getConfigurationMask());
 	}
 
 	public CommandControl(ChannelDescription description, Solvis solvis) {
@@ -98,7 +92,8 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public Status execute(Solvis solvis) throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
+	public Status execute(Solvis solvis)
+			throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
 
 		int maxFailCnt = Constants.COMMAND_IGNORED_AFTER_N_FAILURES;
 
@@ -112,29 +107,25 @@ public class CommandControl extends Command {
 
 		if (writeStatus != Status.NO_SUCCESS) {
 
-			if (this.modbus) {
-				readSuccess = this.description.getValue(solvis);
+			Collection<ChannelDescription> readChannels = solvis.getSolvisDescription().getChannelDescriptions()
+					.getChannelDescriptions(this.screen, solvis);
 
+			if (this.isWriting()) {
+				this.readChannels = new ArrayList<>(readChannels.size() + 1);
+				this.readChannels.add(this.description);
 			} else {
-				Collection<ChannelDescription> readChannels = solvis.getSolvisDescription().getChannelDescriptions()
-						.getChannelDescriptions(this.screen, solvis);
-
-				if (this.isWriting()) {
-					this.readChannels = new ArrayList<>(readChannels.size() + 1);
-					this.readChannels.add(this.description);
-				} else {
-					this.readChannels = new ArrayList<>(readChannels.size());
-				}
-				for (Iterator<ChannelDescription> it = readChannels.iterator(); it.hasNext();) {
-					ChannelDescription description = it.next();
-					boolean success = description.getValue(solvis);
-					if (success) {
-						this.readChannels.add(this.description);
-						it.remove();
-					}
-					readSuccess &= success;
-				}
+				this.readChannels = new ArrayList<>(readChannels.size());
 			}
+			for (Iterator<ChannelDescription> it = readChannels.iterator(); it.hasNext();) {
+				ChannelDescription description = it.next();
+				boolean success = description.getValue(solvis);
+				if (success) {
+					this.readChannels.add(this.description);
+					it.remove();
+				}
+				readSuccess &= success;
+			}
+
 			if (!readSuccess) {
 				++this.readFailCount;
 				if (this.readFailCount >= maxFailCnt) {
@@ -220,11 +211,6 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	protected boolean isModbus() {
-		return this.modbus;
-	}
-
-	@Override
 	protected boolean isWriting() {
 		return this.setValue != null && !this.inhibit;
 	}
@@ -239,10 +225,6 @@ public class CommandControl extends Command {
 			return false;
 		}
 		CommandControl control = (CommandControl) queueCommand;
-		if (this.modbus) {
-			return !this.isInhibit() && this.description == control.description
-					&& (!this.isWriting() || control.isWriting());
-		}
 		if (!control.isInhibit() && control.screen == this.screen) {
 			return !this.isWriting() || control.isWriting() && control.description == this.description;
 		} else {

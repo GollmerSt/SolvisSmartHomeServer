@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="rsc"/>
-	<classpathentry kind="lib" path="lib/jlibmodbus-1.2.9.7.jar"/>
 	<classpathentry kind="lib" path="lib/mailapi-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/smtp-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/javax.activation-1.2.0.jar"/>

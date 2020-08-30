@@ -372,39 +372,35 @@ public class SolvisWorkers {
 
 	private Status execute(Command command)
 			throws IOException, TerminationException, PowerOnException, ModbusException, NumberFormatException {
-		if (!command.isModbus() || command.isWriting()) {
-			AbstractScreen commandScreen = command.getScreen(this.solvis);
-			if (commandScreen != null) {
-				long now = System.currentTimeMillis();
+		AbstractScreen commandScreen = command.getScreen(this.solvis);
+		if (commandScreen != null) {
+			long now = System.currentTimeMillis();
 
-				boolean clear;
+			boolean clear;
 
-				if (SolvisScreen.get(this.solvis.getCurrentScreen()) != commandScreen
-						|| this.commandScreen != commandScreen) {
-					clear = true;
-				} else if (now > this.timeCommandScreen + Constants.TIME_COMMAND_SCREEN_VALID) {
-					clear = true;
+			if (SolvisScreen.get(this.solvis.getCurrentScreen()) != commandScreen
+					|| this.commandScreen != commandScreen) {
+				clear = true;
+			} else if (now > this.timeCommandScreen + Constants.TIME_COMMAND_SCREEN_VALID) {
+				clear = true;
+			} else {
+				boolean isIn = this.commandsOfScreen.contains(command);
+				if (!isIn) {
+					clear = false;
 				} else {
-					boolean isIn = this.commandsOfScreen.contains(command);
-					if (!isIn) {
-						clear = false;
-					} else {
-						clear = true;
-					}
+					clear = true;
 				}
-				if (clear) {
-					this.solvis.clearCurrentScreen();
-					this.commandScreen = commandScreen;
-					this.timeCommandScreen = now;
-					this.commandsOfScreen.clear();
-				}
-				this.commandsOfScreen.add(command);
 			}
-
-			return command.execute(this.solvis);
-		} else {
-			return Status.SUCCESS;
+			if (clear) {
+				this.solvis.clearCurrentScreen();
+				this.commandScreen = commandScreen;
+				this.timeCommandScreen = now;
+				this.commandsOfScreen.clear();
+			}
+			this.commandsOfScreen.add(command);
 		}
+
+		return command.execute(this.solvis);
 	}
 
 	void commandOptimization(boolean enable) {
@@ -420,11 +416,6 @@ public class SolvisWorkers {
 				@Override
 				public String toString() {
 					return "Optimization enable";
-				}
-
-				@Override
-				public boolean isModbus() {
-					return false;
 				}
 
 				@Override
