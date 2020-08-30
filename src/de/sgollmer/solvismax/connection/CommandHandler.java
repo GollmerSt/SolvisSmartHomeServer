@@ -21,7 +21,6 @@ import de.sgollmer.solvismax.connection.transfer.Command;
 import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
-import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.error.ClientAssignmentException;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.JsonException;
@@ -252,7 +251,7 @@ public class CommandHandler {
 	}
 
 	private void sendMeasurements(Solvis solvis, IClient client) {
-		client.send(new MeasurementsPackage(solvis.getAllSolvisData().getMeasurements()));
+		solvis.getDistributor().sendCollection(solvis.getAllSolvisData().getMeasurements());
 		client.send(solvis.getSolvisState());
 		ConnectionStatus status = solvis.getHumanAccess().getConnectionStatus();
 		client.send(new ConnectionState(status));

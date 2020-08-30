@@ -7,7 +7,6 @@
 
 package de.sgollmer.solvismax.model.objects;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -116,8 +115,8 @@ public class AllSolvisData {
 		}
 	}
 
-	public synchronized Collection<SolvisData> getMeasurements() {
-		return this.solvisDatas.values();
+	public synchronized Measurements getMeasurements() {
+		return new Measurements(this.solvisDatas);
 	}
 
 	public void registerObserver(IObserver<SolvisData> observer) {

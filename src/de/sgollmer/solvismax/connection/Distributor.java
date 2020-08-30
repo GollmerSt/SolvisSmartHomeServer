@@ -7,11 +7,8 @@
 
 package de.sgollmer.solvismax.connection;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
@@ -24,9 +21,10 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
+import de.sgollmer.solvismax.model.objects.Measurements;
 import de.sgollmer.solvismax.model.objects.Observer;
-import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
+import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
@@ -131,16 +129,20 @@ public class Distributor extends Observable<JsonPackage> {
 
 	}
 
-	public void sendCollection(Collection<SolvisData> measurements) {
+	private void sendCollection(Collection< SolvisData > sendData) {
 		long timeStamp = System.currentTimeMillis();
-		if (!measurements.isEmpty()) {
-			for (SolvisData data : measurements) {
+		if (!sendData.isEmpty()) {
+			for (SolvisData data : sendData) {
 				data.setSentData(timeStamp);
 			}
 			this.aliveThread.trigger();
-			MeasurementsPackage sendPackage = new MeasurementsPackage(measurements);
+			MeasurementsPackage sendPackage = new MeasurementsPackage(sendData);
 			this.notify(sendPackage);
 		}
+	}
+
+	public void sendCollection(Measurements measurements) {
+		sendCollection(measurements.cloneAndClear());
 	}
 
 	private void abort() {
@@ -236,7 +238,7 @@ public class Distributor extends Observable<JsonPackage> {
 						}
 					}
 					if (!this.abort) {
-						sendCollection(Distributor.this.collectedBufferedMeasurements.cloneAndClear());
+						sendCollection(Distributor.this.collectedBufferedMeasurements);
 					}
 				} catch (Throwable e) {
 					logger.error("Error was thrown in periodic burst thread. Cause: ", e);
@@ -294,25 +296,4 @@ public class Distributor extends Observable<JsonPackage> {
 		this.aliveThread.start();
 	}
 
-	private class Measurements {
-		private Map<String, SolvisData> measurements = new HashMap<>();
-
-		public synchronized SolvisData add(SolvisData data) {
-			return this.measurements.put(data.getId(),data);
-		}
-
-		public void remove(SolvisData data) {
-			this.measurements.remove(data.getId());
-		}
-
-		public synchronized Collection<SolvisData> cloneAndClear() {
-			Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements.values());
-			this.measurements.clear();
-			return collection;
-		}
-
-		public boolean isEmpty() {
-			return this.measurements.isEmpty();
-		}
-	}
 }
