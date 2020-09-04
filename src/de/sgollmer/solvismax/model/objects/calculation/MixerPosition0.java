@@ -75,8 +75,8 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 			this.result = result;
 			this.pumpOn = pumpOn;
 			this.mixerClosing = mixerClosing;
-			this.pumpOn.register(this);
-			this.mixerClosing.register(this);
+			this.pumpOn.registerContinuousObserver(this);
+			this.mixerClosing.registerContinuousObserver(this);
 		}
 
 		@Override

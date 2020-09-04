@@ -1421,7 +1421,7 @@
 					dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="X05.BrennerStatus">
+		<tns:ChannelDescription id="X05.BrennerStatus" glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="burnerStatus">
 				<tns:Dependency id="burnerLevel1On"
 					dataId="A12.Brenner" />
@@ -1430,7 +1430,7 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X07.MischerPosition0_HK1">
+			id="X07.MischerPosition0_HK1" glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="mixerPosition0">
 				<tns:Dependency id="pumpOn" dataId="A03.Pumpe_HK1" />
 				<tns:Dependency id="mixerClosing"
@@ -1438,7 +1438,7 @@
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="X08.MischerPosition0_HK2">
+			id="X08.MischerPosition0_HK2" glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="mixerPosition0">
 				<tns:Dependency id="pumpOn" dataId="A04.Pumpe_HK2" />
 				<tns:Dependency id="mixerClosing"

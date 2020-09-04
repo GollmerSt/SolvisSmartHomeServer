@@ -48,14 +48,20 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	private final String unit;
 	private final ConfigurationMasks configurationMasks;
 	private final ChannelSource channelSource;
+	private final int glitchInhibitTime_ms;
 
 	private ChannelDescription(String id, boolean buffered, String unit, ConfigurationMasks configurationMasks,
-			ChannelSource channelSource) {
+			ChannelSource channelSource, int glitchInhibitTime_ms) throws XmlException {
 		this.id = id;
 		this.buffered = buffered;
 		this.unit = unit;
 		this.configurationMasks = configurationMasks;
 		this.channelSource = channelSource;
+		this.glitchInhibitTime_ms = glitchInhibitTime_ms;
+		if (!this.channelSource.isGlitchDetectionAllowed() && this.glitchInhibitTime_ms > 0) {
+			throw new XmlException("Error in description of channel <" + this.id
+					+ ">. Definition of Glitch inhibit time not allowed.");
+		}
 	}
 
 	public String getId() {
@@ -135,6 +141,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		private String unit = null;
 		private ConfigurationMasks configurationMasks;
 		private ChannelSource channelSource;
+		private int glitchInhibitTime_ms;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -151,6 +158,10 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 					break;
 				case "unit":
 					this.unit = value;
+					break;
+				case "glitchInhibitTime_ms":
+					this.glitchInhibitTime_ms = Integer.parseInt(value);
+					break;
 			}
 
 		}
@@ -158,7 +169,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		@Override
 		public ChannelDescription create() throws XmlException {
 			ChannelDescription description = new ChannelDescription(this.id, this.buffered, this.unit,
-					this.configurationMasks, this.channelSource);
+					this.configurationMasks, this.channelSource, this.glitchInhibitTime_ms);
 			this.channelSource.setDescription(description);
 			return description;
 		}
@@ -273,6 +284,10 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		de.sgollmer.solvismax.connection.transfer.ChannelDescription meta = new de.sgollmer.solvismax.connection.transfer.ChannelDescription(
 				this);
 		return new MqttData(solvis, Mqtt.formatChannelMetaTopic(this.getId()), meta.getValue().toString(), 0, true);
+	}
+
+	public int getGlitchInhibitTime_ms() {
+		return this.glitchInhibitTime_ms;
 	}
 
 }

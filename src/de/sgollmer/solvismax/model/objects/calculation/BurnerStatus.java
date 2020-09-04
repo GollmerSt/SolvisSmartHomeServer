@@ -94,8 +94,8 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 			this.result = result;
 			this.burnerLevel1On = burnerLevel1On;
 			this.burnerLevel2On = burnerLevel2On;
-			this.burnerLevel1On.register(this);
-			this.burnerLevel2On.register(this);
+			this.burnerLevel1On.registerContinuousObserver(this);
+			this.burnerLevel2On.registerContinuousObserver(this);
 		}
 
 		@Override

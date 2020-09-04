@@ -497,5 +497,11 @@ public class Control extends ChannelSource {
 	protected SingleData<?> createSingleData(String value) throws TypeException {
 		return this.strategy.createSingleData(value);
 	}
+	
+	@Override
+	public boolean isGlitchDetectionAllowed() {
+		return false ;
+	}
+
 
 }

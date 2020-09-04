@@ -1,5 +1,12 @@
 A E N D E R U N G E N
 
+Version 01.02.03 rc6
+
+    04.09.2020  Auf den "Kanälen" X05.BrennerStatus, X07.MischerPosition0_HK1 und X08.MischerPosition0_HK2
+                konnten Glitches entstehen, da sie von je 2 anderen Kanälen abhängig sind, welche (fast)
+                gleichzeitig sich ändern können. Dadurch konnten fehlerhafte Events ausgelöst werden.
+                
+
 Version 01.02.03 rc5
 
     20.08.2020  Die Rechtecke, welche in dem control.cml noch als "Field" bezeichnet wurden in Rectangle umbenannt.

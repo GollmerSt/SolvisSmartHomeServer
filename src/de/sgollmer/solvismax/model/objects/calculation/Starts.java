@@ -65,11 +65,12 @@ public class Starts extends Strategy<Starts> {
 	private class Executable implements IObserver<SolvisData> {
 		private final SolvisData result;
 		private final SolvisData equipmentOn;
+		private boolean former = false;
 
 		private Executable(SolvisData result, SolvisData equipmentOn) {
 			this.result = result;
 			this.equipmentOn = equipmentOn;
-			this.equipmentOn.register(this);
+			this.equipmentOn.registerContinuousObserver(this);
 		}
 
 		@Override
@@ -77,11 +78,12 @@ public class Starts extends Strategy<Starts> {
 
 			try {
 				boolean equipmentOn = data.getBool();
-				if (equipmentOn) {
+				if (equipmentOn && !this.former) {
 					int result = this.result.getInt();
 					++result;
 					this.result.setInteger(result, data.getTimeStamp());
 				}
+				this.former = equipmentOn;
 			} catch (TypeException e) {
 				logger.error("Type error, update ignored", e);
 				return;

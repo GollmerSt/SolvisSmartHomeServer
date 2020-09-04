@@ -34,6 +34,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	private final Average average;
 	private SingleData<?> data = null;
+	private SingleData<?> pendingData = null;
 	private long sentTimeStamp = -1;
 	private SingleData<?> sentData = null;
 
@@ -111,15 +112,56 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 			data = this.average.getAverage(data);
 		}
 
-		if (data != null && (!data.equals(this.data) || status == Status.VALUE_VIOLATION )) {
+		if (data == null) {
+			return;
+		}
+
+		boolean glitchInhibitEnabled = this.description.getGlitchInhibitTime_ms() > 0;
+		boolean changed = false;
+
+		if (data.getTimeStamp() > 0 && this.pendingData != null) {
+			
+			if (data.equals(this.pendingData)) {
+				
+				if (data.getTimeStamp() > this.pendingData.getTimeStamp()
+						+ this.description.getGlitchInhibitTime_ms()) {
+					
+					glitchInhibitEnabled = false;
+					this.pendingData = null;
+					changed = true;
+				}
+			} else {
+				
+				this.pendingData = data;
+			}
+		} else if (!data.equals(this.data)) {
+			
+			if (glitchInhibitEnabled && data.getTimeStamp() > 0) {
+				
+				this.pendingData = data;
+			} else {
+				
+				changed = true;
+			}
+		}
+		
+		if ( ! glitchInhibitEnabled) {
 			this.data = data;
+		}
+
+
+		if (changed || status == Status.VALUE_VIOLATION) {
+			
 			if (!this.description.isWriteable() || !this.datas.getSolvis().willBeModified(this)
 					|| status == Status.VALUE_VIOLATION) {
+				
 				this.notify(this, source);
 			}
 			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
 		}
+		
 		if (this.continousObservable != null) {
+			
 			this.continousObservable.notify(this, source);
 		}
 	}
@@ -203,7 +245,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	public void setSingleData(SetResult data) {
-		this.setData(data.getData(), this, data.getStatus());;
+		this.setData(data.getData(), this, data.getStatus());
+		;
 	}
 
 	public void setSingleData(SingleData<?> data) {
@@ -249,6 +292,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		}
 	}
 
+	/**
+	 * Get the time stamp of the last measurement
+	 * @return
+	 */
 	public long getTimeStamp() {
 		SingleData<?> data = this.data;
 		if (data != null) {

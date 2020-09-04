@@ -34,4 +34,8 @@ public abstract class ChannelSource implements IChannelSource {
 	}
 
 	protected abstract SingleData<?> createSingleData(String value) throws TypeException;
+	
+	public boolean isGlitchDetectionAllowed() {
+		return true ;
+	}
 }
