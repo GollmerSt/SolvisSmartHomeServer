@@ -2,6 +2,10 @@ A E N D E R U N G E N
 
 Version 01.02.03 rc6
 
+    05.09.2020  Um den Anlagenstatus "Heizkreise" zu erkennen, wurde bisher der Bereich des Brenners gesannt.
+                Da es Solvis-Anlagen gibt, welche einen externen Brenner besitzen, wird stattdessen der obere
+                Bereich des linken Rohres hergenommen, bei dem das Heizwasser abgezapft wird. 
+                
     04.09.2020  Auf den "Kanälen" X05.BrennerStatus, X07.MischerPosition0_HK1 und X08.MischerPosition0_HK2
                 konnten Glitches entstehen, da sie von je 2 anderen Kanälen abhängig sind, welche (fast)
                 gleichzeitig sich ändern können. Dadurch konnten fehlerhafte Events ausgelöst werden.
