@@ -14,7 +14,7 @@ import java.util.jar.Manifest;
 
 public class Version {
 
-	private String serverVersion = "01.02.03.rc6";
+	private String serverVersion = "01.02.03.rc7";
 	private String appendix = "MQTT beta, 3 heating circuits beta";
 
 	public static Version getInstance() {
