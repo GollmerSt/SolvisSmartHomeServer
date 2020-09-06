@@ -54,7 +54,7 @@ final class Callback implements MqttCallbackExtended {
 						solvis.registerScreenChangedByHumanObserver(this.mqtt.new PublishHumanAccessObserver(solvis));
 						solvis.getSolvisState().register(this.mqtt.new PublishStatusObserver(solvis));
 						this.mqtt.publish(ServerCommand.getMqttMeta(solvis, false));
-						solvis.getSolvisDescription().sendToMqtt(solvis, this.mqtt);
+						solvis.getSolvisDescription().sendToMqtt(solvis, this.mqtt, false);
 					}
 				}
 				for (Solvis solvis : this.mqtt.instances.getUnits()) {

@@ -289,11 +289,14 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		return result;
 	}
 
-	void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException, MqttConnectionLost {
+	void sendToMqtt(Solvis solvis, Mqtt mqtt, boolean deleteRetained) throws MqttException, MqttConnectionLost {
 		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
 			ChannelDescription meta = descriptionsC.get(solvis);
 			if (meta != null) {
 				MqttData data = meta.getMqttMeta(solvis);
+				if (deleteRetained) {
+					data.prepareDeleteRetained();
+				}
 				mqtt.publish(data);
 			}
 		}
