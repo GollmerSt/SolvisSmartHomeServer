@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.connection.mqtt;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
@@ -24,6 +25,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.IClient;
 import de.sgollmer.solvismax.connection.ISendData;
+import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.connection.ServerStatus;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.crypt.Ssl;
@@ -106,44 +108,43 @@ public class Mqtt {
 		@Override
 		public void setAttribute(QName name, String value) {
 			try {
-			switch (name.getLocalPart()) {
-				case "enable":
-					this.enable = Boolean.parseBoolean(value);
-					break;
-				case "brokerUrl":
-					this.brokerUrl = value;
-					break;
-				case "port":
-					this.port = Integer.parseInt(value);
-					break;
-				case "userName":
-					this.userName = value;
-					break;
-				case "passwordCrypt":
-					this.passwordCrypt.decrypt(value);
-					break;
-				case "topicPrefix":
-					this.topicPrefix = value;
-					break;
-				case "idPrefix":
-					this.idPrefix = value;
-					break;
-				case "publishQoS":
-					this.publishQoS = Integer.parseInt(value);
-					break;
-				case "subscribeQoS":
-					this.subscribeQoS = Integer.parseInt(value);
-					break;
-			}
+				switch (name.getLocalPart()) {
+					case "enable":
+						this.enable = Boolean.parseBoolean(value);
+						break;
+					case "brokerUrl":
+						this.brokerUrl = value;
+						break;
+					case "port":
+						this.port = Integer.parseInt(value);
+						break;
+					case "userName":
+						this.userName = value;
+						break;
+					case "passwordCrypt":
+						this.passwordCrypt.decrypt(value);
+						break;
+					case "topicPrefix":
+						this.topicPrefix = value;
+						break;
+					case "idPrefix":
+						this.idPrefix = value;
+						break;
+					case "publishQoS":
+						this.publishQoS = Integer.parseInt(value);
+						break;
+					case "subscribeQoS":
+						this.subscribeQoS = Integer.parseInt(value);
+						break;
+				}
 			} catch (CryptDefaultValueException | CryptExeception e) {
 				this.enable = false;
 				String m = "base.xml error of passwordCrypt in Mqtt tag, MQTT disabled: " + e.getMessage();
 				Level level = Level.ERROR;
-				if ( e instanceof CryptDefaultValueException ) {
+				if (e instanceof CryptDefaultValueException) {
 					level = Level.WARN;
 				}
-				LogManager.getInstance()
-						.addDelayedErrorMessage(new DelayedMessage(level, m, Mqtt.class, null));
+				LogManager.getInstance().addDelayedErrorMessage(new DelayedMessage(level, m, Mqtt.class, null));
 			}
 
 		}
@@ -257,6 +258,14 @@ public class Mqtt {
 	}
 
 	MqttCallbackExtended callback = new Callback(this);
+
+	public void unpublish(MqttData data) throws MqttException, MqttConnectionLost {
+		if (data != null) {
+			data = (MqttData) data.clone();
+			data.prepareDeleteRetained();
+			this.publish(data);
+		}
+	}
 
 	public synchronized void publish(MqttData data) throws MqttException, MqttConnectionLost {
 		if (data == null) {
@@ -425,4 +434,17 @@ public class Mqtt {
 
 	}
 
+	public void deleteRetainedTopics() throws MqttException, MqttConnectionLost {
+		for (Solvis solvis : this.instances.getUnits()) {
+			this.unpublish(ServerCommand.getMqttMeta(solvis, false));
+			solvis.getSolvisDescription().sendToMqtt(solvis, this, true);
+			Collection<SolvisData> dates = solvis.getAllSolvisData().getMeasurements().cloneAndClear();
+			for (SolvisData solvisData : dates) {
+				this.unpublish(solvisData.getMqttData());
+			}
+			this.unpublish(solvis.getSolvisState().getMqttData());
+			this.unpublish(solvis.getHumanAccess().getMqttData(solvis));
+		}
+		this.publish(ServerCommand.getMqttMeta(null, true));
+	}
 }

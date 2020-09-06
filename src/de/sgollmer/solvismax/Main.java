@@ -34,6 +34,7 @@ import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlException;
@@ -375,6 +376,11 @@ public class Main {
 			this.commandHandler.abort();
 		}
 		if (this.mqtt != null) {
+			try {
+				this.mqtt.deleteRetainedTopics();
+			} catch (MqttException | MqttConnectionLost e) {
+				this.logger.error("Error on deleting Mqtt retained topics", e);
+			}
 			this.mqtt.abort();
 		}
 		if (this.server != null) {

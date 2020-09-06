@@ -343,8 +343,7 @@ public class SolvisDescription {
 		this.errorDetection.instantiate(solvis);
 	}
 
-	public void sendToMqtt(Solvis solvis, Mqtt mqtt) throws MqttException, MqttConnectionLost {
-		this.getChannelDescriptions().sendToMqtt(solvis, mqtt);
+	public void sendToMqtt(Solvis solvis, Mqtt mqtt, boolean deleteRetained) throws MqttException, MqttConnectionLost {
+		this.getChannelDescriptions().sendToMqtt(solvis, mqtt, deleteRetained);
 	}
-
 }

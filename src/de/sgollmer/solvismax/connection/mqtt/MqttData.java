@@ -11,7 +11,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import de.sgollmer.solvismax.model.Solvis;
 
-public class MqttData {
+public class MqttData implements Cloneable {
 	final String topicSuffix;
 	final MqttMessage message;
 
@@ -20,6 +20,13 @@ public class MqttData {
 		this.message = new MqttMessage(payload);
 		this.message.setQos(qoS);
 		this.message.setRetained(retained);
+	}
+
+	@Override
+	public MqttData clone() {
+		return new MqttData(
+				this.topicSuffix, this.message.getPayload(), this.message.getQos(), this.message.isRetained());
+
 	}
 
 	public MqttData(String topicSuffix, String utf8Data, int qoS, boolean retained) {
@@ -45,5 +52,9 @@ public class MqttData {
 
 	boolean isRetained() {
 		return this.message.isRetained();
+	}
+
+	public void prepareDeleteRetained() {
+		this.message.setRetained(false);
 	}
 }

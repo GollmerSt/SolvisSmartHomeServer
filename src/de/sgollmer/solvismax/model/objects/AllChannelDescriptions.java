@@ -295,9 +295,10 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 			if (meta != null) {
 				MqttData data = meta.getMqttMeta(solvis);
 				if (deleteRetained) {
-					data.prepareDeleteRetained();
+					mqtt.unpublish(data);
+				} else {
+					mqtt.publish(data);
 				}
-				mqtt.publish(data);
 			}
 		}
 
