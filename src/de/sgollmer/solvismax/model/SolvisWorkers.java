@@ -527,6 +527,9 @@ public class SolvisWorkers {
 						}
 					}
 				} catch (Throwable e) {
+					if ( e instanceof TerminationException ) {
+						return;
+					}
 					logger.error("Error was thrown in measurements worker thread. Cause: ", e);
 					try {
 						AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_THROWABLE);
