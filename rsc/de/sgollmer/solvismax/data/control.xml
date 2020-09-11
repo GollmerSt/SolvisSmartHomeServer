@@ -1257,7 +1257,7 @@
 			id="S06.Solarruecklauftemperatur" buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
-				<tns:Field position="38" length="4" />
+				<tns:Field position="34" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="S07.Solardruck"
@@ -1310,12 +1310,52 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="S14">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x00"
+					andMask="0x20" />
+			</tns:Configuration>
+			<tns:Measurement type="signed" average="true"
+				divisor="10">
+				<tns:Field position="66" length="4" />
+			</tns:Measurement>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="S14.Kesselfuehler">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x60"
+					andMask="0x20" />
+			</tns:Configuration>
+			<tns:Measurement type="signed" average="true"
+				divisor="10">
+				<tns:Field position="66" length="4" />
+			</tns:Measurement>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="S14.ErdwaermequelleVL">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x60"
+					andMask="0x40" />
+			</tns:Configuration>
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="66" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="S15">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x00"
+					andMask="0x40" />
+			</tns:Configuration>
+			<tns:Measurement type="signed" average="true"
+				divisor="10">
+				<tns:Field position="70" length="4" />
+			</tns:Measurement>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="S15.ErdwaermequelleRL">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x40"
+					andMask="0x40" />
+			</tns:Configuration>
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="70" length="4" />
