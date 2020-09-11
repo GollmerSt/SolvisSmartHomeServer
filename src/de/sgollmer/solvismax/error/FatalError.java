@@ -10,4 +10,8 @@ public class FatalError extends Error {
 	public FatalError(String message) {
 		super(message);
 	}
+	
+	public FatalError(Throwable t) {
+		super(t);
+	}
 }

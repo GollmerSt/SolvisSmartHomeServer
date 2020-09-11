@@ -211,7 +211,7 @@ public class CommandHandler {
 			assignments.add(solvis);
 			client.send(new ConnectedPackage(clientId));
 			DescriptionsPackage channelDescription = new DescriptionsPackage(
-					this.instances.getSolvisDescription().getChannelDescriptions(), solvis.getConfigurationMask());
+					this.instances.getSolvisDescription().getChannelDescriptions(), solvis);
 			client.send(channelDescription);
 
 			this.sendMeasurements(solvis, (Client) client);
@@ -289,7 +289,7 @@ public class CommandHandler {
 			throw new JsonException(e.getMessage() + " Located in revceived Json package.");
 		}
 		boolean ignored = solvis.setFromExternal(description, singleData);
-		if ( ignored) {
+		if (ignored) {
 			logger.info("Setting the channel <" + description.getId() + "> ignored to prevent feedback loops.");
 		} else {
 			logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");

@@ -9,18 +9,18 @@ package de.sgollmer.solvismax.connection.transfer;
 
 import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.ServerCommand;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 
 public class DescriptionsPackage extends JsonPackage implements ISendData {
 
-	public DescriptionsPackage(AllChannelDescriptions descriptions, int configurationMask) {
+	public DescriptionsPackage(AllChannelDescriptions descriptions, Solvis solvis) {
 		this.command = Command.DESCRIPTIONS;
 		this.data = new Frame();
 
 		for (OfConfigs<de.sgollmer.solvismax.model.objects.ChannelDescription> confDescriptions : descriptions.get()) {
-			de.sgollmer.solvismax.model.objects.ChannelDescription description = confDescriptions
-					.get(configurationMask);
+			de.sgollmer.solvismax.model.objects.ChannelDescription description = confDescriptions.get(solvis);
 			if (description != null) {
 				ChannelDescription descr = new ChannelDescription(description);
 				this.data.add(descr);

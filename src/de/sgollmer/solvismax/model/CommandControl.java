@@ -40,7 +40,7 @@ public class CommandControl extends Command {
 	CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) {
 		this.setValue = setValue;
 		this.description = description;
-		this.screen = description.getScreen(solvis.getConfigurationMask());
+		this.screen = description.getScreen(solvis);
 	}
 
 	public CommandControl(ChannelDescription description, Solvis solvis) {

@@ -144,7 +144,7 @@ public class HeaterLoops implements IConfiguration {
 
 	@Override
 	public AbstractScreen getScreen(Solvis solvis) {
-		return solvis.getSolvisDescription().getScreens().get(this.getScreenRef(), 0);
+		return solvis.getSolvisDescription().getScreens().get(this.getScreenRef(), solvis);
 	}
 
 }

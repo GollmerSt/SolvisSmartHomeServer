@@ -14,29 +14,38 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ConfigurationMasks {
+public class Configuration {
 
 	private static final String XML_CONFIGURATION_MASK = "ConfigurationMask";
 
+	private final boolean admin;
 	private final Collection<ConfigurationMask> masks;
 
-	private ConfigurationMasks(Collection<ConfigurationMask> masks) {
+	private Configuration(boolean admin, Collection<ConfigurationMask> masks) {
+		this.admin = admin;
 		this.masks = masks;
 	}
 
-	public boolean isInConfiguration(int configurationMask) {
+	public boolean isInConfiguration(Solvis solvis) {
+		if ( !solvis.isAdmin() && this.admin ) {
+			return false;
+		}
+		if ( this.masks.isEmpty()) {
+			return true ;
+		}
 		for (ConfigurationMask mask : this.masks) {
-			if (mask.isInConfiguration(configurationMask)) {
+			if (mask.isInConfiguration(solvis.getConfigurationMask())) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean isVerified(ConfigurationMasks masks) {
+	public boolean isVerified(Configuration masks) {
 		for (ConfigurationMask maskO : this.masks) {
 			for (ConfigurationMask maskI : masks.masks) {
 				if (!maskO.isVerified(maskI)) {
@@ -47,8 +56,9 @@ public class ConfigurationMasks {
 		return true;
 	}
 
-	public static class Creator extends CreatorByXML<ConfigurationMasks> {
+	public static class Creator extends CreatorByXML<Configuration> {
 
+		private boolean admin = false;
 		private final Collection<ConfigurationMask> masks = new ArrayList<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -57,11 +67,16 @@ public class ConfigurationMasks {
 
 		@Override
 		public void setAttribute(QName name, String value) {
+			switch (name.getLocalPart()) {
+				case "admin":
+					this.admin = Boolean.parseBoolean(value);
+					break;
+			}
 		}
 
 		@Override
-		public ConfigurationMasks create() throws XmlException, IOException {
-			return new ConfigurationMasks(this.masks);
+		public Configuration create() throws XmlException, IOException {
+			return new Configuration(this.admin, this.masks);
 		}
 
 		@Override
@@ -95,6 +110,7 @@ public class ConfigurationMasks {
 		}
 
 		private boolean isInConfiguration(int configurationMask) {
+			
 			return this.cmpMask == (configurationMask & this.andMask);
 		}
 

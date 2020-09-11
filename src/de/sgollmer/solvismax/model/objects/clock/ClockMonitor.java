@@ -432,7 +432,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 			@Override
 			public boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException {
-				int configurationMask = Executable.this.solvis.getConfigurationMask();
+				Solvis solvis = Executable.this.solvis;
 				Calendar adjustmentCalendar = Calendar.getInstance();
 				long now = adjustmentCalendar.getTimeInMillis();
 				if (now > nextAdjust.realAdjustTime) {
@@ -441,7 +441,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 				}
 				adjustmentCalendar.setTimeInMillis(nextAdjust.solvisAdjustTime);
 				boolean success = false;
-				Screen clockAdjustScreen = (Screen) ClockMonitor.this.screen.get(configurationMask);
+				Screen clockAdjustScreen = (Screen) ClockMonitor.this.screen.get(solvis);
 				if (clockAdjustScreen == null) {
 					logger.error("Clock adjust screen not defined in the current configuration. Adjustment terminated");
 					Executable.this.adjustmentTypeRequestPending = AdjustmentType.NONE;
@@ -507,7 +507,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 							- Constants.SETTING_TIME_RANGE_LOWER + Constants.SETTING_TIME_RANGE_UPPER) {
 						Executable.this.solvis.send(ClockMonitor.this.ok);
 						AbstractScreen screen = SolvisScreen.get(Executable.this.solvis.getCurrentScreen());
-						if (screen != ClockMonitor.this.okScreen.get(configurationMask)) {
+						if (screen != ClockMonitor.this.okScreen.get(solvis)) {
 							success = false;
 						}
 						Executable.this.averageDiff.clear();

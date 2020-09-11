@@ -25,7 +25,7 @@ import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.calculation.Calculation;
-import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
+import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.data.IMode;
@@ -38,7 +38,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.IElement<ChannelDescription> {
 
-	private static final String XML_CONFIGURATION_MASKS = "ConfigurationMasks";
+	private static final String XML_CONFIGURATION = "Configuration";
 	private static final String XML_CONTROL = "Control";
 	private static final String XML_MEASUREMENT = "Measurement";
 	private static final String XML_CALCULATION = "Calculation";
@@ -46,11 +46,11 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	private final String id;
 	private final boolean buffered;
 	private final String unit;
-	private final ConfigurationMasks configurationMasks;
+	private final Configuration configurationMasks;
 	private final ChannelSource channelSource;
 	private final int glitchInhibitTime_ms;
 
-	private ChannelDescription(String id, boolean buffered, String unit, ConfigurationMasks configurationMasks,
+	private ChannelDescription(String id, boolean buffered, String unit, Configuration configurationMasks,
 			ChannelSource channelSource, int glitchInhibitTime_ms) throws XmlException {
 		this.id = id;
 		this.buffered = buffered;
@@ -139,7 +139,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		private String id;
 		private boolean buffered;
 		private String unit = null;
-		private ConfigurationMasks configurationMasks;
+		private Configuration configurationMasks;
 		private ChannelSource channelSource;
 		private int glitchInhibitTime_ms;
 
@@ -178,8 +178,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		public CreatorByXML<?> getCreator(QName name) {
 			String source = name.getLocalPart();
 			switch (source) {
-				case XML_CONFIGURATION_MASKS:
-					return new ConfigurationMasks.Creator(source, this.getBaseCreator());
+				case XML_CONFIGURATION:
+					return new Configuration.Creator(source, this.getBaseCreator());
 				case XML_CONTROL:
 					return new Control.Creator(source, this.getBaseCreator());
 				case XML_MEASUREMENT:
@@ -193,8 +193,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_CONFIGURATION_MASKS:
-					this.configurationMasks = (ConfigurationMasks) created;
+				case XML_CONFIGURATION:
+					this.configurationMasks = (Configuration) created;
 					break;
 				case XML_CONTROL:
 				case XML_MEASUREMENT:
@@ -219,13 +219,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public AbstractScreen getScreen(int configurationMask) {
-		return this.channelSource.getScreen(configurationMask);
-	}
-
-	@Override
 	public AbstractScreen getScreen(Solvis solvis) {
-		return this.channelSource.getScreen(solvis.getConfigurationMask());
+		return this.channelSource.getScreen(solvis);
 	}
 
 	@Override
@@ -239,11 +234,11 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public boolean isInConfiguration(int configurationMask) {
+	public boolean isInConfiguration(Solvis solvis) {
 		if (this.configurationMasks == null) {
 			return true;
 		} else {
-			return this.configurationMasks.isInConfiguration(configurationMask);
+			return this.configurationMasks.isInConfiguration(solvis);
 		}
 	}
 

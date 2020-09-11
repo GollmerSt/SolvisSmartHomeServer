@@ -219,11 +219,6 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public Screen getScreen(int configurationMask) {
-		return null;
-	}
-
-	@Override
 	public Screen getScreen(Solvis solvis) {
 		return null;
 	}

@@ -47,9 +47,9 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	private Map<String, OfConfigs<ChannelDescription>> descriptions = new HashMap<>(3);
 
-	private Map<Integer, Collection<ChannelDescription>> updateControlChannelsSequences = new HashMap<>(3);
-	private Map<Integer, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>(3);
-	private Map<Integer, Collection<ChannelDescription>> updateReadOnlyControlChannelsSequences = new HashMap<>(3);
+	private Map<ChannelConfig, Collection<ChannelDescription>> updateControlChannelsSequences = new HashMap<>(3);
+	private Map<ChannelConfig, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>(3);
+	private Map<ChannelConfig, Collection<ChannelDescription>> updateReadOnlyControlChannelsSequences = new HashMap<>(3);
 
 	private void addDescription(ChannelDescription description) throws XmlException {
 		OfConfigs<ChannelDescription> channelConf = this.descriptions.get(description.getId());
@@ -64,12 +64,12 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		return this.descriptions.get(id);
 	}
 
-	public ChannelDescription get(String id, int configurationMask) {
+	public ChannelDescription get(String id, Solvis solvis) {
 		OfConfigs<ChannelDescription> descriptions = this.descriptions.get(id);
 		if (descriptions == null) {
 			return null;
 		} else {
-			return descriptions.get(configurationMask);
+			return descriptions.get(solvis);
 		}
 	}
 
@@ -184,31 +184,55 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	public void updateControlChannels(Solvis solvis) {
 
 		this.updateChannels(solvis, Type.ALL_CONTROL,
-				new Reference<Map<Integer, Collection<ChannelDescription>>>(this.updateControlChannelsSequences));
+				new Reference<Map<ChannelConfig, Collection<ChannelDescription>>>(this.updateControlChannelsSequences));
 	}
 
 	public void updateReadOnlyControlChannels(Solvis solvis) {
 
-		this.updateChannels(solvis, Type.READONLY, new Reference<Map<Integer, Collection<ChannelDescription>>>(
+		this.updateChannels(solvis, Type.READONLY, new Reference<Map<ChannelConfig, Collection<ChannelDescription>>>(
 				this.updateReadOnlyControlChannelsSequences));
 	}
 
 	public void updateByHumanAccessFinished(Solvis solvis) {
 
 		this.updateChannels(solvis, Type.SCREEN_DEPENDEND,
-				new Reference<Map<Integer, Collection<ChannelDescription>>>(this.updateByScreenChangeSequences));
+				new Reference<Map<ChannelConfig, Collection<ChannelDescription>>>(this.updateByScreenChangeSequences));
 	}
 
 	private enum Type {
 		ALL_CONTROL, READONLY, WRITEABLE, SCREEN_DEPENDEND
 	}
+	
+	private static class ChannelConfig {
+		private final boolean admin ;
+		private final int configurationMask;
+		
+		public ChannelConfig(Solvis solvis) {
+			this.admin = solvis.isAdmin() ;
+			this.configurationMask = solvis.getConfigurationMask();
+		}
+		
+		@Override
+		public boolean equals( Object obj ) {
+			if ( !(obj instanceof ChannelConfig )) {
+				return false ;
+			} else {
+				ChannelConfig cmp = (ChannelConfig) obj;
+				return this.admin == cmp.admin && this.configurationMask == cmp.configurationMask;
+			}
+		}
+
+		@Override
+		public int hashCode() {
+			return (Integer.hashCode(this.configurationMask) * 449) + Boolean.hashCode(this.admin) * 53 + 751; 
+		}
+	}
 
 	private void updateChannels(Solvis solvis, Type type,
-			Reference<Map<Integer, Collection<ChannelDescription>>> destin) {
-
-		int configurationMask = solvis.getConfigurationMask();
-
-		Collection<ChannelDescription> descriptions = destin.get().get(configurationMask);
+			Reference<Map<ChannelConfig, Collection<ChannelDescription>>> destin) {
+		
+		ChannelConfig config = new ChannelConfig(solvis);
+		Collection<ChannelDescription> descriptions = destin.get().get(config);
 
 		if (descriptions == null) {
 
@@ -216,7 +240,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 			for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
 				ChannelDescription description = confDescriptions.get(solvis);
-				if (description != null && description.isInConfiguration(configurationMask)) {
+				if (description != null && description.isInConfiguration(solvis)) {
 					boolean add = false;
 					switch (type) {
 						case ALL_CONTROL:
@@ -237,7 +261,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 				}
 			}
 			descriptions = this.optimize((List<ChannelDescription>) descriptions, solvis);
-			destin.get().put(configurationMask, descriptions);
+			destin.get().put(config, descriptions);
 		}
 
 		for (ChannelDescription description : descriptions) {
@@ -280,7 +304,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
 			ChannelDescription description = descriptionsC.get(solvis);
 			if (description != null) {
-				AbstractScreen channelScreen = descriptionsC.get(solvis).getScreen(solvis.getConfigurationMask());
+				AbstractScreen channelScreen = descriptionsC.get(solvis).getScreen(solvis);
 				if (channelScreen != null && screen == channelScreen) {
 					result.add(description);
 				}

@@ -91,10 +91,11 @@ public class Solvis {
 	private final Unit unit;
 	private final File writePath;
 	private final History history = new History();
+	private final boolean mustLearn;
 
 	Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms,
-			File writePath) {
+			File writePath, boolean mustLearn) {
 		this.unit = unit;
 		this.type = unit.getType();
 		this.defaultReadMeasurementsInterval_ms = unit.getDefaultReadMeasurementsInterval_ms();
@@ -114,6 +115,7 @@ public class Solvis {
 		this.timeZone = timeZone;
 		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
 		this.writePath = writePath;
+		this.mustLearn = mustLearn;
 	}
 
 	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
@@ -327,7 +329,7 @@ public class Solvis {
 	}
 
 	public ChannelDescription getChannelDescription(String description) {
-		return this.solvisDescription.getChannelDescriptions().get(description, this.getConfigurationMask());
+		return this.solvisDescription.getChannelDescriptions().get(description, this);
 	}
 
 	public Duration getDuration(String id) {
@@ -406,35 +408,37 @@ public class Solvis {
 		return this.grafics;
 	}
 
-	void learning() throws IOException, LearningException, TerminationException, ModbusException {
-		this.getGrafics().clear();
-		logger.log(LEARN, "Learning started.");
-		this.initConfigurationMask();
-		logger.log(LEARN, "Configuration mask: 0x" + Integer.toHexString(this.configurationMask));
-		this.getGrafics().setConfigurationMask(this.configurationMask);
-		Screen home = this.getHomeScreen();
-		if (home == null) {
-			throw new AssertionError("Assign error: Screen description of <"
-					+ this.solvisDescription.getScreens().getHomeId() + "> not found.");
-		}
-		if (!home.isLearned(this)) {
-			this.gotoHome();
-			this.forceCurrentScreen(home);
-		} else {
-			home.goTo(this);
-		}
-		Screen.learnScreens(this);
-		this.solvisDescription.getClock().learn(this);
-		this.solvisDescription.getChannelDescriptions().learn(this);
-		boolean success = false;
-		for (int cnt = 0; cnt < Constants.FAIL_REPEATS && !success; --cnt) {
-			try {
-				this.getHomeScreen().goTo(this);
-				success = true;
-			} catch (IOException e) {
+	void learning(boolean force) throws IOException, LearningException, TerminationException, ModbusException {
+		if (this.mustLearn || force) {
+			this.getGrafics().clear();
+			logger.log(LEARN, "Learning started.");
+			this.initConfigurationMask();
+			logger.log(LEARN, "Configuration mask: 0x" + Integer.toHexString(this.configurationMask));
+			this.getGrafics().setConfigurationMask(this.configurationMask);
+			Screen home = this.getHomeScreen();
+			if (home == null) {
+				throw new AssertionError("Assign error: Screen description of <"
+						+ this.solvisDescription.getScreens().getHomeId() + "> not found.");
 			}
+			if (!home.isLearned(this)) {
+				this.gotoHome();
+				this.forceCurrentScreen(home);
+			} else {
+				home.goTo(this);
+			}
+			Screen.learnScreens(this);
+			this.solvisDescription.getClock().learn(this);
+			this.solvisDescription.getChannelDescriptions().learn(this);
+			boolean success = false;
+			for (int cnt = 0; cnt < Constants.FAIL_REPEATS && !success; --cnt) {
+				try {
+					this.getHomeScreen().goTo(this);
+					success = true;
+				} catch (IOException e) {
+				}
+			}
+			logger.log(LEARN, "Learning finished.");
 		}
-		logger.log(LEARN, "Learning finished.");
 	}
 
 	/**
@@ -651,7 +655,7 @@ public class Solvis {
 	public Screen getHomeScreen() {
 		if (this.home == null) {
 			String homeId = this.solvisDescription.getScreens().getHomeId();
-			this.home = (Screen) this.solvisDescription.getScreens().get(homeId, this.getConfigurationMask());
+			this.home = (Screen) this.solvisDescription.getScreens().get(homeId, this);
 		}
 		return this.home;
 	}
@@ -755,6 +759,10 @@ public class Solvis {
 		} catch (IOException e) {
 			logger.error("Error on writing the image of the learned screen <" + id + ">.");
 		}
+	}
+	
+	public boolean isAdmin() {
+		return this.unit.getFeatures().isAdmin();
 	}
 
 }

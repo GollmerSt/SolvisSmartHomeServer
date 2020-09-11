@@ -77,8 +77,6 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public Collection<? extends IMode> getModes();
 
-	public AbstractScreen getScreen(int configurationMask);
-
 	public AbstractScreen getScreen(Solvis solvis);
 
 	public UpperLowerStep getUpperLowerStep();

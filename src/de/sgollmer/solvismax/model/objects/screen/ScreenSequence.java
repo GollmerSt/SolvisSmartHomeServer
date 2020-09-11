@@ -27,7 +27,7 @@ import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
-import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
+import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -48,7 +48,7 @@ public class ScreenSequence extends AbstractScreen {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(ScreenSequence.class);
 
-	private static final String XML_CONFIGURATION_MASKS = "ConfigurationMasks";
+	private static final String XML_CONFIGURATION = "Configuration";
 	private static final String XML_TOUCH_POINT = "TouchPoint";
 	private static final String XML_PREPARATION_REF = "PreparationRef";
 	private static final String XML_SCREEN_REF = "ScreenRef";
@@ -62,7 +62,7 @@ public class ScreenSequence extends AbstractScreen {
 	private Preparation preparation = null;
 	private OfConfigs<AbstractScreen> previousScreen;
 
-	public ScreenSequence(String id, String previousId, boolean wrapArround, ConfigurationMasks configurationMasks,
+	public ScreenSequence(String id, String previousId, boolean wrapArround, Configuration configurationMasks,
 			ISelectScreen selectScreen, String preparationId, List<ScreenRef> screenRefs) {
 		super(id, previousId, configurationMasks);
 		this.wrapArround = wrapArround;
@@ -148,23 +148,23 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public AbstractScreen getBackScreen(int configurationMask) {
+	public AbstractScreen getBackScreen(Solvis solvis) {
 		for (ScreenRef screenRef : this.screenRefs) {
-			AbstractScreen screen = screenRef.getScreen(configurationMask);
+			AbstractScreen screen = screenRef.getScreen(solvis);
 			if (screen != null) {
-				return screen.getBackScreen(configurationMask);
+				return screen.getBackScreen(solvis);
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public AbstractScreen getPreviousScreen(int configurationMask) {
-		return (AbstractScreen) OfConfigs.get(configurationMask, this.previousScreen);
+	public AbstractScreen getPreviousScreen(Solvis solvis) {
+		return (AbstractScreen) OfConfigs.get(solvis, this.previousScreen);
 	}
 
 	@Override
-	public ConfigurationMasks getConfigurationMasks() {
+	public Configuration getConfigurationMasks() {
 		return this.configurationMasks;
 	}
 
@@ -176,7 +176,7 @@ public class ScreenSequence extends AbstractScreen {
 	@Override
 	public boolean gotoLearning(Solvis solvis, AbstractScreen current, Collection<ScreenGraficDescription> descriptions)
 			throws IOException, TerminationException {
-		AbstractScreen previous = this.getPreviousScreen(solvis.getConfigurationMask());
+		AbstractScreen previous = this.getPreviousScreen(solvis);
 		previous.goTo(solvis);
 		return previous == SolvisScreen.get(solvis.getCurrentScreen());
 	}
@@ -235,8 +235,8 @@ public class ScreenSequence extends AbstractScreen {
 				}
 			}
 		}
-		
-		start.goTo(solvis) ;
+
+		start.goTo(solvis);
 
 	}
 
@@ -301,7 +301,7 @@ public class ScreenSequence extends AbstractScreen {
 		private String previousId;
 		private boolean wrapArround = false;
 
-		private ConfigurationMasks configurationMasks;
+		private Configuration configurationMasks;
 		private ISelectScreen selectScreen;
 		private String preparationId = null;
 		private List<ScreenRef> screenRefs = new ArrayList<>();
@@ -337,8 +337,8 @@ public class ScreenSequence extends AbstractScreen {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_CONFIGURATION_MASKS:
-					return new ConfigurationMasks.Creator(id, this.getBaseCreator());
+				case XML_CONFIGURATION:
+					return new Configuration.Creator(id, this.getBaseCreator());
 				case XML_PREPARATION_REF:
 					return new Preparation.Creator(id, this.getBaseCreator());
 				case XML_SCREEN_REF:
@@ -352,8 +352,8 @@ public class ScreenSequence extends AbstractScreen {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
 			switch (creator.getId()) {
-				case XML_CONFIGURATION_MASKS:
-					this.configurationMasks = (ConfigurationMasks) created;
+				case XML_CONFIGURATION:
+					this.configurationMasks = (Configuration) created;
 					break;
 				case XML_PREPARATION_REF:
 					this.preparationId = ((PreparationRef) created).getPreparationId();
@@ -372,12 +372,12 @@ public class ScreenSequence extends AbstractScreen {
 
 	@Override
 	protected void addToPreviousScreenTouches(AbstractScreen next, Collection<ScreenTouch> allPreviousScreenTouches,
-			int configurationMask) {
+			Solvis solvis) {
 		List<AbstractScreen> screenList = new ArrayList<AbstractScreen>();
 		int index = -1;
 		int ix = 0;
 		for (ScreenRef screenRef : this.screenRefs) {
-			AbstractScreen screen = screenRef.getScreen(configurationMask);
+			AbstractScreen screen = screenRef.getScreen(solvis);
 			if (screen != null) {
 				screenList.add(screen);
 				if (screen == next) {

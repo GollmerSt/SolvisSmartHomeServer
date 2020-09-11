@@ -13,7 +13,7 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Preparation;
-import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
+import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
 
@@ -21,12 +21,12 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	protected final String id;
 	protected final String previousId;
-	protected final ConfigurationMasks configurationMasks;
+	protected final Configuration configurationMasks;
 	protected List<AbstractScreen> nextScreens = new ArrayList<>(3);
 	protected List<ScreenTouch> allPreviousScreenTouches = null;
 	protected Preparation preparation = null;
 
-	protected AbstractScreen(String id, String previousId, ConfigurationMasks configurationMasks) {
+	protected AbstractScreen(String id, String previousId, Configuration configurationMasks) {
 		this.id = id;
 		this.previousId = previousId;
 		this.configurationMasks = configurationMasks;
@@ -60,11 +60,11 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	public abstract OfConfigs<AbstractScreen> getBackScreen();
 
-	public abstract AbstractScreen getBackScreen(int configurationMask);
+	public abstract AbstractScreen getBackScreen(Solvis solvis);
 
-	public abstract AbstractScreen getPreviousScreen(int configurationMask);
+	public abstract AbstractScreen getPreviousScreen(Solvis solvis);
 
-	public abstract ConfigurationMasks getConfigurationMasks();
+	public abstract Configuration getConfigurationMasks();
 
 	public abstract ISelectScreen getSelectScreen();
 
@@ -106,21 +106,21 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 		return this.id.compareTo(screen.id);
 	}
 
-	public List<ScreenTouch> getPreviousScreenTouches(int configurationMask) {
+	public List<ScreenTouch> getPreviousScreenTouches(Solvis solvis) {
 
 		if (this.allPreviousScreenTouches == null) {
 
 			this.allPreviousScreenTouches = new ArrayList<>();
 
 			AbstractScreen current = this;
-			AbstractScreen previous = current.getPreviousScreen(configurationMask);
+			AbstractScreen previous = current.getPreviousScreen(solvis);
 
 			while (previous != null) {
 
-				previous.addToPreviousScreenTouches(current, this.allPreviousScreenTouches, configurationMask);
+				previous.addToPreviousScreenTouches(current, this.allPreviousScreenTouches, solvis);
 
 				current = previous;
-				previous = current.getPreviousScreen(configurationMask);
+				previous = current.getPreviousScreen(solvis);
 			}
 		}
 		return this.allPreviousScreenTouches;
@@ -134,7 +134,7 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	 * @param configurationMask        Configuration mask
 	 */
 	protected abstract void addToPreviousScreenTouches(AbstractScreen next,
-			Collection<ScreenTouch> allPreviousScreenTouches, int configurationMask);
+			Collection<ScreenTouch> allPreviousScreenTouches, Solvis solvis);
 
 	public static class ScreenTouch {
 		private final AbstractScreen screen;
@@ -183,11 +183,11 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	}
 
 	@Override
-	public boolean isInConfiguration(int configurationMask) {
+	public boolean isInConfiguration(Solvis solvis) {
 		if (this.configurationMasks == null) {
 			return true;
 		} else {
-			return this.configurationMasks.isInConfiguration(configurationMask);
+			return this.configurationMasks.isInConfiguration(solvis);
 		}
 	}
 
@@ -207,17 +207,17 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	public static class OptimizeComparator implements Comparator<AbstractScreen> {
 
-		private final int mask;
+		private final Solvis solvis;
 
-		public OptimizeComparator(int mask) {
-			this.mask = mask;
+		public OptimizeComparator(Solvis solvis) {
+			this.solvis = solvis;
 		}
 
 		@Override
 		public int compare(AbstractScreen o1, AbstractScreen o2) {
 
-			List<ScreenTouch> p1 = o1.getPreviousScreenTouches(this.mask);
-			List<ScreenTouch> p2 = o2.getPreviousScreenTouches(this.mask);
+			List<ScreenTouch> p1 = o1.getPreviousScreenTouches(this.solvis);
+			List<ScreenTouch> p2 = o2.getPreviousScreenTouches(this.solvis);
 
 			if (p1.size() == 0 && p2.size() == 0) {
 				return 0;
@@ -257,9 +257,6 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 			return 0;
 		}
 
-		public int getMask() {
-			return this.mask;
-		}
 	}
 
 	public boolean isNoRestore() {

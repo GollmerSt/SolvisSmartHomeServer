@@ -33,7 +33,7 @@ import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
-import de.sgollmer.solvismax.model.objects.configuration.ConfigurationMasks;
+import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -44,7 +44,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private static final ILogger logger = LogManager.getInstance().getLogger(Screen.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
-	private static final String XML_CONFIGURATION_MASKS = "ConfigurationMasks";
+	private static final String XML_CONFIGURATION = "Configuration";
 	private static final String XML_TOUCH_POINT = "TouchPoint";
 	private static final String XML_USER_SELECTION = "UserSelection";
 	private static final String XML_UP_TOUCH_POINT = "SequenceUp";
@@ -73,16 +73,14 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private final String lastPreparationId;
 	private Preparation lastPreparation = null;
 	private final boolean noRestore;
-	private final boolean admin;
 
 	private OfConfigs<AbstractScreen> previousScreen = null;
 	private OfConfigs<AbstractScreen> backScreen = null;
 
 	protected Screen(String id, String previousId, String backId, boolean ignoreChanges, boolean mustSave,
-			ConfigurationMasks configurationMasks, ISelectScreen selectScreen, TouchPoint sequenceUp,
+			Configuration configurationMasks, ISelectScreen selectScreen, TouchPoint sequenceUp,
 			TouchPoint sequenceDown, Collection<String> screenGraficRefs, Collection<IScreenPartCompare> screenCompares,
-			Collection<Rectangle> ignoreRectangles, String preparationId, String lastPreparationId, boolean noRestore,
-			boolean admin) {
+			Collection<Rectangle> ignoreRectangles, String preparationId, String lastPreparationId, boolean noRestore) {
 		super(id, previousId, configurationMasks);
 		this.backId = backId;
 		this.ignoreChanges = ignoreChanges;
@@ -96,7 +94,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		this.preparationId = preparationId;
 		this.lastPreparationId = lastPreparationId;
 		this.noRestore = noRestore;
-		this.admin = admin;
 	}
 
 	/**
@@ -248,8 +245,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	 * @return the previousScreen
 	 */
 	@Override
-	public AbstractScreen getPreviousScreen(int configurationMask) {
-		return (AbstractScreen) OfConfigs.get(configurationMask, this.previousScreen);
+	public AbstractScreen getPreviousScreen(Solvis solvis) {
+		return (AbstractScreen) OfConfigs.get(solvis, this.previousScreen);
 	}
 
 	/**
@@ -267,7 +264,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private String backId;
 		private boolean ignoreChanges;
 		private boolean mustSave = false;
-		private ConfigurationMasks configurationMasks;
+		private Configuration configurationMasks;
 		private ISelectScreen selectScreen = null;
 		private TouchPoint sequenceUp = null;
 		private TouchPoint sequenceDown = null;
@@ -277,7 +274,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private String preparationId = null;
 		private String lastPreparationId;
 		private boolean noRestore = false;
-		private boolean admin = false;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -308,9 +304,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				case "noRestore":
 					this.noRestore = Boolean.parseBoolean(value);
 					break;
-				case "admin":
-					this.admin = Boolean.parseBoolean(value);
-					break;
 			}
 
 		}
@@ -333,15 +326,15 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			return new Screen(this.id, this.previousId, this.backId, this.ignoreChanges, this.mustSave,
 					this.configurationMasks, this.selectScreen, this.sequenceUp, this.sequenceDown,
 					this.screenGraficRefs, this.screenCompares, this.ignoreRectangles, this.preparationId,
-					this.lastPreparationId, this.noRestore, this.admin);
+					this.lastPreparationId, this.noRestore);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (name.getLocalPart()) {
-				case XML_CONFIGURATION_MASKS:
-					return new ConfigurationMasks.Creator(id, this.getBaseCreator());
+				case XML_CONFIGURATION:
+					return new Configuration.Creator(id, this.getBaseCreator());
 				case XML_TOUCH_POINT:
 				case XML_UP_TOUCH_POINT:
 				case XML_DOWN_TOUCH_POINT:
@@ -369,8 +362,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_CONFIGURATION_MASKS:
-					this.configurationMasks = (ConfigurationMasks) created;
+				case XML_CONFIGURATION:
+					this.configurationMasks = (Configuration) created;
 					break;
 				case XML_TOUCH_POINT:
 				case XML_USER_SELECTION:
@@ -591,7 +584,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			current = solvis.getHomeScreen();
 		}
 		if (this != current) {
-			List<ScreenTouch> previousScreens = this.getPreviousScreenTouches(solvis.getConfigurationMask());
+			List<ScreenTouch> previousScreens = this.getPreviousScreenTouches(solvis);
 			boolean gone = false;
 			while (!gone) {
 				ScreenTouch foundScreenTouch = null;
@@ -655,14 +648,12 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private static AbstractScreen back(Solvis solvis, AbstractScreen current,
 			Collection<ScreenGraficDescription> descriptions)
 			throws IOException, TerminationException, LearningException {
-		int configurationMask = solvis.getConfigurationMask();
-		AbstractScreen back = current.getBackScreen(configurationMask);
+		AbstractScreen back = current.getBackScreen(solvis);
 		solvis.sendBack();
 		current = SolvisScreen.get(solvis.getCurrentScreen());
 		if (current == null) {
-			// TODO ist das sinnvoll. Wenn Back nicht funktioniert kann es Probleme geben
-			// TODO besser von Beginn anfangen
-			current = back;
+			solvis.gotoHome();
+			current = solvis.getHomeScreen();
 			if (descriptions != null) {
 				current.learn(solvis, descriptions);
 			}
@@ -681,16 +672,15 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public AbstractScreen getBackScreen(int configurationMask) {
-		return (AbstractScreen) OfConfigs.get(configurationMask, this.backScreen);
+	public AbstractScreen getBackScreen(Solvis solvis) {
+		return (AbstractScreen) OfConfigs.get(solvis, this.backScreen);
 	}
 
 	public Collection<AbstractScreen> getNextScreens(Solvis solvis) {
-		int mask = solvis.getConfigurationMask();
 		List<AbstractScreen> result = new ArrayList<>(3);
 		for (AbstractScreen screen : this.nextScreens) {
-			if (screen.isInConfiguration(mask)) {
-				if (screen.getBackScreen(mask) == screen.getPreviousScreen(mask)) {
+			if (screen.isInConfiguration(solvis)) {
+				if (screen.getBackScreen(solvis) == screen.getPreviousScreen(solvis)) {
 					result.add(0, screen);
 				} else {
 					result.add(screen);
@@ -731,7 +721,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			logger.error("Screen <" + this.getId() + "> not found.");
 		}
 
-		List<ScreenTouch> previousScreens = this.getPreviousScreenTouches(solvis.getConfigurationMask());
+		List<ScreenTouch> previousScreens = this.getPreviousScreenTouches(solvis);
 
 		boolean gone = false;
 
@@ -792,13 +782,13 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public ConfigurationMasks getConfigurationMasks() {
+	public Configuration getConfigurationMasks() {
 		return this.configurationMasks;
 	}
 
 	@Override
 	protected void addToPreviousScreenTouches(AbstractScreen next, Collection<ScreenTouch> allPreviousScreenTouches,
-			int configurationMask) {
+			Solvis solvis) {
 		ISelectScreen selectScreen = next.getSelectScreen();
 		Preparation preparation = next.getPreparation();
 
@@ -816,10 +806,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public boolean isNoRestore() {
 		return this.noRestore;
-	}
-
-	public boolean isAdmin() {
-		return this.admin;
 	}
 
 	private static class WhiteGraficRectangle implements IScreenPartCompare {

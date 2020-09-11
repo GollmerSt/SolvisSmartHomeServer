@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -29,8 +30,7 @@ public class AllSolvisGrafics implements IXmlWriteable {
 	private Long controlResourceHashCode;
 	private Long controlFileHashCode;
 
-	private AllSolvisGrafics(Collection<SystemGrafics> systems, Long controlResourceHashCode,
-			Long controlFileHashCode) {
+	private AllSolvisGrafics(Collection<SystemGrafics> systems, Long controlResourceHashCode, Long controlFileHashCode) {
 		this.systems = systems;
 		this.controlResourceHashCode = controlResourceHashCode;
 		this.controlFileHashCode = controlFileHashCode;
@@ -50,9 +50,12 @@ public class AllSolvisGrafics implements IXmlWriteable {
 			this.controlFileHashCode = hashes.getFileHash();
 		}
 		SystemGrafics result = null;
-		for (SystemGrafics system : this.systems) {
+		boolean finish = false;
+		for (Iterator<SystemGrafics> it = this.systems.iterator(); it.hasNext() && !finish;) {
+			SystemGrafics system = it.next();
 			if (system.getId().equals(unitId)) {
 				result = system;
+				finish = true;
 			}
 		}
 		if (result == null) {
@@ -127,4 +130,5 @@ public class AllSolvisGrafics implements IXmlWriteable {
 	public Hashes getControlHashCodes() {
 		return new Hashes(this.controlResourceHashCode, this.controlFileHashCode);
 	}
+
 }

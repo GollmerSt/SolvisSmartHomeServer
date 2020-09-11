@@ -61,19 +61,18 @@ public class AllScreens implements IScreenLearnable {
 		return screens;
 	}
 
-	public AbstractScreen get(String id, int configurationMask) {
+	public AbstractScreen get(String id, Solvis solvis) {
 		OfConfigs<AbstractScreen> screens = this.screens.get(id);
 		if (screens == null) {
 			return null;
 		} else {
-			return screens.get(configurationMask);
+			return screens.get(solvis);
 		}
 	}
 
 	public AbstractScreen getScreen(MyImage image, Solvis solvis) {
-		int configurationMask = solvis.getConfigurationMask();
 		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
-			AbstractScreen screen = screenConf.get(configurationMask);
+			AbstractScreen screen = screenConf.get(solvis);
 			if (screen != null && screen.isMatchingScreen(image, solvis) && screen.isScreen()) {
 				return (Screen) screen;
 			}
@@ -154,9 +153,8 @@ public class AllScreens implements IScreenLearnable {
 
 	@Override
 	public void addLearnScreenGrafics(Collection<ScreenGraficDescription> learnScreens, Solvis solvis) {
-		int configurationMask = solvis.getConfigurationMask();
 		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
-			AbstractScreen screen = screenConf.get(configurationMask);
+			AbstractScreen screen = screenConf.get(solvis);
 			if (screen != null) {
 				screen.addLearnScreenGrafics(learnScreens, solvis);
 			}

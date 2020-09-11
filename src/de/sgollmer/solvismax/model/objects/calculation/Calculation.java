@@ -150,11 +150,6 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public AbstractScreen getScreen(int configurationMask) {
-		return null;
-	}
-
-	@Override
 	public AbstractScreen getScreen(Solvis solvis) {
 		return null;
 	}

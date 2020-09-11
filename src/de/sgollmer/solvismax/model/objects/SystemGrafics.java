@@ -29,15 +29,17 @@ public class SystemGrafics implements IXmlWriteable {
 	private final String id;
 	private int configurationMask;
 	private final Map<String, ScreenGraficData> graficDatas;
+	private  boolean admin = false;
 
 	SystemGrafics(String id) {
-		this(id, 0, new HashMap<>());
+		this(id, 0, new HashMap<>(), false);
 	}
 
-	private SystemGrafics(String id, int configurationMask, Map<String, ScreenGraficData> graficDatas) {
+	private SystemGrafics(String id, int configurationMask, Map<String, ScreenGraficData> graficDatas, boolean admin) {
 		this.id = id;
 		this.configurationMask = configurationMask;
 		this.graficDatas = graficDatas;
+		this.admin = admin;
 	}
 
 	String getId() {
@@ -65,6 +67,7 @@ public class SystemGrafics implements IXmlWriteable {
 	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException {
 		writer.writeAttribute("id", this.id);
 		writer.writeAttribute("configurationMask", Integer.toString(this.configurationMask));
+		writer.writeAttribute("admin", Boolean.toString(this.admin));
 		for (ScreenGraficData data : this.graficDatas.values()) {
 			writer.writeStartElement(XML_SCREEN_GRAFIC);
 			data.writeXml(writer);
@@ -78,6 +81,7 @@ public class SystemGrafics implements IXmlWriteable {
 		private String id;
 		private int configurationMask;
 		private final Map<String, ScreenGraficData> graficDatas = new HashMap<>();
+		private  boolean admin = false;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -91,6 +95,10 @@ public class SystemGrafics implements IXmlWriteable {
 					break;
 				case "configurationMask":
 					this.configurationMask = Integer.parseInt(value);
+					break;
+				case "admin":
+					this.admin = Boolean.parseBoolean(value);
+					break;
 			}
 
 		}
@@ -98,7 +106,7 @@ public class SystemGrafics implements IXmlWriteable {
 		@Override
 		public SystemGrafics create() throws XmlException, IOException {
 
-			return new SystemGrafics(this.id, this.configurationMask, this.graficDatas);
+			return new SystemGrafics(this.id, this.configurationMask, this.graficDatas, this. admin);
 		}
 
 		@Override
@@ -133,6 +141,14 @@ public class SystemGrafics implements IXmlWriteable {
 
 	public void setConfigurationMask(int configurationMask) {
 		this.configurationMask = configurationMask;
+	}
+
+	public boolean isAdmin() {
+		return this.admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 
 }

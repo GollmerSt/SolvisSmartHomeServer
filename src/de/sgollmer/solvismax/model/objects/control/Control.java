@@ -333,11 +333,6 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public AbstractScreen getScreen(int configurationMask) {
-		return this.guiAccess.getScreen().get(configurationMask);
-	}
-
-	@Override
 	public AbstractScreen getScreen(Solvis solvis) {
 		return this.guiAccess.getScreen().get(solvis);
 	}

@@ -128,7 +128,7 @@ public class Solar implements IConfiguration {
 
 	@Override
 	public AbstractScreen getScreen(Solvis solvis) {
-		return solvis.getSolvisDescription().getScreens().get(this.screenRef, 0);
+		return solvis.getSolvisDescription().getScreens().get(this.screenRef, solvis);
 	}
 
 }

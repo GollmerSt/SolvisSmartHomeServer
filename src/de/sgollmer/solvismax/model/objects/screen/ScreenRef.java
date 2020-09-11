@@ -94,11 +94,4 @@ public class ScreenRef implements IAssigner {
 		return this.screen.get(solvis);
 	}
 
-	public AbstractScreen getScreen( int configurationMask) {
-		if ( this.screen == null ) {
-			return null ;
-		}
-		return this.screen.get(configurationMask);
-	}
-
 }

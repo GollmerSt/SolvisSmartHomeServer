@@ -35,7 +35,7 @@
 			</element>
 		</sequence>
 		<attribute name="controlResourceHashCode" type="int"></attribute>
-		<attribute name="controlFileHashCode" type="int"></attribute>
+		<attribute name="controlFileHashCode" type="int"></attribute>
 	</complexType>
 
 	<element name="SolvisGrafics" type="tns:SolvisGrafics"></element>
@@ -48,8 +48,8 @@
 			</documentation>
 		</annotation>
 		<sequence>
-            <element name="Origin" type="tns:Coordinate"></element>
-            <element name="ScreenGrafic" type="tns:ScreenGrafic"
+			<element name="Origin" type="tns:Coordinate"></element>
+			<element name="ScreenGrafic" type="tns:ScreenGrafic"
 				maxOccurs="unbounded" minOccurs="0">
 			</element>
 		</sequence>
@@ -59,6 +59,7 @@
 			</annotation>
 		</attribute>
 		<attribute name="configurationMask" type="int"></attribute>
+		<attribute name="admin" type="boolean" use="optional"></attribute>
 	</complexType>
 
 	<complexType name="Coordinate">

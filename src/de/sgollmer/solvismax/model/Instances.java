@@ -44,8 +44,8 @@ public class Instances {
 	private final AllSolvisGrafics graficDatas;
 	private final Hashes xmlHash;
 	private final File writeablePath;
-	private final WriteErrorScreens writeErrorScreens ;
-	private final boolean mustLearn;
+	private final WriteErrorScreens writeErrorScreens;
+	private boolean mustLearn;
 
 	public Instances(BaseData baseData, boolean learn) throws IOException, XmlException, XMLStreamException,
 			AssignmentException, FileException, ReferenceException {
@@ -62,7 +62,10 @@ public class Instances {
 		this.writeErrorScreens = new WriteErrorScreens(this);
 
 		for (Unit xmlUnit : baseData.getUnits().getUnits()) {
-			Solvis solvis = this.createSolvisInstance(xmlUnit);
+			boolean mustLearn = !this.graficDatas.get(xmlUnit.getId(), this.xmlHash).isAdmin()
+					&& xmlUnit.getFeatures().isAdmin() || this.mustLearn;
+			this.mustLearn |= mustLearn;
+			Solvis solvis = this.createSolvisInstance(xmlUnit, mustLearn);
 			this.units.add(solvis);
 		}
 	}
@@ -71,23 +74,26 @@ public class Instances {
 		this.backupHandler.start();
 	}
 
-	public void learn( boolean force ) throws IOException, LearningException, XMLStreamException, FileException,
+	public void learn(boolean force) throws IOException, LearningException, XMLStreamException, FileException,
 			TerminationException, ModbusException {
 		boolean learned = true;
 		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
 		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);
 		FileHelper.rmDir(learnDesination);
 		FileHelper.mkdir(learnDesination);
+
 		for (Solvis solvis : this.units) {
-			solvis.learning(); 
+			Unit xmlUnit = solvis.getUnit();
+			solvis.learning(force);
 			learned = true;
+			this.graficDatas.get(xmlUnit.getId(), this.xmlHash).setAdmin(xmlUnit.getFeatures().isAdmin());
 		}
-		if ( learned ) {
-			//this.graficDatas.
+		if (learned) {
+			// this.graficDatas.
 			new GraficFileHandler(this.writeablePath).write(this.graficDatas);
 		}
 	}
-		
+
 	public boolean init()
 			throws IOException, XMLStreamException, LearningException, AssignmentException, DependencyException {
 		for (Solvis solvis : this.units) {
@@ -109,14 +115,16 @@ public class Instances {
 		return null;
 	}
 
-	private Solvis createSolvisInstance(Unit unit) throws IOException, XmlException, XMLStreamException {
+	private Solvis createSolvisInstance(Unit unit, boolean mustLearn)
+			throws IOException, XmlException, XMLStreamException {
 		Miscellaneous misc = this.solvisDescription.getMiscellaneous();
 		SolvisConnection connection = new SolvisConnection(unit.getUrl(), unit, misc.getSolvisConnectionTimeout_ms(),
 				misc.getSolvisReadTimeout_ms(), misc.getPowerOffDetectedAfterIoErrors(),
 				misc.getPowerOffDetectedAfterTimeout_ms(), unit.isFwLth2_21_02A());
 		String timeZone = this.baseData.getTimeZone();
 		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId(), this.xmlHash),
-				connection, this.backupHandler, timeZone, this.baseData.getEchoInhibitTime_ms(), this.writeablePath);
+				connection, this.backupHandler, timeZone, this.baseData.getEchoInhibitTime_ms(), this.writeablePath,
+				mustLearn);
 		if (this.baseData.getExceptionMail() != null && solvis.getFeatures().isSendMailOnError()) {
 			solvis.registerSolvisErrorObserver(this.baseData.getExceptionMail());
 		}

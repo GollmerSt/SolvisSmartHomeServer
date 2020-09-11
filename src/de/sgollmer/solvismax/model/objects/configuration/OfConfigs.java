@@ -30,27 +30,23 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner {
 		this.elements.add(element);
 	}
 
-	public E get(int configurationMask) {
-		if (configurationMask == 0 && this.elements.size() == 1) {
+	public E get(Solvis solvis) {
+		if (solvis.getConfigurationMask() == 0 && this.elements.size() == 1) {
 			return this.elements.iterator().next();
 		}
 		for (E e : this.elements) {
-			if (e.isInConfiguration(configurationMask)) {
+			if (e.isInConfiguration(solvis)) {
 				return e;
 			}
 		}
 		return null;
 	}
 
-	public E get(Solvis solvis) {
-		return this.get(solvis.getConfigurationMask());
-	}
-
-	public static Object get(int configurationMask, OfConfigs<?> ofConfigs) {
+	public static Object get(Solvis solvis, OfConfigs<?> ofConfigs) {
 		if (ofConfigs == null) {
 			return null;
 		} else {
-			return ofConfigs.get(configurationMask);
+			return ofConfigs.get(solvis);
 		}
 	}
 
@@ -76,7 +72,7 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner {
 	public interface IElement<E> extends IAssigner {
 		public boolean isConfigurationVerified(E e);
 
-		public boolean isInConfiguration(int configurationMask);
+		public boolean isInConfiguration(Solvis solvis);
 
 		public String getName();
 	}

@@ -9,9 +9,11 @@
 	<!-- Es werden immer 2 Ports belegt, der angegebene und der nächst höhere. 
 		Also hier 107545 und 10736 -->
 	<tns:Units>
-		<!-- Existiert im Solarkreislauf eine zweite Umwaelzpumpe, welche an A07 
-			angeschlossen ist, ist die configOrMask auf "0x10"zu setzen. Dann wird die 
-			Laufzeit dieser Solarpumpe ebenfalls angezeigt. -->
+		<!-- configOrMask: -->
+		<!-- 0x10: Solarkreislauf mit zweiter Umwaelzpumpe an A07 -->
+		<!-- 0x20: externer Brennkessel mit Temperaturfühler an S14 -->
+		<!-- 0x40: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
+		<!-- 0x80: Solar Ost + West S16 Kollektor West-->
 		<tns:Unit id="mySolvis" type="SolvisMax" configOrMask="0x00"
 			fwLth2_21_02A="true" account="account" passwordCrypt="AES-coded"
 			url="aaa.bbb.ccc.ddd" defaultAverageCount="12"
