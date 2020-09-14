@@ -24,6 +24,11 @@ public class ModeValue<M extends IMode> extends SingleData<M> {
 	}
 
 	@Override
+	public Boolean getBoolean() {
+		return null;
+	}
+
+	@Override
 	public Integer getInt() {
 		return null;
 	}

@@ -36,6 +36,12 @@ public class StringData extends SingleData<String> {
 		return this.data;
 	}
 
+
+	@Override
+	public Boolean getBoolean() {
+		return null;
+	}
+	
 	@Override
 	public Integer getInt() {
 		return null;

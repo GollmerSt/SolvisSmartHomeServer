@@ -23,6 +23,12 @@ public class BooleanValue extends SingleData<Boolean> {
 		return this.value;
 	}
 
+
+	@Override
+	public Boolean getBoolean() {
+		// TODO Auto-generated method stub
+		return this.value;
+	}
 	@Override
 	public Integer getInt() {
 		return this.value ? 1 : 0;

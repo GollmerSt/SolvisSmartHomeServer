@@ -23,6 +23,12 @@ public class DateValue extends SingleData<Calendar> {
 		this.calendar = calendar;
 	}
 
+
+	@Override
+	public Boolean getBoolean() {
+		return null;
+	}
+
 	@Override
 	public Integer getInt() {
 		return null;

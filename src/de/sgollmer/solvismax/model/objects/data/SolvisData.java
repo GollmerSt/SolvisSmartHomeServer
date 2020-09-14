@@ -217,10 +217,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		SingleData<?> data = this.data;
 		if (data == null) {
 			return null;
-		} else if (!(data instanceof BooleanValue)) {
+		}
+		Boolean bool = this.data.getBoolean() ;
+		if (bool == null ) {
 			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
-		return ((BooleanValue) data).get();
+		return bool;
 	}
 
 	public boolean getBool() throws TypeException {

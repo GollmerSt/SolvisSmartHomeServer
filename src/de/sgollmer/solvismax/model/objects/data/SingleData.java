@@ -19,7 +19,17 @@ public abstract class SingleData<T> {
 		return this.timeStamp;
 	}
 
+	/**
+	 *  
+	 * @return integer value if supported. Otherwise null.
+	 */
 	public abstract Integer getInt();
+	
+	/**
+	 *  
+	 * @return boolean value if supported. Otherwise null.
+	 */
+	public abstract Boolean getBoolean();
 
 	SingleData<T> create(int value, long timeStamp, boolean fastChange) {
 		return this.create(value, timeStamp);

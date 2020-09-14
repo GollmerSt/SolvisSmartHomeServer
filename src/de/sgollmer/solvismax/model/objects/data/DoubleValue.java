@@ -18,6 +18,12 @@ public class DoubleValue extends SingleData<Double> {
 		this.value = value;
 	}
 
+
+	@Override
+	public Boolean getBoolean() {
+		return null;
+	}
+	
 	@Override
 	public Integer getInt() {
 		return (int) Math.round(this.value);

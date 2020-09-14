@@ -1435,14 +1435,14 @@
 				<tns:Field position="114" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="A01.Pumpe_Solar">
-			<tns:Measurement type="boolean">
+		<tns:ChannelDescription id="A01.Pumpe_Solar" unit="%">
+			<tns:Measurement type="unsigned" >
 				<tns:Field position="118" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="A02.Pumpe_Warmwasser">
-			<tns:Measurement type="boolean">
+			id="A02.Pumpe_Warmwasser" unit="%">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="120" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1476,12 +1476,12 @@
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="A07.Pumpe_Solar2">
+		<tns:ChannelDescription id="A07.Pumpe_Solar2" unit="%">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x10"
 					compareMask="0x10" />
 			</tns:Configuration>
-			<tns:Measurement type="boolean">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>

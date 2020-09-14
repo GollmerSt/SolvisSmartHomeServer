@@ -19,6 +19,15 @@ public class IntegerValue extends SingleData<Integer> {
 		this.fastChange = fastChange;
 	}
 
+
+	@Override
+	public Boolean getBoolean() {
+		if ( this.data != null ) {
+			return this.data != 0;
+		}
+		return null;
+	}
+
 	public IntegerValue(Integer value, long timeStamp) {
 		this(value, timeStamp, false);
 	}
