@@ -1,5 +1,21 @@
 A E N D E R U N G E N
 
+Version 01.02.03 rc7
+
+    11.09.2020  Weitere Configuration-Bits eingeführt, welche die Namen der Kanäle S14 und S15 betreffen.
+    
+    11.09.2020  Der Installateur-Mode der Anlage wird nur angesteuert, wenn das Admin-Feature gesetzt ist. 
+
+    06.09.2020  Die Retained MQTT topics werden beim Beenden des Servers auf not retained gesetzt. Dadurch
+                bleiben keine Daten im MQTT-Broker zurück und es gibt keine fehlerhaften Zeitstempel in der
+                SmartHome-Anwendung, wenn der Server nicht läuft während das SmartHome-System gestartet
+                wird.
+    
+    06.09.2020  Beim beenden des Servers konnte in den Log Fehlermeldungen erscheinen. 
+                
+    06.09.2020  Die Learned-Images wurden teilweise nicht richtig beannt.
+                
+
 Version 01.02.03 rc6
 
     05.09.2020  Um den Anlagenstatus "Heizkreise" zu erkennen, wurde bisher der Bereich des Brenners gesannt.

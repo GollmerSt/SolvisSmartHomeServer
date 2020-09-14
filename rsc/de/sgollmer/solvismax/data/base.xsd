@@ -30,7 +30,8 @@
 			</element>
 			<element name="Mqtt" type="tns:Mqtt" maxOccurs="1"
 				minOccurs="0"></element>
-            <element name="ExceptionMail" type="tns:ExceptionMail" maxOccurs="1" minOccurs="0">
+			<element name="ExceptionMail" type="tns:ExceptionMail"
+				maxOccurs="1" minOccurs="0">
 				<annotation>
 					<documentation>
 						Daten für den Mailversand im Fall einer
@@ -38,7 +39,7 @@
 					</documentation>
 				</annotation>
 			</element>
-        </sequence>
+		</sequence>
 		<attribute name="DEBUG" type="boolean" use="optional">
 			<annotation>
 				<documentation>Debug-Mode. Nur zur Entwicklung</documentation>
@@ -100,22 +101,34 @@
 					Or-Maske für die Konfiguration.
 
 					Reserviert sind in der
-					Konfigurations-Maske aktuell
-					folgende Bits, welche nicht in
-					configOrMask
-					verwendet werden dürfen: 0x00000001 HK1 vorhanden
-					0x00000002 HK2 vorhanden 0x00000004 HK3 vorhanden,
-					aber noch nicht
-					in dem control-File definiert
-					0x00000008 Solaranlage vorhanden
-					0x01000000
-					SolvisMax 0x02000000 SolvisBen
+					Konfigurations-Maske aktuell folgende Bits, welche nicht in der
+					configOrMask verwendet werden dürfen:
 
-					In der configOrMask können
-					folgende Werte verwendet
-					werden: 0x00000010 Solarpumpe 2 vorhanden
-					und an A07
-					angeschlossen
+					0x00000001 HK1 vorhanden
+
+					0x00000002 HK2 vorhanden
+
+					0x00000004 HK3 vorhanden
+
+					0x00000008 mit
+					Solaranlage
+
+					0x01000000 SolvisMax
+
+					0x02000000 SolvisBen
+
+
+					In der
+					configOrMask können folgende Werte verwendet werden:
+
+					0x00000010
+					Solarpumpe 2 vorhanden und an A07 angeschlossen
+
+					0x00000020 externer Brenner
+
+					0x00000040 Wärmepumpe
+
+					0x00000080 für Solar Ost + West S16 Kollektor West reserviert
 
 				</documentation>
 			</annotation>
@@ -244,19 +257,25 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="releaseBlockingAfterUserAccess_ms" type="int"
-			use="required">
+		<attribute name="releaseBlockingAfterUserAccess_ms"
+			type="int" use="required">
 			<annotation>
-				<documentation>Zeitintervall, das nach einem User-Eingriff vergehen muss, bis die Werte upgedated werden. In dieser Zeit werden keine Werte vom GUI abgerufen, damit die Eingabe des Users nicht gestört wird.
+				<documentation>Zeitintervall, das nach einem User-Eingriff vergehen
+					muss, bis die Werte upgedated werden. In dieser Zeit werden keine
+					Werte vom GUI abgerufen, damit die Eingabe des Users nicht gestört
+					wird.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="releaseBlockingAfterServiceAccess_ms"
 			type="int">
-            <annotation>
-            	<documentation>Zeitintervall, das nach einem Service-Eingriff vergehen muss, bis die Werte upgedated werden. In dieser Zeit werden keine Werte vom GUI abgerufen, damit die Eingabe des Service nicht gestört wird.
-			</documentation>
-            </annotation>
+			<annotation>
+				<documentation>Zeitintervall, das nach einem Service-Eingriff
+					vergehen muss, bis die Werte upgedated werden. In dieser Zeit
+					werden keine Werte vom GUI abgerufen, damit die Eingabe des Service
+					nicht gestört wird.
+				</documentation>
+			</annotation>
 		</attribute>
 		<attribute name="delayAfterSwitchingOnEnable" type="boolean"
 			use="required">
@@ -293,7 +312,9 @@
 		</attribute>
 		<attribute name="port" type="int" use="required">
 			<annotation>
-				<documentation>Port, den der Server nutzt, um Command von Client zu empfangen. Es wird ebenfalls der nächsthöherer Port genutzt um sicher zu stellen, dass nicht 2 Server gleichzeitig gestartet sind.
+				<documentation>Port, den der Server nutzt, um Command von Client zu
+					empfangen. Es wird ebenfalls der nächsthöherer Port genutzt um
+					sicher zu stellen, dass nicht 2 Server gleichzeitig gestartet sind.
 				</documentation>
 			</annotation>
 		</attribute>
@@ -357,7 +378,8 @@
 					<documentation>
 						Nach jedem erkannnten Anwenderzugriff auf dei
 						SolvisControl werden die Anlagen-Werte wieder
-						gelesen. Dies ist erforderlich, weil der
+						gelesen. Dies ist
+						erforderlich, weil der
 						Anwender diese Werte manuell geändert haben
 						könnte.
 					</documentation>
@@ -369,7 +391,8 @@
 					<documentation>
 						Es wird der Zugriff eines Service-Mitarbeiter
 						(Schornsteinfeger/Installateur) erkannt und die
-						Sperrung des GUI-Zugriffs durch den Server
+						Sperrung des
+						GUI-Zugriffs durch den Server
 						erhöht sich auf 60 Minuten.
 					</documentation>
 				</annotation>
@@ -389,16 +412,24 @@
 			<element name="ClearErrorMessageAfterMail" type="boolean"
 				maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="OnlyMeasurements" type="boolean"
-				maxOccurs="1" minOccurs="1">
+			<element name="OnlyMeasurements" type="boolean" maxOccurs="1"
+				minOccurs="1">
 				<annotation>
 					<documentation>
 						Dieses Attribut deaktiviert sämtliche Zugriffe
-						zum GUI der Solvis.
+						zum
+						GUI der Solvis.
 					</documentation>
 				</annotation>
 			</element>
-			<element name="Admin" type="boolean" maxOccurs="1" minOccurs="0"></element>
+			<element name="Admin" type="boolean" maxOccurs="1"
+				minOccurs="0">
+				<annotation>
+					<documentation>Die Bildschirme der Nutzers "Installateur" können
+						angefahren werden.
+					</documentation>
+				</annotation>
+			</element>
 		</sequence>
 
 	</complexType>
