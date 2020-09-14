@@ -2,6 +2,13 @@ A E N D E R U N G E N
 
 Version 01.02.03
 
+    14.09.2020  A01, A01 sowie bei einem System mit 2 Solarpumpen erfolgt die Ausgabe nun in Prozent.
+                Diese Pumpen werden von der Solvis-Anlage quasi analog angesteuert und es werden die
+                Werte entsprechend in Prozent angegeben.
+                Anmerkung:
+                    Beim Warmwasser pulst (bei mir) die Pumpe mit einem max. Tastverhältnis von 1:1,
+                    der Wert ist daher maximal 50%. 
+
     11.09.2020  Weitere Configuration-Bits eingeführt, welche die Namen der Kanäle S14 und S15 betreffen.
     
     11.09.2020  Der Installateur-Mode der Anlage wird nur angesteuert, wenn das Admin-Feature gesetzt ist. 
