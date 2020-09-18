@@ -61,7 +61,11 @@ public class StrategyReadWrite extends StrategyRead {
 	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData setValue)
 			throws IOException, TerminationException, ModbusException, TypeException {
 		if (controlAccess instanceof GuiAccess) {
-			Integer target = setValue.getInteger();
+			Double dTarget = setValue.getDouble();
+			if (dTarget == null) {
+				throw new TypeException("Set value null not allowed");
+			}
+			Integer target = (int) Math.round(dTarget * this.getDivisor());
 			IntegerValue data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 			if (data == null) {
 				return null;
@@ -188,8 +192,8 @@ public class StrategyReadWrite extends StrategyRead {
 
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
-		return new UpperLowerStep((float) this.most / this.getDivisor(), (float) this.least / this.getDivisor(),
-				(float) this.increment / this.getDivisor());
+		return new UpperLowerStep((double) this.most / this.getDivisor(), (double) this.least / this.getDivisor(),
+				(double) this.increment / this.getDivisor());
 	}
 
 	@Override

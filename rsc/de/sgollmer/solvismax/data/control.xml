@@ -235,13 +235,13 @@
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
-		<tns:Screen id="Heizkreis1 5_5" backId="Heizkreise"
-			previousId="Heizkreis1 1_5">
+		<tns:Screen id="Heizkreis1 4_5" backId="Heizkreise"
+			previousId="Heizkreis1 5_5" mustSave="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="15/5">
+			<tns:ScreenOcr value="14/5">
 				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
@@ -253,13 +253,13 @@
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
-		<tns:Screen id="Heizkreis1 4_5" backId="Heizkreise"
-			previousId="Heizkreis1 5_5" mustSave="true">
+		<tns:Screen id="Heizkreis1 5_5" backId="Heizkreise"
+			previousId="Heizkreis1 1_5">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="14/5">
+			<tns:ScreenOcr value="15/5">
 				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
@@ -325,28 +325,6 @@
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
-		<tns:Screen id="Heizkreis2 5_5" backId="Heizkreise"
-			previousId="Heizkreis2 1_5">
-			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x02"
-					compareMask="0x02" />
-			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="225" Y="25" />
-			</tns:TouchPoint>
-			<tns:ScreenOcr value="25/5">
-				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="13" />
-				</tns:Rectangle>
-			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
-			<tns:IgnoreRectangle>
-				<tns:TopLeft X="145" Y="15" />
-				<tns:BottomRight X="205" Y="65" />
-			</tns:IgnoreRectangle>
-		</tns:Screen>
 		<tns:Screen id="Heizkreis2 4_5" backId="Heizkreise"
 			previousId="Heizkreis2 5_5" mustSave="true">
 			<tns:Configuration>
@@ -358,6 +336,28 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="24/5">
+				<tns:Rectangle>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="13" />
+				</tns:Rectangle>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="145" Y="15" />
+				<tns:BottomRight X="205" Y="65" />
+			</tns:IgnoreRectangle>
+		</tns:Screen>
+		<tns:Screen id="Heizkreis2 5_5" backId="Heizkreise"
+			previousId="Heizkreis2 1_5">
+			<tns:Configuration>
+				<tns:ConfigurationMask andMask="0x02"
+					compareMask="0x02" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="25/5">
 				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
@@ -423,28 +423,6 @@
 			</tns:ScreenOcr>
 			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
-		<tns:Screen id="Heizkreis3 5_5" backId="Heizkreise"
-			previousId="Heizkreis3 1_5">
-			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x04"
-					compareMask="0x04" />
-			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
-				<tns:Coordinate X="225" Y="25" />
-			</tns:TouchPoint>
-			<tns:ScreenOcr value="35/5">
-				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
-					<tns:BottomRight X="198" Y="13" />
-				</tns:Rectangle>
-			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
-			<tns:IgnoreRectangle>
-				<tns:TopLeft X="145" Y="15" />
-				<tns:BottomRight X="205" Y="65" />
-			</tns:IgnoreRectangle>
-		</tns:Screen>
 		<tns:Screen id="Heizkreis3 4_5" backId="Heizkreise"
 			previousId="Heizkreis3 5_5" mustSave="true">
 			<tns:Configuration>
@@ -456,6 +434,28 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="34/5">
+				<tns:Rectangle>
+					<tns:TopLeft X="163" Y="2" />
+					<tns:BottomRight X="198" Y="13" />
+				</tns:Rectangle>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis" />
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="145" Y="15" />
+				<tns:BottomRight X="205" Y="65" />
+			</tns:IgnoreRectangle>
+		</tns:Screen>
+		<tns:Screen id="Heizkreis3 5_5" backId="Heizkreise"
+			previousId="Heizkreis3 1_5">
+			<tns:Configuration>
+				<tns:ConfigurationMask andMask="0x04"
+					compareMask="0x04" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="25" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="35/5">
 				<tns:Rectangle>
 					<tns:TopLeft X="163" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
@@ -1435,8 +1435,9 @@
 				<tns:Field position="114" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="A01.Pumpe_Solar" unit="%">
-			<tns:Measurement type="unsigned" >
+		<tns:ChannelDescription id="A01.Pumpe_Solar"
+			unit="%">
+			<tns:Measurement type="unsigned">
 				<tns:Field position="118" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1476,7 +1477,8 @@
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="A07.Pumpe_Solar2" unit="%">
+		<tns:ChannelDescription id="A07.Pumpe_Solar2"
+			unit="%">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x10"
 					compareMask="0x10" />
@@ -1708,7 +1710,7 @@
 					</tns:ModeEntry>
 				</tns:TypeMode>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1735,7 +1737,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1791,7 +1793,7 @@
 					</tns:ModeEntry>
 				</tns:TypeMode>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1850,7 +1852,7 @@
 					</tns:ModeEntry>
 				</tns:TypeMode>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1883,7 +1885,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1916,7 +1918,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1947,7 +1949,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -1981,7 +1983,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2009,7 +2011,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2080,7 +2082,7 @@
 					</tns:ModeEntry>
 				</tns:TypeMode>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2113,7 +2115,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2146,7 +2148,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2178,7 +2180,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2210,7 +2212,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2285,7 +2287,7 @@
 					</tns:ModeEntry>
 				</tns:TypeMode>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2318,7 +2320,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2351,7 +2353,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2383,7 +2385,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2415,7 +2417,7 @@
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2495,7 +2497,7 @@
 				<tns:TypeButton pushTimeId="Standard"
 					releaseTimeId="WindowChange" />
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -2511,7 +2513,79 @@
 				<tns:TypeButton pushTimeId="Standard"
 					releaseTimeId="WindowChange" />
 				<tns:UpdateBy>
-					<tns:ScreenChange />
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<!-- tns:ChannelDescription
+			id="C28.BetriebsartVT_HK1">
+			<tns:Configuration admin="true" />
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis1 2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="150" Y="19" />
+						<tns:BottomRight X="195" Y="31" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeMode>
+					<tns:ModeEntry id="Kurve">
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="WindowChange">
+								<tns:Coordinate X="145" Y="25" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="BetriebsartVT_Kurve">
+							</tns:ScreenGrafic>
+						</tns:GuiSet>
+						<tns:MustBeWhite>
+							<tns:TopLeft X="130" Y="70" />
+							<tns:BottomRight X="215" Y="95" />
+						</tns:MustBeWhite>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Fix">
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="WindowChange">
+								<tns:Coordinate X="145" Y="25" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="BetriebsartVT_Fix">
+							</tns:ScreenGrafic>
+						</tns:GuiSet>
+						<tns:MustBeWhite invertFunction="true">
+							<tns:TopLeft X="130" Y="70" />
+							<tns:BottomRight X="215" Y="95" />
+						</tns:MustBeWhite>
+					</tns:ModeEntry>
+				</tns:TypeMode>
+			</tns:Control>
+		</tns:ChannelDescription -->
+		<tns:ChannelDescription id="C29.Steilheit_HK1">
+			<tns:Configuration admin="true" />
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis1 2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="47" />
+						<tns:BottomRight X="195" Y="59" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite divisor="100" increment="5"
+					most="250" least="20">
+					<tns:GuiModification
+						format="(?&lt;integerPlaces&gt;\d*?)\.(?&lt;decimalPlaces&gt;\d*?)"
+						wrapAround="true">
+
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="205" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>

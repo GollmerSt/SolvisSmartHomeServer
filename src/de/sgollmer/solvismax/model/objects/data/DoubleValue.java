@@ -7,6 +7,8 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
+import java.util.Locale;
+
 import de.sgollmer.solvismax.Constants;
 
 public class DoubleValue extends SingleData<Double> {
@@ -18,12 +20,11 @@ public class DoubleValue extends SingleData<Double> {
 		this.value = value;
 	}
 
-
 	@Override
 	public Boolean getBoolean() {
 		return null;
 	}
-	
+
 	@Override
 	public Integer getInt() {
 		return (int) Math.round(this.value);
@@ -41,12 +42,12 @@ public class DoubleValue extends SingleData<Double> {
 
 	@Override
 	public String toString() {
-		return Double.toString(this.value);
+		return String.format(Locale.US, "%1.4f", this.value);
 	}
 
 	@Override
 	public String toJson() {
-		return this.toString();
+		return Double.toString(this.value);
 	}
 
 	@Override

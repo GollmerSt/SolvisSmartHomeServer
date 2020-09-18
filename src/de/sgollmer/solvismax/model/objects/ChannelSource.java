@@ -29,7 +29,7 @@ public abstract class ChannelSource implements IChannelSource {
 	}
 
 	@Override
-	public boolean isScreenChangeDependend() {
+	public boolean isHumanAccessDependend() {
 		return false;
 	}
 

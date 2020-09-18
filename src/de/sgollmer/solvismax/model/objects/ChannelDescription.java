@@ -261,8 +261,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public boolean isScreenChangeDependend() {
-		return this.channelSource.isScreenChangeDependend();
+	public boolean isHumanAccessDependend() {
+		return this.channelSource.isHumanAccessDependend();
 	}
 
 	@Override

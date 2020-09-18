@@ -81,14 +81,14 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public UpperLowerStep getUpperLowerStep();
 
-	public boolean isScreenChangeDependend();
+	public boolean isHumanAccessDependend();
 
 	public static class UpperLowerStep {
 		private final double upper;
 		private final double lower;
 		private final double step;
 
-		public UpperLowerStep(float upper, float lower, float step) {
+		public UpperLowerStep(double upper, double lower, double step) {
 			this.upper = upper;
 			this.lower = lower;
 			this.step = step;

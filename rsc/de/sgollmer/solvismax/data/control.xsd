@@ -367,7 +367,7 @@
 				(Betriebsstatus, z.B. Standby)</documentation>
 		</annotation>
 		<sequence>
-            <element name="GuiSet" maxOccurs="1" minOccurs="0">
+			<element name="GuiSet" maxOccurs="1" minOccurs="0">
 				<complexType>
 					<sequence>
 						<element name="Touch" type="tns:TouchPoint"
@@ -394,6 +394,7 @@
 				</complexType>
 			</element>
 
+			<element name="MustBeWhite" type="tns:Rectangle" maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -655,27 +656,17 @@
 			</documentation>
 		</annotation>
 		<sequence>
-			<element name="Configuration" maxOccurs="1"
-				minOccurs="0" type="tns:Configuration">
+			<element name="Configuration" maxOccurs="1" minOccurs="0"
+				type="tns:Configuration">
 			</element>
 
 
-			<choice>
-				<element name="Calculation" type="tns:Calculation"
-					maxOccurs="1" minOccurs="1">
-				</element>
-				<sequence minOccurs="1" maxOccurs="1">
-					<choice maxOccurs="1" minOccurs="0">
-						<element name="Measurement"
-							type="tns:Measurement" maxOccurs="1" minOccurs="1">
-						</element>
-						<element name="Control" type="tns:Control"
-							maxOccurs="1" minOccurs="1">
-						</element>
-					</choice>
-				</sequence>
-
-			</choice>
+			<sequence maxOccurs="1" minOccurs="1">
+				<choice maxOccurs="1" minOccurs="1"><element name="Calculation" type="tns:Calculation" maxOccurs="1" minOccurs="1">
+						</element><element name="Measurement" type="tns:Measurement" maxOccurs="1" minOccurs="1">
+						</element><element name="Control" type="tns:Control" maxOccurs="1" minOccurs="1">
+						</element></choice>
+			</sequence>
 		</sequence>
 
 		<attribute name="id" type="string" use="required"></attribute>
@@ -781,7 +772,7 @@
 		</attribute>
 	</complexType>
 
-	<complexType name="ScreenChange">
+	<complexType name="HumanAccess">
 		<annotation>
 			<documentation>Definiert die Abhängigkeit der Definition von einer
 				Bildschirmänderung.
@@ -864,7 +855,7 @@
 			<element name="EquipmentOnOff" type="tns:EquipmentOnOff"
 				maxOccurs="1" minOccurs="0">
 			</element>
-			<element name="ScreenChange" type="tns:ScreenChange"
+			<element name="HumanAccess" type="tns:HumanAccess"
 				maxOccurs="1" minOccurs="0"></element>
 			<element name="SolvisHeatingData"
 				type="tns:SolvisHeatingData" maxOccurs="1" minOccurs="0">
@@ -1310,16 +1301,17 @@
 	<complexType name="GuiRead">
 		<attribute name="format" type="string" use="required">
 			<annotation>
-				<documentation> Der Format-String dient zur Extraktion der
-					Daten aus einem String
+				<documentation> Der Format-String dient zur Extraktion der Daten aus einem String.
 
-					Er besteht aus folgenden zeichen:
+Es handlet sich dabei um einen regulären Ausdruck.
 
-					C: beliebiges Zeichen, wird ignoriert 0:
-					Ziffer oder +/-, muss vorhanden sein, wird
-					übernommen #: Ziffer oder +/- optional, wird
-					übernommen
-				</documentation>
+Die Gruppen des Suchausdrucks werden einfach hintereinandergehängt und als Daten verwendet.
+
+Enthält der reguläre Ausdruck jedoch die Gruppen "integerPlaces" oder "decimalPlaces" so handelt es sich bei dem Wert um
+eine zu interpretierende Fließkommazahl. Inm diesem fall werden dann nur nach den Gruppen "sign", "integerPlaces" und "decimalPlaces" gesucht.
+Das ergebnis wird dann wie folgt zusammengestellt: ${sign}${integerPlaces}.${decimalPlaces}.
+
+</documentation>
 			</annotation>
 		</attribute>
 	</complexType>
@@ -1348,18 +1340,19 @@
 		<attribute name="format" type="string" use="required">
 			<annotation>
 				<documentation>
-					Der Format-String dient zur Extraktion der Daten aus
-					einem String
+					Der Format-String dient zur Extraktion der Daten aus einem String.
 
-					Er besteht aus folgenden zeichen:
+Es handlet sich dabei um einen regulären Ausdruck.
 
-					C: beliebiges Zeichen, wird ignoriert 0: Ziffer oder
-					+/-, muss vorhanden sein, wird übernommen #: Ziffer
-					oder +/- optional, wird übernommen
+Die Gruppen des Suchausdrucks werden einfach hintereinandergehängt und als Daten verwendet.
+
+Enthält der reguläre Ausdruck jedoch die Gruppen "integerPlaces" oder "decimalPlaces" so handelt es sich bei dem Wert um
+eine zu interpretierende Fließkommazahl. Inm diesem fall werden dann nur nach den Gruppen "sign", "integerPlaces" und "decimalPlaces" gesucht.
+Das ergebnis wird dann wie folgt zusammengestellt: ${sign}${integerPlaces}.${decimalPlaces}.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="wrapAround" type="boolean"></attribute>
+		<attribute name="wrapAround" type="boolean" use="optional"></attribute>
 	</complexType>
 
 

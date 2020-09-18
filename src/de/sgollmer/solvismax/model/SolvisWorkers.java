@@ -214,7 +214,7 @@ public class SolvisWorkers {
 					this.insertCommand(restoreCommand, executeCommand, true);
 				}
 				logger.debug("Command <" + commandString + "> executed "
-						+ (status == Status.NO_SUCCESS ? "not " : "" + "successfull"));
+						+ (status == Status.NO_SUCCESS ? "not " : "") + "successfull");
 			}
 			return new ExecutedCommand(executeCommand, status);
 		}

@@ -12,7 +12,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
+
 public class Helper {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(Helper.class);
 
 	public static class Format {
 		private final Pattern pattern;
@@ -27,8 +32,32 @@ public class Helper {
 			if (!matcher.matches()) {
 				return null;
 			} else {
-				for (int i = 1; i <= matcher.groupCount(); ++i) {
-					builder.append(matcher.group(i));
+				String integerPlaces = null;
+				String decimalPlaces = null;
+				String sign = null;
+				try {
+					integerPlaces = matcher.group("integerPlaces");
+					decimalPlaces = matcher.group("decimalPlaces");
+					logger.debug("A value with decimal places is expected" );
+					sign = matcher.group("sign");
+				} catch (IllegalArgumentException e) {
+				}
+
+				if (integerPlaces == null && decimalPlaces == null) {
+					for (int i = 1; i <= matcher.groupCount(); ++i) {
+						builder.append(matcher.group(i));
+					}
+				} else {
+					if (sign != null && sign.equals("-")) {
+						builder.append('-');
+					}
+					if (integerPlaces != null) {
+						builder.append(integerPlaces);
+					}
+					builder.append('.');
+					if (decimalPlaces != null) {
+						builder.append(decimalPlaces);
+					}
 				}
 				return builder.toString();
 			}

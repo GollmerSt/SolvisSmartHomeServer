@@ -1,5 +1,15 @@
 A E N D E R U N G E N
 
+Version 01.02.04 rc1
+
+    18.09.2020  C29.Steilheit_HK1 neu. Aktuell offenes Problem:
+                Dieser Wert ist nur gültig, wenn die Betriebsart Vorlauf-Temperatur auf "Kurve" steht.
+                Wenn auf "Fix", gibt es feste Vorlauftemperaturen und zwar "Fix-Vorlauf Tag" und
+                "Fix-Vorlauf Absenk".
+                Es müsste noch eine Dependency eingeführt werden, so dass die Auswertung von den obigen
+                Status abhängig ist (nur bei Kurve).
+                
+
 Version 01.02.03
 
     14.09.2020  A01, A01 sowie bei einem System mit 2 Solarpumpen erfolgt die Ausgabe nun in Prozent.

@@ -185,8 +185,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean isScreenChangeDependend() {
-		return this.updateStrategies == null ? false : this.updateStrategies.isScreenChangeDependend();
+	public boolean isHumanAccessDependend() {
+		return this.updateStrategies == null ? false : this.updateStrategies.isHumanAccessDependend();
 	}
 
 	public static class Creator extends CreatorByXML<Control> {

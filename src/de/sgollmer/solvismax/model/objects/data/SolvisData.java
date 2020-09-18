@@ -120,48 +120,47 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		boolean changed = false;
 
 		if (data.getTimeStamp() > 0 && this.pendingData != null) {
-			
+
 			if (data.equals(this.pendingData)) {
-				
+
 				if (data.getTimeStamp() > this.pendingData.getTimeStamp()
 						+ this.description.getGlitchInhibitTime_ms()) {
-					
+
 					glitchInhibitEnabled = false;
 					this.pendingData = null;
 					changed = true;
 				}
 			} else {
-				
+
 				this.pendingData = data;
 			}
 		} else if (!data.equals(this.data)) {
-			
+
 			if (glitchInhibitEnabled && data.getTimeStamp() > 0) {
-				
+
 				this.pendingData = data;
 			} else {
-				
+
 				changed = true;
 			}
 		}
-		
-		if ( ! glitchInhibitEnabled) {
+
+		if (!glitchInhibitEnabled) {
 			this.data = data;
 		}
 
-
 		if (changed || status == Status.VALUE_VIOLATION) {
-			
+
 			if (!this.description.isWriteable() || !this.datas.getSolvis().willBeModified(this)
 					|| status == Status.VALUE_VIOLATION) {
-				
+
 				this.notify(this, source);
 			}
 			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
 		}
-		
+
 		if (this.continousObservable != null) {
-			
+
 			this.continousObservable.notify(this, source);
 		}
 	}
@@ -195,6 +194,24 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
 	}
 
+	public Double getDouble() throws TypeException {
+		SingleData<?> data = this.data;
+		if (data == null) {
+			return null;
+		} else if (data instanceof DoubleValue) {
+			return ((DoubleValue) data).get();
+
+		} else if ((data instanceof IntegerValue)) {
+			Integer i = ((IntegerValue) data).get();
+			if (i == null) {
+				return null;
+			} else
+				return (double) i;
+		} else {
+			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
+		}
+	}
+
 	public int getInt() throws TypeException {
 		Integer value = this.getInteger();
 		if (value == null) {
@@ -218,8 +235,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (data == null) {
 			return null;
 		}
-		Boolean bool = this.data.getBoolean() ;
-		if (bool == null ) {
+		Boolean bool = this.data.getBoolean();
+		if (bool == null) {
 			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
 		return bool;
@@ -296,6 +313,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	/**
 	 * Get the time stamp of the last measurement
+	 * 
 	 * @return
 	 */
 	public long getTimeStamp() {

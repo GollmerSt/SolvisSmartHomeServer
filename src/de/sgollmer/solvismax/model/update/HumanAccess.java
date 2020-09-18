@@ -17,14 +17,14 @@ import de.sgollmer.solvismax.model.update.UpdateStrategies.UpdateCreator;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ByScreenChange extends Strategy<ByScreenChange> {
+public class HumanAccess extends Strategy<HumanAccess> {
 
-	private static ByScreenChange getInstance() {
+	private static HumanAccess getInstance() {
 		return ByScreenChangeHolder.INSTANCE;
 	}
 
 	private static class ByScreenChangeHolder {
-		private static final ByScreenChange INSTANCE = new ByScreenChange();
+		private static final HumanAccess INSTANCE = new HumanAccess();
 	}
 
 	@Override
@@ -32,11 +32,11 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 	}
 
 	@Override
-	public boolean isScreenChangeDependend() {
+	public boolean isHumanAccessDependend() {
 		return true;
 	}
 
-	static class Creator extends UpdateCreator<ByScreenChange> {
+	static class Creator extends UpdateCreator<HumanAccess> {
 
 		Creator() {
 			super(null, null);
@@ -52,8 +52,8 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 		}
 
 		@Override
-		public ByScreenChange create() throws XmlException {
-			return ByScreenChange.getInstance();
+		public HumanAccess create() throws XmlException {
+			return HumanAccess.getInstance();
 		}
 
 		@Override
@@ -67,7 +67,7 @@ public class ByScreenChange extends Strategy<ByScreenChange> {
 		}
 
 		@Override
-		public UpdateCreator<ByScreenChange> createCreator(String id, BaseCreator<?> creator) {
+		public UpdateCreator<HumanAccess> createCreator(String id, BaseCreator<?> creator) {
 			return new Creator(id, creator);
 		}
 

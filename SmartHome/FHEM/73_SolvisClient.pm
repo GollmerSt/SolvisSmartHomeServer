@@ -1023,7 +1023,9 @@ sub Set {
                     return "unknown value $value choose one of on off";
                 }
             } else {
-                $value = int($value) ;
+				my $factor = int(1.0 / $ChannelDescriptions{$channel}{Accuracy} + 0.5);
+                $value = int($value * $factor + 0.5) ;
+				$value /= $factor;
             }
             SendSetData($self, $channel, $value) ;
         } else {

@@ -39,7 +39,7 @@ public class UpdateStrategies implements IAssigner {
 
 	public enum StrategyEnum {
 
-		SCREEN_CHANGED(new ByScreenChange.Creator(), "ScreenChange"),
+		HUMAN_ACCESS(new HumanAccess.Creator(), "HumanAccess"),
 		EQUIPMENT_ON_OFF(new EquipmentOnOff.Creator(), "EquipmentOnOff");
 
 		private final UpdateCreator<?> creator;
@@ -77,7 +77,7 @@ public class UpdateStrategies implements IAssigner {
 			this.source = source;
 		}
 
-		public boolean isScreenChangeDependend() {
+		public boolean isHumanAccessDependend() {
 			return false;
 		}
 
@@ -144,9 +144,9 @@ public class UpdateStrategies implements IAssigner {
 		}
 	}
 
-	public boolean isScreenChangeDependend() {
+	public boolean isHumanAccessDependend() {
 		for (Strategy<?> strategy : this.strategies) {
-			if (strategy.isScreenChangeDependend()) {
+			if (strategy.isHumanAccessDependend()) {
 				return true;
 			}
 		}

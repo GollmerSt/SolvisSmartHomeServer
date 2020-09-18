@@ -195,12 +195,12 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	public void updateByHumanAccessFinished(Solvis solvis) {
 
-		this.updateChannels(solvis, Type.SCREEN_DEPENDEND,
+		this.updateChannels(solvis, Type.HUMAN_ACCESS_DEPENDEND,
 				new Reference<Map<ChannelConfig, Collection<ChannelDescription>>>(this.updateByScreenChangeSequences));
 	}
 
 	private enum Type {
-		ALL_CONTROL, READONLY, WRITEABLE, SCREEN_DEPENDEND
+		ALL_CONTROL, READONLY, WRITEABLE, HUMAN_ACCESS_DEPENDEND
 	}
 	
 	private static class ChannelConfig {
@@ -252,8 +252,8 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 						case WRITEABLE:
 							add = description.isWriteable() && description.getType() == IChannelSource.Type.CONTROL;
 							break;
-						case SCREEN_DEPENDEND:
-							add = description.isScreenChangeDependend();
+						case HUMAN_ACCESS_DEPENDEND:
+							add = description.isHumanAccessDependend();
 					}
 					if (add) {
 						descriptions.add(description);
