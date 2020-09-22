@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -22,6 +22,7 @@ import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.IMode;
+import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class BurnerStatus extends Strategy<BurnerStatus> {
@@ -41,7 +42,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		return new BurnerStatus(calculation);
 	}
 
-	private enum Status implements IMode {
+	private enum Status implements IMode<Status> {
 		OFF("off"), LEVEL1("Stufe1"), LEVEL2("Stufe2");
 
 		private String name;
@@ -54,6 +55,11 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		public String getName() {
 			return this.name;
 		}
+
+		@Override
+		public ModeValue<?> create(long timeStamp) {
+			return new ModeValue<>(this, timeStamp);
+		}
 	}
 
 	@Override
@@ -62,7 +68,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	}
 
 	@Override
-	void instantiate(Solvis solvis) throws AssignmentException, DependencyException {
+	void instantiate(Solvis solvis) throws AssignmentException, AliasException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		Dependencies dependencies = this.calculation.getDependencies();
 
@@ -131,7 +137,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	}
 
 	@Override
-	Collection<IMode> getModes() {
+	Collection<IMode<?>> getModes() {
 		return Arrays.asList(Status.values());
 	}
 

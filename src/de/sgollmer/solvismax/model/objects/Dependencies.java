@@ -10,18 +10,18 @@ package de.sgollmer.solvismax.model.objects;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class Dependencies implements IAssigner {
-	private final Collection<Dependency> collection = new ArrayList<>(2);
+	private final Collection<Alias> collection = new ArrayList<>(2);
 
-	public void add(Dependency dependency) {
+	public void add(Alias dependency) {
 		this.collection.add(dependency);
 	}
 
-	public Dependency get(String id) {
-		for (Dependency d : this.collection) {
+	public Alias get(String id) {
+		for (Alias d : this.collection) {
 			if (d.getId().equals(id)) {
 				return d;
 			}
@@ -29,22 +29,22 @@ public class Dependencies implements IAssigner {
 		return null;
 	}
 
-	public SolvisData get(AllSolvisData allData, String id) throws DependencyException {
-		Dependency dependency = this.get(id);
+	public SolvisData get(AllSolvisData allData, String id) throws AliasException {
+		Alias dependency = this.get(id);
 		if (dependency == null) {
-			throw new DependencyException("Dependency error: <" + id + "> unknown");
+			throw new AliasException("Alias error: <" + id + "> unknown");
 		}
 
 		ChannelDescription description = allData.getSolvis().getChannelDescription(dependency.getDataId());
 		if (description == null) {
-			throw new DependencyException("Dependency error: <" + dependency.getDataId() + "> unknown");
+			throw new AliasException("Alias error: <" + dependency.getDataId() + "> unknown");
 		}
 		return allData.get(description);
 	}
 
 	@Override
 	public void assign(SolvisDescription description) {
-		for (Dependency d : this.collection) {
+		for (Alias d : this.collection) {
 			d.assign(description);
 		}
 	}

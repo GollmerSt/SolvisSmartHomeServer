@@ -14,10 +14,9 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -28,6 +27,7 @@ import de.sgollmer.solvismax.model.objects.calculation.Calculation;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.control.Control;
+import de.sgollmer.solvismax.model.objects.control.Dependency;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -74,20 +74,20 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	public boolean getValue(Solvis solvis)
-			throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
+			throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
 		return this.getValue(data, solvis);
 	}
 
 	@Override
 	public boolean getValue(SolvisData dest, Solvis solvis)
-			throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
+			throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		return this.channelSource.getValue(dest, solvis);
 	}
 
 	@Override
 	public SetResult setValue(Solvis solvis, SolvisData value)
-			throws IOException, TerminationException, ModbusException {
+			throws IOException, TerminationException {
 		return this.channelSource.setValue(solvis, value);
 	}
 
@@ -129,7 +129,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) throws AssignmentException, DependencyException {
+	public void instantiate(Solvis solvis) throws AssignmentException, AliasException {
 		this.channelSource.instantiate(solvis);
 
 	}
@@ -208,7 +208,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException, ModbusException {
+	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException {
 		this.channelSource.learn(solvis);
 
 	}
@@ -224,7 +224,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public Collection<? extends IMode> getModes() {
+	public Collection<? extends IMode<?>> getModes() {
 		return this.channelSource.getModes();
 	}
 
@@ -283,6 +283,12 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 
 	public int getGlitchInhibitTime_ms() {
 		return this.glitchInhibitTime_ms;
+	}
+
+	@Override
+	public Dependency getDependency() {
+		// TODO Auto-generated method stub
+		return this.channelSource.getDependency();
 	}
 
 }

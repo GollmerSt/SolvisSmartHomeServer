@@ -73,4 +73,14 @@ public class DateValue extends SingleData<Calendar> {
 		return this.calendar;
 	}
 
+	@Override
+	public int compareTo(SingleData<?> o) {
+		if (o instanceof DateValue) {
+			return this.calendar.compareTo(((DateValue)o).calendar);
+		} else if (o != null) {
+			return this.getClass().getCanonicalName().compareTo(o.getClass().getCanonicalName());
+		} else {
+			return 1;
+		}
+	}
 }

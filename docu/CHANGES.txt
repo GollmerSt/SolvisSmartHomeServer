@@ -9,6 +9,9 @@ Version 01.02.04 rc1
                 Es müsste noch eine Dependency eingeführt werden, so dass die Auswertung von den obigen
                 Status abhängig ist (nur bei Kurve).
                 
+                C28.BetriebsartVT_HK1 neu.
+                
+                
 
 Version 01.02.03
 

@@ -33,6 +33,7 @@ import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
+import de.sgollmer.solvismax.model.objects.WhiteGraficRectangle;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
@@ -806,56 +807,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public boolean isNoRestore() {
 		return this.noRestore;
-	}
-
-	private static class WhiteGraficRectangle implements IScreenPartCompare {
-
-		private Rectangle rectangle;
-
-		public WhiteGraficRectangle(Rectangle rectangle) {
-			this.rectangle = rectangle;
-		}
-
-		@Override
-		public boolean isElementOf(MyImage image, Solvis solvis) {
-			return image.isWhite(this.rectangle) != this.rectangle.isInvertFunction();
-		}
-
-		public static class Creator extends CreatorByXML<WhiteGraficRectangle> {
-
-			private final Rectangle.Creator rectangeleCreator;;
-
-			public Creator(String id, BaseCreator<?> creator) {
-				super(id, creator);
-				this.rectangeleCreator = new Rectangle.Creator(id, creator);
-			}
-
-			@Override
-			public void setAttribute(QName name, String value) {
-				this.rectangeleCreator.setAttribute(name, value);
-
-			}
-
-			@Override
-			public WhiteGraficRectangle create()
-					throws XmlException, IOException, AssignmentException, ReferenceException {
-				Rectangle rectangle = this.rectangeleCreator.create();
-				return new WhiteGraficRectangle(rectangle);
-			}
-
-			@Override
-			public CreatorByXML<?> getCreator(QName name) {
-				return this.rectangeleCreator.getCreator(name);
-			}
-
-			@Override
-			public void created(CreatorByXML<?> creator, Object created) throws XmlException {
-				this.rectangeleCreator.created(creator, created);
-
-			}
-
-		}
-
 	}
 
 }

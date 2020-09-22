@@ -10,7 +10,6 @@ package de.sgollmer.solvismax.model.objects.control;
 import java.io.IOException;
 import java.util.List;
 
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
@@ -26,10 +25,10 @@ import de.sgollmer.solvismax.objects.Rectangle;
 public interface IStrategy extends IAssigner {
 
 	SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess, boolean optional)
-			throws TerminationException, IOException, ModbusException;
+			throws TerminationException, IOException;
 
 	SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
-			throws IOException, TerminationException, TypeException, ModbusException;
+			throws IOException, TerminationException, TypeException;
 
 	boolean isWriteable();
 
@@ -37,7 +36,7 @@ public interface IStrategy extends IAssigner {
 
 	Double getAccuracy();
 
-	List<? extends IMode> getModes();
+	List<? extends IMode<?>> getModes();
 
 	UpperLowerStep getUpperLowerStep();
 
@@ -48,7 +47,7 @@ public interface IStrategy extends IAssigner {
 	boolean mustBeLearned();
 
 	boolean learn(Solvis solvis, IControlAccess controlAccess)
-			throws IOException, ModbusException, TerminationException;
+			throws IOException, TerminationException;
 
 	SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
 

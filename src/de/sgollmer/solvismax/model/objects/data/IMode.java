@@ -7,6 +7,9 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
-public interface IMode {
-	public String getName();
+public interface IMode<C> extends Comparable<C>{
+	
+	public String getName() ;
+	
+	public ModeValue<?> create( long timeStamp);
 }

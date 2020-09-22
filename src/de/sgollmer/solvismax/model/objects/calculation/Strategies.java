@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.model.objects.calculation;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
@@ -58,9 +58,9 @@ public enum Strategies {
 			return true; // i.g. solvis data contains the current value
 		}
 
-		abstract void instantiate(Solvis solvis) throws AssignmentException, DependencyException;
+		abstract void instantiate(Solvis solvis) throws AssignmentException, AliasException;
 
-		Collection<IMode> getModes() {
+		Collection<IMode<?>> getModes() {
 			return null;
 		}
 

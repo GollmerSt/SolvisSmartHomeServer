@@ -18,10 +18,9 @@ import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlException;
@@ -75,7 +74,7 @@ public class Instances {
 	}
 
 	public void learn(boolean force) throws IOException, LearningException, XMLStreamException, FileException,
-			TerminationException, ModbusException {
+			TerminationException {
 		boolean learned = true;
 		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
 		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);
@@ -95,7 +94,7 @@ public class Instances {
 	}
 
 	public boolean init()
-			throws IOException, XMLStreamException, LearningException, AssignmentException, DependencyException {
+			throws IOException, XMLStreamException, LearningException, AssignmentException, AliasException {
 		for (Solvis solvis : this.units) {
 			if (!solvis.getGrafics().isEmpty()) {
 				solvis.init();

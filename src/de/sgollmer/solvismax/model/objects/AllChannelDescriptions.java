@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,19 +22,19 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
-import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
+import de.sgollmer.solvismax.model.objects.control.Dependency;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
@@ -49,7 +50,8 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	private Map<ChannelConfig, Collection<ChannelDescription>> updateControlChannelsSequences = new HashMap<>(3);
 	private Map<ChannelConfig, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>(3);
-	private Map<ChannelConfig, Collection<ChannelDescription>> updateReadOnlyControlChannelsSequences = new HashMap<>(3);
+	private Map<ChannelConfig, Collection<ChannelDescription>> updateReadOnlyControlChannelsSequences = new HashMap<>(
+			3);
 
 	private void addDescription(ChannelDescription description) throws XmlException {
 		OfConfigs<ChannelDescription> channelConf = this.descriptions.get(description.getId());
@@ -123,7 +125,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException, ModbusException {
+	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
 			if (description != null && description instanceof IGraficsLearnable) {
@@ -133,7 +135,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	}
 
 	public void measure(Solvis solvis, AllSolvisData datas)
-			throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
+			throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		solvis.clearMeasuredData();
 		solvis.getMeasureData();
 		solvis.getDistributor().setBurstUpdate(true);
@@ -152,14 +154,12 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 			throw e;
 		} catch (TerminationException e) {
 			throw e;
-		} catch (ModbusException e) {
-			throw e;
 		} finally {
 			solvis.getDistributor().setBurstUpdate(false);
 		}
 	}
 
-	public void init(Solvis solvis) throws IOException, AssignmentException, DependencyException {
+	public void init(Solvis solvis) throws IOException, AssignmentException, AliasException {
 		AllSolvisData datas = solvis.getAllSolvisData();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
@@ -182,40 +182,34 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 //	private Map<ConfigurationMask, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>();
 
 	public void updateControlChannels(Solvis solvis) {
-
-		this.updateChannels(solvis, Type.ALL_CONTROL,
-				new Reference<Map<ChannelConfig, Collection<ChannelDescription>>>(this.updateControlChannelsSequences));
+		this.updateChannels(solvis, Type.ALL_CONTROL, this.updateControlChannelsSequences);
 	}
 
 	public void updateReadOnlyControlChannels(Solvis solvis) {
-
-		this.updateChannels(solvis, Type.READONLY, new Reference<Map<ChannelConfig, Collection<ChannelDescription>>>(
-				this.updateReadOnlyControlChannelsSequences));
+		this.updateChannels(solvis, Type.READONLY, this.updateReadOnlyControlChannelsSequences);
 	}
 
 	public void updateByHumanAccessFinished(Solvis solvis) {
-
-		this.updateChannels(solvis, Type.HUMAN_ACCESS_DEPENDEND,
-				new Reference<Map<ChannelConfig, Collection<ChannelDescription>>>(this.updateByScreenChangeSequences));
+		this.updateChannels(solvis, Type.HUMAN_ACCESS_DEPENDEND, this.updateByScreenChangeSequences);
 	}
 
 	private enum Type {
 		ALL_CONTROL, READONLY, WRITEABLE, HUMAN_ACCESS_DEPENDEND
 	}
-	
+
 	private static class ChannelConfig {
-		private final boolean admin ;
+		private final boolean admin;
 		private final int configurationMask;
-		
+
 		public ChannelConfig(Solvis solvis) {
-			this.admin = solvis.isAdmin() ;
+			this.admin = solvis.isAdmin();
 			this.configurationMask = solvis.getConfigurationMask();
 		}
-		
+
 		@Override
-		public boolean equals( Object obj ) {
-			if ( !(obj instanceof ChannelConfig )) {
-				return false ;
+		public boolean equals(Object obj) {
+			if (!(obj instanceof ChannelConfig)) {
+				return false;
 			} else {
 				ChannelConfig cmp = (ChannelConfig) obj;
 				return this.admin == cmp.admin && this.configurationMask == cmp.configurationMask;
@@ -224,15 +218,14 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 		@Override
 		public int hashCode() {
-			return (Integer.hashCode(this.configurationMask) * 449) + Boolean.hashCode(this.admin) * 53 + 751; 
+			return (Integer.hashCode(this.configurationMask) * 449) + Boolean.hashCode(this.admin) * 53 + 751;
 		}
 	}
 
-	private void updateChannels(Solvis solvis, Type type,
-			Reference<Map<ChannelConfig, Collection<ChannelDescription>>> destin) {
-		
+	private void updateChannels(Solvis solvis, Type type, Map<ChannelConfig, Collection<ChannelDescription>> destin) {
+
 		ChannelConfig config = new ChannelConfig(solvis);
-		Collection<ChannelDescription> descriptions = destin.get().get(config);
+		Collection<ChannelDescription> descriptions = destin.get(config);
 
 		if (descriptions == null) {
 
@@ -261,7 +254,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 				}
 			}
 			descriptions = this.optimize((List<ChannelDescription>) descriptions, solvis);
-			destin.get().put(config, descriptions);
+			destin.put(config, descriptions);
 		}
 
 		for (ChannelDescription description : descriptions) {
@@ -282,15 +275,49 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	}
 
 	private void buildOptimized(Screen start, Collection<ChannelDescription> toFind,
-			Collection<ChannelDescription> destin, Solvis solvis) {
+			Collection<ChannelDescription> destin, final Solvis solvis) {
+
+		List<ChannelDescription> channelsOfScreenChannelDescriptions = new ArrayList<>();
 
 		for (Iterator<ChannelDescription> it = toFind.iterator(); it.hasNext();) {
 			ChannelDescription oneToFind = it.next();
 			if (oneToFind.getScreen(solvis) == start) {
-				destin.add(oneToFind);
+				channelsOfScreenChannelDescriptions.add(oneToFind);
 				it.remove();
 			}
 		}
+
+		channelsOfScreenChannelDescriptions.sort(new Comparator<ChannelDescription>() {
+
+			@Override
+			public int compare(ChannelDescription o1, ChannelDescription o2) {
+				Dependency d1 = o1.getDependency();
+				Dependency d2 = o2.getDependency();
+
+				if (d1 == null && d2 == null) {
+					return 0;
+				}
+
+				if (d1 == null && d2 != null) {
+					return -1;
+				}
+
+				if (d1 != null && d2 == null) {
+					return 1;
+				}
+
+				String i1 = d1.getChannelDescription(solvis).getId();
+				String i2 = d2.getChannelDescription(solvis).getId();
+
+				if (i1.equals(i2)) {
+					return d1.getData(solvis).compareTo(d2.getData(solvis));
+				}
+				return 0;
+			}
+		});
+
+		destin.addAll(channelsOfScreenChannelDescriptions);
+
 		for (AbstractScreen next : start.getNextScreens(solvis)) {
 			if (next instanceof Screen) {
 				this.buildOptimized((Screen) next, toFind, destin, solvis);
@@ -299,7 +326,8 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	}
 
-	public Collection<ChannelDescription> getChannelDescriptions(AbstractScreen screen, Solvis solvis) {
+	public Collection<ChannelDescription> getChannelDescriptions(AbstractScreen screen, Solvis solvis)
+			throws TypeException {
 		Collection<ChannelDescription> result = new ArrayList<>();
 		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
 			ChannelDescription description = descriptionsC.get(solvis);

@@ -9,6 +9,7 @@ package de.sgollmer.solvismax.model.objects.configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.ReferenceException;
@@ -17,7 +18,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 
-public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner {
+public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner, Iterable<E> {
 	private final Collection<E> elements = new ArrayList<>(1);
 
 	public void verifyAndAdd(E element) throws XmlException {
@@ -75,6 +76,11 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner {
 		public boolean isInConfiguration(Solvis solvis);
 
 		public String getName();
+	}
+
+	@Override
+	public Iterator<E> iterator() {
+		return this.elements.iterator();
 	}
 
 }

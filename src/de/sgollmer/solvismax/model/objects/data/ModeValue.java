@@ -9,7 +9,7 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.Constants;
 
-public class ModeValue<M extends IMode> extends SingleData<M> {
+public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 
 	private final M mode;
 
@@ -66,5 +66,23 @@ public class ModeValue<M extends IMode> extends SingleData<M> {
 	public String toJson() {
 		return "\"" + this.toString() + "\"";
 	}
+	
+	@Override
+	public int compareTo(SingleData<?> o) {
+		if (o instanceof ModeValue) {
+			@SuppressWarnings("unchecked")
+			M cmp = (M) ((ModeValue<?>) o).mode;
+			if (this.mode == null) {
+				return cmp == null ? 0 : -1;
+			} else {
+				return this.mode.compareTo(cmp);
+			}
+		} else if (o != null) {
+			return this.getClass().getCanonicalName().compareTo(o.getClass().getCanonicalName());
+		} else {
+			return 1;
+		}
+	}
+
 
 }

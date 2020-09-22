@@ -9,13 +9,13 @@ package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
@@ -26,9 +26,9 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
-import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
@@ -48,9 +48,11 @@ public class StrategyMode implements IStrategy {
 	private static final String XML_MODE_ENTRY = "ModeEntry";
 
 	private final List<ModeEntry> modes;
+	private final boolean sequence;
 
-	private StrategyMode(List<ModeEntry> modes) {
+	private StrategyMode(List<ModeEntry> modes, boolean sequence) {
 		this.modes = modes;
+		this.sequence = sequence;
 	}
 
 	@Override
@@ -60,7 +62,7 @@ public class StrategyMode implements IStrategy {
 
 	@Override
 	public ModeValue<ModeEntry> getValue(SolvisScreen source, Solvis solvis, IControlAccess controlAccess,
-			boolean optional) throws IOException, ModbusException {
+			boolean optional) throws IOException {
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			MyImage image = new MyImage(source.getImage(), rectangle, true);
@@ -84,15 +86,15 @@ public class StrategyMode implements IStrategy {
 
 	@Override
 	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
-			throws IOException, TerminationException, TypeException, ModbusException {
+			throws IOException, TerminationException, TypeException {
 		if (value.getMode() == null) {
 			throw new TypeException("Wrong value type");
 		}
-		IMode valueMode = value.getMode().get();
 		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 		if (cmp != null && value.getMode().equals(cmp)) {
-			return new SetResult(Status.SUCCESS, cmp);
+			return new SetResult(ResultStatus.SUCCESS, cmp);
 		}
+		IMode<?> valueMode = value.getMode().get();
 		ModeEntry mode = null;
 		for (ModeEntry m : this.modes) {
 			if (valueMode.equals(m)) {
@@ -103,7 +105,17 @@ public class StrategyMode implements IStrategy {
 		if (mode == null) {
 			throw new TypeException("Unknown value");
 		}
-		solvis.send(mode.getGuiSet().getTouch());
+
+		int touches = this.sequence ? this.modes.size() : 1;
+
+		for (int i = 0; i < touches; ++i) {
+			solvis.send(mode.getGuiSet().getTouch());
+			cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
+			if (cmp != null && value.getMode().equals(cmp)) {
+				return new SetResult(ResultStatus.SUCCESS, cmp);
+			}
+		}
+
 		return null;
 	}
 
@@ -120,6 +132,7 @@ public class StrategyMode implements IStrategy {
 	static class Creator extends CreatorByXML<StrategyMode> {
 
 		private final List<ModeEntry> modes = new ArrayList<>(5);
+		private boolean sequence = false;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -132,7 +145,7 @@ public class StrategyMode implements IStrategy {
 
 		@Override
 		public StrategyMode create() throws XmlException {
-			return new StrategyMode(this.modes);
+			return new StrategyMode(this.modes, this.sequence);
 		}
 
 		@Override
@@ -149,7 +162,17 @@ public class StrategyMode implements IStrategy {
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
 				case XML_MODE_ENTRY:
-					this.modes.add((ModeEntry) created);
+					ModeEntry entry = (ModeEntry) created;
+					boolean byWhite = !entry.getWhiteGraficRectangles().isEmpty();
+					if (!this.modes.isEmpty() && this.sequence != byWhite) {
+						logger.error("MustBeWhite definitions of mode <" + this.getId()
+								+ "> not complete. White space detection ignored.");
+						this.sequence = false;
+					} else {
+						this.sequence = byWhite;
+					}
+					this.modes.add(entry);
+
 					break;
 			}
 
@@ -187,8 +210,7 @@ public class StrategyMode implements IStrategy {
 		return true;
 	}
 
-	@Override
-	public boolean learn(Solvis solvis, IControlAccess controlAccess) throws ModbusException, TerminationException {
+	private boolean learnByButton(Solvis solvis, IControlAccess controlAccess) throws TerminationException {
 		boolean successfull = true;
 		for (ModeEntry mode : this.getModes()) {
 			try {
@@ -209,6 +231,62 @@ public class StrategyMode implements IStrategy {
 				logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull (IOError), will be retried");
 			}
 		}
+		return successfull;
+	}
+
+	private boolean learnByWhiteRectangles(Solvis solvis, IControlAccess controlAccess) throws TerminationException {
+		boolean successfull = true;
+		List<ModeEntry> toLearn = new ArrayList<>(this.getModes());
+		try {
+			boolean abort = false;
+			while (!toLearn.isEmpty() && !abort) {
+				solvis.send(toLearn.get(0).getGuiSet().getTouch());
+				boolean found = false;
+				SolvisScreen currentScreen = solvis.getCurrentScreen();
+				for (Iterator<ModeEntry> it = toLearn.iterator(); it.hasNext();) {
+					ModeEntry mode = it.next();
+					if (mode.isMatchingWhite(currentScreen.getImage(), solvis)) {
+						ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
+						solvis.writeLearningImage(currentScreen, currentScreen.get().getId() + "__" + grafic.getId());
+						grafic.learn(solvis);
+						solvis.clearCurrentScreen();
+						SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess,
+								false);
+						if (data == null || !mode.equals(data.get())) {
+							logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
+							successfull = false;
+							abort = true;
+						} else {
+							found = true;
+							it.remove();
+						}
+						break;
+					}
+				}
+				if (!found) {
+					logger.log(LEARN, "Learning of <" + toLearn.get(0).getId() + "> not successfull, will be retried");
+					successfull = false;
+					abort = true;
+				}
+			}
+		} catch (IOException e) {
+			successfull = false;
+			logger.log(LEARN,
+					"Learning of <" + toLearn.get(0).getId() + "> not successfull (IOError), will be retried");
+
+		}
+		return successfull;
+	}
+
+	@Override
+	public boolean learn(Solvis solvis, IControlAccess controlAccess) throws TerminationException {
+		boolean successfull = true;
+		if (this.sequence) {
+			successfull = learnByWhiteRectangles(solvis, controlAccess);
+		} else {
+			successfull = learnByButton(solvis, controlAccess);
+		}
+
 		if (successfull) {
 			for (ListIterator<ModeEntry> itO = this.getModes().listIterator(); itO.hasNext();) {
 				ModeEntry modeO = itO.next();
@@ -237,9 +315,10 @@ public class StrategyMode implements IStrategy {
 		return this.interpretSetData(singleData.toString());
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private SingleData<?> interpretSetData(String value) throws TypeException {
-		IMode setMode = null;
-		for (IMode mode : this.getModes()) {
+		IMode<?> setMode = null;
+		for (IMode<?> mode : this.getModes()) {
 			if (mode.getName().equals(value)) {
 				setMode = mode;
 				break;
@@ -248,7 +327,7 @@ public class StrategyMode implements IStrategy {
 		if (setMode == null) {
 			throw new TypeException("Mode <" + value + "> is unknown");
 		}
-		return new ModeValue<IMode>(setMode, -1);
+		return new ModeValue(setMode, -1);
 	}
 
 	@Override

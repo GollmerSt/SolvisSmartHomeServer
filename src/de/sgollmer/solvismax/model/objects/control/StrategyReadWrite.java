@@ -13,16 +13,15 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
-import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.DoubleValue;
@@ -59,7 +58,7 @@ public class StrategyReadWrite extends StrategyRead {
 
 	@Override
 	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData setValue)
-			throws IOException, TerminationException, ModbusException, TypeException {
+			throws IOException, TerminationException, TypeException {
 		if (controlAccess instanceof GuiAccess) {
 			Double dTarget = setValue.getDouble();
 			if (dTarget == null) {
@@ -70,7 +69,7 @@ public class StrategyReadWrite extends StrategyRead {
 			if (data == null) {
 				return null;
 			} else if (data.get() == null) {
-				return new SetResult(Status.NO_SUCCESS, data);
+				return new SetResult(ResultStatus.NO_SUCCESS, data);
 			}
 			int current = data.get();
 
@@ -81,7 +80,7 @@ public class StrategyReadWrite extends StrategyRead {
 					/ (2 * this.increment);
 
 			if (current == value) {
-				return new SetResult(target == current ? Status.SUCCESS : Status.VALUE_VIOLATION, data);
+				return new SetResult(target == current ? ResultStatus.SUCCESS : ResultStatus.VALUE_VIOLATION, data);
 			}
 
 			int[] dist = new int[3];
@@ -119,7 +118,7 @@ public class StrategyReadWrite extends StrategyRead {
 				solvis.send(point);
 			}
 			if (interrupt) {
-				return new SetResult(Status.INTERRUPTED, data);
+				return new SetResult(ResultStatus.INTERRUPTED, data);
 			}
 		}
 		return null;

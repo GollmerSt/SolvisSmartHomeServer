@@ -13,7 +13,6 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
@@ -52,7 +51,7 @@ public class StrategyRead implements IStrategy {
 
 	@Override
 	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, IControlAccess controlAccess, boolean optional)
-			throws IOException, ModbusException {
+			throws IOException {
 		Integer i = null;
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
@@ -74,7 +73,7 @@ public class StrategyRead implements IStrategy {
 
 	@Override
 	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
-			throws IOException, TerminationException, ModbusException, TypeException {
+			throws IOException, TerminationException, TypeException {
 		return null;
 	}
 
@@ -138,7 +137,7 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public List<? extends IMode> getModes() {
+	public List<? extends IMode<?>> getModes() {
 		return null;
 	}
 

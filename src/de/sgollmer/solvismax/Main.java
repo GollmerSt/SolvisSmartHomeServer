@@ -29,11 +29,10 @@ import de.sgollmer.solvismax.connection.TerminateClient;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -254,7 +253,7 @@ public class Main {
 
 			try {
 				this.instances.learn(learn);
-			} catch (IOException | XMLStreamException | LearningException | FileException | ModbusException e) {
+			} catch (IOException | XMLStreamException | LearningException | FileException e) {
 				this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
 				e.printStackTrace();
 				System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
@@ -271,7 +270,7 @@ public class Main {
 
 		try {
 			this.instances.init();
-		} catch (IOException | AssignmentException | XMLStreamException | DependencyException e) {
+		} catch (IOException | AssignmentException | XMLStreamException | AliasException e) {
 			this.logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);

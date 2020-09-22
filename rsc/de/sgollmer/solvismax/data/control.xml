@@ -1548,59 +1548,52 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="X01.BrennerStarts">
 			<tns:Calculation strategy="starts">
-				<tns:Dependency id="equipmentOn" dataId="A12.Brenner" />
+				<tns:Alias id="equipmentOn" dataId="A12.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X02.BrennerLaufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
-				<tns:Dependency id="equipmentOn" dataId="A12.Brenner" />
+				<tns:Alias id="equipmentOn" dataId="A12.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X03.BrennerStufe2Starts">
 			<tns:Calculation strategy="starts">
-				<tns:Dependency id="equipmentOn"
-					dataId="A13.Brenner_S2" />
+				<tns:Alias id="equipmentOn" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X04.BrennerStufe2Laufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime">
-				<tns:Dependency id="equipmentOn"
-					dataId="A13.Brenner_S2" />
+				<tns:Alias id="equipmentOn" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="X05.BrennerStatus"
 			glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="burnerStatus">
-				<tns:Dependency id="burnerLevel1On"
-					dataId="A12.Brenner" />
-				<tns:Dependency id="burnerLevel2On"
-					dataId="A13.Brenner_S2" />
+				<tns:Alias id="burnerLevel1On" dataId="A12.Brenner" />
+				<tns:Alias id="burnerLevel2On" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X07.MischerPosition0_HK1" glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="mixerPosition0">
-				<tns:Dependency id="pumpOn" dataId="A03.Pumpe_HK1" />
-				<tns:Dependency id="mixerClosing"
-					dataId="A09.Mischer.HK1_zu" />
+				<tns:Alias id="pumpOn" dataId="A03.Pumpe_HK1" />
+				<tns:Alias id="mixerClosing" dataId="A09.Mischer.HK1_zu" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X08.MischerPosition0_HK2" glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="mixerPosition0">
-				<tns:Dependency id="pumpOn" dataId="A04.Pumpe_HK2" />
-				<tns:Dependency id="mixerClosing"
-					dataId="A11.Mischer.HK2_zu" />
+				<tns:Alias id="pumpOn" dataId="A04.Pumpe_HK2" />
+				<tns:Alias id="mixerClosing" dataId="A11.Mischer.HK2_zu" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X09.LaufzeitSolarpumpe_s">
 			<tns:Calculation strategy="runtime">
-				<tns:Dependency id="equipmentOn"
-					dataId="A01.Pumpe_Solar" />
+				<tns:Alias id="equipmentOn" dataId="A01.Pumpe_Solar" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
@@ -1610,8 +1603,7 @@
 					compareMask="0x10" />
 			</tns:Configuration>
 			<tns:Calculation strategy="runtime">
-				<tns:Dependency id="equipmentOn"
-					dataId="A07.Pumpe_Solar2" />
+				<tns:Alias id="equipmentOn" dataId="A07.Pumpe_Solar2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C01.StartsBrenner">
@@ -2517,7 +2509,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<!-- tns:ChannelDescription
+		<tns:ChannelDescription
 			id="C28.BetriebsartVT_HK1">
 			<tns:Configuration admin="true" />
 			<tns:Control>
@@ -2534,7 +2526,8 @@
 								releaseTimeRefId="WindowChange">
 								<tns:Coordinate X="145" Y="25" />
 							</tns:Touch>
-							<tns:ScreenGrafic id="BetriebsartVT_Kurve">
+							<tns:ScreenGrafic id="BetriebsartVT_Kurve"
+								exact="true">
 							</tns:ScreenGrafic>
 						</tns:GuiSet>
 						<tns:MustBeWhite>
@@ -2548,7 +2541,8 @@
 								releaseTimeRefId="WindowChange">
 								<tns:Coordinate X="145" Y="25" />
 							</tns:Touch>
-							<tns:ScreenGrafic id="BetriebsartVT_Fix">
+							<tns:ScreenGrafic id="BetriebsartVT_Fix"
+								exact="true">
 							</tns:ScreenGrafic>
 						</tns:GuiSet>
 						<tns:MustBeWhite invertFunction="true">
@@ -2558,7 +2552,7 @@
 					</tns:ModeEntry>
 				</tns:TypeMode>
 			</tns:Control>
-		</tns:ChannelDescription -->
+		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C29.Steilheit_HK1">
 			<tns:Configuration admin="true" />
 			<tns:Control>
@@ -2567,6 +2561,8 @@
 						<tns:TopLeft X="155" Y="47" />
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C28.BetriebsartVT_HK1"
+						value="Kurve" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite divisor="100" increment="5"
 					most="250" least="20">
@@ -2587,6 +2583,60 @@
 				<tns:UpdateBy>
 					<tns:HumanAccess />
 				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C30.Fix_Vorlauf_Tag_HK1">
+			<tns:Configuration admin="true" />
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis1 2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="150" Y="47" />
+						<tns:BottomRight X="195" Y="59" />
+					</tns:CurrentValue>
+					<tns:Dependency id="C28.BetriebsartVT_HK1"
+						value="Fix" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="75"
+					least="5">
+					<tns:GuiModification format="(\d+).*">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="205" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C31.Fix_Vorlauf_Absenk_HK1">
+			<tns:Configuration admin="true" />
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis1 2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="150" Y="75" />
+						<tns:BottomRight X="195" Y="87" />
+					</tns:CurrentValue>
+					<tns:Dependency id="C28.BetriebsartVT_HK1"
+						value="Fix" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="75"
+					least="5">
+					<tns:GuiModification format="(\d+).*">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="205" Y="80" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 			</tns:Control>
 		</tns:ChannelDescription>
 	</tns:ChannelDescriptions>

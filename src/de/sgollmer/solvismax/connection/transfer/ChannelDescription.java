@@ -72,11 +72,11 @@ public class ChannelDescription extends Element {
 			frame.add(step);
 		}
 
-		Collection<? extends IMode> modes = description.getModes();
+		Collection<? extends IMode<?>> modes = description.getModes();
 		if (modes != null) {
 			ArrayValue arrayValue = new ArrayValue();
 
-			for (IMode mode : modes) {
+			for (IMode<?> mode : modes) {
 				IValue value = new SingleValue(mode.getName());
 				arrayValue.add(value);
 			}

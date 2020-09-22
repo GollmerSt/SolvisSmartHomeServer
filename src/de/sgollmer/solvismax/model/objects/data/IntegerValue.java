@@ -19,10 +19,9 @@ public class IntegerValue extends SingleData<Integer> {
 		this.fastChange = fastChange;
 	}
 
-
 	@Override
 	public Boolean getBoolean() {
-		if ( this.data != null ) {
+		if (this.data != null) {
 			return this.data != 0;
 		}
 		return null;
@@ -86,6 +85,22 @@ public class IntegerValue extends SingleData<Integer> {
 	@Override
 	public boolean isFastChange() {
 		return this.fastChange;
+	}
+
+	@Override
+	public int compareTo(SingleData<?> o) {
+		if (o instanceof IntegerValue) {
+			Integer cmp = ((IntegerValue) o).data;
+			if (this.data == null) {
+				return cmp == null ? 0 : -1;
+			} else {
+				return Integer.compare(this.data, ((IntegerValue) o).data);
+			}
+		} else if (o != null) {
+			return this.getClass().getCanonicalName().compareTo(o.getClass().getCanonicalName());
+		} else {
+			return 1;
+		}
 	}
 
 }

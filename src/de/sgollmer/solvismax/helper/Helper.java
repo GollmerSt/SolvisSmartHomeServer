@@ -17,6 +17,7 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 
 public class Helper {
 
+	@SuppressWarnings("unused")
 	private static final ILogger logger = LogManager.getInstance().getLogger(Helper.class);
 
 	public static class Format {
@@ -38,7 +39,6 @@ public class Helper {
 				try {
 					integerPlaces = matcher.group("integerPlaces");
 					decimalPlaces = matcher.group("decimalPlaces");
-					logger.debug("A value with decimal places is expected" );
 					sign = matcher.group("sign");
 				} catch (IllegalArgumentException e) {
 				}
@@ -187,14 +187,46 @@ public class Helper {
 	}
 
 	public static class Reference<R> {
-		private final R reference;
 
-		public Reference(R reference) {
-			this.reference = reference;
+		private R value;
+
+		public Reference(R value) {
+			this.value = value;
 		}
 
 		public R get() {
-			return this.reference;
+			return this.value;
+		}
+
+		public void set(R value) {
+			this.value = value;
+		}
+
+		@SuppressWarnings("unchecked")
+		private void add(int value) {
+			if (this.value instanceof Integer) {
+				this.value = (R) new Integer((int) (((Integer) this.value).intValue() + value));
+			} else if (this.value instanceof Byte) {
+				this.value = (R) new Byte((byte) (((Byte) this.value).intValue() + value));
+			} else if (this.value instanceof Long) {
+				this.value = (R) new Long((long) (((Long) this.value).longValue() + value));
+			} else if (this.value instanceof Float) {
+				this.value = (R) new Float((float) (((Float) this.value).floatValue() + value));
+			} else if (this.value instanceof Double) {
+				this.value = (R) new Double((double) (((Double) this.value).doubleValue() + value));
+			} else if ( this.value != null ){
+				throw new UnsupportedOperationException( "add cannot be used fot element of class " + this.value.getClass().getName() );
+			} else {
+				throw new NullPointerException();
+			}
+		}
+		
+		public void increment() {
+			this.add(1);
+		}
+		
+		public void decrement() {
+			this.add(-1);
 		}
 	}
 }

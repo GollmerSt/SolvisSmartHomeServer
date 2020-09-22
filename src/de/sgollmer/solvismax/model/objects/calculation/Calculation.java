@@ -13,7 +13,7 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
@@ -22,9 +22,10 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
 import de.sgollmer.solvismax.model.objects.Dependencies;
-import de.sgollmer.solvismax.model.objects.Dependency;
+import de.sgollmer.solvismax.model.objects.Alias;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
+import de.sgollmer.solvismax.model.objects.control.Dependency;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -34,7 +35,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Calculation extends ChannelSource {
 
-	private static final String XML_DEPENDENCY = "Dependency";
+	private static final String XML_Alias = "Alias";
 
 	private final Strategy<?> strategy;
 	private final Dependencies dependencies;
@@ -76,7 +77,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) throws AssignmentException, DependencyException {
+	public void instantiate(Solvis solvis) throws AssignmentException, AliasException {
 		this.strategy.instantiate(solvis);
 	}
 
@@ -115,8 +116,8 @@ public class Calculation extends ChannelSource {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_DEPENDENCY:
-					return new Dependency.Creator(id, this.getBaseCreator());
+				case XML_Alias:
+					return new Alias.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -124,8 +125,8 @@ public class Calculation extends ChannelSource {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_DEPENDENCY:
-					this.dependencies.add((Dependency) created);
+				case XML_Alias:
+					this.dependencies.add((Alias) created);
 			}
 		}
 
@@ -155,7 +156,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public Collection<? extends IMode> getModes() {
+	public Collection<? extends IMode<?>> getModes() {
 		return null;
 	}
 
@@ -181,6 +182,11 @@ public class Calculation extends ChannelSource {
 
 	@Override
 	protected SingleData<?> createSingleData(String value) {
+		return null;
+	}
+
+	@Override
+	public Dependency getDependency() {
 		return null;
 	}
 }

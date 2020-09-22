@@ -13,16 +13,15 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
-import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
@@ -63,7 +62,7 @@ public class StrategyButton implements IStrategy {
 
 	@Override
 	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess,
-			boolean optional) throws TerminationException, IOException, ModbusException {
+			boolean optional) throws TerminationException, IOException {
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			Button button = new Button(solvisScreen.getImage(), rectangle, this.pushTime, this.releaseTime);
@@ -74,7 +73,7 @@ public class StrategyButton implements IStrategy {
 
 	@Override
 	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
-			throws IOException, TerminationException, TypeException, ModbusException {
+			throws IOException, TerminationException, TypeException {
 		Boolean bool = value.getBoolean();
 		if (bool == null) {
 			throw new TypeException("Wrong value type");
@@ -84,7 +83,7 @@ public class StrategyButton implements IStrategy {
 				((GuiAccess) controlAccess).getValueRectangle(), this.pushTime, this.releaseTime);
 		boolean cmp = button.isSelected() ^ this.invert;
 		if (cmp == bool) {
-			return new SetResult(Status.SUCCESS, new BooleanValue(cmp, System.currentTimeMillis()));
+			return new SetResult(ResultStatus.SUCCESS, new BooleanValue(cmp, System.currentTimeMillis()));
 		}
 		button.set(solvis, bool);
 
@@ -103,11 +102,6 @@ public class StrategyButton implements IStrategy {
 
 	@Override
 	public Double getAccuracy() {
-		return null;
-	}
-
-	@Override
-	public List<? extends IMode> getModes() {
 		return null;
 	}
 
@@ -200,6 +194,11 @@ public class StrategyButton implements IStrategy {
 	@Override
 	public SingleData<?> createSingleData(String value) {
 		return new BooleanValue(Boolean.parseBoolean(value), -1);
+	}
+
+	@Override
+	public List<? extends IMode<?>> getModes() {
+		return null;
 	}
 
 }

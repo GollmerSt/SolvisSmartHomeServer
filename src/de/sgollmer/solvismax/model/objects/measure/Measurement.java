@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.control.Dependency;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -224,7 +225,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public Collection<? extends IMode> getModes() {
+	public Collection<? extends IMode<?>> getModes() {
 		return null;
 	}
 
@@ -270,6 +271,11 @@ public class Measurement extends ChannelSource {
 		public boolean isBoolean();
 
 		public boolean validate(Collection<Field> fields);
+	}
+
+	@Override
+	public Dependency getDependency() {
+		return null;
 	}
 
 }

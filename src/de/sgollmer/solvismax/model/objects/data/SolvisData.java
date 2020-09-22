@@ -20,10 +20,10 @@ import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
-import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 
 public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, IObserver<SolvisState> {
 
@@ -97,10 +97,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	private void setData(SingleData<?> data) {
-		this.setData(data, this, Status.SUCCESS);
+		this.setData(data, this, ResultStatus.SUCCESS);
 	}
 
-	private synchronized void setData(SingleData<?> data, Object source, Status status) {
+	private synchronized void setData(SingleData<?> data, Object source, ResultStatus status) {
 
 		if (data == null || data.get() == null) {
 			this.data = null;
@@ -149,10 +149,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 			this.data = data;
 		}
 
-		if (changed || status == Status.VALUE_VIOLATION) {
+		if (changed || status == ResultStatus.VALUE_VIOLATION) {
 
 			if (!this.description.isWriteable() || !this.datas.getSolvis().willBeModified(this)
-					|| status == Status.VALUE_VIOLATION) {
+					|| status == ResultStatus.VALUE_VIOLATION) {
 
 				this.notify(this, source);
 			}
@@ -173,7 +173,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	public void setInteger(Integer integer, long timeStamp, Object source) {
-		this.setData(new IntegerValue(integer, timeStamp), source, Status.SUCCESS);
+		this.setData(new IntegerValue(integer, timeStamp), source, ResultStatus.SUCCESS);
 	}
 
 	public void setInteger(Integer integer, long timeStamp) {
@@ -250,8 +250,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return bool;
 	}
 
-	public void setMode(IMode mode, long timeStamp) {
-		this.setData(new ModeValue<>(mode, timeStamp));
+	public void setMode(IMode<?> mode, long timeStamp) {
+		this.setData(mode.create(timeStamp));
 	}
 
 	public ModeValue<?> getMode() {

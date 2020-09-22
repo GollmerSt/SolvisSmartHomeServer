@@ -7,13 +7,13 @@
 
 package de.sgollmer.solvismax.error;
 
-public class DependencyException extends Exception {
+public class AliasException extends Exception {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 883291412939229936L;
 
-	public DependencyException(String message) {
+	public AliasException(String message) {
 		super(message);
 	}
 }

@@ -15,24 +15,24 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
-import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
-import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
+import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
+import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -58,6 +58,7 @@ public class Control extends ChannelSource {
 	private static final String XML_CONTROL_TYPE_MODE = "TypeMode";
 	private static final String XML_CONTROL_TYPE_BUTTON = "TypeButton";
 	private static final String XML_UPDATE_BY = "UpdateBy";
+	private static final String XML_DEPENDENCY = "Dependency";
 
 	private final boolean optional;
 	private final GuiAccess guiAccess;
@@ -65,8 +66,7 @@ public class Control extends ChannelSource {
 	private final IStrategy strategy;
 	private final UpdateStrategies updateStrategies;
 
-	private Control(boolean optional, GuiAccess guiAccess, IStrategy strategy,
-			UpdateStrategies updateStrategies) {
+	private Control(boolean optional, GuiAccess guiAccess, IStrategy strategy, UpdateStrategies updateStrategies) {
 		this.optional = optional;
 		this.guiAccess = guiAccess;
 		this.strategy = strategy;
@@ -80,8 +80,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData destin, Solvis solvis)
-			throws IOException, TerminationException, ModbusException {
+	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException, TerminationException {
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return false;
@@ -97,8 +96,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, SolvisData value)
-			throws IOException, TerminationException, ModbusException {
+	public SetResult setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
 
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
@@ -123,8 +121,9 @@ public class Control extends ChannelSource {
 		}
 		if (setResult == null) {
 			logger.error("Setting of <" + this.getDescription().getId() + "> not successfull");
-		} else if ( setResult.getStatus() == Status.SUCCESS){
-			logger.info("Channel <" + this.description.getId() + "> is set to " + setResult.getData().toString() + ">.");
+		} else if (setResult.getStatus() == ResultStatus.SUCCESS) {
+			logger.info(
+					"Channel <" + this.description.getId() + "> is set to " + setResult.getData().toString() + ">.");
 		}
 		return setResult;
 	}
@@ -260,7 +259,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException, ModbusException {
+	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException {
 		if (!this.getControlAccess(solvis).isModbus() && this.strategy.mustBeLearned()) {
 			SingleData<?> data = null;
 			AbstractScreen screen = this.guiAccess.getScreen().get(solvis);
@@ -338,7 +337,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public Collection<? extends IMode> getModes() {
+	public Collection<? extends IMode<?>> getModes() {
 		return this.strategy.getModes();
 	}
 
@@ -362,16 +361,19 @@ public class Control extends ChannelSource {
 		private final Rectangle valueRectangle;
 		private final String preparationId;
 		private final String restoreChannelId;
+		private final Dependency dependency;
 
 		private OfConfigs<AbstractScreen> screen = null;
 		private Preparation preparation = null;
 		private OfConfigs<ChannelDescription> restoreChannel = null;
 
-		private GuiAccess(String screenId, Rectangle valueRectangle, String preparationId, String restoreChannelId) {
+		private GuiAccess(String screenId, Rectangle valueRectangle, String preparationId, String restoreChannelId,
+				Dependency dependency) {
 			this.screenId = screenId;
 			this.valueRectangle = valueRectangle;
 			this.preparationId = preparationId;
 			this.restoreChannelId = restoreChannelId;
+			this.dependency = dependency;
 		}
 
 		Rectangle getValueRectangle() {
@@ -392,6 +394,7 @@ public class Control extends ChannelSource {
 			private Rectangle valueRectangle;
 			private String preparationId;
 			private String restoreChannelId;
+			private Dependency dependency;
 
 			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -412,7 +415,8 @@ public class Control extends ChannelSource {
 
 			@Override
 			public GuiAccess create() throws XmlException, IOException {
-				return new GuiAccess(this.screenId, this.valueRectangle, this.preparationId, this.restoreChannelId);
+				return new GuiAccess(this.screenId, this.valueRectangle, this.preparationId, this.restoreChannelId,
+						this.dependency);
 			}
 
 			@Override
@@ -422,7 +426,9 @@ public class Control extends ChannelSource {
 					case XML_CONTROL_CURRENT:
 						return new Rectangle.Creator(id, this.getBaseCreator());
 					case XML_PREPARATION_REF:
-						return new PreparationRef.Creator(id, getBaseCreator());
+						return new PreparationRef.Creator(id, this.getBaseCreator());
+					case XML_DEPENDENCY:
+						return new Dependency.Creator(id, this.getBaseCreator());
 				}
 				return null;
 			}
@@ -436,6 +442,8 @@ public class Control extends ChannelSource {
 					case XML_PREPARATION_REF:
 						this.preparationId = ((PreparationRef) created).getPreparationId();
 						break;
+					case XML_DEPENDENCY:
+						this.dependency = (Dependency) created;
 				}
 
 			}
@@ -443,7 +451,7 @@ public class Control extends ChannelSource {
 		}
 
 		@Override
-		public void assign(SolvisDescription description) throws ReferenceException, XmlException {
+		public void assign(SolvisDescription description) throws ReferenceException, XmlException, AssignmentException {
 			this.screen = description.getScreens().getScreen(this.screenId);
 			if (this.screen == null) {
 				throw new ReferenceException("Screen of reference < " + this.screenId + " > not found");
@@ -463,6 +471,10 @@ public class Control extends ChannelSource {
 				}
 			}
 
+			if ( this.dependency != null) {
+				this.dependency.assign(description);
+			}
+			
 		}
 
 		boolean prepare(Solvis solvis) throws IOException, TerminationException {
@@ -492,11 +504,15 @@ public class Control extends ChannelSource {
 	protected SingleData<?> createSingleData(String value) throws TypeException {
 		return this.strategy.createSingleData(value);
 	}
-	
+
 	@Override
 	public boolean isGlitchDetectionAllowed() {
-		return false ;
+		return false;
 	}
 
+	@Override
+	public Dependency getDependency() {
+		return this.guiAccess.dependency;
+	}
 
 }

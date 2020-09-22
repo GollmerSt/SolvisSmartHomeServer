@@ -10,11 +10,13 @@ package de.sgollmer.solvismax.model;
 import java.io.IOException;
 import java.util.Collection;
 
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
-import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
+import de.sgollmer.solvismax.model.objects.control.Dependency;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 
 public abstract class Command {
@@ -27,11 +29,14 @@ public abstract class Command {
 	 * @throws IOException
 	 * @throws TerminationException
 	 * @throws PowerOnException
+	 * @throws TypeException
+	 * @throws NumberFormatException
+	 * @throws XmlException 
 	 * @throws FieldException
 	 * @throws ModbusException
 	 */
-	protected abstract Status execute(Solvis solvis)
-			throws IOException, TerminationException, PowerOnException, ModbusException;
+	protected abstract ResultStatus execute(Solvis solvis)
+			throws IOException, TerminationException, PowerOnException, NumberFormatException, TypeException, XmlException;
 
 	protected abstract void notExecuted();
 
@@ -77,7 +82,7 @@ public abstract class Command {
 		 */
 		private final boolean insert;
 		/**
-		 * True: no previous entries are of interest 
+		 * True: no previous entries are of interest
 		 */
 		private final boolean mustFinished;
 
@@ -103,7 +108,7 @@ public abstract class Command {
 		 * @param insert         True: The new command must inserted after queue command
 		 * @param mustFinished   True: no previous entries are of interest
 		 */
-		
+
 		Handling(boolean inQueueInhibt, boolean inhibitAdd, boolean insert, boolean mustFinished) {
 			this.inQueueInhibt = inQueueInhibt;
 			this.inhibitAdd = inhibitAdd;
@@ -170,7 +175,18 @@ public abstract class Command {
 		return null;
 	}
 
+	public Dependency getDependency(Solvis solvis) {
+		return null;
+	}
+
 	Collection<ChannelDescription> getReadChannels() {
 		return null;
+	}
+
+	public boolean isDependencyPrepared() {
+		return true;
+	}
+
+	public void setDependencyPrepared(boolean dependencyPrepared) {
 	}
 }

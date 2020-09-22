@@ -23,12 +23,12 @@ public class BooleanValue extends SingleData<Boolean> {
 		return this.value;
 	}
 
-
 	@Override
 	public Boolean getBoolean() {
 		// TODO Auto-generated method stub
 		return this.value;
 	}
+
 	@Override
 	public Integer getInt() {
 		return this.value ? 1 : 0;
@@ -65,6 +65,17 @@ public class BooleanValue extends SingleData<Boolean> {
 	@Override
 	public String toJson() {
 		return Boolean.toString(this.value);
+	}
+
+	@Override
+	public int compareTo(SingleData<?> o) {
+		if (o instanceof BooleanValue) {
+			return Boolean.compare(this.value, ((BooleanValue) o).value);
+		} else if (o != null) {
+			return this.getClass().getCanonicalName().compareTo(o.getClass().getCanonicalName());
+		} else {
+			return 1;
+		}
 	}
 
 }

@@ -103,6 +103,30 @@ public class Measurement {
 		@Override
 		public void setAttribute(QName name, String value) {
 		}
+		
+		private static class Mode implements IMode<Mode> {
+			
+			private final String data ;
+			
+			public Mode(String data) {
+				this.data=data;
+			}
+
+			@Override
+			public int compareTo(Mode o) {
+				return this.data.compareTo(o.data);
+			}
+
+			@Override
+			public String getName() {
+				return this.data;
+			}
+			
+			@Override
+			public ModeValue<?> create(long timeStamp) {
+				return new ModeValue<>(this, timeStamp);
+			}
+		}
 
 		@Override
 		public SingleData<?> create() throws XmlException, IOException {
@@ -113,19 +137,13 @@ public class Measurement {
 				case Constants.XmlStrings.XML_MEASUREMENT_INTEGER:
 					return new IntegerValue(Integer.parseInt(dataString), -1);
 				case Constants.XmlStrings.XML_MEASUREMENT_MODE:
-					return new ModeValue<IMode>(new IMode() {
-
-						@Override
-						public String getName() {
-							return dataString;
-						}
-					}, -1);
+					return new ModeValue<Mode>(new Mode(dataString), -1);
 				case Constants.XmlStrings.XML_MEASUREMENT_STRING:
 					return new StringData(dataString, -1);
 			}
 			return null;
 		}
-
+		
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			return null;

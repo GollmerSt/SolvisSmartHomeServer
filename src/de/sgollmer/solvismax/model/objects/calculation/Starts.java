@@ -8,7 +8,7 @@
 package de.sgollmer.solvismax.model.objects.calculation;
 
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -42,7 +42,7 @@ public class Starts extends Strategy<Starts> {
 	}
 
 	@Override
-	void instantiate(Solvis solvis) throws AssignmentException, DependencyException {
+	void instantiate(Solvis solvis) throws AssignmentException, AliasException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 

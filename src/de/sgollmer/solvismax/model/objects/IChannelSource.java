@@ -11,39 +11,37 @@ import java.io.IOException;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
-import de.sgollmer.solvismax.error.ModbusException;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.control.Dependency;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 
 public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public ChannelDescription getRestoreChannel(Solvis solvis);
 
-	public boolean getValue(SolvisData dest, Solvis solvis)
-			throws IOException, PowerOnException, TerminationException, ModbusException;
+	public Dependency getDependency();
 
-	public enum Status {
-		SUCCESS, INTERRUPTED, NO_SUCCESS, UNKNOWN, VALUE_VIOLATION
-	}
+	public boolean getValue(SolvisData dest, Solvis solvis)
+			throws IOException, PowerOnException, TerminationException;
 
 	public static class SetResult {
-		private final Status status;
+		private final ResultStatus status;
 		private final SingleData<?> data;
 
-		public SetResult(Status status, SingleData<?> data) {
+		public SetResult(ResultStatus status, SingleData<?> data) {
 			this.status = status;
 			this.data = data;
 		}
 
-		public Status getStatus() {
+		public ResultStatus getStatus() {
 			return this.status;
 		}
 
@@ -53,7 +51,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	}
 
 	public SetResult setValue(Solvis solvis, SolvisData value)
-			throws IOException, TerminationException, ModbusException;
+			throws IOException, TerminationException;
 
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
 
@@ -67,7 +65,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public boolean isBoolean();
 
-	public void instantiate(Solvis solvis) throws AssignmentException, DependencyException;
+	public void instantiate(Solvis solvis) throws AssignmentException, AliasException;
 
 	public Type getType();
 
@@ -75,7 +73,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 		CONTROL, CALCULATION, MEASUREMENT
 	}
 
-	public Collection<? extends IMode> getModes();
+	public Collection<? extends IMode<?>> getModes();
 
 	public AbstractScreen getScreen(Solvis solvis);
 

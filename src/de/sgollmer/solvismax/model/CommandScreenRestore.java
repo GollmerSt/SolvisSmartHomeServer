@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.model;
 import java.io.IOException;
 
 import de.sgollmer.solvismax.error.PowerOnException;
-import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 
 public class CommandScreenRestore extends Command {
 
@@ -21,9 +21,9 @@ public class CommandScreenRestore extends Command {
 	}
 
 	@Override
-	protected Status execute(Solvis solvis) throws IOException, PowerOnException {
+	protected ResultStatus execute(Solvis solvis) throws IOException, PowerOnException {
 		solvis.screenRestore(this.enable);
-		return Status.SUCCESS;
+		return ResultStatus.SUCCESS;
 	}
 
 	@Override
@@ -35,4 +35,5 @@ public class CommandScreenRestore extends Command {
 	@Override
 	protected void notExecuted() {
 	}
+
 }

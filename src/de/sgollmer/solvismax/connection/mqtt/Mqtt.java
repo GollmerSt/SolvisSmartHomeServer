@@ -227,9 +227,9 @@ public class Mqtt {
 			try {
 				Mqtt.this.publish(data.getMqttData());
 			} catch (MqttException e) {
-				logger.error("Error on mqtt publish <Status> of unit <" + this.unit.getId() + ">:", e);
+				logger.error("Error on mqtt publish <ResultStatus> of unit <" + this.unit.getId() + ">:", e);
 			} catch (MqttConnectionLost e) {
-				logger.debug("No MQTT connection publish <Status>");
+				logger.debug("No MQTT connection publish <ResultStatus>");
 			}
 		}
 

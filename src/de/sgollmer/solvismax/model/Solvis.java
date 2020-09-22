@@ -19,11 +19,11 @@ import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.DependencyException;
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -246,7 +246,7 @@ public class Solvis {
 
 	}
 
-	void init() throws IOException, XMLStreamException, AssignmentException, DependencyException {
+	void init() throws IOException, XMLStreamException, AssignmentException, AliasException {
 		this.configurationMask = this.getGrafics().getConfigurationMask();
 
 		synchronized (this.solvisMeasureObject) {
@@ -282,7 +282,7 @@ public class Solvis {
 		this.getSolvisDescription().getChannelDescriptions().updateReadOnlyControlChannels(this);
 	}
 
-	void measure() throws IOException, PowerOnException, TerminationException, ModbusException, NumberFormatException {
+	void measure() throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData());
 		}
@@ -312,6 +312,7 @@ public class Solvis {
 	 * @param singleData
 	 * 
 	 * @return True: Command was ignored to prevent feedback loops
+	 * @throws TypeException 
 	 */
 	public boolean setFromExternal(ChannelDescription description, SingleData<?> singleData) {
 
@@ -408,7 +409,7 @@ public class Solvis {
 		return this.grafics;
 	}
 
-	void learning(boolean force) throws IOException, LearningException, TerminationException, ModbusException {
+	void learning(boolean force) throws IOException, LearningException, TerminationException {
 		if (this.mustLearn || force) {
 			this.getGrafics().clear();
 			logger.log(LEARN, "Learning started.");

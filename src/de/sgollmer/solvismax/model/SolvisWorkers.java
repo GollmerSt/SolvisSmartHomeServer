@@ -15,17 +15,18 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.ModbusException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Command.Handling;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
-import de.sgollmer.solvismax.model.objects.IChannelSource.Status;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -89,7 +90,7 @@ public class SolvisWorkers {
 			}
 
 			while (!this.abort) {
-				Status status;
+				ResultStatus status;
 				Command command = null;
 				SolvisState.State state = SolvisWorkers.this.solvis.getSolvisState().getState();
 				if (state == SolvisState.State.SOLVIS_CONNECTED || state == SolvisState.State.ERROR) {
@@ -115,7 +116,7 @@ public class SolvisWorkers {
 					if (this.abort) {
 						return;
 					}
-					status = Status.SUCCESS;
+					status = ResultStatus.SUCCESS;
 
 					try {
 						if (command != null
@@ -141,21 +142,21 @@ public class SolvisWorkers {
 							command = executedCommand.command;
 							status = executedCommand.status;
 						}
-					} catch (IOException | PowerOnException | ModbusException e) {
-						status = Status.NO_SUCCESS;
+					} catch (IOException | PowerOnException e) {
+						status = ResultStatus.NO_SUCCESS;
 					} catch (TerminationException e3) {
 						return;
 					} catch (Throwable e4) {
 						logger.error("Unknown error detected", e4);
-						status = Status.SUCCESS;
+						status = ResultStatus.SUCCESS;
 					}
 				} else {
-					status = Status.NO_SUCCESS;
+					status = ResultStatus.NO_SUCCESS;
 					stateChanged = true;
 				}
 				if (command != null) {
 					synchronized (this) {
-						if (status == Status.SUCCESS) {
+						if (status == ResultStatus.SUCCESS) {
 							this.removeCommand(command);
 						} else {
 							if (command.toEndOfQueue()) {
@@ -164,7 +165,7 @@ public class SolvisWorkers {
 						}
 					}
 				}
-				if (status == Status.NO_SUCCESS) {
+				if (status == ResultStatus.NO_SUCCESS) {
 					try {
 						synchronized (this) {
 							this.wait(unsuccessfullWaitTime);
@@ -181,40 +182,56 @@ public class SolvisWorkers {
 
 		private class ExecutedCommand {
 			private final Command command;
-			private final Status status;
+			private final ResultStatus status;
 
-			public ExecutedCommand(Command command, Status status) {
+			public ExecutedCommand(Command command, ResultStatus status) {
 				this.command = command;
 				this.status = status;
 			}
 		}
 
-		private ExecutedCommand processCommand(Command command)
-				throws IOException, TerminationException, PowerOnException, ModbusException, NumberFormatException {
+		private ExecutedCommand processCommand(Command command) throws IOException, TerminationException,
+				PowerOnException, NumberFormatException, TypeException, XmlException {
 			Command executeCommand = command;
-			ChannelDescription restoreChannel = command.getRestoreChannel(SolvisWorkers.this.solvis);
-			if (restoreChannel != null && !this.channelsOfQueueRead.contains(restoreChannel)) {
-				executeCommand = new CommandControl(restoreChannel, SolvisWorkers.this.solvis);
-				this.insertCommand(executeCommand, command, false);
-			}
+//			ChannelDescription restoreChannel = command.getRestoreChannel(SolvisWorkers.this.solvis);
+//			Dependency dependency = command.getDependency(SolvisWorkers.this.solvis);
+//			if (restoreChannel == null && dependency != null && !command.isDependencyPrepared()) {
+//				restoreChannel = dependency.getChannelDescription(SolvisWorkers.this.solvis);
+//			}
+//			if (restoreChannel != null) {
+//				if (!this.channelsOfQueueRead.contains(restoreChannel)) {
+//					executeCommand = new CommandControl(restoreChannel, SolvisWorkers.this.solvis);
+//					this.insertCommand(executeCommand, command, false);
+//				}
+//				command.setDependencyPrepared(true);
+//			} else if (dependency != null && command.isDependencyPrepared()) {
+//				ChannelDescription dependentChannel = dependency.getChannelDescription(SolvisWorkers.this.solvis);
+//				SingleData<?> setDependent = dependency.getData(SolvisWorkers.this.solvis);
+//				SolvisData solvisData = new SolvisData(setDependent);
+//				SetResult result = dependentChannel.setValue(SolvisWorkers.this.solvis, solvisData);
+//				ResultStatus status = result.getStatus();
+//				if (status != ResultStatus.SUCCESS) {
+//					return new ExecutedCommand(command, status);
+//				}
+//			}
 			String commandString = executeCommand.toString();
 			logger.debug("Command <" + commandString + "> will be executed");
-			Status status = execute(executeCommand);
-			if (executeCommand.getReadChannels() != null) {
-				this.channelsOfQueueRead.addAll(executeCommand.getReadChannels());
-			}
-			if (status == Status.INTERRUPTED) {
+			ResultStatus status = execute(executeCommand);
+//			if (executeCommand.getReadChannels() != null) {
+//				this.channelsOfQueueRead.addAll(executeCommand.getReadChannels());
+//			}
+			if (status == ResultStatus.INTERRUPTED) {
 				logger.debug("Command <" + commandString + "> was interrupted. will be continued.");
 			} else {
-				restoreChannel = executeCommand.getRestoreChannel(SolvisWorkers.this.solvis);
-				if (restoreChannel != null) {
-					SolvisData data = SolvisWorkers.this.solvis.getAllSolvisData().get(restoreChannel);
-					CommandControl restoreCommand = new CommandControl(restoreChannel, data.getSingleData(),
-							SolvisWorkers.this.solvis);
-					this.insertCommand(restoreCommand, executeCommand, true);
-				}
+//				restoreChannel = executeCommand.getRestoreChannel(SolvisWorkers.this.solvis);
+//				if (restoreChannel != null) {
+//					SolvisData data = SolvisWorkers.this.solvis.getAllSolvisData().get(restoreChannel);
+//					CommandControl restoreCommand = new CommandControl(restoreChannel, data.getSingleData(),
+//							SolvisWorkers.this.solvis);
+//					this.insertCommand(restoreCommand, executeCommand, true);
+//				}
 				logger.debug("Command <" + commandString + "> executed "
-						+ (status == Status.NO_SUCCESS ? "not " : "") + "successfull");
+						+ (status == ResultStatus.NO_SUCCESS ? "not " : "") + "successfull");
 			}
 			return new ExecutedCommand(executeCommand, status);
 		}
@@ -226,20 +243,6 @@ public class SolvisWorkers {
 				if (command == cmp) {
 					it.remove();
 					deleted = true;
-				}
-			}
-		}
-
-		private synchronized void insertCommand(Command command, Command reference, boolean after) {
-			if (command == null) {
-				return;
-			}
-			for (int idx = 0; idx < this.queue.size(); ++idx) {
-				Command cmp = this.queue.get(idx);
-				if (reference == cmp) {
-					idx = after ? idx + 1 : idx;
-					this.queue.add(idx, command);
-					break;
 				}
 			}
 		}
@@ -370,8 +373,8 @@ public class SolvisWorkers {
 
 	}
 
-	private Status execute(Command command)
-			throws IOException, TerminationException, PowerOnException, ModbusException, NumberFormatException {
+	private ResultStatus execute(Command command) throws IOException, TerminationException, PowerOnException,
+			NumberFormatException, TypeException, XmlException {
 		AbstractScreen commandScreen = command.getScreen(this.solvis);
 		if (commandScreen != null) {
 			long now = System.currentTimeMillis();
@@ -408,9 +411,9 @@ public class SolvisWorkers {
 			this.controlsThread.push(new Command() {
 
 				@Override
-				public Status execute(Solvis solvis) throws IOException, TerminationException, PowerOnException {
+				public ResultStatus execute(Solvis solvis) throws IOException, TerminationException, PowerOnException {
 					SolvisWorkers.this.controlsThread.commandOptimization(true);
-					return Status.SUCCESS;
+					return ResultStatus.SUCCESS;
 				}
 
 				@Override
@@ -527,7 +530,7 @@ public class SolvisWorkers {
 						}
 					}
 				} catch (Throwable e) {
-					if ( e instanceof TerminationException ) {
+					if (e instanceof TerminationException) {
 						return;
 					}
 					logger.error("Error was thrown in measurements worker thread. Cause: ", e);

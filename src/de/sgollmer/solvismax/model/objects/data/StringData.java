@@ -67,4 +67,20 @@ public class StringData extends SingleData<String> {
 		return this.data;
 	}
 
+	@Override
+	public int compareTo(SingleData<?> o) {
+		if (o instanceof StringData) {
+			String cmp = ((StringData) o).data;
+			if (this.data == null) {
+				return cmp == null ? 0 : -1;
+			} else {
+				return this.data.compareTo(cmp);
+			}
+		} else if (o != null) {
+			return this.getClass().getCanonicalName().compareTo(o.getClass().getCanonicalName());
+		} else {
+			return 1;
+		}
+	}
+
 }

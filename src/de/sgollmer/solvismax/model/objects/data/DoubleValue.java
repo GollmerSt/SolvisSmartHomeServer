@@ -83,4 +83,15 @@ public class DoubleValue extends SingleData<Double> {
 		return Double.valueOf(this.value).hashCode();
 	}
 
+	@Override
+	public int compareTo(SingleData<?> o) {
+		if (o instanceof DoubleValue) {
+			return Double.compare(this.value, ((DoubleValue) o).value);
+		} else if (o != null) {
+			return this.getClass().getCanonicalName().compareTo(o.getClass().getCanonicalName());
+		} else {
+			return 1;
+		}
+	}
+
 }

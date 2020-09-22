@@ -8,31 +8,41 @@
 package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
+import de.sgollmer.solvismax.model.objects.WhiteGraficRectangle;
 import de.sgollmer.solvismax.model.objects.data.IMode;
+import de.sgollmer.solvismax.model.objects.data.ModeValue;
+import de.sgollmer.solvismax.model.objects.screen.IScreenPartCompare;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
-public class ModeEntry implements IAssigner, IMode {
+public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 
 	private static final String XML_GUI_SET = "GuiSet";
 	private static final String XML_TOUCH = "Touch";
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
+	private static final String XML_MUST_BE_WHITE = "MustBeWhite";
 
 	private final String id;
 	private final GuiSet guiSet;
+	private final Collection<WhiteGraficRectangle> whiteGraficRectangles;
 
-	private ModeEntry(String id, GuiSet guiSet) {
+	private ModeEntry(String id, GuiSet guiSet, Collection<WhiteGraficRectangle> whiteGraficRectangles) {
 		this.id = id;
 		this.guiSet = guiSet;
+		this.whiteGraficRectangles = whiteGraficRectangles;
 	}
 
 	/**
@@ -58,6 +68,7 @@ public class ModeEntry implements IAssigner, IMode {
 
 		private String id;
 		private GuiSet guiSet;
+		private final Collection<WhiteGraficRectangle> whiteGraficRectangles = new ArrayList<>();
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -74,7 +85,7 @@ public class ModeEntry implements IAssigner, IMode {
 
 		@Override
 		public ModeEntry create() throws XmlException, IOException {
-			return new ModeEntry(this.id, this.guiSet);
+			return new ModeEntry(this.id, this.guiSet,this.whiteGraficRectangles);
 		}
 
 		@Override
@@ -83,6 +94,8 @@ public class ModeEntry implements IAssigner, IMode {
 			switch (id) {
 				case XML_GUI_SET:
 					return new GuiSet.Creator(id, this.getBaseCreator());
+				case XML_MUST_BE_WHITE:
+					return new WhiteGraficRectangle.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -93,6 +106,8 @@ public class ModeEntry implements IAssigner, IMode {
 				case XML_GUI_SET:
 					this.guiSet = (GuiSet) created;
 					break;
+				case XML_MUST_BE_WHITE:
+					this.whiteGraficRectangles.add((WhiteGraficRectangle) created);
 			}
 		}
 
@@ -189,6 +204,32 @@ public class ModeEntry implements IAssigner, IMode {
 
 	boolean isXmlValid() {
 		return this.guiSet != null;
+	}
+
+	public Collection<WhiteGraficRectangle> getWhiteGraficRectangles() {
+		return this.whiteGraficRectangles;
+	}
+
+	public boolean isMatchingWhite(MyImage image, Solvis solvis) {
+		for (IScreenPartCompare screenPart : this.whiteGraficRectangles) {
+			if (!screenPart.isElementOf(image, solvis)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public int compareTo(ModeEntry o) {
+		if ( o == null ) {
+			return 1;
+		}
+		return this.id.compareTo(o.getId());
+	}
+
+	@Override
+	public ModeValue<?> create(long timeStamp) {
+		return new ModeValue<>(this, timeStamp);
 	}
 
 }

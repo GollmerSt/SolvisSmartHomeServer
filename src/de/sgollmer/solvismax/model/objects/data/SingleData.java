@@ -7,7 +7,7 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
-public abstract class SingleData<T> {
+public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 
 	private final long timeStamp;
 
