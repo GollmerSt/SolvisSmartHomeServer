@@ -50,7 +50,7 @@ public class Starts extends Strategy<Starts> {
 			result.setInteger(0, -1);
 		}
 
-		Dependencies dependencies = this.calculation.getDependencies();
+		Dependencies dependencies = this.calculation.getCalculationDependencies();
 
 		SolvisData equipmentOn = dependencies.get(allData, "equipmentOn");
 

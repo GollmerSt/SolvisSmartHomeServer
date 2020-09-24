@@ -25,7 +25,6 @@ public class BooleanValue extends SingleData<Boolean> {
 
 	@Override
 	public Boolean getBoolean() {
-		// TODO Auto-generated method stub
 		return this.value;
 	}
 

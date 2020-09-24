@@ -16,7 +16,6 @@ import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
-import de.sgollmer.solvismax.model.objects.control.Dependency;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 
 public abstract class Command {
@@ -172,10 +171,6 @@ public abstract class Command {
 	}
 
 	ChannelDescription getRestoreChannel(Solvis solvis) {
-		return null;
-	}
-
-	public Dependency getDependency(Solvis solvis) {
 		return null;
 	}
 

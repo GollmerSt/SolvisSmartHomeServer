@@ -286,9 +286,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public Dependency getDependency() {
-		// TODO Auto-generated method stub
-		return this.channelSource.getDependency();
+	public Collection< Dependency > getDependencies() {
+		return this.channelSource.getDependencies();
 	}
 
 }

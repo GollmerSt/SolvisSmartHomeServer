@@ -7,6 +7,8 @@
 
 package de.sgollmer.solvismax.helper;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
@@ -229,4 +231,21 @@ public class Helper {
 			this.add(-1);
 		}
 	}
+	
+	/**
+	 * Copy a collection. If th source collection is null, an empty collection will be generated
+	 * @param <T>
+	 * @param source source collection, can be null
+	 * 
+	 * @return copied collection, elements aren't cloned
+	 */
+	public static <T> Collection<T> copy(Collection<T> source) {
+		if (source == null) {
+			return new ArrayList<>();
+		} else {
+			return new ArrayList<>(source);
+		}
+	}
+
+
 }

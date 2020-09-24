@@ -274,7 +274,8 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public Dependency getDependency() {
+	public Collection<Dependency> getDependencies() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

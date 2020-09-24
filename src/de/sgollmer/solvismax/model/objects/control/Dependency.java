@@ -114,4 +114,19 @@ public class Dependency implements IAssigner {
 		return d1.getData(solvis).equals(d2.getData(solvis));
 	}
 
+	public int compareTo(Dependency o, Solvis solvis) {
+		if ( o == null ) {
+			return 1;
+		}
+		String id1 = this.getChannelDescription(solvis).getId();
+		String id2 = o.getChannelDescription(solvis).getId();
+		
+		if ( !id1.equals(id2)) {
+			return id1.compareTo(id2);
+		}
+		else {
+			return this.getData(solvis).compareTo(o.getData(solvis));
+		}
+	}
+
 }

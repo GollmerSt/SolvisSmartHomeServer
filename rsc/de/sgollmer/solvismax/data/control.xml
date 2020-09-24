@@ -2561,6 +2561,8 @@
 						<tns:TopLeft X="155" Y="47" />
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C06.Anlagenmodus_HK1"
+						value="Standby" />
 					<tns:Dependency id="C28.BetriebsartVT_HK1"
 						value="Kurve" />
 				</tns:GuiAccess>
@@ -2594,6 +2596,8 @@
 						<tns:TopLeft X="150" Y="47" />
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C06.Anlagenmodus_HK1"
+						value="Standby" />
 					<tns:Dependency id="C28.BetriebsartVT_HK1"
 						value="Fix" />
 				</tns:GuiAccess>
@@ -2621,6 +2625,8 @@
 						<tns:TopLeft X="150" Y="75" />
 						<tns:BottomRight X="195" Y="87" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C06.Anlagenmodus_HK1"
+						value="Standby" />
 					<tns:Dependency id="C28.BetriebsartVT_HK1"
 						value="Fix" />
 				</tns:GuiAccess>

@@ -432,6 +432,11 @@ public class Mqtt {
 			return this.clientId.hashCode();
 		}
 
+		@Override
+		public void close() {
+			logger.error("Unexpected using of iClient");
+		}
+
 	}
 
 	public void deleteRetainedTopics() throws MqttException, MqttConnectionLost {

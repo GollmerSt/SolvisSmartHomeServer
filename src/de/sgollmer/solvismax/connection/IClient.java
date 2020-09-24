@@ -16,6 +16,8 @@ public interface IClient {
 
 	public void closeDelayed();
 
+	public void close();
+
 	public String getClientId();
 
 	public Solvis getSolvis();

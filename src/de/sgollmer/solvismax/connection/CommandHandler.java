@@ -72,10 +72,10 @@ public class CommandHandler {
 				this.disconnect(receivedData, client, true);
 				break;
 			case GET:
-				this.get(receivedData, client);
+				this.get(receivedData);
 				break;
 			case SET:
-				this.set(receivedData, client);
+				this.set(receivedData);
 				break;
 			case SERVER_COMMAND:
 				this.executeServerCommand(receivedData, client);
@@ -276,12 +276,11 @@ public class CommandHandler {
 		}
 	}
 
-	private void set(ITransferedData receivedDat, IClient client) throws JsonException {
+	private void set(ITransferedData receivedDat) throws JsonException {
 		Solvis solvis = receivedDat.getSolvis();
-		if (solvis == null) {
-			solvis = client.getSolvis();
-		}
+		
 		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
+		
 		SingleData<?> singleData = receivedDat.getSingleData();
 		try {
 			singleData = description.interpretSetData(singleData);
@@ -296,11 +295,8 @@ public class CommandHandler {
 		}
 	}
 
-	private void get(ITransferedData receivedDat, IClient client) {
+	private void get(ITransferedData receivedDat) {
 		Solvis solvis = receivedDat.getSolvis();
-		if (solvis == null) {
-			solvis = client.getSolvis();
-		}
 		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
 		logger.info("Channel <" + description.getId() + "> will be updated by GET command");
 		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, solvis));
@@ -390,6 +386,7 @@ public class CommandHandler {
 			}
 			synchronized (CommandHandler.this) {
 				if (!this.abort) {
+					this.assignments.getClient().close();
 					try {
 						unregister(this.assignments);
 					} catch (ClientAssignmentException e) {

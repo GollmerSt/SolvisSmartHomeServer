@@ -138,6 +138,7 @@ public class Server {
 				while (!abortConnection) {
 					JsonPackage jsonPackage = ReceivedPackageCreator.getInstance().receive(in,
 							Server.this.clientTimeout);
+					jsonPackage.setSolvis(this.solvis);
 					abortConnection = Server.this.commandHandler.commandFromClient(jsonPackage, this);
 				}
 
@@ -167,7 +168,8 @@ public class Server {
 
 		}
 
-		synchronized void close() {
+		@Override
+		public synchronized void close() {
 			logger.info("Client disconnected");
 			try {
 				removeClient(this);

@@ -20,6 +20,7 @@ import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -47,12 +48,15 @@ public class CommandControl extends Command {
 	private final Solvis solvis;
 	private boolean mustBeFinished = false;
 	private ResultStatus finalStatus = ResultStatus.SUCCESS;
+	private Collection<Dependency> toExecute = null;
+	private final DependencyCache dependencyCache;
 
 	CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) {
 		this.setValue = setValue;
 		this.description = description;
 		this.screen = description.getScreen(solvis);
 		this.solvis = solvis;
+		this.dependencyCache = new DependencyCache(solvis);
 	}
 
 	public CommandControl(ChannelDescription description, Solvis solvis) {
@@ -176,34 +180,46 @@ public class CommandControl extends Command {
 				if (queueCommand.isWriting()) {
 					finished = true;
 				}
-				boolean sameEnvironment = queueCommand.getScreen(solvis) == this.getScreen(solvis);
 
-				Dependency dependency = this.description.getDependency();
-				Dependency queueDependency = queueCommand.description.getDependency();
+				if (queueCommand.getScreen(solvis) == this.getScreen(solvis)) {
 
-				sameEnvironment &= Dependency.equals(dependency, queueDependency, solvis);
+					Collection<Dependency> queueDependencies = Helper.copy(queueCommand.description.getDependencies());
+					Collection<Dependency> dependencies = Helper.copy(this.description.getDependencies());
 
-				if (sameEnvironment) {
-
-					if (queueCommand.isWriting()) {
-
-						if (this.description == queueCommand.description && this.isWriting()) {
-							inQueueInhibit = true;
+					for (Iterator<Dependency> itQ = queueDependencies.iterator(); itQ.hasNext();) {
+						Dependency queueDependency = itQ.next();
+						for (Iterator<Dependency> it = dependencies.iterator(); it.hasNext();) {
+							Dependency dependency = it.next();
+							if (queueDependency.equals(dependency)) {
+								it.remove();
+								itQ.remove();
+								break;
+							}
 						}
-						inhibitAdd = !this.isWriting();
-						insert = true;
-
-					} else if (queueCommand.getRestoreChannel(solvis) != null) {
-
-						if (this.description == queueCommand.description) {
-							inQueueInhibit = true;
-						}
-
-					} else {
-						inQueueInhibit = true;
 					}
-				}
 
+					if (queueDependencies.isEmpty() && dependencies.isEmpty()) {
+
+						if (queueCommand.isWriting()) {
+
+							if (this.description == queueCommand.description && this.isWriting()) {
+								inQueueInhibit = true;
+							}
+							inhibitAdd = !this.isWriting();
+							insert = true;
+
+						} else if (queueCommand.getRestoreChannel(solvis) != null) {
+
+							if (this.description == queueCommand.description) {
+								inQueueInhibit = true;
+							}
+
+						} else {
+							inQueueInhibit = true;
+						}
+					}
+
+				}
 				return new Handling(inQueueInhibit, inhibitAdd, insert, finished);
 			}
 		}
@@ -267,11 +283,6 @@ public class CommandControl extends Command {
 		return this.description.getRestoreChannel(solvis);
 	}
 
-	@Override
-	public Dependency getDependency(Solvis solvis) {
-		return this.description.getDependency();
-	}
-
 	/**
 	 * State machine for execution of a command including restore and dependency
 	 * processing
@@ -283,11 +294,10 @@ public class CommandControl extends Command {
 	private enum StateEnum {
 		NONE(new None()), //
 		PREPARE_RESTORE(new PrepareRestore()), //
-		PREPARE_DEPENDENCY(new PrepareDependency()), //
-		EXECUTE_DEPENDENCY(new ExecuteDependency(false)), //
+		EXECUTE_DEPENDENCY(new ExecuteDependency()), //
 		WRITING(new Writing()), //
 		READING(new Reading()), //
-		RESTORE_DEPENDENCY(new ExecuteDependency(true)), //
+		RESTORE_DEPENDENCY(new RestoreDependency()), //
 		RESTORE(new Restore()), //
 		FINISHED(new Finished());
 
@@ -295,6 +305,7 @@ public class CommandControl extends Command {
 
 		private StateEnum(State state) {
 			this.state = state;
+			state.setStateEnum(this);
 		}
 
 		public State getState() {
@@ -304,11 +315,39 @@ public class CommandControl extends Command {
 
 	private static abstract class State {
 
+		private StateEnum stateEnum;
+
 		public abstract State next(CommandControl command, Solvis solvis);
 
 		public abstract ResultStatus execute(CommandControl command) throws IOException, TerminationException,
 				TypeException, NumberFormatException, PowerOnException, XmlException;
 
+		@Override
+		public String toString() {
+			return this.stateEnum.name();
+		}
+
+		public void setStateEnum(StateEnum stateEnum) {
+			this.stateEnum = stateEnum;
+		}
+	}
+
+	private boolean hasDependency(boolean handleArray) {
+		if (this.description.getDependencies() != null) {
+			if (handleArray) {
+				if (this.toExecute == null) {
+					this.toExecute = new ArrayList<Dependency>(this.description.getDependencies());
+					return true;
+				} else if (this.toExecute.isEmpty()) {
+					this.toExecute = null;
+					return false;
+				} else {
+					return true;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
 	private static class None extends State {
@@ -317,8 +356,8 @@ public class CommandControl extends Command {
 		public State next(CommandControl command, Solvis solvis) {
 			if (command.description.getRestoreChannel(solvis) != null) {
 				return StateEnum.PREPARE_RESTORE.getState();
-			} else if (command.description.getDependency() != null) {
-				return StateEnum.PREPARE_DEPENDENCY.getState();
+			} else if (command.hasDependency(false)) {
+				return StateEnum.EXECUTE_DEPENDENCY.getState();
 			} else {
 				return StateEnum.WRITING.getState();
 			}
@@ -335,8 +374,8 @@ public class CommandControl extends Command {
 
 		@Override
 		public State next(CommandControl command, Solvis solvis) {
-			if (command.description.getDependency() != null) {
-				return StateEnum.PREPARE_DEPENDENCY.getState();
+			if (command.hasDependency(false)) {
+				return StateEnum.EXECUTE_DEPENDENCY.getState();
 			} else {
 				return StateEnum.WRITING.getState();
 			}
@@ -353,63 +392,53 @@ public class CommandControl extends Command {
 
 	}
 
-	private static class PrepareDependency extends State {
-
-		@Override
-		public State next(CommandControl command, Solvis solvis) {
-			return StateEnum.EXECUTE_DEPENDENCY.getState();
-		}
-
-		@Override
-		public ResultStatus execute(CommandControl command) throws NumberFormatException, IOException, PowerOnException,
-				TerminationException, TypeException, XmlException {
-			Solvis solvis = command.solvis;
-			ChannelDescription dependencyChannel = command.getDependency(solvis).getChannelDescription(solvis);
-			SolvisData data = solvis.getAllSolvisData().get(dependencyChannel);
-			return dependencyChannel.getValue(data, solvis)?ResultStatus.SUCCESS:ResultStatus.NO_SUCCESS;
-		}
-
-	}
-
 	private static class ExecuteDependency extends State {
 
-		private final boolean restore;
-
-		public ExecuteDependency(boolean restore) {
-			this.restore = restore;
-		}
-
 		@Override
 		public State next(CommandControl command, Solvis solvis) {
-			return this.restore ? StateEnum.FINISHED.getState() : StateEnum.WRITING.getState();
+			if (command.hasDependency(true)) {
+				return this;
+			} else {
+				return StateEnum.WRITING.getState();
+			}
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command) throws IOException, TerminationException, TypeException {
+		public ResultStatus execute(CommandControl command)
+				throws IOException, TerminationException, TypeException, NumberFormatException, PowerOnException {
+			command.hasDependency(true);
+
+			Iterator<Dependency> it = command.toExecute.iterator();
+			Dependency dependency = it.next();
 			Solvis solvis = command.solvis;
-			Dependency dependency = command.getDependency(solvis);
-			ChannelDescription description = dependency.getChannelDescription(solvis);
 
-			SingleData<?> data;
-
-			SingleData<?> former = solvis.getAllSolvisData().get(description).getSingleData();
-
-			if (this.restore) {
-				data = former;
-			} else {
-				data = dependency.getData(solvis);
-				if (data.equals(former)) {
-					return ResultStatus.SUCCESS;
-				}
+			ChannelDescription dependencyChannel = dependency.getChannelDescription(solvis);
+			SolvisData solvisData = solvis.getAllSolvisData().get(dependencyChannel);
+			boolean success = dependencyChannel.getValue(solvisData, solvis);
+			if (!success) {
+				return ResultStatus.NO_SUCCESS;
 			}
 
-			command.mustBeFinished = true;
-			ResultStatus status = command.write(solvis, description, data, command.dependencyFailCount, false);
+			SingleData<?> data = dependency.getData(solvis);
+			SingleData<?> now = command.dependencyCache.get(dependencyChannel);
 
-			if (status == ResultStatus.VALUE_VIOLATION && !this.restore) {
-				logger.error("Wrong dependency value definition of channel <" + command.description.getId()
-						+ ">. Check control.xml. Error ignored.");
-				status = ResultStatus.SUCCESS;
+			ResultStatus status = ResultStatus.SUCCESS;
+
+			if (!data.equals(now)) {
+
+				command.mustBeFinished = true;
+				status = command.write(solvis, dependencyChannel, data, command.dependencyFailCount, false);
+
+				command.dependencyCache.put(dependencyChannel, data);
+
+				if (status == ResultStatus.VALUE_VIOLATION) {
+					logger.error("Wrong dependency value definition of channel <" + command.description.getId()
+							+ ">. Check control.xml. Error ignored.");
+					status = ResultStatus.SUCCESS;
+				}
+			}
+			if (status == ResultStatus.SUCCESS) {
+				it.remove();
 			}
 
 			return status;
@@ -444,7 +473,7 @@ public class CommandControl extends Command {
 
 		@Override
 		public State next(CommandControl command, Solvis solvis) {
-			if (command.description.getDependency() != null) {
+			if (command.hasDependency(false)) {
 				return StateEnum.RESTORE_DEPENDENCY.getState();
 			} else if (command.description.getRestoreChannel(solvis) != null) {
 				return StateEnum.RESTORE.getState();
@@ -463,51 +492,26 @@ public class CommandControl extends Command {
 
 				Collection<ChannelDescription> readChannels = solvis.getSolvisDescription().getChannelDescriptions()
 						.getChannelDescriptions(command.screen, solvis);
+				
 
-				ChannelDescription commandDependencyDescription = null;
-				Dependency commandDependency = command.description.getDependency();
-
-				Map<ChannelDescription, SingleData<?>> dependencyMap = new HashMap<>();
-
-				if (commandDependency != null) {
-					commandDependencyDescription = commandDependency.getChannelDescription(solvis);
-
-					for (ChannelDescription description : readChannels) {
-						Dependency dependency = description.getDependency();
-						if (dependency != null) {
-							dependencyMap.put(dependency.getChannelDescription(solvis), null);
-						}
-					}
-
-					for (Map.Entry<ChannelDescription, SingleData<?>> entry : dependencyMap.entrySet()) {
-						ChannelDescription description = entry.getKey();
-						if (description == commandDependencyDescription) {
-							entry.setValue(commandDependency.getData(solvis));
-						} else {
-							SolvisData data = solvis.getAllSolvisData().get(commandDependencyDescription);
-							data = data.clone();
-							boolean success = entry.getKey().getValue(data, solvis);
-							if (success) {
-								entry.setValue(data.getSingleData());
-							} else {
-								return ResultStatus.NO_SUCCESS;
-							}
-						}
-					}
-				}
 				command.readChannels = new ArrayList<>();
 
 				for (ChannelDescription description : readChannels) {
-					Dependency dependency = description.getDependency();
-					if (!dependencyMap.containsKey(description)) {
-						if (dependency == null) {
-							command.readChannels.add(description);
-						} else if (dependency != null) {
-							SingleData<?> current = dependencyMap.get(dependency.getChannelDescription(solvis));
-							if (dependency.getData(solvis).equals(current)) {
-								command.readChannels.add(description);
+					Collection< Dependency > commandDependencies = Helper.copy(command.description.getDependencies());
+					Collection<Dependency> dependencies = Helper.copy(description.getDependencies());
+					for ( Iterator<Dependency> itC = commandDependencies.iterator(); itC.hasNext();) {
+						Dependency commandDependency = itC.next();
+						for ( Iterator<Dependency> it = dependencies.iterator(); it.hasNext();) {
+							Dependency dependency = it.next();
+							if ( Dependency.equals(dependency, commandDependency, solvis)) {
+								it.remove();
+								itC.remove();
+								break;
 							}
 						}
+					}
+					if ( dependencies.isEmpty() && commandDependencies.isEmpty() ) {
+						command.readChannels.add(description);
 					}
 				}
 			}
@@ -532,6 +536,44 @@ public class CommandControl extends Command {
 			}
 
 			return readSuccess ? ResultStatus.SUCCESS : ResultStatus.NO_SUCCESS;
+		}
+
+	}
+
+	private static class RestoreDependency extends State {
+
+		@Override
+		public State next(CommandControl command, Solvis solvis) {
+			if (command.hasDependency(true)) {
+				return this;
+			} else {
+				return StateEnum.FINISHED.getState();
+			}
+		}
+
+		@Override
+		public ResultStatus execute(CommandControl command) throws IOException, TerminationException, TypeException {
+			command.hasDependency(true);
+
+			Iterator<Dependency> it = command.toExecute.iterator();
+			Dependency dependency = it.next();
+
+			Solvis solvis = command.solvis;
+			ChannelDescription description = dependency.getChannelDescription(solvis);
+
+			SingleData<?> data = solvis.getAllSolvisData().get(description).getSingleData();
+			SingleData<?> dependencyData = command.dependencyCache.get(description);
+
+			ResultStatus status = ResultStatus.SUCCESS;
+
+			if (!data.equals(dependencyData)) {
+
+				status = command.write(solvis, description, data, command.dependencyFailCount, false);
+			}
+			if (status == ResultStatus.SUCCESS) {
+				it.remove();
+			}
+			return status;
 		}
 
 	}
@@ -573,5 +615,33 @@ public class CommandControl extends Command {
 
 	public boolean mustBeFinished() {
 		return this.mustBeFinished;
+	}
+
+	private static class DependencyCache {
+
+		private final Solvis solvis;
+		private final Map<ChannelDescription, SingleData<?>> map = new HashMap<>();
+
+		public DependencyCache(Solvis solvis) {
+			this.solvis = solvis;
+		}
+
+		public SingleData<?> get(ChannelDescription description) {
+			SingleData<?> result = this.map.get(description);
+			if (result == null) {
+				result = SolvisData.getSingleData(this.solvis.getAllSolvisData().get(description));
+			}
+			return result;
+		}
+
+		public void put(ChannelDescription description, SingleData<?> data) {
+			SingleData<?> former = this.map.get(description);
+			if (former != null && !former.equals(data)) {
+				throw new FatalError("dependency <" + description.getId() + "> doesn't fit. Fomer value <" + former
+						+ "> isn't the same as <" + data + ">.");
+			}
+			this.map.put(description, data);
+		}
+
 	}
 }

@@ -51,7 +51,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 			result.setBoolean(false, -1);
 		}
 
-		Dependencies dependencies = this.calculation.getDependencies();
+		Dependencies dependencies = this.calculation.getCalculationDependencies();
 
 		SolvisData pumpOn = dependencies.get(allData, "pumpOn");
 		SolvisData mixerClosing = dependencies.get(allData, "mixerClosing");

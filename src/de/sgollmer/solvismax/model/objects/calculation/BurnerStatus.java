@@ -70,7 +70,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	@Override
 	void instantiate(Solvis solvis) throws AssignmentException, AliasException {
 		AllSolvisData allData = solvis.getAllSolvisData();
-		Dependencies dependencies = this.calculation.getDependencies();
+		Dependencies dependencies = this.calculation.getCalculationDependencies();
 
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 

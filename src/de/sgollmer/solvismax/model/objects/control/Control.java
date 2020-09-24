@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
@@ -361,19 +362,19 @@ public class Control extends ChannelSource {
 		private final Rectangle valueRectangle;
 		private final String preparationId;
 		private final String restoreChannelId;
-		private final Dependency dependency;
+		private final Collection<Dependency> dependencies;
 
 		private OfConfigs<AbstractScreen> screen = null;
 		private Preparation preparation = null;
 		private OfConfigs<ChannelDescription> restoreChannel = null;
 
 		private GuiAccess(String screenId, Rectangle valueRectangle, String preparationId, String restoreChannelId,
-				Dependency dependency) {
+				Collection<Dependency> dependencies) {
 			this.screenId = screenId;
 			this.valueRectangle = valueRectangle;
 			this.preparationId = preparationId;
 			this.restoreChannelId = restoreChannelId;
-			this.dependency = dependency;
+			this.dependencies = dependencies;
 		}
 
 		Rectangle getValueRectangle() {
@@ -394,7 +395,7 @@ public class Control extends ChannelSource {
 			private Rectangle valueRectangle;
 			private String preparationId;
 			private String restoreChannelId;
-			private Dependency dependency;
+			private Collection<Dependency> dependencies = null;
 
 			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -416,7 +417,7 @@ public class Control extends ChannelSource {
 			@Override
 			public GuiAccess create() throws XmlException, IOException {
 				return new GuiAccess(this.screenId, this.valueRectangle, this.preparationId, this.restoreChannelId,
-						this.dependency);
+						this.dependencies);
 			}
 
 			@Override
@@ -443,7 +444,10 @@ public class Control extends ChannelSource {
 						this.preparationId = ((PreparationRef) created).getPreparationId();
 						break;
 					case XML_DEPENDENCY:
-						this.dependency = (Dependency) created;
+						if (this.dependencies == null) {
+							this.dependencies = new ArrayList<>();
+						}
+						this.dependencies.add((Dependency) created);
 				}
 
 			}
@@ -471,10 +475,12 @@ public class Control extends ChannelSource {
 				}
 			}
 
-			if ( this.dependency != null) {
-				this.dependency.assign(description);
+			if (this.dependencies != null) {
+				for (Dependency dependency : this.dependencies) {
+					dependency.assign(description);
+				}
 			}
-			
+
 		}
 
 		boolean prepare(Solvis solvis) throws IOException, TerminationException {
@@ -511,8 +517,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public Dependency getDependency() {
-		return this.guiAccess.dependency;
+	public Collection<Dependency> getDependencies() {
+		return this.guiAccess.dependencies;
 	}
 
 }

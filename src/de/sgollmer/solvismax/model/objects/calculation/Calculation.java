@@ -84,7 +84,7 @@ public class Calculation extends ChannelSource {
 	/**
 	 * @return the dependencies
 	 */
-	Dependencies getDependencies() {
+	Dependencies getCalculationDependencies() {
 		return this.dependencies;
 	}
 
@@ -186,7 +186,8 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public Dependency getDependency() {
+	public Collection<Dependency> getDependencies() {
 		return null;
 	}
+
 }

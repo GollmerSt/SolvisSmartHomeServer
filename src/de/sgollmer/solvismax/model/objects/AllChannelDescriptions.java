@@ -31,6 +31,7 @@ import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
@@ -291,28 +292,32 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 			@Override
 			public int compare(ChannelDescription o1, ChannelDescription o2) {
-				Dependency d1 = o1.getDependency();
-				Dependency d2 = o2.getDependency();
-
-				if (d1 == null && d2 == null) {
+				Collection<Dependency> ds1 = Helper.copy(o1.getDependencies());
+				Collection<Dependency> ds2 = Helper.copy(o2.getDependencies());
+				for (Iterator<Dependency> it1 = ds1.iterator(); it1.hasNext();) {
+					Dependency d1 = it1.next();
+					for (Iterator<Dependency> it2 = ds2.iterator(); it2.hasNext();) {
+						Dependency d2 = it2.next();
+						if ( Dependency.equals( d1, d2, solvis)) {
+							it1.remove();
+							it2.remove();
+							break;
+						}
+					}
+				}
+				
+				if (ds1.isEmpty() && ds2.isEmpty()) {
 					return 0;
 				}
 
-				if (d1 == null && d2 != null) {
+				if (ds1.isEmpty() && !ds2.isEmpty()) {
 					return -1;
 				}
 
-				if (d1 != null && d2 == null) {
+				if (!ds1.isEmpty() && ds2.isEmpty()) {
 					return 1;
 				}
-
-				String i1 = d1.getChannelDescription(solvis).getId();
-				String i2 = d2.getChannelDescription(solvis).getId();
-
-				if (i1.equals(i2)) {
-					return d1.getData(solvis).compareTo(d2.getData(solvis));
-				}
-				return 0;
+				return ds1.iterator().next().compareTo(ds2.iterator().next(), solvis);
 			}
 		});
 
