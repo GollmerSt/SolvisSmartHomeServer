@@ -2,6 +2,18 @@ A E N D E R U N G E N
 
 Version 01.02.04 rc1
 
+    25.09.2020  Prepare ist überflüssig, wird durch Dependency ersetzt.
+    
+                Deadlockbeseitigt, der auftrat, wenn der Server bei aktivem Solvis-Fehler
+                gestartet wurde.
+                
+                WW_Pumpe_Min_Laufzeit hinzugefügt, dabei Attribute für Step erweitert. Entsprechend
+                auch FHEM-Client ergänzt. Neues Konfigurationsbit 0x0100 (WW-Kreislauf).
+
+    24.09.2020  Mehr als eine Dependency pro Channel ist nun möglich
+    
+    23.09.2020  Dependencies eingeführt, um das Problem vom 18.09.2020 zu lösen
+
     18.09.2020  C29.Steilheit_HK1 neu. Aktuell offenes Problem:
                 Dieser Wert ist nur gültig, wenn die Betriebsart Vorlauf-Temperatur auf "Kurve" steht.
                 Wenn auf "Fix", gibt es feste Vorlauftemperaturen und zwar "Fix-Vorlauf Tag" und

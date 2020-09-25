@@ -70,6 +70,18 @@ public class ChannelDescription extends Element {
 			step.name = "Step";
 			step.value = new SingleValue(new DoubleValue(upperLowerStep.getStep(), -1));
 			frame.add(step);
+			if (upperLowerStep.getIncrementChange() != null) {
+				Element incrementChange = new Element();
+				incrementChange.name = "IncrementChange";
+				incrementChange.value = new SingleValue(new DoubleValue(upperLowerStep.getIncrementChange(), -1));
+				frame.add(incrementChange);
+			}
+			if (upperLowerStep.getChangedIncrement() != null) {
+				Element changedIncrement = new Element();
+				changedIncrement.name = "ChangedIncrement";
+				changedIncrement.value = new SingleValue(new DoubleValue(upperLowerStep.getChangedIncrement(), -1));
+				frame.add(changedIncrement);
+			}
 		}
 
 		Collection<? extends IMode<?>> modes = description.getModes();

@@ -32,7 +32,6 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 	private final Set<ChannelDescription> errorChannels = new HashSet<>();
 	private boolean error = false;
 	private long timeOfLastSwitchingOn = -1;
-	private Boolean notifyError = false;
 
 	SolvisState(Solvis solvis) {
 		this.solvis = solvis;

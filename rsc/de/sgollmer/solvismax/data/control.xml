@@ -6,6 +6,16 @@
 	<tns:SolvisTypes>
 		<tns:Type id="SolvisMax" configuration="0x01000000" />
 		<tns:Type id="SolvisBen" configuration="0x02000000" />
+		<!-- weitere Werte: -->
+		<!-- 0x0001: Heizkreis 1 vorhanden -->
+		<!-- 0x0002: Heizkreis 2 vorhanden -->
+		<!-- 0x0004: Heizkreis 3 vorhanden -->
+		<!-- 0x0008: Solarkollektor vorhanden -->
+		<!-- 0x0010: Solarkreislauf mit zweiter Umwaelzpumpe an A07 -->
+		<!-- 0x0020: externer Brennkessel mit Temperaturfühler an S14 -->
+		<!-- 0x0040: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
+		<!-- 0x0080: Solar Ost + West S16 Kollektor West -->
+		<!-- 0x0100: Heißwasserkreislauf vorhanden -->
 	</tns:SolvisTypes>
 	<tns:Configurations>
 		<tns:HeaterLoops screenRef="Home">
@@ -2510,7 +2520,40 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C28.BetriebsartVT_HK1">
+			id="C28.WW_Pumpe_Min_Laufzeit" unit="s">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0100"
+					andMask="0x0100" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Zirkulation">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="18" />
+						<tns:BottomRight Y="45" X="200" />
+					</tns:CurrentValue>
+					<tns:Dependency id="C26.Warmwasserzirkulation_Puls"
+						value="true" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="300"
+					least="0" incrementChange="120" changedIncrement="30">
+					<tns:GuiModification format="(\d+)." wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="20" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="220" Y="50" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C29.BetriebsartVT_HK1">
 			<tns:Configuration admin="true" />
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
@@ -2553,7 +2596,7 @@
 				</tns:TypeMode>
 			</tns:Control>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="C29.Steilheit_HK1">
+		<tns:ChannelDescription id="C30.Steilheit_HK1">
 			<tns:Configuration admin="true" />
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
@@ -2563,7 +2606,7 @@
 					</tns:CurrentValue>
 					<tns:Dependency id="C06.Anlagenmodus_HK1"
 						value="Standby" />
-					<tns:Dependency id="C28.BetriebsartVT_HK1"
+					<tns:Dependency id="C29.BetriebsartVT_HK1"
 						value="Kurve" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite divisor="100" increment="5"
@@ -2588,7 +2631,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C30.Fix_Vorlauf_Tag_HK1">
+			id="C31.Fix_Vorlauf_Tag_HK1">
 			<tns:Configuration admin="true" />
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
@@ -2598,7 +2641,7 @@
 					</tns:CurrentValue>
 					<tns:Dependency id="C06.Anlagenmodus_HK1"
 						value="Standby" />
-					<tns:Dependency id="C28.BetriebsartVT_HK1"
+					<tns:Dependency id="C29.BetriebsartVT_HK1"
 						value="Fix" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
@@ -2617,7 +2660,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C31.Fix_Vorlauf_Absenk_HK1">
+			id="C32.Fix_Vorlauf_Absenk_HK1">
 			<tns:Configuration admin="true" />
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
@@ -2627,7 +2670,7 @@
 					</tns:CurrentValue>
 					<tns:Dependency id="C06.Anlagenmodus_HK1"
 						value="Standby" />
-					<tns:Dependency id="C28.BetriebsartVT_HK1"
+					<tns:Dependency id="C29.BetriebsartVT_HK1"
 						value="Fix" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"

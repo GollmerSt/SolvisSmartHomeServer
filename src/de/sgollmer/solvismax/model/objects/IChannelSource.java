@@ -29,8 +29,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public DependencyGroup getDependencyGroup();
 
-	public boolean getValue(SolvisData dest, Solvis solvis)
-			throws IOException, PowerOnException, TerminationException;
+	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, PowerOnException, TerminationException;
 
 	public static class SetResult {
 		private final ResultStatus status;
@@ -50,8 +49,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 		}
 	}
 
-	public SetResult setValue(Solvis solvis, SolvisData value)
-			throws IOException, TerminationException;
+	public SetResult setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException;
 
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
 
@@ -85,11 +83,16 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 		private final double upper;
 		private final double lower;
 		private final double step;
+		private final Double incrementChange;
+		private final Double changedIncrement;
 
-		public UpperLowerStep(double upper, double lower, double step) {
+		public UpperLowerStep(double upper, double lower, double step, Double incrementChange,
+				Double changedIncrement) {
 			this.upper = upper;
 			this.lower = lower;
 			this.step = step;
+			this.incrementChange = incrementChange;
+			this.changedIncrement = changedIncrement;
 		}
 
 		public double getUpper() {
@@ -103,6 +106,15 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 		public double getStep() {
 			return this.step;
 		}
+
+		public Double getIncrementChange() {
+			return this.incrementChange;
+		}
+
+		public Double getChangedIncrement() {
+			return this.changedIncrement;
+		}
+
 	}
 
 }

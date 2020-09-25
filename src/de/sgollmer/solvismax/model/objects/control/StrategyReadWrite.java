@@ -41,13 +41,18 @@ public class StrategyReadWrite extends StrategyRead {
 	private final int increment;
 	private final int least;
 	private final int most;
+	private final Integer incrementChange;
+	private final Integer changedIncrement;
 	private final GuiModification guiModification;
 
-	private StrategyReadWrite(int increment, int divisor, int least, int most, GuiModification guiModification) {
+	private StrategyReadWrite(int increment, int divisor, int least, int most, Integer incrementChange,
+			Integer changedIncrement, GuiModification guiModification) {
 		super(divisor, guiModification);
 		this.increment = increment;
 		this.least = least;
 		this.most = most;
+		this.incrementChange = incrementChange;
+		this.changedIncrement = changedIncrement;
 		this.guiModification = guiModification;
 	}
 
@@ -76,8 +81,17 @@ public class StrategyReadWrite extends StrategyRead {
 			int goal = Math.max(target, this.least);
 			goal = Math.min(goal, this.most);
 
-			int value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment))
-					/ (2 * this.increment);
+			int value;
+
+			if (this.incrementChange != null && goal >= this.incrementChange) {
+				goal -= this.incrementChange;
+				value = (2 * this.changedIncrement * goal + (goal > 0 ? this.changedIncrement : -this.changedIncrement))
+						/ (2 * this.changedIncrement);
+				value += this.incrementChange;
+			} else {
+				value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment))
+						/ (2 * this.increment);
+			}
 
 			if (current == value) {
 				return new SetResult(target == current ? ResultStatus.SUCCESS : ResultStatus.VALUE_VIOLATION, data);
@@ -85,13 +99,13 @@ public class StrategyReadWrite extends StrategyRead {
 
 			int[] dist = new int[3];
 
-			int minDist = value - current;
-			int maxDist = this.most - this.least + this.increment;
+			dist[0] = this.steps(value, false) - this.steps(current, false); // no wrap around
 
-			dist[0] = minDist; // no wrap around
+			dist[1] = -this.steps(current, false) + this.steps(value, true); // wrap lower
+			dist[2] = this.steps(value, false) - this.steps(current, true); // wrap upper
 
-			dist[1] = minDist + maxDist; // wrap upper
-			dist[2] = minDist - maxDist; // wrap lower
+			int minDist = dist[0];
+
 			if (this.guiModification.wrapAround) {
 				for (int i = 1; i < dist.length; ++i) {
 					if (Math.abs(minDist) > Math.abs(dist[i])) {
@@ -99,14 +113,17 @@ public class StrategyReadWrite extends StrategyRead {
 					}
 				}
 			}
+
 			TouchPoint point;
+			int touches;
 			if (minDist < 0) {
 				point = this.guiModification.lower;
+				touches = -minDist;
 			} else {
 				point = this.guiModification.upper;
+				touches = minDist;
 			}
 
-			int touches = Math.abs(minDist) / this.increment;
 			boolean interrupt = false;
 
 			if (touches > Constants.INTERRUPT_AFTER_N_TOUCHES) {
@@ -124,12 +141,46 @@ public class StrategyReadWrite extends StrategyRead {
 		return null;
 	}
 
+	/**
+	 * Calculation of the number of steps to need to go from the limit
+	 * 
+	 * @param value Reach value
+	 * @param upper True: Go from upper limit, false from lower
+	 * 
+	 * @return Number of steps, positiv increments to reach the value from the
+	 *         limits
+	 */
+
+	private int steps(int value, boolean upper) {
+		int result;
+		if (upper) {
+			int limit = this.changedIncrement != null ? this.most + this.changedIncrement : this.most + this.increment;
+			if (value >= this.incrementChange) {
+				result = (value - limit) / this.changedIncrement;
+			} else {
+				result = (this.incrementChange - limit) / this.changedIncrement;
+				result += (value - this.incrementChange) / this.increment;
+			}
+		} else {
+			int limit = this.least;
+			if (value <= this.incrementChange) {
+				result = (value - limit) / this.increment;
+			} else {
+				result = (this.incrementChange - limit) / this.increment;
+				result += (value - this.incrementChange) / this.changedIncrement;
+			}
+		}
+		return result;
+	}
+
 	static class Creator extends CreatorByXML<StrategyReadWrite> {
 
 		private int divisor = 1;
 		private int increment;
 		private int least;
 		private int most;
+		private Integer incrementChange = null;
+		private Integer changedIncrement = null;
 		private GuiModification guiModification = null;
 
 		Creator(String id, BaseCreator<?> creator) {
@@ -151,13 +202,20 @@ public class StrategyReadWrite extends StrategyRead {
 				case "most":
 					this.most = Integer.parseInt(value);
 					break;
+				case "incrementChange":
+					this.incrementChange = Integer.parseInt(value);
+					break;
+				case "changedIncrement":
+					this.changedIncrement = Integer.parseInt(value);
+					break;
 			}
 
 		}
 
 		@Override
 		public StrategyReadWrite create() throws XmlException {
-			return new StrategyReadWrite(this.increment, this.divisor, this.least, this.most, this.guiModification);
+			return new StrategyReadWrite(this.increment, this.divisor, this.least, this.most, this.incrementChange,
+					this.changedIncrement, this.guiModification);
 		}
 
 		@Override
@@ -191,8 +249,21 @@ public class StrategyReadWrite extends StrategyRead {
 
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
-		return new UpperLowerStep((double) this.most / this.getDivisor(), (double) this.least / this.getDivisor(),
-				(double) this.increment / this.getDivisor());
+		Double incrementChange = null;
+		Double changedIncrement = null;
+
+		if (this.incrementChange != null && this.changedIncrement != null) {
+			incrementChange = (double) this.incrementChange / this.getDivisor();
+			changedIncrement = (double) this.changedIncrement / this.getDivisor();
+		}
+
+		return new UpperLowerStep( //
+				(double) this.most / this.getDivisor(), //
+				(double) this.least / this.getDivisor(), //
+				(double) this.increment / this.getDivisor(), //
+				incrementChange, //
+				changedIncrement//
+		);
 	}
 
 	@Override

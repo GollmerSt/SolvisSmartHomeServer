@@ -10,10 +10,11 @@
 		Also hier 107545 und 10736 -->
 	<tns:Units>
 		<!-- configOrMask: -->
-		<!-- 0x10: Solarkreislauf mit zweiter Umwaelzpumpe an A07 -->
-		<!-- 0x20: externer Brennkessel mit Temperaturfühler an S14 -->
-		<!-- 0x40: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
-		<!-- 0x80: Solar Ost + West S16 Kollektor West-->
+		<!-- 0x0010: Solarkreislauf mit zweiter Umwaelzpumpe an A07 -->
+		<!-- 0x0020: externer Brennkessel mit Temperaturfühler an S14 -->
+		<!-- 0x0040: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
+		<!-- 0x0080: Solar Ost + West S16 Kollektor West-->
+		<!-- 0x0100: Heißwasserkreislauf vorhanden -->
 		<tns:Unit id="mySolvis" type="SolvisMax" configOrMask="0x00"
 			fwLth2_21_02A="true" account="account" passwordCrypt="AES-coded"
 			url="aaa.bbb.ccc.ddd" defaultAverageCount="12"

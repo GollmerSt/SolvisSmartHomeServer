@@ -1218,38 +1218,38 @@
 			<documentation>
 				Defintionen zur Modifikation eines Wertes über das
 				Solvis-Gui (Berührungspunkte für
-				Aufwärts-/Abwärtszählen, Increments
-				etc.)
+				Aufwärts-/Abwärtszählen, Increments etc.)
 			</documentation>
 		</annotation>
 		<sequence>
 			<element name="GuiModification" type="tns:GuiModification"
-				maxOccurs="1" minOccurs="0">
+				maxOccurs="1" minOccurs="1">
 			</element>
 		</sequence>
 		<attribute name="optional" type="boolean">
 			<annotation>
 				<documentation>
 					Wenn das Feld nicht in allen Konfigurationen
-					vorhanden ist, kann das nicht vorhandensein
-					durch setzen von optional auf
-					&amp;quot;true&amp;quot; werden. Das ist
-					z.B. für C03.LaufzeitAnforderung2
-					erforderlich, da diese bei modulierten
-					Gasbrennern nicht vorhanden ist.
+					vorhanden ist, kann das nicht vorhandensein durch
+					setzen von optional auf &amp;quot;true&amp;quot;
+					werden. Das ist z.B. für C03.LaufzeitAnforderung2
+					erforderlich, da diese bei modulierten Gasbrennern
+					nicht vorhanden ist.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="divisor" type="int">
 			<annotation>
-				<documentation>Divisor des Wertes (normalerweise 1)</documentation>
+				<documentation>
+					Divisor des Wertes (normalerweise 1)
+				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="increment" type="int" use="required">
 			<annotation>
 				<documentation>
-					Wert um den der Parameter bei einem
-					Bildschirmdruck erhöht/erniedigt wird
+					Wert um den der Parameter bei einem Bildschirmdruck
+					erhöht/erniedigt wird
 				</documentation>
 			</annotation>
 		</attribute>
@@ -1267,6 +1267,8 @@
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="incrementChange" type="int"></attribute>
+		<attribute name="changedIncrement" type="int"></attribute>
 	</complexType>
 
 
@@ -1440,7 +1442,22 @@ Es handelt sich dabei um einen Art virtuellerScreen, der einen Vorgänger besitz
 
 
 	<complexType name="Dependency">
-		<attribute name="id" type="string" use="required"></attribute>
+        <annotation>
+        	<documentation>Es gibt in den Solvis-Menüs Einstellungen, welche erst zu erreichen sind, wenn bestimmte Voreinstellungen durchgeführt wurden.
+Beispiel ist das Menü 2 der Heizkreise. Dort kann man die fixen Vorlauftemperaturwerte nur errichen, wenn man BetriebsartVT_HK1
+auf Fix stellt.
+
+Mit der Dependency-Definition wird festgelegt, unter welchen Besdingungen der Control-Wert erreichbar ist.
+
+Auch kann man mit der Dependenvcy festlegen, dass z.b. der Heizkreis in den Standby gehen soll, ehe ein bestimmter Parameter
+modifiziert/ausgelesen wird.
+
+Wird kein Dependency-Value definiert, so wird vor dem Lesen/Schreiben des Kanals der Dependency-Wert ermittelt und nach Ende der 
+Funktion wieder auf den vorherigen Wert zurück gestellt. Dies ist bei der Ermittlung der Soll-Temperaturen Tag/Nacht der Heizkreise notwendig,
+da es sich gezeigt hat, dass der lange Druck auf den Tag/Nacht-Button manchmal dazu führt, dass der Anlagenmodus des Heizkreises
+verändert wird.</documentation>
+        </annotation>
+        <attribute name="id" type="string" use="required"></attribute>
 		<attribute name="value" type="string" use="optional"></attribute>
 	</complexType>
 </schema>
