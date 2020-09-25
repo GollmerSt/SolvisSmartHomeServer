@@ -325,7 +325,7 @@ public class SolvisDescription {
 		int configurationMask = this.types.getConfiguration(solvis.getType());
 		return configurationMask | this.configurations.get(solvis);
 	}
-
+	
 	public AllPreparations getPreparations() {
 		return this.allPreparations;
 	}

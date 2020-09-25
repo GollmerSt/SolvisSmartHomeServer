@@ -53,12 +53,13 @@
 				maxOccurs="unbounded" minOccurs="0">
 			</element>
 		</sequence>
-		<attribute name="id" type="string">
+		<attribute name="id" type="string" use="required">
 			<annotation>
 				<documentation>Id der Solvis-Anlage</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="configurationMask" type="int"></attribute>
+		<attribute name="configurationMask" type="int" use="required"></attribute>
+		<attribute name="baseConfigurationMask" type="int" use="required"></attribute>
 		<attribute name="admin" type="boolean" use="optional"></attribute>
 	</complexType>
 

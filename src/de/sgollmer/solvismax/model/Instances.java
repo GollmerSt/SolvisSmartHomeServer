@@ -28,6 +28,7 @@ import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.ErrorDetection.WriteErrorScreens;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
@@ -61,10 +62,13 @@ public class Instances {
 		this.writeErrorScreens = new WriteErrorScreens(this);
 
 		for (Unit xmlUnit : baseData.getUnits().getUnits()) {
-			boolean mustLearn = !this.graficDatas.get(xmlUnit.getId(), this.xmlHash).isAdmin()
-					&& xmlUnit.getFeatures().isAdmin() || this.mustLearn;
-			this.mustLearn |= mustLearn;
-			Solvis solvis = this.createSolvisInstance(xmlUnit, mustLearn);
+			
+			SystemGrafics systemGrafics = this.graficDatas.get(xmlUnit.getId(), this.xmlHash);
+			
+			this.mustLearn |= !systemGrafics.isAdmin() && xmlUnit.getFeatures().isAdmin();
+			this.mustLearn |= xmlUnit.getConfigOrMask() != systemGrafics.getBaseConfigurationMask();
+			
+			Solvis solvis = this.createSolvisInstance(xmlUnit, this.mustLearn);
 			this.units.add(solvis);
 		}
 	}
@@ -73,8 +77,8 @@ public class Instances {
 		this.backupHandler.start();
 	}
 
-	public void learn(boolean force) throws IOException, LearningException, XMLStreamException, FileException,
-			TerminationException {
+	public void learn(boolean force)
+			throws IOException, LearningException, XMLStreamException, FileException, TerminationException {
 		boolean learned = true;
 		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
 		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);

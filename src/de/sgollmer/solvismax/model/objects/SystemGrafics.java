@@ -28,16 +28,20 @@ public class SystemGrafics implements IXmlWriteable {
 
 	private final String id;
 	private int configurationMask;
+	private int baseConfigurationMask = 0;
 	private final Map<String, ScreenGraficData> graficDatas;
-	private  boolean admin = false;
+	private boolean admin = false;
 
 	SystemGrafics(String id) {
-		this(id, 0, new HashMap<>(), false);
+		this(id, 0, 0, new HashMap<>(), false);
 	}
 
-	private SystemGrafics(String id, int configurationMask, Map<String, ScreenGraficData> graficDatas, boolean admin) {
+	private SystemGrafics(String id, int configurationMask, int baseConfigurationMask,
+			Map<String, ScreenGraficData> graficDatas, boolean admin) {
 		this.id = id;
 		this.configurationMask = configurationMask;
+		this.baseConfigurationMask = baseConfigurationMask;
+		;
 		this.graficDatas = graficDatas;
 		this.admin = admin;
 	}
@@ -67,6 +71,7 @@ public class SystemGrafics implements IXmlWriteable {
 	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException {
 		writer.writeAttribute("id", this.id);
 		writer.writeAttribute("configurationMask", Integer.toString(this.configurationMask));
+		writer.writeAttribute("baseConfigurationMask", Integer.toString(this.baseConfigurationMask));
 		writer.writeAttribute("admin", Boolean.toString(this.admin));
 		for (ScreenGraficData data : this.graficDatas.values()) {
 			writer.writeStartElement(XML_SCREEN_GRAFIC);
@@ -80,8 +85,9 @@ public class SystemGrafics implements IXmlWriteable {
 
 		private String id;
 		private int configurationMask;
+		private int baseConfigurationMask;
 		private final Map<String, ScreenGraficData> graficDatas = new HashMap<>();
-		private  boolean admin = false;
+		private boolean admin = false;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -96,6 +102,9 @@ public class SystemGrafics implements IXmlWriteable {
 				case "configurationMask":
 					this.configurationMask = Integer.parseInt(value);
 					break;
+				case "baseConfigurationMask":
+					this.baseConfigurationMask = Integer.parseInt(value);
+					break;
 				case "admin":
 					this.admin = Boolean.parseBoolean(value);
 					break;
@@ -106,7 +115,8 @@ public class SystemGrafics implements IXmlWriteable {
 		@Override
 		public SystemGrafics create() throws XmlException, IOException {
 
-			return new SystemGrafics(this.id, this.configurationMask, this.graficDatas, this. admin);
+			return new SystemGrafics(this.id, this.configurationMask, this.baseConfigurationMask, this.graficDatas,
+					this.admin);
 		}
 
 		@Override
@@ -149,6 +159,14 @@ public class SystemGrafics implements IXmlWriteable {
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
+	}
+
+	public int getBaseConfigurationMask() {
+		return this.baseConfigurationMask;
+	}
+
+	public void setBaseConfigurationMask(int baseConfigurationMask) {
+		this.baseConfigurationMask = baseConfigurationMask;
 	}
 
 }
