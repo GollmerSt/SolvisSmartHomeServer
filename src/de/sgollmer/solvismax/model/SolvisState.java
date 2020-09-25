@@ -19,18 +19,17 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.WatchDog.Event;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
-import de.sgollmer.solvismax.model.objects.Observer.IObserverableError;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
-public class SolvisState extends Observable<SolvisState> implements ISendData, IObserverableError {
+public class SolvisState extends Observable<SolvisState> implements ISendData {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisState.class);
 
 	private final Solvis solvis;
 	private State state = State.UNDEFINED;
 	private SolvisScreen errorScreen = null;
-	private Set<ChannelDescription> errorChannels = new HashSet<>();
+	private final Set<ChannelDescription> errorChannels = new HashSet<>();
 	private boolean error = false;
 	private long timeOfLastSwitchingOn = -1;
 	private Boolean notifyError = false;
@@ -48,53 +47,75 @@ public class SolvisState extends Observable<SolvisState> implements ISendData, I
 	}
 
 	/**
-	 * Set/reset error, if error channel detects an error
+	 * Set/reset error, if error channel detects an error (caused by measurements
+	 * worker)
 	 * 
 	 * @param error
 	 * @param description
 	 */
 
-	public synchronized void setError(boolean error, ChannelDescription description) {
+	public void setError(boolean error, ChannelDescription description) {
 		ErrorChanged changed;
-		if (error) {
-			changed = this.errorChannels.add(description) ? ErrorChanged.SET : ErrorChanged.NONE;
-		} else {
-			changed = this.errorChannels.remove(description) ? ErrorChanged.RESET : ErrorChanged.NONE;
+		synchronized (this) {
+			if (error) {
+				changed = this.errorChannels.add(description) ? ErrorChanged.SET : ErrorChanged.NONE;
+			} else {
+				changed = this.errorChannels.remove(description) ? ErrorChanged.RESET : ErrorChanged.NONE;
+			}
 		}
 		processError(changed, null);
 	}
 
 	/**
-	 * Set error if an error message/button is visible on screen
+	 * Set error if an error message/button is visible on screen (from watch dog)
 	 * 
 	 * @param errorVisible if error button or error message box is visible
 	 * @param errorScreen
 	 * @return
 	 */
 
-	synchronized boolean setError(Event errorEvent, SolvisScreen errorScreen) {
+	boolean setError(Event errorEvent, SolvisScreen errorScreen) {
 		boolean errorVisible = errorEvent.isError();
 		ErrorChanged changed = ErrorChanged.NONE;
 		boolean isHomeScreen = SolvisScreen.get(errorScreen) == this.solvis.getHomeScreen();
-		if (errorVisible || this.errorScreen != null) {
-			if (!errorVisible && isHomeScreen) { // Nur der Homescreen kann Fehler zuücksetzen
-				this.errorScreen = null;
-				changed = ErrorChanged.RESET;
-			} else if (errorEvent == Event.SET_ERROR_BY_MESSAGE || this.errorScreen == null) {
-				this.errorScreen = errorScreen;
-				changed = ErrorChanged.SET;
-			} else {
-				changed = ErrorChanged.NONE;
+
+		synchronized (this) {
+
+			if (errorVisible || this.errorScreen != null) {
+				if (!errorVisible && isHomeScreen) { // Nur der Homescreen kann Fehler zuücksetzen
+					this.errorScreen = null;
+					changed = ErrorChanged.RESET;
+				} else if (errorEvent == Event.SET_ERROR_BY_MESSAGE || this.errorScreen == null) {
+					this.errorScreen = errorScreen;
+					changed = ErrorChanged.SET;
+				} else {
+					changed = ErrorChanged.NONE;
+				}
 			}
 		}
+
 		return processError(changed, null);
 	}
 
-	private synchronized boolean processError(ErrorChanged errorChangeState, ChannelDescription description) {
+	private boolean processError(ErrorChanged errorChangeState, ChannelDescription description) {
 		String errorName = description == null ? "Message box" : description.getId();
-		boolean last = this.error;
-		this.error = this.errorScreen != null || !this.errorChannels.isEmpty();
+
+		boolean channelError;
+
 		SolvisErrorInfo solvisErrorInfo = null;
+
+		boolean last;
+		boolean error;
+		MyImage errorImage;
+
+		synchronized (this) {
+			channelError = !this.errorChannels.isEmpty();
+			last = this.error;
+			this.error = this.errorScreen != null || channelError;
+			error = this.error;
+			errorImage = SolvisScreen.getImage(this.errorScreen);
+		}
+
 		if (errorChangeState != ErrorChanged.NONE) {
 			String message = "The Solvis system \"" + this.solvis.getUnit().getId() + "\" reports: ";
 			boolean cleared = errorChangeState != ErrorChanged.SET;
@@ -104,28 +125,18 @@ public class SolvisState extends Observable<SolvisState> implements ISendData, I
 				message += " Error: " + errorName + " occured.";
 			}
 			logger.info(message);
-			solvisErrorInfo = new SolvisErrorInfo(this.solvis, SolvisScreen.getImage(this.errorScreen), message,
-					cleared);
+			solvisErrorInfo = new SolvisErrorInfo(this.solvis, errorImage, message, cleared);
 		}
-		if (!this.error && last) {
+		if (!error && last) {
 			String message = "All errors of Solvis system \"" + this.solvis.getUnit().getId() + "\" cleared.";
 			logger.info(message);
 			solvisErrorInfo = new SolvisErrorInfo(this.solvis, SolvisScreen.getImage(this.errorScreen), message, true);
 		}
 		if (solvisErrorInfo != null) {
 			this.notify(this);
-			this.notifyError = false;
-			this.solvis.notifySolvisErrorObserver(solvisErrorInfo, this);
-			if (this.notifyError) {
-				return false;
-			}
+			return this.solvis.notifySolvisErrorObserver(solvisErrorInfo, this);
 		}
 		return true;
-	}
-
-	@Override
-	public synchronized void setException(Exception e) {
-		this.notifyError = true;
 	}
 
 	public void setPowerOff() {

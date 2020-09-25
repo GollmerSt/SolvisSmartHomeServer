@@ -355,8 +355,8 @@ public class Solvis {
 		this.solvisErrorObservable.register(observer);
 	}
 
-	public void notifySolvisErrorObserver(SolvisErrorInfo info, Object source) {
-		this.solvisErrorObservable.notify(info, source);
+	public boolean notifySolvisErrorObserver(SolvisErrorInfo info, Object source) {
+		return this.solvisErrorObservable.notify(info, source);
 	}
 
 	void saveScreen() throws IOException, TerminationException {
@@ -417,6 +417,7 @@ public class Solvis {
 			this.initConfigurationMask();
 			logger.log(LEARN, "Configuration mask: 0x" + Integer.toHexString(this.configurationMask));
 			this.getGrafics().setConfigurationMask(this.configurationMask);
+			this.getGrafics().setBaseConfigurationMask(this.getUnit().getConfigOrMask());
 			Screen home = this.getHomeScreen();
 			if (home == null) {
 				throw new AssertionError("Assign error: Screen description of <"

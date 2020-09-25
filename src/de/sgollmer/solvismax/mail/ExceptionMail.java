@@ -16,6 +16,7 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.CryptDefaultValueException;
 import de.sgollmer.solvismax.error.CryptExeception;
+import de.sgollmer.solvismax.error.ObserverException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
@@ -26,7 +27,6 @@ import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.Observer.IObserverableError;
 import de.sgollmer.solvismax.xml.ArrayXml;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
@@ -160,9 +160,7 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 			this.send(info.getMessage(), "", info.getImage());
 		} catch (MessagingException | IOException e) {
 			logger.error("Mail <" + info.getMessage() + "> couldn't be sent: ", e);
-			if ( source instanceof IObserverableError ) {
-				((IObserverableError)source).setException(e);
-			}
+			throw new ObserverException();
 		}
 		
 	}

@@ -10,6 +10,8 @@ package de.sgollmer.solvismax.model.objects;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import de.sgollmer.solvismax.error.ObserverException;
+
 public class Observer<D> {
 
 	public static class Observable<D> {
@@ -30,25 +32,28 @@ public class Observer<D> {
 			this.notify(data, null);
 		}
 
-		public void notify(D data, Object source) {
+		public boolean notify(D data, Object source) {
+			boolean status = true;
 			if (this.observers != null) {
 				Collection<IObserver<D>> copy;
 				synchronized (this) {
 					copy = new ArrayList<>(this.observers);
 				}
 				for (IObserver<D> observer : copy) {
-					observer.update(data, source);
+					try {
+						observer.update(data, source);
+					} catch (ObserverException e) {
+						status = false;
+					}
 				}
 			}
+			return status;
 		}
+
 	}
 
 	public interface IObserver<D> {
 		public void update(D data, Object source);
-	}
-
-	public interface IObserverableError {
-		public void setException(Exception e);
 	}
 
 }
