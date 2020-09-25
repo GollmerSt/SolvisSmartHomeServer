@@ -64,7 +64,7 @@ public class Solvis {
 
 	private final SolvisState solvisState = new SolvisState(this);
 	private final SolvisDescription solvisDescription;
-	private final AllSolvisData allSolvisData = new AllSolvisData(this);
+	private final AllSolvisData allSolvisData;
 	private final SystemGrafics grafics;
 	private int learningPictureIndex = 0;
 
@@ -92,10 +92,15 @@ public class Solvis {
 	private final File writePath;
 	private final History history = new History();
 	private final boolean mustLearn;
+	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
+	private Object solvisMeasureObject = new Object();
+	private HumanAccess humanAccess = HumanAccess.NONE;
+
 
 	Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms,
 			File writePath, boolean mustLearn) {
+		this.allSolvisData = new AllSolvisData(this);
 		this.unit = unit;
 		this.type = unit.getType();
 		this.defaultReadMeasurementsInterval_ms = unit.getDefaultReadMeasurementsInterval_ms();
@@ -118,10 +123,6 @@ public class Solvis {
 		this.mustLearn = mustLearn;
 	}
 
-	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
-
-	private Object solvisMeasureObject = new Object();
-	private HumanAccess humanAccess = HumanAccess.NONE;
 
 	void setCurrentScreen(SolvisScreen screen) {
 		this.currentScreen = screen;

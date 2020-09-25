@@ -292,8 +292,8 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 			@Override
 			public int compare(ChannelDescription o1, ChannelDescription o2) {
-				Collection<Dependency> ds1 = Helper.copy(o1.getDependencies());
-				Collection<Dependency> ds2 = Helper.copy(o2.getDependencies());
+				Collection<Dependency> ds1 = Helper.copy(o1.getDependencyGroup().get());
+				Collection<Dependency> ds2 = Helper.copy(o2.getDependencyGroup().get());
 				for (Iterator<Dependency> it1 = ds1.iterator(); it1.hasNext();) {
 					Dependency d1 = it1.next();
 					for (Iterator<Dependency> it2 = ds2.iterator(); it2.hasNext();) {

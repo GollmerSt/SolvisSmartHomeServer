@@ -216,24 +216,27 @@ public class Helper {
 				this.value = (R) new Float((float) (((Float) this.value).floatValue() + value));
 			} else if (this.value instanceof Double) {
 				this.value = (R) new Double((double) (((Double) this.value).doubleValue() + value));
-			} else if ( this.value != null ){
-				throw new UnsupportedOperationException( "add cannot be used fot element of class " + this.value.getClass().getName() );
+			} else if (this.value != null) {
+				throw new UnsupportedOperationException(
+						"add cannot be used fot element of class " + this.value.getClass().getName());
 			} else {
 				throw new NullPointerException();
 			}
 		}
-		
+
 		public void increment() {
 			this.add(1);
 		}
-		
+
 		public void decrement() {
 			this.add(-1);
 		}
 	}
-	
+
 	/**
-	 * Copy a collection. If th source collection is null, an empty collection will be generated
+	 * Copy a collection. If th source collection is null, an empty collection will
+	 * be generated
+	 * 
 	 * @param <T>
 	 * @param source source collection, can be null
 	 * 
@@ -247,5 +250,48 @@ public class Helper {
 		}
 	}
 
+	public static <T extends Comparable<T>> Integer compareTo(T o1, T o2) {
+		if (o1 == null & o2 == null) {
+			return 0;
+		}
+		if (o2 == null) {
+			return 1;
+		} else if (o1 == null) {
+			return -1;
+		}
+		return o1.compareTo(o2);
+	}
+
+	public static <T> Integer compareNull(T o1, T o2) {
+		if (o1 == null & o2 == null) {
+			return 0;
+		}
+		if (o2 == null) {
+			return 1;
+		} else if (o1 == null) {
+			return -1;
+		}
+		return null;
+	}
+
+	public static <T> Boolean checkNull(T o1, T o2) {
+		if (o1 == null & o2 == null) {
+			return true;
+		}
+		if (o2 == null||o1 == null) {
+			return false;
+		}
+		return null;
+	}
+
+	public static <T> Boolean equals(T o1, T o2) {
+		if (o1 == null & o2 == null) {
+			return true;
+		}
+		if (o2 == null||o1 == null) {
+			return false;
+		}
+		return o1.equals(o2);
+	}
 
 }

@@ -10,13 +10,13 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.Collection;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.AliasException;
+import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.control.Dependency;
+import de.sgollmer.solvismax.model.objects.control.DependencyGroup;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -27,7 +27,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public ChannelDescription getRestoreChannel(Solvis solvis);
 
-	public Collection<Dependency> getDependencies();
+	public DependencyGroup getDependencyGroup();
 
 	public boolean getValue(SolvisData dest, Solvis solvis)
 			throws IOException, PowerOnException, TerminationException;

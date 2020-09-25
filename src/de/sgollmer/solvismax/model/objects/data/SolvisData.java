@@ -364,11 +364,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getId()), value, 0, true);
 	}
 
-	public static SingleData<?> getSingleData(SolvisData solvisData) {
-		if (solvisData == null) {
-			return null;
+	public boolean isValid() {
+		if ( this.data == null ) {
+			return false ;
+		} else if (this.description.isWriteable()){
+			return this.datas.getLastHumanAccess() < this.data.getTimeStamp();
 		} else {
-			return solvisData.getSingleData();
+			return true;
 		}
+		
 	}
 }

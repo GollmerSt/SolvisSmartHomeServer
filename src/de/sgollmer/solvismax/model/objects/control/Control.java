@@ -8,7 +8,6 @@
 package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
@@ -31,8 +30,8 @@ import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
 import de.sgollmer.solvismax.model.objects.Preparation;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -130,11 +129,9 @@ public class Control extends ChannelSource {
 	}
 
 	private boolean guiPrepare(Solvis solvis, IControlAccess controlAccess) throws IOException, TerminationException {
-		if (!controlAccess.isModbus()) {
-			((Screen) this.guiAccess.getScreen().get(solvis)).goTo(solvis);
-			if (!this.guiAccess.prepare(solvis)) {
-				return false;
-			}
+		((Screen) this.guiAccess.getScreen().get(solvis)).goTo(solvis);
+		if (!this.guiAccess.prepare(solvis)) {
+			return false;
 		}
 		return true;
 	}
@@ -261,7 +258,7 @@ public class Control extends ChannelSource {
 
 	@Override
 	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException {
-		if (!this.getControlAccess(solvis).isModbus() && this.strategy.mustBeLearned()) {
+		if (this.strategy.mustBeLearned()) {
 			SingleData<?> data = null;
 			AbstractScreen screen = this.guiAccess.getScreen().get(solvis);
 			if (screen == null) {
@@ -362,14 +359,14 @@ public class Control extends ChannelSource {
 		private final Rectangle valueRectangle;
 		private final String preparationId;
 		private final String restoreChannelId;
-		private final Collection<Dependency> dependencies;
+		private final DependencyGroup dependencies;
 
 		private OfConfigs<AbstractScreen> screen = null;
 		private Preparation preparation = null;
 		private OfConfigs<ChannelDescription> restoreChannel = null;
 
 		private GuiAccess(String screenId, Rectangle valueRectangle, String preparationId, String restoreChannelId,
-				Collection<Dependency> dependencies) {
+				DependencyGroup dependencies) {
 			this.screenId = screenId;
 			this.valueRectangle = valueRectangle;
 			this.preparationId = preparationId;
@@ -395,7 +392,7 @@ public class Control extends ChannelSource {
 			private Rectangle valueRectangle;
 			private String preparationId;
 			private String restoreChannelId;
-			private Collection<Dependency> dependencies = null;
+			private DependencyGroup dependencies = new DependencyGroup();
 
 			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -445,7 +442,7 @@ public class Control extends ChannelSource {
 						break;
 					case XML_DEPENDENCY:
 						if (this.dependencies == null) {
-							this.dependencies = new ArrayList<>();
+							this.dependencies = new DependencyGroup();
 						}
 						this.dependencies.add((Dependency) created);
 				}
@@ -475,21 +472,11 @@ public class Control extends ChannelSource {
 				}
 			}
 
-			if (this.dependencies != null) {
-				for (Dependency dependency : this.dependencies) {
-					dependency.assign(description);
-				}
-			}
-
+			this.dependencies.assign(description);
 		}
 
 		boolean prepare(Solvis solvis) throws IOException, TerminationException {
 			return Preparation.prepare(this.preparation, solvis);
-		}
-
-		@Override
-		public boolean isModbus() {
-			return false;
 		}
 
 	}
@@ -517,7 +504,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public Collection<Dependency> getDependencies() {
+	public DependencyGroup getDependencyGroup() {
 		return this.guiAccess.dependencies;
 	}
 

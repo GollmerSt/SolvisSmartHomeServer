@@ -68,10 +68,11 @@ public abstract class Command {
 
 	public static class Handling {
 		/**
-		 * True: The Execution of the command within the queue isn't necessary, because
+		 * True: The Execution of the command within the queue isn't necessary and was 
+		 * inhibited, because
 		 * the effect of new command is overwriting the effect of the old one.
 		 */
-		private final boolean inQueueInhibt;
+		private final boolean inQueueInhibited;
 		/**
 		 * True: New command is ignored, because he is redundant
 		 */
@@ -87,15 +88,15 @@ public abstract class Command {
 
 		/**
 		 * 
-		 * @param inQueueInhibit True: The Execution of the command within the queue
+		 * @param inQueueInhibited True: The Execution of the command within the queue
 		 *                       isn't necessary, because the effect of new command is
 		 *                       overwriting the effect of the old one.
 		 * @param inhibitAppend  True: New command is ignored, because he is redundant
 		 * @param insert         True: The new command must inserted after queue command
 		 */
 
-		public Handling(boolean inQueueInhibit, boolean inhibitAppend, boolean insert) {
-			this(inQueueInhibit, inhibitAppend, insert, false);
+		public Handling(boolean inQueueInhibited, boolean inhibitAppend, boolean insert) {
+			this(inQueueInhibited, inhibitAppend, insert, false);
 		}
 
 		/**
@@ -108,15 +109,15 @@ public abstract class Command {
 		 * @param mustFinished   True: no previous entries are of interest
 		 */
 
-		Handling(boolean inQueueInhibt, boolean inhibitAdd, boolean insert, boolean mustFinished) {
-			this.inQueueInhibt = inQueueInhibt;
+		Handling(boolean inQueueInhibited, boolean inhibitAdd, boolean insert, boolean mustFinished) {
+			this.inQueueInhibited = inQueueInhibited;
 			this.inhibitAdd = inhibitAdd;
 			this.insert = insert;
 			this.mustFinished = mustFinished;
 		}
 
-		boolean mustInhibitInQueue() {
-			return this.inQueueInhibt;
+		boolean isInhibitedInQueue() {
+			return this.inQueueInhibited;
 		}
 
 		boolean isInhibitAdd() {
@@ -133,7 +134,7 @@ public abstract class Command {
 
 	}
 
-	protected Handling getHandling(Command queueEntry, Solvis solvis) {
+	protected Handling handle(Command queueEntry, Solvis solvis) {
 		return new Handling(false, false, false);
 	}
 

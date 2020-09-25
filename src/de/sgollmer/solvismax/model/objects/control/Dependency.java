@@ -8,6 +8,7 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.IAssigner;
@@ -91,42 +92,53 @@ public class Dependency implements IAssigner {
 		}
 
 		for (ChannelDescription cd : this.channel) {
-			try {
-				cd.interpretSetData(new StringData(this.value, 0));
-			} catch (TypeException e) {
-				throw new XmlException("Error in control.xml, invalid dependency value <" + this.value
-						+ "> defined for channel <" + cd.getId() + ">.");
+			if (this.value != null) {
+				try {
+					cd.interpretSetData(new StringData(this.value, 0));
+				} catch (TypeException e) {
+					throw new XmlException("Error in control.xml, invalid dependency value <" + this.value
+							+ "> defined for channel <" + cd.getId() + ">.");
+				}
 			}
 		}
 
 	}
 
 	public static boolean equals(Dependency d1, Dependency d2, Solvis solvis) {
-		if (d1 == null && d2 == null) {
-			return true;
-		}
-		if (d1 == null || d2 == null) {
-			return false;
+
+		Boolean result = Helper.checkNull(d1, d2);
+		if (result != null) {
+			return result;
 		}
 		if (d1.getChannelDescription(solvis) != d2.getChannelDescription(solvis)) {
 			return false;
 		}
-		return d1.getData(solvis).equals(d2.getData(solvis));
+		SingleData<?> dd1 = d1.getData(solvis);
+		SingleData<?> dd2 = d2.getData(solvis);
+
+		return Helper.equals(dd1, dd2);
+
 	}
 
 	public int compareTo(Dependency o, Solvis solvis) {
-		if ( o == null ) {
+		if (o == null) {
 			return 1;
 		}
 		String id1 = this.getChannelDescription(solvis).getId();
 		String id2 = o.getChannelDescription(solvis).getId();
-		
-		if ( !id1.equals(id2)) {
+
+		if (!this.getChannelDescription(solvis).getId().equals(o.getChannelDescription(solvis).getId())) {
 			return id1.compareTo(id2);
 		}
-		else {
-			return this.getData(solvis).compareTo(o.getData(solvis));
-		}
+		SingleData<?> d1 = this.getData(solvis);
+		SingleData<?> d2 = o.getData(solvis);
+
+		return Helper.compareTo(d1, d2);
+	}
+
+	@Override
+	public String toString() {
+		return "ChannelId: " + this.id + ", value: " + this.value;
 	}
 
 }

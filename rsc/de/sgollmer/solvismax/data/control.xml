@@ -1855,12 +1855,12 @@
 					compareMask="0x01" />
 			</tns:Configuration>
 			<tns:Control>
-				<tns:GuiAccess screenId="TagestemperaturSelected_HK1"
-					restoreChannelId="C06.Anlagenmodus_HK1">
+				<tns:GuiAccess screenId="TagestemperaturSelected_HK1">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C06.Anlagenmodus_HK1" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -1888,12 +1888,12 @@
 					compareMask="0x01" />
 			</tns:Configuration>
 			<tns:Control>
-				<tns:GuiAccess screenId="NachttemperaturSelected_HK1"
-					restoreChannelId="C06.Anlagenmodus_HK1">
+				<tns:GuiAccess screenId="NachttemperaturSelected_HK1">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C06.Anlagenmodus_HK1" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2085,12 +2085,12 @@
 					compareMask="0x02" />
 			</tns:Configuration>
 			<tns:Control>
-				<tns:GuiAccess screenId="TagestemperaturSelected_HK2"
-					restoreChannelId="C12.Anlagenmodus_HK2">
+				<tns:GuiAccess screenId="TagestemperaturSelected_HK2">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C12.Anlagenmodus_HK2" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2118,12 +2118,12 @@
 					compareMask="0x02" />
 			</tns:Configuration>
 			<tns:Control>
-				<tns:GuiAccess screenId="NachttemperaturSelected_HK2"
-					restoreChannelId="C12.Anlagenmodus_HK2">
+				<tns:GuiAccess screenId="NachttemperaturSelected_HK2">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C12.Anlagenmodus_HK2" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2290,12 +2290,12 @@
 					compareMask="0x04" />
 			</tns:Configuration>
 			<tns:Control>
-				<tns:GuiAccess screenId="TagestemperaturSelected_HK3"
-					restoreChannelId="C18.Anlagenmodus_HK3">
+				<tns:GuiAccess screenId="TagestemperaturSelected_HK3">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C18.Anlagenmodus_HK3" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2323,12 +2323,12 @@
 					compareMask="0x04" />
 			</tns:Configuration>
 			<tns:Control>
-				<tns:GuiAccess screenId="NachttemperaturSelected_HK3"
-					restoreChannelId="C18.Anlagenmodus_HK3">
+				<tns:GuiAccess screenId="NachttemperaturSelected_HK3">
 					<tns:CurrentValue>
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
+					<tns:Dependency id="C18.Anlagenmodus_HK3" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">

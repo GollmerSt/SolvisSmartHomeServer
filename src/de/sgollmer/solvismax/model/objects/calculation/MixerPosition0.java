@@ -14,7 +14,6 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
-import de.sgollmer.solvismax.model.objects.Dependencies;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
@@ -51,13 +50,13 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 			result.setBoolean(false, -1);
 		}
 
-		Dependencies dependencies = this.calculation.getCalculationDependencies();
+		AliasGroup dependencies = this.calculation.getCalculationDependencies();
 
 		SolvisData pumpOn = dependencies.get(allData, "pumpOn");
 		SolvisData mixerClosing = dependencies.get(allData, "mixerClosing");
 
 		if (result == null || pumpOn == null || mixerClosing == null) {
-			throw new AssignmentException("Assignment error: Dependencies not assigned");
+			throw new AssignmentException("Assignment error: DependencyGroup not assigned");
 		}
 
 		Executable executable = new Executable(result, pumpOn, mixerClosing);

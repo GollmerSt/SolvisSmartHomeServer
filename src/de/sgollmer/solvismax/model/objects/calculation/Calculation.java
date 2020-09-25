@@ -21,11 +21,9 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
-import de.sgollmer.solvismax.model.objects.Dependencies;
 import de.sgollmer.solvismax.model.objects.Alias;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
-import de.sgollmer.solvismax.model.objects.control.Dependency;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -38,9 +36,9 @@ public class Calculation extends ChannelSource {
 	private static final String XML_Alias = "Alias";
 
 	private final Strategy<?> strategy;
-	private final Dependencies dependencies;
+	private final AliasGroup dependencies;
 
-	private Calculation(Strategies strategies, Dependencies dependencies) {
+	private Calculation(Strategies strategies, AliasGroup dependencies) {
 		this.strategy = strategies.create(this);
 		this.dependencies = dependencies;
 	}
@@ -84,14 +82,14 @@ public class Calculation extends ChannelSource {
 	/**
 	 * @return the dependencies
 	 */
-	Dependencies getCalculationDependencies() {
+	AliasGroup getCalculationDependencies() {
 		return this.dependencies;
 	}
 
 	public static class Creator extends CreatorByXML<Calculation> {
 
 		private Strategies strategy;
-		private final Dependencies dependencies = new Dependencies();
+		private final AliasGroup dependencies = new AliasGroup();
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -186,7 +184,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public Collection<Dependency> getDependencies() {
+	public de.sgollmer.solvismax.model.objects.control.DependencyGroup getDependencyGroup() {
 		return null;
 	}
 

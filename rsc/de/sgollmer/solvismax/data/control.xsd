@@ -1299,7 +1299,6 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="restoreChannelId" type="string" use="optional"></attribute>
 	</complexType>
 
 
@@ -1442,6 +1441,6 @@ Es handelt sich dabei um einen Art virtuellerScreen, der einen Vorgänger besitz
 
 	<complexType name="Dependency">
 		<attribute name="id" type="string" use="required"></attribute>
-		<attribute name="value" type="string" use="required"></attribute>
+		<attribute name="value" type="string" use="optional"></attribute>
 	</complexType>
 </schema>

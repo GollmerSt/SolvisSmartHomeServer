@@ -27,7 +27,7 @@ import de.sgollmer.solvismax.model.objects.calculation.Calculation;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.control.Control;
-import de.sgollmer.solvismax.model.objects.control.Dependency;
+import de.sgollmer.solvismax.model.objects.control.DependencyGroup;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -86,8 +86,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, SolvisData value)
-			throws IOException, TerminationException {
+	public SetResult setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
 		return this.channelSource.setValue(solvis, value);
 	}
 
@@ -286,8 +285,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public Collection< Dependency > getDependencies() {
-		return this.channelSource.getDependencies();
+	public DependencyGroup getDependencyGroup() {
+		return this.channelSource.getDependencyGroup();
 	}
 
 }

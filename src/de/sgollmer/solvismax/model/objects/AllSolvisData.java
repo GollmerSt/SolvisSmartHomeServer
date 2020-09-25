@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
@@ -24,10 +25,28 @@ public class AllSolvisData {
 	private final Map<String, SolvisData> solvisDatas = new HashMap<>();
 	private int averageCount;
 	private int measurementHysteresisFactor;
+	private long lastHumanAcess = 0; 
+	private HumanAccess humanAccess ;
 
 	public AllSolvisData(Solvis solvis) {
 		this.solvis = solvis;
+		
+		solvis.registerScreenChangedByHumanObserver( new IObserver<HumanAccess>() {
+			
+			@Override
+			public void update(HumanAccess data, Object source) {
+				if ( data == HumanAccess.NONE && AllSolvisData.this.humanAccess != HumanAccess.NONE ) {
+					AllSolvisData.this.lastHumanAcess = System.currentTimeMillis();
+				}
+			}
+
+		});
 	}
+	
+	public long getLastHumanAccess() {
+		return this.lastHumanAcess;
+	}
+	
 
 	public SolvisData get(ChannelDescription description) {
 		String id = description.getId();

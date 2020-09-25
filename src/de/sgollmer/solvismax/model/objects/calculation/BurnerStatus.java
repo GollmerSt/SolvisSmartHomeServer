@@ -17,7 +17,6 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
-import de.sgollmer.solvismax.model.objects.Dependencies;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
@@ -70,7 +69,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	@Override
 	void instantiate(Solvis solvis) throws AssignmentException, AliasException {
 		AllSolvisData allData = solvis.getAllSolvisData();
-		Dependencies dependencies = this.calculation.getCalculationDependencies();
+		AliasGroup dependencies = this.calculation.getCalculationDependencies();
 
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
@@ -82,7 +81,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		SolvisData burnerLevel2On = dependencies.get(allData, "burnerLevel2On");
 
 		if (result == null || burnerLevel1On == null || burnerLevel2On == null) {
-			throw new AssignmentException("Assignment error: Dependencies not assigned");
+			throw new AssignmentException("Assignment error: DependencyGroup not assigned");
 		}
 		Executable executable = new Executable(result, burnerLevel1On, burnerLevel2On);
 

@@ -38,8 +38,12 @@ public class CommandClock extends Command {
 	}
 
 	@Override
-	public Handling getHandling(Command queueEntry, Solvis solvis) {
-		return new Handling(false, queueEntry instanceof CommandClock, false);
+	public Handling handle(Command queueEntry, Solvis solvis) {
+		return new Handling( //
+				false, // inQueueInhibited
+				queueEntry instanceof CommandClock, // inhibitAppend
+				false // insert
+		);
 	}
 
 	@Override

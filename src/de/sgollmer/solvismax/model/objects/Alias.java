@@ -22,11 +22,11 @@ public class Alias implements IAssigner {
 		this.dataId = dataId;
 	}
 
-	String getDataId() {
+	public String getDataId() {
 		return this.dataId;
 	}
 
-	String getId() {
+	public String getId() {
 		return this.id;
 	}
 

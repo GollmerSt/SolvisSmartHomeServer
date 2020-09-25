@@ -288,9 +288,8 @@ public class SolvisWorkers {
 
 					for (ListIterator<Command> it = this.queue.listIterator(this.queue.size()); it.hasPrevious();) {
 						Command cmp = it.previous();
-						Handling handling = command.getHandling(cmp, SolvisWorkers.this.solvis);
-						if (handling.mustInhibitInQueue()) {
-							cmp.setInhibit(true);
+						Handling handling = command.handle(cmp, SolvisWorkers.this.solvis);
+						if (handling.isInhibitedInQueue()) {
 							logger.debug("Command <" + cmp.toString() + "> was inhibited.");
 						}
 						if (handling.isInhibitAdd()) {
