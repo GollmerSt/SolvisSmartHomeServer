@@ -31,7 +31,6 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
-import de.sgollmer.solvismax.model.SolvisState.State;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -225,18 +224,18 @@ public class Solvis {
 		this.solvisDescription.getFallBack().execute(this, lastChance);
 	}
 
-	private class UpdateControlAfterPowerOn implements IObserver<SolvisState> {
+	private class UpdateControlAfterPowerOn implements IObserver<SolvisState.State> {
 		private boolean powerOff = true;
 
 		@Override
-		public void update(SolvisState data, Object source) {
+		public void update(SolvisState.State data, Object source) {
 			boolean update = false;
 			synchronized (this) {
-				State state = data.getState();
-				if (this.powerOff & state == State.SOLVIS_CONNECTED) {
+				SolvisState.State state = data;
+				if (this.powerOff & state == SolvisState.State.SOLVIS_CONNECTED) {
 					this.powerOff = false;
 					update = true;
-				} else if (state == State.POWER_OFF) {
+				} else if (state == SolvisState.State.POWER_OFF) {
 					this.powerOff = true;
 				}
 			}
@@ -261,7 +260,7 @@ public class Solvis {
 		this.getSolvisDescription().instantiate(this);
 		UpdateControlAfterPowerOn updateControlAfterPowerOn = new UpdateControlAfterPowerOn();
 		this.solvisState.register(updateControlAfterPowerOn);
-		updateControlAfterPowerOn.update(this.solvisState, null);
+		updateControlAfterPowerOn.update(this.solvisState.getState(), null);
 		this.registerScreenChangedByHumanObserver(new IObserver<WatchDog.HumanAccess>() {
 
 			@Override
@@ -503,11 +502,11 @@ public class Solvis {
 			Solvis.this.solvisState.register(new PowerObserver());
 		}
 
-		private class PowerObserver implements IObserver<SolvisState> {
+		private class PowerObserver implements IObserver<SolvisState.State> {
 
 			@Override
-			public void update(SolvisState data, Object source) {
-				switch (data.getState()) {
+			public void update(SolvisState.State data, Object source) {
+				switch (data) {
 					case SOLVIS_CONNECTED:
 						MeasurementUpdateThread.this.power = true;
 						break;

@@ -22,7 +22,7 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
-public class SolvisState extends Observable<SolvisState> implements ISendData {
+public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisState.State> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisState.class);
 
@@ -37,8 +37,17 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 		this.solvis = solvis;
 	}
 
-	public enum State {
-		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, SOLVIS_DISCONNECTED, ERROR, UNDEFINED
+	public enum State implements ISendData {
+		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, SOLVIS_DISCONNECTED, ERROR, UNDEFINED;
+
+		@Override
+		public SolvisStatePackage createJsonPackage() {
+			return new SolvisStatePackage(this);
+		}
+
+		public MqttData getMqttData(SolvisState state) {
+			return new MqttData(state.solvis, Constants.Mqtt.STATUS, this.name(), 0, true);
+		}
 	}
 
 	private enum ErrorChanged {
@@ -132,7 +141,7 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 			solvisErrorInfo = new SolvisErrorInfo(this.solvis, SolvisScreen.getImage(this.errorScreen), message, true);
 		}
 		if (solvisErrorInfo != null) {
-			this.notify(this);
+			this.notify(this.state, this);
 			return this.solvis.notifySolvisErrorObserver(solvisErrorInfo, this);
 		}
 		return true;
@@ -164,24 +173,26 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 		}
 	}
 
-	private synchronized void setState(State state) {
-		if (this.state != state) {
-			if (state == State.SOLVIS_CONNECTED) {
-				switch (this.state) {
-					case POWER_OFF:
-					case REMOTE_CONNECTED:
-						this.timeOfLastSwitchingOn = System.currentTimeMillis();
-				}
-			}
-			this.state = state;
-			logger.info("Solvis state changed to <" + this.state.name() + ">.");
-			this.notify(this);
-		}
-	}
+	private void setState(State state) {
+		boolean changed = false;
+		synchronized (this) {
 
-	@Override
-	public SolvisStatePackage createJsonPackage() {
-		return new SolvisStatePackage(this.getState());
+			if (this.state != state) {
+				if (state == State.SOLVIS_CONNECTED) {
+					switch (this.state) {
+						case POWER_OFF:
+						case REMOTE_CONNECTED:
+							this.timeOfLastSwitchingOn = System.currentTimeMillis();
+					}
+				}
+				this.state = state;
+				changed = true;
+			}
+		}
+		if (changed) {
+			logger.info("Solvis state changed to <" + state.name() + ">.");
+			this.notify(this.state, this);
+		}
 	}
 
 	long getTimeOfLastSwitchingOn() {
@@ -230,7 +241,4 @@ public class SolvisState extends Observable<SolvisState> implements ISendData {
 		return this.errorScreen != null;
 	}
 
-	public MqttData getMqttData() {
-		return new MqttData(this.solvis, Constants.Mqtt.STATUS, this.getState().name(), 0, true);
-	}
 }

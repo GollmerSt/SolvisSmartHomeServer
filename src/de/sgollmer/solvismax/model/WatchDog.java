@@ -47,13 +47,13 @@ public class WatchDog {
 	private boolean initialized = false;
 	private SolvisStateObserver solvisStateObserver = new SolvisStateObserver();
 
-	private class SolvisStateObserver implements IObserver<SolvisState> {
+	private class SolvisStateObserver implements IObserver<SolvisState.State> {
 
 		@Override
-		public void update(SolvisState data, Object source) {
+		public void update(SolvisState.State data, Object source) {
 			synchronized (WatchDog.this) {
 				try {
-					switch (data.getState()) {
+					switch (data) {
 						case POWER_OFF:
 						case REMOTE_CONNECTED:
 							processEvent(Event.POWER_OFF, null);

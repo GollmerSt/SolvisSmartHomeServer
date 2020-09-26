@@ -254,7 +254,7 @@ public class CommandHandler {
 
 	private void sendMeasurements(Solvis solvis, IClient client) {
 		solvis.getDistributor().sendCollection(solvis.getAllSolvisData().getMeasurements());
-		client.send(solvis.getSolvisState());
+		client.send(solvis.getSolvisState().getState());
 		ConnectionStatus status = solvis.getHumanAccess().getConnectionStatus();
 		client.send(new ConnectionState(status));
 

@@ -11,10 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.PowerOnException;
@@ -32,6 +34,7 @@ import de.sgollmer.solvismax.model.objects.control.DependencyGroup;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public class CommandControl extends Command {
 
@@ -50,8 +53,10 @@ public class CommandControl extends Command {
 	private boolean mustBeFinished = false;
 	private ResultStatus finalStatus = ResultStatus.SUCCESS;
 
+	private Set<ChannelDescription> toRestore = new HashSet<>(3);
+
 	private MySet dependencyGroupsToExecute = new MySet();
-	private Collection<Dependency> dependenciesToExecute = null;
+	private List<Dependency> dependenciesToExecute = null;
 	private DependencyGroup currentDependencyGroup = null;
 	private final DependencyCache dependencyCache;
 
@@ -338,6 +343,27 @@ public class CommandControl extends Command {
 
 	}
 
+	private Iterator<Dependency> getNextDependencyIterator() throws IOException, TerminationException {
+
+		Iterator<Dependency> itResult = null;
+
+		AbstractScreen current = SolvisScreen.get(this.solvis.getCurrentScreen());
+
+		for (ListIterator<Dependency> it = this.dependenciesToExecute.listIterator(); it.hasNext();) {
+			if (itResult == null) {
+				itResult = this.dependenciesToExecute.listIterator(it.nextIndex());
+				;
+			}
+			Dependency dependency = it.next();
+			if (dependency.getChannelDescription(this.solvis).getScreen(this.solvis) == current) {
+				itResult = this.dependenciesToExecute.listIterator(it.previousIndex());
+				break;
+			}
+		}
+
+		return itResult;
+	}
+
 	private static class ExecuteDependency extends State {
 
 		@Override
@@ -359,13 +385,14 @@ public class CommandControl extends Command {
 				command.dependenciesToExecute = new ArrayList<>(command.currentDependencyGroup.get());
 			}
 
-			Iterator<Dependency> it = command.dependenciesToExecute.iterator();
-			if (!it.hasNext()) {
+			Iterator<Dependency> it = command.getNextDependencyIterator();
+			if (it == null) {
 				return ResultStatus.CONTINUE;
 			}
 
-			Dependency dependency = it.next();
 			Solvis solvis = command.solvis;
+
+			Dependency dependency = it.next();
 
 			ChannelDescription dependencyChannel = dependency.getChannelDescription(solvis);
 			SolvisData solvisData = solvis.getAllSolvisData().get(dependencyChannel);
@@ -381,7 +408,10 @@ public class CommandControl extends Command {
 			SingleData<?> now = command.dependencyCache.get(dependencyChannel);
 
 			if (data == null) {
+				command.toRestore.add(dependencyChannel);
 				data = solvisData.getSingleData();
+				it.remove();
+				return ResultStatus.SUCCESS;
 			}
 
 			ResultStatus status = ResultStatus.SUCCESS;
@@ -394,9 +424,16 @@ public class CommandControl extends Command {
 					}
 					command.mustBeFinished = true;
 				}
+
+				command.toRestore.add(dependencyChannel);
+
 				status = command.write(solvis, dependencyChannel, data, command.dependencyFailCount, false);
 
 				command.dependencyCache.put(dependencyChannel, data);
+
+				if (data.equals(solvisData.getSingleData())) {
+					command.toRestore.remove(dependencyChannel);
+				}
 
 				if (status == ResultStatus.VALUE_VIOLATION) {
 					logger.error("Wrong dependency value definition of channel <" + command.description.getId()
@@ -499,48 +536,39 @@ public class CommandControl extends Command {
 		@Override
 		public State next(CommandControl command) {
 
-			if (command.dependenciesToExecute.isEmpty()) {
-				command.dependenciesToExecute = null;
-				command.dependencyGroupsToExecute.remove(0);
-				if (command.dependencyGroupsToExecute.isEmpty()) {
-					return StateEnum.FINISHED.getState();
-				} else {
-					return StateEnum.EXECUTE_DEPENDENCY.getState();
-				}
-			} else {
+			if (!command.dependencyGroupsToExecute.isEmpty()) {
+				return StateEnum.EXECUTE_DEPENDENCY.getState();
+			} else if (!command.toRestore.isEmpty()) {
 				return this;
+			} else {
+				return StateEnum.FINISHED.getState();
 			}
 		}
 
 		@Override
 		public ResultStatus execute(CommandControl command) throws IOException, TerminationException, TypeException {
 
-			if (command.dependenciesToExecute == null) {
-				command.dependenciesToExecute = new ArrayList<>(command.currentDependencyGroup.get());
+			if (command.currentDependencyGroup != null) {
+				command.dependencyGroupsToExecute.remove(command.currentDependencyGroup);
 			}
 
-			Iterator<Dependency> it = command.dependenciesToExecute.iterator();
-
-			if (!it.hasNext()) {
+			if (!command.dependencyGroupsToExecute.isEmpty()) {
 				return ResultStatus.CONTINUE;
 			}
 
-			Dependency dependency = it.next();
+			if (command.toRestore.isEmpty()) {
+				return ResultStatus.CONTINUE;
+			}
 
 			Solvis solvis = command.solvis;
-			ChannelDescription description = dependency.getChannelDescription(solvis);
-
+			ChannelDescription description = command.toRestore.iterator().next();
 			SingleData<?> data = solvis.getAllSolvisData().get(description).getSingleData();
-			SingleData<?> dependencyData = command.dependencyCache.get(description);
 
-			ResultStatus status = ResultStatus.SUCCESS;
+			ResultStatus status = command.write(solvis, description, data, command.dependencyFailCount, false);
+			command.dependencyCache.put(description, data);
 
-			if (!data.equals(dependencyData) || dependency.getData(solvis) == null) {
-
-				status = command.write(solvis, description, data, command.dependencyFailCount, false);
-			}
 			if (status == ResultStatus.SUCCESS) {
-				it.remove();
+				command.toRestore.remove(description);
 			}
 			return status;
 		}
@@ -617,10 +645,11 @@ public class CommandControl extends Command {
 				boolean added = false;
 				for (ListIterator<DependencyGroup> it = this.list.listIterator(); it.hasNext();) {
 					DependencyGroup entry = it.next();
-					if (entry.get().size() < e.get().size()) {
+					if (entry.get().size() > e.get().size()) {
 						it.previous();
 						it.add(e);
 						added = true;
+						break ;
 					}
 				}
 				if (!added) {
@@ -638,9 +667,16 @@ public class CommandControl extends Command {
 			return result;
 		}
 
-		public void remove( int i) {
-			this.list.remove(i);
+		public void remove(DependencyGroup toRemove) {
+			for (Iterator<DependencyGroup> it = this.list.iterator(); it.hasNext();) {
+				DependencyGroup group = it.next();
+				if (group.equals(toRemove)) {
+					it.remove();
+					break;
+				}
+			}
 		}
 
 	}
+
 }

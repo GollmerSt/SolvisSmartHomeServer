@@ -31,6 +31,7 @@ import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.crypt.Ssl;
 import de.sgollmer.solvismax.error.CryptDefaultValueException;
 import de.sgollmer.solvismax.error.CryptExeception;
+import de.sgollmer.solvismax.error.FatalError;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
 import de.sgollmer.solvismax.error.XmlException;
@@ -214,7 +215,7 @@ public class Mqtt {
 		}
 	}
 
-	class PublishStatusObserver implements IObserver<SolvisState> {
+	class PublishStatusObserver implements IObserver<SolvisState.State> {
 
 		private final Unit unit;
 
@@ -223,9 +224,12 @@ public class Mqtt {
 		}
 
 		@Override
-		public void update(SolvisState data, Object source) {
+		public void update(SolvisState.State data, Object source) {
+			if ( !(source instanceof SolvisState )) {
+				throw new FatalError( "The source object of the notify must be SolvisState");
+			}
 			try {
-				Mqtt.this.publish(data.getMqttData());
+				Mqtt.this.publish(data.getMqttData((SolvisState)source));
 			} catch (MqttException e) {
 				logger.error("Error on mqtt publish <ResultStatus> of unit <" + this.unit.getId() + ">:", e);
 			} catch (MqttConnectionLost e) {
@@ -447,7 +451,7 @@ public class Mqtt {
 			for (SolvisData solvisData : dates) {
 				this.unpublish(solvisData.getMqttData());
 			}
-			this.unpublish(solvis.getSolvisState().getMqttData());
+			this.unpublish(solvis.getSolvisState().getState().getMqttData(solvis.getSolvisState()));
 			this.unpublish(solvis.getHumanAccess().getMqttData(solvis));
 		}
 		this.publish(ServerCommand.getMqttMeta(null, true));

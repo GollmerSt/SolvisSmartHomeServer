@@ -25,7 +25,7 @@ import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 
-public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, IObserver<SolvisState> {
+public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, IObserver<SolvisState.State> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisData.class);
 
@@ -305,8 +305,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 	}
 
 	@Override
-	public void update(SolvisState data, Object source) {
-		if (data.getState() == SolvisState.State.POWER_OFF && this.average != null) {
+	public void update(SolvisState.State data, Object source) {
+		if (data == SolvisState.State.POWER_OFF && this.average != null) {
 			this.average.clear();
 		}
 	}

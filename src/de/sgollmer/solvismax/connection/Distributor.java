@@ -96,10 +96,10 @@ public class Distributor extends Observable<JsonPackage> {
 		}
 	}
 
-	private class SolvisStateObserver implements Observer.IObserver<SolvisState> {
+	private class SolvisStateObserver implements Observer.IObserver<SolvisState.State> {
 
 		@Override
-		public void update(SolvisState data, Object source) {
+		public void update(SolvisState.State data, Object source) {
 			Distributor.this.notify(data.createJsonPackage());
 		}
 

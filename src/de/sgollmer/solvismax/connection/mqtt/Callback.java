@@ -62,7 +62,7 @@ final class Callback implements MqttCallbackExtended {
 					for (SolvisData data : dates) {
 						this.mqtt.publish(data.getMqttData());
 					}
-					this.mqtt.publish(solvis.getSolvisState().getMqttData());
+					this.mqtt.publish(solvis.getSolvisState().getState().getMqttData(solvis.getSolvisState()));
 					this.mqtt.publish(solvis.getHumanAccess().getMqttData(solvis));
 				}
 				this.mqtt.publish(ServerStatus.ONLINE.getMqttData());
