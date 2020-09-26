@@ -1,5 +1,16 @@
 A E N D E R U N G E N
 
+Version 01.02.04 rc2
+
+    26.09.2020  Beim Learning kann es zu einer Endlosschleife kommen, wenn bei einem Goto beim
+                Zurückgehen auf den vorherigen Screen, der Screen nicht erkannt wird. Die Ursache
+                dieser Nicht-Erkennung kann ein XML-Fehler sein, aber auch ein Verschlucken eines
+                Touches durch die Solvis-Anlage. Die Fehlerbehandlung war nicht ausreichend, wodurch
+                es danach zu einer Endlosschleife kommt. Nun wird der Goto vom HomeScreen erneut
+                versucht, so dass bei nur verschluckten Touchs die Wiederholung wahrscheinlich
+                erfolgreich sein wird.  
+
+
 Version 01.02.04 rc1
 
     25.09.2020  Prepare ist überflüssig, wird durch Dependency ersetzt.
@@ -22,7 +33,6 @@ Version 01.02.04 rc1
                 Status abhängig ist (nur bei Kurve).
                 
                 C28.BetriebsartVT_HK1 neu.
-                
                 
 
 Version 01.02.03

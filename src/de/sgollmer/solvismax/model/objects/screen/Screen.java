@@ -619,12 +619,15 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 							if (next != this) {
 								logger.log(LEARN,
 										"Warning: Goto with an unlearned Screen, algorithm or control.xml fail?");
+								solvis.gotoHome();
+								logger.log(LEARN, "Pepartation failed, goto learning will tried again.");
+								return false ;
 							}
 						}
 					} else {
 						solvis.gotoHome();
 						current = solvis.getHomeScreen();
-						logger.log(LEARN, "Pepartation failed, learning will tried again.");
+						logger.log(LEARN, "Pepartation failed, goto learning will tried again.");
 					}
 				}
 				if (this == current) {
