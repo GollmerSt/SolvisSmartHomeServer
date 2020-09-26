@@ -8,7 +8,11 @@ Version 01.02.04 rc2
                 Touches durch die Solvis-Anlage. Die Fehlerbehandlung war nicht ausreichend, wodurch
                 es danach zu einer Endlosschleife kommt. Nun wird der Goto vom HomeScreen erneut
                 versucht, so dass bei nur verschluckten Touchs die Wiederholung wahrscheinlich
-                erfolgreich sein wird.  
+                erfolgreich sein wird.
+                
+                Beim Einbau der MQTT-Schnittstelle ist in den Wiederaufbau der Client-Server-Verbindung
+                ein Bug reingerutscht. Der hat zur Folge, dass nach einem Wiederaufbau ein Neuaufbau
+                der Verbindung nicht mehr möglich ist.
 
 
 Version 01.02.04 rc1

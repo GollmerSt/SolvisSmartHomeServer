@@ -180,7 +180,7 @@ public class CommandHandler {
 			ClientAssignments assignments = this.get(client);
 			if (online) {
 				if (assignments != null) {
-					assignments.reconnect(client);
+					assignments.reconnected(client);
 				} else {
 					this.createClientAssignments(client);
 				}
@@ -216,7 +216,7 @@ public class CommandHandler {
 
 			this.sendMeasurements(solvis, (Client) client);
 		} else {
-			client.send(new ConnectedPackage(clientId));
+			client.send(new ConnectedPackage(clientId)); // Only for termination
 		}
 		return false;
 	}
@@ -231,14 +231,16 @@ public class CommandHandler {
 		synchronized (this) {
 			ClientAssignments assignments = this.get(client);
 			if (assignments != null) {
-				Client former = (Client) assignments.getClient(); // only Server/Client
 				Solvis solvis = assignments.getSolvis();
+				((Client) client).setSolvis(solvis);
+
+				Client former = (Client) assignments.getClient(); // only Server/Client
 				if (former != null) {
 					former.close();
 					solvis.getDistributor().unregister(former);
 				}
 
-				assignments.reconnect(client);
+				assignments.reconnected(client);
 				solvis.getDistributor().register((Client) client);
 
 				sendMeasurements(solvis, client);

@@ -142,10 +142,10 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	/**
-	 * Calculation of the number of steps to need to go from the limit
+	 * Calculation of the number of steps to need to go FROM the given limit
 	 * 
 	 * @param value Reach value
-	 * @param upper True: Go from upper limit, false from lower
+	 * @param upper True: Go FROM upper limit, false FROM lower
 	 * 
 	 * @return Number of steps, positiv increments to reach the value from the
 	 *         limits
@@ -153,23 +153,31 @@ public class StrategyReadWrite extends StrategyRead {
 
 	private int steps(int value, boolean upper) {
 		int result;
-		if (upper) {
-			int limit = this.changedIncrement != null ? this.most + this.changedIncrement : this.most + this.increment;
-			if (value >= this.incrementChange) {
-				result = (value - limit) / this.changedIncrement;
-			} else {
-				result = (this.incrementChange - limit) / this.changedIncrement;
-				result += (value - this.incrementChange) / this.increment;
-			}
+
+		if (this.incrementChange == null) {
+			int limit = upper ? this.most + this.increment : this.least;
+			result = (value - limit) / this.increment;
 		} else {
-			int limit = this.least;
-			if (value <= this.incrementChange) {
-				result = (value - limit) / this.increment;
+			if (upper) {
+				int limit = this.most + this.changedIncrement;
+
+				if (value >= this.incrementChange) {
+					result = (value - limit) / this.changedIncrement;
+				} else {
+					result = (this.incrementChange - limit) / this.changedIncrement;
+					result += (value - this.incrementChange) / this.increment;
+				}
 			} else {
-				result = (this.incrementChange - limit) / this.increment;
-				result += (value - this.incrementChange) / this.changedIncrement;
+				int limit = this.least;
+				if (value <= this.incrementChange) {
+					result = (value - limit) / this.increment;
+				} else {
+					result = (this.incrementChange - limit) / this.increment;
+					result += (value - this.incrementChange) / this.changedIncrement;
+				}
 			}
 		}
+
 		return result;
 	}
 

@@ -10,6 +10,7 @@ Offene Aufgaben:
      einen Text- als such grafische Oberfläche besitzen. Als 3. Möglichkeit wäre ein WebInterface
      denkbar, vielleicht in Form einer WebPage auf GitHub mit JavaScript.
      Vielleicht auch https://github.com/michmech/xonomy
+     
 
 Erledigt:
 
@@ -296,4 +297,18 @@ Erledigt:
     
 20. Das Linux-paket enthält aktuell dateienn mit CR+LF, die müssen mit FixCRLF in LF umgewandelt werden.
 
-		
+21. Nach einem Standby: 
+
+14:51:33,211|INFO|de.sgollmer.solvismax.connection.Server - Client connection closed. cause:: java.lang.NullPointerException
+	at de.sgollmer.solvismax.connection.CommandHandler.set(CommandHandler.java:282)
+	at de.sgollmer.solvismax.connection.CommandHandler.commandFromClient(CommandHandler.java:78)
+	at de.sgollmer.solvismax.connection.Server$Client.run(Server.java:142)
+	at de.sgollmer.solvismax.helper.Helper$Runnable$1.run(Helper.java:144)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+14:51:33,211|INFO|de.sgollmer.solvismax.connection.Server - Client disconnected
+
+  Ursache war nicht der Standby. Nach zweiten Wiederaufbauversuch war ein Neu-Konnektieren nicht mehr möglich

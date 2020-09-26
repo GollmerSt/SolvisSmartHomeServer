@@ -30,7 +30,7 @@ public class ClientAssignments {
 		}
 	}
 
-	void reconnect(IClient client) {
+	void reconnected(IClient client) {
 		this.abort();
 		this.client = client;
 	}
