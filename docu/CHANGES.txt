@@ -2,6 +2,9 @@ A E N D E R U N G E N
 
 Version 01.02.04 rc2
 
+    27.09.2020  Wenn ein Dependency-Channel im gleichen Command-Ablauf auch zu lesen war, wurde
+                der Dependency-Channel nicht richtig restored.
+    
     26.09.2020  Beim Learning kann es zu einer Endlosschleife kommen, wenn bei einem Goto beim
                 Zurückgehen auf den vorherigen Screen, der Screen nicht erkannt wird. Die Ursache
                 dieser Nicht-Erkennung kann ein XML-Fehler sein, aber auch ein Verschlucken eines

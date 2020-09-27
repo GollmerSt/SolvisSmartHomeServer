@@ -509,7 +509,8 @@ public class CommandControl extends Command {
 
 			for (Iterator<ChannelDescription> it = command.readChannels.iterator(); it.hasNext();) {
 				ChannelDescription description = it.next();
-				if (DependencyGroup.equals(description.getDependencyGroup(), command.currentDependencyGroup, solvis)) {
+				if (DependencyGroup.equals(description.getDependencyGroup(), command.currentDependencyGroup, solvis)
+						&& !command.toRestore.contains(description)) {
 					boolean success = description.getValue(solvis);
 					if (success) {
 						it.remove();
@@ -561,7 +562,18 @@ public class CommandControl extends Command {
 			}
 
 			Solvis solvis = command.solvis;
-			ChannelDescription description = command.toRestore.iterator().next();
+			AbstractScreen current = SolvisScreen.get(solvis.getCurrentScreen());
+
+			Iterator<ChannelDescription> it;
+			ChannelDescription description = null;
+
+			for (it = command.toRestore.iterator(); it.hasNext();) {
+				description = it.next();
+				if (description.getScreen(solvis).equals(current)) {
+					break;
+				}
+			}
+
 			SingleData<?> data = solvis.getAllSolvisData().get(description).getSingleData();
 
 			ResultStatus status = command.write(solvis, description, data, command.dependencyFailCount, false);
@@ -645,11 +657,11 @@ public class CommandControl extends Command {
 				boolean added = false;
 				for (ListIterator<DependencyGroup> it = this.list.listIterator(); it.hasNext();) {
 					DependencyGroup entry = it.next();
-					if (entry.get().size() > e.get().size()) {
+					if (entry.get().size() < e.get().size()) {
 						it.previous();
 						it.add(e);
 						added = true;
-						break ;
+						break;
 					}
 				}
 				if (!added) {
