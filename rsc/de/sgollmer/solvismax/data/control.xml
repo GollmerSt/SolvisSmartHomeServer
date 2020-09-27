@@ -1030,6 +1030,62 @@
 				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
+		<tns:Screen id="Heizkreis1 1_11" backId="Heizung Installateur"
+			previousId="Heizung Installateur" ignoreChanges="true">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="20" Y="15" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="11/11">
+				<tns:Rectangle>
+					<tns:TopLeft X="157" Y="2" />
+					<tns:BottomRight X="205" Y="13" />
+				</tns:Rectangle>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis Installateur" />
+		</tns:Screen>
+		<tns:Screen id="Heizkreis1 2_11" backId="Heizkreise"
+			previousId="Heizkreis1 1_11">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="12/11">
+				<tns:Rectangle>
+					<tns:TopLeft X="157" Y="2" />
+					<tns:BottomRight X="205" Y="13" />
+				</tns:Rectangle>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis Installateur" />
+		</tns:Screen>
+		<tns:Screen id="Heizkreis1 3_11" backId="Heizkreise"
+			previousId="Heizkreis1 2_11">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="13/11">
+				<tns:Rectangle>
+					<tns:TopLeft X="157" Y="2" />
+					<tns:BottomRight X="205" Y="13" />
+				</tns:Rectangle>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis Installateur" />
+		</tns:Screen>
+		<tns:Screen id="Heizkreis1 4_11" backId="Heizkreise"
+			previousId="Heizkreis1 3_11">
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="14/11">
+				<tns:Rectangle>
+					<tns:TopLeft X="157" Y="2" />
+					<tns:BottomRight X="205" Y="13" />
+				</tns:Rectangle>
+			</tns:ScreenOcr>
+			<tns:ScreenGraficRef refId="Heizkreis Installateur" />
+		</tns:Screen>
 		<tns:Screen id="Wasser Installateur"
 			backId="Installateur Menue" previousId="Installateur Menue">
 			<tns:Configuration admin="true" />
@@ -1145,8 +1201,14 @@
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="Heizkreis">
 			<tns:Rectangle>
-				<tns:TopLeft X="40" Y="0" />
+				<tns:TopLeft X="40" Y="2" />
 				<tns:BottomRight X="160" Y="13" />
+			</tns:Rectangle>
+		</tns:ScreenGrafic>
+		<tns:ScreenGrafic id="Heizkreis Installateur">
+			<tns:Rectangle>
+				<tns:TopLeft X="35" Y="2" />
+				<tns:BottomRight X="156" Y="14" />
 			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="Tagestemperatur" exact="true">
@@ -2554,7 +2616,7 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C29.BetriebsartVT_HK1">
-			<tns:Configuration admin="true" />
+			<tns:Configuration />
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
 					<tns:CurrentValue>
@@ -2597,7 +2659,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C30.Steilheit_HK1">
-			<tns:Configuration admin="true" />
+			<tns:Configuration />
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
 					<tns:CurrentValue>
@@ -2632,7 +2694,7 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C31.Fix_Vorlauf_Tag_HK1">
-			<tns:Configuration admin="true" />
+			<tns:Configuration />
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
 					<tns:CurrentValue>
@@ -2661,7 +2723,7 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C32.Fix_Vorlauf_Absenk_HK1">
-			<tns:Configuration admin="true" />
+			<tns:Configuration />
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
 					<tns:CurrentValue>
@@ -2683,6 +2745,31 @@
 						<tns:Lower pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="145" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C33.Min_Vorlauf_Temp">
+			<tns:Configuration admin="true" />
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis1 4_11">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="46" />
+						<tns:BottomRight X="195" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="75"
+					least="0">
+					<tns:GuiModification format="(\d+)..">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="200" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
 						</tns:Lower>
 					</tns:GuiModification>
 				</tns:TypeReadWrite>
