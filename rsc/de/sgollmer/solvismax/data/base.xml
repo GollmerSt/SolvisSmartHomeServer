@@ -13,7 +13,7 @@
 		<!-- 0x0010: Solarkreislauf mit zweiter Umwaelzpumpe an A07 -->
 		<!-- 0x0020: externer Brennkessel mit Temperaturfühler an S14 -->
 		<!-- 0x0040: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
-		<!-- 0x0080: Solar Ost + West S16 Kollektor West-->
+		<!-- 0x0080: Solar Ost + West S16 Kollektor West -->
 		<!-- 0x0100: Heißwasserkreislauf vorhanden -->
 		<tns:Unit id="mySolvis" type="SolvisMax" configOrMask="0x00"
 			fwLth2_21_02A="true" account="account" passwordCrypt="AES-coded"
@@ -27,26 +27,33 @@
 			delayAfterSwitchingOnEnable="true"
 			ignoredFrameThicknesScreenSaver="3">
 			<tns:Features>
-				<tns:ClockTuning>false</tns:ClockTuning>
+				<!-- !!!!!!!!! true: GUI controlling disabled -->
+				<tns:Feature id="OnlyMeasurements" value="true" />
+				<!-- Bei true werden saemtliche Gui-Aktivitaeten verhindert. Das Modul 
+					verhaelt sich so wie das bisherige, ein aktiver Eingriff vom Server auf die 
+					SolvisControl erfolgt nicht. -->
+				<tns:Feature id="ClockTuning" value="false" />
 				<!-- Die Uhr wird automatisch eingestellt, Genauigkeit +- 31s -->
-				<tns:EquipmentTimeSynchronisation>false</tns:EquipmentTimeSynchronisation>
+				<tns:Feature id="EquipmentTimeSynchronisation"
+					value="false" />
 				<!-- Synchronisation der sekundengenauen Brennerlaufzeiten mit den stuendlichen 
 					der SolvisControl -->
-				<tns:UpdateAfterUserAccess>false</tns:UpdateAfterUserAccess>
+				<tns:Feature id="UpdateAfterUserAccess" value="false" />
 				<!-- Nach jedem Userzugriff werden automatisch der Zustand der Anlage 
 					abgefragt -->
-				<tns:DetectServiceAccess>false</tns:DetectServiceAccess>
+				<tns:Feature id="DetectServiceAccess" value="false" />
 				<!-- Es werden die Service-Screens "Schornsteinfeger", "Nutzerauswahl", 
 					"Nutzerauswahl-Code" besonders behandlt, werden diese erkannt, sind saemtliche 
 					Gui-Actionen fuer 1h deaktiviert. Jeder Anwender-Eingriff in dieser Zeit 
 					triggert die Stunde erneut. -->
-				<tns:PowerOffIsServiceAccess>false</tns:PowerOffIsServiceAccess>
+				<tns:Feature id="PowerOffIsServiceAccess" value="false" />
 				<!-- Wird ein Power-Off der Anlage erkannt, wird der wie ein Zugriff 
 					auf die Service-Screens behandelt (siehe vorheriges Element) -->
-				<tns:SendMailOnError>false</tns:SendMailOnError>
+				<tns:Feature id="SendMailOnError" value="false" />
 				<!-- Im Fall eines Anlagenfehlers wird einen Mail gesendet. Definitionen 
 					im Abschnitt "ExceptionMail" -->
-				<tns:ClearErrorMessageAfterMail>false</tns:ClearErrorMessageAfterMail>
+				<tns:Feature id="ClearErrorMessageAfterMail"
+					value="false" />
 				<!-- Ist dieses Feature deaktiviert (false), wird bei einem Anlagenfehler 
 					die GUI-Steuerung solange deaktiviert, bis die Fehlermeldung verschwunden 
 					ist. Die Steuereungsbefehle werden gemerkt und nach beenden des Fehlerzustandes 
@@ -55,10 +62,24 @@
 					aktiviert, wird nur zum HomeScreen gewechselt, wenn der Versand der Mail 
 					erfolgreich war. Der Error-Status wird zurueckgesetzt, wenn dieser Button 
 					nicht mehr sichtbar ist. GUI-Steuerungsbefehle werden in dieser Zeit ausgefuehrt -->
-				<tns:OnlyMeasurements>true</tns:OnlyMeasurements>   <!-- true: GUI controlling disabled -->
-				<!-- Bei true werden saemtliche Gui-Aktivitaeten verhindert. Das Modul 
-					verhaelt sich so wie das bisherige, ein aktiver Eingriff vom Server auf die 
-					SolvisControl erfolgt nicht. -->
+				<tns:Feature id="Admin" value="false" />
+				<!-- Ist dieses Feature aktiviert, kann der Server auch Werte innerhalb 
+					der Installateur-Menüs verändern. Aktuell ist hier nur die minimale Vorlauftemperatur 
+					veränderbar. Grundsätzlich gilt, wer das Admin-Flag auf true setzt, der muss 
+					wissen, was er tut! -->
+				<tns:Feature id="Min_Vorlauf_Temp" value="false" />
+				<!-- Die Minimale Vorlauf-Temperatur kann eingestellt werden. Neben diesem 
+					Feature muss auch das Admin-Feature aktiviert sein. -->
+				<tns:Feature id="BetriebsartVT_HK" value="false" />
+				<!-- Die Betriebsart des Heizkreises (Fix oder Kurve) und deren Parameter 
+					(Steilheit, Fix-Tag, Fix-Nacht) können eingestellt werden. Beim Auslesen/Einstellen 
+					dieser Werte wird der Heizkreis während des Einstellvorganges auf Standby 
+					gestellt. dadurch wird ein unnötiges Hochheizen in dieser Zeit vermieden. 
+					Würde das nicht erfolgen, würde das Auslesen dieser Werte ein Start des Brenner 
+					in der höchsten Stufe verursachen, da defaultmäßig die Fix-Werte recht hoch 
+					eingestellt sind. Nach dem Auslesen/Einstellen wird der heizkreis wieder 
+					in den vorherigen Zustand gestellt -->
+
 			</tns:Features>
 		</tns:Unit>
 	</tns:Units>

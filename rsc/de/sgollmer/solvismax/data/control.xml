@@ -2611,7 +2611,7 @@
 		<tns:ChannelDescription
 			id="C29.BetriebsartVT_HK1">
 			<tns:Configuration>
-				<tns:Feature id="BetriebsartVT_HK1" value="true" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
@@ -2656,7 +2656,7 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C30.Steilheit_HK1">
 			<tns:Configuration>
-				<tns:Feature id="BetriebsartVT_HK1" value="true" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
@@ -2693,7 +2693,7 @@
 		<tns:ChannelDescription
 			id="C31.Fix_Vorlauf_Tag_HK1">
 			<tns:Configuration>
-				<tns:Feature id="BetriebsartVT_HK1" value="true" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
@@ -2724,7 +2724,7 @@
 		<tns:ChannelDescription
 			id="C32.Fix_Vorlauf_Absenk_HK1">
 			<tns:Configuration>
-				<tns:Feature id="BetriebsartVT_HK1" value="true" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
