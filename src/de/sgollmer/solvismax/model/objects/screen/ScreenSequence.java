@@ -131,7 +131,7 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public void addLearnScreenGrafics(Collection<ScreenGraficDescription> learnGrafics, Solvis solvis) {
+	public void addLearnScreenGrafics(Collection<IScreenPartCompare> learnGrafics, Solvis solvis) {
 		for (ScreenRef screenRef : this.screenRefs) {
 			AbstractScreen screen = screenRef.getScreen(solvis);
 			if (screen != null) {
@@ -174,7 +174,7 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public boolean gotoLearning(Solvis solvis, AbstractScreen current, Collection<ScreenGraficDescription> descriptions)
+	public boolean gotoLearning(Solvis solvis, AbstractScreen current, Collection<IScreenPartCompare> descriptions)
 			throws IOException, TerminationException {
 		AbstractScreen previous = this.getPreviousScreen(solvis);
 		previous.goTo(solvis);
@@ -182,7 +182,7 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public void learn(Solvis solvis, Collection<ScreenGraficDescription> descriptions)
+	public void learn(Solvis solvis, Collection<IScreenPartCompare> descriptions)
 			throws TerminationException, IOException, LearningException {
 		boolean preparationSuccess = true;
 		if (this.preparation != null) {
@@ -412,6 +412,21 @@ public class ScreenSequence extends AbstractScreen {
 	@Override
 	public boolean isMatchingWOGrafics(MyImage image, Solvis solvis) {
 		return false;
+	}
+
+	@Override
+	public AbstractScreen getSurroundScreen(MyImage image, Solvis solvis) {
+
+		AbstractScreen result = null;
+
+		for (ScreenRef ref : this.screenRefs) {
+			AbstractScreen screen = ref.getScreen(solvis);
+			if (screen != null && screen.isMatchingScreen(image, solvis)) {
+				result = screen;
+				break;
+			}
+		}
+		return result;
 	}
 
 }

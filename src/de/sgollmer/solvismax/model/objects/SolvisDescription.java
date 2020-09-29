@@ -26,6 +26,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
 import de.sgollmer.solvismax.model.objects.configuration.SolvisTypes;
+import de.sgollmer.solvismax.model.objects.screen.IScreenPartCompare;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.xml.BaseCreator;
@@ -113,8 +114,8 @@ public class SolvisDescription {
 		}
 	}
 
-	public Collection<ScreenGraficDescription> getLearnGrafics(Solvis solvis) {
-		Collection<ScreenGraficDescription> learnGrafics = new ArrayList<>();
+	public Collection<IScreenPartCompare> getLearnGrafics(Solvis solvis) {
+		Collection<IScreenPartCompare> learnGrafics = new ArrayList<>();
 		this.screens.addLearnScreenGrafics(learnGrafics, solvis);
 		return learnGrafics;
 	}

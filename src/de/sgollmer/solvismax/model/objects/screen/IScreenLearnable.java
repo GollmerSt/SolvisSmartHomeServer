@@ -13,6 +13,6 @@ import de.sgollmer.solvismax.model.Solvis;
 
 public interface IScreenLearnable {
 
-	public void addLearnScreenGrafics(Collection<ScreenGraficDescription> learnGrafics, Solvis solvis);
+	public void addLearnScreenGrafics(Collection<IScreenPartCompare> learnGrafics, Solvis solvis);
 
 }

@@ -7,31 +7,52 @@
 
 package de.sgollmer.solvismax.model.objects.screen;
 
+import org.tinylog.Logger;
+
+import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.error.FatalError;
+import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 
 public class SolvisScreen {
-	//private static final ILogger logger = LogManager.getInstance().getLogger(SolvisScreen.class);
+	// private static final ILogger logger =
+	// LogManager.getInstance().getLogger(SolvisScreen.class);
 
 	private final Solvis solvis;
 	private final MyImage image;
 	private boolean scanned = false;
 	private AbstractScreen screen = null;
+	private final Reference<AbstractScreen> previousScreen;
 
-	public SolvisScreen(MyImage image, Solvis solvis) {
+	public SolvisScreen(MyImage image, Solvis solvis, Reference<AbstractScreen> previousScreen) {
 		this.image = image;
 		this.solvis = solvis;
+		this.previousScreen = previousScreen;
 	}
 
 	public AbstractScreen get() {
 		if (this.screen == null && !this.scanned) {
-			this.screen = this.solvis.getSolvisDescription().getScreens().getScreen(this.image, this.solvis);
+
+			if (this.previousScreen != null && this.previousScreen.get() != null) {
+
+				this.screen = this.previousScreen.get().getSurroundScreen(this.image, this.solvis);
+			}
+			if (this.screen == null) {
+				this.screen = this.solvis.getSolvisDescription().getScreens().getScreen(this.image, this.solvis);
+
+				if (BaseData.DEBUG && this.screen != null && this.previousScreen != null
+						&& this.previousScreen.get() != null) {
+					Logger.error("Warning: Error within the xml file? Screen <" + this.screen
+							+ "> not found arround the previous screen <" + this.previousScreen.get() + ">.");
+				}
+			}
 			this.scanned = true;
 		}
 		if (this.screen != null && !this.screen.isScreen()) {
 			throw new FatalError("Only an object of type Screen is allowed.");
 		}
+		this.previousScreen.set(this.screen);
 		return this.screen;
 	}
 

@@ -209,13 +209,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="15" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="11/5">
+			<tns:ScreenOcr value="11/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
 		<tns:Screen id="Heizkreis1 2_5" backId="Heizkreise"
 			previousId="Heizkreis1 1_5">
@@ -223,13 +223,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="12/5">
+			<tns:ScreenOcr value="12/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
 		<tns:Screen id="Heizkreis1 3_5" backId="Heizkreise"
 			previousId="Heizkreis1 2_5">
@@ -237,13 +237,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="13/5">
+			<tns:ScreenOcr value="13/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
 		<tns:Screen id="Heizkreis1 4_5" backId="Heizkreise"
 			previousId="Heizkreis1 5_5" mustSave="true">
@@ -251,13 +251,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="14/5">
+			<tns:ScreenOcr value="14/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="145" Y="15" />
 				<tns:BottomRight X="205" Y="65" />
@@ -269,13 +269,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="15/5">
+			<tns:ScreenOcr value="15/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="145" Y="15" />
 				<tns:BottomRight X="205" Y="65" />
@@ -291,13 +291,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="45" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="21/5">
+			<tns:ScreenOcr value="21/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
 		<tns:Screen id="Heizkreis2 2_5" backId="Heizkreise"
 			previousId="Heizkreis2 1_5">
@@ -309,13 +309,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="22/5">
+			<tns:ScreenOcr value="22/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
 		<tns:Screen id="Heizkreis2 3_5" backId="Heizkreise"
 			previousId="Heizkreis2 2_5">
@@ -327,13 +327,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="23/5">
+			<tns:ScreenOcr value="23/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
 		<tns:Screen id="Heizkreis2 4_5" backId="Heizkreise"
 			previousId="Heizkreis2 5_5" mustSave="true">
@@ -345,13 +345,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="24/5">
+			<tns:ScreenOcr value="24/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="145" Y="15" />
 				<tns:BottomRight X="205" Y="65" />
@@ -367,13 +367,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="25/5">
+			<tns:ScreenOcr value="25/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="145" Y="15" />
 				<tns:BottomRight X="205" Y="65" />
@@ -389,13 +389,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="65" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="31/5">
+			<tns:ScreenOcr value="31/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
 		<tns:Screen id="Heizkreis3 2_5" backId="Heizkreise"
 			previousId="Heizkreis3 1_5">
@@ -407,13 +407,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="32/5">
+			<tns:ScreenOcr value="32/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
 		<tns:Screen id="Heizkreis3 3_5" backId="Heizkreise"
 			previousId="Heizkreis3 2_5">
@@ -425,13 +425,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="33/5">
+			<tns:ScreenOcr value="33/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 		</tns:Screen>
 		<tns:Screen id="Heizkreis3 4_5" backId="Heizkreise"
 			previousId="Heizkreis3 5_5" mustSave="true">
@@ -443,13 +443,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="34/5">
+			<tns:ScreenOcr value="34/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="145" Y="15" />
 				<tns:BottomRight X="205" Y="65" />
@@ -465,13 +465,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="35/5">
+			<tns:ScreenOcr value="35/5" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="163" Y="2" />
+					<tns:TopLeft X="40" Y="2" />
 					<tns:BottomRight X="198" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis" />
 			<tns:IgnoreRectangle>
 				<tns:TopLeft X="145" Y="15" />
 				<tns:BottomRight X="205" Y="65" />
@@ -1030,61 +1030,66 @@
 				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Screen>
-		<tns:Screen id="Heizkreis1 1_11" backId="Heizung Installateur"
-			previousId="Heizung Installateur" ignoreChanges="true">
+		<tns:Screen id="Heizkreis1 1_11"
+			backId="Heizung Installateur" previousId="Heizung Installateur"
+			ignoreChanges="true">
+			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="15" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="11/11">
+			<tns:ScreenOcr value="11/11" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="157" Y="2" />
+					<tns:TopLeft X="35" Y="2" />
 					<tns:BottomRight X="205" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis Installateur" />
 		</tns:Screen>
-		<tns:Screen id="Heizkreis1 2_11" backId="Heizkreise"
-			previousId="Heizkreis1 1_11">
+		<tns:Screen id="Heizkreis1 2_11"
+			backId="Heizung Installateur" previousId="Heizkreis1 1_11">
+			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="12/11">
+			<tns:ScreenOcr value="12/11" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="157" Y="2" />
+					<tns:TopLeft X="35" Y="2" />
 					<tns:BottomRight X="205" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis Installateur" />
 		</tns:Screen>
-		<tns:Screen id="Heizkreis1 3_11" backId="Heizkreise"
-			previousId="Heizkreis1 2_11">
+		<tns:Screen id="Heizkreis1 3_11"
+			backId="Heizung Installateur" previousId="Heizkreis1 2_11">
+			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="13/11">
+			<tns:ScreenOcr value="13/11" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="157" Y="2" />
+					<tns:TopLeft X="35" Y="2" />
 					<tns:BottomRight X="205" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis Installateur" />
 		</tns:Screen>
-		<tns:Screen id="Heizkreis1 4_11" backId="Heizkreise"
-			previousId="Heizkreis1 3_11">
+		<tns:Screen id="Heizkreis1 4_11"
+			backId="Heizung Installateur" previousId="Heizkreis1 3_11">
+			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="14/11">
+			<tns:ScreenOcr value="14/11" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="157" Y="2" />
+					<tns:TopLeft X="35" Y="2" />
 					<tns:BottomRight X="205" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Heizkreis Installateur" />
 		</tns:Screen>
 		<tns:Screen id="Wasser Installateur"
 			backId="Installateur Menue" previousId="Installateur Menue">
@@ -1107,13 +1112,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="25" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="1/2">
+			<tns:ScreenOcr value="1/2" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="197" Y="3" />
-					<tns:BottomRight X="220" Y="14" />
+					<tns:TopLeft X="5" Y="3" />
+					<tns:BottomRight X="220" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Wasser Anforderung" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Wasser Anforderung" />
 		</tns:Screen>
 		<tns:Screen id="Wasser Anforderung 2/2"
 			backId="Wasser Installateur" previousId="Wasser Anforderung 1/2">
@@ -1122,13 +1127,13 @@
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
-			<tns:ScreenOcr value="2/2">
+			<tns:ScreenOcr value="2/2" right="true">
 				<tns:Rectangle>
-					<tns:TopLeft X="197" Y="3" />
-					<tns:BottomRight X="220" Y="14" />
+					<tns:TopLeft X="5" Y="3" />
+					<tns:BottomRight X="220" Y="13" />
 				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Wasser Anforderung" />
 			</tns:ScreenOcr>
-			<tns:ScreenGraficRef refId="Wasser Anforderung" />
 		</tns:Screen>
 		<tns:Screen id="Wasser Bereitschaft"
 			backId="Wasser Installateur" previousId="Wasser Installateur">
@@ -1200,16 +1205,8 @@
 			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="Heizkreis">
-			<tns:Rectangle>
-				<tns:TopLeft X="40" Y="2" />
-				<tns:BottomRight X="160" Y="13" />
-			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="Heizkreis Installateur">
-			<tns:Rectangle>
-				<tns:TopLeft X="35" Y="2" />
-				<tns:BottomRight X="156" Y="14" />
-			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="Tagestemperatur" exact="true">
 			<tns:Rectangle>
@@ -1252,10 +1249,6 @@
 			</tns:Rectangle>
 		</tns:ScreenGrafic>
 		<tns:ScreenGrafic id="Wasser Anforderung">
-			<tns:Rectangle>
-				<tns:TopLeft X="15" Y="3" />
-				<tns:BottomRight X="197" Y="14" />
-			</tns:Rectangle>
 		</tns:ScreenGrafic>
 	</tns:ScreenGrafics>
 	<tns:FallBack>
@@ -2598,7 +2591,8 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="300"
 					least="0" incrementChange="120" changedIncrement="30">
-					<tns:GuiModification format="(\d+)." wrapAround="true">
+					<tns:GuiModification format="(\d+)."
+						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="220" Y="20" />
@@ -2616,7 +2610,9 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C29.BetriebsartVT_HK1">
-			<tns:Configuration />
+			<tns:Configuration>
+				<tns:Feature id="BetriebsartVT_HK1" value="true" />
+			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
 					<tns:CurrentValue>
@@ -2659,7 +2655,9 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="C30.Steilheit_HK1">
-			<tns:Configuration />
+			<tns:Configuration>
+				<tns:Feature id="BetriebsartVT_HK1" value="true" />
+			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
 					<tns:CurrentValue>
@@ -2694,7 +2692,9 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C31.Fix_Vorlauf_Tag_HK1">
-			<tns:Configuration />
+			<tns:Configuration>
+				<tns:Feature id="BetriebsartVT_HK1" value="true" />
+			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
 					<tns:CurrentValue>
@@ -2723,7 +2723,9 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C32.Fix_Vorlauf_Absenk_HK1">
-			<tns:Configuration />
+			<tns:Configuration>
+				<tns:Feature id="BetriebsartVT_HK1" value="true" />
+			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 2_5">
 					<tns:CurrentValue>
@@ -2752,7 +2754,9 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="C33.Min_Vorlauf_Temp">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="true">
+				<tns:Feature id="Min_Vorlauf_Temp" value="true" />
+			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 4_11">
 					<tns:CurrentValue>

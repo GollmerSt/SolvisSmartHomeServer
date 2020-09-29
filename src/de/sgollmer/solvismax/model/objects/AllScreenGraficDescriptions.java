@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
@@ -34,8 +35,12 @@ public class AllScreenGraficDescriptions implements IAssigner {
 		}
 	}
 
-	public ScreenGraficDescription get(String id) {
-		return this.screenGraficDescriptions.get(id);
+	public ScreenGraficDescription get(String id) throws XmlException {
+		ScreenGraficDescription description = this.screenGraficDescriptions.get(id);
+		if ( description == null) {
+			throw new XmlException( "ScreenGrafic of <" + id + "> not known, check the control.xml");
+		}
+		return description;
 	}
 
 	@Override

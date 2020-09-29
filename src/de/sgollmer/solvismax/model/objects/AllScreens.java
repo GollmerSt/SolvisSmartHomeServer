@@ -18,14 +18,14 @@ import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.screen.Screen;
-import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
-import de.sgollmer.solvismax.model.objects.screen.ScreenSequence;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.IScreenLearnable;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.solvismax.model.objects.screen.IScreenPartCompare;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
+import de.sgollmer.solvismax.model.objects.screen.ScreenSequence;
 import de.sgollmer.solvismax.xml.BaseCreator;
+import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class AllScreens implements IScreenLearnable {
 
@@ -152,7 +152,7 @@ public class AllScreens implements IScreenLearnable {
 	}
 
 	@Override
-	public void addLearnScreenGrafics(Collection<ScreenGraficDescription> learnScreens, Solvis solvis) {
+	public void addLearnScreenGrafics(Collection<IScreenPartCompare> learnScreens, Solvis solvis) {
 		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
 			AbstractScreen screen = screenConf.get(solvis);
 			if (screen != null) {

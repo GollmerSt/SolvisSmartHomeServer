@@ -19,8 +19,8 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.solvismax.model.objects.screen.IScreenPartCompare;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
-import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
@@ -43,7 +43,7 @@ public class Configurations {
 		int configurationMask = 0;
 		Screen home = solvis.getHomeScreen();
 		IConfiguration homeConfiguration = null;
-		Collection<ScreenGraficDescription> learnConfigurationScreens = new ArrayList<>();
+		Collection<IScreenPartCompare> learnConfigurationScreens = new ArrayList<>();
 		for (Iterator<IConfiguration> it = this.configurations.iterator(); it.hasNext();) {
 			IConfiguration configuration = it.next();
 			AbstractScreen screen = configuration.getScreen(solvis);
@@ -54,7 +54,7 @@ public class Configurations {
 			}
 		}
 		if (homeConfiguration != null) {
-			Collection<ScreenGraficDescription> learnHomeScreen = new ArrayList<>();
+			Collection<IScreenPartCompare> learnHomeScreen = new ArrayList<>();
 			home.addLearnScreenGrafics(learnHomeScreen, solvis);
 			home.gotoLearning(solvis, current, learnHomeScreen);
 			home.learn(solvis, learnHomeScreen);

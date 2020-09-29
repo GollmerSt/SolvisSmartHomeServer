@@ -33,7 +33,7 @@ public class Ocr extends MyImage {
 		this.processing(false);
 	}
 
-	private Ocr(MyImage image) {
+	public Ocr(MyImage image) {
 		super(image);
 		this.processing(false);
 	}
@@ -44,10 +44,10 @@ public class Ocr extends MyImage {
 		this.processing(true);
 	}
 
-	public Ocr (MyImage image, Rectangle rectangle) {
+	public Ocr(MyImage image, Rectangle rectangle) {
 		this(image, rectangle.getTopLeft(), rectangle.getBottomRight(), true);
 	}
-	
+
 	private final void processing(boolean coordinatesChanged) {
 
 		this.createHistograms(true);

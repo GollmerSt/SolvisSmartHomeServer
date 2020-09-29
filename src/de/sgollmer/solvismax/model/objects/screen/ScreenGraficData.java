@@ -45,7 +45,7 @@ public class ScreenGraficData implements IXmlWriteable {
 		writer.writeAttribute("isPattern", Boolean.toString(this.image instanceof Pattern));
 		BufferedImage image = this.image.createBufferdImage();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ImageIO.write(image, "bmp", bos);
+		ImageIO.write(image, "png", bos);
 		Encoder base64 = Base64.getEncoder();
 		writer.writeCharacters(new String(base64.encode(bos.toByteArray()), "UTF-8"));
 	}

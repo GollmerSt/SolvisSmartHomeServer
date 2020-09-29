@@ -418,5 +418,119 @@ public class MyImage {
 		ImageIO.write(this.image.getSubimage(this.origin.getX(), this.origin.getY(), this.getWidth(), this.getHeight()),
 				Constants.Files.GRAFIC_SUFFIX, file);
 	}
+	
+	public List<MyImage> split() {
+		this.createHistograms(true);
+
+		this.removeFrame();
+
+		this.shrink();
+		
+		List< MyImage > parts = new ArrayList<>();
+
+		Coordinate start = null;
+
+		int lower = this.getHeight() - 1;
+
+		for (int x = 0; x < this.getHistogramX().size(); ++x) {
+
+			int cnt = this.getHistogramX().get(x);
+			if (cnt > 0) {
+				if (start == null) {
+					start = new Coordinate(x, 0);
+				}
+			} else {
+				if (start != null) {
+					Coordinate end = new Coordinate(x - 1, lower);
+					parts.add(new MyImage(this, start, end, false));
+					start = null;
+				}
+			}
+		}
+		if (start != null) {
+			Coordinate end = new Coordinate(this.getHistogramX().size() - 1, lower);
+			parts.add(new MyImage(this, start, end, false));
+		}
+		
+		return parts;
+	}
+	
+	private void removeFrame() {
+		int i;
+		boolean missed = true;
+		for (i = 0; i < this.getWidth() && this.getHistogramX().get(i) == this.getHeight(); ++i) {
+			missed = false;
+		}
+		if (missed) {
+			return;
+		}
+
+		int left = i;
+		missed = true;
+
+		for (i = this.getWidth() - 1; i >= 0 && this.getHistogramX().get(i) == this.getHeight(); --i) {
+			missed = false;
+		}
+		if (missed) {
+			return;
+		}
+
+		int right = i;
+		
+		if ( left > right) {
+			return;
+		}
+
+		missed = true;
+		for (i = 0; i < this.getHeight() && this.getHistogramY().get(i) == this.getWidth(); ++i) {
+			missed = false;
+		}
+		if (missed) {
+			return;
+		}
+
+		int top = i;
+		missed = true;
+
+		for (i = this.getHeight() - 1; i >= 0 && this.getHistogramY().get(i) == this.getWidth(); --i) {
+			missed = false;
+		}
+		if (missed) {
+			return;
+		}
+
+		int bottom = i;
+
+		if ( top > bottom) {
+			return;
+		}
+
+		int remainingX = right - left + 1;
+		int remainingY = bottom - top + 1;
+		int thicknessX = this.getWidth() - remainingX;
+		int thicknessY = this.getHeight() - remainingY;
+
+		if (remainingX == 0 || remainingY == 0) {
+			return;
+		}
+		if (this.getHistogramX().get(left) != thicknessY && this.getHistogramX().get(right) != thicknessY
+				&& this.getHistogramY().get(top) != thicknessX && this.getHistogramY().get(bottom) != thicknessX) {
+			return;
+		}
+		this.origin = new Coordinate(left + this.origin.getX(), top + this.origin.getY());
+		this.size = new Coordinate(remainingX, remainingY);
+
+		this.histogramX = this.histogramX.subList(left, right + 1);
+		this.histogramY = this.histogramY.subList(top, bottom + 1);
+
+		for (i = 0; i < this.histogramX.size(); ++i) {
+			this.histogramX.set(i, this.histogramX.get(i) - thicknessY);
+		}
+
+		for (i = 0; i < this.histogramY.size(); ++i) {
+			this.histogramY.set(i, this.histogramY.get(i) - thicknessX);
+		}
+
+	}
 
 }

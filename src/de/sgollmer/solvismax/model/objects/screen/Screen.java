@@ -128,15 +128,15 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public void assign(SolvisDescription description) throws ReferenceException, XmlException, AssignmentException {
 		for (String id : this.screenGraficRefs) {
-			ScreenGraficDescription grafic = description.getScreenGrafics().get(id);
-			if (grafic == null) {
-				throw new ReferenceException("Screen grafic reference < " + id + " > not found");
-			}
-			this.screenCompares.add(grafic);
+			this.screenCompares.add(description.getScreenGrafics().get(id));
 		}
 		if (this.screenCompares.isEmpty()) {
 			throw new XmlException(
 					"Error in XML definition: Grafic information of screen <" + this.getId() + "> is missing.");
+		}
+
+		for (IScreenPartCompare cmp : this.screenCompares) {
+			cmp.assign(description);
 		}
 
 		if (this.backId != null) {
@@ -206,6 +206,11 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	@Override
 	public boolean isMatchingScreen(MyImage image, Solvis solvis) {
+
+		if (!this.isInConfiguration(solvis)) {
+			return false;
+		}
+
 		if (this.lastPreparation != null && solvis.getHistory().getLastPreparation() != this.lastPreparation) {
 			return false;
 		}
@@ -230,10 +235,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	public boolean isLearned(Solvis solvis) {
 
 		for (IScreenPartCompare cmp : this.screenCompares) {
-			if (cmp instanceof ScreenGraficDescription) {
-				if (!((ScreenGraficDescription) cmp).isLearned(solvis)) {
-					return false;
-				}
+			if (!cmp.isLearned(solvis)) {
+				return false;
 			}
 		}
 		if (this.preparation != null) {
@@ -345,7 +348,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				case XML_SCREEN_GRAFICS:
 					return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
 				case XML_SCREEN_GRAFICS_REF:
-					return new CreatorScreenGraficRef(id, this.getBaseCreator());
+					return new ScreenGraficRef.Creator(id, this.getBaseCreator());
 				case XML_SCREEN_OCR:
 					return new ScreenOcr.Creator(id, getBaseCreator());
 				case XML_IGNORE_RECTANGLE:
@@ -382,7 +385,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					((SolvisDescription.Creator) this.getBaseCreator()).getScreenGraficDescriptions().add(grafic);
 					break;
 				case XML_SCREEN_GRAFICS_REF:
-					this.screenGraficRefs.add((String) created);
+					this.screenGraficRefs.add(((ScreenGraficRef) created).getRefId());
 					break;
 				case XML_SCREEN_OCR:
 					this.screenCompares.add((ScreenOcr) created);
@@ -408,52 +411,18 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	}
 
-	private static class CreatorScreenGraficRef extends CreatorByXML<String> {
-
-		private String refId;
-
-		private CreatorScreenGraficRef(String id, BaseCreator<?> creator) {
-			super(id, creator);
-		}
-
-		@Override
-		public void setAttribute(QName name, String value) {
-			if (name.getLocalPart().equals("refId")) {
-				this.refId = value;
-			}
-
-		}
-
-		@Override
-		public String create() throws XmlException {
-			return this.refId;
-		}
-
-		@Override
-		public CreatorByXML<?> getCreator(QName name) {
-			return null;
-		}
-
-		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
-		}
-
-	}
-
 	@Override
-	public void addLearnScreenGrafics(Collection<ScreenGraficDescription> descriptions, Solvis solvis) {
+	public void addLearnScreenGrafics(Collection<IScreenPartCompare> descriptions, Solvis solvis) {
 		for (IScreenPartCompare cmp : this.screenCompares) {
-			if (cmp instanceof ScreenGraficDescription) {
-				ScreenGraficDescription description = (ScreenGraficDescription) cmp;
-				if (!description.isLearned(solvis) && !descriptions.contains(description)) {
-					descriptions.add(description);
-				}
+			if (!cmp.isLearned(solvis) && !descriptions.contains(cmp)) {
+				descriptions.add(cmp);
 			}
 		}
 	}
 
+//
 	public static void learnScreens(Solvis solvis) throws IOException, TerminationException, LearningException {
-		Collection<ScreenGraficDescription> learnGrafics = solvis.getSolvisDescription().getLearnGrafics(solvis);
+		Collection<IScreenPartCompare> learnGrafics = solvis.getSolvisDescription().getLearnGrafics(solvis);
 		while (learnGrafics.size() > 0) {
 			solvis.getHomeScreen().learn(solvis, learnGrafics);
 //			solvis.gotoHome();
@@ -461,7 +430,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public void learn(Solvis solvis, Collection<ScreenGraficDescription> descriptions)
+	public void learn(Solvis solvis, Collection<IScreenPartCompare> descriptions)
 			throws IOException, TerminationException, LearningException {
 
 		// Seach all LearnScreens object of current screen and learn the
@@ -473,15 +442,24 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				solvis.writeLearningImage(solvis.getCurrentScreen(), this.id);
 			}
 			try {
+				boolean learned = false;
+
 				for (IScreenPartCompare screenPartCompare : this.screenCompares) {
-					if (screenPartCompare instanceof ScreenGraficDescription) {
-						ScreenGraficDescription description = (ScreenGraficDescription) screenPartCompare;
-						if (!description.isLearned(solvis)) {
-							description.learn(solvis);
-							descriptions.remove(description);
+					if (!screenPartCompare.isLearned(solvis)) {
+						screenPartCompare.learn(solvis);
+						learned = true;
+					}
+				}
+
+				if (learned) {
+					for (Iterator<IScreenPartCompare> it = descriptions.iterator(); it.hasNext();) {
+						IScreenPartCompare toLearn = it.next();
+						if (toLearn.isLearned(solvis)) {
+							it.remove();
 						}
 					}
 				}
+
 				solvis.clearCurrentScreen();
 			} catch (IOException e) {
 				logger.log(LEARN,
@@ -575,7 +553,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	 * @throws LearningException
 	 */
 	@Override
-	public boolean gotoLearning(Solvis solvis, AbstractScreen current, Collection<ScreenGraficDescription> descriptions)
+	public boolean gotoLearning(Solvis solvis, AbstractScreen current, Collection<IScreenPartCompare> descriptions)
 			throws IOException, TerminationException, LearningException {
 		if (current == null) {
 			if (this != solvis.getHomeScreen()) {
@@ -621,7 +599,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 										"Warning: Goto with an unlearned Screen, algorithm or control.xml fail?");
 								solvis.gotoHome();
 								logger.log(LEARN, "Pepartation failed, goto learning will tried again.");
-								return false ;
+								return false;
 							}
 						}
 					} else {
@@ -650,8 +628,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	 * @throws LearningException
 	 */
 	private static AbstractScreen back(Solvis solvis, AbstractScreen current,
-			Collection<ScreenGraficDescription> descriptions)
-			throws IOException, TerminationException, LearningException {
+			Collection<IScreenPartCompare> descriptions) throws IOException, TerminationException, LearningException {
 		AbstractScreen back = current.getBackScreen(solvis);
 		solvis.sendBack();
 		current = SolvisScreen.get(solvis.getCurrentScreen());
@@ -765,7 +742,11 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			}
 			if (!gone) {
 				logger.info("Goto screen <" + this.getId() + "> not succcessful. Will be retried.");
-				solvis.gotoHome(); // try it from beginning
+				if (cnt == 0) {
+					solvis.sendBack();
+				} else {
+					solvis.gotoHome(); // try it from beginning
+				}
 			}
 		}
 		if (!gone) {

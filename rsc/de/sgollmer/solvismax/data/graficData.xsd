@@ -35,7 +35,7 @@
 			</element>
 		</sequence>
 		<attribute name="controlResourceHashCode" type="int"></attribute>
-		<attribute name="controlFileHashCode" type="int"></attribute>
+		<attribute name="controlFileHashCode" type="int"></attribute>
 	</complexType>
 
 	<element name="SolvisGrafics" type="tns:SolvisGrafics"></element>
@@ -48,6 +48,12 @@
 			</documentation>
 		</annotation>
 		<sequence>
+			<element name="Features">
+				<complexType>
+					<sequence>
+						<element name="Feature" type="tns:Feature" maxOccurs="unbounded" minOccurs="0"></element>
+					</sequence>
+				</complexType></element>
 			<element name="Origin" type="tns:Coordinate"></element>
 			<element name="ScreenGrafic" type="tns:ScreenGrafic"
 				maxOccurs="unbounded" minOccurs="0">
@@ -58,9 +64,10 @@
 				<documentation>Id der Solvis-Anlage</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="configurationMask" type="int" use="required"></attribute>
-		<attribute name="baseConfigurationMask" type="int" use="required"></attribute>
-		<attribute name="admin" type="boolean" use="optional"></attribute>
+		<attribute name="configurationMask" type="int"
+			use="required"></attribute>
+		<attribute name="baseConfigurationMask" type="int"
+			use="required"></attribute>
 	</complexType>
 
 	<complexType name="Coordinate">
@@ -72,6 +79,11 @@
 		</annotation>
 		<attribute name="X" type="int" use="required"></attribute>
 		<attribute name="Y" type="int" use="required"></attribute>
+	</complexType>
+
+	<complexType name="Feature">
+		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="value" type="boolean" use="required"></attribute>
 	</complexType>
 
 

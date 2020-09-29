@@ -65,7 +65,7 @@ public class Instances {
 			
 			SystemGrafics systemGrafics = this.graficDatas.get(xmlUnit.getId(), this.xmlHash);
 			
-			this.mustLearn |= !systemGrafics.isAdmin() && xmlUnit.getFeatures().isAdmin();
+			this.mustLearn |= !systemGrafics.areRelevantFeaturesEqual(xmlUnit.getFeatures().getMap());
 			this.mustLearn |= xmlUnit.getConfigOrMask() != systemGrafics.getBaseConfigurationMask();
 			
 			Solvis solvis = this.createSolvisInstance(xmlUnit, this.mustLearn);
@@ -86,10 +86,8 @@ public class Instances {
 		FileHelper.mkdir(learnDesination);
 
 		for (Solvis solvis : this.units) {
-			Unit xmlUnit = solvis.getUnit();
 			solvis.learning(force);
 			learned = true;
-			this.graficDatas.get(xmlUnit.getId(), this.xmlHash).setAdmin(xmlUnit.getFeatures().isAdmin());
 		}
 		if (learned) {
 			// this.graficDatas.

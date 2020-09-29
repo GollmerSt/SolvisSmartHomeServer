@@ -11,6 +11,16 @@ Offene Aufgaben:
      denkbar, vielleicht in Form einer WebPage auf GitHub mit JavaScript.
      Vielleicht auch https://github.com/michmech/xonomy
      
+23. Control auch von Features abhängig machen
+
+24: Erkennung der Screens mit OCR:
+	  Die Positionen sind stark vom Text der Überschriften abhängig. Bei ausländischer Sprache
+	  wird der aktuelle Algorithmus vermutlich nicht funktionieren.
+	  Die Überschriftenerkennung müsste so laufen, dass diese in lauter Pattern
+	  zerlegt wird. Mite OCR und RegEx wird die Anzahl der hinteren validen OCR-Pattern ermittelt,
+	  die vorderen Pattern müssen dann grafisch verglichen werden.
+	  Dann braucht man auch nicht mehr Heizkreis-Grafik und Heizkrein-Installateur-Grafik unterscheiden. 
+	  
 
 Erledigt:
 
@@ -312,3 +322,8 @@ Erledigt:
 14:51:33,211|INFO|de.sgollmer.solvismax.connection.Server - Client disconnected
 
   Ursache war nicht der Standby. Nach zweiten Wiederaufbauversuch war ein Neu-Konnektieren nicht mehr möglich
+  
+22. Goto: Wenn Goto schief geht, nicht gleich nach Home gehen, sondern erstmal Back probieren.
+     In Installateur-Menüs wird das dann kritisch, zuviel Stufen zurück.
+
+  

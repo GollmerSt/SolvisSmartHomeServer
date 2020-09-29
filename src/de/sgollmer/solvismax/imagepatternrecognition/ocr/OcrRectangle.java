@@ -30,51 +30,35 @@ public class OcrRectangle extends MyImage {
 
 	private OcrRectangle(MyImage image, Coordinate upperLeft, Coordinate lowerRight) {
 		super(image, upperLeft, lowerRight, true);
-		this.split();
+		this.splitInParts();
 	}
 
 	public OcrRectangle(MyImage image, Rectangle rectangle) {
 		super(image, rectangle, true);
-		this.split();
+		this.splitInParts();
 	}
 
 	private OcrRectangle(MyImage image) {
 		super(image);
-		this.split();
+		this.splitInParts();
 	}
 
-	private void split() {
+	public OcrRectangle(MyImage myImage, Collection<MyImage> images) {
+		super(myImage);
+		this.parts = new ArrayList<>(images.size());
+		for (MyImage image : images) {
+			this.parts.add(new Ocr(image));
+		}
+	}
 
-		this.createHistograms(true);
+	public void splitInParts() {
 
-		this.removeFrame();
-
-		this.shrink();
+		Collection<MyImage> images = this.split();
 
 		this.parts = new ArrayList<>();
 
-		Coordinate start = null;
-
-		int lower = this.getHeight() - 1;
-
-		for (int x = 0; x < this.getHistogramX().size(); ++x) {
-
-			int cnt = this.getHistogramX().get(x);
-			if (cnt > 0) {
-				if (start == null) {
-					start = new Coordinate(x, 0);
-				}
-			} else {
-				if (start != null) {
-					Coordinate end = new Coordinate(x - 1, lower);
-					this.parts.add(new Ocr(this, start, end, false));
-					start = null;
-				}
-			}
-		}
-		if (start != null) {
-			Coordinate end = new Coordinate(this.getHistogramX().size() - 1, lower);
-			this.parts.add(new Ocr(this, start, end, false));
+		for (MyImage image : images) {
+			this.parts.add(new Ocr(image));
 		}
 	}
 
@@ -90,76 +74,6 @@ public class OcrRectangle extends MyImage {
 		// logger.debug("String detected by OCR: " + result );
 
 		return result;
-	}
-
-	private void removeFrame() {
-		int i;
-		boolean missed = true;
-		for (i = 0; i < this.getWidth() && this.getHistogramX().get(i) == this.getHeight(); ++i) {
-			missed = false;
-		}
-		if (missed) {
-			return;
-		}
-
-		int left = i;
-		missed = true;
-
-		for (i = this.getWidth() - 1; i >= 0 && this.getHistogramX().get(i) == this.getHeight(); --i) {
-			missed = false;
-		}
-		if (missed) {
-			return;
-		}
-
-		int right = i;
-
-		missed = true;
-		for (i = 0; i < this.getHeight() && this.getHistogramY().get(i) == this.getWidth(); ++i) {
-			missed = false;
-		}
-		if (missed) {
-			return;
-		}
-
-		int top = i;
-		missed = true;
-
-		for (i = this.getHeight() - 1; i >= 0 && this.getHistogramY().get(i) == this.getWidth(); --i) {
-			missed = false;
-		}
-		if (missed) {
-			return;
-		}
-
-		int bottom = i;
-
-		int remainingX = right - left + 1;
-		int remainingY = bottom - top + 1;
-		int thicknessX = this.getWidth() - remainingX;
-		int thicknessY = this.getHeight() - remainingY;
-
-		if (remainingX == 0 || remainingY == 0) {
-			return;
-		}
-		if (this.getHistogramX().get(left) != thicknessY && this.getHistogramX().get(right) != thicknessY
-				&& this.getHistogramY().get(top) != thicknessX && this.getHistogramY().get(bottom) != thicknessX) {
-			return;
-		}
-		this.origin = new Coordinate(left + this.origin.getX(), top + this.origin.getY());
-		this.size = new Coordinate(remainingX, remainingY);
-
-		this.histogramX = this.histogramX.subList(left, right + 1);
-		this.histogramY = this.histogramY.subList(top, bottom + 1);
-
-		for (i = 0; i < this.histogramX.size(); ++i) {
-			this.histogramX.set(i, this.histogramX.get(i) - thicknessY);
-		}
-
-		for (i = 0; i < this.histogramY.size(); ++i) {
-			this.histogramY.set(i, this.histogramY.get(i) - thicknessX);
-		}
-
 	}
 
 	public static void main(String[] args) {

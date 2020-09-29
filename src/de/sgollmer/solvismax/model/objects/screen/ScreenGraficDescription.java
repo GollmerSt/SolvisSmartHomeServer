@@ -81,6 +81,7 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 		return image.equals(cmp);
 	}
 
+	@Override
 	public boolean isLearned(Solvis solvis) {
 		return solvis.getGrafics().get(this.getId()) != null;
 	}
@@ -152,6 +153,7 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 	public void assign(SolvisDescription description) {
 	}
 
+	@Override
 	public void learn(Solvis solvis) throws IOException, TerminationException {
 		MyImage image = solvis.getCurrentScreen().getImage();
 		if (this.exact) {

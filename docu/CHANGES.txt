@@ -2,8 +2,24 @@ A E N D E R U N G E N
 
 Version 01.02.04 rc2
 
+    29.09.2020  Features auf ein etwas anderes Format umgestellt, so dass Features ergänzt werden können,
+                ohne dass das Xsd-File und entsprechend das Programm geändert werden muss. Die alten
+                Definitionen sind noch möglich.
+
+    28.09.2020  Algorithmus zur Erkennung von Überschriften optimiert, bei der Grafik- mit OCR-Erkennung
+                kombiniert ist.
+                Bei der Ergänzung durch C33.Min_Vorlauf_Temp hatte sich ein Problem gezeigt, dass die
+                Anfang des OCR-Feldes zu stark variert. Abhängig von der OCR-Stellenanzahl passt
+                die feste Position des OCR-Auschnitts nicht mehr.
+                Noch größere Schwierigkeiten erhält man, wenn man die Sprache umstellt. Dann müsste man
+                noch die Sprache in das config-File berücksichtigen, wodurch das nicht mehr handlebar wird.
+                Nun wird der Übergang zwischen Grafik und OCR dynamisch anhand der zu erwartenden
+                OCR-Zeichenanzahl ermittelt.
+    
     27.09.2020  Wenn ein Dependency-Channel im gleichen Command-Ablauf auch zu lesen war, wurde
                 der Dependency-Channel nicht richtig restored.
+                
+                C33.Min_Vorlauf_Temp neu
     
     26.09.2020  Beim Learning kann es zu einer Endlosschleife kommen, wenn bei einem Goto beim
                 Zurückgehen auf den vorherigen Screen, der Screen nicht erkannt wird. Die Ursache
@@ -19,7 +35,7 @@ Version 01.02.04 rc2
                 
                 Dependency-Reihenfolge noch optimiert.
                 
-                DeadLock mit Mqtt gleichzeitig mit Server-Client gefixt 
+                DeadLock mit Mqtt gleichzeitig mit Server-Client gefixt
 
 
 Version 01.02.04 rc1

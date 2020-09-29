@@ -15,25 +15,43 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.Feature;
+import de.sgollmer.solvismax.model.objects.Features;
 import de.sgollmer.solvismax.xml.BaseCreator;
 import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Configuration {
 
 	private static final String XML_CONFIGURATION_MASK = "ConfigurationMask";
+	private static final String XML_FEATURE = "Feature";
 
 	private final boolean admin;
 	private final Collection<ConfigurationMask> masks;
+	private final Feature feature;
 
-	private Configuration(boolean admin, Collection<ConfigurationMask> masks) {
+	private Configuration(boolean admin, Collection<ConfigurationMask> masks, Feature feature) {
 		this.admin = admin;
 		this.masks = masks;
+		this.feature = feature;
 	}
 
 	public boolean isInConfiguration(Solvis solvis) {
+		if ( solvis.isLearning() ) {
+			if ( this.admin ) {
+				solvis.addFeatureDependency( Features.XML_ADMIN ) ;
+			}
+			if ( this.feature != null ) {
+				solvis.addFeatureDependency( this.feature.getId() ) ;
+			}
+			
+		}
 		if ( !solvis.isAdmin() && this.admin ) {
 			return false;
 		}
+		if ( this.feature != null && !solvis.isFeature( this.feature )) {
+			return false;
+		}
+		
 		if ( this.masks.isEmpty()) {
 			return true ;
 		}
@@ -43,6 +61,9 @@ public class Configuration {
 			}
 		}
 		return false;
+	}
+	
+	public void setFeatureDependencies(Solvis solvis) {
 	}
 
 	public boolean isVerified(Configuration masks) {
@@ -60,6 +81,7 @@ public class Configuration {
 
 		private boolean admin = false;
 		private final Collection<ConfigurationMask> masks = new ArrayList<>();
+		private Feature feature;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -76,7 +98,7 @@ public class Configuration {
 
 		@Override
 		public Configuration create() throws XmlException, IOException {
-			return new Configuration(this.admin, this.masks);
+			return new Configuration(this.admin, this.masks, this.feature);
 		}
 
 		@Override
@@ -84,7 +106,9 @@ public class Configuration {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_CONFIGURATION_MASK:
-					return new ConfigurationMask.Creator(id, getBaseCreator());
+					return new ConfigurationMask.Creator(id, this.getBaseCreator());
+				case XML_FEATURE:
+					return new Feature.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -94,6 +118,9 @@ public class Configuration {
 			switch (creator.getId()) {
 				case XML_CONFIGURATION_MASK:
 					this.masks.add((ConfigurationMask) created);
+					break;
+				case XML_FEATURE:
+					this.feature =(Feature) created;
 					break;
 			}
 		}

@@ -57,15 +57,6 @@
 				</sequence>
 			</choice>
 			<sequence maxOccurs="1" minOccurs="1">
-				<element name="ScreenOcr" type="tns:ScreenOcr"
-					maxOccurs="unbounded" minOccurs="0">
-					<annotation>
-						<documentation>
-							Wenn sich der Bildschirm aus erkennbaren
-							Zeichen bestimmt werden kann
-						</documentation>
-					</annotation>
-				</element>
 				<choice maxOccurs="unbounded" minOccurs="1">
 					<element name="ScreenGrafic" type="tns:ScreenGrafic"
 						maxOccurs="1" minOccurs="1">
@@ -76,7 +67,15 @@
 							</documentation>
 						</annotation>
 					</element>
-					<element name="ScreenGraficRef"
+                    <element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="1" minOccurs="1">
+					<annotation>
+						<documentation>
+							Wenn sich der Bildschirm aus erkennbaren
+							Zeichen bestimmt werden kann
+						</documentation>
+					</annotation>
+				</element>
+                    <element name="ScreenGraficRef"
 						type="tns:ScreenGraficRef" maxOccurs="1" minOccurs="1">
 						<annotation>
 							<documentation>
@@ -212,24 +211,29 @@
 
 	<complexType name="ScreenOcr">
 		<annotation>
-			<documentation>Die zu erkennenden Zeichen, über die der angezeigte
+			<documentation>
+				Die zu erkennenden Zeichen, über die der angezeigte
 				Bildschirm bestimmt werden kann
 			</documentation>
 		</annotation>
 		<sequence>
 			<element name="Rectangle" type="tns:Rectangle">
 				<annotation>
-					<documentation>Bereich des Bildschirms mit den zeichen
+					<documentation>
+						Bereich des Bildschirms mit den zeichen
 					</documentation>
 				</annotation>
+			</element>
+			<element name="ScreenGraficRef"
+				type="tns:ScreenGraficRef" maxOccurs="1" minOccurs="1">
 			</element>
 		</sequence>
 		<attribute name="value" type="string" use="required">
 			<annotation>
-				<documentation>Soll-Zeichen-String
-				</documentation>
+				<documentation>Soll-Zeichen-String</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="right" type="boolean" use="optional"></attribute>
 	</complexType>
 
 	<complexType name="Coordinate">
@@ -1411,9 +1415,18 @@ Es handelt sich dabei um einen Art virtuellerScreen, der einen Vorgänger besitz
 			<element minOccurs="0" maxOccurs="unbounded"
 				name="ConfigurationMask" type="tns:ConfigurationMask">
 			</element>
+			<element name="Feature" type="tns:Feature" maxOccurs="unbounded" minOccurs="0">
+				<annotation>
+					<documentation>Die Konfiguration kann nur valide sein, wenn das Feature den identischen Wert wie im base.xml besitzt.</documentation>
+				</annotation></element>
 		</sequence>
 		<attribute name="admin" type="boolean" use="optional"></attribute>
+		<attribute name="feature" type="string" use="optional">
+			<annotation>
+				<documentation>Enable-Feature. Wenn das </documentation>
+			</annotation></attribute>
 	</complexType>
+
 
 	<complexType name="UserSelection">
 		<sequence>
@@ -1459,5 +1472,11 @@ verändert wird.</documentation>
         </annotation>
         <attribute name="id" type="string" use="required"></attribute>
 		<attribute name="value" type="string" use="optional"></attribute>
+	</complexType>
+	<complexType name="Feature">
+        <annotation>
+        	<documentation>Allgemeines Feature. Wirkt z.B. auf die Configuration im control.xml-File. Damit kann man bestimmte Scrrens/Channels abhängig vom Feature behandeln.</documentation></annotation>
+        <attribute name="id" type="string" use="required"></attribute>
+		<attribute name="value" type="boolean" use="required"></attribute>
 	</complexType>
 </schema>

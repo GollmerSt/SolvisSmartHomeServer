@@ -69,10 +69,9 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	public abstract ISelectScreen getSelectScreen();
 
 	public abstract boolean gotoLearning(Solvis solvis, AbstractScreen current,
-			Collection<ScreenGraficDescription> desscriptions)
-			throws IOException, TerminationException, LearningException;
+			Collection<IScreenPartCompare> desscriptions) throws IOException, TerminationException, LearningException;
 
-	public abstract void learn(Solvis solvis, Collection<ScreenGraficDescription> descriptions)
+	public abstract void learn(Solvis solvis, Collection<IScreenPartCompare> descriptions)
 			throws IOException, TerminationException, LearningException;
 
 	public abstract boolean goTo(Solvis solvis) throws IOException, TerminationException;
@@ -261,6 +260,42 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	public boolean isNoRestore() {
 		return false;
+	}
+
+	private AbstractScreen matches(AbstractScreen screen, MyImage image, Solvis solvis) {
+		if (screen == null) {
+			return null;
+		}
+		if (screen.isMatchingScreen(image, solvis)) {
+			return screen;
+		} else {
+			return null;
+		}
+	}
+
+	public AbstractScreen getSurroundScreen(MyImage image, Solvis solvis) {
+
+		AbstractScreen result = null;
+
+		if ((result = this.matches(this, image, solvis)) != null) {
+		} //
+		else if ((result = this.matches(this.getPreviousScreen(solvis), image, solvis)) != null) {
+		} //
+		else if ((result = this.matches(this.getBackScreen(solvis), image, solvis)) != null) {
+		} //
+		else {
+			for (AbstractScreen screen : this.nextScreens) {
+				if (screen.isMatchingScreen(image, solvis)) {
+					result = screen;
+					break;
+				}
+			}
+		}
+		if (result == null && this.getPreviousScreen(solvis) instanceof ScreenSequence) {
+			result = this.getPreviousScreen(solvis).getSurroundScreen(image, solvis);
+		}
+
+		return result;
 	}
 
 }

@@ -356,7 +356,7 @@
 		</annotation>
 		<sequence>
 			<element name="ClockTuning" type="boolean" maxOccurs="1"
-				minOccurs="1">
+				minOccurs="0">
 				<annotation>
 					<documentation>
 						Die Solvis-Uhr wird +-31s genau eingestellt
@@ -364,7 +364,7 @@
 				</annotation>
 			</element>
 			<element name="EquipmentTimeSynchronisation" type="boolean"
-				maxOccurs="1" minOccurs="1">
+				maxOccurs="1" minOccurs="0">
 				<annotation>
 					<documentation>
 						Die Synchronisation der SolvisControl-Zählern
@@ -373,32 +373,30 @@
 				</annotation>
 			</element>
 			<element name="UpdateAfterUserAccess" type="boolean"
-				maxOccurs="1" minOccurs="1">
+				maxOccurs="1" minOccurs="0">
 				<annotation>
 					<documentation>
 						Nach jedem erkannnten Anwenderzugriff auf dei
 						SolvisControl werden die Anlagen-Werte wieder
-						gelesen. Dies ist
-						erforderlich, weil der
+						gelesen. Dies ist erforderlich, weil der
 						Anwender diese Werte manuell geändert haben
 						könnte.
 					</documentation>
 				</annotation>
 			</element>
 			<element name="DetectServiceAccess" type="boolean"
-				maxOccurs="1" minOccurs="1">
+				maxOccurs="1" minOccurs="0">
 				<annotation>
 					<documentation>
 						Es wird der Zugriff eines Service-Mitarbeiter
 						(Schornsteinfeger/Installateur) erkannt und die
-						Sperrung des
-						GUI-Zugriffs durch den Server
+						Sperrung des GUI-Zugriffs durch den Server
 						erhöht sich auf 60 Minuten.
 					</documentation>
 				</annotation>
 			</element>
 			<element name="PowerOffIsServiceAccess" type="boolean"
-				maxOccurs="1" minOccurs="1">
+				maxOccurs="1" minOccurs="0">
 				<annotation>
 					<documentation>
 						Ein Power-Off der Anlage wird als Aktion eines
@@ -407,29 +405,33 @@
 				</annotation>
 			</element>
 			<element name="SendMailOnError" type="boolean" maxOccurs="1"
-				minOccurs="1">
+				minOccurs="0">
 			</element>
 			<element name="ClearErrorMessageAfterMail" type="boolean"
-				maxOccurs="1" minOccurs="1">
+				maxOccurs="1" minOccurs="0">
 			</element>
-			<element name="OnlyMeasurements" type="boolean" maxOccurs="1"
-				minOccurs="1">
+			<element name="OnlyMeasurements" type="boolean"
+				maxOccurs="1" minOccurs="0">
 				<annotation>
 					<documentation>
 						Dieses Attribut deaktiviert sämtliche Zugriffe
-						zum
-						GUI der Solvis.
+						zum GUI der Solvis.
 					</documentation>
 				</annotation>
 			</element>
 			<element name="Admin" type="boolean" maxOccurs="1"
 				minOccurs="0">
 				<annotation>
-					<documentation>Die Bildschirme der Nutzers "Installateur" können
-						angefahren werden.
+					<documentation>
+						Die Bildschirme der Nutzers "Installateur"
+						können angefahren werden.
 					</documentation>
 				</annotation>
 			</element>
+			<element name="Feature" type="tns:Feature" maxOccurs="unbounded" minOccurs="0">
+				<annotation>
+					<documentation>Allgemeines Feature. Wirkt z.B. auf die Configuration im control.xml-File. Damit kann man bestimmte Scrrens/Channels abhängig vom Feature behandeln.</documentation>
+				</annotation></element>
 		</sequence>
 
 	</complexType>
@@ -542,4 +544,9 @@
 			<pattern value="[^:/]*"></pattern>
 		</restriction>
 	</simpleType>
+
+	<complexType name="Feature">
+		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="value" type="boolean" use="required"></attribute>
+	</complexType>
 </schema>

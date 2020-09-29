@@ -26,6 +26,7 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -35,13 +36,14 @@ import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Duration;
+import de.sgollmer.solvismax.model.objects.Feature;
+import de.sgollmer.solvismax.model.objects.Features;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
-import de.sgollmer.solvismax.model.objects.Units.Features;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
@@ -74,6 +76,7 @@ public class Solvis {
 	private final int echoInhibitTime_ms;
 	private int configurationMask = 0;
 	private SolvisScreen currentScreen = null;
+	private final Reference<AbstractScreen> previousScreen = new Reference<>(null);
 	private AbstractScreen savedScreen = null;
 	private Screen home = null;
 	private SolvisMeasurements measureData = null;
@@ -91,10 +94,10 @@ public class Solvis {
 	private final File writePath;
 	private final History history = new History();
 	private final boolean mustLearn;
+	private boolean learning = false;
 	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
 	private Object solvisMeasureObject = new Object();
 	private HumanAccess humanAccess = HumanAccess.NONE;
-
 
 	Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms,
@@ -122,7 +125,6 @@ public class Solvis {
 		this.mustLearn = mustLearn;
 	}
 
-
 	void setCurrentScreen(SolvisScreen screen) {
 		this.currentScreen = screen;
 	}
@@ -143,7 +145,7 @@ public class Solvis {
 	}
 
 	private SolvisScreen getRealScreen() throws IOException, TerminationException {
-		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()), this);
+		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()), this, this.previousScreen);
 		return screen;
 	}
 
@@ -217,6 +219,7 @@ public class Solvis {
 
 	public void gotoHome() throws IOException, TerminationException {
 		this.gotoHome(false);
+		this.previousScreen.set(this.getHomeScreen());
 	}
 
 	public void gotoHome(boolean lastChance) throws IOException, TerminationException {
@@ -312,7 +315,7 @@ public class Solvis {
 	 * @param singleData
 	 * 
 	 * @return True: Command was ignored to prevent feedback loops
-	 * @throws TypeException 
+	 * @throws TypeException
 	 */
 	public boolean setFromExternal(ChannelDescription description, SingleData<?> singleData) {
 
@@ -411,6 +414,7 @@ public class Solvis {
 
 	void learning(boolean force) throws IOException, LearningException, TerminationException {
 		if (this.mustLearn || force) {
+			this.learning = true;
 			this.getGrafics().clear();
 			logger.log(LEARN, "Learning started.");
 			this.initConfigurationMask();
@@ -440,6 +444,7 @@ public class Solvis {
 				}
 			}
 			logger.log(LEARN, "Learning finished.");
+			this.learning = false;
 		}
 	}
 
@@ -762,9 +767,29 @@ public class Solvis {
 			logger.error("Error on writing the image of the learned screen <" + id + ">.");
 		}
 	}
-	
+
 	public boolean isAdmin() {
 		return this.unit.getFeatures().isAdmin();
+	}
+
+	public boolean isFeature(Feature feature) {
+		Boolean value = this.unit.getFeatures().getFeature(feature.getId());
+		if (value == null) {
+			return false;
+		}
+		return value == feature.isSet();
+	}
+
+	public boolean isLearning() {
+		return this.learning;
+	}
+
+	public void addFeatureDependency(String id) {
+		Boolean value = this.getFeatures().getFeature(id);
+		value = value == null ? false : value;
+		Feature feature = new Feature(id, value);
+		this.getGrafics().add(feature);
+
 	}
 
 }
