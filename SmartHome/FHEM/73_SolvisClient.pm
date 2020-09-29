@@ -23,6 +23,9 @@
 #   00.02.10    10.06.2020  SCMP77              ReadyFn simplified, reconnect on JSON errors
 #   00.02.11    02.07.2020  SCMP77              Set bug fixed
 #   00.02.12    19.07.2020  SCMP77              Server compile time is written to the log
+#   00.02.12    19.07.2020  SCMP77              Server compile time is written to the log
+#   00.02.12    19.07.2020  SCMP77              Server compile time is written to the log
+#   00.02.13    25.09.2020  SCMP77              Meta-Daten-Begandlung ergänzt (wegen WW_Pumpe_Min_Laufzeit)
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -1781,7 +1784,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.12",
+  "version": "v00.02.13",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
