@@ -2753,7 +2753,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C33.Min_Vorlauf_Temp">
+			id="C33.Min_Vorlauf_Temp_HK1">
 			<tns:Configuration admin="true">
 				<tns:Feature id="Min_Vorlauf_Temp" value="true" />
 			</tns:Configuration>
