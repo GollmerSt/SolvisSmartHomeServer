@@ -2,6 +2,8 @@ A E N D E R U N G E N
 
 Version 01.02.04 rc2
 
+    01.10.2020  C33.Min_Vorlauf_Temp -> C33.Min_Vorlauf_Temp_HK1
+
     29.09.2020  Features auf ein etwas anderes Format umgestellt, so dass Features ergänzt werden können,
                 ohne dass das Xsd-File und entsprechend das Programm geändert werden muss. Die alten
                 Definitionen sind noch möglich.
