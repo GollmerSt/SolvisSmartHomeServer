@@ -1,6 +1,10 @@
 A E N D E R U N G E N
 
-Version 01.02.04 rc2
+Version 01.02.05
+
+    02.10.2020  Neuer Einstellmöglichkeiten noch für den zweiten Heizkreis hinzugefügt. Da beim
+                dritten Heizkreis die Vorlauftemperatur fest eingestellt, wird es diese Einstellungen
+                dort vermutlich nicht geben. 
 
     01.10.2020  C33.Min_Vorlauf_Temp -> C33.Min_Vorlauf_Temp_HK1
 

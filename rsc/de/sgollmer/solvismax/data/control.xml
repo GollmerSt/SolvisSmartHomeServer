@@ -15,7 +15,6 @@
 		<!-- 0x0020: externer Brennkessel mit Temperaturfühler an S14 -->
 		<!-- 0x0040: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
 		<!-- 0x0080: Solar Ost + West S16 Kollektor West -->
-		<!-- 0x0100: Heißwasserkreislauf vorhanden -->
 	</tns:SolvisTypes>
 	<tns:Configurations>
 		<tns:HeaterLoops screenRef="Home">
@@ -1084,6 +1083,79 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:ScreenOcr value="14/11" right="true">
+				<tns:Rectangle>
+					<tns:TopLeft X="35" Y="2" />
+					<tns:BottomRight X="205" Y="13" />
+				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
+			</tns:ScreenOcr>
+		</tns:Screen>
+		<tns:Screen id="Heizkreis2 1_11"
+			backId="Heizung Installateur" previousId="Heizung Installateur"
+			ignoreChanges="true">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="20" Y="40" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="21/11" right="true">
+				<tns:Rectangle>
+					<tns:TopLeft X="35" Y="2" />
+					<tns:BottomRight X="205" Y="13" />
+				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
+			</tns:ScreenOcr>
+		</tns:Screen>
+		<tns:Screen id="Heizkreis2 2_11"
+			backId="Heizung Installateur" previousId="Heizkreis2 1_11">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="22/11" right="true">
+				<tns:Rectangle>
+					<tns:TopLeft X="35" Y="2" />
+					<tns:BottomRight X="205" Y="13" />
+				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
+			</tns:ScreenOcr>
+		</tns:Screen>
+		<tns:Screen id="Heizkreis2 3_11"
+			backId="Heizung Installateur" previousId="Heizkreis2 2_11">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="23/11" right="true">
+				<tns:Rectangle>
+					<tns:TopLeft X="35" Y="2" />
+					<tns:BottomRight X="205" Y="13" />
+				</tns:Rectangle>
+				<tns:ScreenGraficRef refId="Heizkreis" />
+			</tns:ScreenOcr>
+		</tns:Screen>
+		<tns:Screen id="Heizkreis2 4_11"
+			backId="Heizung Installateur" previousId="Heizkreis2 3_11">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:ScreenOcr value="24/11" right="true">
 				<tns:Rectangle>
 					<tns:TopLeft X="35" Y="2" />
 					<tns:BottomRight X="205" Y="13" />
@@ -2577,8 +2649,7 @@
 		<tns:ChannelDescription
 			id="C28.WW_Pumpe_Min_Laufzeit" unit="s">
 			<tns:Configuration>
-				<tns:ConfigurationMask compareMask="0x0100"
-					andMask="0x0100" />
+				<tns:Feature id="WW_Pumpe_Min_Laufzeit" value="true" />
 			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Zirkulation">
@@ -2759,6 +2830,187 @@
 			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis1 4_11">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="46" />
+						<tns:BottomRight X="195" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="75"
+					least="0">
+					<tns:GuiModification format="(\d+)..">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="200" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C34.BetriebsartVT_HK2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis2 2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="150" Y="19" />
+						<tns:BottomRight X="195" Y="31" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeMode>
+					<tns:ModeEntry id="Kurve">
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="WindowChange">
+								<tns:Coordinate X="145" Y="25" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="BetriebsartVT_Kurve"
+								exact="true">
+							</tns:ScreenGrafic>
+						</tns:GuiSet>
+						<tns:MustBeWhite>
+							<tns:TopLeft X="130" Y="70" />
+							<tns:BottomRight X="215" Y="95" />
+						</tns:MustBeWhite>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Fix">
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="WindowChange">
+								<tns:Coordinate X="145" Y="25" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="BetriebsartVT_Fix"
+								exact="true">
+							</tns:ScreenGrafic>
+						</tns:GuiSet>
+						<tns:MustBeWhite invertFunction="true">
+							<tns:TopLeft X="130" Y="70" />
+							<tns:BottomRight X="215" Y="95" />
+						</tns:MustBeWhite>
+					</tns:ModeEntry>
+				</tns:TypeMode>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription id="C35.Steilheit_HK2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis2 2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="47" />
+						<tns:BottomRight X="195" Y="59" />
+					</tns:CurrentValue>
+					<tns:Dependency id="C12.Anlagenmodus_HK2"
+						value="Standby" />
+					<tns:Dependency id="C34.BetriebsartVT_HK2"
+						value="Kurve" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite divisor="100" increment="5"
+					most="250" least="20">
+					<tns:GuiModification
+						format="(?&lt;integerPlaces&gt;\d*?)\.(?&lt;decimalPlaces&gt;\d*?)"
+						wrapAround="true">
+
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="205" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C36.Fix_Vorlauf_Tag_HK2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis2 2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="150" Y="47" />
+						<tns:BottomRight X="195" Y="59" />
+					</tns:CurrentValue>
+					<tns:Dependency id="C12.Anlagenmodus_HK2"
+						value="Standby" />
+					<tns:Dependency id="C34.BetriebsartVT_HK2"
+						value="Fix" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="75"
+					least="5">
+					<tns:GuiModification format="(\d+).*">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="205" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C37.Fix_Vorlauf_Absenk_HK2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis2 2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="150" Y="75" />
+						<tns:BottomRight X="195" Y="87" />
+					</tns:CurrentValue>
+					<tns:Dependency id="C12.Anlagenmodus_HK2"
+						value="Standby" />
+					<tns:Dependency id="C34.BetriebsartVT_HK2"
+						value="Fix" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="75"
+					least="5">
+					<tns:GuiModification format="(\d+).*">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="205" Y="80" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+			</tns:Control>
+		</tns:ChannelDescription>
+		<tns:ChannelDescription
+			id="C38.Min_Vorlauf_Temp_HK2">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+				<tns:Feature id="Min_Vorlauf_Temp" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis2 4_11">
 					<tns:CurrentValue>
 						<tns:TopLeft X="155" Y="46" />
 						<tns:BottomRight X="195" Y="60" />

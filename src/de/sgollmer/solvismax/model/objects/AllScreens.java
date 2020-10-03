@@ -53,9 +53,12 @@ public class AllScreens implements IScreenLearnable {
 	 */
 	public OfConfigs<AbstractScreen> getScreen(String id) throws XmlException {
 		OfConfigs<AbstractScreen> screens = this.screens.get(id);
+		if ( screens == null ) {
+			throw new XmlException("Screen <" + id + "> is unknown, check the control.xml");
+		}
 		for (AbstractScreen screen : screens.getElements()) {
 			if (!screen.isScreen()) {
-				throw new XmlException("<" + screen.getId() + "> mut be type of Screen");
+				throw new XmlException("<" + screen.getId() + "> must be type of Screen, check the control.xml");
 			}
 		}
 		return screens;
