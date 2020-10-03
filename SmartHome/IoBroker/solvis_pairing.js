@@ -21,7 +21,18 @@ var channels = [
 	'C21:TemperaturFeineinstellung_HK3',
 	'C22:Raumeinfluss_HK3',
 	'C26:Warmwasserzirkulation_Puls',
-	'C27:Warmwasserzirkulation_Zeit'
+	'C27:Warmwasserzirkulation_Zeit',
+	'C28:WW_Pumpe_Min_Laufzeit',
+	'C29:BetriebsartVT_HK1',
+	'C30:Steilheit_HK1',
+	'C31:Fix_Vorlauf_Tag_HK1',
+	'C32:Fix_Vorlauf_Absenk_HK1',
+	'C33:Min_Vorlauf_Temp_HK1',
+	'C34:BetriebsartVT_HK2',
+	'C35:Steilheit_HK2',
+	'C36:Fix_Vorlauf_Tag_HK2',
+	'C37:Fix_Vorlauf_Absenk_HK2',
+	'C38:Min_Vorlauf_Temp_HK2'
 ]
 
 if ( getState('mqtt-client.0.info.connection') ) {

@@ -4839,6 +4839,1326 @@
       "ownerGroup": "system.group.administrator"
     }
   },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C28:WW_Pumpe_Min_Laufzeit.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C28:WW_Pumpe_Min_Laufzeit/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C28:WW_Pumpe_Min_Laufzeit/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C28:WW_Pumpe_Min_Laufzeit.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C28:WW_Pumpe_Min_Laufzeit.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C28:WW_Pumpe_Min_Laufzeit/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C28:WW_Pumpe_Min_Laufzeit/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C28:WW_Pumpe_Min_Laufzeit.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C28:WW_Pumpe_Min_Laufzeit.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C28:WW_Pumpe_Min_Laufzeit/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C28:WW_Pumpe_Min_Laufzeit/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C28:WW_Pumpe_Min_Laufzeit.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C29:BetriebsartVT_HK1.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C29:BetriebsartVT_HK1/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C29:BetriebsartVT_HK1/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C29:BetriebsartVT_HK1.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C29:BetriebsartVT_HK1.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C29:BetriebsartVT_HK1/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C29:BetriebsartVT_HK1/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C29:BetriebsartVT_HK1.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C29:BetriebsartVT_HK1.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C29:BetriebsartVT_HK1/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C29:BetriebsartVT_HK1/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C29:BetriebsartVT_HK1.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C30:Steilheit_HK1.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C30:Steilheit_HK1/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C30:Steilheit_HK1/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C30:Steilheit_HK1.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C30:Steilheit_HK1.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C30:Steilheit_HK1/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C30:Steilheit_HK1/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C30:Steilheit_HK1.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C30:Steilheit_HK1.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C30:Steilheit_HK1/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C30:Steilheit_HK1/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C30:Steilheit_HK1.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C31:Fix_Vorlauf_Tag_HK1.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C31:Fix_Vorlauf_Tag_HK1/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C31:Fix_Vorlauf_Tag_HK1/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C31:Fix_Vorlauf_Tag_HK1.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C31:Fix_Vorlauf_Tag_HK1.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C31:Fix_Vorlauf_Tag_HK1/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C31:Fix_Vorlauf_Tag_HK1/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C31:Fix_Vorlauf_Tag_HK1.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C31:Fix_Vorlauf_Tag_HK1.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C31:Fix_Vorlauf_Tag_HK1/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C31:Fix_Vorlauf_Tag_HK1/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C31:Fix_Vorlauf_Tag_HK1.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C32:Fix_Vorlauf_Absenk_HK1.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C32:Fix_Vorlauf_Absenk_HK1/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C32:Fix_Vorlauf_Absenk_HK1/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C32:Fix_Vorlauf_Absenk_HK1.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C32:Fix_Vorlauf_Absenk_HK1.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C32:Fix_Vorlauf_Absenk_HK1/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C32:Fix_Vorlauf_Absenk_HK1/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C32:Fix_Vorlauf_Absenk_HK1.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C32:Fix_Vorlauf_Absenk_HK1.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C32:Fix_Vorlauf_Absenk_HK1/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C32:Fix_Vorlauf_Absenk_HK1/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C32:Fix_Vorlauf_Absenk_HK1.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C33:Min_Vorlauf_Temp_HK1.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C33:Min_Vorlauf_Temp_HK1/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C33:Min_Vorlauf_Temp_HK1/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C33:Min_Vorlauf_Temp_HK1.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C33:Min_Vorlauf_Temp_HK1.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C33:Min_Vorlauf_Temp_HK1/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C33:Min_Vorlauf_Temp_HK1/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C33:Min_Vorlauf_Temp_HK1.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C33:Min_Vorlauf_Temp_HK1.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C33:Min_Vorlauf_Temp_HK1/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C33:Min_Vorlauf_Temp_HK1/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C33:Min_Vorlauf_Temp_HK1.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C34:BetriebsartVT_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C34:BetriebsartVT_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C34:BetriebsartVT_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C34:BetriebsartVT_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C34:BetriebsartVT_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C34:BetriebsartVT_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C34:BetriebsartVT_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C34:BetriebsartVT_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C34:BetriebsartVT_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C34:BetriebsartVT_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C34:BetriebsartVT_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C34:BetriebsartVT_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C35:Steilheit_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C35:Steilheit_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C35:Steilheit_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C35:Steilheit_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C35:Steilheit_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C35:Steilheit_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C35:Steilheit_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C35:Steilheit_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C35:Steilheit_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C35:Steilheit_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C35:Steilheit_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C35:Steilheit_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C36:Fix_Vorlauf_Tag_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C36:Fix_Vorlauf_Tag_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C36:Fix_Vorlauf_Tag_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C36:Fix_Vorlauf_Tag_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C36:Fix_Vorlauf_Tag_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C36:Fix_Vorlauf_Tag_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C36:Fix_Vorlauf_Tag_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C36:Fix_Vorlauf_Tag_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C36:Fix_Vorlauf_Tag_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C36:Fix_Vorlauf_Tag_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C36:Fix_Vorlauf_Tag_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C36:Fix_Vorlauf_Tag_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C37:Fix_Vorlauf_Absenk_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C37:Fix_Vorlauf_Absenk_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C37:Fix_Vorlauf_Absenk_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C37:Fix_Vorlauf_Absenk_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C37:Fix_Vorlauf_Absenk_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C37:Fix_Vorlauf_Absenk_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C37:Fix_Vorlauf_Absenk_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C37:Fix_Vorlauf_Absenk_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C37:Fix_Vorlauf_Absenk_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C37:Fix_Vorlauf_Absenk_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C37:Fix_Vorlauf_Absenk_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C37:Fix_Vorlauf_Absenk_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C38:Min_Vorlauf_Temp_HK2.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C38:Min_Vorlauf_Temp_HK2/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/C38:Min_Vorlauf_Temp_HK2/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C38:Min_Vorlauf_Temp_HK2.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C38:Min_Vorlauf_Temp_HK2.data": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C38:Min_Vorlauf_Temp_HK2/data",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C38:Min_Vorlauf_Temp_HK2/data"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C38:Min_Vorlauf_Temp_HK2.data",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C38:Min_Vorlauf_Temp_HK2.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/C38:Min_Vorlauf_Temp_HK2/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/C38:Min_Vorlauf_Temp_HK2/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958188,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.C38:Min_Vorlauf_Temp_HK2.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
   "mqtt-client.0.SolvisSmartHomeServer.mySolvis.I1:Anlagentyp.data": {
     "type": "state",
     "role": "text",
