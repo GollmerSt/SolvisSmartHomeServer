@@ -116,7 +116,7 @@ public class AllSolvisData {
 	public synchronized void backupSpecialMeasurements(SystemMeasurements systemMeasurements) {
 		systemMeasurements.clear();
 		for (SolvisData data : this.solvisDatas.values()) {
-			if (data.getDescription().getType() == IChannelSource.Type.CALCULATION) {
+			if (data.getDescription().mustBackuped()) {
 				SingleData<?> sd = data.getSingleData();
 				if (sd != null) {
 					systemMeasurements.add(new Measurement(data.getId(), data.getSingleData()));

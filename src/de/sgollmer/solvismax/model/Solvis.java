@@ -256,8 +256,8 @@ public class Solvis {
 			this.getSolvisDescription().getChannelDescriptions().init(this);
 		}
 		SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.unit.getId());
-		this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 		this.worker.init();
+		this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 		this.worker.start();
 		this.getDistributor().register(this);
 		this.getSolvisDescription().instantiate(this);
@@ -321,9 +321,13 @@ public class Solvis {
 
 		boolean ignored;
 
+		if (singleData == null) {
+			return true;
+		}
+
 		SolvisData current = this.getAllSolvisData().get(description);
 		if (current.getSentTimeStamp() + this.getEchoInhibitTime_ms() < System.currentTimeMillis()
-				|| !current.getSingleData().equals(singleData)) {
+				|| !singleData.equals(current.getSingleData())) {
 			this.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData, this));
 			ignored = false;
 		} else {

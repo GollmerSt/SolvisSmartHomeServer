@@ -2,6 +2,10 @@ A E N D E R U N G E N
 
 Version 01.02.05
 
+    03.10.2020  Erfolgt mit dem Client eine Connection vor dem initialen Auslesen der Control-Kanäle
+                trat in bestimmten Fällen eine Null-Pounter-Exception auf. Diese wurde gefixt, außerdem
+                werden nun auch die Control-Kanäle im Backup abgelegt.
+
     02.10.2020  Neuer Einstellmöglichkeiten noch für den zweiten Heizkreis hinzugefügt. Da beim
                 dritten Heizkreis die Vorlauftemperatur fest eingestellt, wird es diese Einstellungen
                 dort vermutlich nicht geben. 

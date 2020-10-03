@@ -508,4 +508,9 @@ public class Control extends ChannelSource {
 		return this.guiAccess.dependencies;
 	}
 
+	@Override
+	public boolean mustBackuped() {
+		return true;
+	}
+
 }

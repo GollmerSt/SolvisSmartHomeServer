@@ -289,4 +289,9 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.getDependencyGroup();
 	}
 
+	@Override
+	public boolean mustBackuped() {
+		return this.channelSource.mustBackuped();
+	}
+
 }

@@ -28,6 +28,8 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	public ChannelDescription getRestoreChannel(Solvis solvis);
 
 	public DependencyGroup getDependencyGroup();
+	
+	public boolean mustBackuped();
 
 	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, PowerOnException, TerminationException;
 

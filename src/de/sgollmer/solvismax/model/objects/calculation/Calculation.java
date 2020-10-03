@@ -188,4 +188,9 @@ public class Calculation extends ChannelSource {
 		return null;
 	}
 
+	@Override
+	public boolean mustBackuped() {
+		return true;
+	}
+
 }
