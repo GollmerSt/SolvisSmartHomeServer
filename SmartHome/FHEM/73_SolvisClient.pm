@@ -23,9 +23,8 @@
 #   00.02.10    10.06.2020  SCMP77              ReadyFn simplified, reconnect on JSON errors
 #   00.02.11    02.07.2020  SCMP77              Set bug fixed
 #   00.02.12    19.07.2020  SCMP77              Server compile time is written to the log
-#   00.02.12    19.07.2020  SCMP77              Server compile time is written to the log
-#   00.02.12    19.07.2020  SCMP77              Server compile time is written to the log
-#   00.02.13    25.09.2020  SCMP77              Meta-Daten-Begandlung ergänzt (wegen WW_Pumpe_Min_Laufzeit)
+#   00.02.13    25.09.2020  SCMP77              Meta-Daten-Begandlung ergänzt (wegen WW_Pumpe_Min_Laufzeit).
+#   00.02.14    04.10.2020  SCMP77              Meta-Beschreibung nun Device-abhängig, Doku ergänzt.
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -186,10 +185,9 @@ GP_Export(
 
 
 
-my %ChannelDescriptions;
-my $setParameters = '';
-my $serverCommands = '';
-my @serverCommand_Array = ();
+my %devicesChannelDescriptions ;
+my %devicesSetParameters ;
+my %devicesServerCommands ;
 
 
 
@@ -747,10 +745,14 @@ sub Reconnect {
 sub CreateGetSetServerCommands {
     my $self = shift;
     my $descriptions = shift;
+	
+	my $device = $self->{NAME};
 
-    %ChannelDescriptions = ();
-    $serverCommands = '';
-    @serverCommand_Array = ();
+	my %ChannelDescriptions = ();
+	$devicesChannelDescriptions{$device} = \%ChannelDescriptions;
+    my $serverCommands = '';
+	$devicesServerCommands{$device} = \$serverCommands;
+    my @serverCommand_Array = ();
 
     foreach my $description( keys(%{$descriptions})) {
         my %descriptionHash = %$descriptions{$description};
@@ -809,9 +811,10 @@ sub CreateGetSetServerCommands {
         }
     }
 
+
     $serverCommands = join(',',sort(@serverCommand_Array));
     
-    CreateSetParams();
+    CreateSetParams($self);
 
     return;
 
@@ -824,9 +827,16 @@ sub CreateGetSetServerCommands {
 #       Create data for Set Parameters
 #
 sub CreateSetParams {
-    $setParameters = '';
 
-    my @channels = keys(%ChannelDescriptions);
+    my $self = shift;
+	my $device = $self->{NAME};
+
+    my $setParameters = '';
+	$devicesSetParameters{$device} = \$setParameters;
+	
+	my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
+	   
+	my @channels = keys(%ChannelDescriptions);
     my $firstO = _TRUE_;
     foreach my $channel (@channels) {
         if ( $ChannelDescriptions{$channel}{SET} == _FALSE_ ) {
@@ -890,6 +900,10 @@ sub CreateSetParams {
 sub UpdateReadings {
     my $self = shift;
     my $readings = shift;
+	
+	my $device = $self->{NAME};
+
+	my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
 
     readingsBeginUpdate($self);
 
@@ -1007,6 +1021,20 @@ sub SendGetData {
 sub Set {
     my ( $self, $name, @aa ) = @_;
     my ( $cmd, @args ) = @aa;
+	
+	my $device = $self->{NAME};
+
+#    Log($self, 3, "Device: $device");
+#    Log($self, 3, "Hash Skalar: %devicesChannelDescriptions");
+#    Log($self, 3, "Skalar: $devicesChannelDescriptions{$device}");
+	
+	if ( ! defined($devicesChannelDescriptions{$device})) {
+        return "Device  $device currently not connected.";
+	}
+	
+	my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
+	my $setParameters = ${$devicesSetParameters{$device}};
+	my $serverCommands = ${$devicesServerCommands{$device}};
 
     if ( $cmd eq '?' ) {
         return "unknown argument $cmd choose one of $setParameters ServerCommand:$serverCommands";
@@ -1090,7 +1118,15 @@ sub Get {
     my $opt = shift;
     #my @args = shift;
 
-    ### If not enough arguments have been provided
+ 	my $device = $self->{NAME};
+
+	if ( ! defined($devicesChannelDescriptions{$device})) {
+        return "Device  $device currently not connected.";
+	}
+
+	my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
+
+   ### If not enough arguments have been provided
     if ( !defined($opt) ) {
         return '\"get Solvis\" needs at least one argument';
     }
@@ -1134,6 +1170,9 @@ sub Get {
 #
 sub DbLog_splitFn {
     my $event = shift;
+    my $device = shift;
+
+	my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
 
     my ($reading, $value, $unit);
 
@@ -1237,6 +1276,17 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe 2 (A02)</td></tr>
             <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
             <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
+            <tr><td align="right" valign="top"><code>C28.WW_Pumpe_Min_Laufzeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation minimale Pulszeit </td></tr>
+            <tr><td align="right" valign="top"><code>C29.BetriebsartVT_HK1</code> : </td><td align="left" valign="top">Algorithmus Vorlauftemperatur Heizkreis 1 </td></tr>
+            <tr><td align="right" valign="top"><code>C30.Steilheit_HK1</code> : </td><td align="left" valign="top">Steilheit Vorlauftemperatur Heizkreis 1</td></tr>
+            <tr><td align="right" valign="top"><code>C31.Fix_Vorlauf_Tag_HK1</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Tag Heizkreis 1 </td></tr>
+            <tr><td align="right" valign="top"><code>C32.Fix_Vorlauf_Absenk_HK1</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Nacht Heizkreis 1 </td></tr>
+            <tr><td align="right" valign="top"><code>C33.Min_Vorlauf_Temp_HK1</code> : </td><td align="left" valign="top">Minimale Vorlauftemperatur Heizkreis 1 </td></tr>
+            <tr><td align="right" valign="top"><code>C34.BetriebsartVT_HK2</code> : </td><td align="left" valign="top">Algorithmus Vorlauftemperatur Heizkreis 2 </td></tr>
+            <tr><td align="right" valign="top"><code>C35.Steilheit_HK2</code> : </td><td align="left" valign="top">Steilheit Vorlauftemperatur Heizkreis 2</td></tr>
+            <tr><td align="right" valign="top"><code>C36.Fix_Vorlauf_Tag_HK2</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Tag Heizkreis 2 </td></tr>
+            <tr><td align="right" valign="top"><code>C37.Fix_Vorlauf_Absenk_HK2</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Nacht Heizkreis 2 </td></tr>
+            <tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimale Vorlauftemperatur Heizkreis 2 </td></tr>
           </table>
         </ul>
       </ul><BR><BR><BR><BR>
@@ -1285,6 +1335,17 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top">Raumeinfluss Heizkreis 2(0 ... 90%)</td></tr>
                     <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
                     <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
+					<tr><td align="right" valign="top"><code>C28.WW_Pumpe_Min_Laufzeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation minimale Pulszeit </td></tr>
+					<tr><td align="right" valign="top"><code>C29.BetriebsartVT_HK1</code> : </td><td align="left" valign="top">Algorithmus Vorlauftemperatur Heizkreis 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C30.Steilheit_HK1</code> : </td><td align="left" valign="top">Steilheit Vorlauftemperatur Heizkreis 1</td></tr>
+					<tr><td align="right" valign="top"><code>C31.Fix_Vorlauf_Tag_HK1</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Tag Heizkreis 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C32.Fix_Vorlauf_Absenk_HK1</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Nacht Heizkreis 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C33.Min_Vorlauf_Temp_HK1</code> : </td><td align="left" valign="top">Minimale Vorlauftemperatur Heizkreis 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C34.BetriebsartVT_HK2</code> : </td><td align="left" valign="top">Algorithmus Vorlauftemperatur Heizkreis 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C35.Steilheit_HK2</code> : </td><td align="left" valign="top">Steilheit Vorlauftemperatur Heizkreis 2</td></tr>
+					<tr><td align="right" valign="top"><code>C36.Fix_Vorlauf_Tag_HK2</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Tag Heizkreis 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C37.Fix_Vorlauf_Absenk_HK2</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Nacht Heizkreis 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimale Vorlauftemperatur Heizkreis 2 </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1373,6 +1434,17 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe 2 (A02)</td></tr>
                     <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Puls </td></tr>
                     <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation Modus Zeit </td></tr>
+					<tr><td align="right" valign="top"><code>C28.WW_Pumpe_Min_Laufzeit</code> : </td><td align="left" valign="top">Warmwasserzirkulation minimale Pulszeit </td></tr>
+					<tr><td align="right" valign="top"><code>C29.BetriebsartVT_HK1</code> : </td><td align="left" valign="top">Algorithmus Vorlauftemperatur Heizkreis 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C30.Steilheit_HK1</code> : </td><td align="left" valign="top">Steilheit Vorlauftemperatur Heizkreis 1</td></tr>
+					<tr><td align="right" valign="top"><code>C31.Fix_Vorlauf_Tag_HK1</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Tag Heizkreis 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C32.Fix_Vorlauf_Absenk_HK1</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Nacht Heizkreis 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C33.Min_Vorlauf_Temp_HK1</code> : </td><td align="left" valign="top">Minimale Vorlauftemperatur Heizkreis 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C34.BetriebsartVT_HK2</code> : </td><td align="left" valign="top">Algorithmus Vorlauftemperatur Heizkreis 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C35.Steilheit_HK2</code> : </td><td align="left" valign="top">Steilheit Vorlauftemperatur Heizkreis 2</td></tr>
+					<tr><td align="right" valign="top"><code>C36.Fix_Vorlauf_Tag_HK2</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Tag Heizkreis 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C37.Fix_Vorlauf_Absenk_HK2</code> : </td><td align="left" valign="top">Vorlauftemperatur Fix Nacht Heizkreis 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimale Vorlauftemperatur Heizkreis 2 </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1539,6 +1611,17 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Running time of the solar pump 2 (A02)</td></tr>
             <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
             <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
+            <tr><td align="right" valign="top"><code>C28.WW_Pumpe_Min_Laufzeit</code> : </td><td align="left" valign="top">DHW circulation minimum pulse time </td></tr>
+            <tr><td align="right" valign="top"><code>C29.BetriebsartVT_HK1</code> : </td><td align="left" valign="top">Algorithm flow temperature heating circuit 1 </td></tr>
+            <tr><td align="right" valign="top"><code>C30.Steilheit_HK1</code> : </td><td align="left" valign="top">Flow temperature slope, heating circuit 1</td></tr>
+            <tr><td align="right" valign="top"><code>C31.Fix_Vorlauf_Tag_HK1</code> : </td><td align="left" valign="top">Fixed flow temperature day heating circuit 1 </td></tr>
+            <tr><td align="right" valign="top"><code>C32.Fix_Vorlauf_Absenk_HK1</code> : </td><td align="left" valign="top">Fixed flow temperature night heating circuit 1 </td></tr>
+            <tr><td align="right" valign="top"><code>C33.Min_Vorlauf_Temp_HK1</code> : </td><td align="left" valign="top">Minimum flow temperature heating circuit 1 </td></tr>
+            <tr><td align="right" valign="top"><code>C34.BetriebsartVT_HK2</code> : </td><td align="left" valign="top">Algorithm flow temperature heating circuit 2 </td></tr>
+            <tr><td align="right" valign="top"><code>C35.Steilheit_HK2</code> : </td><td align="left" valign="top">Flow temperature slope, heating circuit 2</td></tr>
+            <tr><td align="right" valign="top"><code>C36.Fix_Vorlauf_Tag_HK2</code> : </td><td align="left" valign="top">Fixed flow temperature day heating circuit 2 </td></tr>
+            <tr><td align="right" valign="top"><code>C37.Fix_Vorlauf_Absenk_HK2</code> : </td><td align="left" valign="top">Fixed flow temperature night heating circuit 2 </td></tr>
+            <tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimum flow temperature heating circuit 2 </td></tr>
           </table>
         </ul>
       </ul><BR><BR><BR><BR>
@@ -1586,6 +1669,17 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C16.Raumeinfluss_HK2</code> : </td><td align="left" valign="top"> room influence of heating circuit 2 (0 ... 90%)</td></tr>
                     <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
                     <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
+					<tr><td align="right" valign="top"><code>C28.WW_Pumpe_Min_Laufzeit</code> : </td><td align="left" valign="top">DHW circulation minimum pulse time </td></tr>
+					<tr><td align="right" valign="top"><code>C29.BetriebsartVT_HK1</code> : </td><td align="left" valign="top">Algorithm flow temperature heating circuit 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C30.Steilheit_HK1</code> : </td><td align="left" valign="top">Flow temperature slope, heating circuit 1</td></tr>
+					<tr><td align="right" valign="top"><code>C31.Fix_Vorlauf_Tag_HK1</code> : </td><td align="left" valign="top">Fixed flow temperature day heating circuit 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C32.Fix_Vorlauf_Absenk_HK1</code> : </td><td align="left" valign="top">Fixed flow temperature night heating circuit 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C33.Min_Vorlauf_Temp_HK1</code> : </td><td align="left" valign="top">Minimum flow temperature heating circuit 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C34.BetriebsartVT_HK2</code> : </td><td align="left" valign="top">Algorithm flow temperature heating circuit 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C35.Steilheit_HK2</code> : </td><td align="left" valign="top">Flow temperature slope, heating circuit 2</td></tr>
+					<tr><td align="right" valign="top"><code>C36.Fix_Vorlauf_Tag_HK2</code> : </td><td align="left" valign="top">Fixed flow temperature day heating circuit 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C37.Fix_Vorlauf_Absenk_HK2</code> : </td><td align="left" valign="top">Fixed flow temperature night heating circuit 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimum flow temperature heating circuit 2 </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1671,6 +1765,17 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C25.LaufzeitSolarpumpe2</code> : </td><td align="left" valign="top">Running time of the solar pump 2 (A02)</td></tr>
                     <tr><td align="right" valign="top"><code>C26.Warmwasserzirkulation_Puls</code> : </td><td align="left" valign="top">DHW circulation mode pulse </td></tr>
                     <tr><td align="right" valign="top"><code>C27.Warmwasserzirkulation_Zeit</code> : </td><td align="left" valign="top">DHW circulation mode time </td></tr>
+					<tr><td align="right" valign="top"><code>C28.WW_Pumpe_Min_Laufzeit</code> : </td><td align="left" valign="top">DHW circulation minimum pulse time </td></tr>
+					<tr><td align="right" valign="top"><code>C29.BetriebsartVT_HK1</code> : </td><td align="left" valign="top">Algorithm flow temperature heating circuit 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C30.Steilheit_HK1</code> : </td><td align="left" valign="top">Flow temperature slope, heating circuit 1</td></tr>
+					<tr><td align="right" valign="top"><code>C31.Fix_Vorlauf_Tag_HK1</code> : </td><td align="left" valign="top">Fixed flow temperature day heating circuit 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C32.Fix_Vorlauf_Absenk_HK1</code> : </td><td align="left" valign="top">Fixed flow temperature night heating circuit 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C33.Min_Vorlauf_Temp_HK1</code> : </td><td align="left" valign="top">Minimum flow temperature heating circuit 1 </td></tr>
+					<tr><td align="right" valign="top"><code>C34.BetriebsartVT_HK2</code> : </td><td align="left" valign="top">Algorithm flow temperature heating circuit 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C35.Steilheit_HK2</code> : </td><td align="left" valign="top">Flow temperature slope, heating circuit 2</td></tr>
+					<tr><td align="right" valign="top"><code>C36.Fix_Vorlauf_Tag_HK2</code> : </td><td align="left" valign="top">Fixed flow temperature day heating circuit 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C37.Fix_Vorlauf_Absenk_HK2</code> : </td><td align="left" valign="top">Fixed flow temperature night heating circuit 2 </td></tr>
+					<tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimum flow temperature heating circuit 2 </td></tr>
                 </table>
               </ul>
             </ul><BR>
@@ -1784,7 +1889,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.13",
+  "version": "v00.02.14",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

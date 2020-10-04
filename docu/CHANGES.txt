@@ -2,11 +2,17 @@ A E N D E R U N G E N
 
 Version 01.02.04
 
+    04.10.2020  FHEM-SolvisClient: Die Meta-Daten werden nun Device-spezifisch im Client gespeichert.
+                In der Praxis kommt das nicht vor (kaum jemand wird zwei Solvis-Anlagen haben),
+                die bisherige Version hat beim Test häufig zu Iterationen geführt, da dabei
+                gleichzeitig meherere Server unterscheidlicher Versionen und damit unterschiedlichen
+                Meta-Daten laufen.
+
     03.10.2020  Erfolgt mit dem Client eine Connection vor dem initialen Auslesen der Control-Kanäle
                 trat in bestimmten Fällen eine Null-Pounter-Exception auf. Diese wurde gefixt, außerdem
                 werden nun auch die Control-Kanäle im Backup abgelegt.
                 
-                ioBroker object list mit den neuen Control-Kanälen aktualisiert.
+                ioBroker object list mit den neuen Control-Kanälen erweitert.
 
     02.10.2020  Neuer Einstellmöglichkeiten noch für den zweiten Heizkreis hinzugefügt. Da beim
                 dritten Heizkreis die Vorlauftemperatur fest eingestellt, wird es diese Einstellungen
