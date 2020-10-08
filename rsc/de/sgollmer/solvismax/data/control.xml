@@ -1530,10 +1530,8 @@
 				<tns:Field position="34" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S07.Solardruck"
-			buffered="true">
-			<tns:Measurement type="signed" average="true"
-				divisor="10">
+		<tns:ChannelDescription id="S07.Solardruck">
+			<tns:Measurement type="signed" divisor="10">
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1559,7 +1557,7 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S11.ZirkulationRuecklauftemperatur" unit="°C">
+			id="S11.ZirkulationRuecklauftemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="54" length="4" />
@@ -1579,7 +1577,8 @@
 				<tns:Field position="62" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S14">
+		<tns:ChannelDescription id="S14"
+			buffered="true" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x00"
 					andMask="0x20" />
@@ -1589,7 +1588,8 @@
 				<tns:Field position="66" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S14.Kesselfuehler">
+		<tns:ChannelDescription id="S14.Kesselfuehler"
+			buffered="true" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x60"
 					andMask="0x20" />
@@ -1600,7 +1600,7 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S14.ErdwaermequelleVL">
+			id="S14.ErdwaermequelleVL" buffered="true" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x60"
 					andMask="0x40" />
@@ -1610,7 +1610,8 @@
 				<tns:Field position="66" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S15">
+		<tns:ChannelDescription id="S15"
+			buffered="true" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x00"
 					andMask="0x40" />
@@ -1621,7 +1622,7 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S15.ErdwaermequelleRL">
+			id="S15.ErdwaermequelleRL" buffered="true" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x40"
 					andMask="0x40" />
@@ -1631,14 +1632,15 @@
 				<tns:Field position="70" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription id="S16">
+		<tns:ChannelDescription id="S16"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="74" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="S18.Durchfluss_Warmwasserzirkulation" unit="l/h">
+			id="S18.Durchfluss_Warmwasserzirkulation" buffered="true" unit="l/h">
 			<tns:Measurement type="unsigned" average="true">
 				<tns:Field position="78" length="4" />
 			</tns:Measurement>
@@ -2898,7 +2900,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C31.Fix_Vorlauf_Tag_HK1">
+			id="C31.Fix_Vorlauf_Tag_HK1" unit="°C">
 			<tns:Configuration>
 				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
@@ -2932,7 +2934,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C32.Fix_Vorlauf_Absenk_HK1">
+			id="C32.Fix_Vorlauf_Absenk_HK1"  unit="°C">
 			<tns:Configuration>
 				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
@@ -2966,7 +2968,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C33.Min_Vorlauf_Temp_HK1">
+			id="C33.Min_Vorlauf_Temp_HK1" unit="°C">
 			<tns:Configuration admin="true">
 				<tns:Feature id="Min_Vorlauf_Temp" value="true" />
 			</tns:Configuration>
@@ -3085,7 +3087,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C36.Fix_Vorlauf_Tag_HK2">
+			id="C36.Fix_Vorlauf_Tag_HK2" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -3121,7 +3123,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C37.Fix_Vorlauf_Absenk_HK2">
+			id="C37.Fix_Vorlauf_Absenk_HK2" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -3157,7 +3159,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C38.Min_Vorlauf_Temp_HK2">
+			id="C38.Min_Vorlauf_Temp_HK2" unit="°C">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />

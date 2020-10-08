@@ -646,7 +646,10 @@
 		</sequence>
 
 		<attribute name="id" type="string" use="required"></attribute>
-		<attribute name="buffered" type="boolean" use="optional"></attribute>
+		<attribute name="buffered" type="boolean" use="optional">
+			<annotation>
+				<documentation>Ist dieses Flag gesetzt, so erfolgt das Senden der Daten im Block mit anderen Daten nicht als Einzelevent.</documentation>
+			</annotation></attribute>
 		<attribute name="unit" type="string" use="optional"></attribute>
 		<attribute name="glitchInhibitTime_ms" type="int" use="optional"></attribute>
 	</complexType>
