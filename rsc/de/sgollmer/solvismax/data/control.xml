@@ -1988,8 +1988,9 @@
 					</tns:CurrentValue>
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="65"
-					least="10">
-					<tns:GuiModification format="(\d+)..$">
+					least="10" maxExceeding="5">
+					<tns:GuiModification format="(\d+)..$"
+						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="225" Y="20" />
@@ -2934,7 +2935,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
-			id="C32.Fix_Vorlauf_Absenk_HK1"  unit="°C">
+			id="C32.Fix_Vorlauf_Absenk_HK1" unit="°C">
 			<tns:Configuration>
 				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>

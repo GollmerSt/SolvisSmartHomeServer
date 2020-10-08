@@ -27,6 +27,14 @@ Version 01.02.05
                 
                 Einige Einheiten fehlten noch bei den neu hinzugefügten Control-Kanälen.
                 
+                Es wurde "maxExceeding"-Attribut in der control.xml eingeführt. Ist dieses Attribut in
+                Kombination mit dem "wrapAround"-Attribut definiert, wird ein Wrap-Around nur durchgeführt,
+                wenn dabei die Grenze von maxExceeding nicht überschritten wird.
+                Wichtig für das Heißwasser, wenn jemand während einer Verstellung unter der Dusche steht.
+                Aktuell steht der Wert auf 5K, d.h. ein WarpAround wird nur durchgeführt, wenn sichergestellt ist,
+                dass durch den WrapAround keine Temperatur eingestellt wird, die den aktuell eingestellten
+                oder einzustellenden Wert um 5K überschreitet. 
+                
     07.10.2020  Die Update-Bedingungen für die neuen Kanäle waren noch nicht vollständig. Bedingungen ergänzt.
                 
 

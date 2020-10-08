@@ -43,16 +43,18 @@ public class StrategyReadWrite extends StrategyRead {
 	private final int most;
 	private final Integer incrementChange;
 	private final Integer changedIncrement;
+	private final Integer maxExceeding;
 	private final GuiModification guiModification;
 
 	private StrategyReadWrite(int increment, int divisor, int least, int most, Integer incrementChange,
-			Integer changedIncrement, GuiModification guiModification) {
+			Integer changedIncrement, Integer maxExceeding, GuiModification guiModification) {
 		super(divisor, guiModification);
 		this.increment = increment;
 		this.least = least;
 		this.most = most;
 		this.incrementChange = incrementChange;
 		this.changedIncrement = changedIncrement;
+		this.maxExceeding = maxExceeding;
 		this.guiModification = guiModification;
 	}
 
@@ -106,7 +108,11 @@ public class StrategyReadWrite extends StrategyRead {
 
 			int minDist = dist[0];
 
-			if (this.guiModification.wrapAround) {
+			if (this.guiModification.wrapAround && //
+					(this.maxExceeding == null //
+							|| this.most - current <= this.maxExceeding //
+							|| this.most - value <= this.maxExceeding //
+					)) {
 				for (int i = 1; i < dist.length; ++i) {
 					if (Math.abs(minDist) > Math.abs(dist[i])) {
 						minDist = dist[i];
@@ -189,6 +195,7 @@ public class StrategyReadWrite extends StrategyRead {
 		private int most;
 		private Integer incrementChange = null;
 		private Integer changedIncrement = null;
+		private Integer maxExceeding = null;
 		private GuiModification guiModification = null;
 
 		Creator(String id, BaseCreator<?> creator) {
@@ -216,6 +223,9 @@ public class StrategyReadWrite extends StrategyRead {
 				case "changedIncrement":
 					this.changedIncrement = Integer.parseInt(value);
 					break;
+				case "maxExceeding":
+					this.maxExceeding = Integer.parseInt(value);
+					break;
 			}
 
 		}
@@ -223,7 +233,7 @@ public class StrategyReadWrite extends StrategyRead {
 		@Override
 		public StrategyReadWrite create() throws XmlException {
 			return new StrategyReadWrite(this.increment, this.divisor, this.least, this.most, this.incrementChange,
-					this.changedIncrement, this.guiModification);
+					this.changedIncrement, this.maxExceeding, this.guiModification);
 		}
 
 		@Override
