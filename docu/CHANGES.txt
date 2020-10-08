@@ -1,5 +1,33 @@
 A E N D E R U N G E N
 
+Version 01.02.05
+
+    08.10.2020  Es hat sich gezeigt, dass manchmal das Umschalten auf andere Screen vom Home-Screen auf der
+                SolvisControl 2 nicht richtig funktioniert. Das hat zur Folge, dass der Bildschirm Home
+                nach wie vor zu sehen ist, jedoch in der Button-Leiste links ein anderer Button gedrückt ist
+                (weißer Hintergrund). Dadurch erkennt der Server den Home-Screen nicht mehr.
+                Durch diese fehlende Erkennung kann auch die Anzeige der Uhr nicht mehr ausgeblendet werden
+                und der Server erkennt ständige Änderung auf der Anzeige. Er nimmt an, es lägen ständig 
+                User-Eingriffe vor und der GUI-Access ist entsprechend nicht mehr möglich.
+                Dieses "Hängen-Bleiben" der Buttons wurde nicht nur in der Button-Leiste beobachtet, es ist
+                bei allen Buttons möglich. Man kann den Frehler mit der Web-Oberfläche provozieren, in dem
+                man bei gedrückter Maustaste den Mauszeiger wegzieht, so dass das Loslassen nicht auf dem
+                Button erfolgt.
+                Es kommt daher, dass die SolvisRemote manchmal den Release einer Taste verschluckt.
+                NUR eine andere Definition für den Home-Screen scheidet aus, da auch eine andere Defintion
+                von diesem Problem betroffen wäre.
+                Die XML-Definition wurde daher so erweitert, dass es verschiedene Varianten geben kann,
+                mit denen ein Screen erkannt wird. Der Home-Screen wird nun erkannt, wenn links die
+                entsprechende Button-Leiste ODER rechts die Wippe gleichzeitig mit dem
+                Urlaubsbutton sichtbar ist.
+                
+                Die Release-Time um die Screens "Heizkreis 1 4/11" und "Heizkreis 2 4/11" (in den Installateur-
+                Screens) war zu knapp. Dadurch wurde der Screen nicht immer gefunden.
+                Sie wurde daher um 0.5s erhöht
+                
+    07.10.2020  Die Update-Bedingungen für die neuen Kanäle waren noch nicht vollständig. Bedingungen ergänzt.
+                
+
 Version 01.02.04
 
     04.10.2020  FHEM-SolvisClient: Die Meta-Daten werden nun Device-spezifisch im Client gespeichert.

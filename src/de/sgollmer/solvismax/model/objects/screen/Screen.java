@@ -33,7 +33,6 @@ import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
-import de.sgollmer.solvismax.model.objects.WhiteGraficRectangle;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
@@ -50,11 +49,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private static final String XML_USER_SELECTION = "UserSelection";
 	private static final String XML_UP_TOUCH_POINT = "SequenceUp";
 	private static final String XML_DOWN_TOUCH_POINT = "SequenceDown";
-	private static final String XML_SCREEN_GRAFICS = "ScreenGrafic";
-	private static final String XML_SCREEN_GRAFICS_REF = "ScreenGraficRef";
-	private static final String XML_SCREEN_OCR = "ScreenOcr";
+	private static final String XML_IDENTIFICATION = "Identification";
 	private static final String XML_IGNORE_RECTANGLE = "IgnoreRectangle";
-	private static final String XML_MUST_BE_WHITE = "MustBeWhite";
 	private static final String XML_PREPARATION_REF = "PreparationRef";
 	private static final String XML_LAST_PREPARATION_REF = "LastPreparationRef";
 
@@ -67,8 +63,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private final TouchPoint sequenceUp;
 	private final TouchPoint sequenceDown;
 
-	private final Collection<IScreenPartCompare> screenCompares;
-	private final Collection<String> screenGraficRefs;
+	private final Collection<Identification> identifications;
+
 	private final Collection<Rectangle> ignoreRectangles;
 	private final String preparationId;
 	private final String lastPreparationId;
@@ -80,8 +76,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	protected Screen(String id, String previousId, String backId, boolean ignoreChanges, boolean mustSave,
 			Configuration configurationMasks, ISelectScreen selectScreen, TouchPoint sequenceUp,
-			TouchPoint sequenceDown, Collection<String> screenGraficRefs, Collection<IScreenPartCompare> screenCompares,
-			Collection<Rectangle> ignoreRectangles, String preparationId, String lastPreparationId, boolean noRestore) {
+			TouchPoint sequenceDown, Collection<Identification> identifications, Collection<Rectangle> ignoreRectangles,
+			String preparationId, String lastPreparationId, boolean noRestore) {
 		super(id, previousId, configurationMasks);
 		this.backId = backId;
 		this.ignoreChanges = ignoreChanges;
@@ -89,8 +85,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		this.selectScreen = selectScreen;
 		this.sequenceUp = sequenceUp;
 		this.sequenceDown = sequenceDown;
-		this.screenGraficRefs = screenGraficRefs;
-		this.screenCompares = screenCompares;
+		this.identifications = identifications;
 		this.ignoreRectangles = ignoreRectangles;
 		this.preparationId = preparationId;
 		this.lastPreparationId = lastPreparationId;
@@ -127,16 +122,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	@Override
 	public void assign(SolvisDescription description) throws ReferenceException, XmlException, AssignmentException {
-		for (String id : this.screenGraficRefs) {
-			this.screenCompares.add(description.getScreenGrafics().get(id));
-		}
-		if (this.screenCompares.isEmpty()) {
-			throw new XmlException(
-					"Error in XML definition: Grafic information of screen <" + this.getId() + "> is missing.");
-		}
-
-		for (IScreenPartCompare cmp : this.screenCompares) {
-			cmp.assign(description);
+		for (Identification identification : this.identifications) {
+			identification.assign(description, this);
 		}
 
 		if (this.backId != null) {
@@ -214,31 +201,32 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		if (this.lastPreparation != null && solvis.getHistory().getLastPreparation() != this.lastPreparation) {
 			return false;
 		}
-		for (IScreenPartCompare screenPart : this.screenCompares) {
-			if (!screenPart.isElementOf(image, solvis)) {
-				return false;
+		for (Identification identification : this.identifications) {
+			if (identification.isMatchingScreen(image, solvis)) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean isMatchingWOGrafics(MyImage image, Solvis solvis) {
-		for (IScreenPartCompare screenPart : this.screenCompares) {
-			if (!(screenPart instanceof ScreenGraficDescription) && !screenPart.isElementOf(image, solvis)) {
-				return false;
+		for (Identification identification : this.identifications) {
+			if (identification.isMatchingWOGrafics(image, solvis)) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public boolean isLearned(Solvis solvis) {
 
-		for (IScreenPartCompare cmp : this.screenCompares) {
-			if (!cmp.isLearned(solvis)) {
+		for (Identification identification : this.identifications) {
+			if (!identification.isLearned(solvis)) {
 				return false;
 			}
 		}
+
 		if (this.preparation != null) {
 			return this.preparation.isLearned(solvis);
 		}
@@ -272,8 +260,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private ISelectScreen selectScreen = null;
 		private TouchPoint sequenceUp = null;
 		private TouchPoint sequenceDown = null;
-		private final Collection<String> screenGraficRefs = new ArrayList<>();
-		private final Collection<IScreenPartCompare> screenCompares = new ArrayList<>();
+		private Collection<Identification> identifications = new ArrayList<>();
 		private List<Rectangle> ignoreRectangles = null;
 		private String preparationId = null;
 		private String lastPreparationId;
@@ -329,8 +316,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				});
 			return new Screen(this.id, this.previousId, this.backId, this.ignoreChanges, this.mustSave,
 					this.configurationMasks, this.selectScreen, this.sequenceUp, this.sequenceDown,
-					this.screenGraficRefs, this.screenCompares, this.ignoreRectangles, this.preparationId,
-					this.lastPreparationId, this.noRestore);
+					this.identifications, this.ignoreRectangles, this.preparationId, this.lastPreparationId,
+					this.noRestore);
 		}
 
 		@Override
@@ -345,20 +332,14 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					return new TouchPoint.Creator(id, this.getBaseCreator());
 				case XML_USER_SELECTION:
 					return new UserSelection.Creator(id, this.getBaseCreator());
-				case XML_SCREEN_GRAFICS:
-					return new ScreenGraficDescription.Creator(id, this.getBaseCreator());
-				case XML_SCREEN_GRAFICS_REF:
-					return new ScreenGraficRef.Creator(id, this.getBaseCreator());
-				case XML_SCREEN_OCR:
-					return new ScreenOcr.Creator(id, getBaseCreator());
 				case XML_IGNORE_RECTANGLE:
-					return new Rectangle.Creator(id, getBaseCreator());
-				case XML_MUST_BE_WHITE:
-					return new WhiteGraficRectangle.Creator(id, getBaseCreator());
+					return new Rectangle.Creator(id, this.getBaseCreator());
+				case XML_IDENTIFICATION:
+					return new Identification.Creator(id, this.getBaseCreator());
 				case XML_PREPARATION_REF:
-					return new PreparationRef.Creator(id, getBaseCreator());
+					return new PreparationRef.Creator(id, this.getBaseCreator());
 				case XML_LAST_PREPARATION_REF:
-					return new PreparationRef.Creator(id, getBaseCreator());
+					return new PreparationRef.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -379,19 +360,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				case XML_DOWN_TOUCH_POINT:
 					this.sequenceDown = (TouchPoint) created;
 					break;
-				case XML_SCREEN_GRAFICS:
-					ScreenGraficDescription grafic = (ScreenGraficDescription) created;
-					this.screenGraficRefs.add(grafic.getId());
-					((SolvisDescription.Creator) this.getBaseCreator()).getScreenGraficDescriptions().add(grafic);
-					break;
-				case XML_SCREEN_GRAFICS_REF:
-					this.screenGraficRefs.add(((ScreenGraficRef) created).getRefId());
-					break;
-				case XML_SCREEN_OCR:
-					this.screenCompares.add((ScreenOcr) created);
-					break;
-				case XML_MUST_BE_WHITE:
-					this.screenCompares.add((WhiteGraficRectangle) created);
+				case XML_IDENTIFICATION:
+					this.identifications.add((Identification) created);
 					break;
 				case XML_IGNORE_RECTANGLE:
 					if (this.ignoreRectangles == null) {
@@ -413,10 +383,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	@Override
 	public void addLearnScreenGrafics(Collection<IScreenPartCompare> descriptions, Solvis solvis) {
-		for (IScreenPartCompare cmp : this.screenCompares) {
-			if (!cmp.isLearned(solvis) && !descriptions.contains(cmp)) {
-				descriptions.add(cmp);
-			}
+		for (Identification identification : this.identifications) {
+			identification.addLearnScreenGrafics(descriptions, solvis);
 		}
 	}
 
@@ -444,11 +412,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			try {
 				boolean learned = false;
 
-				for (IScreenPartCompare screenPartCompare : this.screenCompares) {
-					if (!screenPartCompare.isLearned(solvis)) {
-						screenPartCompare.learn(solvis);
-						learned = true;
-					}
+				for (Identification identification : this.identifications) {
+					learned |= identification.learn(solvis);
 				}
 
 				if (learned) {
@@ -597,7 +562,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 							if (next != this) {
 								logger.log(LEARN,
 										"Warning: Goto with an unlearned Screen, algorithm or control.xml fail?");
-								solvis.gotoHome();
+//								solvis.gotoHome();
+								solvis.sendBack();
 								logger.log(LEARN, "Pepartation failed, goto learning will tried again.");
 								return false;
 							}

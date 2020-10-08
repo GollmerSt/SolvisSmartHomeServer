@@ -54,41 +54,10 @@
 							</documentation>
 						</annotation>
 					</element>
-				</sequence>
+                </sequence>
 			</choice>
-			<sequence maxOccurs="1" minOccurs="1">
-				<choice maxOccurs="unbounded" minOccurs="1">
-					<element name="ScreenGrafic" type="tns:ScreenGrafic"
-						maxOccurs="1" minOccurs="1">
-						<annotation>
-							<documentation>
-								Wenn sich der Bildschirm aus einem
-								Bildschirmbereich bestimmt werden kann
-							</documentation>
-						</annotation>
-					</element>
-                    <element name="ScreenOcr" type="tns:ScreenOcr" maxOccurs="1" minOccurs="1">
-					<annotation>
-						<documentation>
-							Wenn sich der Bildschirm aus erkennbaren
-							Zeichen bestimmt werden kann
-						</documentation>
-					</annotation>
-				</element>
-                    <element name="ScreenGraficRef"
-						type="tns:ScreenGraficRef" maxOccurs="1" minOccurs="1">
-						<annotation>
-							<documentation>
-								Wenn sich der Bildschirm aus einem
-								Bildschirmbereich bestimmt werden kann,
-								die Definition erfolgt über eine
-								Refenzierung
-							</documentation>
-						</annotation>
-					</element>
-				</choice>
-			</sequence>
-			<element name="IgnoreRectangle" type="tns:Rectangle"
+            <element name="Identification" type="tns:ScreenIdentification" maxOccurs="unbounded" minOccurs="1"></element>
+            <element name="IgnoreRectangle" type="tns:Rectangle"
 				maxOccurs="unbounded" minOccurs="0">
 				<annotation>
 					<documentation>
@@ -111,8 +80,7 @@
 					</documentation>
 				</annotation>
 			</element>
-			<element name="MustBeWhite" type="tns:Rectangle"
-				maxOccurs="unbounded" minOccurs="0">
+            <element name="MustBeWhite" type="tns:Rectangle" maxOccurs="unbounded" minOccurs="0">
 				<annotation>
 					<documentation>
 						Dieses rechteck wird nur im Lernvorgang geprüft,
@@ -124,7 +92,7 @@
 					</documentation>
 				</annotation>
 			</element>
-			<element name="PreparationRef" type="tns:PreparationRef"
+            <element name="PreparationRef" type="tns:PreparationRef"
 				maxOccurs="1" minOccurs="0">
 			</element>
 			<element name="LastPreparationRef" type="tns:PreparationRef"
@@ -1478,5 +1446,16 @@ verändert wird.</documentation>
         	<documentation>Allgemeines Feature. Wirkt z.B. auf die Configuration im control.xml-File. Damit kann man bestimmte Scrrens/Channels abhängig vom Feature behandeln.</documentation></annotation>
         <attribute name="id" type="string" use="required"></attribute>
 		<attribute name="value" type="boolean" use="required"></attribute>
+	</complexType>
+
+	<complexType name="ScreenIdentification">
+		<sequence>
+			<choice maxOccurs="unbounded" minOccurs="1">
+				<element name="Grafic" type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1"></element>
+				<element name="Ocr" type="tns:ScreenOcr" maxOccurs="1" minOccurs="1"></element>
+				<element name="GraficRef" type="tns:ScreenGraficRef" maxOccurs="1" minOccurs="1"></element>
+			</choice>
+			<element name="MustBeWhite" type="tns:Rectangle" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
 	</complexType>
 </schema>
