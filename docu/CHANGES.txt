@@ -25,6 +25,8 @@ Version 01.02.05
                 Screens) war zu knapp. Dadurch wurde der Screen nicht immer gefunden.
                 Sie wurde daher um 0.5s erhöht
                 
+                Einige Einheiten fehlten noch bei den neu hinzugefügten Control-Kanälen.
+                
     07.10.2020  Die Update-Bedingungen für die neuen Kanäle waren noch nicht vollständig. Bedingungen ergänzt.
                 
 
