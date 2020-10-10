@@ -28,45 +28,54 @@ public class Features {
 	private Features(Map<String, Boolean> features) {
 		this.features = features;
 	}
+	
+	private boolean get( String feature ) {
+		Boolean result = this.features.get(feature);
+		if ( result == null ) {
+			return false ;
+		} else {
+			return result;
+		}
+	}
 
 	public boolean isClockTuning() {
-		return this.features.get(XML_CLOCK_TUNING);
+		return this.get(XML_CLOCK_TUNING);
 	}
 
 	public boolean isEquipmentTimeSynchronisation() {
-		return this.features.get(XML_EQUIPMENT_TIME_SYNC);
+		return this.get(XML_EQUIPMENT_TIME_SYNC);
 	}
 
 	public boolean isUpdateAfterUserAccess() {
-		return this.features.get(XML_UPDATE_AFTER_USER_ACCESS);
+		return this.get(XML_UPDATE_AFTER_USER_ACCESS);
 	}
 
 	public boolean isDetectServiceAccess() {
-		return this.features.get(XML_DETECT_SERVICE_ACCESS);
+		return this.get(XML_DETECT_SERVICE_ACCESS);
 	}
 
 	public boolean isOnlyMeasurements() {
-		return this.features.get(XML_ONLY_MEASUREMENT);
+		return this.get(XML_ONLY_MEASUREMENT);
 	}
 
 	public boolean isClearErrorMessageAfterMail() {
-		return this.features.get(XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL);
+		return this.get(XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL);
 	}
 
 	public boolean isPowerOffIsServiceAccess() {
-		return this.features.get(XMl_POWEROFF_IS_SERVICE_ACCESS);
+		return this.get(XMl_POWEROFF_IS_SERVICE_ACCESS);
 	}
 
 	public boolean isSendMailOnError() {
-		return this.features.get(XMl_SEND_MAIL_ON_ERROR);
+		return this.get(XMl_SEND_MAIL_ON_ERROR);
 	}
 
 	public boolean isAdmin() {
-		return this.features.get(XML_ADMIN);
+		return this.get(XML_ADMIN);
 	}
 
 	public Boolean getFeature(String id) {
-		return this.features.get(id);
+		return this.get(id);
 	}
 
 	static class Creator extends CreatorByXML<Features> {
