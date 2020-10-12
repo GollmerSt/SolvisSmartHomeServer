@@ -7,6 +7,8 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
+import de.sgollmer.solvismax.helper.Helper;
+
 public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 
 	private final long timeStamp;
@@ -25,11 +27,17 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 	 */
 	public abstract Integer getInt();
 	
+
+	/**
+	 *  
+	 * @return double value if supported. Otherwise null.
+	 */
+	public abstract Double getDouble();
 	/**
 	 *  
 	 * @return boolean value if supported. Otherwise null.
 	 */
-	public abstract Boolean getBoolean();
+	public abstract Helper.Boolean getBoolean();
 
 	SingleData<T> create(int value, long timeStamp, boolean fastChange) {
 		return this.create(value, timeStamp);

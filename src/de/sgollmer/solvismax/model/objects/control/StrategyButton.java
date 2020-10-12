@@ -16,6 +16,7 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.XmlException;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
@@ -74,10 +75,12 @@ public class StrategyButton implements IStrategy {
 	@Override
 	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeException {
-		Boolean bool = value.getBoolean();
-		if (bool == null) {
+		Helper.Boolean helperBool = value.getBoolean();
+		if (helperBool == Helper.Boolean.UNDEFINED) {
 			throw new TypeException("Wrong value type");
 		}
+		
+		boolean bool = helperBool.result();
 
 		Button button = new Button(solvis.getCurrentScreen().getImage(),
 				((GuiAccess) controlAccess).getValueRectangle(), this.pushTime, this.releaseTime);

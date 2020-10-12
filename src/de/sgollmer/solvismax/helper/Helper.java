@@ -274,21 +274,41 @@ public class Helper {
 		return null;
 	}
 
-	public static <T> Boolean checkNull(T o1, T o2) {
-		if (o1 == null & o2 == null) {
-			return true;
+	/**
+	 * 
+	 * This helper enum avoids following error:
+	 * 
+	 * A method that returns either Boolean.TRUE, Boolean.FALSE or null is an
+	 * accident waiting to happen.This method can be invoked as though it returned a
+	 * value of type boolean, and the compiler will insert automatic unboxing of the
+	 * Boolean value. If a null value is returned,this will result in a
+	 * NullPointerException.
+	 * 
+	 *
+	 */
+	public enum Boolean {
+		TRUE, FALSE, UNDEFINED;
+
+		public boolean result() {
+			return this == TRUE;
 		}
-		if (o2 == null||o1 == null) {
-			return false;
-		}
-		return null;
 	}
 
-	public static <T> Boolean equals(T o1, T o2) {
+	public static <T> Helper.Boolean checkNull(T o1, T o2) {
+		if (o1 == null & o2 == null) {
+			return Helper.Boolean.TRUE;
+		}
+		if (o2 == null || o1 == null) {
+			return Helper.Boolean.FALSE;
+		}
+		return Helper.Boolean.UNDEFINED;
+	}
+
+	public static <T> java.lang.Boolean equals(T o1, T o2) {
 		if (o1 == null & o2 == null) {
 			return true;
 		}
-		if (o2 == null||o1 == null) {
+		if (o2 == null || o1 == null) {
 			return false;
 		}
 		return o1.equals(o2);

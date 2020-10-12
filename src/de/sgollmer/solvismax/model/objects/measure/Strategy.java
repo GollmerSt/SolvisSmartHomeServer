@@ -52,17 +52,18 @@ public enum Strategy implements IType {
 		for (int i = data.length() / 2 - 1; i >= 0 / 2; --i) {
 
 			char c = data.charAt(2 * i);
-			int b = Character.digit(c, 16);
-			if ( b < 0 ) {
+			int b16 = Character.digit(c, 16);
+			if ( b16 < 0 ) {
 				result = null;
 				break;
 			}
 			c = data.charAt(2 * i + 1);
-			if (c < 0 ) {
+			int b1 = Character.digit(c, 16);
+			if (b1 < 0 ) {
 				result = null;
 				break;
 			}
-			b = b * 16 + Character.digit(c, 16);
+			int b = b16 * 16 + b1;
 
 			result = result << 8 | b;
 		}

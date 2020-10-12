@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.model.objects.data;
 import java.util.Locale;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.helper.Helper;
 
 public class DoubleValue extends SingleData<Double> {
 
@@ -21,8 +22,8 @@ public class DoubleValue extends SingleData<Double> {
 	}
 
 	@Override
-	public Boolean getBoolean() {
-		return null;
+	public Helper.Boolean getBoolean() {
+		return Helper.Boolean.UNDEFINED;
 	}
 
 	@Override
@@ -30,6 +31,11 @@ public class DoubleValue extends SingleData<Double> {
 		return (int) Math.round(this.value);
 	}
 
+
+	@Override
+	public Double getDouble() {
+		return this.value;
+	}
 	@Override
 	public SingleData<Double> create(int value, long timeStamp) {
 		return new DoubleValue(value, timeStamp);
@@ -65,15 +71,11 @@ public class DoubleValue extends SingleData<Double> {
 		if (!(obj instanceof SingleData)) {
 			return false;
 		}
-		double cmp;
-		double maxEqualDiff = Math.abs(this.value) * Constants.PRECISION_DOUBLE;
-		if (obj instanceof DoubleValue) {
-			cmp = ((DoubleValue) obj).value;
-		} else if (obj instanceof IntegerValue) {
-			cmp = ((IntegerValue) obj).get();
-		} else {
-			return false;
+		Double cmp = ((SingleData<?>)obj).getDouble();
+		if ( cmp == null ) {
+			return false ;
 		}
+		double maxEqualDiff = Math.abs(this.value) * Constants.PRECISION_DOUBLE;
 		double diff = this.value - cmp;
 		return Math.abs(diff) < maxEqualDiff;
 	}

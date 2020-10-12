@@ -134,9 +134,10 @@ public class FallBack implements IAssigner {
 			if (screen == null) {
 				logger.error("The screen < " + this.getId()
 						+ "> is not possible in the FallBack Element of the XML, because it's not unique over all configurations. Ignored");
+				return;
 			}
 
-			screen.getSelectScreen().execute(solvis,SolvisScreen.get(solvis.getCurrentScreen()));
+			screen.getSelectScreen().execute(solvis, SolvisScreen.get(solvis.getCurrentScreen()));
 		}
 
 		private static class Creator extends de.sgollmer.solvismax.model.objects.screen.ScreenRef.Creator {

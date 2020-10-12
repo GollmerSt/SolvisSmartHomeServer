@@ -69,7 +69,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	private final String timeChannelId;
 	private final String screenId;
 	private final String okScreenId;
-//	private final Rectangle secondsScan;
 	private final List<DatePart> dateParts;
 	private final TouchPoint upper;
 	private final TouchPoint lower;
@@ -85,7 +84,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		CALENDAR_2018.set(Calendar.MILLISECOND, 0);
 	}
 
-	private ClockMonitor(String timeChannelId, String screenId, String okScreenId, Rectangle secondsScan,
+	private ClockMonitor(String timeChannelId, String screenId, String okScreenId,
 			List<DatePart> dateParts, TouchPoint upper, TouchPoint lower, TouchPoint ok,
 			DisableClockSetting disableClockSetting) {
 		this.timeChannelId = timeChannelId;
@@ -95,7 +94,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		this.upper = upper;
 		this.lower = lower;
 		this.ok = ok;
-//		this.secondsScan = secondsScan;
 		this.disableClockSetting = disableClockSetting;
 	}
 
@@ -121,20 +119,17 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private final long solvisAdjustTime;
 		private final long realAdjustTime;
 		private final long startAdjustTime;
-//		private final int fineAdjusts;
 
 		private NextAdjust(long solvisAdjustTime, long realAdjustTime, long startAdjustTime) {
 			this.solvisAdjustTime = solvisAdjustTime;
 			this.realAdjustTime = realAdjustTime;
 			this.startAdjustTime = startAdjustTime;
-//			this.fineAdjusts = -1;
 		}
 
 		private NextAdjust(int fineAdjusts, long startAdjustTime) {
 			this.solvisAdjustTime = -1;
 			this.realAdjustTime = -1;
 			this.startAdjustTime = startAdjustTime;
-//			this.fineAdjusts = fineAdjusts;
 		}
 
 		private long getStartAdjustTime() {
@@ -215,7 +210,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private String screenId;
 		private String okScreenId;
 		private List<DatePart> dateParts;
-		private Rectangle secondsScan;
 		private TouchPoint upper;
 		private TouchPoint lower;
 		private TouchPoint ok;
@@ -246,7 +240,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 		@Override
 		public ClockMonitor create() throws XmlException, IOException {
-			return new ClockMonitor(this.timeChannelId, this.screenId, this.okScreenId, this.secondsScan,
+			return new ClockMonitor(this.timeChannelId, this.screenId, this.okScreenId,
 					this.dateParts, this.upper, this.lower, this.ok, this.disableClockSetting);
 		}
 
@@ -318,7 +312,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private final Solvis solvis;
 		private ClockAdjustmentThread adjustmentThread = null;
 		private final StrategyAdjust strategyAdjust = new StrategyAdjust();
-//		private final StrategyFineAdjust strategyFineAdjust = new StrategyFineAdjust();
 		private final AverageInt averageDiff = new AverageInt(30);
 		private boolean burner = false;
 		private boolean hotWaterPump = false;

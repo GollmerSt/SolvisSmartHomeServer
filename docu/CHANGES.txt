@@ -1,5 +1,23 @@
 A E N D E R U N G E N
 
+Version 01.02.07
+
+    12.10.2020  FindBugs wurde über das Programmpaket drüber laufen gelassen und die gemeldeten Stellen wurden
+                korrigiert.
+                Hinter den Stellen verbergen sich nach genauer Analyse nicht wirklich um Dinge, welche man
+                ändern muss. So hatte sich ein Bug durch copy und paste verfielfacht, der beim Einlesen der 
+                XML-Files eine Rolle spieln würde, wenn XML fehlerhaft wären. XML-Files werden jedoch zuvor
+                gecheckt, so dass diese Bugs eine Auswirkung haben konnten.
+                Bei den anderen Bugs ging es mehr um Fehlervermeidung. Der Code wurde entsprechend
+                den Empfehlungen geändert.
+
+
+Version 01.02.06
+
+    10.10.2020  Der base.xml-Reader war leider doch nicht ganz kompatibel zu älteren base.xnml files.
+                Bei Verwendung älterer Versionen konnte einen Nullpointer-Exception auftreten.
+
+
 Version 01.02.05
 
     08.10.2020  Es hat sich gezeigt, dass manchmal das Umschalten auf andere Screen vom Home-Screen auf der

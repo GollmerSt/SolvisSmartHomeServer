@@ -82,9 +82,9 @@ public class Ssl {
 		if (!this.enable) {
 			return null;
 		}
-		String caFilePath = this.caFilePath;
-		String clientCrtFilePath = this.clientCrtFilePath;
-		String clientKeyFilePath = this.clientKeyFilePath;
+		String temp = this.caFilePath;
+		temp = this.clientCrtFilePath;
+		temp = this.clientKeyFilePath;
 		// TODO not yet implemented
 		return null;
 	}

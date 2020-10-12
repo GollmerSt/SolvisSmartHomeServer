@@ -33,7 +33,7 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 
-	private static ILogger logger = null;
+	private static final ILogger logger = LogManager.getInstance().getLogger(ExceptionMail.class);;
 
 	private static final String XML_RECIPIENT = "Recipient";
 	private static final String XML_RECIPIENTS = "Recipients";
@@ -143,9 +143,6 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 	}
 
 	public void send(String subject, String text, MyImage image) throws MessagingException, IOException {
-		if (logger == null) {
-			logger = LogManager.getInstance().getLogger(ExceptionMail.class);
-		}
 		Mail.send(subject, text, this.name, this.from, this.password, this.securityType, this.provider, this.port,
 				this.recipients, image);
 	}

@@ -28,7 +28,7 @@ import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
-public class Distributor extends Observable<JsonPackage> {
+public final class Distributor extends Observable<JsonPackage> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(Distributor.class);
 

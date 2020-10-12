@@ -137,7 +137,7 @@ public class LogManager {
 	}
 
 	public ILogger getLogger(Class<?> loggedClass) {
-		return this.loggerBase.create(loggedClass);
+		return new Logger(loggedClass);
 	}
 
 	public void addDelayedErrorMessage(DelayedMessage message) {
@@ -214,6 +214,112 @@ public class LogManager {
 			}
 		} catch (InterruptedException e) {
 		}
+	}
+
+	private class Logger implements ILogger {
+
+		private ILogger logger = null;
+		private final Class<?> clazz;
+
+		public Logger(Class<?> clazz) {
+			this.clazz = clazz;
+		}
+
+		@Override
+		public ILogger create(Class<?> clazz) {
+			return new Logger(clazz);
+		}
+
+		@Override
+		public boolean createInstance(String path) throws IOException, FileException {
+			return false;
+		}
+
+		@Override
+		public void shutdown() throws InterruptedException {
+			LogManager.this.loggerBase.shutdown();
+		}
+
+		private ILogger getLogger() {
+			if (this.logger == null) {
+				this.logger = LogManager.this.loggerBase.create(this.clazz);
+			}
+			return this.logger;
+		}
+
+		@Override
+		public void fatal(String message) {
+			this.getLogger().fatal(message);
+
+		}
+
+		@Override
+		public void fatal(String message, Throwable throwable) {
+			this.getLogger().fatal(message, throwable);
+
+		}
+
+		@Override
+		public void error(String message) {
+			this.getLogger().error(message);
+
+		}
+
+		@Override
+		public void error(String message, Throwable throwable) {
+			this.getLogger().error(message, throwable);
+		}
+
+		@Override
+		public void learn(String message) {
+			this.getLogger().learn(message);
+		}
+
+		@Override
+		public void learn(String message, Throwable throwable) {
+			this.getLogger().learn(message, throwable);
+		}
+
+		@Override
+		public void warn(String message) {
+			this.getLogger().warn(message);
+		}
+
+		@Override
+		public void warn(String message, Throwable throwable) {
+			this.getLogger().warn(message, throwable);
+		}
+
+		@Override
+		public void info(String message) {
+			this.getLogger().info(message);
+		}
+
+		@Override
+		public void info(String message, Throwable throwable) {
+			this.getLogger().info(message, throwable);
+		}
+
+		@Override
+		public void debug(String message) {
+			this.getLogger().debug(message);
+		}
+
+		@Override
+		public void debug(String message, Throwable throwable) {
+			this.getLogger().debug(message, throwable);
+		}
+
+		@Override
+		public void log(Level level, String message) {
+			this.getLogger().log(level, message);
+		}
+
+		@Override
+		public void log(Level level, String message, Throwable throwable) {
+			this.getLogger().log(level, message, throwable);
+		}
+
 	}
 
 }

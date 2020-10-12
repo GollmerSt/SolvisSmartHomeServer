@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.helper.Helper;
 
 public class BooleanValue extends SingleData<Boolean> {
 
@@ -24,13 +25,18 @@ public class BooleanValue extends SingleData<Boolean> {
 	}
 
 	@Override
-	public Boolean getBoolean() {
-		return this.value;
+	public Helper.Boolean getBoolean() {
+		return this.value?Helper.Boolean.TRUE:Helper.Boolean.FALSE;
 	}
 
 	@Override
 	public Integer getInt() {
 		return this.value ? 1 : 0;
+	}
+
+	@Override
+	public Double getDouble() {
+		return this.value ? 1.0 : 0.0;
 	}
 
 	@Override

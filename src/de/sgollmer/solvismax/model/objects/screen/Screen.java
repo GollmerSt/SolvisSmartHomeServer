@@ -107,10 +107,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof String) {
-			return this.id.equals(obj);
-		} else if (obj instanceof Screen) {
-			return this.getId().contentEquals(((Screen) obj).getId());
+		if (obj instanceof Screen) {
+			return this.getId().equals(((Screen) obj).getId());
 		}
 		return false;
 	}

@@ -190,6 +190,7 @@ public class Solvis {
 	public void send(TouchPoint point) throws IOException, TerminationException {
 		if (point == null) {
 			logger.warn("TouchPoint is <null>, ignored");
+			return;
 		}
 		this.send(point.getCoordinate(), point.getPushTime(), point.getReleaseTime());
 	}

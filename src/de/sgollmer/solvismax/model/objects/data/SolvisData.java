@@ -13,6 +13,7 @@ import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
@@ -230,24 +231,21 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	}
 
-	public Boolean getBoolean() throws TypeException {
+	public Helper.Boolean getBoolean() throws TypeException {
 		SingleData<?> data = this.data;
 		if (data == null) {
-			return null;
+			return Helper.Boolean.UNDEFINED;
 		}
-		Boolean bool = this.data.getBoolean();
-		if (bool == null) {
+		Helper.Boolean bool = this.data.getBoolean();
+		if (bool == Helper.Boolean.UNDEFINED) {
 			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
 		return bool;
 	}
 
 	public boolean getBool() throws TypeException {
-		Boolean bool = this.getBoolean();
-		if (bool == null) {
-			bool = false;
-		}
-		return bool;
+		Helper.Boolean bool = this.getBoolean();
+		return bool.result();
 	}
 
 	public void setMode(IMode<?> mode, long timeStamp) {

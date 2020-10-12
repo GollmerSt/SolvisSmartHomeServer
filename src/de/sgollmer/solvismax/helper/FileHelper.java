@@ -183,7 +183,7 @@ public class FileHelper {
 	}
 
 	public static boolean mkdir(File directory) {
-		if (directory.isDirectory() || directory == null) {
+		if (directory == null || directory.isDirectory()) {
 			return true;
 		}
 		if (!mkdir(directory.getParentFile())) {
@@ -193,11 +193,12 @@ public class FileHelper {
 	}
 
 	public static boolean canDelete(File file) {
-		if (!file.exists() || file == null) {
+		if ( file == null || !file.exists() ) {
 			return true;
 		}
-		if (file.isDirectory()) {
-			for (File child : file.listFiles()) {
+		File [] files ;
+		if (file.isDirectory() && ( files = file.listFiles() ) != null) {
+			for (File child : files) {
 				if (!canDelete(child)) {
 					return false;
 				}
@@ -211,11 +212,12 @@ public class FileHelper {
 		if (!canDelete(file)) {
 			return false;
 		}
-		if (!file.exists() || file == null) {
+		if (file == null || !file.exists()) {
 			return true;
 		}
-		if (file.isDirectory()) {
-			for (File child : file.listFiles()) {
+		File [] files ;
+		if (file.isDirectory() && ( files = file.listFiles() ) != null) {
+			for (File child : files) {
 				rmDir(child);
 			}
 		}
@@ -238,14 +240,18 @@ public class FileHelper {
 	}
 
 	public static Collection<File> getSortedbyDate(File parent, final Pattern regex) {
-		List<File> files = new ArrayList<>(Arrays.asList(parent.listFiles(new FilenameFilter() {
+		File [] filteredFiles = parent.listFiles(new FilenameFilter() {
 
 			@Override
 			public boolean accept(File dir, String name) {
 				Matcher matcher = regex.matcher(name);
 				return matcher.matches();
 			}
-		})));
+		});
+		if ( filteredFiles == null ) {
+			return new ArrayList<File>();
+		}
+		List<File> files = new ArrayList<>(Arrays.asList(filteredFiles));
 		files.sort(new Comparator<File>() {
 
 			@Override

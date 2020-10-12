@@ -39,6 +39,7 @@ public class WatchDog {
 
 	private final int watchDogTime;
 	private boolean abort = false;
+	private boolean waiting = false;
 	private HumanAccess humanAccess = HumanAccess.UNKNOWN;
 	private boolean serviceScreenDetected = false;
 	private boolean powerOff = false;
@@ -207,7 +208,9 @@ public class WatchDog {
 				synchronized (this) {
 					if (!this.abort) {
 						try {
+							this.waiting = true;
 							this.wait(this.watchDogTime);
+							this.waiting = false;
 						} catch (InterruptedException e) {
 						}
 					}
@@ -217,7 +220,9 @@ public class WatchDog {
 				synchronized (this) {
 					if (!this.abort) {
 						try {
+							this.waiting = true;
 							this.wait(Constants.WAIT_TIME_AFTER_IO_ERROR);
+							this.waiting = false;
 						} catch (InterruptedException e1) {
 						}
 					}
@@ -384,7 +389,9 @@ public class WatchDog {
 	}
 
 	synchronized void bufferNotEmpty() {
-		this.notifyAll();
+		if (this.waiting) {
+			this.notifyAll();
+		}
 	}
 
 	synchronized void serviceReset() {

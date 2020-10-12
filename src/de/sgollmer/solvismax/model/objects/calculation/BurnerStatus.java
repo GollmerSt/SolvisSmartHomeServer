@@ -72,17 +72,17 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		AliasGroup dependencies = this.calculation.getCalculationDependencies();
 
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
-
-		if (result.getMode() == null) {
-			result.setMode(Status.OFF, -1);
-		}
-
 		SolvisData burnerLevel1On = dependencies.get(allData, "burnerLevel1On");
 		SolvisData burnerLevel2On = dependencies.get(allData, "burnerLevel2On");
 
 		if (result == null || burnerLevel1On == null || burnerLevel2On == null) {
 			throw new AssignmentException("Assignment error: DependencyGroup not assigned");
 		}
+
+		if (result.getMode() == null) {
+			result.setMode(Status.OFF, -1);
+		}
+
 		Executable executable = new Executable(result, burnerLevel1On, burnerLevel2On);
 
 		executable.update(burnerLevel1On, this);

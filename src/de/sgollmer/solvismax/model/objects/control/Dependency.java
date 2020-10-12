@@ -106,9 +106,9 @@ public class Dependency implements IAssigner {
 
 	public static boolean equals(Dependency d1, Dependency d2, Solvis solvis) {
 
-		Boolean result = Helper.checkNull(d1, d2);
-		if (result != null) {
-			return result;
+		Helper.Boolean equals = Helper.checkNull(d1, d2);
+		if (equals != Helper.Boolean.UNDEFINED) {
+			return equals.result();
 		}
 		if (d1.getChannelDescription(solvis) != d2.getChannelDescription(solvis)) {
 			return false;

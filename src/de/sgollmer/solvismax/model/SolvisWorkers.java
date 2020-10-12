@@ -69,6 +69,7 @@ public class SolvisWorkers {
 		private int screenRestoreInhibitCnt = 0;
 		private int optimizationInhibitCnt = 0;
 		private int commandDisableCount = 0;
+		private boolean running = false;
 
 		private ControlWorkerThread() {
 			super("ControlWorkerThread");
@@ -86,6 +87,7 @@ public class SolvisWorkers {
 			int watchDogTime = SolvisWorkers.this.solvis.getUnit().getWatchDogTime_ms();
 
 			synchronized (this) {
+				this.running = true;
 				this.notifyAll();
 			}
 
@@ -482,7 +484,9 @@ public class SolvisWorkers {
 				synchronized (this.controlsThread) {
 					try {
 						this.controlsThread.start();
-						this.controlsThread.wait(); // in case of
+						while (!this.controlsThread.running) {
+							this.controlsThread.wait();
+						}
 					} catch (InterruptedException e) {
 					}
 				}

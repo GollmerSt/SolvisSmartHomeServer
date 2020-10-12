@@ -14,12 +14,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.Semaphore;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.ReceivedPackageCreator;
 import de.sgollmer.solvismax.error.ConnectionClosedException;
+import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -37,6 +40,7 @@ public class Server {
 	private final ServerThread serverThread;
 	private final int clientTimeout;
 	private boolean abort = false;
+	private final Semaphore permits = new Semaphore(Constants.MAX_CONNECTIONS);
 
 	public Server(ServerSocket serverSocket, CommandHandler commandHandler, Miscellaneous misc) {
 		this.connectedClients = new ArrayList<>(Constants.MAX_CONNECTIONS);
@@ -65,15 +69,13 @@ public class Server {
 					client.submit();
 
 				} catch (Throwable e) {
-					synchronized (this) {
-
-					}
 					if (!this.abort) {
 						e.printStackTrace();
 						logger.error("Unexpected termination of server", e);
 						try {
-							this.wait(Constants.RETRY_STARTING_SERVER_TIME);
-						} catch (InterruptedException e1) {
+							AbortHelper.getInstance().sleep(Constants.RETRY_STARTING_SERVER_TIME);
+						} catch (TerminationException e1) {
+							return;
 						}
 					}
 				}
@@ -92,13 +94,9 @@ public class Server {
 	}
 
 	private void waitForAvailableSocket() {
-		synchronized (this.connectedClients) {
-			if (this.connectedClients.size() >= Constants.MAX_CONNECTIONS) {
-				try {
-					this.connectedClients.wait();
-				} catch (InterruptedException e) {
-				}
-			}
+		try {
+			this.permits.acquire();
+		} catch (InterruptedException e1) {
 		}
 	}
 
@@ -111,7 +109,7 @@ public class Server {
 	private void removeClient(Client client) {
 		synchronized (this.connectedClients) {
 			this.connectedClients.remove(client);
-			this.connectedClients.notifyAll();
+			this.permits.release();
 		}
 	}
 

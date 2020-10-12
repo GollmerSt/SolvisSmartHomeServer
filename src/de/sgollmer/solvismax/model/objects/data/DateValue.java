@@ -7,11 +7,13 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.helper.Helper;
 
 public class DateValue extends SingleData<Calendar> {
 	private static final SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -25,12 +27,17 @@ public class DateValue extends SingleData<Calendar> {
 
 
 	@Override
-	public Boolean getBoolean() {
-		return null;
+	public Helper.Boolean getBoolean() {
+		return Helper.Boolean.UNDEFINED;
 	}
 
 	@Override
 	public Integer getInt() {
+		return null;
+	}
+
+	@Override
+	public Double getDouble() {
 		return null;
 	}
 
@@ -42,7 +49,7 @@ public class DateValue extends SingleData<Calendar> {
 	@Override
 	public String toString() {
 		Date date = new Date(this.calendar.getTimeInMillis());
-		return formater.format(date);
+		return ((DateFormat) formater.clone()).format(date);
 	}
 
 	@Override

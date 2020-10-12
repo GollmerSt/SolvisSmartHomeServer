@@ -199,8 +199,10 @@ public class ControlFileReader {
 			modifiedByUser = false;
 			mustLearn = true;
 		}
+		
+		boolean overwriteOnLearn = Constants.OVERWRITE_ONLY_ON_LEARN;
 
-		if (mustWrite && (learn || !Constants.OVERWWRITE_ONLY_ON_LEARN)) {
+		if (mustWrite && (learn || !overwriteOnLearn)) {
 
 			if (modifiedByUser) {
 

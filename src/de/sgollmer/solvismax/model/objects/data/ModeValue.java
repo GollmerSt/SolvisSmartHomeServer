@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.helper.Helper;
 
 public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 
@@ -24,12 +25,17 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	}
 
 	@Override
-	public Boolean getBoolean() {
-		return null;
+	public Helper.Boolean getBoolean() {
+		return Helper.Boolean.UNDEFINED;
 	}
 
 	@Override
 	public Integer getInt() {
+		return null;
+	}
+
+	@Override
+	public Double getDouble() {
 		return null;
 	}
 

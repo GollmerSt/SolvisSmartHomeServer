@@ -41,7 +41,8 @@ import de.sgollmer.solvismax.xml.CreatorByXML;
 
 public class Mail {
 
-	private static ILogger logger;
+	private static final ILogger logger = LogManager.getInstance().getLogger(Mail.class);
+
 	private static boolean DEBUG = false; // kein Mailversand
 
 	enum Security {
@@ -120,9 +121,6 @@ public class Mail {
 	static void send(String subject, String text, String name, String from, CryptAes password, Security security,
 			String provider, int port, Collection<Recipient> recipients, MyImage image)
 			throws MessagingException, IOException {
-		if (logger == null) {
-			logger = LogManager.getInstance().getLogger(Mail.class);
-		}
 
 		String portString = Integer.toString(port);
 
@@ -193,6 +191,5 @@ public class Mail {
 		}
 		logger.info("Email was sent.");
 	}
-
 
 }

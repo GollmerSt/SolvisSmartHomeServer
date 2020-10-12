@@ -46,10 +46,6 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
-		if (result.getSingleData() == null) {
-			result.setBoolean(false, -1);
-		}
-
 		AliasGroup dependencies = this.calculation.getCalculationDependencies();
 
 		SolvisData pumpOn = dependencies.get(allData, "pumpOn");
@@ -57,6 +53,10 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 
 		if (result == null || pumpOn == null || mixerClosing == null) {
 			throw new AssignmentException("Assignment error: DependencyGroup not assigned");
+		}
+
+		if (result.getSingleData() == null) {
+			result.setBoolean(false, -1);
 		}
 
 		Executable executable = new Executable(result, pumpOn, mixerClosing);
@@ -81,11 +81,10 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		@Override
 		public void update(SolvisData data, Object source) {
 
-			boolean result;
 			boolean mixer;
 			boolean pump;
 			try {
-				result = this.result.getBool();
+				this.result.getBool();
 				mixer = this.mixerClosing.getBool();
 				pump = this.pumpOn.getBool();
 			} catch (TypeException e) {
@@ -93,7 +92,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 				return;
 			}
 
-			result = !pump && !mixer;
+			boolean result = !pump && !mixer;
 
 			this.result.setBoolean(result, data.getTimeStamp());
 

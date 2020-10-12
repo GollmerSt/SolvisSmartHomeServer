@@ -107,9 +107,11 @@ public class CryptAes {
 				result[i] = b;
 				previous = c & 0xff;
 			}
+			int length = (result[0] & 0xff) | (result[1] << 8 & 0xff);
+			return new String(Arrays.copyOfRange(result, 2, length + 2)).toCharArray();
+		} else {
+			return null;
 		}
-		int length = (result[0] & 0xff) | (result[1] << 8 & 0xff);
-		return new String(Arrays.copyOfRange(result, 2, length + 2)).toCharArray();
 	}
 
 	public void set(String value) {
@@ -118,8 +120,8 @@ public class CryptAes {
 		}
 	}
 
-	public static void main(String[] args) throws CryptDefaultValueException, CryptExeception,
-			InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+	public static void main(String[] args) throws CryptDefaultValueException, CryptExeception, InvalidKeyException,
+			NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		CryptAes aes = new CryptAes();
 		for (int i = 0; i < 100; ++i) {
 			StringBuilder builder = new StringBuilder();

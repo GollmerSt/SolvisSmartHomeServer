@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.helper.Helper;
 
 public class IntegerValue extends SingleData<Integer> {
 	private final Integer data;
@@ -20,11 +21,11 @@ public class IntegerValue extends SingleData<Integer> {
 	}
 
 	@Override
-	public Boolean getBoolean() {
+	public Helper.Boolean getBoolean() {
 		if (this.data != null) {
-			return this.data != 0;
+			return this.data == 0?Helper.Boolean.FALSE:Helper.Boolean.TRUE;
 		}
-		return null;
+		return Helper.Boolean.UNDEFINED;
 	}
 
 	public IntegerValue(Integer value, long timeStamp) {
@@ -33,13 +34,14 @@ public class IntegerValue extends SingleData<Integer> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this.data != null && obj instanceof IntegerValue) {
-			return this.data.equals(((IntegerValue) obj).data);
-		} else if (obj instanceof DoubleValue) {
-			return this.data.equals(((DoubleValue) obj).getInt());
-		} else {
+		if (!(obj instanceof SingleData<?>)) {
 			return false;
 		}
+		SingleData<?> cmp = (SingleData<?>) obj;
+		if (cmp == null || this.data == null) {
+			return false;
+		}
+		return this.data.equals(cmp.getInt());
 	}
 
 	@Override
@@ -50,6 +52,14 @@ public class IntegerValue extends SingleData<Integer> {
 	@Override
 	public Integer getInt() {
 		return this.data;
+	}
+
+	@Override
+	public Double getDouble() {
+		if (this.data != null) {
+			return this.data.doubleValue();
+		}
+		return null;
 	}
 
 	@Override
