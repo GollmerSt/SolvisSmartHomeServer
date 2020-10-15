@@ -235,7 +235,7 @@ public class CommandControl extends Command {
 			builder.append(", channel: ");
 			builder.append(this.description.getId());
 			builder.append(", set value: ");
-			builder.append(this.setValue.toString());
+			builder.append(this.description.normalize(setValue).toString());
 		}
 		if (this.inhibit) {
 			builder.append(", inhibited");

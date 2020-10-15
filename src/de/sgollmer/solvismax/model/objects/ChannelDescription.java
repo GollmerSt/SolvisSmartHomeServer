@@ -28,6 +28,7 @@ import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.control.DependencyGroup;
+import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -306,4 +307,17 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 
 		return new IntegerValue((int) Math.round(data.getDouble() * divisor), data.getTimeStamp());
 	}
+	
+	public SingleData<?> normalize(SingleData<?> data) {
+		if (data.get() == null) {
+			return null;
+		}
+		if (data instanceof IntegerValue && this.getDivisor() != 1) {
+			return new DoubleValue((double) data.getInt() / this.getDivisor(), data.getTimeStamp());
+		} else {
+			return data;
+		}
+	}
+
+
 }

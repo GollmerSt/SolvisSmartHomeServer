@@ -290,22 +290,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public SingleData<?> normalize() {
-		return this.normalize(this.data);
-	}
-
-	public SingleData<?> normalize(SingleData<?> data) {
-		if (data.get() == null) {
-			return null;
-		}
-		if (data instanceof IntegerValue && this.getDescription().getDivisor() != 1) {
-			return new DoubleValue((double) data.getInt() / this.getDescription().getDivisor(), data.getTimeStamp());
-		} else {
-			return data;
-		}
+		return this.getDescription().normalize(this.data);
 	}
 
 	public SingleValue toSingleValue(SingleData<?> data) {
-		return new SingleValue(this.normalize(data));
+		return new SingleValue(this.description.normalize(data));
 	}
 
 	@Override
