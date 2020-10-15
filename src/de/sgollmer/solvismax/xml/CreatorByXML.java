@@ -36,7 +36,7 @@ public abstract class CreatorByXML<T> {
 	 * @param name
 	 * @param value
 	 */
-	public abstract void setAttribute(QName name, String value);
+	public abstract void setAttribute(QName name, String value) throws XmlException;
 
 	/**
 	 * Wird mit EndElement aufgerufen.

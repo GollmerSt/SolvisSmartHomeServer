@@ -37,6 +37,7 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 
 	private static final String XML_RECIPIENT = "Recipient";
 	private static final String XML_RECIPIENTS = "Recipients";
+	private static final String XMl_PROXY = "Proxy";
 
 	private final String name;
 	private final String from;
@@ -45,9 +46,10 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 	private final String provider;
 	private final int port;
 	private final Collection<Recipient> recipients;
+	private final Proxy proxy;
 
 	private ExceptionMail(String name, String from, CryptAes password, Security securityType, String provider, int port,
-			Collection<Recipient> recipients) {
+			Collection<Recipient> recipients, Proxy proxy) {
 		this.name = name;
 		this.from = from;
 		this.password = password;
@@ -55,6 +57,7 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 		this.provider = provider;
 		this.port = port;
 		this.recipients = recipients;
+		this.proxy = proxy;
 	}
 
 	public static class Creator extends CreatorByXML<ExceptionMail> {
@@ -66,6 +69,7 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 		private String provider;
 		private int port;
 		private Collection<Recipient> recipients;
+		private Proxy proxy = null ;
 		private boolean valid = true;
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -115,7 +119,7 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 		public ExceptionMail create() throws XmlException, IOException {
 			if (this.valid) {
 				return new ExceptionMail(this.name, this.from, this.password, this.securityType, this.provider,
-						this.port, this.recipients);
+						this.port, this.recipients, this.proxy);
 			} else {
 				return null;
 			}
@@ -127,6 +131,8 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 			switch (id) {
 				case XML_RECIPIENTS:
 					return new ArrayXml.Creator<Recipient>(id, this.getBaseCreator(), new Recipient(), XML_RECIPIENT);
+				case XMl_PROXY:
+					return new Proxy.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -138,13 +144,16 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 				case XML_RECIPIENTS:
 					this.recipients = ((ArrayXml<Recipient>) created).getArray();
 					break;
+				case XMl_PROXY:
+					this.proxy = (Proxy) created;
+					break;
 			}
 		}
 	}
 
 	public void send(String subject, String text, MyImage image) throws MessagingException, IOException {
 		Mail.send(subject, text, this.name, this.from, this.password, this.securityType, this.provider, this.port,
-				this.recipients, image);
+				this.recipients, image, this.proxy);
 	}
 
 //	public void send(SolvisErrorInfo info) throws MessagingException, IOException {

@@ -119,7 +119,7 @@ public class Mail {
 	}
 
 	static void send(String subject, String text, String name, String from, CryptAes password, Security security,
-			String provider, int port, Collection<Recipient> recipients, MyImage image)
+			String provider, int port, Collection<Recipient> recipients, MyImage image, Proxy proxy)
 			throws MessagingException, IOException {
 
 		String portString = Integer.toString(port);
@@ -127,6 +127,16 @@ public class Mail {
 		logger.info(security.name() + "Email Start");
 		Properties props = new Properties();
 		props.put("mail.smtp.host", provider); // SMTP Host
+		if (proxy != null) {
+			props.put("mail.smtp.proxy.host", proxy.getHost());
+			props.put("mail.smtp.proxy.port", Integer.toString(proxy.getPort()));
+			if (proxy.getUser() != null) {
+				props.put("mail.smtp.proxy.user", proxy.getUser());
+			}
+			if (proxy.getPassword() != null) {
+				props.put("mail.smtp.proxy.password", new String(proxy.getPassword().cP()));
+			}
+		}
 		switch (security) {
 			case SSL:
 				props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // SSL Factory Class

@@ -430,6 +430,10 @@
 	<complexType name="ExceptionMail">
 		<sequence>
 			<element name="Recipients" type="tns:Recipients"></element>
+			<element name="Proxy" type="tns:Proxy" maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>Proxy-Definition, wenn Mail_versand nur über Proy möglich.</documentation>
+				</annotation></element>
 		</sequence>
 		<attribute name="name" type="string" use="required">
 			<annotation>
@@ -537,5 +541,28 @@
 	<complexType name="Feature">
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="value" type="boolean" use="required"></attribute>
+	</complexType>
+
+	<complexType name="Proxy">
+        <annotation>
+        	<documentation>Proxy-Definitionen</documentation>
+        </annotation>
+        <attribute name="host" type="string" use="required">
+        	<annotation>
+        		<documentation> Specifies the host name of an HTTP web proxy server that will be used for connections to the mail server. </documentation>
+        	</annotation></attribute>
+		<attribute name="port" type="nonNegativeInteger" use="required">
+			<annotation>
+				<documentation>Specifies the port number for the HTTP web proxy server.</documentation>
+			</annotation></attribute>
+		<attribute name="user" type="string" use="optional">
+			<annotation>
+				<documentation> Specifies the user name to use to authenticate with the HTTP web proxy server. By default, no authentication is done. </documentation></annotation></attribute>
+		<attribute name="passwordCrypt" type="string" use="optional">
+			<annotation>
+				<documentation> Specifies the password to use to authenticate with the HTTP web proxy server. By default, no authentication is done. 
+
+Das Password muss mit dem Make-File oder in Windows über das StarMenü verschlüsselt sein.</documentation>
+			</annotation></attribute>
 	</complexType>
 </schema>
