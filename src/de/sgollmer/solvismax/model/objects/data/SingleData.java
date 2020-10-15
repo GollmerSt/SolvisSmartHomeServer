@@ -22,19 +22,19 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 	}
 
 	/**
-	 *  
+	 * 
 	 * @return integer value if supported. Otherwise null.
 	 */
 	public abstract Integer getInt();
-	
 
 	/**
-	 *  
+	 * 
 	 * @return double value if supported. Otherwise null.
 	 */
 	public abstract Double getDouble();
+
 	/**
-	 *  
+	 * 
 	 * @return boolean value if supported. Otherwise null.
 	 */
 	public abstract Helper.Boolean getBoolean();
@@ -54,5 +54,4 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 	boolean isFastChange() {
 		return false;
 	}
-
 }

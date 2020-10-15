@@ -318,7 +318,7 @@ public class Solvis {
 	 * @return True: Command was ignored to prevent feedback loops
 	 * @throws TypeException
 	 */
-	public boolean setFromExternal(ChannelDescription description, SingleData<?> singleData) {
+	public boolean setFromExternal(ChannelDescription description, SingleData<?> singleData) throws TypeException {
 
 		boolean ignored;
 

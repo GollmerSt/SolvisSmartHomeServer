@@ -67,11 +67,7 @@ public class StrategyReadWrite extends StrategyRead {
 	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData setValue)
 			throws IOException, TerminationException, TypeException {
 		if (controlAccess instanceof GuiAccess) {
-			Double dTarget = setValue.getDouble();
-			if (dTarget == null) {
-				throw new TypeException("Set value null not allowed");
-			}
-			Integer target = (int) Math.round(dTarget * this.getDivisor());
+			Integer target = setValue.getInteger();
 			IntegerValue data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 			if (data == null) {
 				return null;

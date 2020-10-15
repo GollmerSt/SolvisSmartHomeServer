@@ -60,17 +60,18 @@ public class CommandControl extends Command {
 	private DependencyGroup currentDependencyGroup = null;
 	private final DependencyCache dependencyCache;
 
-	CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) {
-		this.setValue = setValue;
+	CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) throws TypeException {
+		this(description, solvis);
+		this.setValue = description.toInternal(setValue);
+	}
+
+	public CommandControl(ChannelDescription description, Solvis solvis) {
+		this.setValue = null;
 		this.description = description;
 		this.dependencyGroupsToExecute.add(description.getDependencyGroup().clone(), solvis);
 		this.screen = description.getScreen(solvis);
 		this.solvis = solvis;
 		this.dependencyCache = new DependencyCache(solvis);
-	}
-
-	public CommandControl(ChannelDescription description, Solvis solvis) {
-		this(description, null, solvis);
 	}
 
 	@Override
@@ -165,7 +166,7 @@ public class CommandControl extends Command {
 	private ResultStatus write(Solvis solvis, ChannelDescription description, SingleData<?> setValue,
 			Reference<Integer> failCountRef, boolean overwrite) throws IOException, TerminationException {
 		SolvisData data = solvis.getAllSolvisData().get(description);
-		SolvisData clone = data.clone();
+		SolvisData clone = data.duplicate();
 		clone.setSingleData(setValue);
 		SetResult setResult = description.setValue(solvis, clone);
 		if (setResult == null) {

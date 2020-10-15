@@ -49,6 +49,10 @@ public class Observer<D> {
 			}
 			return status;
 		}
+		
+		public synchronized boolean isEmpty() {
+			return this.observers == null || this.observers.isEmpty();
+		}
 
 	}
 

@@ -26,7 +26,7 @@ import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 
-public class SolvisData extends Observer.Observable<SolvisData> implements Cloneable, IObserver<SolvisState.State> {
+public class SolvisData extends Observer.Observable<SolvisData> implements IObserver<SolvisState.State> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisData.class);
 
@@ -70,8 +70,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		this.datas = null;
 	}
 
-	@Override
-	public SolvisData clone() {
+	/**
+	 * This method duplicates the SolvisData without the observers
+	 * 
+	 * @return duplicate
+	 */
+	public SolvisData duplicate() {
 		return new SolvisData(this);
 	}
 
@@ -150,7 +154,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 			this.data = data;
 		}
 
-		if (changed || status == ResultStatus.VALUE_VIOLATION) {
+		if (!this.isEmpty() && (changed || status == ResultStatus.VALUE_VIOLATION)) {
 
 			if (!this.description.isWriteable() || !this.datas.getSolvis().willBeModified(this)
 					|| status == ResultStatus.VALUE_VIOLATION) {
@@ -195,24 +199,24 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
 	}
 
-	public Double getDouble() throws TypeException {
-		SingleData<?> data = this.data;
-		if (data == null) {
-			return null;
-		} else if (data instanceof DoubleValue) {
-			return ((DoubleValue) data).get();
-
-		} else if ((data instanceof IntegerValue)) {
-			Integer i = ((IntegerValue) data).get();
-			if (i == null) {
-				return null;
-			} else
-				return (double) i;
-		} else {
-			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
-		}
-	}
-
+//	public Double getDouble() throws TypeException {
+//		SingleData<?> data = this.data;
+//		if (data == null) {
+//			return null;
+//		} else if (data instanceof DoubleValue) {
+//			return ((DoubleValue) data).get();
+//
+//		} else if ((data instanceof IntegerValue)) {
+//			Integer i = ((IntegerValue) data).get();
+//			if (i == null) {
+//				return null;
+//			} else
+//				return (double) i;
+//		} else {
+//			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
+//		}
+//	}
+//
 	public int getInt() throws TypeException {
 		Integer value = this.getInteger();
 		if (value == null) {
@@ -263,7 +267,6 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 
 	public void setSingleData(SetResult data) {
 		this.setData(data.getData(), this, data.getStatus());
-		;
 	}
 
 	public void setSingleData(SingleData<?> data) {
@@ -286,20 +289,23 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		return this.data;
 	}
 
-//	private SingleValue toSingleValue() {
-//		return this.toSingleValue(this.data);
-//	}
+	public SingleData<?> normalize() {
+		return this.normalize(this.data);
+	}
 
-	public SingleValue toSingleValue(SingleData<?> data) {
+	public SingleData<?> normalize(SingleData<?> data) {
 		if (data.get() == null) {
 			return null;
 		}
 		if (data instanceof IntegerValue && this.getDescription().getDivisor() != 1) {
-			return new SingleValue(
-					new DoubleValue((double) data.getInt() / this.getDescription().getDivisor(), data.getTimeStamp()));
+			return new DoubleValue((double) data.getInt() / this.getDescription().getDivisor(), data.getTimeStamp());
 		} else {
-			return new SingleValue(data);
+			return data;
 		}
+	}
+
+	public SingleValue toSingleValue(SingleData<?> data) {
+		return new SingleValue(this.normalize(data));
 	}
 
 	@Override
@@ -353,23 +359,19 @@ public class SolvisData extends Observer.Observable<SolvisData> implements Clone
 		if (this.data == null) {
 			return null;
 		}
-		String value;
-		if (this.data instanceof IntegerValue && this.getDescription().getDivisor() != 1) {
-			value = Double.toString((double) this.data.getInt() / this.getDescription().getDivisor());
-		} else {
-			value = this.data.toString();
-		}
+		String value = this.normalize().toString();
 		return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getId()), value, 0, true);
 	}
 
 	public boolean isValid() {
-		if ( this.data == null ) {
-			return false ;
-		} else if (this.description.isWriteable()){
+		if (this.data == null) {
+			return false;
+		} else if (this.description.isWriteable()) {
 			return this.datas.getLastHumanAccess() < this.data.getTimeStamp();
 		} else {
 			return true;
 		}
-		
+
 	}
+
 }
