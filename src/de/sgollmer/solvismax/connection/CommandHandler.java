@@ -49,7 +49,7 @@ public class CommandHandler {
 	}
 
 	public boolean commandFromClient(ITransferedData receivedData, IClient client)
-			throws IOException, ClientAssignmentException, JsonException {
+			throws IOException, ClientAssignmentException, JsonException, TypeException {
 		Command command = receivedData.getCommand();
 		if (command == null) {
 			return false;
@@ -278,7 +278,7 @@ public class CommandHandler {
 		}
 	}
 
-	private void set(ITransferedData receivedDat) throws JsonException {
+	private void set(ITransferedData receivedDat) throws JsonException, TypeException {
 		Solvis solvis = receivedDat.getSolvis();
 
 		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
@@ -288,8 +288,7 @@ public class CommandHandler {
 		try {
 			ignored = solvis.setFromExternal(description, singleData);
 		} catch (TypeException e) {
-			// TODO funktioniert das bei Mqtt?
-			throw new JsonException(e.getMessage() + " Located in revceived Json package.");
+			throw new TypeException(e.getMessage() + " Located in revceived commande.");
 		}
 		if (ignored) {
 			logger.info("Setting the channel <" + description.getId() + "> ignored to prevent feedback loops.");

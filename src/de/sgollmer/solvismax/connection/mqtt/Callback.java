@@ -125,7 +125,7 @@ final class Callback implements MqttCallbackExtended {
 				this.mqtt.commandHandler.commandFromClient(subscribeData,
 						this.mqtt.new Client(subscribeData.getClientId()));
 			}
-		} catch (IOException | ClientAssignmentException | JsonException e) {
+		} catch (IOException | ClientAssignmentException | JsonException | TypeException e) {
 			Mqtt.logger.error("Error: On command handling", e);
 		}
 	}

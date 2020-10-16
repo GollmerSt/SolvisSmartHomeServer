@@ -77,7 +77,7 @@ public class StrategyButton implements IStrategy {
 			throws IOException, TerminationException, TypeException {
 		Helper.Boolean helperBool = value.getBoolean();
 		if (helperBool == Helper.Boolean.UNDEFINED) {
-			throw new TypeException("Wrong value type");
+			throw new TypeException("Wrong value type, should be boolean");
 		}
 		
 		boolean bool = helperBool.result();
