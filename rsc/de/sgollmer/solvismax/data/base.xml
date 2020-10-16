@@ -97,6 +97,6 @@
 			<tns:Recipient address="Mailadresse@gmail.com"
 				type="TO" />
 		</tns:Recipients>
-		<tns:Proxy host="HttpProxy" port="80" user="user" passwordCrypt="EhDnGP6WICnLIIA2q9ZTew=="/>
+		<!-- <tns:Proxy host="HttpProxy" port="80" user="user" passwordCrypt="EhDnGP6WICnLIIA2q9ZTew=="/> -->
 	</tns:ExceptionMail>
 </tns:BaseData>
