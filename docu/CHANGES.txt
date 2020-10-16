@@ -2,6 +2,12 @@ A E N D E R U N G E N
 
 Version 01.02.07
 
+	15.10.2020  HTTP Proxy für Mail-Versand nun möglich.
+
+    15.10.2020  Bei Control-Channels, welche mittels Fließkomma-Werten gesetzt werden, funktionierete
+                der Update des Clients über sowohl über die Mqtt- als auch Server-Client-Schnittstelle
+                nicht zuverlässig.
+
     12.10.2020  FindBugs wurde über das Programmpaket drüber laufen gelassen und die gemeldeten Stellen wurden
                 korrigiert.
                 Hinter den Stellen verbergen sich nach genauer Analyse nicht wirklich um Dinge, welche man
