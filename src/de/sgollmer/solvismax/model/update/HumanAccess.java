@@ -9,13 +9,13 @@ package de.sgollmer.solvismax.model.update;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.Strategy;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.UpdateCreator;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class HumanAccess extends Strategy<HumanAccess> {
 

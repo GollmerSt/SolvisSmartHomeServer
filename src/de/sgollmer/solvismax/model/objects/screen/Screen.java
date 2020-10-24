@@ -23,7 +23,6 @@ import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.LearningTerminationException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -36,8 +35,9 @@ import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Screen extends AbstractScreen implements Comparable<AbstractScreen> {
 

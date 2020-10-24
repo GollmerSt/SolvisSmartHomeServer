@@ -17,7 +17,6 @@ import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
@@ -29,8 +28,9 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.objects.Field;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Measurement extends ChannelSource {
 

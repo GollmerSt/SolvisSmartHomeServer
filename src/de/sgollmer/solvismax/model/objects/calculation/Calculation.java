@@ -12,24 +12,24 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.AliasException;
+import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.Alias;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
-import de.sgollmer.solvismax.model.objects.Alias;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Calculation extends ChannelSource {
 

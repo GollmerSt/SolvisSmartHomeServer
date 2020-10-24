@@ -18,7 +18,6 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
@@ -27,8 +26,8 @@ import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
@@ -37,8 +36,9 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class StrategyMode implements IStrategy {
 

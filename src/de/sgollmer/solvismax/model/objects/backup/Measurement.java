@@ -14,15 +14,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
-import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
+import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Measurement {
 

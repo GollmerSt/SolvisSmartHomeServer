@@ -12,7 +12,6 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.HelperException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.Ocr;
@@ -21,8 +20,9 @@ import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class UserSelection implements ISelectScreen {
 
@@ -106,7 +106,7 @@ public class UserSelection implements ISelectScreen {
 		}
 
 		@Override
-		public UserSelection create() throws XmlException, IOException, AssignmentException, ReferenceException {
+		public UserSelection create() throws XmlException, IOException {
 			return new UserSelection(this.digits, this.waitTimeAfterLastDigitRefId);
 		}
 
@@ -224,7 +224,7 @@ public class UserSelection implements ISelectScreen {
 			}
 
 			@Override
-			public Digit create() throws XmlException, IOException, AssignmentException, ReferenceException {
+			public Digit create() throws XmlException, IOException {
 				return new Digit(this.digit, this.rectangle, this.upper, this.lower);
 			}
 
@@ -271,7 +271,7 @@ public class UserSelection implements ISelectScreen {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(SolvisDescription description) throws AssignmentException, ReferenceException {
 		if (this.waitTimeAfterLastDigitRefId != null) {
 			Duration duration = description.getDuration(this.waitTimeAfterLastDigitRefId);
 			if (duration == null) {

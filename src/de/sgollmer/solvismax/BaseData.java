@@ -12,11 +12,11 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.model.objects.Units;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class BaseData {
 

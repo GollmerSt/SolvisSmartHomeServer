@@ -8,7 +8,7 @@
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.8" />
 	<property name="source" value="1.8" />
-	<property name="bin.dir" value="bin" />
+	<property name="build.dir" value="build" />
 	<property name="private.dir" value="private" />
 	<property name="pubLinux.dir" value="publish Linux" />
 	<property name="pubWindows.dir" value="publish Windows" />
@@ -21,7 +21,7 @@
 	<property name="makefile" value="SmartHome/Linux/Makefile" />
 	<property name="linux.systemd" value="SmartHome/Linux/SolvisSmartHomeServer.service" />
 	<property name="linux.systemdD" value="SmartHome/Linux/DebugSolvisSmartHomeServer.service" />
-	<property name="pubBaseDir" value="${bin.dir}/de/sgollmer/solvismax/data" />
+	<property name="pubBaseDir" value="${build.dir}/de/sgollmer/solvismax/data" />
 	<property name="myBase.xml" location="${env.SOLVIS_SMART_HOME_SERVER_BASE_XML}" />
 	<property name="lib.dir" value="lib" />
 	<property name="dist.base" value="SolvisSmartHomeServer" />
@@ -67,16 +67,17 @@
 		<pathelement location="lib/smtp-1.6.2.jar" />
 		<pathelement location="lib/javax.activation-1.2.0.jar" />
 		<pathelement location="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" />
+		<pathelement location="lib/XMLLibrary.jar" />
 	</path>
 	<target name="init">
-		<mkdir dir="${bin.dir}" />
-		<copy includeemptydirs="false" todir="${bin.dir}">
+		<mkdir dir="${build.dir}" />
+		<copy includeemptydirs="false" todir="${build.dir}">
 			<fileset dir="src">
 				<exclude name="**/*.launch" />
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
-		<copy includeemptydirs="false" todir="${bin.dir}">
+		<copy includeemptydirs="false" todir="${build.dir}">
 			<fileset dir="rsc">
 				<exclude name="**/*.launch" />
 				<exclude name="**/*.java" />
@@ -84,7 +85,7 @@
 		</copy>
 	</target>
 	<target depends="build" name="createjar">
-		<jar destfile="${private.dir}/temp/${dist.base}_woLib.jar" basedir="${bin.dir}" />
+		<jar destfile="${private.dir}/temp/${dist.base}_woLib.jar" basedir="${build.dir}" />
 	</target>
 	<target name="createLog4jJar" if="${isLog4j}">
 		<jar destfile="${private.dir}/temp/logger.jar">
@@ -107,13 +108,14 @@
 			<zipfileset src="lib/javax.activation-1.2.0.jar" />
 			<zipfileset src="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" />
 			<zipfileset src="${private.dir}/temp/logger.jar" />
+			<zipfileset src="lib/XMLLibrary.jar" />
 			<manifest>
 				<attribute name="Main-Class" value="de.sgollmer.solvismax.Main" />
 				<attribute name="Built-Date" value="${TODAY}" />
 			</manifest>
 		</jar>
 		<copy todir="${private.dir}">
-			<fileset dir="${bin.dir}" casesensitive="yes">
+			<fileset dir="${build.dir}" casesensitive="yes">
 				<include name="base.xml" />
 			</fileset>
 		</copy>
@@ -121,9 +123,9 @@
 			<fileset file="${myBase.xml}" casesensitive="yes" />
 			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
 		</copy>
-		<mkdir dir="${private.dir}/FHEM"/>
+		<mkdir dir="${private.dir}/FHEM" />
 		<fixcrlf file="${fhem.pm}" destdir="${private.dir}/FHEM" eol="lf" />
-		<mkdir dir="${private.dir}/ioBroker"/>
+		<mkdir dir="${private.dir}/ioBroker" />
 		<fixcrlf file="${iobroker.client.json}" destdir="${private.dir}/ioBroker" eol="lf" />
 		<fixcrlf file="${iobroker.javascript}" destdir="${private.dir}/ioBroker" eol="lf" />
 		<fixcrlf file="${linux.systemd}" destdir="${private.dir}" eol="lf" />
@@ -136,9 +138,9 @@
 			<fileset file="${pubBaseDir}/base.xsd" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 		</copy>
-		<mkdir dir="${pubLinux.dir}/FHEM"/>
+		<mkdir dir="${pubLinux.dir}/FHEM" />
 		<fixcrlf file="${fhem.pm}" destdir="${pubLinux.dir}/FHEM" eol="lf" />
-		<mkdir dir="${pubLinux.dir}/ioBroker"/>
+		<mkdir dir="${pubLinux.dir}/ioBroker" />
 		<fixcrlf file="${iobroker.client.json}" destdir="${pubLinux.dir}/ioBroker" eol="lf" />
 		<fixcrlf file="${iobroker.javascript}" destdir="${pubLinux.dir}/ioBroker" eol="lf" />
 		<fixcrlf file="${linux.systemd}" destdir="${pubLinux.dir}" eol="lf" />
@@ -147,8 +149,8 @@
 		<fixcrlf file="${changes}" destdir="${pubLinux.dir}" eol="lf" />
 		<copy file="${pubBaseDir}/base.xml" tofile="${pubLinux.dir}/base.xml.new" />
 		<zip destfile="${zip.dir}/SolvisSmartHomeServer linux ${version}.zip" basedir="${pubLinux.dir}" />
-		
-		
+
+
 		<exec executable="${innoSetup}" dir="${iss.dir}">
 			<arg value="/cc" />
 			<arg value="${iss}" />
@@ -167,7 +169,7 @@
 		<zip destfile="${zip.dir}/SolvisSmartHomeServer windows ${version}.zip" basedir="${pubWindows.dir}" />
 	</target>
 	<target name="clean">
-		<delete dir="${bin.dir}" />
+		<delete dir="${build.dir}" />
 		<delete dir="${private.dir}" />
 		<delete dir="${pubLinux.dir}" />
 		<delete dir="${pubWindows.dir}" />
@@ -176,7 +178,7 @@
 	<target depends="build-project" name="build" />
 	<target depends="init" name="build-project">
 		<echo message="${ant.project.name}: ${ant.file}" />
-		<javac debug="true" debuglevel="${debuglevel}" encoding="Cp1252" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}">
+		<javac debug="true" debuglevel="${debuglevel}" encoding="Cp1252" destdir="${build.dir}" includeantruntime="false" source="${source}" target="${target}">
 			<src path="src" />
 			<src path="rsc" />
 			<classpath refid="SolvisMax.classpath" />

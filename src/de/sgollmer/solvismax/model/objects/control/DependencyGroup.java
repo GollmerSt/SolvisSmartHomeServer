@@ -6,10 +6,10 @@ import java.util.Iterator;
 
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.ReferenceException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class DependencyGroup implements IAssigner, Cloneable{
 	private HashSet<Dependency > dependencies = new HashSet<>(3);

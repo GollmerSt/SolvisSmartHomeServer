@@ -19,12 +19,12 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
-import de.sgollmer.solvismax.xml.IXmlWriteable;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlWriteable;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class ScreenGraficData implements IXmlWriteable {
 	private final String id;

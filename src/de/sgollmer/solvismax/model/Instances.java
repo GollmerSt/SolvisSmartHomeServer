@@ -17,24 +17,24 @@ import javax.xml.stream.XMLStreamException;
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.SolvisConnection;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.AliasException;
+import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
+import de.sgollmer.solvismax.model.objects.ErrorDetection.WriteErrorScreens;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
-import de.sgollmer.solvismax.model.objects.ErrorDetection.WriteErrorScreens;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.xml.ControlFileReader;
 import de.sgollmer.solvismax.xml.ControlFileReader.Hashes;
 import de.sgollmer.solvismax.xml.GraficFileHandler;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Instances {
 	private Collection<Solvis> units = new ArrayList<>();
@@ -55,6 +55,7 @@ public class Instances {
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
 		ControlFileReader.Result result = reader.read(this.graficDatas.getControlHashCodes(), learn);
 		this.solvisDescription = result.getSolvisDescription();
+		this.solvisDescription.assign();
 		this.mustLearn = result.mustLearn();
 		this.xmlHash = result.getHashes();
 		this.backupHandler = new MeasurementsBackupHandler(this.writeablePath,

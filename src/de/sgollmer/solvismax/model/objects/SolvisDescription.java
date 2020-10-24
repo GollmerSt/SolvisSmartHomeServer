@@ -21,7 +21,6 @@ import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
@@ -29,8 +28,9 @@ import de.sgollmer.solvismax.model.objects.configuration.SolvisTypes;
 import de.sgollmer.solvismax.model.objects.screen.IScreenPartCompare;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class SolvisDescription {
 
@@ -72,7 +72,7 @@ public class SolvisDescription {
 			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
 			AllPreparations allPreparations, ClockMonitor clock, AllDurations durations, Miscellaneous miscellaneous,
 			ErrorDetection errorDetection, Service service)
-			throws XmlException, AssignmentException, ReferenceException {
+			throws XmlException {
 		this.types = types;
 		this.configurations = configurations;
 		this.saver = saver;
@@ -87,10 +87,9 @@ public class SolvisDescription {
 		this.errorDetection = errorDetection;
 		this.service = service;
 
-		this.process();
 	}
 
-	private void process() throws XmlException, AssignmentException, ReferenceException {
+	public void assign() throws XmlException, AssignmentException, ReferenceException {
 		if (this.saver != null) {
 			this.saver.assign(this);
 		}
@@ -147,7 +146,7 @@ public class SolvisDescription {
 		}
 
 		@Override
-		public SolvisDescription create() throws XmlException, AssignmentException, ReferenceException {
+		public SolvisDescription create() throws XmlException {
 			return new SolvisDescription(this.types, this.configurations, this.saver, this.screens, this.fallBack,
 					this.screenGrafics, this.dataDescriptions, this.allPreparations, this.clock, this.durations,
 					this.miscellaneous, this.errorDetection, this.service);

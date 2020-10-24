@@ -34,7 +34,6 @@ import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.error.FatalError;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -46,8 +45,9 @@ import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Mqtt {
 

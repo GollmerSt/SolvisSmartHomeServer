@@ -19,13 +19,14 @@ import javax.xml.stream.XMLStreamWriter;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
+import de.sgollmer.xmllibrary.XmlException;
+import de.sgollmer.xmllibrary.XmlStreamReader;
 
 public class GraficFileHandler {
 
@@ -87,7 +88,7 @@ public class GraficFileHandler {
 
 		try {
 
-			result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName());
+			result = reader.read(source, rootId, new AllSolvisGrafics.Creator(rootId), xml.getName()).getObject();
 
 		} catch (IOException | XmlException | XMLStreamException e1) {
 			logger.error("Warning: Read error on grafics.xml file. A new one will be created.");

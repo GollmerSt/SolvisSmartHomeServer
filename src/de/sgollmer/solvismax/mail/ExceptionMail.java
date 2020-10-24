@@ -17,7 +17,6 @@ import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.CryptDefaultValueException;
 import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.error.ObserverException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
@@ -27,9 +26,9 @@ import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.xml.ArrayXml;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.ArrayXml;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
 
 public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 
@@ -116,7 +115,7 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 		}
 
 		@Override
-		public ExceptionMail create() throws XmlException, IOException {
+		public ExceptionMail create() throws IOException {
 			if (this.valid) {
 				return new ExceptionMail(this.name, this.from, this.password, this.securityType, this.provider,
 						this.port, this.recipients, this.proxy);

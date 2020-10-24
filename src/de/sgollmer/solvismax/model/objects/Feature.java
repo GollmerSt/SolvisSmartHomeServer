@@ -6,12 +6,10 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ReferenceException;
-import de.sgollmer.solvismax.error.XmlException;
-import de.sgollmer.solvismax.xml.ArrayXml;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.ArrayXml;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Feature implements ArrayXml.IElement<Feature> {
 	final String id;
@@ -49,7 +47,7 @@ public class Feature implements ArrayXml.IElement<Feature> {
 		}
 
 		@Override
-		public Feature create() throws XmlException, IOException, AssignmentException, ReferenceException {
+		public Feature create() throws XmlException, IOException {
 			return new Feature(this.id, this.value);
 		}
 

@@ -5,16 +5,14 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.crypt.CryptAes;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.CryptDefaultValueException;
 import de.sgollmer.solvismax.error.CryptExeception;
-import de.sgollmer.solvismax.error.ReferenceException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Proxy {
 
@@ -88,7 +86,7 @@ public class Proxy {
 		}
 
 		@Override
-		public Proxy create() throws XmlException, IOException, AssignmentException, ReferenceException {
+		public Proxy create() throws XmlException, IOException {
 			return new Proxy(this.host, this.port, this.user, this.password);
 		}
 

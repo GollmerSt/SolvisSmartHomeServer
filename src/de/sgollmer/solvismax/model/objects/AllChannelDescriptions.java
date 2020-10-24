@@ -30,7 +30,6 @@ import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
@@ -40,8 +39,9 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 

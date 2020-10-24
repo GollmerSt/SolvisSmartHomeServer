@@ -18,7 +18,6 @@ import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -41,8 +40,9 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.model.update.UpdateStrategies;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Control extends ChannelSource {
 

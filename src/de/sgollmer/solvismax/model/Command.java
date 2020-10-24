@@ -13,10 +13,10 @@ import java.util.Collection;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.xmllibrary.XmlException;
 
 public abstract class Command {
 

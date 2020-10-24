@@ -11,10 +11,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class AllScreenGraficDescriptions implements IAssigner {
 

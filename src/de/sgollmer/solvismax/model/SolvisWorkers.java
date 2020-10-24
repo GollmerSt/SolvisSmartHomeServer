@@ -18,7 +18,6 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -30,6 +29,7 @@ import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class SolvisWorkers {
 

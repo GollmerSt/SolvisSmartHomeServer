@@ -7,7 +7,6 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -16,8 +15,9 @@ import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class Dependency implements IAssigner {
 	private final String id;
@@ -55,7 +55,7 @@ public class Dependency implements IAssigner {
 		}
 
 		@Override
-		public Dependency create() throws XmlException, IOException, AssignmentException, ReferenceException {
+		public Dependency create() throws XmlException, IOException {
 			return new Dependency(this.id, this.value);
 		}
 

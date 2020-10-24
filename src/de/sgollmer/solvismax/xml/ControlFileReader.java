@@ -19,14 +19,14 @@ import de.sgollmer.solvismax.Main;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.ReferenceException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.helper.FileHelper;
-import de.sgollmer.solvismax.helper.FileHelper.ChecksumInputStream;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
+import de.sgollmer.xmllibrary.XmlException;
+import de.sgollmer.xmllibrary.XmlStreamReader;
 
 public class ControlFileReader {
 	
@@ -130,7 +130,7 @@ public class ControlFileReader {
 		String rootId = XML_ROOT_ID;
 
 		SolvisDescription fromFile = null;
-		ChecksumInputStream inputStreamFromFile ;
+		InputStream inputStreamFromFile ;
 
 		boolean mustWrite; // Wenn im Verzeichnis nicht vorhanden, nicht lesbar oder älter
 									// oder Checksumme unbekannt
@@ -141,24 +141,31 @@ public class ControlFileReader {
 		Throwable e = null;
 
 		String resourcePath = Constants.Files.RESOURCE + '/' + NAME_XML_CONTROLFILE;
-		ChecksumInputStream resource = new ChecksumInputStream(Main.class.getResourceAsStream(resourcePath));
-		SolvisDescription fromResource = reader.read(resource, rootId,
+		
+		InputStream resource = Main.class.getResourceAsStream(resourcePath);
+		
+		XmlStreamReader.ReadData<SolvisDescription> result =reader.read(resource, rootId,
 				new SolvisDescription.Creator(rootId), NAME_XML_CONTROLFILE);
-
-		long newResourceHash = resource.getHash();
+		
+		SolvisDescription fromResource = result.getObject();
+		long newResourceHash = result.getHash();
+		
 		long fileHash = 0;
 
 		boolean xmlExits = xml.exists();
 		if (xmlExits) {
 
-			inputStreamFromFile = new ChecksumInputStream(new FileInputStream(xml));
+			inputStreamFromFile = new FileInputStream(xml);
 
 			boolean mustVerify = true; // Wenn zu verifizieren
 
 			try {
-
-				fromFile = reader.read(inputStreamFromFile, rootId, new SolvisDescription.Creator(rootId),
+				
+				XmlStreamReader.ReadData<SolvisDescription> readData = reader.read(inputStreamFromFile, rootId, new SolvisDescription.Creator(rootId),
 						xml.getName());
+
+				fromFile = readData.getObject();
+				fileHash = readData.getHash();
 
 			} catch (Throwable e1) {
 				inputStreamFromFile.close();
@@ -166,7 +173,6 @@ public class ControlFileReader {
 				mustWrite = true;
 			}
 			
-			fileHash = inputStreamFromFile.getHash();
 			
 			if ( former.getFileHash() != null ) {
 				mustWrite =  newResourceHash != former.getResourceHash() ;

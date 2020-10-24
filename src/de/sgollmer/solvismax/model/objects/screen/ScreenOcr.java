@@ -16,7 +16,6 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.XmlException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
@@ -28,8 +27,9 @@ import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.solvismax.xml.BaseCreator;
-import de.sgollmer.solvismax.xml.CreatorByXML;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
 public class ScreenOcr implements IScreenPartCompare, IAssigner {
 
@@ -226,7 +226,7 @@ public class ScreenOcr implements IScreenPartCompare, IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException {
+	public void assign(SolvisDescription description) throws AssignmentException, XmlException {
 		if (this.graficRef != null) {
 			this.graficDescription = description.getScreenGrafics().get(this.graficRef.getRefId());
 		}
