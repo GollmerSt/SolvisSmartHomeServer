@@ -2,7 +2,9 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
-	24.10.2020  XML-Methoden durch meine XML-Libary ersetzt. 
+	31.10.2020  Tiny-Log aktualisiert
+	
+	24.10.2020  XML-Methoden durch private XML-Libary ersetzt. 
 
 
 Version 01.02.07

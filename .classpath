@@ -5,14 +5,14 @@
 	<classpathentry kind="lib" path="lib/mailapi-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/smtp-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/javax.activation-1.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/tinylog-impl-2.2.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_261"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2-api-2.13.2.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-api-2.13.2.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-core-2.13.2.jar"/>
-	<classpathentry kind="lib" path="lib/tinylog-api-2.1.2.jar" sourcepath="C:/Users/stefa_000/AppData/Roaming/JavaLibraries/tinylog-2.1.2/tinylog-api-2.1.2-sources.jar"/>
-	<classpathentry kind="lib" path="lib/tinylog-impl-2.1.2.jar" sourcepath="C:/Users/stefa_000/AppData/Roaming/JavaLibraries/tinylog-2.1.2/tinylog-impl-2.1.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" sourcepath="C:/Users/stefa_000/AppData/Roaming/JavaLibraries/paho 1.2.5/org.eclipse.paho.client.mqttv3-1.2.5-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="lib/XMLLibrary.jar"/>
+	<classpathentry kind="lib" path="lib/tinylog-api-2.2.0.jar" sourcepath="C:/Users/stefa_000/AppData/Roaming/JavaLibraries/tinylog-2.2.0/tinylog-api-2.2.0-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

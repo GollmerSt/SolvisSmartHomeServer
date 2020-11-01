@@ -8,7 +8,9 @@
 package de.sgollmer.solvismax.log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.tinylog.Logger;
@@ -208,15 +210,19 @@ public class TinyLog {
 
 		Properties props = System.getProperties();
 		props.setProperty("tinylog.configuration", properties.getAbsolutePath());
+		
+		Properties prop = new Properties();
+		InputStream stream = new FileInputStream(properties);
+		prop.load(stream);
 
 		for (int i = 1; i < 10; ++i) {
 			String key = Constants.TINY_LOG_FILE_PROPERTY_PREFIX + i;
-			String type = Configuration.get(key);
+			String type = prop.getProperty(key);
 			if (type == null) {
 				break;
 			}
 			key = Constants.TINY_LOG_FILE_PROPERTY_PREFIX + i + Constants.TINY_LOG_FILE_PROPERTY_SUFFIX;
-			String file = Configuration.get(key);
+			String file = prop.getProperty(key);
 			if (file != null) {
 				Configuration.set(key, this.parent.getAbsolutePath() + File.separator + file);
 			}
