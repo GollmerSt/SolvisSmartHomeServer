@@ -116,7 +116,7 @@ public class Measurement extends ChannelSource {
 			dest.setSingleData((SingleData<?>) null);
 			return true;
 		} else {
-			return this.type.get(dest, this.fields, solvis.getMeasureData());
+			return this.type.get(dest, this.fields, solvis.getMeasureData(), solvis);
 		}
 	}
 
@@ -263,7 +263,9 @@ public class Measurement extends ChannelSource {
 	}
 
 	interface IType {
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
+		//public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
+
+		public boolean get(SolvisData dest, Collection<Field> fields, SolvisMeasurements measureData, Solvis solvis)
 				throws PowerOnException, IOException, NumberFormatException;
 
 		public boolean isNumeric();

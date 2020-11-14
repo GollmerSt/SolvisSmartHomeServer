@@ -363,4 +363,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	}
 
+	public Calendar getDate() {
+		if (!(this.data instanceof DateValue)) {
+			return null;
+		}
+		return ((DateValue) this.data).get();
+	}
+
 }

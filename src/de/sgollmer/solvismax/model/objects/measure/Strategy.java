@@ -31,8 +31,9 @@ public enum Strategy implements IType {
 	}
 
 	@Override
-	public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws PowerOnException, IOException {
-		return this.type.get(destin, fields, data);
+	public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data,
+			de.sgollmer.solvismax.model.Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
+		return this.type.get(destin, fields, data, solvis);
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public enum Strategy implements IType {
 		return this.type.validate(fields);
 	}
 
-	private static long toInt(String data) throws NumberFormatException{
+	private static long toInt(String data) throws NumberFormatException {
 
 		Long result = 0L;
 
@@ -53,13 +54,13 @@ public enum Strategy implements IType {
 
 			char c = data.charAt(2 * i);
 			int b16 = Character.digit(c, 16);
-			if ( b16 < 0 ) {
+			if (b16 < 0) {
 				result = null;
 				break;
 			}
 			c = data.charAt(2 * i + 1);
 			int b1 = Character.digit(c, 16);
-			if (b1 < 0 ) {
+			if (b1 < 0) {
 				result = null;
 				break;
 			}
@@ -67,8 +68,8 @@ public enum Strategy implements IType {
 
 			result = result << 8 | b;
 		}
-		if ( result == null ) {
-			throw new NumberFormatException("Unexpected characters in Solvis XML String <" + data + ">."); 
+		if (result == null) {
+			throw new NumberFormatException("Unexpected characters in Solvis XML String <" + data + ">.");
 		}
 		return result;
 	}
@@ -95,8 +96,8 @@ public enum Strategy implements IType {
 		}
 
 		@Override
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
-				throws PowerOnException, IOException, NumberFormatException {
+		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data,
+				de.sgollmer.solvismax.model.Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
 			Field field = getFirst(fields);
 			String sub = field.subString(data.getHexString());
 			long result = toInt(sub);
@@ -126,12 +127,12 @@ public enum Strategy implements IType {
 		}
 
 	}
-	
+
 	private static class Boolean implements IType {
 
 		@Override
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
-				throws PowerOnException, IOException, NumberFormatException {
+		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data,
+				de.sgollmer.solvismax.model.Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
 			Field field = getFirst(fields);
 			String sub = field.subString(data.getHexString());
 			boolean result = toInt(sub) > 0;
@@ -159,7 +160,8 @@ public enum Strategy implements IType {
 	private static class Date implements IType {
 
 		@Override
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data) throws IOException, NumberFormatException {
+		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data,
+				de.sgollmer.solvismax.model.Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
 			String str = "";
 			for (Iterator<Field> it = fields.iterator(); it.hasNext();) {
 				str += it.next().subString(data.getHexString());
@@ -174,6 +176,14 @@ public enum Strategy implements IType {
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(year, month, date, hour, minute, second);
+
+			Calendar old = destin.getDate();
+			int measurementsInterval = solvis.getDefaultReadMeasurementsInterval_ms();
+
+			if (old != null && measurementsInterval >= 2000 && (calendar.getTimeInMillis() == old.getTimeInMillis() )) {
+				solvis.getSolvisState().setRemoteConnected();
+				throw new PowerOnException("Solvis time not changed");
+			}
 
 			destin.setDate(calendar, data.getTimeStamp());
 

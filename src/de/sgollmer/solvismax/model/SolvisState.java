@@ -152,6 +152,15 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 	}
 
 	public void setConnected() {
+		synchronized (this) {
+			if (this.state == State.REMOTE_CONNECTED || this.state == State.SOLVIS_CONNECTED) {
+				return;
+			}
+		}
+		this.setState(State.REMOTE_CONNECTED);
+	}
+
+	public void setSolvisConnected() {
 		this.setState(State.SOLVIS_CONNECTED);
 	}
 
@@ -159,7 +168,7 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 		this.setState(State.SOLVIS_DISCONNECTED);
 	}
 
-	void setRemoteConnected() {
+	public void setRemoteConnected() {
 		this.setState(State.REMOTE_CONNECTED);
 	}
 

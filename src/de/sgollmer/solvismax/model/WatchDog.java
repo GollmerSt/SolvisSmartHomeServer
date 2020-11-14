@@ -30,11 +30,14 @@ public class WatchDog {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(WatchDog.class);
 
+	private static final String XML_END_OF_USER_BY_SCREEN_SAVER = "EndOfUserInterventionDetectionThroughScreenSaver";
+
 	private final Solvis solvis;
 	private final ScreenSaver.Exec saver;
 
 	private final int releaseBlockingAfterUserChange_ms;
 	private final int releaseBlockingAfterServiceAccess_ms;
+	private final boolean endOfUserByScreenSaver;
 	private final boolean clearErrorMessageAfterMail;
 
 	private final int watchDogTime;
@@ -50,13 +53,21 @@ public class WatchDog {
 
 	private class SolvisStateObserver implements IObserver<SolvisState.State> {
 
+		private SolvisState.State lastState = SolvisState.State.UNDEFINED;
+
 		@Override
 		public void update(SolvisState.State data, Object source) {
+
 			synchronized (WatchDog.this) {
 				try {
 					switch (data) {
-						case POWER_OFF:
 						case REMOTE_CONNECTED:
+							if (this.lastState == SolvisState.State.SOLVIS_CONNECTED
+									|| this.lastState == SolvisState.State.ERROR) {
+								processEvent(Event.POWER_OFF, null);
+							}
+							break;
+						case POWER_OFF:
 							processEvent(Event.POWER_OFF, null);
 							break;
 						case SOLVIS_CONNECTED:
@@ -66,6 +77,7 @@ public class WatchDog {
 				} catch (IOException | TerminationException e) {
 				}
 			}
+			this.lastState = data;
 		}
 
 	}
@@ -78,6 +90,7 @@ public class WatchDog {
 		this.releaseBlockingAfterUserChange_ms = BaseData.DEBUG ? Constants.DEBUG_USER_ACCESS_TIME
 				: unit.getReleaseBlockingAfterUserAccess_ms();
 		this.releaseBlockingAfterServiceAccess_ms = unit.getReleaseBlockingAfterServiceAccess_ms();
+		this.endOfUserByScreenSaver = unit.getFeatures().getFeature(XML_END_OF_USER_BY_SCREEN_SAVER);
 		this.watchDogTime = this.solvis.getUnit().getWatchDogTime_ms();
 		this.solvis.registerAbortObserver(new IObserver<Boolean>() {
 
@@ -296,14 +309,16 @@ public class WatchDog {
 						synchronized (this) {
 							if (event == Event.SCREENSAVER) {
 								current = HumanAccess.NONE;
-							} else if (currentTime > this.lastUserAccessTime + this.releaseBlockingAfterUserChange_ms) {
+							} else if (!this.endOfUserByScreenSaver
+									&& currentTime > this.lastUserAccessTime + this.releaseBlockingAfterUserChange_ms) {
 								current = HumanAccess.NONE;
 							}
 						}
 						break;
 					case SERVICE:
 						synchronized (this) {
-							if (!this.serviceScreenDetected && !this.powerOff
+							if ((!this.endOfUserByScreenSaver || event == Event.SCREENSAVER)
+									&& !this.serviceScreenDetected && !this.powerOff
 									&& currentTime > this.serviceAccessFinishedTime
 											+ this.releaseBlockingAfterServiceAccess_ms) {
 								current = HumanAccess.NONE;

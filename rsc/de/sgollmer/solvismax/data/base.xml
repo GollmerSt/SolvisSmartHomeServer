@@ -81,6 +81,10 @@
 				<tns:Feature id="WW_Pumpe_Min_Laufzeit" value="false" />
 				<!-- Die minimale Laufzeit der Zirkulationspumpe des Heißwasserkreislaufes 
 					kann ausgelesen und modifiziert werden -->
+				<tns:Feature
+					id="EndOfUserInterventionDetectionThroughScreenSaver" value="false" />
+				<!-- Als Zusatzerkennung des Endes der Anwender-Eingriffs (Service/User) 
+					wird neben einer festen Zeit auch der Bildschirmschoner genutzt -->
 			</tns:Features>
 		</tns:Unit>
 	</tns:Units>

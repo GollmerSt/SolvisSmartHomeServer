@@ -273,9 +273,8 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 		switch (this.solvisState.getState()) {
 			case POWER_OFF:
-			case REMOTE_CONNECTED:
 			case SOLVIS_DISCONNECTED:
-				logger.info("Connection to solvis <" + this.urlBase + "> successfull.");
+				logger.info("Connection to solvis remote <" + this.urlBase + "> successfull.");
 				break;
 		}
 	}

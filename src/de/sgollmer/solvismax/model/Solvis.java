@@ -611,7 +611,7 @@ public class Solvis {
 		return this.timeZone;
 	}
 
-	int getDefaultReadMeasurementsInterval_ms() {
+	public int getDefaultReadMeasurementsInterval_ms() {
 		return this.defaultReadMeasurementsInterval_ms;
 	}
 
@@ -654,9 +654,9 @@ public class Solvis {
 	}
 
 	public int getTimeAfterLastSwitchingOn() {
-		long time = System.currentTimeMillis();
 		long timeOfLastSwitchingOn = this.solvisState.getTimeOfLastSwitchingOn();
 		if (timeOfLastSwitchingOn > 0 && this.delayAfterSwitchingOnEnable) {
+			long time = System.currentTimeMillis();
 			return (int) (time - timeOfLastSwitchingOn);
 		} else {
 			return 0x7fffffff;
