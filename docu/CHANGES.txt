@@ -2,6 +2,9 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
+	14.11.2020  Der Service-Mode wurde nicht immer gesetzt, wenn die SolvisRemote eingeschaltet blieb und die Anlage
+	            selber ausgeschaltet wurde (bei aktiviertem PowerOffIsServiceAccess-Feature).
+
 	31.10.2020  Tiny-Log aktualisiert
 	
 	24.10.2020  XML-Methoden durch private XML-Libary ersetzt. 
