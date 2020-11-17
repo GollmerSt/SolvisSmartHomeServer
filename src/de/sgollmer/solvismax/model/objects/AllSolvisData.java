@@ -138,6 +138,16 @@ public class AllSolvisData {
 		return new Measurements(this.solvisDatas);
 	}
 
+	public synchronized Measurements getMeasurementsForUpdate() {
+		Measurements measurements = new Measurements();
+		for (SolvisData data : this.solvisDatas.values()) {
+			if (! data.getDescription().isDelayed(this.solvis)) {
+				measurements.add(data);
+			}
+		}
+		return measurements;
+	}
+
 	public void registerObserver(IObserver<SolvisData> observer) {
 		for (SolvisData data : this.solvisDatas.values()) {
 			data.register(observer);

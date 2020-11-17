@@ -69,11 +69,11 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	@Override
 	void instantiate(Solvis solvis) throws AssignmentException, AliasException {
 		AllSolvisData allData = solvis.getAllSolvisData();
-		AliasGroup dependencies = this.calculation.getCalculationDependencies();
+		AliasGroup aliasGroup = this.calculation.getAliasGroup();
 
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
-		SolvisData burnerLevel1On = dependencies.get(allData, "burnerLevel1On");
-		SolvisData burnerLevel2On = dependencies.get(allData, "burnerLevel2On");
+		SolvisData burnerLevel1On = aliasGroup.get(allData, "burnerLevel1On");
+		SolvisData burnerLevel2On = aliasGroup.get(allData, "burnerLevel2On");
 
 		if (result == null || burnerLevel1On == null || burnerLevel2On == null) {
 			throw new AssignmentException("Assignment error: DependencyGroup not assigned");

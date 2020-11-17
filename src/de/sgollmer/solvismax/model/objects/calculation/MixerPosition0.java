@@ -46,10 +46,10 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
-		AliasGroup dependencies = this.calculation.getCalculationDependencies();
+		AliasGroup aliasGroup = this.calculation.getAliasGroup();
 
-		SolvisData pumpOn = dependencies.get(allData, "pumpOn");
-		SolvisData mixerClosing = dependencies.get(allData, "mixerClosing");
+		SolvisData pumpOn = aliasGroup.get(allData, "pumpOn");
+		SolvisData mixerClosing = aliasGroup.get(allData, "mixerClosing");
 
 		if (result == null || pumpOn == null || mixerClosing == null) {
 			throw new AssignmentException("Assignment error: DependencyGroup not assigned");

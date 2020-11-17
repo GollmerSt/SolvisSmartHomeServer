@@ -36,11 +36,11 @@ public class Calculation extends ChannelSource {
 	private static final String XML_Alias = "Alias";
 
 	private final Strategy<?> strategy;
-	private final AliasGroup dependencies;
+	private final AliasGroup aliasGroup;
 
-	private Calculation(Strategies strategies, AliasGroup dependencies) {
+	private Calculation(Strategies strategies, AliasGroup aliasGroup) {
 		this.strategy = strategies.create(this);
-		this.dependencies = dependencies;
+		this.aliasGroup = aliasGroup;
 	}
 
 	@Override
@@ -80,16 +80,16 @@ public class Calculation extends ChannelSource {
 	}
 
 	/**
-	 * @return the dependencies
+	 * @return the aliasGroup
 	 */
-	AliasGroup getCalculationDependencies() {
-		return this.dependencies;
+	AliasGroup getAliasGroup() {
+		return this.aliasGroup;
 	}
 
 	public static class Creator extends CreatorByXML<Calculation> {
 
 		private Strategies strategy;
-		private final AliasGroup dependencies = new AliasGroup();
+		private final AliasGroup aliasGroup = new AliasGroup();
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -107,7 +107,7 @@ public class Calculation extends ChannelSource {
 
 		@Override
 		public Calculation create() throws XmlException {
-			return new Calculation(this.strategy, this.dependencies);
+			return new Calculation(this.strategy, this.aliasGroup);
 		}
 
 		@Override
@@ -124,7 +124,7 @@ public class Calculation extends ChannelSource {
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
 				case XML_Alias:
-					this.dependencies.add((Alias) created);
+					this.aliasGroup.add((Alias) created);
 			}
 		}
 
@@ -132,7 +132,7 @@ public class Calculation extends ChannelSource {
 
 	@Override
 	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
-		this.dependencies.assign(description);
+		this.aliasGroup.assign(description);
 		if (this.strategy != null) {
 			this.strategy.assign(description);
 		}
@@ -191,6 +191,15 @@ public class Calculation extends ChannelSource {
 	@Override
 	public boolean mustBackuped() {
 		return true;
+	}
+
+	@Override
+	public boolean isDelayed(Solvis solvis) {
+		boolean delayed = false;
+		for ( ChannelDescription description : this.getAliasGroup().getChannelDescriptions(solvis) ) {
+			delayed |= description.isDelayed(solvis);
+		}
+		return delayed;
 	}
 
 }

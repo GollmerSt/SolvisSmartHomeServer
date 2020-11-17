@@ -10,12 +10,10 @@ Offene Aufgaben:
      einen Text- als such grafische Oberfläche besitzen. Als 3. Möglichkeit wäre ein WebInterface
      denkbar, vielleicht in Form einer WebPage auf GitHub mit JavaScript.
      Vielleicht auch https://github.com/michmech/xonomy
-	  
-26. Beim Learning der Fix/Kurve-Grafiken wird im Learn-Modus von Kurve auf Fix umgeschaltet. Da die
-     Defaulteinstellung der Vorlauftemperaturen bei 35/55°C liegen, läuft unnötig im ungünstigesten
-     Fall die Brennerstufe 2. Man sollte auch im Learning vorher in den Standby schalten, also die
-     Dependencies berücksichtigen.
 
+27. Wenn Anlage ausgeschaltet war und um den Stundenwechsel wieder eingeschaltet wird, erfolgt ein
+     Reading-Update auch für die Kanäle, welche noch nicht aktualisiert wurden. Dadurch ein unrealistischer
+     Temperaturverlauf dargestellt.
 
 Erledigt:
 
@@ -330,4 +328,9 @@ Erledigt:
 	  zerlegt wird. Mite OCR und RegEx wird die Anzahl der hinteren validen OCR-Pattern ermittelt,
 	  die vorderen Pattern müssen dann grafisch verglichen werden.
 	  Dann braucht man auch nicht mehr Heizkreis-Grafik und Heizkrein-Installateur-Grafik unterscheiden. 
+ 	  
+26. Beim Learning der Fix/Kurve-Grafiken wird im Learn-Modus von Kurve auf Fix umgeschaltet. Da die
+     Defaulteinstellung der Vorlauftemperaturen bei 35/55°C liegen, läuft unnötig im ungünstigesten
+     Fall die Brennerstufe 2. Man sollte auch im Learning vorher in den Standby schalten, also die
+     Dependencies berücksichtigen.
   

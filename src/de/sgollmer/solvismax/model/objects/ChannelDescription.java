@@ -319,5 +319,10 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		}
 	}
 
+	@Override
+	public boolean isDelayed(Solvis solvis) {
+		return this.channelSource.isDelayed(solvis);
+	}
+
 
 }

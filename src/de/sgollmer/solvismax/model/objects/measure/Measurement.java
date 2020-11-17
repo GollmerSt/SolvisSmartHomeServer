@@ -108,6 +108,11 @@ public class Measurement extends ChannelSource {
 			throw new XmlException("XML-Error: File is not valid of measurement <" + channelId + ">.");
 		}
 	}
+	
+	@Override
+	public boolean isDelayed(Solvis solvis) {
+		return solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn;
+	}
 
 	@Override
 	public boolean getValue(SolvisData dest, Solvis solvis) throws PowerOnException, IOException, TerminationException, NumberFormatException {

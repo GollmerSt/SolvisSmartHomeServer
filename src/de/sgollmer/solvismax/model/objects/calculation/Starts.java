@@ -45,9 +45,9 @@ public class Starts extends Strategy<Starts> {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
-		AliasGroup dependencies = this.calculation.getCalculationDependencies();
+		AliasGroup aliasGroup = this.calculation.getAliasGroup();
 
-		SolvisData equipmentOn = dependencies.get(allData, "equipmentOn");
+		SolvisData equipmentOn = aliasGroup.get(allData, "equipmentOn");
 
 		if (result == null || equipmentOn == null) {
 			throw new AssignmentException("Assignment error: DependencyGroup not assigned");

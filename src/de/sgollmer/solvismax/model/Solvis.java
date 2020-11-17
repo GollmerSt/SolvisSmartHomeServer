@@ -566,7 +566,7 @@ public class Solvis {
 								this.singleUpdate = false;
 							}
 							if (update) {
-								Solvis.this.distributor.sendCollection(getAllSolvisData().getMeasurements());
+								Solvis.this.distributor.sendCollection(getAllSolvisData().getMeasurementsForUpdate());
 							}
 						}
 					}
