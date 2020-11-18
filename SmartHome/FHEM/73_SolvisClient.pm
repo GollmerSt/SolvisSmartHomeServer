@@ -25,6 +25,7 @@
 #   00.02.12    19.07.2020  SCMP77              Server compile time is written to the log
 #   00.02.13    25.09.2020  SCMP77              Meta-Daten-Begandlung ergänzt (wegen WW_Pumpe_Min_Laufzeit).
 #   00.02.14    04.10.2020  SCMP77              Meta-Beschreibung nun Device-abhängig, Doku ergänzt.
+#   00.02.15    18.11.2020  SCMP77              Nur HTML-Doku
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -1394,6 +1395,9 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
               Gegenstück zu dem ServerCommand GUI_COMMANDS_ENABLE<BR>
             </td></tr>
+            <tr><td align="right" valign="top"><code>SERVICE_RESET</code>: </td><td align="left" valign="top">
+              Setzt einen erkannten Service-Zugriff zur&uumlck.<BR>
+            </td></tr>
             <tr><td align="right" valign="top"><code>UPDATE_CHANNELS</code>: </td><td align="left" valign="top">
               Update aller Kan&auml;le, welche nur &uuml;ber das GUI zug&auml;lich sind<BR>
             </td></tr>
@@ -1726,6 +1730,9 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
               Counterpart to the ServerCommand GUI_COMMANDS_ENABLE<BR>
             </td></tr>
+            <tr><td align="right" valign="top"><code>SERVICE_RESET</code>: </td><td align="left" valign="top">
+              Resets a detected service access<BR>
+            </td></tr>
             <tr><td align="right" valign="top"><code>UPDATE_CHANNELS</code>: </td><td align="left" valign="top">
               Update all channels that are only accessible via the GUI.<BR>
             </td></tr>
@@ -1889,7 +1896,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.14",
+  "version": "v00.02.15",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

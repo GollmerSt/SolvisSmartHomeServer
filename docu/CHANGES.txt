@@ -2,6 +2,19 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
+    18.11.2020  Wird die Solvis-Anlage um die volle Stunde eingeschaltet, so werden bei den verzögerten Messwerten
+                die alten Werte vor dem PowerOff erneut versendet. Das führt zu unrealistischen Diagrammen nach einem
+                Power-On.
+                
+                Meldungen für das Log-File reduziert. SET-Befehle, welche unterdrückt werden um einen Rückkoppelung
+                zu vermeiden, werden nur im Debug-Trace ausgegeben (bisher im INFO-Trace).
+                
+                Der Anlagenmodus-Wechsel dauert manchmal länger. Wartezeit um 0,5s auf 3s erhöht.
+                
+                Die Service-Screens der Heizkreise dauern beim Wechsel länger. Zeit um 0,5s auf 4,5s erhöht.
+                
+                FHEM-Client, Doku um SERVICE_RESET ergänzt
+
     17.11.2020  Wird die Solvis-Anlage um die volle Stunde eingeschaltet, so werden bei den verzögerten Messwerten
                 die alten Werte vor dem PowerOff erneut versendet. Das führt zu unrealistischen Diagrammen nach einem
                 Power-On.

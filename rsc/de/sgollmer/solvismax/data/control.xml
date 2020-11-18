@@ -1137,7 +1137,7 @@
 			ignoreChanges="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
+				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="20" Y="15" />
 			</tns:TouchPoint>
 			<tns:Identification>
@@ -1154,7 +1154,7 @@
 			backId="Heizung Installateur" previousId="Heizkreis1 1_11">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
+				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
@@ -1171,7 +1171,7 @@
 			backId="Heizung Installateur" previousId="Heizkreis1 2_11">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
+				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
@@ -1188,7 +1188,7 @@
 			backId="Heizung Installateur" previousId="Heizkreis1 3_11">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChangeLong">
+				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
@@ -1209,7 +1209,7 @@
 					andMask="0x02" />
 			</tns:Configuration>
 			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
+				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="20" Y="40" />
 			</tns:TouchPoint>
 			<tns:Identification>
@@ -1229,7 +1229,7 @@
 					andMask="0x02" />
 			</tns:Configuration>
 			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
+				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
@@ -1249,7 +1249,7 @@
 					andMask="0x02" />
 			</tns:Configuration>
 			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChange">
+				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
@@ -1269,7 +1269,7 @@
 					andMask="0x02" />
 			</tns:Configuration>
 			<tns:TouchPoint pushTimeRefId="Standard"
-				releaseTimeRefId="WindowChangeLong">
+				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
@@ -3337,13 +3337,13 @@
 		<tns:Duration id="ValueChange" time_ms="2000" />
 		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neuer 
 			Mode ausgewählt wurde -->
-		<tns:Duration id="ModeChange" time_ms="2500" />
+		<tns:Duration id="ModeChange" time_ms="3000" />
 		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neues 
 			Fenster ausgewählt wurde -->
 		<tns:Duration id="WindowChange" time_ms="3500" />
-		<!-- Bei einigen wenigen Screens reicht die WindowChange-Zeit nicht aus 
-			bei diesen muss auf WindowChangeLong zurück gegriffen werden -->
-		<tns:Duration id="WindowChangeLong" time_ms="4000" />
+		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neues 
+			Fenster ausgewählt wurde. Längere Zeit für bestimmte (Service-)Bildschirme. -->
+		<tns:Duration id="WindowChangeService" time_ms="4500" />
 		<!-- Zeitintervall für den Check der Zählfunktionen, um die berechneten 
 			Werte zu synchronisieren -->
 		<tns:Duration id="checkCalculation" time_ms="86400000" />

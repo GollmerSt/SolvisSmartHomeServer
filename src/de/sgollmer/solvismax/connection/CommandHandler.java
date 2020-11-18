@@ -54,7 +54,7 @@ public class CommandHandler {
 		if (command == null) {
 			return false;
 		}
-		if (command != Command.SERVER_COMMAND) {
+		if (command != Command.SERVER_COMMAND && command != Command.SET ) {
 			logger.info("Command <" + command.name() + "> received");
 		}
 		boolean abortConnection = false;
@@ -288,11 +288,14 @@ public class CommandHandler {
 		try {
 			ignored = solvis.setFromExternal(description, singleData);
 		} catch (TypeException e) {
-			throw new TypeException(e.getMessage() + " Located in revceived commande.");
+			logger.info("Command <SET> received");
+			throw new TypeException(e.getMessage() + " Located in revceived command.");
 		}
 		if (ignored) {
-			logger.info("Setting the channel <" + description.getId() + "> ignored to prevent feedback loops.");
+			logger.debug("Command <SET> received");
+			logger.debug("Setting the channel <" + description.getId() + "> ignored to prevent feedback loops.");
 		} else {
+			logger.info("Command <SET> received");
 			logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");
 		}
 	}
