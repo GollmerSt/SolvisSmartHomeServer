@@ -1579,42 +1579,37 @@
 
 	<complexType name="Dependency">
 		<annotation>
-			<documentation>Es gibt in den Solvis-Menüs Einstellungen, welche erst
-				zu erreichen sind, wenn bestimmte Voreinstellungen durchgeführt
-				wurden.
-				Beispiel ist das Menü 2 der Heizkreise. Dort kann man die
-				fixen
-				Vorlauftemperaturwerte nur errichen, wenn man BetriebsartVT_HK1
-				auf Fix stellt.
+			<documentation>
+				Es gibt in den Solvis-Menüs Einstellungen, welche erst
+				zu erreichen sind, wenn bestimmte Voreinstellungen
+				durchgeführt wurden. Beispiel ist das Menü 2 der
+				Heizkreise. Dort kann man die fixen
+				Vorlauftemperaturwerte nur errichen, wenn man
+				BetriebsartVT_HK1 auf Fix stellt.
 
 				Mit der Dependency-Definition wird festgelegt, unter
-				welchen
-				Besdingungen der Control-Wert erreichbar ist.
+				welchen Besdingungen der Control-Wert erreichbar ist.
 
-				Auch kann man
-				mit der Dependenvcy festlegen, dass z.b. der Heizkreis in
-				den Standby
-				gehen soll, ehe ein bestimmter Parameter
-				modifiziert/ausgelesen wird.
+				Auch kann man mit der Dependenvcy festlegen, dass z.b.
+				der Heizkreis in den Standby gehen soll, ehe ein
+				bestimmter Parameter modifiziert/ausgelesen wird.
 
 				Wird kein Dependency-Value definiert, so wird vor dem
-				Lesen/Schreiben
-				des Kanals der Dependency-Wert ermittelt und nach
-				Ende der
-				Funktion wieder auf den vorherigen Wert zurück gestellt.
-				Dies ist bei der
-				Ermittlung der Soll-Temperaturen Tag/Nacht der
-				Heizkreise notwendig,
-				da es sich gezeigt hat, dass der lange Druck
-				auf den
-				Tag/Nacht-Button manchmal dazu führt, dass der Anlagenmodus
-				des
-				Heizkreises
-				verändert wird.
+				Lesen/Schreiben des Kanals der Dependency-Wert ermittelt
+				und nach Ende der Funktion wieder auf den vorherigen
+				Wert zurück gestellt. Dies ist bei der Ermittlung der
+				Soll-Temperaturen Tag/Nacht der Heizkreise notwendig, da
+				es sich gezeigt hat, dass der lange Druck auf den
+				Tag/Nacht-Button manchmal dazu führt, dass der
+				Anlagenmodus des Heizkreises verändert wird.
 			</documentation>
 		</annotation>
 		<attribute name="id" type="string" use="required"></attribute>
 		<attribute name="value" type="string" use="optional"></attribute>
+		<attribute name="priority" type="positiveInteger">
+			<annotation>
+				<documentation>Sind mehrere Dependencies definiert, gibt "priority" die Priorität an. Ein niedriger Wert hat Vorrang vor einem höheren.</documentation>
+			</annotation></attribute>
 	</complexType>
 	<complexType name="Feature">
 		<annotation>

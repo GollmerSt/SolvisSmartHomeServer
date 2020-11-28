@@ -51,7 +51,7 @@ public class RunTime extends Strategy<RunTime> {
 		SolvisData equipmentOn = aliasGroup.get(allData, "equipmentOn");
 
 		if (result == null || equipmentOn == null) {
-			throw new AssignmentException("Assignment error: DependencyGroup not assigned");
+			throw new AssignmentException("Assignment error: AliasGroup not assigned");
 		}
 
 		if (result.getSingleData() == null) {

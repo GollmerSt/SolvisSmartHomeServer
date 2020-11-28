@@ -52,7 +52,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		SolvisData mixerClosing = aliasGroup.get(allData, "mixerClosing");
 
 		if (result == null || pumpOn == null || mixerClosing == null) {
-			throw new AssignmentException("Assignment error: DependencyGroup not assigned");
+			throw new AssignmentException("Assignment error: AliasGroup not assigned");
 		}
 
 		if (result.getSingleData() == null) {

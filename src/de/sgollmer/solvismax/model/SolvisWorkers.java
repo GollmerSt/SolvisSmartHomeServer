@@ -195,43 +195,15 @@ public class SolvisWorkers {
 		private ExecutedCommand processCommand(Command command) throws IOException, TerminationException,
 				PowerOnException, NumberFormatException, TypeException, XmlException {
 			Command executeCommand = command;
-//			ChannelDescription restoreChannel = command.getRestoreChannel(SolvisWorkers.this.solvis);
-//			Dependency dependency = command.getDependency(SolvisWorkers.this.solvis);
-//			if (restoreChannel == null && dependency != null && !command.isDependencyPrepared()) {
-//				restoreChannel = dependency.getChannelDescription(SolvisWorkers.this.solvis);
-//			}
-//			if (restoreChannel != null) {
-//				if (!this.channelsOfQueueRead.contains(restoreChannel)) {
-//					executeCommand = new CommandControl(restoreChannel, SolvisWorkers.this.solvis);
-//					this.insertCommand(executeCommand, command, false);
-//				}
-//				command.setDependencyPrepared(true);
-//			} else if (dependency != null && command.isDependencyPrepared()) {
-//				ChannelDescription dependentChannel = dependency.getChannelDescription(SolvisWorkers.this.solvis);
-//				SingleData<?> setDependent = dependency.getData(SolvisWorkers.this.solvis);
-//				SolvisData solvisData = new SolvisData(setDependent);
-//				SetResult result = dependentChannel.setValue(SolvisWorkers.this.solvis, solvisData);
-//				ResultStatus status = result.getStatus();
-//				if (status != ResultStatus.SUCCESS) {
-//					return new ExecutedCommand(command, status);
-//				}
-//			}
+
 			String commandString = executeCommand.toString();
 			logger.debug("Command <" + commandString + "> will be executed");
 			ResultStatus status = execute(executeCommand);
-//			if (executeCommand.getReadChannels() != null) {
-//				this.channelsOfQueueRead.addAll(executeCommand.getReadChannels());
-//			}
+
 			if (status == ResultStatus.INTERRUPTED) {
 				logger.debug("Command <" + commandString + "> was interrupted. will be continued.");
 			} else {
-//				restoreChannel = executeCommand.getRestoreChannel(SolvisWorkers.this.solvis);
-//				if (restoreChannel != null) {
-//					SolvisData data = SolvisWorkers.this.solvis.getAllSolvisData().get(restoreChannel);
-//					CommandControl restoreCommand = new CommandControl(restoreChannel, data.getSingleData(),
-//							SolvisWorkers.this.solvis);
-//					this.insertCommand(restoreCommand, executeCommand, true);
-//				}
+
 				logger.debug("Command <" + commandString + "> executed "
 						+ (status == ResultStatus.NO_SUCCESS ? "not " : "") + "successfull");
 			}

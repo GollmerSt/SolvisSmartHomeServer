@@ -76,7 +76,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		SolvisData burnerLevel2On = aliasGroup.get(allData, "burnerLevel2On");
 
 		if (result == null || burnerLevel1On == null || burnerLevel2On == null) {
-			throw new AssignmentException("Assignment error: DependencyGroup not assigned");
+			throw new AssignmentException("Assignment error: AliasGroup not assigned");
 		}
 
 		if (result.getMode() == null) {

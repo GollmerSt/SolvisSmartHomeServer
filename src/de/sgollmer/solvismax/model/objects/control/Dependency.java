@@ -22,20 +22,23 @@ import de.sgollmer.xmllibrary.XmlException;
 public class Dependency implements IAssigner {
 	private final String id;
 	private final String value;
+	private final Integer priority;
 
 	private OfConfigs<ChannelDescription> channel = null;
 
 	protected ChannelDescription description;
 
-	public Dependency(String id, String value) {
+	public Dependency(String id, String value, Integer priority) {
 		this.id = id;
 		this.value = value;
+		this.priority=priority;
 	}
 
 	public static class Creator extends CreatorByXML<Dependency> {
 
 		private String id;
 		private String value;
+		private  Integer priority=null;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -50,13 +53,17 @@ public class Dependency implements IAssigner {
 				case "value":
 					this.value = value;
 					break;
+				case "priority":
+					this.priority = Integer.parseInt(value);
+					break;
+					
 			}
 
 		}
 
 		@Override
 		public Dependency create() throws XmlException, IOException {
-			return new Dependency(this.id, this.value);
+			return new Dependency(this.id, this.value, this.priority);
 		}
 
 		@Override
@@ -138,7 +145,15 @@ public class Dependency implements IAssigner {
 
 	@Override
 	public String toString() {
-		return "ChannelId: " + this.id + ", value: " + this.value;
+		return "ChannelId: " + this.id + ", value: " + this.value + (this.priority==null?"":", priority: " + this.priority);
+	}
+
+	public Integer getPriority() {
+		return this.priority;
+	}
+
+	public String getId() {
+		return this.id;
 	}
 
 }

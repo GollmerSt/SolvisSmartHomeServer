@@ -2875,9 +2875,9 @@
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
 					<tns:Dependency id="C06.Anlagenmodus_HK1"
-						value="Standby" />
+						value="Standby" priority="10" />
 					<tns:Dependency id="C29.BetriebsartVT_HK1"
-						value="Kurve" />
+						value="Kurve" priority="20" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite divisor="100" increment="5"
 					most="250" least="20">
@@ -2912,9 +2912,9 @@
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
 					<tns:Dependency id="C06.Anlagenmodus_HK1"
-						value="Standby" />
+						value="Standby" priority="10" />
 					<tns:Dependency id="C29.BetriebsartVT_HK1"
-						value="Fix" />
+						value="Fix" priority="20" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
@@ -2946,9 +2946,9 @@
 						<tns:BottomRight X="195" Y="87" />
 					</tns:CurrentValue>
 					<tns:Dependency id="C06.Anlagenmodus_HK1"
-						value="Standby" />
+						value="Standby" priority="10" />
 					<tns:Dependency id="C29.BetriebsartVT_HK1"
-						value="Fix" />
+						value="Fix" priority="20" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
@@ -3062,9 +3062,9 @@
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
 					<tns:Dependency id="C12.Anlagenmodus_HK2"
-						value="Standby" />
+						value="Standby" priority="10" />
 					<tns:Dependency id="C34.BetriebsartVT_HK2"
-						value="Kurve" />
+						value="Kurve" priority="20" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite divisor="100" increment="5"
 					most="250" least="20">
@@ -3101,9 +3101,9 @@
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
 					<tns:Dependency id="C12.Anlagenmodus_HK2"
-						value="Standby" />
+						value="Standby" priority="10" />
 					<tns:Dependency id="C34.BetriebsartVT_HK2"
-						value="Fix" />
+						value="Fix" priority="20" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
@@ -3137,9 +3137,9 @@
 						<tns:BottomRight X="195" Y="87" />
 					</tns:CurrentValue>
 					<tns:Dependency id="C12.Anlagenmodus_HK2"
-						value="Standby" />
+						value="Standby" priority="10" />
 					<tns:Dependency id="C34.BetriebsartVT_HK2"
-						value="Fix" />
+						value="Fix" priority="20" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
