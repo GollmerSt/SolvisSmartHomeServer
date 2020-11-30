@@ -2,6 +2,8 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
+    31.11.2020	Es erfolgte ein Fehlerdump im Log, wenn Client die Verbindung schließt, er wird nun besser abgefangen.
+
     28.11.2020  Bei den Dependencies ist eine Priorisierung notwendig. Das machte sich bemerkbar bei der
                 Einstellung der festen Vorlauftemperaturwerten. Mit höchster Prio mus der Heizkreis auf
                 Standby geschaltet werden, danach ist erst der Heizkreismodus auf Fix zu schalten.

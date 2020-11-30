@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -142,6 +143,8 @@ public class Server {
 
 			} catch (ConnectionClosedException e) {
 				logger.info(e.getMessage());
+			} catch (SocketException e ) {
+				logger.info("Client connection closed by client.");
 			} catch (Throwable e) {
 				if (!Server.this.abort) {
 					logger.info("Client connection closed. cause:", e);
