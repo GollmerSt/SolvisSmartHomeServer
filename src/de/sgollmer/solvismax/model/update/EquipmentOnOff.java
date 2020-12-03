@@ -119,6 +119,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		}
 
 		private void updateByControl(SolvisData data, Object source) {
+			if (!this.solvis.isInitialized())
+				return;
 			int controlData;
 			int calcData;
 			try {

@@ -95,6 +95,7 @@ public class Solvis {
 	private final History history = new History();
 	private final boolean mustLearn;
 	private boolean learning = false;
+	private boolean initialized = false ;
 	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
 	private Object solvisMeasureObject = new Object();
 	private HumanAccess humanAccess = HumanAccess.NONE;
@@ -169,6 +170,8 @@ public class Solvis {
 				if (hexString.substring(0, 6).equals("000000")) {
 					this.getSolvisState().setRemoteConnected();
 					throw new PowerOnException("Power on detected");
+				} else {
+					this.getSolvisState().setConnected();
 				}
 			}
 			result = this.measureData;
@@ -276,6 +279,7 @@ public class Solvis {
 			}
 		});
 		this.measurementUpdateThread.start();
+		this.initialized = true;
 	}
 
 	public void updateControlChannels() {
@@ -795,6 +799,10 @@ public class Solvis {
 		Feature feature = new Feature(id, value);
 		this.getGrafics().add(feature);
 
+	}
+
+	public boolean isInitialized() {
+		return this.initialized;
 	}
 
 }

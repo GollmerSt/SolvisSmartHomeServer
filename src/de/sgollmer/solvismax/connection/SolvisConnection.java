@@ -269,8 +269,6 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.errorCount = 0;
 		this.firstTimeout = 0;
 
-		this.solvisState.setConnected();
-
 		switch (this.solvisState.getState()) {
 			case POWER_OFF:
 			case SOLVIS_DISCONNECTED:
@@ -279,7 +277,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 	}
 
-	private void handleExceptionAndThrow(Throwable e) throws IOException, TerminationException {
+	private void handleExceptionAndThrow(IOException e) throws IOException, TerminationException {
 		if (this.urlConnection != null) {
 			try {
 				this.urlConnection.disconnect();
