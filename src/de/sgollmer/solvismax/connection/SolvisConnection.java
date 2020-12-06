@@ -268,13 +268,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private void setConnected() {
 		this.errorCount = 0;
 		this.firstTimeout = 0;
+		
+		this.solvisState.connectionSuccessfull( this.urlBase ) ;
 
-		switch (this.solvisState.getState()) {
-			case POWER_OFF:
-			case SOLVIS_DISCONNECTED:
-				logger.info("Connection to solvis remote <" + this.urlBase + "> successfull.");
-				break;
-		}
 	}
 
 	private void handleExceptionAndThrow(IOException e) throws IOException, TerminationException {

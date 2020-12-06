@@ -168,10 +168,10 @@ public class Solvis {
 				String hexString = measurements.getHexString();
 				this.measureData = new SolvisMeasurements(measurements.getTimeStamp(), hexString.substring(12));
 				if (hexString.substring(0, 6).equals("000000")) {
-					this.getSolvisState().setRemoteConnected();
+					this.getSolvisState().setSolvisDataValid(false);
 					throw new PowerOnException("Power on detected");
 				} else {
-					this.getSolvisState().setConnected();
+					this.getSolvisState().setSolvisDataValid(true);
 				}
 			}
 			result = this.measureData;

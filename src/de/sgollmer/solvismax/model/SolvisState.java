@@ -32,6 +32,8 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 	private final Set<ChannelDescription> errorChannels = new HashSet<>();
 	private boolean error = false;
 	private long timeOfLastSwitchingOn = -1;
+	private boolean solvisClockValid = false;
+	private boolean solvisDataValid = false;
 
 	SolvisState(Solvis solvis) {
 		this.solvis = solvis;
@@ -151,29 +153,8 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 		this.setState(State.POWER_OFF);
 	}
 
-	public void setConnected() {
-		this.setState(State.SOLVIS_CONNECTED);
-	}
-
-//	public void setConnected() {
-//		synchronized (this) {
-//			if (this.state == State.REMOTE_CONNECTED || this.state == State.SOLVIS_CONNECTED) {
-//				return;
-//			}
-//		}
-//		this.setState(State.REMOTE_CONNECTED);
-//	}
-//
-	public void setSolvisConnected() {
-		this.setState(State.SOLVIS_CONNECTED);
-	}
-
 	public void setDisconnected() {
 		this.setState(State.SOLVIS_DISCONNECTED);
-	}
-
-	public void setRemoteConnected() {
-		this.setState(State.REMOTE_CONNECTED);
 	}
 
 	public synchronized State getState() {
@@ -252,6 +233,37 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 
 	boolean isErrorMessage() {
 		return this.errorScreen != null;
+	}
+
+	public synchronized void setSolvisClockValid(boolean valid) {
+		this.solvisClockValid = valid;
+		this.setSolvisConnection();
+	}
+
+	public synchronized void setSolvisDataValid(boolean valid) {
+		this.solvisDataValid = valid;
+		this.setSolvisConnection();
+	}
+
+	private synchronized void setSolvisConnection() {
+		if (this.solvisClockValid && this.solvisDataValid) {
+			this.setState(State.SOLVIS_CONNECTED);
+		} else if (this.state != State.UNDEFINED || !this.solvisClockValid && !this.solvisDataValid) {
+			this.setState(State.REMOTE_CONNECTED);
+		}
+	}
+
+	public void connectionSuccessfull(String urlBase) {
+
+		switch (this.state) {
+			case POWER_OFF:
+			case SOLVIS_DISCONNECTED:
+				if (!this.solvisDataValid && !this.solvisClockValid) {
+					logger.info("Connection to solvis remote <" + urlBase + "> successfull.");
+				}
+				break;
+		}
+
 	}
 
 }

@@ -177,14 +177,16 @@ public enum Strategy implements IType {
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(year, month, date, hour, minute, second);
 
-//			Calendar old = destin.getDate();
-//			int measurementsInterval = solvis.getDefaultReadMeasurementsInterval_ms();
-//
-//			if (old != null && measurementsInterval >= 2000 && (calendar.getTimeInMillis() == old.getTimeInMillis() )) {
-//				solvis.getSolvisState().setRemoteConnected();
-//				throw new PowerOnException("Solvis time not changed");
-//			}
-//
+			Calendar old = destin.getDate();
+			int measurementsInterval = solvis.getDefaultReadMeasurementsInterval_ms();
+
+			if (old != null && measurementsInterval >= 2000 && (calendar.getTimeInMillis() == old.getTimeInMillis())) {
+				solvis.getSolvisState().setSolvisClockValid(false);
+				throw new PowerOnException("Solvis time not changed");
+			} else {
+				solvis.getSolvisState().setSolvisClockValid(true);
+			}
+
 			destin.setDate(calendar, data.getTimeStamp());
 
 			return true;
