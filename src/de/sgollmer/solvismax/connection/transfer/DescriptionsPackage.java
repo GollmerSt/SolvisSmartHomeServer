@@ -12,6 +12,7 @@ import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class DescriptionsPackage extends JsonPackage implements ISendData {
 
@@ -32,6 +33,11 @@ public class DescriptionsPackage extends JsonPackage implements ISendData {
 				ServerCommandDescription descr = new ServerCommandDescription(command);
 				this.data.add(descr);
 			}
+		}
+		
+		for ( Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
+			SelectScreenDescription descr = new SelectScreenDescription(screen.getId());
+			this.data.add(descr);
 		}
 
 	}

@@ -54,6 +54,9 @@ public class ReceivedPackageCreator {
 			case SERVER_COMMAND:
 				result = new ServerCommandPackage();
 				break;
+			case SELECT_SCREEN:
+				result = new SelectScreenPackage();
+				break;
 			default:
 				logger.error("Command <" + command.name() + "> not known");
 				return null;

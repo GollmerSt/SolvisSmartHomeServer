@@ -78,6 +78,7 @@ public class Solvis {
 	private SolvisScreen currentScreen = null;
 	private final Reference<AbstractScreen> previousScreen = new Reference<>(null);
 	private AbstractScreen savedScreen = null;
+	private AbstractScreen defaultScreen = null;
 	private Screen home = null;
 	private SolvisMeasurements measureData = null;
 	private boolean screenSaverActive = false;
@@ -95,7 +96,7 @@ public class Solvis {
 	private final History history = new History();
 	private final boolean mustLearn;
 	private boolean learning = false;
-	private boolean initialized = false ;
+	private boolean initialized = false;
 	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
 	private Object solvisMeasureObject = new Object();
 	private HumanAccess humanAccess = HumanAccess.NONE;
@@ -371,22 +372,24 @@ public class Solvis {
 	}
 
 	void saveScreen() throws IOException, TerminationException {
-		AbstractScreen current = SolvisScreen.get(this.getCurrentScreen(false));
-		if (current == null) {
-			current = SolvisScreen.get(this.getCurrentScreen());
+		if (this.defaultScreen == null) {
+			AbstractScreen current = SolvisScreen.get(this.getCurrentScreen(false));
+			if (current == null) {
+				current = SolvisScreen.get(this.getCurrentScreen());
+			}
+			if (current == null) {
+				current = this.getHomeScreen();
+			}
+			if (current != this.savedScreen) {
+				logger.info("Screen <" + current.getId() + "> saved");
+				this.savedScreen = current;
+			}
 		}
-		if (current == null) {
-			current = this.getHomeScreen();
-		}
-		if (current != this.savedScreen) {
-			logger.info("Screen <" + current.getId() + "> saved");
-			this.savedScreen = current;
-		}
-
 	}
 
 	void restoreScreen() throws IOException, TerminationException {
-		AbstractScreen screen = this.savedScreen;
+		AbstractScreen screen = this.defaultScreen == null ? this.savedScreen : this.defaultScreen;
+
 		if (screen != null) {
 			if (screen.isNoRestore()) {
 				screen = this.getHomeScreen();
@@ -803,6 +806,10 @@ public class Solvis {
 
 	public boolean isInitialized() {
 		return this.initialized;
+	}
+
+	public void setDefaultScreen(AbstractScreen defaultScreen) {
+		this.defaultScreen = defaultScreen;
 	}
 
 }

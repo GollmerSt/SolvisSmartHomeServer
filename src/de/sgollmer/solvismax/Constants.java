@@ -143,6 +143,7 @@ public class Constants {
 		public static final String DATA_SUFFIX = "/data";
 		public static final String META_SUFFIX = "/meta";
 		public static final String SERVER_PREFIX = "server";
+		public static final String SCREEN_PREFIX = "screen";
 		public static final String ONLINE_STATUS = "/online";
 		public static final String STATUS = "/status";
 		public static final String HUMAN_ACCESS = "/human_access";

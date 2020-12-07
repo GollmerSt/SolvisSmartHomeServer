@@ -42,15 +42,15 @@ public enum ServerCommand {
 		return this.general;
 	}
 
-	public static MqttData getMqttMeta(Solvis solvis, boolean general) {
+	public static MqttData getMqttMeta(Solvis solvis) {
 		String topic = Mqtt.formatServerMetaTopic();
 		ArrayValue array = new ArrayValue();
 		for (ServerCommand command : values()) {
-			if (command.isGeneral() == general && command.shouldCreateMeta()) {
+			if (command.isGeneral() == (solvis == null) && command.shouldCreateMeta()) {
 				array.add(new SingleValue(command.name()));
 			}
 		}
-		if (general) {
+		if (solvis == null) {
 			return new MqttData(topic, array.toString(), 0, true);
 		} else {
 			return new MqttData(solvis, '/' + topic, array.toString(), 0, true);

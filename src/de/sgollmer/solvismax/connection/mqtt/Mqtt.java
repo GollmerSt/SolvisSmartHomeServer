@@ -225,11 +225,11 @@ public class Mqtt {
 
 		@Override
 		public void update(SolvisState.State data, Object source) {
-			if ( !(source instanceof SolvisState )) {
-				throw new FatalError( "The source object of the notify must be SolvisState");
+			if (!(source instanceof SolvisState)) {
+				throw new FatalError("The source object of the notify must be SolvisState");
 			}
 			try {
-				Mqtt.this.publish(data.getMqttData((SolvisState)source));
+				Mqtt.this.publish(data.getMqttData((SolvisState) source));
 			} catch (MqttException e) {
 				logger.error("Error on mqtt publish <ResultStatus> of unit <" + this.unit.getId() + ">:", e);
 			} catch (MqttConnectionLost e) {
@@ -383,6 +383,10 @@ public class Mqtt {
 		return Constants.Mqtt.SERVER_PREFIX + Constants.Mqtt.META_SUFFIX;
 	}
 
+	public static String formatScreenMetaTopic() {
+		return Constants.Mqtt.SCREEN_PREFIX + Constants.Mqtt.META_SUFFIX;
+	}
+
 	class Client implements IClient {
 		private final String clientId;
 
@@ -445,7 +449,7 @@ public class Mqtt {
 
 	public void deleteRetainedTopics() throws MqttException, MqttConnectionLost {
 		for (Solvis solvis : this.instances.getUnits()) {
-			this.unpublish(ServerCommand.getMqttMeta(solvis, false));
+			this.unpublish(ServerCommand.getMqttMeta(solvis));
 			solvis.getSolvisDescription().sendToMqtt(solvis, this, true);
 			Collection<SolvisData> dates = solvis.getAllSolvisData().getMeasurements().cloneAndClear();
 			for (SolvisData solvisData : dates) {
@@ -454,6 +458,6 @@ public class Mqtt {
 			this.unpublish(solvis.getSolvisState().getState().getMqttData(solvis.getSolvisState()));
 			this.unpublish(solvis.getHumanAccess().getMqttData(solvis));
 		}
-		this.publish(ServerCommand.getMqttMeta(null, true));
+		this.publish(ServerCommand.getMqttMeta(null));
 	}
 }

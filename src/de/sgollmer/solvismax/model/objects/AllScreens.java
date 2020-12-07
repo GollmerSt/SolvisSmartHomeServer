@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax.model.objects;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class AllScreens implements IScreenLearnable {
 	 */
 	public OfConfigs<AbstractScreen> getScreen(String id) throws XmlException {
 		OfConfigs<AbstractScreen> screens = this.screens.get(id);
-		if ( screens == null ) {
+		if (screens == null) {
 			throw new XmlException("Screen <" + id + "> is unknown, check the control.xml");
 		}
 		for (AbstractScreen screen : screens.getElements()) {
@@ -73,7 +74,7 @@ public class AllScreens implements IScreenLearnable {
 		}
 	}
 
-	public AbstractScreen getScreen(MyImage image, Solvis solvis) {
+	public Screen getScreen(MyImage image, Solvis solvis) {
 		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
 			AbstractScreen screen = screenConf.get(solvis);
 			if (screen != null && screen.isMatchingScreen(image, solvis) && screen.isScreen()) {
@@ -81,6 +82,17 @@ public class AllScreens implements IScreenLearnable {
 			}
 		}
 		return null;
+	}
+
+	public Collection<Screen> getScreens(Solvis solvis) {
+		Collection<Screen> screens = new ArrayList<>();
+		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
+			AbstractScreen screen = screenConf.get(solvis);
+			if (screen != null && screen.isScreen()) {
+				screens.add((Screen) screen);
+			}
+		}
+		return screens;
 	}
 
 	void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {

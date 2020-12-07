@@ -28,10 +28,13 @@ import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.model.CommandSetScreen;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 
 public class CommandHandler {
 
@@ -54,7 +57,7 @@ public class CommandHandler {
 		if (command == null) {
 			return false;
 		}
-		if (command != Command.SERVER_COMMAND && command != Command.SET ) {
+		if (command != Command.SERVER_COMMAND && command != Command.SET) {
 			logger.info("Command <" + command.name() + "> received");
 		}
 		boolean abortConnection = false;
@@ -79,6 +82,9 @@ public class CommandHandler {
 				break;
 			case SERVER_COMMAND:
 				this.executeServerCommand(receivedData, client);
+				break;
+			case SELECT_SCREEN:
+				this.selectScreen(receivedData, client);
 				break;
 			case CLIENT_ONLINE:
 				this.clientOnline(receivedData, client);
@@ -166,6 +172,42 @@ public class CommandHandler {
 				break;
 		}
 
+	}
+
+	private void selectScreen(ITransferedData receivedData, IClient client) {
+
+		ClientAssignments assignments = null;
+		Solvis solvis = null;
+
+		assignments = this.get(client);
+		if (assignments == null) {
+			client.sendCommandError("Client id unknown");
+			client.closeDelayed();
+			return;
+		}
+
+		solvis = client.getSolvis();
+		if (solvis == null) {
+			solvis = receivedData.getSolvis();
+			assignments.add(solvis);
+		}
+
+		String screenId = (String) receivedData.getSingleData().get();
+
+		AbstractScreen screen = null;
+
+		if (!screenId.equals("NONE")) {
+			screen = solvis.getSolvisDescription().getScreens().get(screenId, solvis);
+
+			if (screen == null || !(screen instanceof Screen)) {
+				client.sendCommandError("Screen id unknown");
+				return;
+			}
+		}
+
+		CommandSetScreen command = new CommandSetScreen(screen);
+
+		solvis.execute(command);
 	}
 
 	private synchronized ClientAssignments createClientAssignments(IClient client) {

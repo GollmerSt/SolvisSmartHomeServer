@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
 import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.model.CommandSetScreen;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -48,12 +49,13 @@ final class Callback implements MqttCallbackExtended {
 		synchronized (this.mqtt) {
 			try {
 				if (!reconnect) {
-					this.mqtt.publish(ServerCommand.getMqttMeta(null, true));
+					this.mqtt.publish(ServerCommand.getMqttMeta(null));
 					for (Solvis solvis : this.mqtt.instances.getUnits()) {
 						solvis.registerObserver(this.mqtt.new PublishChannelObserver(solvis));
 						solvis.registerScreenChangedByHumanObserver(this.mqtt.new PublishHumanAccessObserver(solvis));
 						solvis.getSolvisState().register(this.mqtt.new PublishStatusObserver(solvis));
-						this.mqtt.publish(ServerCommand.getMqttMeta(solvis, false));
+						this.mqtt.publish(ServerCommand.getMqttMeta(solvis));
+						this.mqtt.publish(CommandSetScreen.getMqttMeta(solvis));
 						solvis.getSolvisDescription().sendToMqtt(solvis, this.mqtt, false);
 					}
 				}

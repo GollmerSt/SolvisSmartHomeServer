@@ -68,4 +68,8 @@ public enum Command {
 	 * MQTT-Client online
 	 */
 	CLIENT_ONLINE,
+	/**
+	 * Client: Wählt einen bestimmten Bildschirm aus.
+	 */
+	SELECT_SCREEN,
 }

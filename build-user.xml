@@ -61,8 +61,8 @@
 		<pathelement location="lib/log4j-1.2-api-2.13.2.jar" />
 		<pathelement location="lib/log4j-api-2.13.2.jar" />
 		<pathelement location="lib/log4j-core-2.13.2.jar" />
-		<pathelement location="lib/tinylog-api-2.2.0.jar" />
-		<pathelement location="lib/tinylog-impl-2.2.0.jar" />
+		<pathelement location="lib/tinylog-api-2.2.1.jar" />
+		<pathelement location="lib/tinylog-impl-2.2.1.jar" />
 		<pathelement location="lib/mailapi-1.6.2.jar" />
 		<pathelement location="lib/smtp-1.6.2.jar" />
 		<pathelement location="lib/javax.activation-1.2.0.jar" />
@@ -96,8 +96,8 @@
 	</target>
 	<target name="createTinyLogJar" if="${isTinyLog}">
 		<jar destfile="${private.dir}/temp/logger.jar">
-			<zipfileset src="lib/tinylog-api-2.2.0.jar" />
-			<zipfileset src="lib/tinylog-impl-2.2.0.jar" />
+			<zipfileset src="lib/tinylog-api-2.2.1.jar" />
+			<zipfileset src="lib/tinylog-impl-2.2.1.jar" />
 		</jar>
 	</target>
 	<target depends="createjar,createLog4jJar,createTinyLogJar" name="Build for me">

@@ -2,6 +2,9 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
+    07.12.2020  Command "SelectScreen" wird nun unterstützt. Mit diesem kann man einen Bildschirm speziell
+                auswählen, der am Ende eines Zugriffs (egal ob Manuell oder per Server) immer angefahren wird.  
+
     04.12.2020  PowerOn wurde fälschlicherweise auch bei Verbindungsverlust erkannt.
 
     03.12.2020  Equipment On/Off-Zeiten wurden fälschlicherweise beim Neustart auf die ungenaueren Zeiten

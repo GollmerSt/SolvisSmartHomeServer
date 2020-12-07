@@ -189,6 +189,7 @@ GP_Export(
 my %devicesChannelDescriptions ;
 my %devicesSetParameters ;
 my %devicesServerCommands ;
+my %devicesScreenCommands ;
 
 
 
@@ -754,6 +755,9 @@ sub CreateGetSetServerCommands {
     my $serverCommands = '';
 	$devicesServerCommands{$device} = \$serverCommands;
     my @serverCommand_Array = ();
+    my $screenCommands = '';
+	$devicesScreenCommands{$device} = \$screenCommands;
+    my @screenCommand_Array = ();
 
     foreach my $description( keys(%{$descriptions})) {
         my %descriptionHash = %$descriptions{$description};
@@ -765,6 +769,8 @@ sub CreateGetSetServerCommands {
             #if ( $name ne 'GUI_COMMANDS_DISABLE' && $name ne 'GUI_COMMANDS_ENABLE' ) {
                 push(@serverCommand_Array, $name);
             #}
+        } elsif ( $channelHash{Type} eq 'SelectScreen') {
+            push(@screenCommand_Array, $name);
         } else {
             $ChannelDescriptions{$name} = {};
             $ChannelDescriptions{$name}{SET} = $channelHash{Writeable};
@@ -814,6 +820,7 @@ sub CreateGetSetServerCommands {
 
 
     $serverCommands = join(',',sort(@serverCommand_Array));
+    $screenCommands = join(',',sort(@screenCommand_Array));
     
     CreateSetParams($self);
 
@@ -1036,9 +1043,10 @@ sub Set {
 	my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
 	my $setParameters = ${$devicesSetParameters{$device}};
 	my $serverCommands = ${$devicesServerCommands{$device}};
+	my $screenCommands = ${$devicesScreenCommands{$device}};
 
     if ( $cmd eq '?' ) {
-        return "unknown argument $cmd choose one of $setParameters ServerCommand:$serverCommands";
+        return "unknown argument $cmd choose one of $setParameters ServerCommand:$serverCommands SelectScreen:$screenCommands,NONE";
     }
 
     ### If not enough arguments have been provided
@@ -1051,6 +1059,12 @@ sub Set {
         my $serverCommand = $args[0];
 
         SendServerCommand($self, $serverCommand);
+
+    } elsif ( $cmd eq 'SelectScreen') {
+
+        my $screenCommand = $args[0];
+
+        SendScreenCommand($self, $screenCommand);
 
     } else {
 
@@ -1102,6 +1116,21 @@ sub SendServerCommand {
     my $command = shift;
 
     SendData($self, 'SERVER_COMMAND', 'Command', $command);
+
+    return;
+} # end SendServerCommand
+
+
+
+#####################################
+#
+#       Send screen command
+#
+sub SendScreenCommand {
+    my $self = shift;
+    my $screen = shift;
+
+    SendData($self, 'SELECT_SCREEN', 'Screen', $screen);
 
     return;
 } # end SendServerCommand
