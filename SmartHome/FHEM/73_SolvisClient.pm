@@ -26,6 +26,7 @@
 #   00.02.13    25.09.2020  SCMP77              Meta-Daten-Begandlung ergänzt (wegen WW_Pumpe_Min_Laufzeit).
 #   00.02.14    04.10.2020  SCMP77              Meta-Beschreibung nun Device-abhängig, Doku ergänzt.
 #   00.02.15    18.11.2020  SCMP77              Nur HTML-Doku
+#   00.02.16    07.12.2020  SCMP77              Command SelectScreen supported
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -1437,6 +1438,10 @@ sub DbLog_splitFn {
         </ul><BR>
             Diese Tabelle gibt nicht unbedingt den aktuellen Stand wieder. Es k&ouml;nnen mehr oder weniger Server-Befehle definiert sein, da die Server-Befehle vom Server selber dem Client &uuml;bergeben werden (bei jeder neuen Verbindung). Der Server selber bestimmt daher, was
             der Client anbietet. Maßgebend ist daher immer die Ausgabe in der Web-Oberfl&auml;che.
+			<BR><BR>
+            Zus&auml;tzlich kann mittels dem SET-Befehl "ScreenSelect" ein bestimmter Solvis-Bildschirm ausgew&auml;hlt werden, der default-m&auml;&szlig;ig angefahren wird. Die m&ouml;glichen Bildschirm-Namen
+			sind der Web-Oberfl&auml;che zu entnehmen.
+        </ul>
       </ul><BR><BR><BR>
       <table>
         <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>
@@ -1771,6 +1776,8 @@ sub DbLog_splitFn {
           </table>
         </ul><BR>
             This table does not necessarily reflect the current status. More or fewer server commands can be defined, since the server commands are handed over to the client by the server itself (with each new connection). The server itself determines what the client offers. The decisive factor is therefore always the output in the web interface.
+			<BR><BR>
+            In addition, with the SET command "ScreenSelect", a specific Solvis screen can be selected, which is accessed by default. The possible screen names can be found on the web interface.
       </ul><BR><BR><BR>
       <table>
         <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>
@@ -1925,7 +1932,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.15",
+  "version": "v00.02.16",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

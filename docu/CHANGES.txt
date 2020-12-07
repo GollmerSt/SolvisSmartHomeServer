@@ -3,7 +3,9 @@ A E N D E R U N G E N
 Version 01.02.08
 
     07.12.2020  Command "SelectScreen" wird nun unterstützt. Mit diesem kann man einen Bildschirm speziell
-                auswählen, der am Ende eines Zugriffs (egal ob Manuell oder per Server) immer angefahren wird.  
+                auswählen, der am Ende eines Zugriffs (egal ob Manuell oder per Server) immer angefahren wird.
+                
+                Tiny-Log aktualisiert (Version 2.2.1).
 
     04.12.2020  PowerOn wurde fälschlicherweise auch bei Verbindungsverlust erkannt.
 

@@ -15,10 +15,10 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class CommandSetScreen extends Command {
-	
-	private final AbstractScreen screen ;
-	
-	public CommandSetScreen( AbstractScreen screen) {
+
+	private final AbstractScreen screen;
+
+	public CommandSetScreen(AbstractScreen screen) {
 		this.screen = screen;
 	}
 
@@ -32,7 +32,7 @@ public class CommandSetScreen extends Command {
 	@Override
 	protected void notExecuted() {
 	}
-	
+
 	public static MqttData getMqttMeta(Solvis solvis) {
 		String topic = Mqtt.formatScreenMetaTopic();
 		ArrayValue array = new ArrayValue();
@@ -40,6 +40,12 @@ public class CommandSetScreen extends Command {
 			array.add(new SingleValue(screen.getId()));
 		}
 		return new MqttData(solvis, '/' + topic, array.toString(), 0, true);
+	}
+
+	@Override
+	public String toString() {
+		return "Select " + this.screen.getId();
+
 	}
 
 }
