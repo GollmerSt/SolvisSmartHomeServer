@@ -180,11 +180,14 @@ $(fhemDir)/FHEM/$(fhemModul): $(packageFhemDir)/$(fhemModul)
 createCommandRef:
 	cd $(fhemDir); sudo -u $(account) $(perl) $(fhemCommand)
 	@echo
-	@echo "******************************"
-	@echo "**                          **"
-	@echo "**  Bitte FHEM neu starten  **"
-	@echo "**                          **"
-	@echo "******************************"
+	@echo "************************************"
+	@echo "**                                **"
+	@echo "**     Bitte FHEM neu starten     **"
+	@echo "**                                **"
+	@echo "** z.B. mittels                   **"
+	@echo "**   sudo systemctl restart fhem  **"
+	@echo "**                                **"
+	@echo "************************************"
 
 
 

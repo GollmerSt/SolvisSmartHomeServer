@@ -2,6 +2,10 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
+    08.12.2020  Im Falle eines Anwender-/Service-Zugriffs entstanden seit Version 01.02.04 fehlerhafte Error-Messages. 
+    
+                Heizungskreise Installateur: Ignore-Felder fehlten noch.
+
     07.12.2020  Command "SelectScreen" wird nun unterstützt. Mit diesem kann man einen Bildschirm speziell
                 auswählen, der am Ende eines Zugriffs (egal ob Manuell oder per Server) immer angefahren wird.
                 
@@ -54,7 +58,7 @@ Version 01.02.07
     12.10.2020  FindBugs wurde über das Programmpaket drüber laufen gelassen und die gemeldeten Stellen wurden
                 korrigiert.
                 Hinter den Stellen verbergen sich nach genauer Analyse nicht wirklich um Dinge, welche man
-                ändern muss. So hatte sich ein Bug durch copy und paste verfielfacht, der beim Einlesen der
+                ändern muss. So hatte sich ein Bug durch copy und paste vervielfacht, der beim Einlesen der
                 XML-Files eine Rolle spieln würde, wenn XML fehlerhaft wären. XML-Files werden jedoch zuvor
                 gecheckt, so dass diese Bugs eine Auswirkung haben konnten.
                 Bei den anderen Bugs ging es mehr um Fehlervermeidung. Der Code wurde entsprechend

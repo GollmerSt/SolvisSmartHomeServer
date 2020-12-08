@@ -1100,7 +1100,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
-		<tns:Screen id="Heizung-Anforderung"
+		<tns:Screen id="Heizung-Anforderung" ignoreChanges="true"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -1200,6 +1200,10 @@
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
 			</tns:Identification>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="150" Y="70" />
+				<tns:BottomRight X="200" Y="120" />
+			</tns:IgnoreRectangle>
 		</tns:Screen>
 		<tns:Screen id="Heizkreis2-1_11"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
@@ -1281,6 +1285,10 @@
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
 			</tns:Identification>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="150" Y="70" />
+				<tns:BottomRight X="200" Y="120" />
+			</tns:IgnoreRectangle>
 		</tns:Screen>
 		<tns:Screen id="Wasser-Installateur"
 			backId="Installateur-Menue" previousId="Installateur-Menue">

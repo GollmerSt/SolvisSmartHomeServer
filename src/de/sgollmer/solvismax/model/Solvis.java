@@ -18,15 +18,14 @@ import de.sgollmer.solvismax.connection.Distributor;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.AliasException;
+import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.FileHelper;
-import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -76,7 +75,7 @@ public class Solvis {
 	private final int echoInhibitTime_ms;
 	private int configurationMask = 0;
 	private SolvisScreen currentScreen = null;
-	private final Reference<AbstractScreen> previousScreen = new Reference<>(null);
+	private AbstractScreen previousScreen = null;
 	private AbstractScreen savedScreen = null;
 	private AbstractScreen defaultScreen = null;
 	private Screen home = null;
@@ -147,7 +146,7 @@ public class Solvis {
 	}
 
 	private SolvisScreen getRealScreen() throws IOException, TerminationException {
-		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()), this, this.previousScreen);
+		SolvisScreen screen = new SolvisScreen(new MyImage(getConnection().getScreen()), this);
 		return screen;
 	}
 
@@ -224,7 +223,7 @@ public class Solvis {
 
 	public void gotoHome() throws IOException, TerminationException {
 		this.gotoHome(false);
-		this.previousScreen.set(this.getHomeScreen());
+		this.setPreviousScreen(this.getHomeScreen());
 	}
 
 	public void gotoHome(boolean lastChance) throws IOException, TerminationException {
@@ -357,6 +356,12 @@ public class Solvis {
 	void notifyScreenChangedByHumanObserver(HumanAccess humanAccess) {
 		this.humanAccess = humanAccess;
 		this.screenChangedByHumanObserable.notify(humanAccess);
+		switch ( humanAccess ) {
+			case SERVICE:
+			case USER:
+				this.previousScreen = null ;
+				break;
+		}
 	}
 
 	public HumanAccess getHumanAccess() {
@@ -810,6 +815,19 @@ public class Solvis {
 
 	public void setDefaultScreen(AbstractScreen defaultScreen) {
 		this.defaultScreen = defaultScreen;
+	}
+
+	public AbstractScreen getPreviousScreen() {
+		return this.previousScreen;
+	}
+
+	public void setPreviousScreen(AbstractScreen previousScreen) {
+		switch( this.humanAccess ) {
+			case UNKNOWN:
+			case NONE:
+				this.previousScreen = previousScreen;
+				break;
+		}
 	}
 
 }

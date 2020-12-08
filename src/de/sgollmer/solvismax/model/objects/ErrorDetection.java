@@ -432,7 +432,7 @@ public class ErrorDetection {
 
 			MyImage myImage = new MyImage(image);
 
-			SolvisScreen screen = new SolvisScreen(myImage, null, null);
+			SolvisScreen screen = new SolvisScreen(myImage, null);
 
 			Type type = errorDetection.getType(screen, test.isHome);
 
