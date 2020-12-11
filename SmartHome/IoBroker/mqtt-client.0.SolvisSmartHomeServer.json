@@ -9039,6 +9039,86 @@
       "ownerGroup": "system.group.administrator"
     }
   },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.screen.meta": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "meta",
+      "type": "mixed",
+      "read": true,
+      "write": false,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/mySolvis/screen/meta",
+          "publish": false,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": true,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": true
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/mySolvis/screen/meta"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741958139,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.mySolvis.screen.meta",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
+  "mqtt-client.0.SolvisSmartHomeServer.mySolvis.screen.cmnd": {
+    "type": "state",
+    "role": "text",
+    "common": {
+      "name": "data",
+      "type": "mixed",
+      "read": false,
+      "write": true,
+      "desc": "created from topic",
+      "custom": {
+        "mqtt-client.0": {
+          "enabled": true,
+          "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/screen/cmnd",
+          "publish": true,
+          "pubChangesOnly": false,
+          "pubAsObject": false,
+          "qos": 0,
+          "retain": false,
+          "subscribe": false,
+          "subChangesOnly": false,
+          "subAsObject": false,
+          "subQos": 0,
+          "setAck": false
+        }
+      }
+    },
+    "native": {
+      "topic": "SolvisSmartHomeServer/IoBroker/mySolvis/screen/cmnd"
+    },
+    "from": "system.adapter.mqtt-client.0",
+    "user": "system.user.admin",
+    "ts": 1594741940332,
+    "_id": "mqtt-client.0.SolvisSmartHomeServer.screen.cmnd",
+    "acl": {
+      "object": 1636,
+      "state": 1636,
+      "owner": "system.user.admin",
+      "ownerGroup": "system.group.administrator"
+    }
+  },
   "mqtt-client.0.SolvisSmartHomeServer.server.cmnd": {
     "type": "state",
     "role": "text",

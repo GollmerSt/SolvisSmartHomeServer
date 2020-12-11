@@ -18,6 +18,7 @@ enum SubscribeType {
 	CLIENT_ONLINE(new String[] { "online" }, 1, false, false, Command.CLIENT_ONLINE, Format.BOOLEAN), //
 	UNIT_STATUS(new String[] { "status" }, 1, true, false, null, Format.NONE), //
 	UNIT_SERVER_COMMAND(new String[] { "server", "cmnd" }, 2, true, false, Command.SERVER_COMMAND, Format.STRING), //
+	UNIT_SCREEN_COMMAND(new String[] { "screen", "cmnd" }, 2, true, false, Command.SELECT_SCREEN, Format.STRING), //
 	UNIT_CHANNEL_COMMAND(new String[] { "cmnd" }, 3, true, true, Command.SET, Format.FROM_META), //
 	UNIT_CHANNEL_UPDATE(new String[] { "update" }, 3, true, true, Command.GET, Format.NONE), //
 	UNIT_CHANNEL_DATA(new String[] { "data" }, 2, true, true, null, Format.NONE), //

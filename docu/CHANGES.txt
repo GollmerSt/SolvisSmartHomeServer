@@ -2,6 +2,8 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
+    11.12.2020  Command "SelectScreen" funktionierte noch nicht über die MQTT-Schnittstelle. 
+
     08.12.2020  Im Falle eines Anwender-/Service-Zugriffs entstanden seit Version 01.02.04 fehlerhafte Error-Messages. 
     
                 Heizungskreise Installateur: Ignore-Felder fehlten noch.
@@ -42,7 +44,7 @@ Version 01.02.08
     14.11.2020  Der Service-Mode wurde nicht immer gesetzt, wenn die SolvisRemote eingeschaltet blieb und die Anlage
                 selber ausgeschaltet wurde (bei aktiviertem PowerOffIsServiceAccess-Feature).
 
-    31.10.2020  Tiny-Log aktualisiert
+    31.10.2020  Tiny-Log aktualisiert. (Version 2.2.0).
 
     24.10.2020  XML-Methoden durch private XML-Libary ersetzt.
 
