@@ -419,11 +419,17 @@ public class ScreenSequence extends AbstractScreen {
 
 		AbstractScreen result = null;
 
-		for (ScreenRef ref : this.screenRefs) {
-			AbstractScreen screen = ref.getScreen(solvis);
-			if (screen != null && screen.isMatchingScreen(image, solvis)) {
-				result = screen;
-				break;
+		if ((result = this.matches(this.getPreviousScreen(solvis), image, solvis)) != null) {
+			//
+		} else if ((result = this.matches(this.getBackScreen(solvis), image, solvis)) != null) {
+			//
+		} else {
+			for (ScreenRef ref : this.screenRefs) {
+				AbstractScreen screen = ref.getScreen(solvis);
+				if (screen != null && screen.isMatchingScreen(image, solvis)) {
+					result = screen;
+					break;
+				}
 			}
 		}
 		return result;

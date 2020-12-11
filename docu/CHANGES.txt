@@ -2,7 +2,9 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
-    11.12.2020  Command "SelectScreen" funktionierte noch nicht über die MQTT-Schnittstelle. 
+    11.12.2020  Command "SelectScreen" funktionierte noch nicht über die MQTT-Schnittstelle.
+    
+                Beim Anfahren des Anlagenstatus gab es im Log noch eine falsche Fehlermeldung.
 
     08.12.2020  Im Falle eines Anwender-/Service-Zugriffs entstanden seit Version 01.02.04 fehlerhafte Error-Messages. 
     

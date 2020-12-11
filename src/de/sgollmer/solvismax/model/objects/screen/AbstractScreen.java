@@ -262,7 +262,7 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 		return false;
 	}
 
-	private AbstractScreen matches(AbstractScreen screen, MyImage image, Solvis solvis) {
+	protected AbstractScreen matches(AbstractScreen screen, MyImage image, Solvis solvis) {
 		if (screen == null) {
 			return null;
 		}
@@ -278,14 +278,19 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 		AbstractScreen result = null;
 
 		if ((result = this.matches(this, image, solvis)) != null) {
-		} //
-		else if ((result = this.matches(this.getPreviousScreen(solvis), image, solvis)) != null) {
-		} //
-		else if ((result = this.matches(this.getBackScreen(solvis), image, solvis)) != null) {
-		} //
-		else {
+			//
+		} else if ((result = this.matches(this.getPreviousScreen(solvis), image, solvis)) != null) {
+			//
+		} else if ((result = this.matches(this.getBackScreen(solvis), image, solvis)) != null) {
+			//
+		} else {
 			for (AbstractScreen screen : this.nextScreens) {
-				if (screen.isMatchingScreen(image, solvis)) {
+				if (screen instanceof ScreenSequence) {
+					result = screen.getSurroundScreen(image, solvis);
+					if (result != null) {
+						break;
+					}
+				} else if (screen.isMatchingScreen(image, solvis)) {
 					result = screen;
 					break;
 				}
