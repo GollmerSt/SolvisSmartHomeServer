@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -176,8 +177,15 @@ public enum Strategy implements IType {
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(year, month, date, hour, minute, second);
-
+			
 			Calendar old = destin.getDate();
+			
+			boolean debug = Constants.Debug.FIX_SOLVIS_TIME;
+
+			if ( old != null && debug ) {
+				calendar = old ;
+			}
+
 			int measurementsInterval = solvis.getDefaultReadMeasurementsInterval_ms();
 
 			if (old != null && measurementsInterval >= 2000 && (calendar.getTimeInMillis() == old.getTimeInMillis())) {

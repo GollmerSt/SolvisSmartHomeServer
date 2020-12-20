@@ -72,6 +72,7 @@ public class Mqtt {
 	Instances instances = null;
 	CommandHandler commandHandler = null;
 	private MqttThread mqttThread = null;
+	private final MqttQueue mqttQueue;
 
 	private Mqtt(boolean enable, String brokerUrl, int port, String userName, CryptAes passwordCrypt,
 			String topicPrefix, String idPrefix, int publishQoS, int subscribeQoS, Ssl ssl) {
@@ -85,6 +86,7 @@ public class Mqtt {
 		this.publishQoS = publishQoS;
 		this.subscribeQoS = subscribeQoS;
 		this.ssl = ssl;
+		this.mqttQueue = new MqttQueue(this);
 
 		LoggerFactory.setLogger("de.sgollmer.solvismax.connection.mqtt.Logger");
 	}
@@ -197,44 +199,20 @@ public class Mqtt {
 
 	class PublishChannelObserver implements IObserver<SolvisData> {
 
-		private final Unit unit;
-
-		PublishChannelObserver(Solvis solvis) {
-			this.unit = solvis.getUnit();
-		}
-
 		@Override
 		public void update(SolvisData data, Object source) {
-			try {
-				Mqtt.this.publish(data.getMqttData());
-			} catch (MqttException e) {
-				logger.error("Error on mqtt publish <" + data.getId() + "> of unit <" + this.unit.getId() + ">:", e);
-			} catch (MqttConnectionLost e) {
-				logger.debug("No MQTT connection publish <" + data.getId() + ">");
-			}
+			Mqtt.this.publish(data.getMqttData());
 		}
 	}
 
 	class PublishStatusObserver implements IObserver<SolvisState.State> {
-
-		private final Unit unit;
-
-		PublishStatusObserver(Solvis solvis) {
-			this.unit = solvis.getUnit();
-		}
 
 		@Override
 		public void update(SolvisState.State data, Object source) {
 			if (!(source instanceof SolvisState)) {
 				throw new FatalError("The source object of the notify must be SolvisState");
 			}
-			try {
-				Mqtt.this.publish(data.getMqttData((SolvisState) source));
-			} catch (MqttException e) {
-				logger.error("Error on mqtt publish <ResultStatus> of unit <" + this.unit.getId() + ">:", e);
-			} catch (MqttConnectionLost e) {
-				logger.debug("No MQTT connection publish <ResultStatus>");
-			}
+			Mqtt.this.publish(data.getMqttData((SolvisState) source));
 		}
 
 	}
@@ -249,14 +227,7 @@ public class Mqtt {
 
 		@Override
 		public void update(HumanAccess data, Object source) {
-			try {
-				Mqtt.this.publish(data.getMqttData(this.solvis));
-			} catch (MqttException e) {
-				logger.error("Error on mqtt publish <HumannAccess> of unit <" + this.solvis.getUnit().getId() + ">:",
-						e);
-			} catch (MqttConnectionLost e) {
-				logger.debug("No MQTT connection publish <HumannAccess>");
-			}
+			Mqtt.this.publish(data.getMqttData(this.solvis));
 		}
 
 	}
@@ -270,8 +241,12 @@ public class Mqtt {
 			this.publish(data);
 		}
 	}
+	
+	public void publish(MqttData data) {
+		this.mqttQueue.publish(data);
+	}
 
-	public synchronized void publish(MqttData data) throws MqttException, MqttConnectionLost {
+	public synchronized void publishRaw(MqttData data) throws MqttException, MqttConnectionLost {
 		if (data == null) {
 			return;
 		}
@@ -280,10 +255,7 @@ public class Mqtt {
 		if (qoS == 0) {
 			message.setQos(this.publishQoS);
 		}
-		StringBuilder builder = new StringBuilder(this.topicPrefix);
-		builder.append('/');
-		builder.append(data.topicSuffix);
-		String topic = builder.toString();
+		String topic = this.getTopic(data);
 		if (this.client == null || !this.client.isConnected()) {
 			logger.debug("Not connected, message not delivered");
 			throw new MqttConnectionLost();
@@ -292,15 +264,16 @@ public class Mqtt {
 		logger.debug("Messsage was sent to <" + topic + ">, data: " + message.toString());
 
 	}
+	
+	public String getTopic(MqttData data) {
+		StringBuilder builder = new StringBuilder(this.topicPrefix);
+		builder.append('/');
+		builder.append(data.topicSuffix);
+		return builder.toString();
+	}
 
-	void publishError(String clientId, String message) {
-		try {
-			this.publish(new MqttData(clientId + Constants.Mqtt.ERROR, message, 0, false));
-		} catch (MqttException e) {
-			logger.error("Can't deliver error message to iClient: " + message);
-		} catch (MqttConnectionLost e) {
-			logger.debug("No MQTT connection publish erro message");
-		}
+	void publishError(String clientId, String message, Unit unit) {
+		this.publish(new MqttData(clientId + Constants.Mqtt.ERROR, message, 0, false, unit));
 	}
 
 	MqttData getLastWill() {
@@ -349,14 +322,12 @@ public class Mqtt {
 		if (this.mqttThread != null) {
 			this.mqttThread.abort();
 		}
+		
+		this.publish(this.getLastWill());
+		this.mqttQueue.abort();
 
 		if (this.client.isConnected()) {
 			try {
-				try {
-					this.publish(this.getLastWill());
-				} catch (MqttConnectionLost e) {
-					logger.debug("Can't deliver value of last will at disconnection");
-				}
 				this.client.disconnect();
 				this.client.close();
 			} catch (MqttException e) {
@@ -396,7 +367,7 @@ public class Mqtt {
 
 		@Override
 		public void sendCommandError(String message) {
-			publishError(this.clientId, message);
+			publishError(this.clientId, message, this.getSolvis().getUnit());
 			logger.info(message);
 
 		}
@@ -459,5 +430,6 @@ public class Mqtt {
 			this.unpublish(solvis.getHumanAccess().getMqttData(solvis));
 		}
 		this.publish(ServerCommand.getMqttMeta(null));
+
 	}
 }

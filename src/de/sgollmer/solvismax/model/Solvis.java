@@ -14,6 +14,7 @@ import java.util.Calendar;
 import javax.xml.stream.XMLStreamException;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.Constants.Debug;
 import de.sgollmer.solvismax.connection.Distributor;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
@@ -60,8 +61,6 @@ public class Solvis {
 	// LoggerFactory.getLogger(Solvis.class);
 	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
-	private static final boolean DEBUG_TWO_STATIONS = false;
-
 	private final SolvisState solvisState = new SolvisState(this);
 	private final SolvisDescription solvisDescription;
 	private final AllSolvisData allSolvisData;
@@ -167,7 +166,7 @@ public class Solvis {
 				SolvisMeasurements measurements = this.connection.getMeasurements();
 				String hexString = measurements.getHexString();
 				this.measureData = new SolvisMeasurements(measurements.getTimeStamp(), hexString.substring(12));
-				if (hexString.substring(0, 6).equals("000000")) {
+				if (hexString.substring(0, 6).equals("000000") || Constants.Debug.SOLVIS_RESULT_NULL) {
 					this.getSolvisState().setSolvisDataValid(false);
 					throw new PowerOnException("Power on detected");
 				} else {
@@ -637,7 +636,7 @@ public class Solvis {
 			try {
 				this.configurationMask = this.getSolvisDescription().getConfigurations(this);
 				this.configurationMask |= this.getUnit().getConfigOrMask();
-				if (DEBUG_TWO_STATIONS) {
+				if (Debug.DEBUG_TWO_STATIONS) {
 					this.configurationMask |= 0x00000003;
 				}
 				connected = true;

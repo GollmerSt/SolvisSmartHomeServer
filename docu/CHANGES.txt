@@ -2,6 +2,10 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
+    20.12.2020  Manchmal auftretendes Dead-Problem beim Server-Start im Zusammenhang mit der
+                MQTT-Schnittstelle behoben.
+                
+
     11.12.2020  Command "SelectScreen" funktionierte noch nicht über die MQTT-Schnittstelle.
     
                 Beim Anfahren des Anlagenstatus gab es im Log noch eine falsche Fehlermeldung.

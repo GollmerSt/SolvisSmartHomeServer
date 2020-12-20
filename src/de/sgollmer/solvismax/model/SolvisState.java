@@ -168,6 +168,9 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 	}
 
 	private void setState(State state) {
+		if (state == null) {
+			return;
+		}
 		boolean changed = false;
 		synchronized (this) {
 
@@ -236,21 +239,30 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 	}
 
 	public synchronized void setSolvisClockValid(boolean valid) {
-		this.solvisClockValid = valid;
+		synchronized (this) {
+			this.solvisClockValid = valid;
+		}
 		this.setSolvisConnection();
 	}
 
 	public synchronized void setSolvisDataValid(boolean valid) {
-		this.solvisDataValid = valid;
+		synchronized (this) {
+			this.solvisDataValid = valid;
+		}
 		this.setSolvisConnection();
 	}
 
 	private synchronized void setSolvisConnection() {
-		if (this.solvisClockValid && this.solvisDataValid) {
-			this.setState(State.SOLVIS_CONNECTED);
-		} else if (this.state != State.UNDEFINED || !this.solvisClockValid && !this.solvisDataValid) {
-			this.setState(State.REMOTE_CONNECTED);
+		State state = null;
+		synchronized (this) {
+
+			if (this.solvisClockValid && this.solvisDataValid) {
+				state = State.SOLVIS_CONNECTED;
+			} else if (this.state != State.UNDEFINED || !this.solvisClockValid && !this.solvisDataValid) {
+				state = State.REMOTE_CONNECTED;
+			}
 		}
+		this.setState(state);
 	}
 
 	public void connectionSuccessfull(String urlBase) {

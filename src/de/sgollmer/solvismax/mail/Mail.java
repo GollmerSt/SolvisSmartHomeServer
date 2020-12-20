@@ -30,6 +30,7 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.Constants.Debug;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
@@ -42,8 +43,6 @@ import de.sgollmer.xmllibrary.XmlException;
 public class Mail {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(Mail.class);
-
-	private static boolean DEBUG = false; // kein Mailversand
 
 	enum Security {
 		TLS, SSL, NONE
@@ -194,7 +193,7 @@ public class Mail {
 		message.setContent(multipart);
 
 		logger.info("Send email...");
-		if (!DEBUG) {
+		if (!Debug.NO_MAIL) {
 			Transport.send(message);
 		} else {
 			logger.info("Text of mail: " + subject);

@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.Constants.Debug;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
@@ -36,8 +37,6 @@ import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class ScreenSaver implements IAssigner {
-
-	private static boolean DEBUG = false;
 
 	private static final java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+:\\d+");
 	private static final java.util.regex.Pattern DATE_PATTERN = java.util.regex.Pattern
@@ -205,7 +204,7 @@ public class ScreenSaver implements IAssigner {
 			this.lastState = PositionState.NONE;
 
 			if (!pattern.isIn(check)) {
-				if (DEBUG) {
+				if (Debug.SCREEN_SAVER_DETECTION) {
 					this.debugInfo = "Not in <timeDateRectangle>. " + pattern.getDebugInfo();
 				}
 				return State.NONE;
@@ -244,7 +243,7 @@ public class ScreenSaver implements IAssigner {
 				java.util.regex.Pattern regex) {
 
 			if (!timeDatePattern.isIn(rectangle.getBottomRight())) {
-				if (DEBUG) {
+				if (Debug.SCREEN_SAVER_DETECTION) {
 					this.debugInfo = "Not in <" + rectangle.getName() + ">. " + timeDatePattern.getDebugInfo();
 				}
 				return null;
@@ -254,7 +253,7 @@ public class ScreenSaver implements IAssigner {
 			String time = ocrRectangle.getString();
 			Matcher m = regex.matcher(time);
 			if (!m.matches()) {
-				if (DEBUG) {
+				if (Debug.SCREEN_SAVER_DETECTION) {
 					this.debugInfo = timeDatePattern.getDebugInfo() + ", " + rectangle.getName() + " contents = "
 							+ time;
 				}

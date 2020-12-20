@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import de.sgollmer.solvismax.objects.Coordinate;
 
 public class Constants {
-	public static final int DEBUG_USER_ACCESS_TIME = 60000;
 	/**
 	 * In case of an error the connection to the client ist closed delayed in case
 	 * of sending the cause tro the client
@@ -79,7 +78,7 @@ public class Constants {
 	public static final int MODBUS_SLAVE_ID = 1;
 
 	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
-	
+
 	public static class Solvis {
 		public static final int INPUT_BUFFER_SIZE = 1024;
 		public static final String DISPLAY = "/display.bmp?";
@@ -87,7 +86,7 @@ public class Constants {
 		public static final String TOUCH = "/Touch.CGI?";
 		public static final String X = "x=";
 		public static final String Y = "y=";
-		public static final String TASTER = "/Taster.CGI?taste=" ;
+		public static final String TASTER = "/Taster.CGI?taste=";
 		public static final String ID = "i=";
 	}
 
@@ -151,6 +150,17 @@ public class Constants {
 		public static final int MAX_INFLIGHT = 200;
 		public static final int MIN_CONNECTION_REPEAT_TIME = 1000;
 		public static final int MAX_CONNECTION_REPEAT_TIME = 120000;
+
+	}
+
+	public static class Debug {
+
+		public static final int USER_ACCESS_TIME = 60000;
+		public static final boolean NO_MAIL = false; // kein Mailversand
+		public static boolean SCREEN_SAVER_DETECTION = false; // more debugging info
+		public static boolean DEBUG_TWO_STATIONS = false;
+		public static boolean FIX_SOLVIS_TIME = false;
+		public static boolean SOLVIS_RESULT_NULL = false;
 
 	}
 

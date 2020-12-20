@@ -63,8 +63,8 @@ public class SolvisWorkers {
 
 	private class ControlWorkerThread extends Thread {
 
-		private LinkedList<Command> queue = new LinkedList<>();
-		private Collection<ChannelDescription> channelsOfQueueRead = new ArrayList<>();
+		private final LinkedList<Command> queue = new LinkedList<>();
+		private final Collection<ChannelDescription> channelsOfQueueRead = new ArrayList<>();
 		private boolean abort = false;
 		private int screenRestoreInhibitCnt = 0;
 		private int optimizationInhibitCnt = 0;

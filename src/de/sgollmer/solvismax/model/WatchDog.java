@@ -12,6 +12,7 @@ import java.util.Collection;
 
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.Constants.Debug;
 import de.sgollmer.solvismax.connection.ConnectionStatus;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -87,7 +88,7 @@ public class WatchDog {
 		this.clearErrorMessageAfterMail = solvis.getFeatures().isClearErrorMessageAfterMail();
 		this.saver = saver.createExecutable(solvis);
 		Unit unit = this.solvis.getUnit();
-		this.releaseBlockingAfterUserChange_ms = BaseData.DEBUG ? Constants.DEBUG_USER_ACCESS_TIME
+		this.releaseBlockingAfterUserChange_ms = BaseData.DEBUG ? Debug.USER_ACCESS_TIME
 				: unit.getReleaseBlockingAfterUserAccess_ms();
 		this.releaseBlockingAfterServiceAccess_ms = unit.getReleaseBlockingAfterServiceAccess_ms();
 		this.endOfUserByScreenSaver = unit.getFeatures().getFeature(XML_END_OF_USER_BY_SCREEN_SAVER);
