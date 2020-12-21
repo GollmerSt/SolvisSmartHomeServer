@@ -89,4 +89,9 @@ public class SingleValue implements IValue {
 	public SingleData<?> getData() {
 		return this.data;
 	}
+
+	@Override
+	public String toString() {
+		return this.data.toString();
+	}
 }

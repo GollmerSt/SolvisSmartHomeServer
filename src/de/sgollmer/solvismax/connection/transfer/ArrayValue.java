@@ -9,15 +9,25 @@ package de.sgollmer.solvismax.connection.transfer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import de.sgollmer.solvismax.error.JsonException;
 
 public class ArrayValue implements IValue {
 
-	private Collection<IValue> values = new ArrayList<>();
+	private final Collection<? extends IValue> values ;
 
+	public ArrayValue(List<SingleValue> values) {
+		this.values = values;
+	}
+
+	public ArrayValue() {
+		this.values = new ArrayList<>();
+	}
+
+	@SuppressWarnings("unchecked")
 	public void add(IValue value) {
-		this.values.add(value);
+		((Collection<IValue>) this.values).add(value);
 	}
 
 	@Override
@@ -49,7 +59,7 @@ public class ArrayValue implements IValue {
 				case '{':
 					Frame frame = new Frame();
 					position = frame.from(json, position);
-					this.values.add(frame);
+					this.add(frame);
 					c = Helper.charAt(json, position);
 					break;
 				case ',':
@@ -61,7 +71,7 @@ public class ArrayValue implements IValue {
 				default:
 					SingleValue single = new SingleValue();
 					single.from(json, position);
-					this.values.add(single);
+					this.add(single);
 					break;
 			}
 		}

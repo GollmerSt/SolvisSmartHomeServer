@@ -1,6 +1,9 @@
 package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
@@ -35,10 +38,24 @@ public class CommandSetScreen extends Command {
 
 	public static MqttData getMqttMeta(Solvis solvis) {
 		String topic = Mqtt.formatScreenMetaTopic();
-		ArrayValue array = new ArrayValue();
+		List<SingleValue> values = new ArrayList<>();
 		for (Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
-			array.add(new SingleValue(screen.getId()));
+			values.add(new SingleValue(screen.getId()));
 		}
+		values.sort(new Comparator<SingleValue>() {
+
+			@Override
+			public int compare(SingleValue o1, SingleValue o2) {
+				if (o1 != null) {
+					return o1.toString().compareTo(o2.toString());
+				} else if (o2 == null) {
+					return 0;
+				} else {
+					return -1;
+				}
+			}
+		});
+		ArrayValue array = new ArrayValue(values);
 		return new MqttData(solvis, '/' + topic, array.toString(), 0, true);
 	}
 

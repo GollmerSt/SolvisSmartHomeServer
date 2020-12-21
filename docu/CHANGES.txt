@@ -2,6 +2,11 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
+    21.12.2020  Einge Screens wegen besserer Lesbarkeit unbenannt
+    
+                Mqtt-Meta-Beschreibung der Screens sortiert
+                
+
     20.12.2020  Manchmal auftretendes Dead-Problem beim Server-Start im Zusammenhang mit der
                 MQTT-Schnittstelle behoben.
                 
