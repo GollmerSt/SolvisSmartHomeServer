@@ -17,6 +17,8 @@ public enum ServerCommand {
 	BACKUP(true), //
 	RESTART(true), //
 	TERMINATE(true, false), //
+	DEBUG_ENABLE(true, false), //
+	DEBUG_DISABLE(true, false), //
 	SCREEN_RESTORE_INHIBIT(false), //
 	SCREEN_RESTORE_ENABLE(false), //
 	COMMAND_OPTIMIZATION_INHIBIT(false), //

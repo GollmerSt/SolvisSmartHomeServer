@@ -16,6 +16,7 @@ public class Constants {
 	 * In case of an error the connection to the client ist closed delayed in case
 	 * of sending the cause tro the client
 	 */
+
 	public static final int DELAYED_CLOSING_TIME = 1000;
 	public static final String LOG4J_CONFIG_FILE = "log4j2.xml";
 
@@ -155,12 +156,23 @@ public class Constants {
 
 	public static class Debug {
 
+		public static boolean DEBUG = false;
+
 		public static final int USER_ACCESS_TIME = 60000;
 		public static final boolean NO_MAIL = false; // kein Mailversand
-		public static boolean SCREEN_SAVER_DETECTION = false; // more debugging info
-		public static boolean DEBUG_TWO_STATIONS = false;
-		public static boolean FIX_SOLVIS_TIME = false;
-		public static boolean SOLVIS_RESULT_NULL = false;
+		public static final boolean SCREEN_SAVER_DETECTION = false; // more debugging info
+		public static final boolean DEBUG_TWO_STATIONS = false;
+
+		public static final boolean SOLVIS_TIME_FIXED = false;
+		public static final boolean SOLVIS_RESULT_NULL = false;
+		
+		public static boolean isSolvisTimeFixed() {
+			return DEBUG && SOLVIS_TIME_FIXED;
+		}
+
+		public static boolean isSolvisResultNull() {
+			return DEBUG && SOLVIS_RESULT_NULL;
+		}
 
 	}
 

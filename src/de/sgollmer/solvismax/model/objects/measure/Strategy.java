@@ -180,7 +180,7 @@ public enum Strategy implements IType {
 			
 			Calendar old = destin.getDate();
 			
-			boolean debug = Constants.Debug.FIX_SOLVIS_TIME;
+			boolean debug = Constants.Debug.isSolvisTimeFixed();
 
 			if ( old != null && debug ) {
 				calendar = old ;

@@ -166,7 +166,7 @@ public class Solvis {
 				SolvisMeasurements measurements = this.connection.getMeasurements();
 				String hexString = measurements.getHexString();
 				this.measureData = new SolvisMeasurements(measurements.getTimeStamp(), hexString.substring(12));
-				boolean debug = Constants.Debug.SOLVIS_RESULT_NULL;
+				boolean debug = Constants.Debug.isSolvisResultNull() ;
 				if (hexString.substring(0, 6).equals("000000") || debug) {
 					this.getSolvisState().setSolvisDataValid(false);
 					throw new PowerOnException("Power on detected");

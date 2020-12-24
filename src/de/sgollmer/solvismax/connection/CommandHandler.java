@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 import javax.xml.stream.XMLStreamException;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.Main;
 import de.sgollmer.solvismax.connection.Server.Client;
@@ -166,6 +167,13 @@ public class CommandHandler {
 			case TERMINATE:
 				this.terminate(false);
 				break;
+			case DEBUG_ENABLE:
+				Constants.Debug.DEBUG=true;
+				break;
+			case DEBUG_DISABLE:
+				Constants.Debug.DEBUG=false;
+				break;
+				
 			default:
 				String message = "Server command <" + commandString + ">unknown.";
 				client.sendCommandError(message);

@@ -7,6 +7,9 @@
 #define MyAppVersion    "1.1.0"
 #define MyAppExeName    "Startup.bat"
 #define MyJarFile       "SolvisSmartHomeServer.jar"
+#define MyIconName      "Solvis.ico"
+#define MyWindowsDir    "..\..\SmartHome\Windows"
+
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -34,11 +37,13 @@ RestartIfNeededByRun=no
 ;Name: "english"; MessagesFile: "compiler:Default.isl"
 ;Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
-[Tasks]
-Name: "run"; Description: "Automatic start";
-Name: "run\OnWindowsStart"; Description: "Start with windows"; Flags: exclusive
-Name: "run\OnLogon"; Description: "Start on logon"; Flags: exclusive unchecked
+[Types]
+Name: "main"; Description: "Main installation"
+Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
+[Components]
+Name: "fhem"; Description: "Fhem files"; Flags: checkablealone;
+Name:"iobroker"; Description: "ioBroker files"; Flags: checkablealone;
 
 [Files]
 Source: "Startup.bat"; DestDir: "{app}"; Flags: ignoreversion; 
@@ -46,15 +51,26 @@ Source: "{#MyBaseDir}\base.xml.new"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "{#MyBaseDir}\base.xsd"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "{#MyBaseDir}\CHANGES.txt"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "{#MyBaseDir}\SolvisSmartHomeServer.jar"; DestDir: "{app}"; Flags: ignoreversion;
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: "{#MyBaseDir}\FHEM\*"; DestDir: "{app}\FHEM"; Flags: ignoreversion; Components: fhem;
+Source: "{#MyBaseDir}\IoBroker\*"; DestDir: "{app}\IoBroker"; Flags: ignoreversion; Components: iobroker;
+Source: "{#MyWindowsDir}\{#MyIconName}"; DestDir: "{app}"; Flags: ignoreversion;
+; NOTE: Don't use "Flags: gnoreversion" on any shared system files
+
+[Tasks]
+Name: "run"; Description: "Automatic start";
+Name: "run\OnWindowsStart"; Description: "Start with windows"; Flags: exclusive;
+Name: "run\OnLogon"; Description: "Start on logon"; Flags: exclusive unchecked;
+;Name: "fhem"; Description: "Add Fhem files to the installation directory"; Components: fhem; 
+;Name: "iobroker"; Description: "Add ioBroker files to the installation directory"; Components: iobroker; 
+
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}""";
-Name: "{group}\{#MyAppName} in DOS window"; Filename: "{app}\{#MyAppExeName}"; Parameters: "dos";    
-Name: "{group}\Learn"; Filename: "{app}\{#MyAppExeName}"; Parameters: "learn";
-Name: "{group}\Terminate"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}"" --server-terminate";
-Name: "{group}\Crypt"; Filename: "{app}\{#MyAppExeName}"; Parameters: "crypt";
-Name: "{group}\Send testmail"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}"" --test-mail";
+Name: "{group}\{#MyAppName}"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}"""; IconFilename: "{app}\{#MyIconName}";
+Name: "{group}\{#MyAppName} in DOS window"; Filename: "{app}\{#MyAppExeName}"; Parameters: "dos"; IconFilename: "{app}\{#MyIconName}";
+Name: "{group}\Learn"; Filename: "{app}\{#MyAppExeName}"; Parameters: "learn"; IconFilename: "{app}\{#MyIconName}";
+Name: "{group}\Terminate"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}"" --server-terminate"; IconFilename: "{app}\{#MyIconName}";
+Name: "{group}\Crypt"; Filename: "{app}\{#MyAppExeName}"; Parameters: "crypt"; IconFilename: "{app}\{#MyIconName}";
+Name: "{group}\Send testmail"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}"" --test-mail"; IconFilename: "{app}\{#MyIconName}";
 Name: "{group}\Uninstall {#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Run]
