@@ -37,13 +37,6 @@ RestartIfNeededByRun=no
 ;Name: "english"; MessagesFile: "compiler:Default.isl"
 ;Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
-[Types]
-Name: "main"; Description: "Main installation"
-Name: "custom"; Description: "Custom installation"; Flags: iscustom
-
-[Components]
-Name: "fhem"; Description: "Fhem files"; Flags: checkablealone;
-Name:"iobroker"; Description: "ioBroker files"; Flags: checkablealone;
 
 [Files]
 Source: "Startup.bat"; DestDir: "{app}"; Flags: ignoreversion; 
@@ -51,8 +44,6 @@ Source: "{#MyBaseDir}\base.xml.new"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "{#MyBaseDir}\base.xsd"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "{#MyBaseDir}\CHANGES.txt"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "{#MyBaseDir}\SolvisSmartHomeServer.jar"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "{#MyBaseDir}\FHEM\*"; DestDir: "{app}\FHEM"; Flags: ignoreversion; Components: fhem;
-Source: "{#MyBaseDir}\IoBroker\*"; DestDir: "{app}\IoBroker"; Flags: ignoreversion; Components: iobroker;
 Source: "{#MyWindowsDir}\{#MyIconName}"; DestDir: "{app}"; Flags: ignoreversion;
 ; NOTE: Don't use "Flags: gnoreversion" on any shared system files
 
@@ -60,8 +51,6 @@ Source: "{#MyWindowsDir}\{#MyIconName}"; DestDir: "{app}"; Flags: ignoreversion;
 Name: "run"; Description: "Automatic start";
 Name: "run\OnWindowsStart"; Description: "Start with windows"; Flags: exclusive;
 Name: "run\OnLogon"; Description: "Start on logon"; Flags: exclusive unchecked;
-;Name: "fhem"; Description: "Add Fhem files to the installation directory"; Components: fhem; 
-;Name: "iobroker"; Description: "Add ioBroker files to the installation directory"; Components: iobroker; 
 
 
 [Icons]

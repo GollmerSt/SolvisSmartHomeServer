@@ -2,8 +2,7 @@ A E N D E R U N G E N
 
 Version 01.02.08
 
-    24.12.2020  Windows-Installation: Die FHEM und iobroker-Files zum Installationspaket
-                hinzugefuegt
+    25.12.2020  Icon für Startmenü hinzugefügt, Innosetup entsprechend geändert
 
     23.12.2020  Eine Debugging-Hilfe eingebaut, welche man mit DEBUG_ENABLE un DEBUG_DISABLE
                 steuern kann.
