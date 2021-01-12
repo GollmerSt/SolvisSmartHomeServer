@@ -1,5 +1,15 @@
 A E N D E R U N G E N
 
+Version 01.02.09
+
+    12.01.2021  Für den SelctScreen-Befehl dürfen nur Screens auswählbar sein, deren Attribut
+                "noRestore" nicht gesetzt ist.
+                
+                FHEM-Modul: Die Log-Ausgabe bei einem Command-Error erhält nun die
+                Fehlerbeschreibung
+
+
+
 Version 01.02.08
 
     25.12.2020  Icon für Startmenü hinzugefügt, Innosetup entsprechend geändert
@@ -73,6 +83,7 @@ Version 01.02.08
     24.10.2020  XML-Methoden durch private XML-Libary ersetzt.
 
 
+
 Version 01.02.07
 
     15.10.2020  HTTP Proxy fuer Mail-Versand nun moeglich.
@@ -91,10 +102,12 @@ Version 01.02.07
                 entsprechend den Empfehlungen geaendert.
 
 
+
 Version 01.02.06
 
     10.10.2020  Der base.xml-Reader war leider doch nicht ganz kompatibel zu aelteren base.xnml files.
                 Bei Verwendung aelterer Versionen konnte einen Nullpointer-Exception auftreten.
+
 
 
 Version 01.02.05
@@ -133,6 +146,7 @@ Version 01.02.05
                 oder einzustellenden Wert um 5K ueberschreitet.
 
     07.10.2020  Die Update-Bedingungen fuer die neuen Kanaele waren noch nicht vollstaendig. Bedingungen ergaenzt.
+
 
 
 Version 01.02.04
@@ -191,6 +205,7 @@ Version 01.02.04
                 DeadLock mit Mqtt gleichzeitig mit Server-Client gefixt
 
 
+
 Version 01.02.04 rc1
 
     25.09.2020  Prepare ist ueberfluessig, wird durch Dependency ersetzt.
@@ -213,6 +228,7 @@ Version 01.02.04 rc1
                 Status abhaengig ist (nur bei Kurve).
 
                 C28.BetriebsartVT_HK1 neu.
+
 
 
 Version 01.02.03
@@ -238,6 +254,7 @@ Version 01.02.03
     06.09.2020  Die Learned-Images wurden teilweise nicht richtig beannt.
 
 
+
 Version 01.02.03 rc6
 
     05.09.2020  Um den Anlagenstatus "Heizkreise" zu erkennen, wurde bisher der Bereich des Brenners gesannt.
@@ -247,6 +264,7 @@ Version 01.02.03 rc6
     04.09.2020  Auf den "Kanaelen" X05.BrennerStatus, X07.MischerPosition0_HK1 und X08.MischerPosition0_HK2
                 konnten Glitches entstehen, da sie von je 2 anderen Kanaelen abhaengig sind, welche (fast)
                 gleichzeitig sich aendern koennen. Dadurch konnten fehlerhafte Events ausgeloest werden.
+
 
 
 Version 01.02.03 rc5
@@ -271,6 +289,7 @@ Version 01.02.03 rc5
                 Modbus-Erweiterung entfernt
 
 
+
 Version 01.02.03 rc4
 
     19.08.2020  Durch die Integration der Lernphase in den normalen Start, trat nach der Learning-Phase in
@@ -281,6 +300,7 @@ Version 01.02.03 rc4
                 Automatische Eingabe des Codes in der Nutzerauswahl realisiert
 
 
+
 Version 01.02.03 rc3
 
     18.08.2020  Die 3 der Heizkreisueberschrift wurde faelschlicherweise als 1 erkannt
@@ -288,11 +308,13 @@ Version 01.02.03 rc3
                 Fehlerhafte Touch-Koordinaten bei den Bildschirmen 2 und 3 der Heizkreise
 
 
+
 Version 01.02.03 rc2
 
     17.08.2020  Ein mustSave-Attribut in der control.xml eingefuehrt. Mittels dieses Attributs kann man zur Analyse
                 ein Abspeichern eines Screens waehrend des Learnings erzwingen, auch wenn er zum Learning nicht
                 erforderlich ist.
+
 
 
 Version 01.02.03 rc1
@@ -310,6 +332,7 @@ Version 01.02.03 rc1
                 ioBroker-Script zum Pairing der Solvis-Objekte erstellt.
 
 
+
 Version 01.02.02
 
     14.08.2020  Die Images, welche beim Learning abgespeichert werden, wurden erweitert.
@@ -321,6 +344,7 @@ Version 01.02.02
                 Das Learning wurde nicht in allen erforderlichen Faellen automatisch angestossen. Gefixt.
 
                 BugFix: Nach Ende des Clock-Adjustment trat eine Nullpointer-Exception auf.
+
 
 
 Version 01.02.01
@@ -382,9 +406,11 @@ Version 01.02.01
                 werden muss.
 
 
+
 Version 01.02.00
 
     06.08.2020  Decrypt-Fehlermeldungen verbessert
+
 
 
 Version 01.02.00 rc2
@@ -404,6 +430,7 @@ Version 01.02.00 rc2
                 bei einer IOException im Goto der angelernte Screen nicht richtig ueberprueft.
 
 
+
 Version 01.02.00 rc1
 
     01.08.2000  Einige Fehlerklassen muessen auf Exception basieren
@@ -418,6 +445,7 @@ Version 01.02.00 rc1
                 zu machen.
 
                 Beim Anlernvorgang wurde ein falscher Screen-Name bei einer IoException gemeldet
+
 
 
 Version 01.01.03 rc3
@@ -577,6 +605,7 @@ Version 01.00.11
                 gesichert und danach wieder restauriert.
 
 
+
 Version 01.00.10
 
     14.05.2020  Die Grafik des Bildschirmschoners ist an einigen Solvis-Anlagen nicht im Bild komplett
@@ -601,6 +630,7 @@ Version 01.00.10
                 Anlagenfehler vor.
 
 
+
 Version 01.00.09
 
     10.05.2020  Fuer die Steuerfiles base.xml und control.xml einen Check gegenueber die entsprechende
@@ -614,6 +644,7 @@ Version 01.00.09
 
     12.05.2020  Die Passwort-Verschluesselung kam nicht mit Passwoertern klar, welche eine Laenge von
                 14 + N * 16 und 15 + N * 16 hatten.
+
 
 
 Version 01.00.08
@@ -640,11 +671,13 @@ Version 01.00.08
                 gelesen werden kann, wird sie immer neu erstellt, d.h. ein Learning wird notwendig.
 
 
+
 Version 01.00.07
 
     01.05.2020  FHEM-Client um einige Logs erweitert und von einem unnoetigen Teil bereinigt, der
                 in einem besonderen Fall stundenlang verhindern konnte, dass er sich wieder mit
                 dem Server verbindet.
+
 
 
 Version 01.00.06
@@ -669,11 +702,13 @@ Version 01.00.06
                 nicht ueberschrieben
 
 
+
 Version 01.00.05
 
     28.04.2020  Die XML-Struktur des control.xml-Files musste durch die Modbus-Ergaenzung geaendert
                 werden. Durch ein Bug funktionierte danach die Solvis-Konfiguration ohne Raumfuehler
                 nicht mehr.
+
 
 
 Version 01.00.04
@@ -682,6 +717,7 @@ Version 01.00.04
                 im Bildschirm "Heizkreise" faelschlicherweise der Button fuer den heizkreis 1 gedrueckt
 
                 Uninstall ueber das makefile funktionierte nicht mehr, gefixt
+
 
 
 Version 01.00.03
@@ -700,6 +736,7 @@ Version 01.00.03
                 einem Heizkreis nicht gedrueckt.
 
                 Einige Kanaele zeigten noch einen um Faktor 10 zu hohen Wert an
+
 
 
 Version 01.00.02
@@ -726,6 +763,7 @@ Version 01.00.02
     25.04.2020  Endlos-Schleife bei Anlagen mit mehr als einem Heizkreis gefixt.
 
 
+
 Version 01.00.01
 
     15.03.2020  control.xsd erweiter fuer Modbus
@@ -743,6 +781,8 @@ Version 01.00.01
 
                 Nach einem User-Zugriff wurde weder die WW-Temperatur noch der Status der
                 WW-Pumpe aktualisiert
+
+
 
 Version 00.11.02
 
@@ -765,7 +805,6 @@ Version 00.11.02
     6.03.2020   Der Service-Access wurde nicht automatisch nach 1h zurueckgesetzt, da bei der
                 Anzeige des Bildschirmschoners (was nach 1h immer der Fall ist) der
                 Service-Access-Mode durch ein Bug nicht verlassen werden konnte.
-
 
 
 
@@ -841,6 +880,7 @@ Version 00.11.01
                 ist, erfolgt dieser Vorgang.
 
 
+
 Version 00.10.06
 
     08.02.2020  Bewirkt ein Control-Command mehr als 2 Fehler, wird er an das Ende der Queue
@@ -854,13 +894,11 @@ Version 00.10.06
 
 
 
-
 Version 00.10.05
 
     07.02.2020  Bei Brenner-Laufzeit-Synchronisation war Screen-Restore invertiert.
                 Bei einem moduliertem Gasbrenner gibt es keinen "C03.LaufzeitAnforderung2".
                 Der fehlende Wert wird ignoriert und durch 0 ersetzt.
-
 
 
 
@@ -872,7 +910,6 @@ Version 00.10.04
 
 
 
-
 Version 00.10.03
 
     06.02.2020  control.xml korrigiert. Bei der Konfiguration SolvisMax + Solarmodul war der
@@ -880,7 +917,6 @@ Version 00.10.03
 
                 Bei fehlender Definition eines Bildschirmreferenz kam es zu einer Null-Pointer-
                 Exception. Es erscheint nun eine sinnvolle Fehlermeldung.
-
 
 
 
@@ -957,7 +993,6 @@ Version 00.10.02
 
 
 
-
 Version 00.10.01
 
     15.01.2020  Average-Routine geaendert. Einzelne Messausreisser konnten die angezeigte
@@ -968,7 +1003,6 @@ Version 00.10.01
     16.01.2020  Die Erkennung von User-Eingriffen funktionierte nicht mehr. Fixed.
 
     17.01.2020  Modus mit mehr als einem Heizkreis ueberarbeitet und sowei moeglich getestet.
-
 
 
 

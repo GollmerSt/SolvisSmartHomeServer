@@ -34,10 +34,12 @@ public class DescriptionsPackage extends JsonPackage implements ISendData {
 				this.data.add(descr);
 			}
 		}
-		
-		for ( Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
-			SelectScreenDescription descr = new SelectScreenDescription(screen.getId());
-			this.data.add(descr);
+
+		for (Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
+			if (!screen.isNoRestore()) {
+				SelectScreenDescription descr = new SelectScreenDescription(screen.getId());
+				this.data.add(descr);
+			}
 		}
 
 	}

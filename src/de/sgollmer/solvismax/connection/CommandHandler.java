@@ -168,12 +168,12 @@ public class CommandHandler {
 				this.terminate(false);
 				break;
 			case DEBUG_ENABLE:
-				Constants.Debug.DEBUG=true;
+				Constants.Debug.DEBUG = true;
 				break;
 			case DEBUG_DISABLE:
-				Constants.Debug.DEBUG=false;
+				Constants.Debug.DEBUG = false;
 				break;
-				
+
 			default:
 				String message = "Server command <" + commandString + ">unknown.";
 				client.sendCommandError(message);
@@ -209,6 +209,9 @@ public class CommandHandler {
 
 			if (screen == null || !(screen instanceof Screen)) {
 				client.sendCommandError("Screen id unknown");
+				return;
+			} else if (screen.isNoRestore()) {
+				client.sendCommandError("Screen <" + screenId + "> not usable for select screen command");
 				return;
 			}
 		}

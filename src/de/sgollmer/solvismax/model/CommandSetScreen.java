@@ -40,7 +40,9 @@ public class CommandSetScreen extends Command {
 		String topic = Mqtt.formatScreenMetaTopic();
 		List<SingleValue> values = new ArrayList<>();
 		for (Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
-			values.add(new SingleValue(screen.getId()));
+			if (!screen.isNoRestore()) {
+				values.add(new SingleValue(screen.getId()));
+			}
 		}
 		values.sort(new Comparator<SingleValue>() {
 

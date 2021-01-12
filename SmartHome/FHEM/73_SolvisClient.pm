@@ -27,6 +27,7 @@
 #   00.02.14    04.10.2020  SCMP77              Meta-Beschreibung nun Device-abhängig, Doku ergänzt.
 #   00.02.15    18.11.2020  SCMP77              Nur HTML-Doku
 #   00.02.16    07.12.2020  SCMP77              Command SelectScreen supported
+#   00.02.17    12.01.2021  SCMP77              Command error message will now be written to the log file
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -648,6 +649,9 @@ sub InterpreteConnectionState {
         'HUMAN_ACCESS_FINISHED' => sub {
             readingsSingleUpdate($self,'HumanAccess','none',1);
             Log($self, 3, 'User access finished');
+        },
+        'COMMAND_ERROR' => sub {
+            Log($self, 3, "Command error: $message");
         }
     );
 
@@ -1932,7 +1936,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.16",
+  "version": "v00.02.17",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

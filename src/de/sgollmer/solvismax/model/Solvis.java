@@ -166,7 +166,7 @@ public class Solvis {
 				SolvisMeasurements measurements = this.connection.getMeasurements();
 				String hexString = measurements.getHexString();
 				this.measureData = new SolvisMeasurements(measurements.getTimeStamp(), hexString.substring(12));
-				boolean debug = Constants.Debug.isSolvisResultNull() ;
+				boolean debug = Constants.Debug.isSolvisResultNull();
 				if (hexString.substring(0, 6).equals("000000") || debug) {
 					this.getSolvisState().setSolvisDataValid(false);
 					throw new PowerOnException("Power on detected");
@@ -356,10 +356,10 @@ public class Solvis {
 	void notifyScreenChangedByHumanObserver(HumanAccess humanAccess) {
 		this.humanAccess = humanAccess;
 		this.screenChangedByHumanObserable.notify(humanAccess);
-		switch ( humanAccess ) {
+		switch (humanAccess) {
 			case SERVICE:
 			case USER:
-				this.previousScreen = null ;
+				this.previousScreen = null;
 				break;
 		}
 	}
@@ -393,11 +393,12 @@ public class Solvis {
 	}
 
 	void restoreScreen() throws IOException, TerminationException {
+
 		AbstractScreen screen = this.defaultScreen == null ? this.savedScreen : this.defaultScreen;
 
 		if (screen != null) {
 			if (screen.isNoRestore()) {
-				screen = this.getHomeScreen();
+				screen = this.defaultScreen == null ? this.getHomeScreen() : this.defaultScreen;
 			}
 			screen.goTo(this);
 			logger.info("Screen <" + screen.getId() + "> restored");
@@ -822,7 +823,7 @@ public class Solvis {
 	}
 
 	public void setPreviousScreen(AbstractScreen previousScreen) {
-		switch( this.humanAccess ) {
+		switch (this.humanAccess) {
 			case UNKNOWN:
 			case NONE:
 				this.previousScreen = previousScreen;
