@@ -2,6 +2,12 @@ A E N D E R U N G E N
 
 Version 01.02.09
 
+    14.01.2021  MustBeWhite der  Screen-Idenitifikation war beim Screen "Anlagenstatus-HK"
+                fälschlicherweise nicht in den Identification-Tag geschrieben. Durch ein
+                Fehler im xsd-File wurde das nicht erkannt.
+                Dadurch kann bei bestimmten Anlagenkonfigurationen das Learning nicht
+                eindeutig sein.
+
     12.01.2021  Für den SelctScreen-Befehl dürfen nur Screens auswählbar sein, deren Attribut
                 "noRestore" nicht gesetzt ist.
                 

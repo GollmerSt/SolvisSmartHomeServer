@@ -602,11 +602,11 @@
 					<tns:TopLeft X="200" Y="24" />
 					<tns:BottomRight X="235" Y="30" />
 				</tns:MustBeWhite>
+				<tns:MustBeWhite invertFunction="true">
+					<tns:TopLeft X="45" Y="35" />
+					<tns:BottomRight X="55" Y="45" />
+				</tns:MustBeWhite>
 			</tns:Identification>
-			<tns:MustBeWhite invertFunction="true">
-				<tns:TopLeft X="45" Y="35" />
-				<tns:BottomRight X="55" Y="45" />
-			</tns:MustBeWhite>
 		</tns:Screen>
 		<tns:Screen id="Anlagenstatus-Solar" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">

@@ -93,23 +93,7 @@
 						ist. Ist etwas unsauber gelöst.
 					</documentation>
 				</annotation>
-			</element>
-			<element name="MustBeWhite" type="tns:Rectangle"
-				maxOccurs="unbounded" minOccurs="0">
-				<annotation>
-					<documentation>
-						Dieses rechteck wird nur im Lernvorgang geprüft,
-						ob
-						es ein rein weißes Feld ist. Speziell bei der
-						ScreenSequence wird
-						dadurch errieicht, dass der
-						richtige Bildschirm beim Lernen erkannt
-						wird,
-						auch wenn das erste Element nicht klar definiert
-						ist.
-					</documentation>
-				</annotation>
-			</element>
+			</element>
 			<element name="PreparationRef" type="tns:PreparationRef"
 				maxOccurs="1" minOccurs="0">
 			</element>
