@@ -78,7 +78,10 @@ public class ErrorDetection {
 	}
 
 	public enum Type {
-		NONE, HOME_NONE, MESSAGE_BOX, ERROR_BUTTON
+		NONE, //
+		HOME_NONE, // Home without error button
+		MESSAGE_BOX, //
+		ERROR_BUTTON
 	}
 
 	public Type getType(SolvisScreen screen) {

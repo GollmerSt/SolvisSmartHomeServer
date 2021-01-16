@@ -134,9 +134,8 @@ public class Solvis {
 	}
 
 	SolvisScreen getCurrentScreen(boolean screensaverOff) throws IOException, TerminationException {
-		if (this.screenSaverActive && screensaverOff) {
-			this.resetSreensaver();
-			this.screenSaverActive = false;
+		if (this.screenSaverActive && (screensaverOff || this.currentScreen == null)) {
+			this.resetScreensaver();
 		}
 		if (this.currentScreen == null) {
 			this.currentScreen = this.getRealScreen();
@@ -185,7 +184,7 @@ public class Solvis {
 		}
 	}
 
-	private void resetSreensaver() throws IOException, TerminationException {
+	private void resetScreensaver() throws IOException, TerminationException {
 		this.setScreenSaverActive(false);
 		this.send(this.resetSceenSaver);
 	}
@@ -415,7 +414,7 @@ public class Solvis {
 	/**
 	 * @param screenSaver the screenSaver to set
 	 */
-	private void setScreenSaverActive(boolean screenSaverActive) {
+	void setScreenSaverActive(boolean screenSaverActive) {
 		if (this.screenSaverActive != screenSaverActive) {
 			if (screenSaverActive) {
 				logger.info("Screen saver detected");

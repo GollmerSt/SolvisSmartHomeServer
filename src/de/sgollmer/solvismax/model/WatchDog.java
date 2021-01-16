@@ -302,6 +302,7 @@ public class WatchDog {
 			case POWER_OFF:
 				this.powerOff = true;
 				current = HumanAccess.SERVICE;
+				this.solvis.setScreenSaverActive(false);
 				break;
 			case NONE:
 			case SCREENSAVER:
@@ -327,6 +328,9 @@ public class WatchDog {
 						}
 						break;
 				}
+				if (event == Event.SCREENSAVER) {
+					this.solvis.setScreenSaverActive(true);
+				}
 				break;
 			case POWER_ON:
 				this.powerOff = false;
@@ -336,6 +340,7 @@ public class WatchDog {
 						this.serviceScreenDetected = false;
 					}
 				}
+				this.solvis.setScreenSaverActive(false);
 				break;
 			case CHANGED:
 				if (this.powerOff) {
@@ -357,10 +362,12 @@ public class WatchDog {
 						current = HumanAccess.USER;
 					}
 				}
+				this.solvis.setScreenSaverActive(false);
 				break;
 			case SET_ERROR_BY_BUTTON:
 			case SET_ERROR_BY_MESSAGE:
 			case RESET_ERROR:
+				this.solvis.setScreenSaverActive(false);
 				break;
 			case INIT:
 				if (realScreen != null && this.solvis.getSolvisDescription().getService()
@@ -370,6 +377,8 @@ public class WatchDog {
 						this.humanAccess = HumanAccess.SERVICE;
 					}
 				}
+				this.solvis.setScreenSaverActive(false);
+				break;
 		}
 		processHumanAccess(current);
 	}
