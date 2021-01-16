@@ -1086,6 +1086,8 @@
 			<simpleType>
 				<restriction base="string">
 					<enumeration value="SolvisMax"></enumeration>
+					<enumeration value="SolvisMax6"></enumeration>
+					<enumeration value="SolvisMax7"></enumeration>
 					<enumeration value="SolvisBen"></enumeration>
 				</restriction>
 			</simpleType>

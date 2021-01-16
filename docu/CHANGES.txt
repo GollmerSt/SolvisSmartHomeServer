@@ -4,7 +4,10 @@ Version 01.02.09
 
     16.02.2021  Die ScreenSaver-Erkennung funktionierte nicht mehr richtig. Dadurch wurde immer
                 bei einem GUI-befehl der Back-Button genutzt, obgleich er der richtige Screen
-                in Wirklichkeit ausgewählt war und ein Klick in den Bildschirm gereicht hätte. 
+                in Wirklichkeit ausgewählt war und ein Klick in den Bildschirm gereicht hätte.
+                
+                Unit-Typen "SolvisMax6" und "SolvisMax7" hinzu gefügt, das sich die SolvisMax7
+                Bildschirme leicht von den SolisMax6 unterscheiden.
 
     14.01.2021  MustBeWhite der  Screen-Idenitifikation war beim Screen "Anlagenstatus-HK"
                 fälschlicherweise nicht in den Identification-Tag geschrieben. Durch ein

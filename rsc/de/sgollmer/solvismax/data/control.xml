@@ -5,6 +5,8 @@
 	xsi:schemaLocation="http://www.example.org/control control.xsd ">
 	<tns:SolvisTypes>
 		<tns:Type id="SolvisMax" configuration="0x01000000" />
+		<tns:Type id="SolvisMax6" configuration="0x01000000" />
+		<tns:Type id="SolvisMax7" configuration="0x04000000" />
 		<tns:Type id="SolvisBen" configuration="0x02000000" />
 		<!-- weitere Werte: -->
 		<!-- 0x0001: Heizkreis 1 vorhanden -->
@@ -635,12 +637,14 @@
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
-		<!-- SolvisBen-Definitionen für Anlagenstatus -->
+		<!-- SolvisBen/Max7-Definitionen für Anlagenstatus -->
 		<tns:Screen id="Anlagenstatus-WW" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x03000000"
+				<tns:ConfigurationMask andMask="0x07000000"
 					compareMask="0x02000000" />
+				<tns:ConfigurationMask andMask="0x07000000"
+					compareMask="0x04000000" />
 			</tns:Configuration>
 			<tns:SequenceUp pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -651,23 +655,25 @@
 				<tns:Coordinate X="230" Y="120" />
 			</tns:SequenceDown>
 			<tns:Identification>
-				<tns:Grafic id="Anlagenstatus-WW Ben">
+				<tns:Grafic id="Anlagenstatus-WW Ben/Max7">
 					<tns:Rectangle>
 						<tns:TopLeft X="107" Y="80" />
 						<tns:BottomRight X="125" Y="125" />
 					</tns:Rectangle>
 				</tns:Grafic>
 				<tns:MustBeWhite>
-					<tns:TopLeft X="45" Y="30" />
-					<tns:BottomRight X="75" Y="85" />
+					<tns:TopLeft X="95" Y="10" />
+					<tns:BottomRight X="135" Y="55" />
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
 		<tns:Screen id="Anlagenstatus-HK" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x03000000"
+				<tns:ConfigurationMask andMask="0x07000000"
 					compareMask="0x02000000" />
+				<tns:ConfigurationMask andMask="0x07000000"
+					compareMask="0x04000000" />
 			</tns:Configuration>
 			<tns:SequenceUp pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -678,23 +684,29 @@
 				<tns:Coordinate X="230" Y="120" />
 			</tns:SequenceDown>
 			<tns:Identification>
-				<tns:Grafic id="Anlagenstatus-HK Ben">
+				<tns:Grafic id="Anlagenstatus-HK Ben/Max7">
 					<tns:Rectangle>
 						<tns:TopLeft X="90" Y="13" />
 						<tns:BottomRight X="125" Y="40" />
 					</tns:Rectangle>
 				</tns:Grafic>
 				<tns:MustBeWhite>
-					<tns:TopLeft X="205" Y="30" />
-					<tns:BottomRight X="235" Y="110" />
+					<tns:TopLeft X="200" Y="26" />
+					<tns:BottomRight X="235" Y="30" />
+				</tns:MustBeWhite>
+				<tns:MustBeWhite invertFunction="true">
+					<tns:TopLeft X="40" Y="35" />
+					<tns:BottomRight X="55" Y="65" />
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
 		<tns:Screen id="Anlagenstatus-Solar" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x03000008"
-					compareMask="0x02000008" />
+				<tns:ConfigurationMask andMask="0x07000000"
+					compareMask="0x02000000" />
+				<tns:ConfigurationMask andMask="0x07000000"
+					compareMask="0x04000000" />
 			</tns:Configuration>
 			<tns:SequenceUp pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -705,15 +717,15 @@
 				<tns:Coordinate X="230" Y="120" />
 			</tns:SequenceDown>
 			<tns:Identification>
-				<tns:Grafic id="Anlagenstatus-Solar Ben">
+				<tns:Grafic id="Anlagenstatus-Solar Ben/Max7">
 					<tns:Rectangle>
 						<tns:TopLeft X="185" Y="12" />
 						<tns:BottomRight X="237" Y="45" />
 					</tns:Rectangle>
 				</tns:Grafic>
 				<tns:MustBeWhite>
-					<tns:TopLeft X="85" Y="35" />
-					<tns:BottomRight X="120" Y="80" />
+					<tns:TopLeft X="82" Y="35" />
+					<tns:BottomRight X="100" Y="65" />
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
