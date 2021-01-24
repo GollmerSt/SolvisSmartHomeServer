@@ -14,7 +14,7 @@ import java.util.jar.Manifest;
 
 public class Version {
 
-	private String serverVersion = "01.02.09.rc1";
+	private String serverVersion = "01.02.09";
 	private String appendix = "3 heating circuits beta";
 
 	public static Version getInstance() {
