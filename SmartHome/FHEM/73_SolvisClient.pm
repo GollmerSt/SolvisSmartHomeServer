@@ -28,6 +28,7 @@
 #   00.02.15    18.11.2020  SCMP77              Nur HTML-Doku
 #   00.02.16    07.12.2020  SCMP77              Command SelectScreen supported
 #   00.02.17    12.01.2021  SCMP77              Command error message will now be written to the log file
+#   00.02.18    01.02.2021  SCMP77              Fixed: Solange der Server nicht erreichbar ist, wurde bis zum Timeout FHEM blockiert.
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -265,6 +266,7 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
 
 
     $self->{DeviceName}  = $url;    #Für DevIO, Name fest vorgegeben
+    $self->{helper}{ConnectionOngoing}  = 0;    #Verbindungsaufbau nicht in Arbeit
 
     if( $init_done ) {
         my $result = Connect( $self, 0 );
@@ -362,9 +364,29 @@ sub Connect {
 
     $self->{helper}{BUFFER} = '';
 
-    return DevIo_OpenDev($self, $reopen, $connectedSub );
+    DevIo_OpenDev($self, $reopen, $connectedSub, \&ConnectionCallback );
+    
+    $self->{helper}{ConnectionOngoing}  = 1;    #Verbindungsaufbau in Arbeit
+
 
 } # end Connect
+
+
+#####################################
+#
+#       Connection Callback
+#
+sub ConnectionCallback {
+    my $self = shift;
+    my $error = shift;
+
+    $self->{helper}{ConnectionOngoing}  = 0;    #Verbindungsaufbau nicht in Arbeit
+    
+    if ( defined($error)) {
+        Log( $self, 4, "Connection not successfull, error := $error ");
+    }
+
+}
 
 
 
@@ -414,7 +436,7 @@ sub Ready {
 
     my $now = time;
 
-    if ( defined( $self->{helper}{NEXT_OPEN} ) && $self->{helper}{NEXT_OPEN} > $now) {
+    if ( $self->{helper}{ConnectionOngoing} || defined( $self->{helper}{NEXT_OPEN} ) && $self->{helper}{NEXT_OPEN} > $now) {
         return;
     }
 
@@ -1936,7 +1958,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.17",
+  "version": "v00.02.18",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

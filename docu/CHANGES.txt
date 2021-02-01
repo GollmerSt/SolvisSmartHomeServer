@@ -1,8 +1,17 @@
 A E N D E R U N G E N
 
+Version 01.02.10
+
+    01.02.2021  FHEM-Modul:
+                Ist der Server nicht erreichbar, wurde FHEM bei jedem neuen
+                Verbindungsversuch blockiert. DevIo_OpenDev wird nun mit einer Callback-
+                Methode aufgerufen, so dass kein Blocking mehr erfolgt.
+
+
+
 Version 01.02.09
 
-    16.02.2021  Die ScreenSaver-Erkennung funktionierte nicht mehr richtig. Dadurch wurde immer
+    16.01.2021  Die ScreenSaver-Erkennung funktionierte nicht mehr richtig. Dadurch wurde immer
                 bei einem GUI-befehl der Back-Button genutzt, obgleich er der richtige Screen
                 in Wirklichkeit ausgewählt war und ein Klick in den Bildschirm gereicht hätte.
                 
