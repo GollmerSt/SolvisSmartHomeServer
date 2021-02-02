@@ -60,23 +60,24 @@ use GPUtils qw(GP_Import GP_Export);
 
 use constant MODULE => 'SolvisClient';
 
-use constant WATCH_DOG_INTERVAL => 300 ;        #Violates 'ProhibitConstantPragma'
-                                                #Mindestens alle 5 Minuten muss der Client Daten vom Servere erhalten haben.
-                                                # Andernfalls wird die Verbindung neu aufgebaut
-use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 2 ; #Violates 'ProhibitConstantPragma'
-use constant RECONNECT_AFTER_DISMISS => 30 ;    #Violates 'ProhibitConstantPragma'
-use constant RECONNECT_AFTER_TRANSFER_ERROR => 30 ;    #Violates 'ProhibitConstantPragma'
+use constant WATCH_DOG_INTERVAL => 300 ;            #Violates 'ProhibitConstantPragma'
+                                                    #Mindestens alle 5 Minuten muss der Client Daten vom Servere erhalten haben.
+                                                    # Andernfalls wird die Verbindung neu aufgebaut
+use constant RECONNECT_AFTER_UNKNOWN_CLIENT => 2 ;  #Violates 'ProhibitConstantPragma'
+use constant RECONNECT_AFTER_DISMISS => 30 ;        #Violates 'ProhibitConstantPragma'
+use constant RECONNECT_AFTER_TRANSFER_ERROR => 30 ; #Violates 'ProhibitConstantPragma'
 
-use constant MIN_CONNECTION_INTERVAL => 5 ;    #Violates 'ProhibitConstantPragma'
+use constant MIN_CONNECTION_INTERVAL => 5 ;         #Violates 'ProhibitConstantPragma'
+use constant MAX_CONNECTION_INTERVAL => 120 ;       #Violates 'ProhibitConstantPragma'
 
-use constant _FALSE_ => 0 ;                     #Violates 'ProhibitConstantPragma'
+use constant _FALSE_ => 0 ;                         #Violates 'ProhibitConstantPragma'
 use constant _TRUE_ => 1;   #Violates 'ProhibitConstantPragma'
 
 use constant FORMAT_VERSION_REGEXP => 'm/01\.../' ; #Violates 'ProhibitConstantPragma'
 
-use constant _DISABLE_GUI_ => 0 ;               #Violates 'ProhibitConstantPragma'
-use constant _ENABLE_GUI_ => 1 ;                #Violates 'ProhibitConstantPragma'
-use constant _UPDATE_GUI_ => 2 ;                #Violates 'ProhibitConstantPragma'
+use constant _DISABLE_GUI_ => 0 ;                   #Violates 'ProhibitConstantPragma'
+use constant _ENABLE_GUI_ => 1 ;                    #Violates 'ProhibitConstantPragma'
+use constant _UPDATE_GUI_ => 2 ;                    #Violates 'ProhibitConstantPragma'
 
 
 
@@ -266,7 +267,8 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
 
 
     $self->{DeviceName}  = $url;    #Für DevIO, Name fest vorgegeben
-    $self->{helper}{ConnectionOngoing}  = 0;    #Verbindungsaufbau nicht in Arbeit
+    DevIoConnected($self);
+
 
     if( $init_done ) {
         my $result = Connect( $self, 0 );
@@ -364,11 +366,10 @@ sub Connect {
 
     $self->{helper}{BUFFER} = '';
 
-    DevIo_OpenDev($self, $reopen, $connectedSub, \&ConnectionCallback );
-    
     $self->{helper}{ConnectionOngoing}  = 1;    #Verbindungsaufbau in Arbeit
 
-
+    DevIo_OpenDev($self, $reopen, $connectedSub, \&ConnectionCallback );
+    
 } # end Connect
 
 
@@ -390,12 +391,28 @@ sub ConnectionCallback {
 
 
 
+#####################################
+#
+#       DevIoConnected
+#
+sub DevIoConnected {
+    my $self = shift;
+
+    $self->{helper}{ConnectionOngoing}  = 0;    #Verbindungsaufbau nicht in Arbeit
+    $self->{helper}{ConnectionInterval}  = MIN_CONNECTION_INTERVAL ;
+	$self->{helper}{NEXT_OPEN} = undef;
+}
+
+
+
 ####################################
 #
 #       Send connection data
 #
 sub SendConnectionData {
     my $self = shift;
+
+    DevIoConnected($self);
 
     $self->{CLIENT_ID} = undef;
 
@@ -414,6 +431,8 @@ sub SendConnectionData {
 sub SendReconnectionData {
     my $self = shift;
 
+    DevIoConnected($self);
+    
     if ( defined( $self->{CLIENT_ID} ) ) {
 
         SendData( $self, 'RECONNECT', 'Id', $self->{CLIENT_ID} );
@@ -436,11 +455,14 @@ sub Ready {
 
     my $now = time;
 
-    if ( $self->{helper}{ConnectionOngoing} || defined( $self->{helper}{NEXT_OPEN} ) && $self->{helper}{NEXT_OPEN} > $now) {
+    if ( $self->{helper}{ConnectionOngoing} == 1 || defined( $self->{helper}{NEXT_OPEN} ) && $self->{helper}{NEXT_OPEN} > $now) {
+        #Log( $self, 4, "ConnectionOngoing = $self->{helper}{ConnectionOngoing}");
         return;
     }
+    
+    $self->{helper}{ConnectionInterval} += MIN_CONNECTION_INTERVAL;
 
-    $self->{helper}{NEXT_OPEN} = $now + MIN_CONNECTION_INTERVAL;
+    $self->{helper}{NEXT_OPEN} = $now + $self->{helper}{ConnectionInterval};
 
     Log( $self, 4, 'Reconnection try');
     return Connect($self, 1) ; # reopen
@@ -743,7 +765,7 @@ sub InterpreteSolvisState {
 sub WatchDogTimeout {
     my $self = shift;
 
-    Log($self, 3, 'Timeout of connection detected. Try reconnection');
+    Log($self, 4, 'Timeout of connection detected. Try reconnection');
     Reconnect($self);
 
     return;
@@ -758,7 +780,7 @@ sub WatchDogTimeout {
 sub Reconnect {
     my $self = shift;
 
-    Log($self, 3, 'Retry reconnection');
+    Log($self, 4, 'Retry reconnection');
     DevIo_CloseDev($self);
     Connect($self,0);
 
