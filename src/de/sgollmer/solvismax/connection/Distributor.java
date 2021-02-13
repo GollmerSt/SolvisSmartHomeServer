@@ -57,6 +57,10 @@ public final class Distributor extends Observable<JsonPackage> {
 
 		@Override
 		public void update(SolvisData data, Object source) {
+			
+			if ( data.isDontSend()) {
+				return;
+			}
 
 			Collection<SolvisData> toSend = null;
 
@@ -289,7 +293,7 @@ public final class Distributor extends Observable<JsonPackage> {
 
 			}
 		});
-		solvis.getAllSolvisData().registerObserver(this.getSolvisDataObserver());
+		solvis.registerObserver(this.getSolvisDataObserver());
 		solvis.getConnection().register(this.getConnectionStateObserver());
 		solvis.getSolvisState().register(this.getSolvisStateObserver());
 		solvis.registerScreenChangedByHumanObserver(this.humanAccessObserver);

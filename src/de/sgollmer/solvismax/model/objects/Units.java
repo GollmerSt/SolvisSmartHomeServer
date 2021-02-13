@@ -10,6 +10,8 @@ package de.sgollmer.solvismax.model.objects;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.xml.namespace.QName;
 
@@ -21,14 +23,18 @@ import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.xmllibrary.ArrayXml;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.StringElement;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class Units {
 
 	private static final String XML_UNITS_UNIT = "Unit";
 	private static final String XML_FEATURES = "Features";
+	private static final String XML_IGNORED_CHANNELS = "IgnoredChannels";
+	private static final String XML_REG_EX = "RegEx";
 
 	private final Collection<Unit> units;
 
@@ -99,13 +105,14 @@ public class Units {
 		private final boolean fwLth2_21_02A;
 		private final Features features;
 		private final int ignoredFrameThicknesScreenSaver;
+		private final Collection<Pattern> ignoredChannels;
 
 		private Unit(String id, String type, String url, String account, CryptAes password, int configOrMask,
 				int defaultAverageCount, int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms,
 				int forcedUpdateInterval_ms, int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
 				int releaseBlockingAfterUserAccess_ms, int releaseBlockingAfterServiceAccess_ms,
 				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, Features features,
-				int ignoredFrameThicknesScreenSaver) {
+				int ignoredFrameThicknesScreenSaver, Collection<Pattern> ignoredChannels) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
@@ -125,6 +132,7 @@ public class Units {
 			this.fwLth2_21_02A = fwLth2_21_02A;
 			this.features = features;
 			this.ignoredFrameThicknesScreenSaver = ignoredFrameThicknesScreenSaver;
+			this.ignoredChannels = ignoredChannels;
 		}
 
 		public String getId() {
@@ -173,6 +181,7 @@ public class Units {
 			private boolean fwLth2_21_02A = false;
 			private Features features;
 			private int ignoredFrameThicknesScreenSaver;
+			private final Collection<Pattern> ignoredChannels = new ArrayList<>();
 
 			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -256,7 +265,7 @@ public class Units {
 						this.doubleUpdateInterval_ms, this.bufferedInterval_ms, this.watchDogTime_ms,
 						this.releaseBlockingAfterUserAccess_ms, this.releaseBlockingAfterServiceAccess_ms,
 						this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.features,
-						this.ignoredFrameThicknesScreenSaver);
+						this.ignoredFrameThicknesScreenSaver, this.ignoredChannels);
 
 			}
 
@@ -266,15 +275,31 @@ public class Units {
 				switch (id) {
 					case XML_FEATURES:
 						return new Features.Creator(id, getBaseCreator());
+					case XML_IGNORED_CHANNELS:
+						return new ArrayXml.Creator<StringElement>(id, getBaseCreator(), StringElement.getBaseElement(),
+								XML_REG_EX);
 				}
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(CreatorByXML<?> creator, Object created) throws XmlException {
 				switch (creator.getId()) {
 					case XML_FEATURES:
 						this.features = (Features) created;
+						break;
+					case XML_IGNORED_CHANNELS:
+						@SuppressWarnings("unchecked")
+						ArrayXml<StringElement> arrayXml = (ArrayXml<StringElement>) created;
+						for (StringElement ignoreChannel : arrayXml.getArray()) {
+							try {
+								Pattern exp = Pattern.compile(ignoreChannel.toString());
+								this.ignoredChannels.add(exp);
+							} catch (PatternSyntaxException e) {
+								throw new XmlException("Regular expression error on expression: " + ignoreChannel);
+							}
+
+						}
 						break;
 				}
 			}
@@ -332,6 +357,15 @@ public class Units {
 
 		public int getReleaseBlockingAfterServiceAccess_ms() {
 			return this.releaseBlockingAfterServiceAccess_ms;
+		}
+
+		public boolean isChannelIgnored(String channelId) {
+			for ( Pattern regEx : this.ignoredChannels ) {
+				if ( regEx.matcher(channelId).matches()) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 	}

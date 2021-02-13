@@ -50,15 +50,7 @@ public class AllSolvisData {
 
 	public SolvisData get(ChannelDescription description) {
 		String id = description.getId();
-		SolvisData data = null;
-		synchronized (this) {
-			data = this.solvisDatas.get(id);
-			if (data == null) {
-				data = new SolvisData(description, this);
-				this.solvisDatas.put(id, data);
-			}
-		}
-		return data;
+		return this.get(id);
 	}
 
 	public SolvisData get(String id) {
@@ -68,7 +60,8 @@ public class AllSolvisData {
 			if (data == null) {
 				ChannelDescription description = this.solvis.getChannelDescription(id);
 				if (description != null) {
-					data = new SolvisData(description, this);
+					boolean ignore = this.solvis.getUnit().isChannelIgnored(id);
+					data = new SolvisData(description, this, ignore);
 					this.solvisDatas.put(id, data);
 				}
 			}
@@ -135,13 +128,17 @@ public class AllSolvisData {
 	}
 
 	public synchronized Measurements getMeasurements() {
-		return new Measurements(this.solvisDatas);
+		Measurements measurements = new Measurements();
+		for (SolvisData data : this.solvisDatas.values()) {
+			measurements.add(data);
+		}
+		return measurements;
 	}
 
 	public synchronized Measurements getMeasurementsForUpdate() {
 		Measurements measurements = new Measurements();
 		for (SolvisData data : this.solvisDatas.values()) {
-			if (! data.getDescription().isDelayed(this.solvis)) {
+			if (!data.getDescription().isDelayed(this.solvis)) {
 				measurements.add(data);
 			}
 		}

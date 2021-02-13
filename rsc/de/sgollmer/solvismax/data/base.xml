@@ -26,9 +26,9 @@
 			delayAfterSwitchingOnEnable="true"
 			ignoredFrameThicknesScreenSaver="3">
 			<tns:Features>
-				<!-- !!!!!!!!! true: GUI controlling disabled -->
-				<tns:Feature id="OnlyMeasurements" value="true" />
-				<!-- Bei true werden saemtliche Gui-Aktivitaeten verhindert. Das Modul 
+				<!-- !!!!!!!!! false: GUI controlling disabled -->
+				<tns:Feature id="InteractiveGUIAccess" value="false" />
+				<!-- Bei "false" werden saemtliche Gui-Aktivitaeten verhindert. Das Modul 
 					verhaelt sich so wie das bisherige, ein aktiver Eingriff vom Server auf die 
 					SolvisControl erfolgt nicht. -->
 				<tns:Feature id="ClockTuning" value="false" />
@@ -86,6 +86,13 @@
 				<!-- Als Zusatzerkennung des Endes der Anwender-Eingriffs (Service/User) 
 					wird neben einer festen Zeit auch der Bildschirmschoner genutzt -->
 			</tns:Features>
+			<tns:IgnoredChannels>
+				<!-- Example -->
+				<!-- Inhibit sending of channel by regular expressions
+				<tns:RegEx>AIn.*</tns:RegEx>
+				<tns:RegEx>AOut.*</tns:RegEx>
+				 -->
+			</tns:IgnoredChannels>
 		</tns:Unit>
 	</tns:Units>
 	<tns:Mqtt enable="false" brokerUrl="192.168.0.71" port="1883"

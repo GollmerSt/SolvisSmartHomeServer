@@ -5,8 +5,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
+/**
+ * 
+ * @author stefa_000
+ *
+ *         A collection of measurements, which should be send
+ */
 public class Measurements {
 	private Map<String, SolvisData> measurements = new HashMap<>();
 	private final boolean clear;
@@ -21,8 +28,17 @@ public class Measurements {
 		this.measurements = new HashMap<>();
 	}
 
+	/**
+	 * 
+	 * @param data to add
+	 * @return replaced value
+	 */
 	public synchronized SolvisData add(SolvisData data) {
-		return this.measurements.put(data.getId(), data);
+		if (!data.isDontSend()) {
+			return this.measurements.put(data.getId(), data) ;
+		} else {
+			return null;
+		}
 	}
 
 	public void remove(SolvisData data) {
@@ -35,5 +51,12 @@ public class Measurements {
 			this.measurements.clear();
 		}
 		return collection;
+	}
+
+	public void sent(IObserver<SolvisData> observer) {
+		Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements.values());
+		for (SolvisData data : collection) {
+			observer.update(data, this);
+		}
 	}
 }

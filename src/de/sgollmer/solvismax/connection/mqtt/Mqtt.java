@@ -201,7 +201,9 @@ public class Mqtt {
 
 		@Override
 		public void update(SolvisData data, Object source) {
-			Mqtt.this.publish(data.getMqttData());
+			if (!data.isDontSend()) {
+				Mqtt.this.publish(data.getMqttData());
+			}
 		}
 	}
 
@@ -241,7 +243,7 @@ public class Mqtt {
 			this.publish(data);
 		}
 	}
-	
+
 	public void publish(MqttData data) {
 		this.mqttQueue.publish(data);
 	}
@@ -264,7 +266,7 @@ public class Mqtt {
 		logger.debug("Messsage was sent to <" + topic + ">, data: " + message.toString());
 
 	}
-	
+
 	public String getTopic(MqttData data) {
 		StringBuilder builder = new StringBuilder(this.topicPrefix);
 		builder.append('/');
@@ -322,7 +324,7 @@ public class Mqtt {
 		if (this.mqttThread != null) {
 			this.mqttThread.abort();
 		}
-		
+
 		this.publish(this.getLastWill());
 		this.mqttQueue.abort();
 

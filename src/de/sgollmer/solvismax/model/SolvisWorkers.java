@@ -57,7 +57,7 @@ public class SolvisWorkers {
 				}
 			}
 		});
-		this.controlEnable = !this.solvis.getFeatures().isOnlyMeasurements();
+		this.controlEnable = this.solvis.getFeatures().isInteractiveGUIAccess();
 
 	}
 

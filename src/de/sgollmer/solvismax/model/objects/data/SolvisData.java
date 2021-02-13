@@ -38,12 +38,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	private SingleData<?> pendingData = null;
 	private long sentTimeStamp = -1;
 	private SingleData<?> sentData = null;
+	private final boolean dontSend;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
-	public SolvisData(ChannelDescription description, AllSolvisData datas) {
+	public SolvisData(ChannelDescription description, AllSolvisData datas, boolean ignore) {
 		this.description = description;
 		this.datas = datas;
+		this.dontSend = ignore;
 		if (this.description.isAverage()) {
 			this.average = new Average(datas.getAverageCount(), datas.getMeasurementHysteresisFactor());
 		} else {
@@ -61,6 +63,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 		this.sentTimeStamp = data.sentTimeStamp;
 		this.sentData = data.sentData;
+		this.dontSend = data.dontSend;
 	}
 
 	public SolvisData(SingleData<?> data) {
@@ -68,6 +71,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		this.description = null;
 		this.average = null;
 		this.datas = null;
+		this.dontSend = false;
 	}
 
 	/**
@@ -345,7 +349,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public MqttData getMqttData() {
-		if (this.data == null) {
+		if (this.data == null || this.dontSend) {
 			return null;
 		}
 		String value = this.normalize().toString();
@@ -368,6 +372,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return null;
 		}
 		return ((DateValue) this.data).get();
+	}
+
+	public boolean isDontSend() {
+		return this.dontSend;
 	}
 
 }

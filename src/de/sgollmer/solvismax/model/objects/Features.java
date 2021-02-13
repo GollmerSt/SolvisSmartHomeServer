@@ -21,19 +21,21 @@ public class Features {
 	private static final String XMl_SEND_MAIL_ON_ERROR = "SendMailOnError";
 	private static final String XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL = "ClearErrorMessageAfterMail";
 	private static final String XML_ONLY_MEASUREMENT = "OnlyMeasurements";
+	private static final String XML_INTERACTIVE_GUI_ACCESS = "InteractiveGUIAccess";
 	public static final String XML_ADMIN = "Admin";
 	private static final String XML_FEATURE = "Feature";
 
 	private final Map<String, Boolean> features;
 
-	private Features(Map<String, Boolean> features) {
+	private Features(Map<String, Boolean> features) throws XmlException {
 		this.features = features;
+		this.checkInteractiveGUIAccess();
 	}
-	
-	private boolean get( String feature ) {
+
+	private boolean get(String feature) {
 		Boolean result = this.features.get(feature);
-		if ( result == null ) {
-			return false ;
+		if (result == null) {
+			return false;
 		} else {
 			return result;
 		}
@@ -55,8 +57,25 @@ public class Features {
 		return this.get(XML_DETECT_SERVICE_ACCESS);
 	}
 
-	public boolean isOnlyMeasurements() {
-		return this.get(XML_ONLY_MEASUREMENT);
+	private boolean checkInteractiveGUIAccess() throws XmlException {
+		Boolean interactiveGUIAccess = this.getMap().get(XML_INTERACTIVE_GUI_ACCESS);
+		Boolean onlyMeasurements = this.getMap().get(XML_ONLY_MEASUREMENT);
+		if (interactiveGUIAccess == null && onlyMeasurements == null) {
+			throw new XmlException("Exactly one of the feature \"" + XML_INTERACTIVE_GUI_ACCESS + "\" or \""
+					+ XML_ONLY_MEASUREMENT + "\" is missing.");
+		} else if (interactiveGUIAccess != null && onlyMeasurements != null) {
+			throw new XmlException("The feature \"" + XML_INTERACTIVE_GUI_ACCESS + "\" AND \"" + XML_ONLY_MEASUREMENT
+					+ "\" are defined. Only one is possible.");
+		}
+		return interactiveGUIAccess != null && interactiveGUIAccess || onlyMeasurements != null && !onlyMeasurements;
+	}
+
+	public boolean isInteractiveGUIAccess() {
+		try {
+			return this.checkInteractiveGUIAccess();
+		} catch (XmlException e) {
+			return false;
+		}
 	}
 
 	public boolean isClearErrorMessageAfterMail() {

@@ -6,6 +6,13 @@ Version 01.02.10
                 Ist der Server nicht erreichbar, wurde FHEM bei jedem neuen
                 Verbindungsversuch blockiert. DevIo_OpenDev wird nun mit einer Callback-
                 Methode aufgerufen, so dass kein Blocking mehr erfolgt.
+                
+    08.02.2021	Feature "OnlyMeasurements" durch "InteractiveGUIAccess" mit invertierte
+                Logik ersetzt. Wegen Abwärtskompatibilität wird das Feature "OnlyMeasurements"
+                noch weiterhin unterstützt. Es sollte jedoch durch das neuere ersetzt werden.
+                
+    13.02.2021  Mittels "IgnordChannels" im base.xml kann nun die zum Client/Mqtt-Broker 
+                gesendeten Kanäle schon auf der Server-Seite reduziert werden.
 
 
 

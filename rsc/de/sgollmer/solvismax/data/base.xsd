@@ -71,6 +71,8 @@
 					</documentation>
 				</annotation>
 			</element>
+			<element name="IgnoredChannels"
+				type="tns:IgnoredChannels" maxOccurs="1" minOccurs="0"></element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -126,11 +128,13 @@
 					0x00000010
 					Solarpumpe 2 vorhanden und an A07 angeschlossen
 
-					0x00000020 externer Brenner
+					0x00000020 externer
+					Brenner
 
 					0x00000040 Wärmepumpe
 
-					0x00000080 für Solar Ost + West S16 Kollektor West reserviert
+					0x00000080 für Solar Ost + West S16
+					Kollektor West reserviert
 
 				</documentation>
 			</annotation>
@@ -357,73 +361,94 @@
 			</documentation>
 		</annotation>
 		<sequence>
-			<choice maxOccurs="unbounded" minOccurs="0"><element name="ClockTuning" type="boolean" maxOccurs="1" minOccurs="1">
-				<annotation>
-					<documentation>
-						Die Solvis-Uhr wird +-31s genau eingestellt
-					</documentation>
-				</annotation>
-			</element><element name="EquipmentTimeSynchronisation" type="boolean" maxOccurs="1" minOccurs="1">
-				<annotation>
-					<documentation>
-						Die Synchronisation der SolvisControl-Zählern
-						(Brennerlaufzeit/-Starts aktivieren.
-					</documentation>
-				</annotation>
-			</element><element name="UpdateAfterUserAccess" type="boolean" maxOccurs="1" minOccurs="1">
-				<annotation>
-					<documentation>
-						Nach jedem erkannnten Anwenderzugriff auf dei
-						SolvisControl werden die Anlagen-Werte wieder
-						gelesen. Dies ist erforderlich, weil der
-						Anwender diese Werte manuell geändert haben
-						könnte.
-					</documentation>
-				</annotation>
-			</element><element name="DetectServiceAccess" type="boolean" maxOccurs="1" minOccurs="1">
-				<annotation>
-					<documentation>
-						Es wird der Zugriff eines Service-Mitarbeiter
-						(Schornsteinfeger/Installateur) erkannt und die
-						Sperrung des GUI-Zugriffs durch den Server
-						erhöht sich auf 60 Minuten.
-					</documentation>
-				</annotation>
-			</element><element name="PowerOffIsServiceAccess" type="boolean" maxOccurs="1" minOccurs="1">
-				<annotation>
-					<documentation>
-						Ein Power-Off der Anlage wird als Aktion eines
-						Service-Mitarbeiters gewertet.
-					</documentation>
-				</annotation>
-			</element><element name="SendMailOnError" type="boolean" maxOccurs="1" minOccurs="1">
-			</element><element name="ClearErrorMessageAfterMail" type="boolean" maxOccurs="1" minOccurs="1">
-			</element><element name="OnlyMeasurements" type="boolean" maxOccurs="1" minOccurs="1">
-				<annotation>
-					<documentation>
-						Dieses Attribut deaktiviert sämtliche Zugriffe
-						zum GUI der Solvis.
-					</documentation>
-				</annotation>
-			</element><element name="Admin" type="boolean" maxOccurs="1" minOccurs="1">
-				<annotation>
-					<documentation>
-						Die Bildschirme der Nutzers "Installateur"
-						können angefahren werden.
-					</documentation>
-				</annotation>
-			</element></choice>
-            <element name="Feature" type="tns:Feature" maxOccurs="unbounded" minOccurs="0">
+			<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="ClockTuning" type="boolean" maxOccurs="1"
+					minOccurs="1">
+					<annotation>
+						<documentation>
+							Die Solvis-Uhr wird +-31s genau eingestellt
+						</documentation>
+					</annotation>
+				</element>
+				<element name="EquipmentTimeSynchronisation" type="boolean"
+					maxOccurs="1" minOccurs="1">
+					<annotation>
+						<documentation>
+							Die Synchronisation der SolvisControl-Zählern
+							(Brennerlaufzeit/-Starts aktivieren.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="UpdateAfterUserAccess" type="boolean"
+					maxOccurs="1" minOccurs="1">
+					<annotation>
+						<documentation>
+							Nach jedem erkannnten Anwenderzugriff auf dei
+							SolvisControl werden die Anlagen-Werte wieder
+							gelesen. Dies ist erforderlich, weil der
+							Anwender diese Werte manuell geändert haben
+							könnte.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="DetectServiceAccess" type="boolean"
+					maxOccurs="1" minOccurs="1">
+					<annotation>
+						<documentation>
+							Es wird der Zugriff eines Service-Mitarbeiter
+							(Schornsteinfeger/Installateur) erkannt und die
+							Sperrung des GUI-Zugriffs durch den Server
+							erhöht sich auf 60 Minuten.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="PowerOffIsServiceAccess" type="boolean"
+					maxOccurs="1" minOccurs="1">
+					<annotation>
+						<documentation>
+							Ein Power-Off der Anlage wird als Aktion eines
+							Service-Mitarbeiters gewertet.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="SendMailOnError" type="boolean" maxOccurs="1"
+					minOccurs="1">
+				</element>
+				<element name="ClearErrorMessageAfterMail" type="boolean"
+					maxOccurs="1" minOccurs="1">
+				</element>
+				<element name="OnlyMeasurements" type="boolean"
+					maxOccurs="1" minOccurs="1">
+					<annotation>
+						<documentation>
+							Dieses Attribut deaktiviert sämtliche Zugriffe
+							zum GUI der Solvis.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="Admin" type="boolean" maxOccurs="1"
+					minOccurs="1">
+					<annotation>
+						<documentation>
+							Die Bildschirme der Nutzers "Installateur"
+							können angefahren werden.
+						</documentation>
+					</annotation>
+				</element>
+			</choice>
+			<element name="Feature" type="tns:Feature"
+				maxOccurs="unbounded" minOccurs="0">
 				<annotation>
 					<documentation>
 						Allgemeines Feature. Wirkt z.B. auf die
 						Configuration im control.xml-File. Damit kann
-						man bestimmte Scrrens/Channels abhängig vom
+						man bestimmte
+						Scrrens/Channels abhängig vom
 						Feature behandeln.
 					</documentation>
 				</annotation>
 			</element>
-        </sequence>
+		</sequence>
 
 	</complexType>
 
@@ -432,10 +457,13 @@
 	<complexType name="ExceptionMail">
 		<sequence>
 			<element name="Recipients" type="tns:Recipients"></element>
-			<element name="Proxy" type="tns:Proxy" maxOccurs="1" minOccurs="0">
+			<element name="Proxy" type="tns:Proxy" maxOccurs="1"
+				minOccurs="0">
 				<annotation>
-					<documentation>Proxy-Definition, wenn Mail_versand nur über Proy möglich.</documentation>
-				</annotation></element>
+					<documentation>Proxy-Definition, wenn Mail_versand nur über Proy
+						möglich.</documentation>
+				</annotation>
+			</element>
 		</sequence>
 		<attribute name="name" type="string" use="required">
 			<annotation>
@@ -556,7 +584,10 @@
 					<enumeration value="Min_Vorlauf_Temp"></enumeration>
 					<enumeration value="BetriebsartVT_HK"></enumeration>
 					<enumeration value="WW_Pumpe_Min_Laufzeit"></enumeration>
-					<enumeration value="EndOfUserInterventionDetectionThroughScreenSaver"></enumeration>
+					<enumeration
+						value="EndOfUserInterventionDetectionThroughScreenSaver">
+					</enumeration>
+					<enumeration value="InteractiveGUIAccess"></enumeration>
 				</restriction>
 			</simpleType>
 		</attribute>
@@ -564,25 +595,48 @@
 	</complexType>
 
 	<complexType name="Proxy">
-        <annotation>
-        	<documentation>Proxy-Definitionen</documentation>
-        </annotation>
-        <attribute name="host" type="string" use="required">
-        	<annotation>
-        		<documentation> Specifies the host name of an HTTP web proxy server that will be used for connections to the mail server. </documentation>
-        	</annotation></attribute>
-		<attribute name="port" type="nonNegativeInteger" use="required">
+		<annotation>
+			<documentation>Proxy-Definitionen</documentation>
+		</annotation>
+		<attribute name="host" type="string" use="required">
 			<annotation>
-				<documentation>Specifies the port number for the HTTP web proxy server.</documentation>
-			</annotation></attribute>
+				<documentation> Specifies the host name of an HTTP web proxy server
+					that will be used for connections to the mail server.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="port" type="nonNegativeInteger"
+			use="required">
+			<annotation>
+				<documentation>Specifies the port number for the HTTP web proxy
+					server.</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="user" type="string" use="optional">
 			<annotation>
-				<documentation> Specifies the user name to use to authenticate with the HTTP web proxy server. By default, no authentication is done. </documentation></annotation></attribute>
+				<documentation> Specifies the user name to use to authenticate with
+					the HTTP web proxy server. By default, no authentication is done.
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="passwordCrypt" type="string" use="optional">
 			<annotation>
-				<documentation> Specifies the password to use to authenticate with the HTTP web proxy server. By default, no authentication is done. 
+				<documentation> Specifies the password to use to authenticate with
+					the HTTP web proxy server. By default, no authentication is done.
 
-Das Password muss mit dem Make-File oder in Windows über das StarMenü verschlüsselt sein.</documentation>
-			</annotation></attribute>
+					Das Password muss mit dem Make-File oder in Windows über das
+					StarMenü verschlüsselt sein.
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+	<complexType name="IgnoredChannels">
+		<sequence maxOccurs="unbounded" minOccurs="0">
+			<element name="RegEx" type="tns:RegEx"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="RegEx" mixed="true">
 	</complexType>
 </schema>

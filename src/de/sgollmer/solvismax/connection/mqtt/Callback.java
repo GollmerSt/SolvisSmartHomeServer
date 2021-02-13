@@ -9,7 +9,6 @@ package de.sgollmer.solvismax.connection.mqtt;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -18,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.connection.ServerStatus;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt.PublishChannelObserver;
 import de.sgollmer.solvismax.error.ClientAssignmentException;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
@@ -28,7 +28,6 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
-import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 
 final class Callback implements MqttCallbackExtended {
@@ -48,11 +47,12 @@ final class Callback implements MqttCallbackExtended {
 	public void connectComplete(boolean reconnect, String serverURI) {
 		Mqtt.logger.info("Connection to MQTT successfull");
 		synchronized (this.mqtt) {
+			PublishChannelObserver observer = this.mqtt.new PublishChannelObserver(); 
 			try {
 				if (!reconnect) {
 					this.mqtt.publish(ServerCommand.getMqttMeta(null));
 					for (Solvis solvis : this.mqtt.instances.getUnits()) {
-						solvis.registerObserver(this.mqtt.new PublishChannelObserver());
+						solvis.registerObserver(observer);
 						solvis.registerScreenChangedByHumanObserver(this.mqtt.new PublishHumanAccessObserver(solvis));
 						solvis.getSolvisState().register(this.mqtt.new PublishStatusObserver());
 						this.mqtt.publish(ServerCommand.getMqttMeta(solvis));
@@ -61,10 +61,7 @@ final class Callback implements MqttCallbackExtended {
 					}
 				}
 				for (Solvis solvis : this.mqtt.instances.getUnits()) {
-					Collection<SolvisData> dates = solvis.getAllSolvisData().getMeasurements().cloneAndClear();
-					for (SolvisData data : dates) {
-						this.mqtt.publish(data.getMqttData());
-					}
+					solvis.getAllSolvisData().getMeasurements().sent(observer);
 					this.mqtt.publish(solvis.getSolvisState().getState().getMqttData(solvis.getSolvisState()));
 					this.mqtt.publish(solvis.getHumanAccess().getMqttData(solvis));
 				}
@@ -92,14 +89,14 @@ final class Callback implements MqttCallbackExtended {
 		if (subscribeData.getUnitId() != null) {
 			solvis = this.mqtt.instances.getUnit(subscribeData.getUnitId());
 			if (solvis == null) {
-				this.mqtt.publishError(subscribeData.getClientId(), "Solvis unit unknown.",null);
+				this.mqtt.publishError(subscribeData.getClientId(), "Solvis unit unknown.", null);
 				return;
 			}
 			subscribeData.setSolvis(solvis);
 		}
-		
-		Unit unit = solvis==null?null:solvis.getUnit();
-		
+
+		Unit unit = solvis == null ? null : solvis.getUnit();
+
 		String string = new String(message.getPayload(), StandardCharsets.UTF_8);
 		SingleData<?> data = null;
 		switch (subscribeData.type.format) {
@@ -116,11 +113,11 @@ final class Callback implements MqttCallbackExtended {
 					data = description.interpretSetData(new StringData(string, 0));
 					if (data == null) {
 						this.mqtt.publishError(subscribeData.getClientId(),
-								"Error: Channel <" + subscribeData.getChannelId() + "> not writable.",unit);
+								"Error: Channel <" + subscribeData.getChannelId() + "> not writable.", unit);
 						return;
 					}
 				} catch (TypeException e) {
-					this.mqtt.publishError(subscribeData.getClientId(), "Error: Value error, value: " + string,unit);
+					this.mqtt.publishError(subscribeData.getClientId(), "Error: Value error, value: " + string, unit);
 					return;
 				}
 		}
