@@ -29,6 +29,7 @@
 #   00.02.16    07.12.2020  SCMP77              Command SelectScreen supported
 #   00.02.17    12.01.2021  SCMP77              Command error message will now be written to the log file
 #   00.02.18    01.02.2021  SCMP77              Fixed: Solange der Server nicht erreichbar ist, wurde bis zum Timeout FHEM blockiert.
+#   00.02.19    13.02.2021  SCMP77              Fixed: Limit des Connection-Intervalls hatte keine  Wirkung
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -400,7 +401,7 @@ sub DevIoConnected {
 
     $self->{helper}{ConnectionOngoing}  = 0;    #Verbindungsaufbau nicht in Arbeit
     $self->{helper}{ConnectionInterval}  = MIN_CONNECTION_INTERVAL ;
-	$self->{helper}{NEXT_OPEN} = undef;
+    $self->{helper}{NEXT_OPEN} = undef;
 }
 
 
@@ -460,7 +461,9 @@ sub Ready {
         return;
     }
     
-    $self->{helper}{ConnectionInterval} += MIN_CONNECTION_INTERVAL;
+    if ( $self->{helper}{ConnectionInterval} < MAX_CONNECTION_INTERVAL ) {
+        $self->{helper}{ConnectionInterval} += MIN_CONNECTION_INTERVAL;
+    }
 
     $self->{helper}{NEXT_OPEN} = $now + $self->{helper}{ConnectionInterval};
 
@@ -1980,7 +1983,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "testing",
   "license": "GPL_2",
-  "version": "v00.02.18",
+  "version": "v00.02.19",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
