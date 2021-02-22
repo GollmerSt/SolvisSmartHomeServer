@@ -74,17 +74,8 @@ public class ClientAssignments {
 	}
 
 	private static class State {
-		private boolean screenRestoreEnable = true;
 		private boolean optimizationEnable = true;
 		private boolean commandEnable = true;
-
-		private boolean isScreenRestoreEnable() {
-			return this.screenRestoreEnable;
-		}
-
-		private void setScreenRestoreEnable(boolean screenRestoreInhibit) {
-			this.screenRestoreEnable = screenRestoreInhibit;
-		}
 
 		private boolean isOptimizationEnable() {
 			return this.optimizationEnable;
@@ -120,10 +111,7 @@ public class ClientAssignments {
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
 		}
-		if (enable != state.isScreenRestoreEnable()) {
-			state.setScreenRestoreEnable(enable);
-			solvis.execute(new CommandScreenRestore(enable));
-		}
+		solvis.execute(new CommandScreenRestore(enable, state));
 	}
 
 	void optimizationEnable(Solvis solvis, boolean enable) throws ClientAssignmentException {

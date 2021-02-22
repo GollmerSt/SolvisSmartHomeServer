@@ -28,6 +28,8 @@ import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
+	
+	private final boolean DEBUG = false;
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(EquipmentOnOff.class);
 
@@ -156,6 +158,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			}
 		}
 
+		@SuppressWarnings("unused")
 		private void updateByMeasurement(SolvisData data) {
 
 			if (!(EquipmentOnOff.this.source instanceof Control)) {
@@ -171,6 +174,15 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			int currentCalcValue;
 			try {
 				equipmentOn = data.getBool();
+				
+				if ( EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A12.Brenner") ) {
+					equipmentOn = true;
+				}
+				
+				if (EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A13.Brenner_S2")) {
+					equipmentOn = true;
+				}
+				
 				currentCalcValue = this.calculatedValue.getInt();
 			} catch (TypeException e) {
 				logger.error("Type exception, update ignored", e);
@@ -209,7 +221,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 			if (this.screenRestore != screenRestore) {
 				this.screenRestore = screenRestore;
-				this.solvis.execute(new CommandScreenRestore(this.screenRestore));
+				this.solvis.execute(new CommandScreenRestore(this.screenRestore, this));
 			}
 			this.lastEquipmentState = equipmentOn;
 		}

@@ -10,9 +10,11 @@ package de.sgollmer.solvismax.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Set;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.PowerOnException;
@@ -43,7 +45,6 @@ public class SolvisWorkers {
 	private Collection<Command> commandsOfScreen = new ArrayList<>();
 	private AbstractScreen commandScreen = null;
 	private long timeCommandScreen = System.currentTimeMillis();
-	private final boolean controlEnable;
 
 	SolvisWorkers(Solvis solvis) {
 		this.solvis = solvis;
@@ -57,7 +58,6 @@ public class SolvisWorkers {
 				}
 			}
 		});
-		this.controlEnable = this.solvis.getFeatures().isInteractiveGUIAccess();
 
 	}
 
@@ -66,7 +66,7 @@ public class SolvisWorkers {
 		private final LinkedList<Command> queue = new LinkedList<>();
 		private final Collection<ChannelDescription> channelsOfQueueRead = new ArrayList<>();
 		private boolean abort = false;
-		private int screenRestoreInhibitCnt = 0;
+		private Set<Object> inhibitScreenResoreServices = new HashSet<>();
 		private int optimizationInhibitCnt = 0;
 		private int commandDisableCount = 0;
 		private boolean running = false;
@@ -97,11 +97,11 @@ public class SolvisWorkers {
 				SolvisState.State state = SolvisWorkers.this.solvis.getSolvisState().getState();
 				if (state == SolvisState.State.SOLVIS_CONNECTED || state == SolvisState.State.ERROR) {
 					synchronized (this) {
-						if (this.queue.isEmpty() || this.commandDisableCount > 0 || !SolvisWorkers.this.controlEnable) {
+						if (this.queue.isEmpty() || this.commandDisableCount > 0
+								|| !SolvisWorkers.this.solvis.getFeatures().isInteractiveGUIAccess()) {
 							this.channelsOfQueueRead.clear();
-							if (!queueWasEmpty && this.screenRestoreInhibitCnt == 0) {
+							if (!queueWasEmpty && isScreenRestoreEnabled()) {
 								restoreScreen = true;
-								queueWasEmpty = true;
 							} else {
 								try {
 									this.wait(watchDogTime);
@@ -109,6 +109,7 @@ public class SolvisWorkers {
 								}
 								executeWatchDog = true;
 							}
+							queueWasEmpty = true;
 
 						} else {
 							queueWasEmpty = false;
@@ -249,7 +250,7 @@ public class SolvisWorkers {
 		}
 
 		private void push(Command command) {
-			if (!SolvisWorkers.this.controlEnable) {
+			if (!SolvisWorkers.this.solvis.getFeatures().isInteractiveGUIAccess()) {
 				return;
 			}
 			synchronized (this) {
@@ -310,14 +311,16 @@ public class SolvisWorkers {
 			}
 		}
 
-		private synchronized void screenRestore(boolean enable) {
-			if (enable) {
-				if (this.screenRestoreInhibitCnt > 0) {
-					--this.screenRestoreInhibitCnt;
-				}
+		private synchronized void screenRestore(boolean enable, Object service) {
+			if (!enable) {
+				this.inhibitScreenResoreServices.add(service);
 			} else {
-				++this.screenRestoreInhibitCnt;
+				this.inhibitScreenResoreServices.remove(service);
 			}
+		}
+
+		private boolean isScreenRestoreEnabled() {
+			return this.inhibitScreenResoreServices.size() == 0;
 		}
 
 		private synchronized void commandEnable(boolean enable) {
@@ -409,8 +412,8 @@ public class SolvisWorkers {
 		}
 	}
 
-	void screenRestore(boolean enable) {
-		this.controlsThread.screenRestore(enable);
+	void screenRestore(boolean enable, Object service) {
+		this.controlsThread.screenRestore(enable, service);
 
 	}
 

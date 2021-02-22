@@ -20,14 +20,16 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 public class CommandScreenRestore extends Command {
 
 	private final boolean enable;
+	private final Object service;
 
-	public CommandScreenRestore(boolean enable) {
+	public CommandScreenRestore(boolean enable, Object service) {
 		this.enable = enable;
+		this.service = service;
 	}
 
 	@Override
 	protected ResultStatus execute(Solvis solvis) throws IOException, PowerOnException {
-		solvis.screenRestore(this.enable);
+		solvis.screenRestore(this.enable, this.service);
 		return ResultStatus.SUCCESS;
 	}
 

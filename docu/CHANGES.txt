@@ -14,6 +14,9 @@ Version 01.02.10
     13.02.2021  Mittels "IgnordChannels" im base.xml kann nun die zum Client/Mqtt-Broker 
                 gesendeten Kanäle schon auf der Server-Seite reduziert werden.
 
+    22.02.2021  Während EquipmentOnOf-Überwachung erfolgt fälschlicherweise in manchen Fällen
+                ein Restore-Screen. 
+
 
 
 Version 01.02.09

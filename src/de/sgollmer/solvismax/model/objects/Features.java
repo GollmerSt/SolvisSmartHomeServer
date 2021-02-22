@@ -26,6 +26,7 @@ public class Features {
 	private static final String XML_FEATURE = "Feature";
 
 	private final Map<String, Boolean> features;
+	private Boolean interactiveGUIAccess = null;
 
 	private Features(Map<String, Boolean> features) throws XmlException {
 		this.features = features;
@@ -71,11 +72,14 @@ public class Features {
 	}
 
 	public boolean isInteractiveGUIAccess() {
-		try {
-			return this.checkInteractiveGUIAccess();
-		} catch (XmlException e) {
-			return false;
+		if (this.interactiveGUIAccess == null) {
+			try {
+				this.interactiveGUIAccess = this.checkInteractiveGUIAccess();
+			} catch (XmlException e) {
+				this.interactiveGUIAccess = false;
+			}
 		}
+		return this.interactiveGUIAccess;
 	}
 
 	public boolean isClearErrorMessageAfterMail() {

@@ -303,8 +303,8 @@ public class Solvis {
 		this.worker.commandEnable(enable);
 	}
 
-	void screenRestore(boolean enable) {
-		this.worker.screenRestore(enable);
+	void screenRestore(boolean enable, Object service) {
+		this.worker.screenRestore(enable, service);
 		;
 	}
 
