@@ -30,6 +30,7 @@
 #   00.02.17    12.01.2021  SCMP77              Command error message will now be written to the log file
 #   00.02.18    01.02.2021  SCMP77              Fixed: Solange der Server nicht erreichbar ist, wurde bis zum Timeout FHEM blockiert.
 #   00.02.19    13.02.2021  SCMP77              Fixed: Limit des Connection-Intervalls hatte keine  Wirkung
+#   00.02.20    26.02.2021  SCMP77              testing -> stable
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -1981,9 +1982,9 @@ sub DbLog_splitFn {
     "SolvisMax",
     "SolvisRemote"
   ],
-  "release_status": "testing",
+  "release_status": "stable",
   "license": "GPL_2",
-  "version": "v00.02.19",
+  "version": "v00.02.20",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
