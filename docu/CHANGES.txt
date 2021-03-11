@@ -2,7 +2,7 @@ A E N D E R U N G E N
 
 Version 01.02.11
 
-    11.03.2021  Mqtt-Interface verbesser. Die Mqtt-Schnittstelle hat nun die gleiche Funkrionalität
+    11.03.2021  Mqtt-Interface verbessert. Die Mqtt-Schnittstelle hat nun die gleiche Funkrionalität
                 wie die Server-Client-Schnittstelle. Nun erfolgt - gesteuert durch base.xml - um
                 die volle Stunde ein Refresh aller Kanäle. Auf diese Weise bleiben Diagramme lückenlos.
                 
