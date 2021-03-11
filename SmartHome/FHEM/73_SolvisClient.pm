@@ -605,14 +605,14 @@ sub Connected {
         $self->{VERSION_SERVER} = $connected->{ServerVersion};
 
         my $formatVersion = $connected->{FormatVersion}*1.0;
-		if ( $formatVersion < MIN_SUPPORTED_FORMAT ) {
+        if ( $formatVersion < MIN_SUPPORTED_FORMAT ) {
             Log($self, 3, "Format version $formatVersion of server is not supported, use a newer server, if available.");
             $self->{INFO} = 'Format version is too old';
-		}
-		elsif ( $formatVersion >= MAX_SUPPORTED_FORMAT ) {
+        }
+        elsif ( $formatVersion >= MAX_SUPPORTED_FORMAT ) {
             Log($self, 3, "Format version $formatVersion of server is not supported, use a newer client, if available.");
             $self->{INFO} = 'Format version is too new';
-		}
+        }
         elsif ( $formatVersion < MIN_RECOMMENDED_FORMAT ) {
             Log($self, 3, "Format version $formatVersion of server is deprecated, use a newer server, if available.");
             $self->{INFO} = 'Format version is deprecated but still supported. A new Server ist recommended.';
