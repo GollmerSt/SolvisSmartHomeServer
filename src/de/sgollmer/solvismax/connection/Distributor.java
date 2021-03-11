@@ -12,14 +12,13 @@ import java.util.Collection;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
-import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
+import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.SolvisState;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Measurements;
 import de.sgollmer.solvismax.model.objects.Observer;
@@ -28,12 +27,13 @@ import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
-public final class Distributor extends Observable<JsonPackage> {
+public final class Distributor extends Observable<ISendData> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(Distributor.class);
 
-	private Measurements collectedMeasurements = new Measurements() ;
-	private Measurements collectedBufferedMeasurements = new Measurements() ;
+	private final Solvis solvis;
+	private Measurements collectedMeasurements = new Measurements();
+	private Measurements collectedBufferedMeasurements = new Measurements();
 	private final SolvisDataObserver solvisDataObserver = new SolvisDataObserver();
 	private final ConnectionStateObserver connectionStateObserver = new ConnectionStateObserver();
 	private final SolvisStateObserver solvisStateObserver = new SolvisStateObserver();
@@ -43,7 +43,9 @@ public final class Distributor extends Observable<JsonPackage> {
 	private final int bufferedIntervall_ms;
 	private boolean burstUpdate = false;
 
-	public Distributor(Unit unit) {
+	public Distributor(Solvis solvis) {
+		this.solvis = solvis;
+		Unit unit = solvis.getUnit();
 		this.bufferedIntervall_ms = unit.getBufferedInterval_ms();
 		if (this.bufferedIntervall_ms > 0) {
 			this.periodicBurstThread = new PeriodicBurstThread();
@@ -57,8 +59,8 @@ public final class Distributor extends Observable<JsonPackage> {
 
 		@Override
 		public void update(SolvisData data, Object source) {
-			
-			if ( data.isDontSend()) {
+
+			if (data.isDontSend()) {
 				return;
 			}
 
@@ -100,11 +102,11 @@ public final class Distributor extends Observable<JsonPackage> {
 		}
 	}
 
-	private class SolvisStateObserver implements Observer.IObserver<SolvisState.State> {
+	private class SolvisStateObserver implements Observer.IObserver<SolvisStatePackage> {
 
 		@Override
-		public void update(SolvisState.State data, Object source) {
-			Distributor.this.notify(data.createJsonPackage());
+		public void update(SolvisStatePackage data, Object source) {
+			Distributor.this.notify(data);
 		}
 
 	}
@@ -113,7 +115,7 @@ public final class Distributor extends Observable<JsonPackage> {
 
 		@Override
 		public void update(ConnectionState data, Object source) {
-			Distributor.this.notify(data.createJsonPackage());
+			Distributor.this.notify(data);
 
 		}
 
@@ -123,17 +125,15 @@ public final class Distributor extends Observable<JsonPackage> {
 
 		@Override
 		public void update(HumanAccess data, Object source) {
-			ConnectionStatus status = data.getConnectionStatus();
 			try {
-				Distributor.this.notify(new ConnectionState(status).createJsonPackage());
+				Distributor.this.notify(new SolvisStatePackage(data.getStatus(), Distributor.this.solvis));
 			} catch (Throwable e) {
 			}
-
 		}
 
 	}
 
-	private void sendCollection(Collection< SolvisData > sendData) {
+	private void sendCollection(Collection<SolvisData> sendData) {
 		long timeStamp = System.currentTimeMillis();
 		if (!sendData.isEmpty()) {
 			for (SolvisData data : sendData) {
@@ -191,7 +191,7 @@ public final class Distributor extends Observable<JsonPackage> {
 						}
 					}
 					if (sendAlive) {
-						Distributor.this.notify(new ConnectionState(ConnectionStatus.ALIVE, "").createJsonPackage());
+						Distributor.this.notify(new ConnectionState(ConnectionStatus.ALIVE, ""));
 					}
 				} catch (Throwable e) {
 					logger.error("Error was thrown in alive thread. Cause: ", e);
@@ -284,8 +284,8 @@ public final class Distributor extends Observable<JsonPackage> {
 		return this.solvisStateObserver;
 	}
 
-	public void register(Solvis solvis) {
-		solvis.registerAbortObserver(new IObserver<Boolean>() {
+	public void register() {
+		this.solvis.registerAbortObserver(new IObserver<Boolean>() {
 
 			@Override
 			public void update(Boolean data, Object source) {
@@ -293,10 +293,10 @@ public final class Distributor extends Observable<JsonPackage> {
 
 			}
 		});
-		solvis.registerObserver(this.getSolvisDataObserver());
-		solvis.getConnection().register(this.getConnectionStateObserver());
-		solvis.getSolvisState().register(this.getSolvisStateObserver());
-		solvis.registerScreenChangedByHumanObserver(this.humanAccessObserver);
+		this.solvis.registerObserver(this.getSolvisDataObserver());
+		this.solvis.getConnection().register(this.getConnectionStateObserver());
+		this.solvis.getSolvisState().register(this.getSolvisStateObserver());
+		this.solvis.registerScreenChangedByHumanObserver(this.humanAccessObserver);
 		this.aliveThread.start();
 	}
 

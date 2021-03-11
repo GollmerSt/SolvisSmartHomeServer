@@ -7,12 +7,12 @@
 
 package de.sgollmer.solvismax.connection.mqtt;
 
-import de.sgollmer.solvismax.connection.ITransferedData;
+import de.sgollmer.solvismax.connection.IReceivedData;
 import de.sgollmer.solvismax.connection.transfer.Command;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
-class SubscribeData implements ITransferedData {
+class SubscribeData implements IReceivedData {
 	private final String clientId;
 	private final String unitId;
 	final SubscribeType type;

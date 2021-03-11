@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.sgollmer.solvismax.connection.ISendData;
+import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
@@ -35,7 +37,7 @@ public class Measurements {
 	 */
 	public synchronized SolvisData add(SolvisData data) {
 		if (!data.isDontSend()) {
-			return this.measurements.put(data.getId(), data) ;
+			return this.measurements.put(data.getId(), data);
 		} else {
 			return null;
 		}
@@ -53,10 +55,8 @@ public class Measurements {
 		return collection;
 	}
 
-	public void sent(IObserver<SolvisData> observer) {
-		Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements.values());
-		for (SolvisData data : collection) {
-			observer.update(data, this);
-		}
+	public void sent(IObserver<ISendData> observer) {
+		MeasurementsPackage sendPackage = new MeasurementsPackage(this.measurements.values());
+		observer.update(sendPackage, this);
 	}
 }

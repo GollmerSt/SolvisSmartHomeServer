@@ -17,7 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.connection.ServerStatus;
-import de.sgollmer.solvismax.connection.mqtt.Mqtt.PublishChannelObserver;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt.PublishObserver;
 import de.sgollmer.solvismax.error.ClientAssignmentException;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
@@ -47,14 +47,12 @@ final class Callback implements MqttCallbackExtended {
 	public void connectComplete(boolean reconnect, String serverURI) {
 		Mqtt.logger.info("Connection to MQTT successfull");
 		synchronized (this.mqtt) {
-			PublishChannelObserver observer = this.mqtt.new PublishChannelObserver(); 
+			PublishObserver observer = this.mqtt.new PublishObserver(); 
 			try {
 				if (!reconnect) {
 					this.mqtt.publish(ServerCommand.getMqttMeta(null));
 					for (Solvis solvis : this.mqtt.instances.getUnits()) {
-						solvis.registerObserver(observer);
-						solvis.registerScreenChangedByHumanObserver(this.mqtt.new PublishHumanAccessObserver(solvis));
-						solvis.getSolvisState().register(this.mqtt.new PublishStatusObserver());
+						solvis.getDistributor().register(observer);
 						this.mqtt.publish(ServerCommand.getMqttMeta(solvis));
 						this.mqtt.publish(CommandSetScreen.getMqttMeta(solvis));
 						solvis.getSolvisDescription().sendToMqtt(solvis, this.mqtt, false);
@@ -62,8 +60,8 @@ final class Callback implements MqttCallbackExtended {
 				}
 				for (Solvis solvis : this.mqtt.instances.getUnits()) {
 					solvis.getAllSolvisData().getMeasurements().sent(observer);
-					this.mqtt.publish(solvis.getSolvisState().getState().getMqttData(solvis.getSolvisState()));
-					this.mqtt.publish(solvis.getHumanAccess().getMqttData(solvis));
+					this.mqtt.publish(solvis.getSolvisState().getSolvisStatePackage());
+					this.mqtt.publish(solvis.getHumanAccessPackage());
 				}
 				this.mqtt.publish(ServerStatus.ONLINE.getMqttData());
 				Mqtt.logger.info("New MQTT connection handling successfull");

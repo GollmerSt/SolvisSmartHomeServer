@@ -13,8 +13,7 @@ import java.util.Collection;
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.Debug;
-import de.sgollmer.solvismax.connection.ConnectionStatus;
-import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
@@ -52,19 +51,21 @@ public class WatchDog {
 	private boolean initialized = false;
 	private SolvisStateObserver solvisStateObserver = new SolvisStateObserver();
 
-	private class SolvisStateObserver implements IObserver<SolvisState.State> {
+	private class SolvisStateObserver implements IObserver<SolvisStatePackage> {
 
-		private SolvisState.State lastState = SolvisState.State.UNDEFINED;
+		private SolvisStatus lastState = SolvisStatus.UNDEFINED;
 
 		@Override
-		public void update(SolvisState.State data, Object source) {
+		public void update(SolvisStatePackage data, Object source) {
+			
+			SolvisStatus state = data.getState();
 
 			synchronized (WatchDog.this) {
 				try {
-					switch (data) {
+					switch (state) {
 						case REMOTE_CONNECTED:
-							if (this.lastState == SolvisState.State.SOLVIS_CONNECTED
-									|| this.lastState == SolvisState.State.ERROR) {
+							if (this.lastState == SolvisStatus.SOLVIS_CONNECTED
+									|| this.lastState == SolvisStatus.ERROR) {
 								processEvent(Event.POWER_OFF, null);
 							}
 							break;
@@ -78,7 +79,7 @@ public class WatchDog {
 				} catch (IOException | TerminationException e) {
 				}
 			}
-			this.lastState = data;
+			this.lastState = state;
 		}
 
 	}
@@ -110,19 +111,19 @@ public class WatchDog {
 	}
 
 	public enum HumanAccess {
-		USER(true, "User", ConnectionStatus.USER_ACCESS_DETECTED),
-		SERVICE(true, "Service", ConnectionStatus.SERVICE_ACCESS_DETECTED),
-		NONE(false, "None", ConnectionStatus.HUMAN_ACCESS_FINISHED),
-		UNKNOWN(false, "None", ConnectionStatus.HUMAN_ACCESS_FINISHED);
+		USER(true, "User", SolvisStatus.USER_ACCESS_DETECTED),
+		SERVICE(true, "Service", SolvisStatus.SERVICE_ACCESS_DETECTED),
+		NONE(false, "None", SolvisStatus.HUMAN_ACCESS_FINISHED),
+		UNKNOWN(false, "None", SolvisStatus.HUMAN_ACCESS_FINISHED);
 
 		private final boolean wait;
 		private final String accessType;
-		private final ConnectionStatus connectionStatus;
+		private final SolvisStatus status;
 
-		private HumanAccess(boolean wait, String accessType, ConnectionStatus connectionStatus) {
+		private HumanAccess(boolean wait, String accessType, SolvisStatus connectionStatus) {
 			this.wait = wait;
 			this.accessType = accessType;
-			this.connectionStatus = connectionStatus;
+			this.status = connectionStatus;
 		}
 
 		private boolean mustWait() {
@@ -133,12 +134,8 @@ public class WatchDog {
 			return this.accessType;
 		}
 
-		public ConnectionStatus getConnectionStatus() {
-			return this.connectionStatus;
-		}
-
-		public MqttData getMqttData(Solvis solvis) {
-			return new MqttData(solvis, Constants.Mqtt.HUMAN_ACCESS, this.accessType.toLowerCase(), 0, true);
+		public SolvisStatus getStatus() {
+			return this.status;
 		}
 
 	}

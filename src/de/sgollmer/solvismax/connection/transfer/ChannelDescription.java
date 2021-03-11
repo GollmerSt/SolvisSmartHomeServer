@@ -16,6 +16,7 @@ import de.sgollmer.solvismax.model.objects.data.IMode;
 
 public class ChannelDescription extends Element {
 	public ChannelDescription(de.sgollmer.solvismax.model.objects.ChannelDescription description) {
+		
 		this.name = description.getId();
 		Frame frame = new Frame();
 		this.value = frame;

@@ -7,8 +7,11 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
+import java.util.Collection;
+
 import de.sgollmer.solvismax.connection.ConnectionStatus;
 import de.sgollmer.solvismax.connection.ISendData;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
 
 public class ConnectionState implements ISendData {
 
@@ -40,6 +43,11 @@ public class ConnectionState implements ISendData {
 		}
 		return new JsonPackage(Command.CONNECTION_STATE, frame);
 
+	}
+
+	@Override
+	public Collection<MqttData> createMqttData() {
+		return null;
 	}
 
 }

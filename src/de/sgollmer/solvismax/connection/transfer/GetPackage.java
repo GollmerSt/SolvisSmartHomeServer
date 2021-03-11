@@ -7,9 +7,9 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-import de.sgollmer.solvismax.connection.ITransferedData;
+import de.sgollmer.solvismax.connection.IReceivedData;
 
-public class GetPackage extends JsonPackage implements ITransferedData {
+public class GetPackage extends JsonPackage implements IReceivedData {
 	GetPackage() {
 		this.command = Command.GET;
 	}

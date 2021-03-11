@@ -11,7 +11,7 @@ import de.sgollmer.solvismax.connection.transfer.Command;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
-public interface ITransferedData {
+public interface IReceivedData {
 	/**
 	 * Get the assigned unit
 	 * 

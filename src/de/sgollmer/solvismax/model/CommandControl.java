@@ -284,7 +284,7 @@ public class CommandControl extends Command {
 	}
 
 	/**
-	 * State machine for execution of a command including restore and dependency
+	 * SolvisStatus machine for execution of a command including restore and dependency
 	 * processing
 	 * 
 	 * @author stefa_000

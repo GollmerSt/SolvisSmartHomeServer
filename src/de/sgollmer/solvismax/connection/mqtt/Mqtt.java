@@ -31,7 +31,6 @@ import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.crypt.Ssl;
 import de.sgollmer.solvismax.error.CryptDefaultValueException;
 import de.sgollmer.solvismax.error.CryptExeception;
-import de.sgollmer.solvismax.error.FatalError;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
 import de.sgollmer.solvismax.log.LogManager;
@@ -40,8 +39,6 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.SolvisState;
-import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -197,39 +194,19 @@ public class Mqtt {
 		this.mqttThread.submit();
 	}
 
-	class PublishChannelObserver implements IObserver<SolvisData> {
+	class PublishObserver implements IObserver<ISendData> {
 
 		@Override
-		public void update(SolvisData data, Object source) {
-			if (!data.isDontSend()) {
-				Mqtt.this.publish(data.getMqttData());
-			}
+		public void update(ISendData sendData, Object source) {
+			Mqtt.this.publish(sendData);
 		}
 	}
 
-	class PublishStatusObserver implements IObserver<SolvisState.State> {
+	class PublishStatusObserver implements IObserver<ISendData> {
 
 		@Override
-		public void update(SolvisState.State data, Object source) {
-			if (!(source instanceof SolvisState)) {
-				throw new FatalError("The source object of the notify must be SolvisState");
-			}
-			Mqtt.this.publish(data.getMqttData((SolvisState) source));
-		}
-
-	}
-
-	class PublishHumanAccessObserver implements IObserver<HumanAccess> {
-
-		private final Solvis solvis;
-
-		PublishHumanAccessObserver(Solvis solvis) {
-			this.solvis = solvis;
-		}
-
-		@Override
-		public void update(HumanAccess data, Object source) {
-			Mqtt.this.publish(data.getMqttData(this.solvis));
+		public void update(ISendData data, Object source) {
+			Mqtt.this.publish(data);
 		}
 
 	}
@@ -240,12 +217,36 @@ public class Mqtt {
 		if (data != null) {
 			data = (MqttData) data.clone();
 			data.prepareDeleteRetained();
-			this.publish(data);
+			this.mqttQueue.publish(data);
+		}
+	}
+	
+	public void unpublish(ISendData sendData) throws MqttException, MqttConnectionLost {
+		Collection<MqttData> collection = sendData.createMqttData();
+		if (collection != null) {
+			for (MqttData data : collection) {
+				if (data != null) {
+					this.unpublish(data);
+				}
+			}
 		}
 	}
 
 	public void publish(MqttData data) {
 		this.mqttQueue.publish(data);
+	}
+
+	public void publish(ISendData sendData) {
+		Collection<MqttData> collection = sendData.createMqttData();
+		if (collection != null) {
+			for (MqttData data : collection) {
+				if (data != null) {
+					this.mqttQueue.publish(data);
+				}
+			}
+		} else {
+			logger.debug("Warning, \"ISendData\" object without data");
+		}
 	}
 
 	public synchronized void publishRaw(MqttData data) throws MqttException, MqttConnectionLost {
@@ -428,8 +429,8 @@ public class Mqtt {
 			for (SolvisData solvisData : dates) {
 				this.unpublish(solvisData.getMqttData());
 			}
-			this.unpublish(solvis.getSolvisState().getState().getMqttData(solvis.getSolvisState()));
-			this.unpublish(solvis.getHumanAccess().getMqttData(solvis));
+			this.unpublish(solvis.getSolvisState().getSolvisStatePackage());
+			this.unpublish(solvis.getHumanAccessPackage());
 		}
 		this.publish(ServerCommand.getMqttMeta(null));
 

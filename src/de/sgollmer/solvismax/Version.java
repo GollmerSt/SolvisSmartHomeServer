@@ -36,7 +36,7 @@ public class Version {
 	}
 
 	public String getServerFormatVersion() {
-		return "01.02";
+		return "02.00";
 	}
 
 	public String getMqttFormatVersion() {

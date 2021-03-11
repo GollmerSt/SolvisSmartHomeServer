@@ -12,12 +12,13 @@ import java.util.Calendar;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
+import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.SolvisState;
+import de.sgollmer.solvismax.model.SolvisStatus;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
@@ -26,7 +27,7 @@ import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 
-public class SolvisData extends Observer.Observable<SolvisData> implements IObserver<SolvisState.State> {
+public class SolvisData extends Observer.Observable<SolvisData> implements IObserver<SolvisStatePackage> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisData.class);
 
@@ -302,8 +303,9 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	@Override
-	public void update(SolvisState.State data, Object source) {
-		if (data == SolvisState.State.POWER_OFF && this.average != null) {
+	public void update(SolvisStatePackage data, Object source) {
+		SolvisStatus state = data.getState();
+		if (state == SolvisStatus.POWER_OFF && this.average != null) {
 			this.average.clear();
 		}
 	}

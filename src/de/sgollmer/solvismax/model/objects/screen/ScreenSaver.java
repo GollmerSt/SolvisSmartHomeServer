@@ -391,7 +391,7 @@ public class ScreenSaver implements IAssigner {
 				failed = true;
 			}
 
-			System.out.println("" + ++i + ". " + file.getName() + " State: " + state.name() + ", Soll: "
+			System.out.println("" + ++i + ". " + file.getName() + " SolvisStatus: " + state.name() + ", Soll: "
 					+ test.soll.name() + ", Check: " + pass);
 		}
 

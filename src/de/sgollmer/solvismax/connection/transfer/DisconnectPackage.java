@@ -7,9 +7,9 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-import de.sgollmer.solvismax.connection.ITransferedData;
+import de.sgollmer.solvismax.connection.IReceivedData;
 
-public class DisconnectPackage extends JsonPackage implements ITransferedData {
+public class DisconnectPackage extends JsonPackage implements IReceivedData {
 
 	DisconnectPackage() {
 		this.command = Command.DISCONNECT;

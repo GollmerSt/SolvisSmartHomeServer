@@ -52,7 +52,7 @@ public class CommandHandler {
 
 	}
 
-	public boolean commandFromClient(ITransferedData receivedData, IClient client)
+	public boolean commandFromClient(IReceivedData receivedData, IClient client)
 			throws IOException, ClientAssignmentException, JsonException, TypeException {
 		Command command = receivedData.getCommand();
 		if (command == null) {
@@ -97,7 +97,7 @@ public class CommandHandler {
 		return abortConnection;
 	}
 
-	private void executeServerCommand(ITransferedData receivedData, IClient client)
+	private void executeServerCommand(IReceivedData receivedData, IClient client)
 			throws IOException, ClientAssignmentException {
 		ServerCommand command;
 		String commandString = (String) receivedData.getSingleData().get();
@@ -182,7 +182,7 @@ public class CommandHandler {
 
 	}
 
-	private void selectScreen(ITransferedData receivedData, IClient client) {
+	private void selectScreen(IReceivedData receivedData, IClient client) {
 
 		ClientAssignments assignments = null;
 		Solvis solvis = null;
@@ -227,7 +227,7 @@ public class CommandHandler {
 		return assignments;
 	}
 
-	private void clientOnline(ITransferedData receivedData, IClient client) {
+	private void clientOnline(IReceivedData receivedData, IClient client) {
 		boolean online = (Boolean) receivedData.getSingleData().get();
 		synchronized (this) {
 			ClientAssignments assignments = this.get(client);
@@ -243,7 +243,7 @@ public class CommandHandler {
 		}
 	}
 
-	private boolean connect(ITransferedData receivedData, IClient client) {
+	private boolean connect(IReceivedData receivedData, IClient client) {
 		if (!(client instanceof Client)) {
 			logger.error("Client doesn't exists. Connection ignored.");
 			return true;
@@ -274,7 +274,7 @@ public class CommandHandler {
 		return false;
 	}
 
-	private boolean reconnect(ITransferedData receivedData, IClient client) {
+	private boolean reconnect(IReceivedData receivedData, IClient client) {
 		if (!(client instanceof Client)) {
 			logger.error("Client doesn't exists. Reconnection ignored.");
 			return true;
@@ -307,13 +307,12 @@ public class CommandHandler {
 
 	private void sendMeasurements(Solvis solvis, IClient client) {
 		solvis.getDistributor().sendCollection(solvis.getAllSolvisData().getMeasurements());
-		client.send(solvis.getSolvisState().getState());
-		ConnectionStatus status = solvis.getHumanAccess().getConnectionStatus();
-		client.send(new ConnectionState(status));
+		client.send(solvis.getSolvisState().getSolvisStatePackage());
+		client.send(solvis.getHumanAccessPackage());
 
 	}
 
-	private void disconnect(ITransferedData receivedData, IClient client, boolean shutdown)
+	private void disconnect(IReceivedData receivedData, IClient client, boolean shutdown)
 			throws ClientAssignmentException {
 		if (!(client instanceof Client)) {
 			logger.error("Client doesn't exists. Disconnection ignored.");
@@ -331,7 +330,7 @@ public class CommandHandler {
 		}
 	}
 
-	private void set(ITransferedData receivedDat) throws JsonException, TypeException {
+	private void set(IReceivedData receivedDat) throws JsonException, TypeException {
 		Solvis solvis = receivedDat.getSolvis();
 
 		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
@@ -353,7 +352,7 @@ public class CommandHandler {
 		}
 	}
 
-	private void get(ITransferedData receivedDat) {
+	private void get(IReceivedData receivedDat) {
 		Solvis solvis = receivedDat.getSolvis();
 		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
 		logger.info("Channel <" + description.getId() + "> will be updated by GET command");

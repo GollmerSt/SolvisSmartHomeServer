@@ -8,12 +8,21 @@
 package de.sgollmer.solvismax.connection;
 
 public enum ConnectionStatus {
-	CLIENT_UNKNOWN, //
-	CONNECTION_NOT_POSSIBLE, //
+	CLIENT_UNKNOWN(false), //
+	CONNECTION_NOT_POSSIBLE(false), //
 //	CONNECTED, DISCONNECTED,
-	COMMAND_ERROR, //
-	USER_ACCESS_DETECTED, //
-	SERVICE_ACCESS_DETECTED, //
-	HUMAN_ACCESS_FINISHED, //
-	ALIVE
+	COMMAND_ERROR(false), //
+	ALIVE(false);
+	
+	private final boolean humanAccess ;
+	
+	private ConnectionStatus(boolean humanAccess) {
+		this.humanAccess = humanAccess;
+	}
+	
+	public boolean isHumanAccess() {
+		return this.humanAccess;
+	}
+	
+	
 }

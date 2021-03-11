@@ -7,16 +7,42 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-import de.sgollmer.solvismax.model.SolvisState;
+import java.util.Arrays;
+import java.util.Collection;
 
-public class SolvisStatePackage extends JsonPackage {
+import de.sgollmer.solvismax.connection.ISendData;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.SolvisStatus;
 
-	public SolvisStatePackage(SolvisState.State state) {
-		this.command = Command.SOLVIS_STATE;
-		this.data = new Frame();
+public class SolvisStatePackage implements ISendData {
+	
+	private final SolvisStatus state;
+	private final Solvis solvis;
+
+	public SolvisStatePackage(SolvisStatus state, Solvis solvis) {
+		this.state = state;
+		this.solvis = solvis ;
+	}
+
+	@Override
+	public JsonPackage createJsonPackage() {
+		
+		Frame frame = new Frame();
 		Element element = new Element();
-		this.data.add(element);
+		frame.add(element);
 		element.name = "SolvisState";
-		element.value = new SingleValue(state.name());
+		element.value = new SingleValue(this.state.name());
+
+		return new JsonPackage(Command.SOLVIS_STATE, frame);
+	}
+
+	@Override
+	public Collection<MqttData> createMqttData() {
+		return Arrays.asList(new MqttData(this.solvis, this.state.getMqttPrefix(), this.state.name(), 0, true));
+	}
+
+	public SolvisStatus getState() {
+		return this.state;
 	}
 }

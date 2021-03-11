@@ -114,7 +114,7 @@ public class Server {
 		}
 	}
 
-	class Client extends Helper.Runnable implements IObserver<JsonPackage>, IClient {
+	class Client extends Helper.Runnable implements IObserver<ISendData>, IClient {
 
 		private Socket socket;
 		private String clientId;
@@ -143,7 +143,7 @@ public class Server {
 
 			} catch (ConnectionClosedException e) {
 				logger.info(e.getMessage());
-			} catch (SocketException e ) {
+			} catch (SocketException e) {
 				logger.info("Client connection closed by client.");
 			} catch (Throwable e) {
 				if (!Server.this.abort) {
@@ -184,7 +184,7 @@ public class Server {
 		}
 
 		@Override
-		public synchronized void update(JsonPackage data, Object source) {
+		public synchronized void update(ISendData data, Object source) {
 			this.send(data);
 
 		}
@@ -248,7 +248,9 @@ public class Server {
 
 		@Override
 		public void send(ISendData sendData) {
-			this.send(sendData.createJsonPackage());
+			if (sendData != null) {
+				this.send(sendData.createJsonPackage());
+			}
 
 		}
 

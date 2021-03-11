@@ -10,9 +10,6 @@ package de.sgollmer.solvismax.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.connection.ISendData;
-import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
@@ -22,12 +19,12 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
-public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisState.State> {
+public class SolvisState extends Observable<SolvisStatePackage> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisState.class);
 
 	private final Solvis solvis;
-	private State state = State.UNDEFINED;
+	private SolvisStatus state = SolvisStatus.UNDEFINED;
 	private SolvisScreen errorScreen = null;
 	private final Set<ChannelDescription> errorChannels = new HashSet<>();
 	private boolean error = false;
@@ -37,19 +34,6 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 
 	SolvisState(Solvis solvis) {
 		this.solvis = solvis;
-	}
-
-	public enum State implements ISendData {
-		POWER_OFF, REMOTE_CONNECTED, SOLVIS_CONNECTED, SOLVIS_DISCONNECTED, ERROR, UNDEFINED;
-
-		@Override
-		public SolvisStatePackage createJsonPackage() {
-			return new SolvisStatePackage(this);
-		}
-
-		public MqttData getMqttData(SolvisState state) {
-			return new MqttData(state.solvis, Constants.Mqtt.STATUS, this.name(), 0, true);
-		}
 	}
 
 	private enum ErrorChanged {
@@ -143,31 +127,31 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 			solvisErrorInfo = new SolvisErrorInfo(this.solvis, SolvisScreen.getImage(this.errorScreen), message, true);
 		}
 		if (solvisErrorInfo != null) {
-			this.notify(this.state, this);
+			this.notify(new SolvisStatePackage(this.state, this.solvis));
 			return this.solvis.notifySolvisErrorObserver(solvisErrorInfo, this);
 		}
 		return true;
 	}
 
 	public void setPowerOff() {
-		this.setState(State.POWER_OFF);
+		this.setState(SolvisStatus.POWER_OFF);
 	}
 
 	public void setDisconnected() {
-		this.setState(State.SOLVIS_DISCONNECTED);
+		this.setState(SolvisStatus.SOLVIS_DISCONNECTED);
 	}
 
-	public synchronized State getState() {
+	public synchronized SolvisStatus getState() {
 		if (this.error) {
-			return State.ERROR;
-		} else if (this.state == State.UNDEFINED) {
-			return State.POWER_OFF;
+			return SolvisStatus.ERROR;
+		} else if (this.state == SolvisStatus.UNDEFINED) {
+			return SolvisStatus.POWER_OFF;
 		} else {
 			return this.state;
 		}
 	}
 
-	private void setState(State state) {
+	private void setState(SolvisStatus state) {
 		if (state == null) {
 			return;
 		}
@@ -175,7 +159,7 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 		synchronized (this) {
 
 			if (this.state != state) {
-				if (state == State.SOLVIS_CONNECTED) {
+				if (state == SolvisStatus.SOLVIS_CONNECTED) {
 					switch (this.state) {
 						case POWER_OFF:
 						case REMOTE_CONNECTED:
@@ -188,8 +172,12 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 		}
 		if (changed) {
 			logger.info("Solvis state changed to <" + state.name() + ">.");
-			this.notify(this.state, this);
+			this.notify(this.getSolvisStatePackage());
 		}
+	}
+
+	public SolvisStatePackage getSolvisStatePackage() {
+		return new SolvisStatePackage(this.state, this.solvis);
 	}
 
 	long getTimeOfLastSwitchingOn() {
@@ -231,7 +219,7 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 	}
 
 	boolean isConnected() {
-		return this.state == State.SOLVIS_CONNECTED;
+		return this.state == SolvisStatus.SOLVIS_CONNECTED;
 	}
 
 	boolean isErrorMessage() {
@@ -253,13 +241,13 @@ public class SolvisState extends Observable<de.sgollmer.solvismax.model.SolvisSt
 	}
 
 	private synchronized void setSolvisConnection() {
-		State state = null;
+		SolvisStatus state = null;
 		synchronized (this) {
 
 			if (this.solvisClockValid && this.solvisDataValid) {
-				state = State.SOLVIS_CONNECTED;
-			} else if (this.state != State.UNDEFINED || !this.solvisClockValid && !this.solvisDataValid) {
-				state = State.REMOTE_CONNECTED;
+				state = SolvisStatus.SOLVIS_CONNECTED;
+			} else if (this.state != SolvisStatus.UNDEFINED || !this.solvisClockValid && !this.solvisDataValid) {
+				state = SolvisStatus.REMOTE_CONNECTED;
 			}
 		}
 		this.setState(state);

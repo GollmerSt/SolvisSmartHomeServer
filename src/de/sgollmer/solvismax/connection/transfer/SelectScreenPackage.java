@@ -7,11 +7,11 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-import de.sgollmer.solvismax.connection.ITransferedData;
+import de.sgollmer.solvismax.connection.IReceivedData;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 
-public class SelectScreenPackage extends JsonPackage implements ITransferedData {
+public class SelectScreenPackage extends JsonPackage implements IReceivedData {
 
 	private String screenId;
 

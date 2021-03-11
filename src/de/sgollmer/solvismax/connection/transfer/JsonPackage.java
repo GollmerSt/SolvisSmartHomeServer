@@ -12,12 +12,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import de.sgollmer.solvismax.connection.ITransferedData;
+import de.sgollmer.solvismax.connection.IReceivedData;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
-public class JsonPackage implements ITransferedData {
+public class JsonPackage implements IReceivedData {
 
 	private static final Charset CHARSET = Charset.forName("UTF-8");
 

@@ -7,10 +7,10 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-import de.sgollmer.solvismax.connection.ITransferedData;
+import de.sgollmer.solvismax.connection.IReceivedData;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
-public class SetPackage extends JsonPackage implements ITransferedData {
+public class SetPackage extends JsonPackage implements IReceivedData {
 	SetPackage() {
 		this.command = Command.SET;
 	}

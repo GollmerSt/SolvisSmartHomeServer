@@ -31,6 +31,7 @@
 #   00.02.18    01.02.2021  SCMP77              Fixed: Solange der Server nicht erreichbar ist, wurde bis zum Timeout FHEM blockiert.
 #   00.02.19    13.02.2021  SCMP77              Fixed: Limit des Connection-Intervalls hatte keine  Wirkung
 #   00.02.20    26.02.2021  SCMP77              testing -> stable
+#   00.02.21    26.02.2021  SCMP77              supports server format version >= 2.0
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -75,7 +76,9 @@ use constant MAX_CONNECTION_INTERVAL => 120 ;       #Violates 'ProhibitConstantP
 use constant _FALSE_ => 0 ;                         #Violates 'ProhibitConstantPragma'
 use constant _TRUE_ => 1;   #Violates 'ProhibitConstantPragma'
 
-use constant FORMAT_VERSION_REGEXP => 'm/01\.../' ; #Violates 'ProhibitConstantPragma'
+use constant MIN_SUPPORTED_FORMAT => 1.00 ;          #Violates 'ProhibitConstantPragma'
+use constant MAX_SUPPORTED_FORMAT => 2.99 ;          #Violates 'ProhibitConstantPragma'
+use constant MIN_RECOMMENDED_FORMAT => 2 ;          #Violates 'ProhibitConstantPragma'
 
 use constant _DISABLE_GUI_ => 0 ;                   #Violates 'ProhibitConstantPragma'
 use constant _ENABLE_GUI_ => 1 ;                    #Violates 'ProhibitConstantPragma'
@@ -601,10 +604,18 @@ sub Connected {
 
         $self->{VERSION_SERVER} = $connected->{ServerVersion};
 
-        my $formatVersion = $connected->{FormatVersion};
-        if ( ! $formatVersion =~ FORMAT_VERSION_REGEXP ) {
-            Log($self, 3, "Format version $formatVersion of client is deprecated, use a newer client, if available.");
-            $self->{INFO} = 'Format version is deprecated';
+        my $formatVersion = $connected->{FormatVersion}*1.0;
+		if ( $formatVersion < MIN_SUPPORTED_FORMAT ) {
+            Log($self, 3, "Format version $formatVersion of server is not supported, use a newer server, if available.");
+            $self->{INFO} = 'Format version is too old';
+		}
+		elsif ( $formatVersion >= MAX_SUPPORTED_FORMAT ) {
+            Log($self, 3, "Format version $formatVersion of server is not supported, use a newer client, if available.");
+            $self->{INFO} = 'Format version is too new';
+		}
+        elsif ( $formatVersion < MIN_RECOMMENDED_FORMAT ) {
+            Log($self, 3, "Format version $formatVersion of server is deprecated, use a newer server, if available.");
+            $self->{INFO} = 'Format version is deprecated but still supported. A new Server ist recommended.';
         }
 
         my $buildDate = '';
@@ -612,7 +623,7 @@ sub Connected {
             $buildDate = ", build date: $connected->{BuildDate}";
         }
 
-        Log($self, 3, "Server version: $self->{VERSION_SERVER}$buildDate");
+        Log($self, 3, "Server version: $self->{VERSION_SERVER}$buildDate, Format version: $formatVersion");
 
 
     }
@@ -686,15 +697,16 @@ sub InterpreteConnectionState {
         'ALIVE' => sub {
             Log($self, 4, 'Alive received');
         },
-        'USER_ACCESS_DETECTED' => sub {
+        'USER_ACCESS_DETECTED' => sub {                                 #in case compatibility to format version 1.x
+
             readingsSingleUpdate($self,'HumanAccess','user',1);
             Log($self, 3, 'User access detected');
         },
-        'SERVICE_ACCESS_DETECTED' => sub {
+        'SERVICE_ACCESS_DETECTED' => sub {                              #in case compatibility to format version 1.x
             readingsSingleUpdate($self,'HumanAccess','service',1);
             Log($self, 3, 'User access detected');
         },
-        'HUMAN_ACCESS_FINISHED' => sub {
+        'HUMAN_ACCESS_FINISHED' => sub {                                #in case compatibility to format version 1.x
             readingsSingleUpdate($self,'HumanAccess','none',1);
             Log($self, 3, 'User access finished');
         },
@@ -751,9 +763,45 @@ sub InterpreteSolvisState {
         }
     }
 
-    Log($self, 3, "Solvis status: $stateString");
+    Log($self, 4, "Solvis status: $stateString");
 
-    readingsSingleUpdate($self,'state',$stateString,1);
+    my %switch = (
+
+        'POWER_OFF' => sub {
+            readingsSingleUpdate($self,'state',$stateString,1);
+            Log($self, 3, 'Power off detected');
+       },
+        'REMOTE_CONNECTED' => sub {
+            readingsSingleUpdate($self,'state',$stateString,1);
+            Log($self, 3, 'Remote connected');
+        },
+        'SOLVIS_CONNECTED' => sub {
+            readingsSingleUpdate($self,'state',$stateString,1);
+             Log($self, 3, 'Solvis connected');
+       },
+        'SOLVIS_DISCONNECTED' => sub {
+            readingsSingleUpdate($self,'state',$stateString,1);
+             Log($self, 3, 'Solvis disconnected');
+        },
+        'USER_ACCESS_DETECTED' => sub {
+            readingsSingleUpdate($self,'HumanAccess','user',1);
+            Log($self, 3, 'User access detected');
+        },
+        'SERVICE_ACCESS_DETECTED' => sub {
+            readingsSingleUpdate($self,'HumanAccess','service',1);
+            Log($self, 3, 'User access detected');
+        },
+        'HUMAN_ACCESS_FINISHED' => sub {
+            readingsSingleUpdate($self,'HumanAccess','none',1);
+            Log($self, 3, 'User access finished');
+        },
+    );
+
+    if ( defined($switch{ $stateString  })) {
+        $switch{ $stateString  }->();
+    } else {
+        Log($self, 3, "Connection status unknown: $stateString");
+    }
 
     #DoTrigger($self->{NAME}, $stateString);
 
@@ -1984,7 +2032,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "stable",
   "license": "GPL_2",
-  "version": "v00.02.20",
+  "version": "v00.02.21",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

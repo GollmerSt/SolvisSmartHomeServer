@@ -19,6 +19,7 @@ import de.sgollmer.solvismax.connection.Distributor;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
+import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
@@ -117,7 +118,7 @@ public class Solvis {
 		this.worker = new SolvisWorkers(this);
 		this.backupHandler = measurementsBackupHandler;
 		this.backupHandler.register(this, unit.getId());
-		this.distributor = new Distributor(unit);
+		this.distributor = new Distributor(this);
 		this.measurementUpdateThread = new MeasurementUpdateThread(unit);
 		this.timeZone = timeZone;
 		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
@@ -230,18 +231,18 @@ public class Solvis {
 		this.solvisDescription.getFallBack().execute(this, lastChance);
 	}
 
-	private class UpdateControlAfterPowerOn implements IObserver<SolvisState.State> {
+	private class UpdateControlAfterPowerOn implements IObserver<SolvisStatePackage> {
 		private boolean powerOff = true;
 
 		@Override
-		public void update(SolvisState.State data, Object source) {
+		public void update(SolvisStatePackage data, Object source) {
 			boolean update = false;
 			synchronized (this) {
-				SolvisState.State state = data;
-				if (this.powerOff & state == SolvisState.State.SOLVIS_CONNECTED) {
+				SolvisStatus state = data.getState();
+				if (this.powerOff & state == SolvisStatus.SOLVIS_CONNECTED) {
 					this.powerOff = false;
 					update = true;
-				} else if (state == SolvisState.State.POWER_OFF) {
+				} else if (state == SolvisStatus.POWER_OFF) {
 					this.powerOff = true;
 				}
 			}
@@ -262,11 +263,11 @@ public class Solvis {
 		this.worker.init();
 		this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
 		this.worker.start();
-		this.getDistributor().register(this);
+		this.getDistributor().register();
 		this.getSolvisDescription().instantiate(this);
 		UpdateControlAfterPowerOn updateControlAfterPowerOn = new UpdateControlAfterPowerOn();
 		this.solvisState.register(updateControlAfterPowerOn);
-		updateControlAfterPowerOn.update(this.solvisState.getState(), null);
+		updateControlAfterPowerOn.update(this.solvisState.getSolvisStatePackage(), null);
 		this.registerScreenChangedByHumanObserver(new IObserver<WatchDog.HumanAccess>() {
 
 			@Override
@@ -365,6 +366,10 @@ public class Solvis {
 
 	public HumanAccess getHumanAccess() {
 		return this.humanAccess;
+	}
+
+	public SolvisStatePackage getHumanAccessPackage() {
+		return new SolvisStatePackage(this.humanAccess.getStatus(), this);
 	}
 
 	public void registerSolvisErrorObserver(IObserver<SolvisErrorInfo> observer) {
@@ -524,11 +529,12 @@ public class Solvis {
 			Solvis.this.solvisState.register(new PowerObserver());
 		}
 
-		private class PowerObserver implements IObserver<SolvisState.State> {
+		private class PowerObserver implements IObserver<SolvisStatePackage> {
 
 			@Override
-			public void update(SolvisState.State data, Object source) {
-				switch (data) {
+			public void update(SolvisStatePackage data, Object source) {
+				SolvisStatus state = data.getState(); 
+				switch (state) {
 					case SOLVIS_CONNECTED:
 						MeasurementUpdateThread.this.power = true;
 						break;

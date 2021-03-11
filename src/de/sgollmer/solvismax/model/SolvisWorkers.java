@@ -94,8 +94,8 @@ public class SolvisWorkers {
 			while (!this.abort) {
 				ResultStatus status;
 				Command command = null;
-				SolvisState.State state = SolvisWorkers.this.solvis.getSolvisState().getState();
-				if (state == SolvisState.State.SOLVIS_CONNECTED || state == SolvisState.State.ERROR) {
+				SolvisStatus state = SolvisWorkers.this.solvis.getSolvisState().getState();
+				if (state == SolvisStatus.SOLVIS_CONNECTED || state == SolvisStatus.ERROR) {
 					synchronized (this) {
 						if (this.queue.isEmpty() || this.commandDisableCount > 0
 								|| !SolvisWorkers.this.solvis.getFeatures().isInteractiveGUIAccess()) {
