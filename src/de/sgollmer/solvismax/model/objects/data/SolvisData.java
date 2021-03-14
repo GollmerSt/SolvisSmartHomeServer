@@ -447,6 +447,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				if (currentTimeStamp - this.transmittedTimeStamp > intervall
 						* Constants.FORCE_UPDATE_AFTER_N_INTERVALS) {
 					this.forceCnt = 2;
+					logger.info("Quick change after a long constant period of channel <" + this.solvisData.getDescription() + "> detected.");
 				}
 			} else if (this.forceCnt > 0) {
 				changed = true;
@@ -500,6 +501,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		
 		public SingleValue toSingleValue(SingleData<?> data) {
 			return new SingleValue(this.getDescription().normalize(data));
+		}
+		
+		@Override
+		public String toString() {
+			return "Name: " + this.solvisData.getDescription() + ", Value: " + this.getData();
 		}
 
 	}
