@@ -315,7 +315,13 @@ public class ErrorDetection {
 
 	void instantiate(Solvis solvis) {
 		Execute execute = new Execute(solvis);
-		solvis.registerObserver(execute);
+
+		AllSolvisData allData = solvis.getAllSolvisData();
+
+		for (ErrorCondition condition : this.errorConditions) {
+			SolvisData d = allData.get(condition.getChannelId());
+			d.registerContinuousObserver(execute);
+		}
 	}
 
 	private class Execute implements IObserver<SolvisData> {

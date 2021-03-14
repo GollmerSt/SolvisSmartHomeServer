@@ -50,6 +50,7 @@ import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
@@ -494,8 +495,8 @@ public class Solvis {
 		return this.unit.getFeatures();
 	}
 
-	public void registerObserver(Observer.IObserver<SolvisData> observer) {
-		this.allSolvisData.registerObserver(observer);
+	public void registerSmartHomeObserver(Observer.IObserver<SmartHomeData> observer) {
+		this.allSolvisData.register(observer);
 	}
 
 	public Distributor getDistributor() {

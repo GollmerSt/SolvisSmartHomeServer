@@ -11,18 +11,18 @@ import de.sgollmer.solvismax.helper.Helper.AverageInt;
 
 public class Average implements Cloneable {
 
-	private static class Result {
+	private static class InternalResult {
 		private final int value10;
 		private final boolean fastChange;
 
-		private Result(int value10, boolean fastChange) {
+		private InternalResult(int value10, boolean fastChange) {
 			this.value10 = value10;
 			this.fastChange = fastChange;
 		}
 	}
 
 	private final int measurementHysteresisFactor;
-	private Result average = new Result(0, false);
+	private InternalResult average = new InternalResult(0, false);
 	private int absAverage = 0;
 	private int absCount;
 	private AverageInt averageInt;
@@ -77,10 +77,10 @@ public class Average implements Cloneable {
 		if (size > 1) {
 
 			if (delta > 10 && delta > (this.measurementHysteresisFactor * this.getPrecision() + size - 1) / size) {
-				this.average = new Result(newAverage, fastChange);
+				this.average = new InternalResult(newAverage, fastChange);
 			}
 		} else {
-			this.average = new Result(newAverage, fastChange);
+			this.average = new InternalResult(newAverage, fastChange);
 			;
 		}
 	}
@@ -89,13 +89,33 @@ public class Average implements Cloneable {
 		return (int) ((this.absAverage + (this.absCount >> 1)) / this.absCount);
 	}
 
-	SingleData<?> getAverage(SingleData<?> singleData) {
+	public static class Result {
+		private final SingleData<?> data;
+		private final boolean fastChange;
+
+		public Result(SingleData<?> data, boolean fastChange) {
+			this.data = data;
+			this.fastChange = fastChange;
+		}
+
+		public SingleData<?> getData() {
+			return this.data;
+		}
+
+		public boolean isFastChange() {
+			return this.fastChange;
+		}
+	}
+
+	Result getAverage(SingleData<?> singleData) {
 		if (!this.averageInt.isFilled()) {
 			return null;
 		} else {
-			Result average = this.average;
-			return singleData.create(average.value10 > 0 ? (average.value10 + 5) / 10 : (average.value10 - 5) / 10,
-					singleData.getTimeStamp(), average.fastChange);
+			InternalResult average = this.average;
+			SingleData<?> data = singleData.create(
+					average.value10 > 0 ? (average.value10 + 5) / 10 : (average.value10 - 5) / 10,
+					singleData.getTimeStamp());
+			return new Result(data, average.fastChange);
 		}
 	}
 

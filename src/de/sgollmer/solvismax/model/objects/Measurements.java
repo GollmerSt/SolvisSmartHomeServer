@@ -8,7 +8,7 @@ import java.util.Map;
 import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.transfer.MeasurementsPackage;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 
 /**
  * 
@@ -17,10 +17,10 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
  *         A collection of measurements, which should be send
  */
 public class Measurements {
-	private Map<String, SolvisData> measurements = new HashMap<>();
+	private Map<String, SmartHomeData> measurements = new HashMap<>();
 	private final boolean clear;
 
-	public Measurements(Map<String, SolvisData> measurements) {
+	public Measurements(Map<String, SmartHomeData> measurements) {
 		this.clear = false;
 		this.measurements = measurements;
 	}
@@ -35,20 +35,16 @@ public class Measurements {
 	 * @param data to add
 	 * @return replaced value
 	 */
-	public synchronized SolvisData add(SolvisData data) {
-		if (!data.isDontSend()) {
-			return this.measurements.put(data.getId(), data);
-		} else {
-			return null;
-		}
+	public synchronized SmartHomeData add(SmartHomeData data) {
+		return this.measurements.put(data.getDescription().getId(), data);
 	}
 
-	public void remove(SolvisData data) {
-		this.measurements.remove(data.getId());
+	public void remove(SmartHomeData data) {
+		this.measurements.remove(data.getDescription().getId());
 	}
 
-	public synchronized Collection<SolvisData> cloneAndClear() {
-		Collection<SolvisData> collection = new ArrayList<SolvisData>(this.measurements.values());
+	public synchronized Collection<SmartHomeData> cloneAndClear() {
+		Collection<SmartHomeData> collection = new ArrayList<>(this.measurements.values());
 		if (this.clear) {
 			this.measurements.clear();
 		}

@@ -13,12 +13,14 @@ import java.util.Map;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
+import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 
-public class AllSolvisData {
+public class AllSolvisData extends Observable<SmartHomeData> {
 
 	private final Solvis solvis;
 
@@ -62,6 +64,7 @@ public class AllSolvisData {
 				if (description != null) {
 					boolean ignore = this.solvis.getUnit().isChannelIgnored(id);
 					data = new SolvisData(description, this, ignore);
+					data.setAsSmartHomedata();
 					this.solvisDatas.put(id, data);
 				}
 			}
@@ -130,7 +133,10 @@ public class AllSolvisData {
 	public synchronized Measurements getMeasurements() {
 		Measurements measurements = new Measurements();
 		for (SolvisData data : this.solvisDatas.values()) {
-			measurements.add(data);
+			SmartHomeData smartHomeData = data.getSmartHomeData();
+			if (smartHomeData != null) {
+				measurements.add(smartHomeData);
+			}
 		}
 		return measurements;
 	}
@@ -138,17 +144,17 @@ public class AllSolvisData {
 	public synchronized Measurements getMeasurementsForUpdate() {
 		Measurements measurements = new Measurements();
 		for (SolvisData data : this.solvisDatas.values()) {
-			if (!data.getDescription().isDelayed(this.solvis)) {
-				measurements.add(data);
+			SmartHomeData smartHomeData = data.getSmartHomeData();
+			if (smartHomeData != null && !smartHomeData.getDescription().isDelayed(this.solvis)) {
+				measurements.add(smartHomeData);
 			}
 		}
 		return measurements;
 	}
 
-	public void registerObserver(IObserver<SolvisData> observer) {
-		for (SolvisData data : this.solvisDatas.values()) {
-			data.register(observer);
-		}
+	public void notifySmartHome(SmartHomeData solvisData, Object source) {
+		this.notify(solvisData, source);
+
 	}
 
 }

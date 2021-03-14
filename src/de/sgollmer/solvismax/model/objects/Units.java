@@ -330,6 +330,10 @@ public class Units {
 		public int getBufferedInterval_ms() {
 			return this.bufferedInterval_ms;
 		}
+		
+		public boolean isBuffered() {
+			return this.bufferedInterval_ms > 0;
+		}
 
 		public boolean isDelayAfterSwitchingOnEnable() {
 			return this.delayAfterSwitchingOnEnable;

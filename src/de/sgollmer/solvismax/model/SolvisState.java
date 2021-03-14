@@ -152,8 +152,14 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	}
 
 	private void setState(SolvisStatus state) {
+
+		SolvisStatePackage solvisStatePackage = this.setStateWONotify(state);
+			this.notify(solvisStatePackage);
+	}
+
+	private synchronized SolvisStatePackage setStateWONotify(SolvisStatus state) {
 		if (state == null) {
-			return;
+			return null;
 		}
 		boolean changed = false;
 		synchronized (this) {
@@ -169,11 +175,29 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 				this.state = state;
 				changed = true;
 			}
+			if (changed) {
+				logger.info("Solvis state changed to <" + state.name() + ">.");
+				return (this.getSolvisStatePackage());
+			} else {
+				return null;
+			}
 		}
-		if (changed) {
-			logger.info("Solvis state changed to <" + state.name() + ">.");
-			this.notify(this.getSolvisStatePackage());
+
+	}
+	
+	@Override
+	public void notify( SolvisStatePackage solvisStatePackage ) {
+		if ( solvisStatePackage != null ) {
+			super.notify(solvisStatePackage);
 		}
+	}
+
+	@Override
+	public boolean notify( SolvisStatePackage solvisStatePackage, Object source ) {
+		if ( solvisStatePackage != null ) {
+			return super.notify(solvisStatePackage, source);
+		}
+		return true;
 	}
 
 	public SolvisStatePackage getSolvisStatePackage() {
@@ -226,31 +250,34 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 		return this.errorScreen != null;
 	}
 
-	public synchronized void setSolvisClockValid(boolean valid) {
+	public void setSolvisClockValid(boolean valid) {
+		SolvisStatePackage solvisStatePackage = null;
 		synchronized (this) {
 			this.solvisClockValid = valid;
+			SolvisStatus status = getSolvisConnectionState();
+			solvisStatePackage = this.setStateWONotify(status);
 		}
-		this.setSolvisConnection();
+		this.notify(solvisStatePackage);
 	}
 
-	public synchronized void setSolvisDataValid(boolean valid) {
+	public void setSolvisDataValid(boolean valid) {
+		SolvisStatePackage solvisStatePackage = null;
 		synchronized (this) {
 			this.solvisDataValid = valid;
+			SolvisStatus status = getSolvisConnectionState();
+			solvisStatePackage = this.setStateWONotify(status);
 		}
-		this.setSolvisConnection();
+		this.notify(solvisStatePackage);
 	}
 
-	private synchronized void setSolvisConnection() {
-		SolvisStatus state = null;
-		synchronized (this) {
-
-			if (this.solvisClockValid && this.solvisDataValid) {
-				state = SolvisStatus.SOLVIS_CONNECTED;
-			} else if (this.state != SolvisStatus.UNDEFINED || !this.solvisClockValid && !this.solvisDataValid) {
-				state = SolvisStatus.REMOTE_CONNECTED;
-			}
+	private synchronized SolvisStatus getSolvisConnectionState() {
+		SolvisStatus state = this.state;
+		if (this.solvisClockValid && this.solvisDataValid) {
+			state = SolvisStatus.SOLVIS_CONNECTED;
+		} else if (this.state != SolvisStatus.UNDEFINED || !this.solvisClockValid && !this.solvisDataValid) {
+			state = SolvisStatus.REMOTE_CONNECTED;
 		}
-		this.setState(state);
+		return state;
 	}
 
 	public void connectionSuccessfull(String urlBase) {

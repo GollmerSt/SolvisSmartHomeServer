@@ -25,7 +25,7 @@ import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
-import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 
 public final class Distributor extends Observable<ISendData> {
 
@@ -47,7 +47,7 @@ public final class Distributor extends Observable<ISendData> {
 		this.solvis = solvis;
 		Unit unit = solvis.getUnit();
 		this.bufferedIntervall_ms = unit.getBufferedInterval_ms();
-		if (this.bufferedIntervall_ms > 0) {
+		if (unit.isBuffered()) {
 			this.periodicBurstThread = new PeriodicBurstThread();
 			this.periodicBurstThread.start();
 		} else {
@@ -55,25 +55,19 @@ public final class Distributor extends Observable<ISendData> {
 		}
 	}
 
-	private class SolvisDataObserver implements Observer.IObserver<SolvisData> {
+	private class SolvisDataObserver implements Observer.IObserver<SmartHomeData> {
 
 		@Override
-		public void update(SolvisData data, Object source) {
+		public void update(SmartHomeData data, Object source) {
 
-			if (data.isDontSend()) {
-				return;
-			}
-
-			Collection<SolvisData> toSend = null;
+			Collection<SmartHomeData> toSend = null;
 
 			synchronized (Distributor.this) {
 
 				boolean buffered = data.getDescription().isBuffered() && Distributor.this.periodicBurstThread != null;
 
-				if (buffered && data.isFastChange()
-						&& data.getTimeStamp() - data.getSentTimeStamp() > Constants.FORCE_UPDATE_AFTER_N_INTERVALS
-								* Distributor.this.bufferedIntervall_ms) {
-					buffered = false;
+				if (data.isForce()) {
+					buffered = false ;
 					Distributor.this.collectedBufferedMeasurements.remove(data);
 				}
 
@@ -93,12 +87,12 @@ public final class Distributor extends Observable<ISendData> {
 		}
 	}
 
-	private void add(SolvisData data, Measurements measurements) {
-		SolvisData former = measurements.add(data);
+	private void add(SmartHomeData data, Measurements measurements) {
+		SmartHomeData former = measurements.add(data);
 		if (former != null) {
-			logger.error(
-					"measurements not unique. Timestamps of <" + data.getId() + ">: Former: " + former.getTimeStamp()
-							+ ", New: " + data.getTimeStamp() + ". Former measurement value is ignored");
+			logger.error("measurements not unique. Timestamps of <" + data.getDescription().getId() + ">: Former: "
+					+ former.getTransmittedTimeStamp() + ", New: " + data.getTransmittedTimeStamp()
+					+ ". Former measurement value is ignored");
 		}
 	}
 
@@ -133,11 +127,11 @@ public final class Distributor extends Observable<ISendData> {
 
 	}
 
-	private void sendCollection(Collection<SolvisData> sendData) {
+	private void sendCollection(Collection<SmartHomeData> sendData) {
 		long timeStamp = System.currentTimeMillis();
 		if (!sendData.isEmpty()) {
-			for (SolvisData data : sendData) {
-				data.setSentData(timeStamp);
+			for (SmartHomeData data : sendData) {
+				data.setTransmitted(timeStamp);
 			}
 			this.aliveThread.trigger();
 			MeasurementsPackage sendPackage = new MeasurementsPackage(sendData);
@@ -264,7 +258,7 @@ public final class Distributor extends Observable<ISendData> {
 
 	public void setBurstUpdate(boolean burstUpdate) {
 		boolean send;
-		Collection<SolvisData> collection = null;
+		Collection<SmartHomeData> collection = null;
 		synchronized (this) {
 			send = this.burstUpdate;
 			this.burstUpdate = burstUpdate;
@@ -293,7 +287,7 @@ public final class Distributor extends Observable<ISendData> {
 
 			}
 		});
-		this.solvis.registerObserver(this.getSolvisDataObserver());
+		this.solvis.registerSmartHomeObserver(this.getSolvisDataObserver());
 		this.solvis.getConnection().register(this.getConnectionStateObserver());
 		this.solvis.getSolvisState().register(this.getSolvisStateObserver());
 		this.solvis.registerScreenChangedByHumanObserver(this.humanAccessObserver);

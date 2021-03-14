@@ -63,11 +63,6 @@ public class IntegerValue extends SingleData<Integer> {
 	}
 
 	@Override
-	public SingleData<Integer> create(int value, long timeStamp, boolean fastChange) {
-		return new IntegerValue(value, timeStamp, fastChange);
-	}
-
-	@Override
 	public SingleData<Integer> create(int value, long timeStamp) {
 		return new IntegerValue(value, timeStamp);
 	}

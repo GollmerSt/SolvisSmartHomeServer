@@ -39,10 +39,6 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 	 */
 	public abstract Helper.Boolean getBoolean();
 
-	SingleData<T> create(int value, long timeStamp, boolean fastChange) {
-		return this.create(value, timeStamp);
-	}
-
 	abstract SingleData<T> create(int value, long timeStamp);
 
 	public abstract String getXmlId();

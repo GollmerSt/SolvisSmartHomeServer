@@ -9,6 +9,7 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import java.util.Calendar;
 
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
@@ -40,6 +41,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	private long sentTimeStamp = -1;
 	private SingleData<?> sentData = null;
 	private final boolean dontSend;
+	private SmartHomeData smartHomeData;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
@@ -52,6 +54,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		} else {
 			this.average = null;
 		}
+		this.smartHomeData = null;
+	}
+
+	public void setAsSmartHomedata() {
+		this.smartHomeData = new SmartHomeData(this);
 	}
 
 	private SolvisData(SolvisData data) {
@@ -65,6 +72,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		this.sentTimeStamp = data.sentTimeStamp;
 		this.sentData = data.sentData;
 		this.dontSend = data.dontSend;
+		this.smartHomeData = null;
 	}
 
 	public SolvisData(SingleData<?> data) {
@@ -73,6 +81,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		this.average = null;
 		this.datas = null;
 		this.dontSend = false;
+		this.smartHomeData = null;
 	}
 
 	/**
@@ -117,9 +126,16 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return;
 		}
 
+		boolean fastChange = false;
+
 		if (this.description.isAverage()) {
 			this.average.add(data);
-			data = this.average.getAverage(data);
+			Average.Result average = this.average.getAverage(data);
+			if (average == null) {
+				return;
+			}
+			data = average.getData();
+			fastChange = average.isFastChange();
 		}
 
 		if (data == null) {
@@ -169,6 +185,9 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
 		}
 
+		if (this.smartHomeData != null) {
+			this.smartHomeData.notify(changed, fastChange, source);
+		}
 		if (this.continousObservable != null) {
 
 			this.continousObservable.notify(this, source);
@@ -298,10 +317,6 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return this.getDescription().normalize(this.data);
 	}
 
-	public SingleValue toSingleValue(SingleData<?> data) {
-		return new SingleValue(this.description.normalize(data));
-	}
-
 	@Override
 	public void update(SolvisStatePackage data, Object source) {
 		SolvisStatus state = data.getState();
@@ -350,14 +365,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return this.datas.getSolvis();
 	}
 
-	public MqttData getMqttData() {
-		if (this.data == null || this.dontSend) {
-			return null;
-		}
-		String value = this.normalize().toString();
-		return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getId()), value, 0, true);
-	}
-
+//	public MqttData getMqttData() {
+//		if (this.data == null || this.dontSend) {
+//			return null;
+//		}
+//		String value = this.normalize().toString();
+//		return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getId()), value, 0, true);
+//	}
+//
 	public boolean isValid() {
 		if (this.data == null) {
 			return false;
@@ -378,6 +393,123 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	public boolean isDontSend() {
 		return this.dontSend;
+	}
+
+	public static abstract class XSmartHomeData {
+
+
+
+
+
+
+
+
+	}
+
+	public static class SmartHomeData extends XSmartHomeData {
+		private final Solvis solvis;
+		private final SolvisData solvisData;
+		private SingleData<?> current = null;
+		private SingleData<?> lastTransmittedData = null;
+		private long transmittedTimeStamp = 0;
+		private int forceCnt = 0;
+
+		public SmartHomeData(SolvisData solvisData) {
+			this.solvis = solvisData.datas.getSolvis();
+			this.solvisData = solvisData;
+		}
+
+		private void notify(boolean changed, boolean fastChange, Object source) {
+
+			if (this.solvisData.dontSend) {
+				return;
+			}
+
+			long currentTimeStamp = 0;
+
+			synchronized (this.solvisData) {
+
+				this.current = this.solvisData.data;
+				currentTimeStamp = this.solvisData.getTimeStamp();
+			}
+
+			if (this.forceCnt > 0) {
+				--this.forceCnt;
+			}
+
+			if (changed && fastChange && this.forceCnt == 0) {
+
+				boolean buffered = this.solvisData.getDescription().isBuffered() && this.solvis.getUnit().isBuffered();
+
+				long intervall = buffered ? this.solvis.getUnit().getBufferedInterval_ms()
+						: this.solvis.getUnit().getDefaultReadMeasurementsInterval_ms();
+
+				if (currentTimeStamp - this.transmittedTimeStamp > intervall
+						* Constants.FORCE_UPDATE_AFTER_N_INTERVALS) {
+					this.forceCnt = 2;
+				}
+			} else if (this.forceCnt > 0) {
+				changed = true;
+			}
+
+			if (changed) {
+				this.solvis.getAllSolvisData().notifySmartHome(this, source);
+			}
+		}
+
+		public Solvis getSolvis() {
+			return this.solvis;
+		}
+
+		public boolean isForce() {
+			return this.forceCnt > 0;
+		}
+
+		public SingleData<?> getData() {
+			if (this.forceCnt > 1) {
+				return this.lastTransmittedData;
+			} else {
+				return this.current;
+
+			}
+		}
+
+		public ChannelDescription getDescription() {
+			return this.solvisData.getDescription();
+		}
+
+		public long getTransmittedTimeStamp() {
+			return this.transmittedTimeStamp;
+		}
+
+		public void setTransmitted(long transmittedTimeStamp) {
+			this.transmittedTimeStamp = transmittedTimeStamp;
+			if (this.forceCnt <= 1) {
+				this.lastTransmittedData = this.current;
+			}
+		}
+
+		public MqttData getMqttData() {
+			if (this.getData() == null) {
+				return null;
+			}
+			String value = this.getDescription().normalize(this.getData()).toString();
+			return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getDescription().getId()), value, 0,
+					true);
+		}
+		
+		public SingleValue toSingleValue(SingleData<?> data) {
+			return new SingleValue(this.getDescription().normalize(data));
+		}
+
+	}
+
+	public SmartHomeData getSmartHomeData() {
+		if (this.dontSend) {
+			return null;
+		} else {
+			return this.smartHomeData;
+		}
 	}
 
 }

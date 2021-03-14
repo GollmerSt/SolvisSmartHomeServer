@@ -10,6 +10,11 @@ Version 01.02.11
                 fälschlicherweise als Connection-Staus versendet. Nun wird er als Solvis-Status
                 versendet. Der FHEM-Client ist entsprechend upgedated worden, ist dabei noch
                 abwärtskompatibel. 
+                
+    14.01.2021  Die Messdatentransfe wurde für einen bessere grafische Darstellung optinmiert. Bei
+                einem stärkeren Änderung der Knalwerte nach längerer Pause werden zuerst noch einmal
+                alte Wert transferiert und im Anschluss der neue. Auf diese Weise gibt es kaum 
+                noch unrealistische Verläufe.
 
 Version 01.02.10
 

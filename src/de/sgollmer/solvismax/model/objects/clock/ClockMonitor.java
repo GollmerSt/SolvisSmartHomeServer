@@ -31,6 +31,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -201,7 +202,12 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	public void instantiate(Solvis solvis) {
 
 		Executable executable = new Executable(solvis);
-		solvis.registerObserver(executable);
+		AllSolvisData allData = solvis.getAllSolvisData();
+		
+		SolvisData timeChannel = allData.get(this.timeChannelId);
+		timeChannel.register(executable);
+		
+		this.disableClockSetting.instantiate(solvis, executable);
 	}
 
 	public static class Creator extends CreatorByXML<ClockMonitor> {
@@ -805,6 +811,18 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			}
 
 		}
+		
+		public void instantiate(Solvis solvis, Executable executable) {
+			AllSolvisData allData = solvis.getAllSolvisData();
+			
+			SolvisData burnerChannel = allData.get(this.burnerId);
+			burnerChannel.register(executable);
+			
+			SolvisData hotWaterPumpChannel = allData.get(this.hotWaterPumpId);
+			hotWaterPumpChannel.register(executable);
+			
+		}
+
 	}
 
 }

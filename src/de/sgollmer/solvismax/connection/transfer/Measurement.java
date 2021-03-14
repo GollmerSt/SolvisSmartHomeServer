@@ -7,18 +7,18 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
-import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 
 public class Measurement extends Element {
 
-	private Measurement(SolvisData data) {
-		this.name = data.getId();
-		this.value = data.toSingleValue(data.getSentData());
+	private Measurement(SmartHomeData data) {
+		this.name = data.getDescription().getId();
+		this.value = data.toSingleValue(data.getData());
 	}
 
-	static Measurement createMeasurement(SolvisData data) {
+	static Measurement createMeasurement(SmartHomeData data) {
 		synchronized (data) {
-			if (data.getSentData() != null) {
+			if (data.getData() != null) {
 				return new Measurement(data);
 			} else {
 				return null;

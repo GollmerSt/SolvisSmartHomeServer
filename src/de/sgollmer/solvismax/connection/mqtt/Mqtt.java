@@ -41,7 +41,7 @@ import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
-import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
@@ -220,7 +220,7 @@ public class Mqtt {
 			this.mqttQueue.publish(data);
 		}
 	}
-	
+
 	public void unpublish(ISendData sendData) throws MqttException, MqttConnectionLost {
 		Collection<MqttData> collection = sendData.createMqttData();
 		if (collection != null) {
@@ -425,9 +425,11 @@ public class Mqtt {
 		for (Solvis solvis : this.instances.getUnits()) {
 			this.unpublish(ServerCommand.getMqttMeta(solvis));
 			solvis.getSolvisDescription().sendToMqtt(solvis, this, true);
-			Collection<SolvisData> dates = solvis.getAllSolvisData().getMeasurements().cloneAndClear();
-			for (SolvisData solvisData : dates) {
-				this.unpublish(solvisData.getMqttData());
+			Collection<SmartHomeData> dates = solvis.getAllSolvisData().getMeasurements().cloneAndClear();
+			for (SmartHomeData smartHomeData : dates) {
+				if (smartHomeData != null) {
+					this.unpublish(smartHomeData.getMqttData());
+				}
 			}
 			this.unpublish(solvis.getSolvisState().getSolvisStatePackage());
 			this.unpublish(solvis.getHumanAccessPackage());

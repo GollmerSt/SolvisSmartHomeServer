@@ -32,6 +32,12 @@ public class Observer<D> {
 			this.notify(data, null);
 		}
 
+		/**
+		 * 
+		 * @param data
+		 * @param source
+		 * @return true, if successfull
+		 */
 		public boolean notify(D data, Object source) {
 			boolean status = true;
 			if (this.observers != null) {
