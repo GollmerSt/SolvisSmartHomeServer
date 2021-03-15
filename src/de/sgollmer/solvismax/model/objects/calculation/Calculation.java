@@ -179,7 +179,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	protected SingleData<?> createSingleData(String value) {
+	protected SingleData<?> createSingleData(String value, long timeStamp) {
 		return null;
 	}
 

@@ -15,6 +15,7 @@ import java.io.InputStream;
 import javax.xml.stream.XMLStreamException;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.Constants.Debug;
 import de.sgollmer.solvismax.Main;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.FileException;
@@ -206,7 +207,7 @@ public class ControlFileReader {
 			mustLearn = true;
 		}
 		
-		boolean overwriteOnLearn = Constants.OVERWRITE_ONLY_ON_LEARN;
+		boolean overwriteOnLearn = Debug.OVERWRITE_ONLY_ON_LEARN;
 
 		if (mustWrite && (learn || !overwriteOnLearn)) {
 

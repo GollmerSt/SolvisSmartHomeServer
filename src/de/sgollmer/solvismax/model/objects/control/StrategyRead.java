@@ -222,7 +222,7 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value) throws TypeException {
+	public SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
 		return null;
 	}
 

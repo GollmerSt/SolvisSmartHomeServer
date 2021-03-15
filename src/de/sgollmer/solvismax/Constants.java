@@ -90,6 +90,9 @@ public class Constants {
 		public static final String Y = "y=";
 		public static final String TASTER = "/Taster.CGI?taste=";
 		public static final String ID = "i=";
+		public static final Coordinate RELEASE_COORDINATE = new Coordinate(260, 260);
+		public static final int INTERRUPT_AFTER_N_TOUCHES = 5; // After 5 touches, the screen
+																// command can be interrupted
 	}
 
 	public static class Files {
@@ -166,7 +169,7 @@ public class Constants {
 
 		public static final boolean SOLVIS_TIME_FIXED = false;
 		public static final boolean SOLVIS_RESULT_NULL = false;
-		
+
 		public static boolean isSolvisTimeFixed() {
 			return DEBUG && SOLVIS_TIME_FIXED;
 		}
@@ -175,10 +178,8 @@ public class Constants {
 			return DEBUG && SOLVIS_RESULT_NULL;
 		}
 
-	}
+		public static final boolean OVERWRITE_ONLY_ON_LEARN = false;
 
-	public static final Coordinate RELEASE_COORDINATE = new Coordinate(260, 260);
-	public static final int INTERRUPT_AFTER_N_TOUCHES = 5;
-	public static final boolean OVERWRITE_ONLY_ON_LEARN = false;
+	}
 
 }

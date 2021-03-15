@@ -46,7 +46,7 @@ public class ArrayValue implements IValue {
 	}
 
 	@Override
-	public int from(String json, int position) throws JsonException {
+	public int from(String json, int position, long timeStamp) throws JsonException {
 		char c = Helper.charAt(json, position);
 		if (c != '[') {
 			throw new JsonException("Wrong character <" + c + "> at starting of a element");
@@ -58,7 +58,7 @@ public class ArrayValue implements IValue {
 			switch (Helper.charAt(json, position)) {
 				case '{':
 					Frame frame = new Frame();
-					position = frame.from(json, position);
+					position = frame.from(json, position, timeStamp);
 					this.add(frame);
 					c = Helper.charAt(json, position);
 					break;
@@ -70,7 +70,7 @@ public class ArrayValue implements IValue {
 					break;
 				default:
 					SingleValue single = new SingleValue();
-					single.from(json, position);
+					single.from(json, position,timeStamp);
 					this.add(single);
 					break;
 			}

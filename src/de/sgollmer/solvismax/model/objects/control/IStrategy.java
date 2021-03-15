@@ -46,13 +46,12 @@ public interface IStrategy extends IAssigner {
 
 	boolean mustBeLearned();
 
-	boolean learn(Solvis solvis, IControlAccess controlAccess)
-			throws IOException, TerminationException;
+	boolean learn(Solvis solvis, IControlAccess controlAccess) throws IOException, TerminationException;
 
 	SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
 
 	boolean isBoolean();
 
-	SingleData<?> createSingleData(String value) throws TypeException;
+	SingleData<?> createSingleData(String value, long timeStamp) throws TypeException;
 
 }

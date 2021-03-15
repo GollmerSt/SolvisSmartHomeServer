@@ -76,6 +76,7 @@ final class Callback implements MqttCallbackExtended {
 	@Override
 	public void messageArrived(String topic, MqttMessage message) {
 		SubscribeData subscribeData;
+		long timeStamp = System.currentTimeMillis();
 		try {
 			subscribeData = this.mqtt.analyseReceivedTopic(topic);
 		} catch (MqttInterfaceException e) {
@@ -99,16 +100,16 @@ final class Callback implements MqttCallbackExtended {
 		SingleData<?> data = null;
 		switch (subscribeData.type.format) {
 			case BOOLEAN:
-				data = new BooleanValue(Boolean.parseBoolean(string), 0);
+				data = new BooleanValue(Boolean.parseBoolean(string), timeStamp);
 				break;
 			case STRING:
-				data = new StringData(string, 0);
+				data = new StringData(string, timeStamp);
 				break;
 			case FROM_META:
 				de.sgollmer.solvismax.model.objects.ChannelDescription description = solvis
 						.getChannelDescription(subscribeData.getChannelId());
 				try {
-					data = description.interpretSetData(new StringData(string, 0));
+					data = description.interpretSetData(new StringData(string, timeStamp));
 					if (data == null) {
 						this.mqtt.publishError(subscribeData.getClientId(),
 								"Error: Channel <" + subscribeData.getChannelId() + "> not writable.", unit);

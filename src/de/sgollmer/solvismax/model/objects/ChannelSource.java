@@ -33,7 +33,7 @@ public abstract class ChannelSource implements IChannelSource {
 		return false;
 	}
 
-	protected abstract SingleData<?> createSingleData(String value) throws TypeException;
+	protected abstract SingleData<?> createSingleData(String value, long timeStamp) throws TypeException;
 	
 	public boolean isGlitchDetectionAllowed() {
 		return true ;

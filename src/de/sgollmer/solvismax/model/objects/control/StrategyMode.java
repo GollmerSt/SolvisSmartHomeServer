@@ -312,11 +312,11 @@ public class StrategyMode implements IStrategy {
 
 	@Override
 	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
-		return this.interpretSetData(singleData.toString());
+		return this.interpretSetData(singleData.toString(), singleData.getTimeStamp());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private SingleData<?> interpretSetData(String value) throws TypeException {
+	private SingleData<?> interpretSetData(String value, long timeStamp) throws TypeException {
 		IMode<?> setMode = null;
 		for (IMode<?> mode : this.getModes()) {
 			if (mode.getName().equals(value)) {
@@ -327,7 +327,7 @@ public class StrategyMode implements IStrategy {
 		if (setMode == null) {
 			throw new TypeException("Mode <" + value + "> is unknown");
 		}
-		return new ModeValue(setMode, -1);
+		return new ModeValue(setMode, timeStamp);
 	}
 
 	@Override
@@ -345,7 +345,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value) throws TypeException {
-		return this.interpretSetData(value);
+	public SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
+		return this.interpretSetData(value,timeStamp);
 	}
 }

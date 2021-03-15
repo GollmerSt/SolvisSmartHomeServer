@@ -31,7 +31,7 @@ public class Element {
 		return builder.toString();
 	}
 
-	int from(String json, int position) throws JsonException {
+	int from(String json, int position, long timeStamp) throws JsonException {
 		while (Character.isWhitespace(Helper.charAt(json, position))) {
 			++position;
 		}
@@ -68,17 +68,17 @@ public class Element {
 		switch (Helper.charAt(json, position)) {
 			case '{':
 				Frame frame = new Frame();
-				position = frame.from(json, position);
+				position = frame.from(json, position, timeStamp);
 				this.value = frame;
 				break;
 			case '[':
 				ArrayValue array = new ArrayValue();
-				position = array.from(json, position);
+				position = array.from(json, position, timeStamp);
 				this.value = array;
 				break;
 			default:
 				SingleValue single = new SingleValue();
-				position = single.from(json, position);
+				position = single.from(json, position, timeStamp);
 				this.value = single;
 				break;
 		}

@@ -46,7 +46,7 @@ public class Frame implements IValue {
 	}
 
 	@Override
-	public int from(String json, int position) throws JsonException {
+	public int from(String json, int position, long timeStamp) throws JsonException {
 		while (Character.isWhitespace(Helper.charAt(json, position))) {
 			++position;
 		}
@@ -59,7 +59,7 @@ public class Frame implements IValue {
 		boolean finished = false;
 		while (!finished) {
 			Element element = new Element();
-			position = element.from(json, position);
+			position = element.from(json, position,timeStamp);
 			this.elements.add(element);
 			c = Helper.charAt(json, position);
 			switch (c) {

@@ -77,7 +77,8 @@ public class JsonPackage implements IReceivedData {
 
 		Frame receivedFrame = new Frame();
 		String receivedString = new String(receivedData, CHARSET);
-		receivedFrame.from(receivedString, 0);
+		long timeStamp = System.currentTimeMillis();
+		receivedFrame.from(receivedString, 0, timeStamp);
 		if (receivedFrame.size() > 0) {
 			Element e = receivedFrame.get(0);
 			this.command = Command.valueOf(e.name);

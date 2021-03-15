@@ -25,6 +25,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.Constants.Solvis;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -262,7 +263,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	}
 
 	public void sendRelease() throws IOException, TerminationException {
-		this.sendTouch(Constants.RELEASE_COORDINATE);
+		this.sendTouch(Solvis.RELEASE_COORDINATE);
 	}
 
 	private void setConnected() {

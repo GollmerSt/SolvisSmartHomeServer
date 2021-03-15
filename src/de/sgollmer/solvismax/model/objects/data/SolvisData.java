@@ -38,7 +38,6 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	private final Average average;
 	private SingleData<?> data = null;
 	private SingleData<?> pendingData = null;
-	private long sentTimeStamp = -1;
 	private SingleData<?> sentData = null;
 	private final boolean dontSend;
 	private SmartHomeData smartHomeData;
@@ -69,7 +68,6 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		} else {
 			this.average = null;
 		}
-		this.sentTimeStamp = data.sentTimeStamp;
 		this.sentData = data.sentData;
 		this.dontSend = data.dontSend;
 		this.smartHomeData = null;
@@ -345,16 +343,6 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		} else {
 			return this.data;
 		}
-	}
-
-	public synchronized SingleData<?> setSentData(long sentTimeStamp) {
-		this.sentTimeStamp = sentTimeStamp;
-		this.sentData = this.data;
-		return this.sentData;
-	}
-
-	public long getSentTimeStamp() {
-		return this.sentTimeStamp;
 	}
 
 	public boolean isFastChange() {

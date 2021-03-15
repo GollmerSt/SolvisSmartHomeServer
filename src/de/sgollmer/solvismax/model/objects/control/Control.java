@@ -494,8 +494,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	protected SingleData<?> createSingleData(String value) throws TypeException {
-		return this.strategy.createSingleData(value);
+	protected SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
+		return this.strategy.createSingleData(value, timeStamp);
 	}
 
 	@Override

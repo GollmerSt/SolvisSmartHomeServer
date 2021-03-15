@@ -331,8 +331,23 @@ public class Solvis {
 			return true;
 		}
 
+		long receiveTimeStamp = singleData.getTimeStamp();
+
+		if (receiveTimeStamp <= 0) {
+			logger.error("Data received without timestamp, channel: " + description + ". Current time used.");
+			receiveTimeStamp = System.currentTimeMillis();
+		}
+
 		SolvisData current = this.getAllSolvisData().get(description);
-		if (current.getSentTimeStamp() + this.getEchoInhibitTime_ms() < System.currentTimeMillis()
+		SmartHomeData smartHomeData = current.getSmartHomeData();
+		long currentTimeStamp;
+		if (smartHomeData == null) {
+			logger.error("SmartHomeData of channel <" + description + "> not defined.");
+			currentTimeStamp = 0;
+		} else {
+			currentTimeStamp = smartHomeData.getTransmittedTimeStamp();
+		}
+		if (currentTimeStamp + this.getEchoInhibitTime_ms() < receiveTimeStamp
 				|| !singleData.equals(current.getSingleData())) {
 			this.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData, this));
 			ignored = false;
@@ -534,7 +549,7 @@ public class Solvis {
 
 			@Override
 			public void update(SolvisStatePackage data, Object source) {
-				SolvisStatus state = data.getState(); 
+				SolvisStatus state = data.getState();
 				switch (state) {
 					case SOLVIS_CONNECTED:
 						MeasurementUpdateThread.this.power = true;

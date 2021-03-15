@@ -45,7 +45,7 @@ public class SingleValue implements IValue {
 	}
 
 	@Override
-	public int from(String json, int position) throws JsonException {
+	public int from(String json, int position, long timeStamp) throws JsonException {
 		String sub = json.substring(position);
 		String group = null;
 		Matcher m = STRING.matcher(sub);
@@ -58,19 +58,19 @@ public class SingleValue implements IValue {
 		m = INTEGER.matcher(sub);
 		if (m.matches()) {
 			group = m.group(1);
-			this.data = new IntegerValue(Integer.parseInt(group), -1);
+			this.data = new IntegerValue(Integer.parseInt(group), timeStamp);
 			return position + group.length();
 		}
 		m = FLOAT.matcher(sub);
 		if (m.matches()) {
 			group = m.group(1);
-			this.data = new DoubleValue(Float.parseFloat(group), -1);
+			this.data = new DoubleValue(Float.parseFloat(group), timeStamp);
 			return position + group.length();
 		}
 		m = BOOLEAN.matcher(sub);
 		if (m.matches()) {
 			group = m.group(1);
-			this.data = new BooleanValue(Boolean.parseBoolean(group), -1);
+			this.data = new BooleanValue(Boolean.parseBoolean(group), timeStamp);
 			return position + group.length();
 		}
 		m = NULL.matcher(sub);

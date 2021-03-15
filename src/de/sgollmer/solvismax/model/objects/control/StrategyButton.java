@@ -79,7 +79,7 @@ public class StrategyButton implements IStrategy {
 		if (helperBool == Helper.Boolean.UNDEFINED) {
 			throw new TypeException("Wrong value type, should be boolean");
 		}
-		
+
 		boolean bool = helperBool.result();
 
 		Button button = new Button(solvis.getCurrentScreen().getImage(),
@@ -135,7 +135,7 @@ public class StrategyButton implements IStrategy {
 		} else if (singleData instanceof StringData) {
 			String data = ((StringData) singleData).get();
 			if (data.equalsIgnoreCase("true") || data.equalsIgnoreCase("false")) {
-				return new BooleanValue(data.equalsIgnoreCase("true"), -1);
+				return new BooleanValue(data.equalsIgnoreCase("true"), singleData.getTimeStamp());
 			}
 		}
 		return null;
@@ -195,8 +195,8 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value) {
-		return new BooleanValue(Boolean.parseBoolean(value), -1);
+	public SingleData<?> createSingleData(String value, long timeStamp) {
+		return new BooleanValue(Boolean.parseBoolean(value), timeStamp);
 	}
 
 	@Override

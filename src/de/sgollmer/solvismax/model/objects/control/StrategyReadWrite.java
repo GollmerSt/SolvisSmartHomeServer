@@ -11,7 +11,6 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
@@ -128,8 +127,8 @@ public class StrategyReadWrite extends StrategyRead {
 
 			boolean interrupt = false;
 
-			if (touches > Constants.INTERRUPT_AFTER_N_TOUCHES) {
-				touches = Constants.INTERRUPT_AFTER_N_TOUCHES;
+			if (touches > de.sgollmer.solvismax.Constants.Solvis.INTERRUPT_AFTER_N_TOUCHES) {
+				touches = de.sgollmer.solvismax.Constants.Solvis.INTERRUPT_AFTER_N_TOUCHES;
 				interrupt = true;
 			}
 
@@ -286,9 +285,9 @@ public class StrategyReadWrite extends StrategyRead {
 			String string = (String) singleData.get();
 			try {
 				if (string.contains(".")) {
-					return new DoubleValue(Double.parseDouble(string), 0);
+					return new DoubleValue(Double.parseDouble(string), singleData.getTimeStamp());
 				} else {
-					return new IntegerValue(Integer.parseInt(string), 0);
+					return new IntegerValue(Integer.parseInt(string), singleData.getTimeStamp());
 				}
 			} catch (NumberFormatException e) {
 				throw new TypeException(e);
@@ -378,9 +377,9 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value) throws TypeException {
+	public SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
 		try {
-			return new IntegerValue(Integer.parseInt(value), -1);
+			return new IntegerValue(Integer.parseInt(value), timeStamp);
 		} catch (NumberFormatException e) {
 			throw new TypeException(e);
 		}
