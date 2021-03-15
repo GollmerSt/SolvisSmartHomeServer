@@ -78,7 +78,7 @@ public class SolvisWorkers {
 		@Override
 		public void run() {
 			boolean queueWasEmpty = true;
-			boolean restoreScreen = false;
+			int restoreScreenCnt = 0;
 			boolean executeWatchDog = true;
 			boolean stateChanged = false;
 
@@ -101,18 +101,20 @@ public class SolvisWorkers {
 								|| !SolvisWorkers.this.solvis.getFeatures().isInteractiveGUIAccess()) {
 							this.channelsOfQueueRead.clear();
 							if (!queueWasEmpty && isScreenRestoreEnabled()) {
-								restoreScreen = true;
+								restoreScreenCnt = 2;
 							} else {
 								try {
 									this.wait(watchDogTime);
 								} catch (InterruptedException e) {
 								}
 								executeWatchDog = true;
+								restoreScreenCnt = 0;
 							}
 							queueWasEmpty = true;
 
 						} else {
 							queueWasEmpty = false;
+							restoreScreenCnt = 0;
 							command = this.queue.peek();
 						}
 					}
@@ -129,9 +131,18 @@ public class SolvisWorkers {
 							executeWatchDog = true;
 						}
 						stateChanged = false;
-						if (restoreScreen) {
-							SolvisWorkers.this.solvis.restoreScreen();
-							restoreScreen = false;
+						if (restoreScreenCnt > 0) {
+							if (restoreScreenCnt == 2) {
+								synchronized (this) {
+									try {
+										this.wait(Constants.WAIT_TIME_AFTER_QUEUE_EMPTY);
+									} catch (InterruptedException e) {
+									}
+								}
+							} else {
+								SolvisWorkers.this.solvis.restoreScreen();
+							}
+							--restoreScreenCnt;
 						}
 						if (executeWatchDog) {
 							SolvisWorkers.this.watchDog.execute();

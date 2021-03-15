@@ -44,6 +44,7 @@ public class Constants {
 
 	public static final int MAX_CONNECTIONS = 50;
 	public static final int RETRY_STARTING_SERVER_TIME = 60000;
+	public static final int WAIT_TIME_AFTER_QUEUE_EMPTY = 500;
 	public static final int WAIT_TIME_AFTER_IO_ERROR = 10000;
 	public static final int WAIT_TIME_AFTER_MQTT_ERROR = 100;
 	public static final int ALIVE_TIME = 120000;
