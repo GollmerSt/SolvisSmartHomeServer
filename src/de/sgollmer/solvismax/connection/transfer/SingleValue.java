@@ -52,7 +52,7 @@ public class SingleValue implements IValue {
 		if (m.matches()) {
 			group = m.group(1);
 			group = group.replace("\\\"", "\"");
-			this.data = new StringData(group, -1);
+			this.data = new StringData(group, timeStamp);
 			return position + group.length() + 2;
 		}
 		m = INTEGER.matcher(sub);

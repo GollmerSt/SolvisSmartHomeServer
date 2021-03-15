@@ -48,6 +48,8 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	public boolean equals(Object obj) {
 		if (obj instanceof ModeValue<?>) {
 			return this.mode.getName().equals(((ModeValue<?>) obj).mode.getName());
+		} else if (obj instanceof StringData) {
+			return (this.mode.getName().equals(((StringData) obj).get()));
 		} else {
 			return false;
 		}
@@ -72,7 +74,7 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	public String toJson() {
 		return "\"" + this.toString() + "\"";
 	}
-	
+
 	@Override
 	public int compareTo(SingleData<?> o) {
 		if (o instanceof ModeValue) {
@@ -89,6 +91,5 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 			return 1;
 		}
 	}
-
 
 }

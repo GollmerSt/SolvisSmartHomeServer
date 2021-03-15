@@ -23,7 +23,7 @@ public class StringData extends SingleData<String> {
 		if (obj instanceof StringData) {
 			return this.data.equals(((StringData) obj).data);
 		} else {
-			return false;
+			return obj.equals(this);
 		}
 	}
 

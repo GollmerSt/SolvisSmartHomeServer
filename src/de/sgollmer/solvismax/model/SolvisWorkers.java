@@ -102,13 +102,12 @@ public class SolvisWorkers {
 							this.channelsOfQueueRead.clear();
 							if (!queueWasEmpty && isScreenRestoreEnabled()) {
 								restoreScreenCnt = 2;
-							} else {
+							} else if (restoreScreenCnt == 0 ) {
 								try {
 									this.wait(watchDogTime);
 								} catch (InterruptedException e) {
 								}
 								executeWatchDog = true;
-								restoreScreenCnt = 0;
 							}
 							queueWasEmpty = true;
 
