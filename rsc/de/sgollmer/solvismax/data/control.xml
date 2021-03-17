@@ -1911,7 +1911,9 @@
 				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff equipmentId="A12.Brenner"
-						calculatedId="X01.BrennerStarts" />
+						calculatedId="X01.BrennerStarts">
+						<tns:Trigger id="X02.BrennerLaufzeit_s"/>
+					</tns:EquipmentOnOff>
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>

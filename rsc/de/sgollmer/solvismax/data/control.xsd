@@ -723,14 +723,30 @@
 
 	<complexType name="EquipmentOnOff">
 		<annotation>
-			<documentation>Defintionen zum Abgleich der berechneten Brennerdaten
+			<documentation>
+				Defintionen zum Abgleich der berechneten Brennerdaten
 				mit den Solvis-Daten (z.B. Laufzeiten, Brennerstarts)
 			</documentation>
 		</annotation>
 
+		<sequence>
+			<element name="Trigger" type="tns:Trigger"
+				maxOccurs="unbounded" minOccurs="0">
+				<annotation>
+					<documentation>
+						Wenn erkannt wurdedass die "calculatedId"
+						synchronisiert werden muss, können noch weitere
+						Ids neu synchronisiert werden. Die triggerIds
+						sind dan die caculteIds, welche neu
+						synchronisiert werden müssen.
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
 		<attribute name="equipmentId" type="string" use="required">
 			<annotation>
-				<documentation>Brenner-Name der Solvis-XML-Definitionen A12.Brenner
+				<documentation>
+					Brenner-Name der Solvis-XML-Definitionen A12.Brenner
 					oder A13.Brenner_S2)
 				</documentation>
 			</annotation>
@@ -739,8 +755,10 @@
 
 		<attribute name="calculatedId" type="string" use="required">
 			<annotation>
-				<documentation>berechnente Brennerstufen-Laufzeit, die zur
-					Ermittelung des Stundenwechsels (hourly) hergenommen wird
+				<documentation>
+					berechnente Brennerstufen-Laufzeit, die zur
+					Ermittelung des Stundenwechsels (hourly) hergenommen
+					wird
 				</documentation>
 			</annotation>
 		</attribute>
@@ -748,32 +766,32 @@
 
 		<attribute name="factor" type="int">
 			<annotation>
-				<documentation>Faktor, um aus der Brennerlaufzeit aus dem GUI auf
-					die berechnete Laufzeit zu kommen, normalerweise 3600. Dies wird
-					zur Syynchronisation nach 1h Brennerlaufzeit benötigt.
-					Ist der
-					faktor -1, handelt es sich um den Update der Brennerstarts.
+				<documentation>
+					Faktor, um aus der Brennerlaufzeit aus dem GUI auf
+					die berechnete Laufzeit zu kommen, normalerweise
+					3600. Dies wird zur Syynchronisation nach 1h
+					Brennerlaufzeit benötigt. Ist der faktor -1, handelt
+					es sich um den Update der Brennerstarts.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="checkIntervalId" type="string"
 			use="optional">
 			<annotation>
-				<documentation> Zeit-Intervall, nach dem der berechnete Wert mit dem
-					echten Solvis-Wert verglichen wird und evtl. synchronisiert wird.
-					Zu beachten:
-					Diese Synchronisationsart ist nur einen Stichprobe und
-					kann so nur
-					Abweichungen von mehr als 1h erkennen.
-					Genauerer
-					Synchronisation erhält man über hourly.
+				<documentation>
+					Zeit-Intervall, nach dem der berechnete Wert mit dem
+					echten Solvis-Wert verglichen wird und evtl.
+					synchronisiert wird. Zu beachten: Diese
+					Synchronisationsart ist nur einen Stichprobe und
+					kann so nur Abweichungen von mehr als 1h erkennen.
+					Genauerer Synchronisation erhält man über hourly.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="readIntervalId" type="string"
-			use="optional">
+		<attribute name="readIntervalId" type="string" use="optional">
 			<annotation>
-				<documentation>Zeit-Intervall, nach deren Ablauf immer die
+				<documentation>
+					Zeit-Intervall, nach deren Ablauf immer die
 					Brennerlaufzeit aus dem GUI ermittelt wird, wenn die
 					Synchronisation gestartet ist.
 				</documentation>
@@ -781,19 +799,19 @@
 		</attribute>
 		<attribute name="hourly" type="boolean">
 			<annotation>
-				<documentation>Wenn der Wert nach jeder Stund der Brennerlaufzeit
-					kontrolliert werden soll. Dazu wird der berechnete Wert (z.B.
-					X2.BrennerLaufzeit_s) genutzt.
-					Kurz bevor der Brenner 1 h gelaufen
-					ist, wird die Überprüfung aktiviert
-					und so der Stellenwechsel genau
-					detektiert wird.
-					Die Überwachung wird dann mit dem Erkennen des
-					Zeitwechsels wieder bis
-					zur nächsten Stunde deaktiviert.
+				<documentation>
+					Wenn der Wert nach jeder Stund der Brennerlaufzeit
+					kontrolliert werden soll. Dazu wird der berechnete
+					Wert (z.B. X2.BrennerLaufzeit_s) genutzt. Kurz bevor
+					der Brenner 1 h gelaufen ist, wird die Überprüfung
+					aktiviert und so der Stellenwechsel genau detektiert
+					wird. Die Überwachung wird dann mit dem Erkennen des
+					Zeitwechsels wieder bis zur nächsten Stunde
+					deaktiviert.
 				</documentation>
 			</annotation>
 		</attribute>
+
 	</complexType>
 
 	<complexType name="HumanAccess">
@@ -1621,5 +1639,9 @@
 			<element name="MustBeWhite" type="tns:Rectangle"
 				maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
+	</complexType>
+
+	<complexType name="Trigger">
+		<attribute name="id" type="string" use="required"></attribute>
 	</complexType>
 </schema>

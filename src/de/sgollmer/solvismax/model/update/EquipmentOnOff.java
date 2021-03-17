@@ -7,6 +7,9 @@
 
 package de.sgollmer.solvismax.model.update;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
@@ -21,6 +24,7 @@ import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.update.UpdateStrategies.IExecutable;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.Strategy;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.UpdateCreator;
 import de.sgollmer.xmllibrary.BaseCreator;
@@ -28,8 +32,10 @@ import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
-	
+
 	private final boolean DEBUG = false;
+
+	private static final String XML_TRIGGER = "Trigger";
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(EquipmentOnOff.class);
 
@@ -39,19 +45,17 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 	private final String checkIntervalId;
 	private final String readIntervalId;
 	private final boolean hourly;
+	private final Collection<String> triggerIds;
 
 	private EquipmentOnOff(String equipmentId, String calculatedId, int factor, String checkIntervalId,
-			String readIntervalId, boolean hourly) {
+			String readIntervalId, boolean hourly, Collection<String> triggerIds) {
 		this.equipmentId = equipmentId;
 		this.calculatedId = calculatedId;
 		this.factor = factor;
 		this.checkIntervalId = checkIntervalId;
 		this.readIntervalId = readIntervalId;
 		this.hourly = hourly;
-	}
-
-	private EquipmentOnOff() {
-		this(null, null, -1, null, null, false);
+		this.triggerIds = triggerIds;
 	}
 
 	@Override
@@ -71,9 +75,9 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			readInterval = solvis.getDuration(this.readIntervalId).getTime_ms();
 		}
 
-		new Executable(solvis, toUpdate, equipment, calculatedValue, this.factor, checkInterval, readInterval,
-				this.hourly);
-
+		IExecutable executable = new Executable(solvis, toUpdate, equipment, calculatedValue, this.factor,
+				checkInterval, readInterval, this.hourly);
+		solvis.add(executable);
 	}
 
 	@Override
@@ -81,7 +85,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 	}
 
-	private class Executable implements IObserver<SolvisData> {
+	private class Executable implements IObserver<SolvisData>, IExecutable {
 
 		private final Solvis solvis;
 		private final SolvisData toUpdate;
@@ -140,21 +144,34 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				if (this.syncActive) {
 					this.syncActive = false;
 					update = true;
-					logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> finished");
+					logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> finished.");
 				} else if (controlData > calcData || controlData + this.factor < calcData) {
 					update = true;
 					if (controlData > calcData + 0.1 * this.factor || controlData + this.factor < calcData) {
 						this.syncActive = true;
-						logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> activated");
+						logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> activated.");
 					}
+					notifyTriggerIds();
 				}
 			} else if (calcData != controlData) {
 				update = true;
+				notifyTriggerIds();
 			}
 			if (update) {
 				logger.info("Update of <" + EquipmentOnOff.this.calculatedId
 						+ "> by SolvisConrol data take place, former: " + calcData + ", new: " + controlData);
 				this.calculatedValue.setInteger(controlData, data.getTimeStamp());
+			}
+		}
+
+		private void notifyTriggerIds() {
+			for (String triggerId : EquipmentOnOff.this.triggerIds) {
+				Collection<IExecutable> executables = this.solvis.getUpdateStrategies(triggerId);
+				if (executables != null) {
+					for (IExecutable executable : executables) {
+						executable.trigger();
+					}
+				}
 			}
 		}
 
@@ -174,15 +191,15 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			int currentCalcValue;
 			try {
 				equipmentOn = data.getBool();
-				
-				if ( EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A12.Brenner") ) {
+
+				if (EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A12.Brenner")) {
 					equipmentOn = true;
 				}
-				
+
 				if (EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A13.Brenner_S2")) {
 					equipmentOn = true;
 				}
-				
+
 				currentCalcValue = this.calculatedValue.getInt();
 			} catch (TypeException e) {
 				logger.error("Type exception, update ignored", e);
@@ -231,6 +248,19 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			updateByMeasurement(data);
 		}
 
+		@Override
+		public void trigger() {
+			if (!this.syncActive) {
+				this.syncActive = true;
+				logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> activated.");
+			}
+		}
+
+		@Override
+		public String getTriggerId() {
+			return this.calculatedValue.getId();
+		}
+
 	}
 
 	static class Creator extends UpdateCreator<EquipmentOnOff> {
@@ -241,6 +271,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		private String checkIntervalId;
 		private String readIntervalId;
 		private boolean hourly = false;
+		private final Collection<String> triggerIds = new ArrayList<>();
 
 		Creator() {
 			super(null, null);
@@ -276,17 +307,27 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		@Override
 		public EquipmentOnOff create() throws XmlException {
 			return new EquipmentOnOff(this.equipmentId, this.calculatedId, this.factor, this.checkIntervalId,
-					this.readIntervalId, this.hourly);
+					this.readIntervalId, this.hourly, this.triggerIds);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
+			String id = name.getLocalPart();
+			switch (id) {
+				case XML_TRIGGER:
+					return new Trigger.Creator(id, this.getBaseCreator());
+			}
+
 			return null;
 		}
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-
+			switch ( creator.getId() ) {
+				case XML_TRIGGER:
+					this.triggerIds.add(((Trigger)created).getId());
+					break;
+			}
 		}
 
 		@Override

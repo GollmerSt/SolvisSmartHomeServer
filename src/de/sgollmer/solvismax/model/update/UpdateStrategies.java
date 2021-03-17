@@ -82,6 +82,11 @@ public class UpdateStrategies implements IAssigner {
 		}
 
 	}
+	
+	public interface IExecutable {
+		public void trigger();
+		public String getTriggerId();
+	}
 
 	public static class Creator extends CreatorByXML<UpdateStrategies> {
 

@@ -9,7 +9,11 @@ package de.sgollmer.solvismax.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -55,6 +59,7 @@ import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
+import de.sgollmer.solvismax.model.update.UpdateStrategies;
 import de.sgollmer.solvismax.objects.Coordinate;
 
 public class Solvis {
@@ -100,6 +105,7 @@ public class Solvis {
 	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
 	private Object solvisMeasureObject = new Object();
 	private HumanAccess humanAccess = HumanAccess.NONE;
+	private Map< String, Collection<UpdateStrategies.IExecutable> > updateStrategies = new HashMap<>();
 
 	Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
 			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms,
@@ -240,7 +246,7 @@ public class Solvis {
 			boolean update = false;
 			synchronized (this) {
 				SolvisStatus state = data.getState();
-				if (this.powerOff & state == SolvisStatus.SOLVIS_CONNECTED) {
+				if (this.powerOff && state == SolvisStatus.SOLVIS_CONNECTED) {
 					this.powerOff = false;
 					update = true;
 				} else if (state == SolvisStatus.POWER_OFF) {
@@ -850,6 +856,21 @@ public class Solvis {
 				this.previousScreen = previousScreen;
 				break;
 		}
+	}
+	
+	public void add( UpdateStrategies.IExecutable executable ) {
+		String triggerId = executable.getTriggerId();
+		
+		Collection<UpdateStrategies.IExecutable> collection = this.updateStrategies.get(triggerId);
+		if ( collection == null ) {
+			collection = new ArrayList<>();
+			this.updateStrategies.put(triggerId, collection);
+		}
+		collection.add(executable);
+	}
+	
+	public Collection< UpdateStrategies.IExecutable> getUpdateStrategies(String triggerId ) {
+		return this.updateStrategies.get(triggerId);
 	}
 
 }
