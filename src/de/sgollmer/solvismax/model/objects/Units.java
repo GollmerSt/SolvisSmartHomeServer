@@ -95,6 +95,7 @@ public class Units {
 		private final int defaultAverageCount;
 		private final int measurementHysteresisFactor;
 		private final int defaultReadMeasurementsInterval_ms;
+		private final int forceUpdateAfterFastChangingIntervals;
 		private final int forcedUpdateInterval_ms;
 		private final int doubleUpdateInterval_ms;
 		private final int bufferedInterval_ms;
@@ -109,10 +110,10 @@ public class Units {
 
 		private Unit(String id, String type, String url, String account, CryptAes password, int configOrMask,
 				int defaultAverageCount, int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms,
-				int forcedUpdateInterval_ms, int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
-				int releaseBlockingAfterUserAccess_ms, int releaseBlockingAfterServiceAccess_ms,
-				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, Features features,
-				int ignoredFrameThicknesScreenSaver, Collection<Pattern> ignoredChannels) {
+				int forceUpdateAfterFastChangingIntervals, int forcedUpdateInterval_ms, int doubleUpdateInterval_ms,
+				int bufferedInterval_ms, int watchDogTime_ms, int releaseBlockingAfterUserAccess_ms,
+				int releaseBlockingAfterServiceAccess_ms, boolean delayAfterSwitchingOn, boolean fwLth2_21_02A,
+				Features features, int ignoredFrameThicknesScreenSaver, Collection<Pattern> ignoredChannels) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
@@ -122,6 +123,7 @@ public class Units {
 			this.defaultAverageCount = defaultAverageCount;
 			this.measurementHysteresisFactor = measurementHysteresisFactor;
 			this.defaultReadMeasurementsInterval_ms = defaultReadMeasurementsInterval_ms;
+			this.forceUpdateAfterFastChangingIntervals = forceUpdateAfterFastChangingIntervals;
 			this.forcedUpdateInterval_ms = forcedUpdateInterval_ms;
 			this.doubleUpdateInterval_ms = doubleUpdateInterval_ms;
 			this.bufferedInterval_ms = bufferedInterval_ms;
@@ -171,6 +173,7 @@ public class Units {
 			private int defaultAverageCount;
 			private int measurementHysteresisFactor;
 			private int defaultReadMeasurementsInterval_ms;
+			private int forceUpdateAfterFastChangingIntervals = Constants.FORCE_UPDATE_AFTER_N_INTERVALS;
 			private int forcedUpdateInterval_ms;
 			private int doubleUpdateInterval_ms = 0;
 			private int bufferedInterval_ms;
@@ -221,6 +224,9 @@ public class Units {
 						case "defaultReadMeasurementsInterval_ms":
 							this.defaultReadMeasurementsInterval_ms = Integer.parseInt(value);
 							break;
+						case "forceUpdateInFastChangingAfterIntervals":
+							this.forceUpdateAfterFastChangingIntervals = Integer.parseInt(value);
+							break;
 						case "forcedUpdateInterval_ms":
 							this.forcedUpdateInterval_ms = Integer.parseInt(value);
 							break;
@@ -261,11 +267,11 @@ public class Units {
 			public Unit create() throws XmlException, IOException {
 				return new Unit(this.id, this.type, this.url, this.account, this.password, this.configOrMask,
 						this.defaultAverageCount, this.measurementHysteresisFactor,
-						this.defaultReadMeasurementsInterval_ms, this.forcedUpdateInterval_ms,
-						this.doubleUpdateInterval_ms, this.bufferedInterval_ms, this.watchDogTime_ms,
-						this.releaseBlockingAfterUserAccess_ms, this.releaseBlockingAfterServiceAccess_ms,
-						this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.features,
-						this.ignoredFrameThicknesScreenSaver, this.ignoredChannels);
+						this.defaultReadMeasurementsInterval_ms, this.forceUpdateAfterFastChangingIntervals,
+						this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
+						this.watchDogTime_ms, this.releaseBlockingAfterUserAccess_ms,
+						this.releaseBlockingAfterServiceAccess_ms, this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A,
+						this.features, this.ignoredFrameThicknesScreenSaver, this.ignoredChannels);
 
 			}
 
@@ -330,7 +336,7 @@ public class Units {
 		public int getBufferedInterval_ms() {
 			return this.bufferedInterval_ms;
 		}
-		
+
 		public boolean isBuffered() {
 			return this.bufferedInterval_ms > 0;
 		}
@@ -364,12 +370,16 @@ public class Units {
 		}
 
 		public boolean isChannelIgnored(String channelId) {
-			for ( Pattern regEx : this.ignoredChannels ) {
-				if ( regEx.matcher(channelId).matches()) {
+			for (Pattern regEx : this.ignoredChannels) {
+				if (regEx.matcher(channelId).matches()) {
 					return true;
 				}
 			}
 			return false;
+		}
+
+		public int getForceUpdateAfterFastChangingIntervals() {
+			return this.forceUpdateAfterFastChangingIntervals;
 		}
 
 	}

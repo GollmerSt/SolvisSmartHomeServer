@@ -22,6 +22,8 @@ public class StringData extends SingleData<String> {
 	public boolean equals(Object obj) {
 		if (obj instanceof StringData) {
 			return this.data.equals(((StringData) obj).data);
+		} else if (obj == null) {
+			return false;
 		} else {
 			return obj.equals(this);
 		}
@@ -37,12 +39,11 @@ public class StringData extends SingleData<String> {
 		return this.data;
 	}
 
-
 	@Override
 	public Helper.Boolean getBoolean() {
 		return Helper.Boolean.UNDEFINED;
 	}
-	
+
 	@Override
 	public Integer getInt() {
 		return null;

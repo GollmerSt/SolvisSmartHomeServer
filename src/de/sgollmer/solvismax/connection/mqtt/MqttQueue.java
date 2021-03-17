@@ -17,6 +17,7 @@ public class MqttQueue extends Runnable {
 	private final LinkedList<MqttData> queue = new LinkedList<>();
 	private final Mqtt mqtt;
 	private boolean abort = false;
+	private boolean finished = false;
 
 	public MqttQueue(Mqtt mqtt) {
 		super("MqttQueue");
@@ -34,57 +35,61 @@ public class MqttQueue extends Runnable {
 	@Override
 	public void run() {
 
-		while (!this.abort) {
-			MqttData data = null;
-			synchronized (this) {
-				if (this.queue.isEmpty()) {
-					try {
-						this.notifyAll();
-						this.wait();
-					} catch (InterruptedException e) {
-					}
-				} else {
-					data = this.queue.poll();
-				}
-			}
+		try {
 
-			if (data != null) {
-				try {
-					this.mqtt.publishRaw(data);
-				} catch (MqttException e) {
-					Unit unit = data.getUnit();
-					String topic = this.mqtt.getTopic(data);
-					if (unit == null) {
-						logger.error("Error on mqtt publish <" + topic + ">:", e);
+			while (true) {
+				MqttData data = null;
+				synchronized (this) {
+					if (this.queue.isEmpty()) {
+						if (this.abort) {
+							break;
+						}
+						try {
+							this.wait();
+						} catch (InterruptedException e) {
+						}
 					} else {
-						logger.error("Error on mqtt publish <" + topic + "> of unit <" + unit.getId() + ">:", e);
+						data = this.queue.poll();
 					}
-				} catch (MqttConnectionLost e) {
-					logger.debug("No MQTT connection publish <ResultStatus>");
+				}
+
+				if (data != null) {
+					try {
+						this.mqtt.publishRaw(data);
+					} catch (MqttException e) {
+						Unit unit = data.getUnit();
+						String topic = this.mqtt.getTopic(data);
+						if (unit == null) {
+							logger.error("Error on mqtt publish <" + topic + ">:", e);
+						} else {
+							logger.error("Error on mqtt publish <" + topic + "> of unit <" + unit.getId() + ">:", e);
+						}
+					} catch (MqttConnectionLost e) {
+						logger.debug("No MQTT connection publish <ResultStatus>");
+					}
 				}
 			}
+		} catch (Throwable e) {
+			logger.error("Unexpected throw occured.", e);
 		}
-		this.notifyAll();
+		synchronized (this) {
+			this.finished = true;
+			this.notifyAll();
+		}
 
 	}
 
 	public void abort() {
-		boolean finished = false;
 		synchronized (this) {
-			while (!finished) {
-				if (this.queue.isEmpty()) {
-					this.abort = true;
-					this.notifyAll();
-					finished = true;
-				} else {
-					try {
-						this.wait();
-					} catch (InterruptedException e) {
-					}
+			this.abort = true;
+			if (!this.finished) {
+				this.notifyAll();
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
 				}
 			}
 		}
-
 	}
 
 }

@@ -19,6 +19,7 @@
 			url="aaa.bbb.ccc.ddd" defaultAverageCount="12"
 			measurementHysteresisFactor="4"
 			defaultReadMeasurementsInterval_ms="10000"
+			forceUpdateAfterFastChangingIntervals="3"
 			forcedUpdateInterval_ms="3600000" doubleUpdateInterval_ms="10000"
 			bufferedInterval_ms="60000" watchDogTime_ms="30000"
 			releaseBlockingAfterUserAccess_ms="300000"
@@ -88,10 +89,8 @@
 			</tns:Features>
 			<tns:IgnoredChannels>
 				<!-- Example -->
-				<!-- Inhibit sending of channel by regular expressions
-				<tns:RegEx>AIn.*</tns:RegEx>
-				<tns:RegEx>AOut.*</tns:RegEx>
-				 -->
+				<!-- Inhibit sending of channel by regular expressions <tns:RegEx>AIn.*</tns:RegEx> 
+					<tns:RegEx>AOut.*</tns:RegEx> -->
 			</tns:IgnoredChannels>
 		</tns:Unit>
 	</tns:Units>

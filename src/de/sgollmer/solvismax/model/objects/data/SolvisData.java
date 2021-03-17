@@ -9,7 +9,6 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import java.util.Calendar;
 
-import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
@@ -383,18 +382,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return this.dontSend;
 	}
 
-	public static abstract class XSmartHomeData {
-
-
-
-
-
-
-
-
-	}
-
-	public static class SmartHomeData extends XSmartHomeData {
+	public static class SmartHomeData {
 		private final Solvis solvis;
 		private final SolvisData solvisData;
 		private SingleData<?> current = null;
@@ -432,10 +420,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				long intervall = buffered ? this.solvis.getUnit().getBufferedInterval_ms()
 						: this.solvis.getUnit().getDefaultReadMeasurementsInterval_ms();
 
-				if (currentTimeStamp - this.transmittedTimeStamp > intervall
-						* Constants.FORCE_UPDATE_AFTER_N_INTERVALS) {
+				long forceUpdateAfterFastChangingIntervals = this.solvis.getUnit()
+						.getForceUpdateAfterFastChangingIntervals();
+
+				if (forceUpdateAfterFastChangingIntervals != 0 && currentTimeStamp
+						- this.transmittedTimeStamp > intervall * forceUpdateAfterFastChangingIntervals) {
 					this.forceCnt = 2;
-					logger.info("Quick change after a long constant period of channel <" + this.solvisData.getDescription() + "> detected.");
+					logger.info("Quick change after a long constant period of channel <"
+							+ this.solvisData.getDescription() + "> detected.");
 				}
 			} else if (this.forceCnt > 0) {
 				changed = true;
@@ -486,11 +478,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getDescription().getId()), value, 0,
 					true);
 		}
-		
+
 		public SingleValue toSingleValue(SingleData<?> data) {
 			return new SingleValue(this.getDescription().normalize(data));
 		}
-		
+
 		@Override
 		public String toString() {
 			return "Name: " + this.solvisData.getDescription() + ", Value: " + this.getData();
