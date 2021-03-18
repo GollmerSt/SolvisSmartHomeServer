@@ -426,7 +426,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				if (forceUpdateAfterFastChangingIntervals != 0 && currentTimeStamp
 						- this.transmittedTimeStamp > intervall * forceUpdateAfterFastChangingIntervals) {
 					this.forceCnt = 2;
-					logger.info("Quick change after a long constant period of channel <"
+					logger.debug("Quick change after a long constant period of channel <"
 							+ this.solvisData.getDescription() + "> detected.");
 				}
 			} else if (this.forceCnt > 0) {

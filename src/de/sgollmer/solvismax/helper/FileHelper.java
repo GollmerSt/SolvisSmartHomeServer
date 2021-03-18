@@ -75,8 +75,12 @@ public class FileHelper {
 
 		while (!finished) {
 			int cnt = inputStream.read(buffer);
-			outputStream.write(buffer, 0, cnt);
-			finished = cnt < buffer.length;
+			if (cnt > 0) {
+				outputStream.write(buffer, 0, cnt);
+			} else if (cnt < 0) {
+				finished = true;
+			}
+
 		}
 
 		outputStream.flush();
@@ -193,11 +197,11 @@ public class FileHelper {
 	}
 
 	public static boolean canDelete(File file) {
-		if ( file == null || !file.exists() ) {
+		if (file == null || !file.exists()) {
 			return true;
 		}
-		File [] files ;
-		if (file.isDirectory() && ( files = file.listFiles() ) != null) {
+		File[] files;
+		if (file.isDirectory() && (files = file.listFiles()) != null) {
 			for (File child : files) {
 				if (!canDelete(child)) {
 					return false;
@@ -215,8 +219,8 @@ public class FileHelper {
 		if (file == null || !file.exists()) {
 			return true;
 		}
-		File [] files ;
-		if (file.isDirectory() && ( files = file.listFiles() ) != null) {
+		File[] files;
+		if (file.isDirectory() && (files = file.listFiles()) != null) {
 			for (File child : files) {
 				rmDir(child);
 			}
@@ -240,7 +244,7 @@ public class FileHelper {
 	}
 
 	public static Collection<File> getSortedbyDate(File parent, final Pattern regex) {
-		File [] filteredFiles = parent.listFiles(new FilenameFilter() {
+		File[] filteredFiles = parent.listFiles(new FilenameFilter() {
 
 			@Override
 			public boolean accept(File dir, String name) {
@@ -248,7 +252,7 @@ public class FileHelper {
 				return matcher.matches();
 			}
 		});
-		if ( filteredFiles == null ) {
+		if (filteredFiles == null) {
 			return new ArrayList<File>();
 		}
 		List<File> files = new ArrayList<>(Arrays.asList(filteredFiles));
