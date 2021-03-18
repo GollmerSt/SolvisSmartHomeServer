@@ -11,10 +11,23 @@ Version 01.02.11
                 versendet. Der FHEM-Client ist entsprechend upgedated worden, ist dabei noch
                 abwärtskompatibel. 
                 
-    14.01.2021  Die Messdatentransfe wurde für einen bessere grafische Darstellung optinmiert. Bei
+    14.01.2021  Die Messdatentransfer wurde für einen bessere grafische Darstellung optinmiert. Bei
                 einem stärkeren Änderung der Knalwerte nach längerer Pause werden zuerst noch einmal
                 alte Wert transferiert und im Anschluss der neue. Auf diese Weise gibt es kaum 
                 noch unrealistische Verläufe.
+                
+    17.03.2021  forceUpdateAfterFastChangingIntervals in der base.xml hinzugefügt
+    
+    17.03.2021  Trigger-Tag in der control.xml hinzugefügt. Damit lässt sich erreichen, dass
+                bei dem Update eines berechneten Wertes aus einem Cxx-Wert (und damit der
+                einen neue Synchronosierung für diesen berechneten Wert erfolgt) noch weitere
+                berechnete Werte neu synchronisiert werden.
+                
+    18.03.2021  Betriebssystemabhängig und größenabhängig  erfolgte der Kopie-Vorgang der
+                xml- und xsd-Dateien nur teilweise. Dadurch war ein zweiter Start des Server
+                nicht mehr möglich., da die xml-Dateien dadurch Strukturfehler aufwiesen.
+
+
 
 Version 01.02.10
 
