@@ -169,6 +169,9 @@ public class Constants {
 
 		public static final boolean SOLVIS_TIME_FIXED = false;
 		public static final boolean SOLVIS_RESULT_NULL = false;
+		
+		public static final boolean CORRECTION = true;
+		
 
 		public static boolean isSolvisTimeFixed() {
 			return DEBUG && SOLVIS_TIME_FIXED;

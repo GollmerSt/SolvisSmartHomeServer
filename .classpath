@@ -13,6 +13,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="lib/tinylog-api-2.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/tinylog-impl-2.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/XMLLibrary_1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/XMLLibrary_1.0.1.jar" sourcepath="/XMLLibrary"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

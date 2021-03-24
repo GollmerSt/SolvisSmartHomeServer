@@ -24,7 +24,9 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class Measurement {
+public class Measurement implements SystemBackup.IValue{
+
+	static final String XML_MEASUREMENT = "Measurement";
 
 	private final String id;
 	private final SingleData<?> data;
@@ -160,11 +162,14 @@ public class Measurement {
 
 	}
 
-	void writeXml(XMLStreamWriter writer) throws XMLStreamException {
+	@Override
+	public void writeXml(XMLStreamWriter writer) throws XMLStreamException {
 
+		writer.writeStartElement(XML_MEASUREMENT);
 		writer.writeAttribute("id", this.id);
 		writer.writeStartElement(this.data.getXmlId());
 		writer.writeCharacters(this.data.toString());
+		writer.writeEndElement();
 		writer.writeEndElement();
 
 	}
@@ -172,6 +177,7 @@ public class Measurement {
 	/**
 	 * @return the id
 	 */
+	@Override
 	public String getId() {
 		return this.id;
 	}

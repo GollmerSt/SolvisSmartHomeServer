@@ -1845,7 +1845,7 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X02.BrennerLaufzeit_s" buffered="true" unit="s">
-			<tns:Calculation strategy="runtime">
+			<tns:Calculation strategy="runtime" correction="true">
 				<tns:Alias id="equipmentOn" dataId="A12.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
@@ -1857,7 +1857,7 @@
 		</tns:ChannelDescription>
 		<tns:ChannelDescription
 			id="X04.BrennerStufe2Laufzeit_s" buffered="true" unit="s">
-			<tns:Calculation strategy="runtime">
+			<tns:Calculation strategy="runtime" correction="true">
 				<tns:Alias id="equipmentOn" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
@@ -1912,7 +1912,7 @@
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff equipmentId="A12.Brenner"
 						calculatedId="X01.BrennerStarts">
-						<tns:Trigger id="X02.BrennerLaufzeit_s"/>
+						<tns:Trigger id="X02.BrennerLaufzeit_s" />
 					</tns:EquipmentOnOff>
 				</tns:UpdateBy>
 			</tns:Control>

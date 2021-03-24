@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/measurements" xmlns:tns="http://www.example.org/measurements" elementFormDefault="qualified">
 
-    <element name="SolvisMeasurements" type="tns:SolvisMeasurements"></element>
+    <element name="SolvisBackup" type="tns:SolvisBackup"></element>
 
-    <complexType name="SystemMeasurements">
+    <complexType name="SystemBackup">
     	<sequence>
     		<element name="Measurement" type="tns:Measurement"
     			maxOccurs="unbounded" minOccurs="0">
@@ -29,11 +29,20 @@
     	<attribute name="id" type="string"></attribute>
     </complexType>
 
-    <complexType name="SolvisMeasurements">
+    <complexType name="SolvisBackup">
     	<sequence>
     		<element name="SystemMeasurements"
-    			type="tns:SystemMeasurements">
+    			type="tns:SystemBackup">
+                <annotation>
+                	<documentation>Nur noch wegen Abwärtskompatibilität</documentation>
+                </annotation>
     		</element>
+    		<element name="SystemBackup" type="tns:SystemBackup"></element>
     	</sequence>
+    </complexType>
+
+    <complexType name="Correction">
+    	<attribute name="id" type="string"></attribute>
+    	<attribute name="value" type="double"></attribute>
     </complexType>
 </schema>

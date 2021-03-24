@@ -50,8 +50,8 @@ import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
-import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
-import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
+import de.sgollmer.solvismax.model.objects.backup.BackupHandler;
+import de.sgollmer.solvismax.model.objects.backup.SystemBackup;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
@@ -89,7 +89,7 @@ public class Solvis {
 	private boolean screenSaverActive = false;
 	private final TouchPoint resetSceenSaver;
 	private final SolvisConnection connection;
-	private final MeasurementsBackupHandler backupHandler;
+	private final BackupHandler backupHandler;
 	private final Distributor distributor;
 	private final MeasurementUpdateThread measurementUpdateThread;
 	private final Observable<Boolean> abortObservable = new Observable<>();
@@ -108,7 +108,7 @@ public class Solvis {
 	private Map< String, Collection<UpdateStrategies.IExecutable> > updateStrategies = new HashMap<>();
 
 	Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
-			MeasurementsBackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms,
+			BackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms,
 			File writePath, boolean mustLearn) {
 		this.allSolvisData = new AllSolvisData(this);
 		this.unit = unit;
@@ -266,9 +266,9 @@ public class Solvis {
 		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().init(this);
 		}
-		SystemMeasurements oldMeasurements = this.backupHandler.getSystemMeasurements(this.unit.getId());
+		SystemBackup oldMeasurements = this.backupHandler.getSystemBackup(this.unit.getId());
 		this.worker.init();
-		this.getAllSolvisData().restoreSpecialMeasurements(oldMeasurements);
+		this.getAllSolvisData().restoreFromBackup(oldMeasurements);
 		this.worker.start();
 		this.getDistributor().register();
 		this.getSolvisDescription().instantiate(this);
@@ -499,8 +499,8 @@ public class Solvis {
 		return this.solvisDescription;
 	}
 
-	public void backupMeasurements(SystemMeasurements system) {
-		this.allSolvisData.backupSpecialMeasurements(system);
+	public void backupMeasurements(SystemBackup system) {
+		this.allSolvisData.saveToBackup(system);
 
 	}
 

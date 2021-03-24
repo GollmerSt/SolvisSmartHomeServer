@@ -68,6 +68,10 @@ public enum Strategies {
 
 		abstract boolean isBoolean();
 
+		boolean isCorrection() {
+			return this.calculation.isCorrection();
+		}
+
 	}
 
 	@SuppressWarnings("rawtypes")

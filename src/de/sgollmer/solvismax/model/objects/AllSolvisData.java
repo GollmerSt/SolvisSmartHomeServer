@@ -15,16 +15,18 @@ import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
-import de.sgollmer.solvismax.model.objects.backup.SystemMeasurements;
+import de.sgollmer.solvismax.model.objects.backup.SystemBackup;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
+import de.sgollmer.solvismax.model.update.Correction;
 
 public class AllSolvisData extends Observable<SmartHomeData> {
 
 	private final Solvis solvis;
 
 	private final Map<String, SolvisData> solvisDatas = new HashMap<>();
+	private final Map<String, Correction> corrections = new HashMap<>();
 	private int averageCount;
 	private int measurementHysteresisFactor;
 	private long lastHumanAcess = 0;
@@ -109,7 +111,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		return this.solvis;
 	}
 
-	public synchronized void backupSpecialMeasurements(SystemMeasurements systemMeasurements) {
+	public synchronized void saveToBackup(SystemBackup systemMeasurements) {
 		systemMeasurements.clear();
 		for (SolvisData data : this.solvisDatas.values()) {
 			if (data.getDescription().mustBackuped()) {
@@ -119,13 +121,24 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 				}
 			}
 		}
+		for (Map.Entry<String, Correction> entry : this.corrections.entrySet()) {
+			systemMeasurements.add(entry.getValue());
+		}
 	}
 
-	public synchronized void restoreSpecialMeasurements(SystemMeasurements backup) {
-		for (Measurement measurement : backup.getMeasurements()) {
-			SolvisData data = this.get(measurement.getId());
-			if (data != null) {
-				data.setSingleData(measurement.getData());
+	public synchronized void restoreFromBackup(SystemBackup backup) {
+		long timeStamp = System.currentTimeMillis();
+		for (SystemBackup.IValue value : backup.getValues()) {
+			if (value instanceof Measurement) {
+				SolvisData data = this.get(value.getId());
+				if (data != null) {
+					
+					SingleData<?> single = ((Measurement) value).getData().create(timeStamp);
+					data.setSingleData(single, backup);
+				}
+			} else if (value instanceof Correction) {
+				String id = value.getId();
+				this.corrections.put(id, (Correction) value);
 			}
 		}
 	}
@@ -155,6 +168,15 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 	public void notifySmartHome(SmartHomeData solvisData, Object source) {
 		this.notify(solvisData, source);
 
+	}
+
+	public Correction getCorrection(String id) {
+		Correction correction = this.corrections.get(id);
+		if ( correction == null ) {
+			correction = new Correction(id);
+			this.corrections.put(id, correction);
+		}
+		return correction;
 	}
 
 }

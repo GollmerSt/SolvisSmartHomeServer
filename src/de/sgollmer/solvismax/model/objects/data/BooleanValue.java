@@ -26,7 +26,7 @@ public class BooleanValue extends SingleData<Boolean> {
 
 	@Override
 	public Helper.Boolean getBoolean() {
-		return this.value?Helper.Boolean.TRUE:Helper.Boolean.FALSE;
+		return this.value ? Helper.Boolean.TRUE : Helper.Boolean.FALSE;
 	}
 
 	@Override
@@ -81,6 +81,11 @@ public class BooleanValue extends SingleData<Boolean> {
 		} else {
 			return 1;
 		}
+	}
+
+	@Override
+	public SingleData<Boolean> create(long timeStamp) {
+		return new BooleanValue(this.value, timeStamp);
 	}
 
 }

@@ -41,6 +41,8 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 
 	abstract SingleData<T> create(int value, long timeStamp);
 
+	public abstract SingleData<T> create(long timeStamp);
+
 	public abstract String getXmlId();
 
 	public abstract String toJson();

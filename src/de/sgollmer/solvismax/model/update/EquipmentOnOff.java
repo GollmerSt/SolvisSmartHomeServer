@@ -124,6 +124,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 		}
 
+
 		private void updateByControl(SolvisData data, Object source) {
 			if (!this.solvis.isInitialized())
 				return;
@@ -137,16 +138,17 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				return;
 			}
 
-			boolean update = false;
+			boolean updateBySync = false;
+			boolean updateByReadout = false;
 
 			if (this.factor > 0) {
 				controlData *= this.factor;
 				if (this.syncActive) {
 					this.syncActive = false;
-					update = true;
+					updateBySync = true;
 					logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> finished.");
 				} else if (controlData > calcData || controlData + this.factor < calcData) {
-					update = true;
+					updateByReadout = true;
 					if (controlData > calcData + 0.1 * this.factor || controlData + this.factor < calcData) {
 						this.syncActive = true;
 						logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> activated.");
@@ -154,13 +156,14 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 					notifyTriggerIds();
 				}
 			} else if (calcData != controlData) {
-				update = true;
+				updateByReadout = true;
 				notifyTriggerIds();
 			}
-			if (update) {
+			if (updateByReadout|| updateBySync) {
 				logger.info("Update of <" + EquipmentOnOff.this.calculatedId
 						+ "> by SolvisConrol data take place, former: " + calcData + ", new: " + controlData);
-				this.calculatedValue.setInteger(controlData, data.getTimeStamp());
+				UpdateType type = new UpdateType(updateBySync);
+				this.calculatedValue.setInteger(controlData, data.getTimeStamp(), type);
 			}
 		}
 
@@ -323,9 +326,9 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
-			switch ( creator.getId() ) {
+			switch (creator.getId()) {
 				case XML_TRIGGER:
-					this.triggerIds.add(((Trigger)created).getId());
+					this.triggerIds.add(((Trigger) created).getId());
 					break;
 			}
 		}
@@ -333,6 +336,18 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		@Override
 		public UpdateCreator<EquipmentOnOff> createCreator(String id, BaseCreator<?> creator) {
 			return new Creator(id, creator);
+		}
+	}
+
+	public static class UpdateType {
+		private final boolean syncType;
+
+		UpdateType(boolean syncType) {
+			this.syncType = syncType;
+		}
+
+		public boolean isSyncType() {
+			return this.syncType;
 		}
 	}
 }

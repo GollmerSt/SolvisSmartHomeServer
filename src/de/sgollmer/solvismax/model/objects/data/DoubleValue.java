@@ -31,11 +31,11 @@ public class DoubleValue extends SingleData<Double> {
 		return (int) Math.round(this.value);
 	}
 
-
 	@Override
 	public Double getDouble() {
 		return this.value;
 	}
+
 	@Override
 	public SingleData<Double> create(int value, long timeStamp) {
 		return new DoubleValue(value, timeStamp);
@@ -71,9 +71,9 @@ public class DoubleValue extends SingleData<Double> {
 		if (!(obj instanceof SingleData)) {
 			return false;
 		}
-		Double cmp = ((SingleData<?>)obj).getDouble();
-		if ( cmp == null ) {
-			return false ;
+		Double cmp = ((SingleData<?>) obj).getDouble();
+		if (cmp == null) {
+			return false;
 		}
 		double maxEqualDiff = Math.abs(this.value) * Constants.PRECISION_DOUBLE;
 		double diff = this.value - cmp;
@@ -94,6 +94,11 @@ public class DoubleValue extends SingleData<Double> {
 		} else {
 			return 1;
 		}
+	}
+
+	@Override
+	public SingleData<Double> create(long timeStamp) {
+		return new DoubleValue(this.value, timeStamp);
 	}
 
 }

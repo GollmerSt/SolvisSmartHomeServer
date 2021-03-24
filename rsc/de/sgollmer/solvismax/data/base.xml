@@ -38,6 +38,9 @@
 					value="false" />
 				<!-- Synchronisation der sekundengenauen Brennerlaufzeiten mit den stuendlichen 
 					der SolvisControl -->
+				<tns:Feature id="EquipmentTimeCorrection" value="false" />
+				<!-- Bei jedem Equipment-Start wird eine automatisch ermittelte Korrektur 
+					durchgeführt -->
 				<tns:Feature id="UpdateAfterUserAccess" value="false" />
 				<!-- Nach jedem Userzugriff werden automatisch der Zustand der Anlage 
 					abgefragt -->

@@ -36,10 +36,12 @@ public class Calculation extends ChannelSource {
 	private static final String XML_Alias = "Alias";
 
 	private final Strategy<?> strategy;
+	private final boolean correction;
 	private final AliasGroup aliasGroup;
 
-	private Calculation(Strategies strategies, AliasGroup aliasGroup) {
+	private Calculation(Strategies strategies, boolean correction, AliasGroup aliasGroup) {
 		this.strategy = strategies.create(this);
+		this.correction = correction;
 		this.aliasGroup = aliasGroup;
 	}
 
@@ -89,6 +91,7 @@ public class Calculation extends ChannelSource {
 	public static class Creator extends CreatorByXML<Calculation> {
 
 		private Strategies strategy;
+		private boolean correction = false;
 		private final AliasGroup aliasGroup = new AliasGroup();
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -102,12 +105,15 @@ public class Calculation extends ChannelSource {
 				case "strategy":
 					this.strategy = Strategies.getByName(value);
 					break;
+				case "correction":
+					this.correction = Boolean.parseBoolean(value);
+					break;
 			}
 		}
 
 		@Override
 		public Calculation create() throws XmlException {
-			return new Calculation(this.strategy, this.aliasGroup);
+			return new Calculation(this.strategy, this.correction, this.aliasGroup);
 		}
 
 		@Override
@@ -196,10 +202,14 @@ public class Calculation extends ChannelSource {
 	@Override
 	public boolean isDelayed(Solvis solvis) {
 		boolean delayed = false;
-		for ( ChannelDescription description : this.getAliasGroup().getChannelDescriptions(solvis) ) {
+		for (ChannelDescription description : this.getAliasGroup().getChannelDescriptions(solvis)) {
 			delayed |= description.isDelayed(solvis);
 		}
 		return delayed;
+	}
+
+	public boolean isCorrection() {
+		return this.correction;
 	}
 
 }

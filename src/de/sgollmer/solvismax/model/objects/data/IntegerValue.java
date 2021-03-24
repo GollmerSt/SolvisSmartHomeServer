@@ -23,7 +23,7 @@ public class IntegerValue extends SingleData<Integer> {
 	@Override
 	public Helper.Boolean getBoolean() {
 		if (this.data != null) {
-			return this.data == 0?Helper.Boolean.FALSE:Helper.Boolean.TRUE;
+			return this.data == 0 ? Helper.Boolean.FALSE : Helper.Boolean.TRUE;
 		}
 		return Helper.Boolean.UNDEFINED;
 	}
@@ -106,6 +106,11 @@ public class IntegerValue extends SingleData<Integer> {
 		} else {
 			return 1;
 		}
+	}
+
+	@Override
+	public SingleData<Integer> create(long timeStamp) {
+		return new IntegerValue(this.data, timeStamp);
 	}
 
 }

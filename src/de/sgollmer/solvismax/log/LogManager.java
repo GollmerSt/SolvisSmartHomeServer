@@ -53,8 +53,8 @@ public class LogManager {
 		OK, INIT, PREVIOUS
 	}
 
-	public interface ILogger {
-		public ILogger create(Class<?> clazz);
+	public interface ILoggerExt {
+		public ILoggerExt create(Class<?> clazz);
 
 		public boolean createInstance(String path) throws IOException, FileException;
 
@@ -89,6 +89,13 @@ public class LogManager {
 		public void log(Level level, String message, Throwable throwable);
 	}
 
+	public interface ILogger extends ILoggerExt {
+		public void debug(boolean debug, String message);
+
+		public void debug(boolean debug, String message, Throwable throwable);
+
+	}
+
 	public static class DelayedMessage {
 		private final Level level;
 		private final String message;
@@ -108,7 +115,7 @@ public class LogManager {
 		}
 	}
 
-	private final ILogger loggerBase;
+	private final ILoggerExt loggerBase;
 
 	private Collection<DelayedMessage> delayedErrorMessages = new ArrayList<>();
 	private int delayedErrorCode = -1;
@@ -159,7 +166,7 @@ public class LogManager {
 			}
 
 			if (this.initialized) {
-				ILogger logger = this.loggerBase.create(message.loggedClass);
+				ILoggerExt logger = this.loggerBase.create(message.loggedClass);
 				logger.log(message.level, message.message);
 			} else {
 				System.err.println(message.level.toString() + ": " + message.message);
@@ -218,7 +225,7 @@ public class LogManager {
 
 	private class Logger implements ILogger {
 
-		private ILogger logger = null;
+		private ILoggerExt logger = null;
 		private final Class<?> clazz;
 
 		public Logger(Class<?> clazz) {
@@ -240,7 +247,7 @@ public class LogManager {
 			LogManager.this.loggerBase.shutdown();
 		}
 
-		private ILogger getLogger() {
+		private ILoggerExt getLogger() {
 			if (this.logger == null) {
 				this.logger = LogManager.this.loggerBase.create(this.clazz);
 			}
@@ -299,6 +306,24 @@ public class LogManager {
 		public void info(String message, Throwable throwable) {
 			this.getLogger().info(message, throwable);
 		}
+
+		@Override
+		public void debug(boolean debug, String message) {
+			if (debug) {
+				this.info(message);
+			} else {
+				this.debug(message);
+			}
+		};
+
+		@Override
+		public void debug(boolean debug, String message, Throwable throwable) {
+			if (debug) {
+				this.info(message, throwable);
+			} else {
+				this.debug(message, throwable);
+			}
+		};
 
 		@Override
 		public void debug(String message) {

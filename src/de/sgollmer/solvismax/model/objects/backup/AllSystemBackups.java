@@ -19,43 +19,44 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class Measurements {
+public class AllSystemBackups {
 
 	private static final String XML_MEASUREMENTS_SYSTEM_MEASUREMENTS = "SystemMeasurements";
+	private static final String XML_MEASUREMENTS_SYSTEM_BACKUP = "SystemBackup";
 
-	private final Collection<SystemMeasurements> systemMeasurements;
+	private final Collection<SystemBackup> systemBackups;
 
-	private Measurements(Collection<SystemMeasurements> systemMeasurements) {
-		this.systemMeasurements = systemMeasurements;
+	private AllSystemBackups(Collection<SystemBackup> systemBackups) {
+		this.systemBackups = systemBackups;
 	}
 
-	Measurements() {
+	AllSystemBackups() {
 		this(new ArrayList<>());
 	}
 
-	SystemMeasurements get(String id) {
-		SystemMeasurements result = null;
-		for (SystemMeasurements measurements : this.systemMeasurements) {
+	SystemBackup get(String id) {
+		SystemBackup result = null;
+		for (SystemBackup measurements : this.systemBackups) {
 			if (id.equals(measurements.getId())) {
 				result = measurements;
 				break;
 			}
 		}
 		if (result == null) {
-			result = new SystemMeasurements(id);
-			this.systemMeasurements.add(result);
+			result = new SystemBackup(id);
+			this.systemBackups.add(result);
 		}
 		return result;
 	}
 
-	static class Creator extends BaseCreator<Measurements> {
+	static class Creator extends BaseCreator<AllSystemBackups> {
 
-		private final Measurements measurements;
+		private final AllSystemBackups measurements;
 
-		public Creator(Measurements measurements, String id) {
+		public Creator(AllSystemBackups measurements, String id) {
 			super(id);
 			this.measurements = measurements;
-			this.measurements.systemMeasurements.clear();
+			this.measurements.systemBackups.clear();
 		}
 
 		@Override
@@ -63,7 +64,7 @@ public class Measurements {
 		}
 
 		@Override
-		public Measurements create() throws XmlException, IOException {
+		public AllSystemBackups create() throws XmlException, IOException {
 			return this.measurements;
 		}
 
@@ -72,7 +73,8 @@ public class Measurements {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_MEASUREMENTS_SYSTEM_MEASUREMENTS:
-					return new SystemMeasurements.Creator(id, this.getBaseCreator());
+				case XML_MEASUREMENTS_SYSTEM_BACKUP:
+					return new SystemBackup.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -81,24 +83,25 @@ public class Measurements {
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
 				case XML_MEASUREMENTS_SYSTEM_MEASUREMENTS:
-					this.measurements.systemMeasurements.add((SystemMeasurements) created);
+				case XML_MEASUREMENTS_SYSTEM_BACKUP:
+					this.measurements.systemBackups.add((SystemBackup) created);
 			}
 		}
 
 	}
 
 	void writeXml(XMLStreamWriter writer) throws XMLStreamException {
-		for (SystemMeasurements system : this.systemMeasurements) {
-			writer.writeStartElement(XML_MEASUREMENTS_SYSTEM_MEASUREMENTS);
+		for (SystemBackup system : this.systemBackups) {
+			writer.writeStartElement(XML_MEASUREMENTS_SYSTEM_BACKUP);
 			system.writeXml(writer);
 			writer.writeEndElement();
 		}
 	}
 
 	/**
-	 * @return the systemMeasurements
+	 * @return the systemBackups
 	 */
-	Collection<SystemMeasurements> getSystemMeasurements() {
-		return this.systemMeasurements;
+	Collection<SystemBackup> getSystemBackups() {
+		return this.systemBackups;
 	}
 }

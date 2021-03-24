@@ -575,6 +575,7 @@
 						value="EndOfUserInterventionDetectionThroughScreenSaver">
 					</enumeration>
 					<enumeration value="InteractiveGUIAccess"></enumeration>
+					<enumeration value="EquipmentTimeCorrection"></enumeration>
 				</restriction>
 			</simpleType>
 		</attribute>

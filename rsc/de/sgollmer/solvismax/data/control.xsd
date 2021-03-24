@@ -615,8 +615,9 @@
 
 	<complexType name="Calculation">
 		<annotation>
-			<documentation>Notwendigen Definitionen zur Berechnung für eine aus
-				den Daten zu berechnender Wert
+			<documentation>
+				Notwendigen Definitionen zur Berechnung für eine aus den
+				Daten zu berechnender Wert
 			</documentation>
 		</annotation>
 		<sequence>
@@ -625,8 +626,7 @@
 				<annotation>
 					<documentation>
 						Abhängigkeiten von Solvis-Messungen (Brenner
-						an/aus
-						etc.)
+						an/aus etc.)
 					</documentation>
 				</annotation>
 			</element>
@@ -635,7 +635,8 @@
 		<attribute name="strategy" use="required">
 			<simpleType>
 				<annotation>
-					<documentation>Berechnungsart des zu berechnendesn Wertes
+					<documentation>
+						Berechnungsart des zu berechnendesn Wertes
 					</documentation>
 				</annotation>
 				<restriction base="string">
@@ -646,6 +647,10 @@
 				</restriction>
 			</simpleType>
 		</attribute>
+		<attribute name="correction" type="boolean" use="optional">
+			<annotation>
+				<documentation>Korrigiert die Laufzeit automatisisiert.</documentation>
+			</annotation></attribute>
 	</complexType>
 
 

@@ -26,7 +26,7 @@ public class TinyLog {
 
 	private static TaggedLogger learningLogger;
 
-	static class LoggerTiny implements de.sgollmer.solvismax.log.LogManager.ILogger {
+	static class LoggerTiny implements de.sgollmer.solvismax.log.LogManager.ILoggerExt {
 
 		private final String className;
 
@@ -43,7 +43,7 @@ public class TinyLog {
 		}
 
 		@Override
-		public de.sgollmer.solvismax.log.LogManager.ILogger create(Class<?> clazz) {
+		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(Class<?> clazz) {
 			return new LoggerTiny(clazz);
 		}
 

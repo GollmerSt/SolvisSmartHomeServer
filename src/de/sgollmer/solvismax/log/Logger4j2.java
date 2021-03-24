@@ -28,7 +28,7 @@ import de.sgollmer.solvismax.helper.FileHelper;
  */
 public class Logger4j2 {
 
-	static class Logger implements de.sgollmer.solvismax.log.LogManager.ILogger {
+	static class Logger implements de.sgollmer.solvismax.log.LogManager.ILoggerExt {
 
 		private final org.apache.logging.log4j.Logger logger;
 		private final Level LEARN;
@@ -44,7 +44,7 @@ public class Logger4j2 {
 		}
 
 		@Override
-		public de.sgollmer.solvismax.log.LogManager.ILogger create(Class<?> clazz) {
+		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(Class<?> clazz) {
 			Logger logger = new Logger(clazz);
 			return logger;
 		}

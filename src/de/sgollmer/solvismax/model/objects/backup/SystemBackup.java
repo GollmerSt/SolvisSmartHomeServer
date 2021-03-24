@@ -16,39 +16,38 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.update.Correction;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class SystemMeasurements {
-
-	private static final String XML_MEASUREMENTS_MEASUREMENT = "Measurement";
+public class SystemBackup {
 
 	private final String id;
-	private final Collection<Measurement> measurements;
+	private final Collection<IValue> values;
 	private Solvis owner;
 
-	private SystemMeasurements(String id, Collection<Measurement> measurements) {
+	private SystemBackup(String id, Collection<IValue> values) {
 		this.id = id;
-		this.measurements = measurements;
+		this.values = values;
 	}
 
-	SystemMeasurements(String id) {
+	SystemBackup(String id) {
 		this(id, new ArrayList<>());
 	}
 
-	public Collection<Measurement> getMeasurements() {
-		return this.measurements;
+	public Collection<IValue> getValues() {
+		return this.values;
 	}
 
-	public void add(Measurement measurement) {
-		this.measurements.add(measurement);
+	public void add(IValue value) {
+		this.values.add(value);
 	}
 
-	static class Creator extends CreatorByXML<SystemMeasurements> {
+	static class Creator extends CreatorByXML<SystemBackup> {
 
 		private String id;
-		private final Collection<Measurement> measurements = new ArrayList<>();
+		private final Collection<IValue> values = new ArrayList<>();
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -64,16 +63,18 @@ public class SystemMeasurements {
 		}
 
 		@Override
-		public SystemMeasurements create() throws XmlException, IOException {
-			return new SystemMeasurements(this.id, this.measurements);
+		public SystemBackup create() throws XmlException, IOException {
+			return new SystemBackup(this.id, this.values);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_MEASUREMENTS_MEASUREMENT:
+				case Measurement.XML_MEASUREMENT:
 					return new Measurement.Creator(id, this.getBaseCreator());
+				case Correction.XML_CORRECTION:
+					return new Correction.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -81,8 +82,11 @@ public class SystemMeasurements {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_MEASUREMENTS_MEASUREMENT:
-					this.measurements.add((Measurement) created);
+				case Measurement.XML_MEASUREMENT:
+					this.values.add((IValue) created);
+					break;
+				case Correction.XML_CORRECTION:
+					this.values.add((IValue) created);
 					break;
 			}
 
@@ -92,10 +96,8 @@ public class SystemMeasurements {
 
 	void writeXml(XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeAttribute("id", this.id);
-		for (Measurement measurement : this.measurements) {
-			writer.writeStartElement(XML_MEASUREMENTS_MEASUREMENT);
-			measurement.writeXml(writer);
-			writer.writeEndElement();
+		for (IValue value : this.values) {
+			value.writeXml(writer);
 
 		}
 
@@ -114,7 +116,14 @@ public class SystemMeasurements {
 	}
 
 	public void clear() {
-		this.measurements.clear();
+		this.values.clear();
+
+	}
+
+	public interface IValue {
+		void writeXml(XMLStreamWriter writer) throws XMLStreamException;
+
+		public String getId();
 
 	}
 }

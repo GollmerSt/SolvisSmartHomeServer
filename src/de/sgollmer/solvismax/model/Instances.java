@@ -30,7 +30,7 @@ import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
-import de.sgollmer.solvismax.model.objects.backup.MeasurementsBackupHandler;
+import de.sgollmer.solvismax.model.objects.backup.BackupHandler;
 import de.sgollmer.solvismax.xml.ControlFileReader;
 import de.sgollmer.solvismax.xml.ControlFileReader.Hashes;
 import de.sgollmer.solvismax.xml.GraficFileHandler;
@@ -40,7 +40,7 @@ public class Instances {
 	private Collection<Solvis> units = new ArrayList<>();
 	private final SolvisDescription solvisDescription;
 	private final BaseData baseData;
-	private final MeasurementsBackupHandler backupHandler;
+	private final BackupHandler backupHandler;
 	private final AllSolvisGrafics graficDatas;
 	private final Hashes xmlHash;
 	private final File writeablePath;
@@ -58,7 +58,7 @@ public class Instances {
 		this.solvisDescription.assign();
 		this.mustLearn = result.mustLearn();
 		this.xmlHash = result.getHashes();
-		this.backupHandler = new MeasurementsBackupHandler(this.writeablePath,
+		this.backupHandler = new BackupHandler(this.writeablePath,
 				this.solvisDescription.getMiscellaneous().getMeasurementsBackupTime_ms());
 		this.writeErrorScreens = new WriteErrorScreens(this);
 
@@ -162,7 +162,7 @@ public class Instances {
 		return null;
 	}
 
-	public MeasurementsBackupHandler getBackupHandler() {
+	public BackupHandler getBackupHandler() {
 		return this.backupHandler;
 	}
 

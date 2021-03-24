@@ -90,4 +90,9 @@ public class StringData extends SingleData<String> {
 		}
 	}
 
+	@Override
+	public SingleData<String> create(long timeStamp) {
+		return new StringData(this.data, timeStamp);
+	}
+
 }

@@ -31,23 +31,23 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.xmllibrary.XmlException;
 import de.sgollmer.xmllibrary.XmlStreamReader;
 
-public class MeasurementsBackupHandler {
+public class BackupHandler {
 
-	private static final ILogger logger = LogManager.getInstance().getLogger(MeasurementsBackupHandler.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(BackupHandler.class);
 
 	private static final String NAME_XSD_MEASUREMENTS_FILE = "measurements.xsd";
 	private static final String NAME_XML_MEASUREMENTS_FILE = "measurements.xml";
 
 	private static final String XML_MEASUREMENTS = "SolvisMeasurements";
+	private static final String XML_BACKUP = "SolvisBackup";
 
 	private final File parent;
-	private final Measurements measurements = new Measurements();
+	private final AllSystemBackups measurements = new AllSystemBackups();
 	private final BackupThread thread;
 	private boolean xsdWritten = false;
-	private long timeOfLastBackup = -1 ;
+	private long timeOfLastBackup = -1;
 
-	public MeasurementsBackupHandler(File path, int measurementsBackupTime_ms)
-			throws FileException, ReferenceException {
+	public BackupHandler(File path, int measurementsBackupTime_ms) throws FileException, ReferenceException {
 
 		if (path == null) {
 			String pathName = System.getProperty("user.home");
@@ -99,20 +99,28 @@ public class MeasurementsBackupHandler {
 		if (!xml.exists()) {
 			return;
 		}
-		
-		this.timeOfLastBackup =xml.lastModified() ; 
 
+		this.timeOfLastBackup = xml.lastModified();
+
+		this.read(xml, XML_BACKUP);
+
+		if (this.measurements.getSystemBackups().isEmpty()) {
+			this.read(xml, XML_MEASUREMENTS);
+		}
+
+	}
+
+	private void read(File xml, String rootId) throws IOException, XmlException, XMLStreamException {
 		InputStream source = new FileInputStream(xml);
 
-		XmlStreamReader<Measurements> reader = new XmlStreamReader<>();
+		XmlStreamReader<AllSystemBackups> reader = new XmlStreamReader<>();
 
-		String rootId = XML_MEASUREMENTS;
+		reader.read(source, rootId, new AllSystemBackups.Creator(this.measurements, rootId), xml.getName());
 
-		reader.read(source, rootId, new Measurements.Creator(this.measurements, rootId), xml.getName());
 	}
 
 	private void update() throws IOException, XMLStreamException {
-		for (SystemMeasurements system : this.measurements.getSystemMeasurements()) {
+		for (SystemBackup system : this.measurements.getSystemBackups()) {
 			Solvis owner = system.getOwner();
 			if (owner != null) {
 				owner.backupMeasurements(system);
@@ -133,7 +141,7 @@ public class MeasurementsBackupHandler {
 		OutputStream outputStream = new FileOutputStream(output);
 		XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream, "UTF-8");
 		writer.writeStartDocument();
-		writer.writeStartElement(XML_MEASUREMENTS);
+		writer.writeStartElement(XML_BACKUP);
 		this.measurements.writeXml(writer);
 		writer.writeEndElement();
 		writer.writeEndDocument();
@@ -145,17 +153,17 @@ public class MeasurementsBackupHandler {
 	}
 
 	public void register(Solvis owner, String id) {
-		SystemMeasurements system = this.measurements.get(id);
+		SystemBackup system = this.measurements.get(id);
 		system.setOwner(owner);
 	}
 
 	private static class BackupThread extends Thread {
 
 		private final int measurementsBackupTime_ms;
-		private final MeasurementsBackupHandler handler;
+		private final BackupHandler handler;
 		private boolean abort = false;
 
-		public BackupThread(MeasurementsBackupHandler handler, int measurementsBackupTime_ms) {
+		public BackupThread(BackupHandler handler, int measurementsBackupTime_ms) {
 			super("BackupThread");
 
 			this.measurementsBackupTime_ms = measurementsBackupTime_ms;
@@ -211,10 +219,10 @@ public class MeasurementsBackupHandler {
 
 	}
 
-	public SystemMeasurements getSystemMeasurements(String id) {
+	public SystemBackup getSystemBackup(String id) {
 		return this.measurements.get(id);
 	}
-	
+
 	public long getTimeOfLastBackup() {
 		return this.timeOfLastBackup;
 	}

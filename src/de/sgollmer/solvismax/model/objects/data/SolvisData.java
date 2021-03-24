@@ -290,8 +290,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		this.setData(data.getData(), this, data.getStatus());
 	}
 
+	public void setSingleData(SingleData<?> data, Object source) {
+		this.setData(data, source, ResultStatus.SUCCESS);
+	}
+
 	public void setSingleData(SingleData<?> data) {
-		this.setData(data);
+		this.setSingleData(data, this);
 	}
 
 	public void registerContinuousObserver(Observer.IObserver<SolvisData> observer) {

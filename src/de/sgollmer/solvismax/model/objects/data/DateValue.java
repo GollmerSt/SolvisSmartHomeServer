@@ -25,7 +25,6 @@ public class DateValue extends SingleData<Calendar> {
 		this.calendar = calendar;
 	}
 
-
 	@Override
 	public Helper.Boolean getBoolean() {
 		return Helper.Boolean.UNDEFINED;
@@ -83,11 +82,16 @@ public class DateValue extends SingleData<Calendar> {
 	@Override
 	public int compareTo(SingleData<?> o) {
 		if (o instanceof DateValue) {
-			return this.calendar.compareTo(((DateValue)o).calendar);
+			return this.calendar.compareTo(((DateValue) o).calendar);
 		} else if (o != null) {
 			return this.getClass().getCanonicalName().compareTo(o.getClass().getCanonicalName());
 		} else {
 			return 1;
 		}
+	}
+
+	@Override
+	public SingleData<Calendar> create(long timeStamp) {
+		return new DateValue(this.calendar, timeStamp);
 	}
 }

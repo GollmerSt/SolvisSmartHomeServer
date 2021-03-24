@@ -26,6 +26,9 @@ Version 01.02.11
     18.03.2021  Betriebssystemabhängig und größenabhängig  erfolgte der Kopie-Vorgang der
                 xml- und xsd-Dateien nur teilweise. Dadurch war ein zweiter Start des Server
                 nicht mehr möglich., da die xml-Dateien dadurch Strukturfehler aufwiesen.
+                
+    21.03.2021  Format des Backup-Files geändert. Die neue Version ist abwärtskompatibel
+                jedoch nicht aufwärtskompatibel!
 
 
 

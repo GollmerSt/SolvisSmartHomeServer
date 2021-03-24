@@ -46,8 +46,8 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if ( !(obj instanceof SingleData) ) {
-			return false ;
+		if (!(obj instanceof SingleData)) {
+			return false;
 		} else if (obj instanceof ModeValue<?>) {
 			return this.mode.getName().equals(((ModeValue<?>) obj).mode.getName());
 		} else if (obj instanceof StringData) {
@@ -92,6 +92,11 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 		} else {
 			return 1;
 		}
+	}
+
+	@Override
+	public SingleData<M> create(long timeStamp) {
+		return new ModeValue<M>(this.mode, timeStamp);
 	}
 
 }
