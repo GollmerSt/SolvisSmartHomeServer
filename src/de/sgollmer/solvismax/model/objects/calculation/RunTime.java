@@ -137,9 +137,9 @@ public class RunTime extends Strategy<RunTime> {
 					if (source == this) {
 						return;
 					} else {
+						equipmentOn = this.equipmentOn.getBool() ;
 						this.correctionAdjust(data, source);
 					}
-
 				}
 
 				if (equipmentOn == null) {

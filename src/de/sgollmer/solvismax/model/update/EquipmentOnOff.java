@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.IExecutable;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.Strategy;
@@ -85,10 +86,14 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 	}
 
+	private enum Range {
+		UPDATE_ONLY, OUT_OF_RANGE, SYNC_PREFFERED, NO_ACTION
+	};
+
 	private class Executable implements IObserver<SolvisData>, IExecutable {
 
 		private final Solvis solvis;
-		private final SolvisData toUpdate;
+		private final SolvisData updateSource;
 		private final SolvisData equipment;
 		private final SolvisData calculatedValue;
 		private final int factor;
@@ -98,13 +103,16 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 		private long lastCheckTime = -1;
 		private boolean syncActive = false;
+		private boolean syncReady = false;
+
 		private boolean lastEquipmentState = false;
+		private SingleData<?> lastUpdateValue = null;
 		private boolean screenRestore = true;
 
-		private Executable(Solvis solvis, SolvisData toUpdate, SolvisData equipment, SolvisData calculatedValue,
+		private Executable(Solvis solvis, SolvisData updateSource, SolvisData equipment, SolvisData calculatedValue,
 				int factor, int checkInterval, int readInterval, boolean hourly) {
 			this.solvis = solvis;
-			this.toUpdate = toUpdate;
+			this.updateSource = updateSource;
 			this.equipment = equipment;
 			this.calculatedValue = calculatedValue;
 			this.factor = factor;
@@ -113,7 +121,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			this.hourly = hourly;
 
 			this.equipment.registerContinuousObserver(this);
-			this.toUpdate.register(new IObserver<SolvisData>() {
+			this.updateSource.registerContinuousObserver(new IObserver<SolvisData>() {
 
 				@Override
 				public void update(SolvisData data, Object source) {
@@ -122,48 +130,107 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				}
 			});
 
+			this.solvis.registerCommandEnableObserver(new IObserver<Boolean>() {
+
+				@Override
+				public void update(Boolean data, Object source) {
+					Executable.this.syncReady = false;
+
+				}
+			});
+
 		}
 
+		private class Result {
+			private final Range range;
+			private final int newValue;
+			private final int currentValue;
+
+			public Result(Range range, int newValue, int currentValue) {
+				this.range = range;
+				this.newValue = newValue;
+				this.currentValue = currentValue;
+			}
+		}
+
+		private Result checkRange(SolvisData controlData) throws TypeException {
+			int data = controlData.getInt() * this.factor;
+			int currentData = this.calculatedValue.getInt();
+			if (this.factor == 1) {
+				return currentData == data ? //
+						new Result(Range.NO_ACTION, currentData, currentData) //
+						: new Result(Range.UPDATE_ONLY, data, currentData);
+			}
+			if (currentData < data || data <= currentData - this.factor) {
+				return new Result(Range.OUT_OF_RANGE, data, currentData);
+//			} else if (data > currentData + 0.1 * this.factor) {
+//				return new Result(Range.SYNC_PREFFERED, data, currentData);
+			} else {
+				return new Result(Range.NO_ACTION, currentData, currentData);
+			}
+
+		}
 
 		private void updateByControl(SolvisData data, Object source) {
-			if (!this.solvis.isInitialized())
+			if (!this.solvis.isInitialized()) {
 				return;
-			int controlData;
-			int calcData;
+			}
+
+			boolean equal = data.getSingleData().equals(this.lastUpdateValue);
+
+			if (this.syncReady && equal) {
+				return;
+			} else if (this.syncActive && equal) {
+				this.syncReady = true;
+				return;
+			}
+
+			this.lastUpdateValue = data.getSingleData();
+
+			Result result;
 			try {
-				controlData = data.getInt();
-				calcData = this.calculatedValue.getInt();
+				result = this.checkRange(data);
 			} catch (TypeException e) {
 				logger.error("Type exception, update ignored", e);
 				return;
 			}
 
-			boolean updateBySync = false;
-			boolean updateByReadout = false;
+			boolean update = false;
 
-			if (this.factor > 0) {
-				controlData *= this.factor;
-				if (this.syncActive) {
+			switch (result.range) {
+				case UPDATE_ONLY:
+					update = true;
 					this.syncActive = false;
-					updateBySync = true;
-					logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> finished.");
-				} else if (controlData > calcData || controlData + this.factor < calcData) {
-					updateByReadout = true;
-					if (controlData > calcData + 0.1 * this.factor || controlData + this.factor < calcData) {
+					this.syncReady = false;
+					break;
+				case OUT_OF_RANGE:
+					update = true;
+					String resultString;
+					if (this.syncReady) {
+						this.syncActive = false;
+						this.syncReady = false;
+						resultString = "finished";
+					} else {
+						this.syncActive = true;
+						resultString = "activated";
+					}
+					logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> " + resultString + ".");
+					break;
+				case SYNC_PREFFERED:
+					if (!this.syncActive) {
 						this.syncActive = true;
 						logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> activated.");
 					}
-					notifyTriggerIds();
-				}
-			} else if (calcData != controlData) {
-				updateByReadout = true;
-				notifyTriggerIds();
+					break;
 			}
-			if (updateByReadout|| updateBySync) {
-				logger.info("Update of <" + EquipmentOnOff.this.calculatedId
-						+ "> by SolvisConrol data take place, former: " + calcData + ", new: " + controlData);
-				UpdateType type = new UpdateType(updateBySync);
-				this.calculatedValue.setInteger(controlData, data.getTimeStamp(), type);
+
+			if (update) {
+				logger.info(
+						"Update of <" + EquipmentOnOff.this.calculatedId + "> by SolvisConrol data take place, former: "
+								+ result.currentValue + ", new: " + result.newValue);
+				UpdateType type = new UpdateType(this.syncReady);
+				this.calculatedValue.setInteger(result.newValue, data.getTimeStamp(), type);
+				notifyTriggerIds();
 			}
 		}
 
@@ -188,7 +255,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			if (!this.solvis.getFeatures().isEquipmentTimeSynchronisation()) {
 				return;
 			}
-			long time = System.currentTimeMillis();
+			long time = data.getTimeStamp();
 
 			boolean equipmentOn;
 			int currentCalcValue;
@@ -209,24 +276,22 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				return;
 			}
 
-			boolean screenRestore = true;
+			boolean checkOneShot = this.checkInterval > 0 //
+					&& time > this.lastCheckTime + this.checkInterval; // periodic check, only one check, no
+																		// synchronisation
 
-			boolean checkP = this.checkInterval > 0 && time > this.lastCheckTime + this.checkInterval; // periodic check
-			boolean checkH = false;
-			boolean checkC = false;
+			int checkIntervalHourly_s = Constants.HOURLY_EQUIPMENT_SYNCHRONISATION_READ_INTERVAL_FACTOR
+					* this.readInterval / 1000;
+			int nextHour = ((currentCalcValue - checkIntervalHourly_s) / this.factor + 1) * this.factor;
+			this.syncActive = this.syncActive || this.hourly && currentCalcValue > nextHour - checkIntervalHourly_s;
 
-			if (equipmentOn || this.lastEquipmentState) {
+			boolean checkC = this.syncActive;
 
-				int checkIntervalHourly_s = Constants.HOURLY_EQUIPMENT_SYNCHRONISATION_READ_INTERVAL_FACTOR
-						* this.readInterval / 1000;
-				int nextHour = ((currentCalcValue - checkIntervalHourly_s / 2) / this.factor + 1) * this.factor;
-				checkH = this.hourly && currentCalcValue > nextHour - checkIntervalHourly_s / 2;
-
-				checkC = this.syncActive && this.readInterval > 0 && time > this.lastCheckTime + this.readInterval;
-				checkC |= this.syncActive && !equipmentOn && this.lastEquipmentState;
-
+			if (!equipmentOn && !this.lastEquipmentState) {
+				checkC = false;
 			}
-			boolean check = checkC || checkP || checkH;
+
+			boolean check = checkC || checkOneShot;
 			if (check) {
 
 				this.lastCheckTime = time;
@@ -235,9 +300,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				logger.debug("Update of <" + EquipmentOnOff.this.calculatedId + "> requested.");
 			}
 
-			if (checkH || this.syncActive) {
-				screenRestore = !equipmentOn;
-			}
+			boolean screenRestore = !checkC || !equipmentOn;
 
 			if (this.screenRestore != screenRestore) {
 				this.screenRestore = screenRestore;

@@ -94,6 +94,7 @@ public class Solvis {
 	private final MeasurementUpdateThread measurementUpdateThread;
 	private final Observable<Boolean> abortObservable = new Observable<>();
 	private final Observable<SolvisErrorInfo> solvisErrorObservable = new Observable<>();
+	private final Observable<Boolean> commandEnableObservable = new Observable<>();
 	private final String timeZone;
 	private final boolean delayAfterSwitchingOnEnable;
 	private final Unit unit;
@@ -306,9 +307,20 @@ public class Solvis {
 	public void commandOptimization(boolean enable) {
 		this.worker.commandOptimization(enable);
 	}
+	
+	
+	public interface CommandEnable {
+		public void commandEnable(boolean enable) ;
+	}
+
+	
+	
+	public void registerCommandEnableObserver(IObserver<Boolean> observer) {
+		this.commandEnableObservable.register(observer);
+	}
 
 	public void commandEnable(boolean enable) {
-		this.worker.commandEnable(enable);
+		this.commandEnableObservable.notify(enable);
 	}
 
 	void screenRestore(boolean enable, Object service) {

@@ -58,6 +58,14 @@ public class SolvisWorkers {
 				}
 			}
 		});
+		this.solvis.registerCommandEnableObserver(new IObserver<Boolean>() {
+
+			@Override
+			public void update(Boolean enable, Object source) {
+				SolvisWorkers.this.controlsThread.commandEnable(enable);;
+				
+			}
+		});
 
 	}
 
@@ -424,11 +432,6 @@ public class SolvisWorkers {
 
 	void screenRestore(boolean enable, Object service) {
 		this.controlsThread.screenRestore(enable, service);
-
-	}
-
-	void commandEnable(boolean enable) {
-		this.controlsThread.commandEnable(enable);
 
 	}
 
