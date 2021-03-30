@@ -25,7 +25,6 @@ import de.sgollmer.solvismax.model.update.EquipmentOnOff.UpdateType;
 public class RunTime extends Strategy<RunTime> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(RunTime.class);
-	
 
 	private RunTime(Calculation calculation) {
 		super(calculation);
@@ -102,7 +101,7 @@ public class RunTime extends Strategy<RunTime> {
 		private void correctionAdjust(SolvisData data, Object source) throws TypeException {
 
 			if (source instanceof SystemBackup) {
-				this.updateSyncValues((long)data.getInt() * 1000L);
+				this.updateSyncValues((long) data.getInt() * 1000L);
 				return;
 			}
 
@@ -111,14 +110,14 @@ public class RunTime extends Strategy<RunTime> {
 			}
 
 			if (!((UpdateType) source).isSyncType() && this.syncCnt == 0) {
-				this.updateSyncValues((long)data.getInt() * 1000L);
+				this.updateSyncValues((long) data.getInt() * 1000L);
 				return;
 			}
 
 			if (!RunTime.this.isCorrection()) {
 				return;
 			}
-			long syncedRunTime = (long)data.getInt() * 1000L;
+			long syncedRunTime = (long) data.getInt() * 1000L;
 			if (++this.syncCnt > 1) {
 				int delta = (int) (syncedRunTime - this.lastSyncedRunTime - this.runTimeAfterLastSyncCurrent);
 				this.correction.modify(delta, this.equipmentCntSinceLastSync);
@@ -137,7 +136,7 @@ public class RunTime extends Strategy<RunTime> {
 					if (source == this) {
 						return;
 					} else {
-						equipmentOn = this.equipmentOn.getBool() ;
+						equipmentOn = this.equipmentOn.getBool();
 						this.correctionAdjust(data, source);
 					}
 				}
@@ -187,9 +186,9 @@ public class RunTime extends Strategy<RunTime> {
 			}
 
 		}
-		
+
 		private long getCorrection(int cnt) {
-			if ( this.correction == null ) {
+			if (this.correction == null) {
 				return 0L;
 			} else {
 				return this.correction.get(cnt);

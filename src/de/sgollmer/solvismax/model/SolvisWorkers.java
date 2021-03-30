@@ -58,15 +58,11 @@ public class SolvisWorkers {
 				}
 			}
 		});
-		this.solvis.registerCommandEnableObserver(new IObserver<Boolean>() {
 
-			@Override
-			public void update(Boolean enable, Object source) {
-				SolvisWorkers.this.controlsThread.commandEnable(enable);;
-				
-			}
-		});
-
+	}
+	
+	public void controlEnable( boolean enable ) {
+		SolvisWorkers.this.controlsThread.controlEnable(enable);
 	}
 
 	private class ControlWorkerThread extends Thread {
@@ -76,7 +72,7 @@ public class SolvisWorkers {
 		private boolean abort = false;
 		private Set<Object> inhibitScreenResoreServices = new HashSet<>();
 		private int optimizationInhibitCnt = 0;
-		private int commandDisableCount = 0;
+		private boolean controlEnabled = true;
 		private boolean running = false;
 
 		private ControlWorkerThread() {
@@ -105,7 +101,7 @@ public class SolvisWorkers {
 				SolvisStatus state = SolvisWorkers.this.solvis.getSolvisState().getState();
 				if (state == SolvisStatus.SOLVIS_CONNECTED || state == SolvisStatus.ERROR) {
 					synchronized (this) {
-						if (this.queue.isEmpty() || this.commandDisableCount > 0
+						if (this.queue.isEmpty() || !this.controlEnabled
 								|| !SolvisWorkers.this.solvis.getFeatures().isInteractiveGUIAccess()) {
 							this.channelsOfQueueRead.clear();
 							if (!queueWasEmpty && isScreenRestoreEnabled()) {
@@ -341,14 +337,8 @@ public class SolvisWorkers {
 			return this.inhibitScreenResoreServices.size() == 0;
 		}
 
-		private synchronized void commandEnable(boolean enable) {
-			if (enable) {
-				if (this.commandDisableCount > 0) {
-					--this.commandDisableCount;
-				}
-			} else {
-				++this.commandDisableCount;
-			}
+		private synchronized void controlEnable(boolean enable) {
+			this.controlEnabled = enable;
 		}
 
 		public synchronized boolean willBeModified(SolvisData data) {

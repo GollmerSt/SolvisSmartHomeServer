@@ -96,14 +96,15 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		private final SolvisData updateSource;
 		private final SolvisData equipment;
 		private final SolvisData calculatedValue;
+		private int lastSyncValue = -1;
 		private final int factor;
 		private final int checkInterval;
 		private final int readInterval;
 		private final boolean hourly;
 
 		private long lastCheckTime = -1;
-		private boolean syncActive = false;
-		private boolean syncReady = false;
+		private boolean syncActive = true; // Synchronisation forced after restart
+		private boolean syncPossible = false;
 
 		private boolean lastEquipmentState = false;
 		private SingleData<?> lastUpdateValue = null;
@@ -129,16 +130,6 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 				}
 			});
-
-			this.solvis.registerCommandEnableObserver(new IObserver<Boolean>() {
-
-				@Override
-				public void update(Boolean data, Object source) {
-					Executable.this.syncReady = false;
-
-				}
-			});
-
 		}
 
 		private class Result {
@@ -154,9 +145,10 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		}
 
 		private Result checkRange(SolvisData controlData) throws TypeException {
-			int data = controlData.getInt() * this.factor;
+			int factor = this.factor < 0 ? 1 : this.factor;
+			int data = controlData.getInt() * factor;
 			int currentData = this.calculatedValue.getInt();
-			if (this.factor == 1) {
+			if (this.factor < 0) {
 				return currentData == data ? //
 						new Result(Range.NO_ACTION, currentData, currentData) //
 						: new Result(Range.UPDATE_ONLY, data, currentData);
@@ -176,61 +168,74 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				return;
 			}
 
-			boolean equal = data.getSingleData().equals(this.lastUpdateValue);
-
-			if (this.syncReady && equal) {
-				return;
-			} else if (this.syncActive && equal) {
-				this.syncReady = true;
-				return;
-			}
-
-			this.lastUpdateValue = data.getSingleData();
-
-			Result result;
-			try {
-				result = this.checkRange(data);
-			} catch (TypeException e) {
-				logger.error("Type exception, update ignored", e);
-				return;
-			}
-
 			boolean update = false;
+			Result result = null;
 
-			switch (result.range) {
-				case UPDATE_ONLY:
-					update = true;
-					this.syncActive = false;
-					this.syncReady = false;
-					break;
-				case OUT_OF_RANGE:
-					update = true;
-					String resultString;
-					if (this.syncReady) {
+			synchronized (this) {
+
+				boolean equipmentOn;
+
+				try {
+					equipmentOn = this.equipment.getBool();
+				} catch (TypeException e1) {
+					equipmentOn = false;
+				}
+
+				boolean equal = data.getSingleData().equals(this.lastUpdateValue);
+
+				if (equal) {
+					if (!this.syncPossible && this.factor > 0 && equipmentOn) {
+						this.syncPossible = true;
+						logger.debug("Synchronisation of <" + EquipmentOnOff.this.calculatedId + "> is possible.");
+					}
+					return;
+				}
+
+				this.lastUpdateValue = data.getSingleData();
+
+				try {
+					result = this.checkRange(data);
+				} catch (TypeException e) {
+					logger.error("Type exception, update ignored", e);
+					return;
+				}
+
+				switch (result.range) {
+					case UPDATE_ONLY:
+						update = true;
 						this.syncActive = false;
-						this.syncReady = false;
-						resultString = "finished";
-					} else {
-						this.syncActive = true;
-						resultString = "activated";
-					}
-					logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> " + resultString + ".");
-					break;
-				case SYNC_PREFFERED:
-					if (!this.syncActive) {
-						this.syncActive = true;
-						logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> activated.");
-					}
-					break;
+						this.syncPossible = false;
+						break;
+					case OUT_OF_RANGE:
+						update = true;
+						String resultString;
+						if (this.syncPossible && this.syncActive) {
+							this.syncActive = false;
+							resultString = "finished";
+						} else {
+							this.syncActive = true;
+							resultString = "activated";
+						}
+						logger.info(
+								"Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> " + resultString + ".");
+						break;
+					case SYNC_PREFFERED:
+						if (!this.syncActive) {
+							this.syncActive = true;
+							logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> activated.");
+						}
+						break;
+				}
 			}
 
 			if (update) {
 				logger.info(
 						"Update of <" + EquipmentOnOff.this.calculatedId + "> by SolvisConrol data take place, former: "
 								+ result.currentValue + ", new: " + result.newValue);
-				UpdateType type = new UpdateType(this.syncReady);
+				UpdateType type = new UpdateType(this.syncPossible);
 				this.calculatedValue.setInteger(result.newValue, data.getTimeStamp(), type);
 				notifyTriggerIds();
+				this.lastSyncValue = result.newValue;
 			}
 		}
 
@@ -255,43 +260,62 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			if (!this.solvis.getFeatures().isEquipmentTimeSynchronisation()) {
 				return;
 			}
+
+			boolean check = false;
+			boolean screenRestore = true;
+
 			long time = data.getTimeStamp();
 
-			boolean equipmentOn;
-			int currentCalcValue;
-			try {
-				equipmentOn = data.getBool();
+			synchronized (this) {
 
-				if (EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A12.Brenner")) {
-					equipmentOn = true;
+				boolean equipmentOn;
+				int currentCalcValue;
+				try {
+					equipmentOn = data.getBool();
+
+					if (EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A12.Brenner")) {
+						equipmentOn = true;
+					}
+
+					if (EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A13.Brenner_S2")) {
+						equipmentOn = true;
+					}
+
+					currentCalcValue = this.calculatedValue.getInt();
+				} catch (TypeException e) {
+					logger.error("Type exception, update ignored", e);
+					return;
 				}
 
-				if (EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A13.Brenner_S2")) {
-					equipmentOn = true;
+				if (!equipmentOn) {
+					if (this.syncPossible) {
+						this.syncPossible = false;
+						logger.debug("Synchronisation of <" + EquipmentOnOff.this.calculatedId
+								+ "> isn't possible in case of equipment switched off.");
+					}
 				}
 
-				currentCalcValue = this.calculatedValue.getInt();
-			} catch (TypeException e) {
-				logger.error("Type exception, update ignored", e);
-				return;
+				boolean checkOneShot = this.checkInterval > 0 //
+						&& time > this.lastCheckTime + this.checkInterval; // periodic check, only one check, no
+																			// synchronisation
+
+				int lowerHourly_s = -Constants.HOURLY_EQUIPMENT_SYNCHRONISATION_READ_INTERVAL_FACTOR * this.readInterval
+						/ 1000;
+				int nextHour = ((this.lastSyncValue - lowerHourly_s) / this.factor + 1) * this.factor;
+				this.syncActive = this.syncActive || this.hourly && nextHour + lowerHourly_s < currentCalcValue;
+
+				boolean checkC = this.syncActive;
+
+				if (!equipmentOn && !this.lastEquipmentState) {
+					checkC = false;
+				}
+
+				check = checkC || checkOneShot;
+
+				screenRestore = !checkC || !equipmentOn;
+
+				this.lastEquipmentState = equipmentOn;
 			}
-
-			boolean checkOneShot = this.checkInterval > 0 //
-					&& time > this.lastCheckTime + this.checkInterval; // periodic check, only one check, no
-																		// synchronisation
-
-			int checkIntervalHourly_s = Constants.HOURLY_EQUIPMENT_SYNCHRONISATION_READ_INTERVAL_FACTOR
-					* this.readInterval / 1000;
-			int nextHour = ((currentCalcValue - checkIntervalHourly_s) / this.factor + 1) * this.factor;
-			this.syncActive = this.syncActive || this.hourly && currentCalcValue > nextHour - checkIntervalHourly_s;
-
-			boolean checkC = this.syncActive;
-
-			if (!equipmentOn && !this.lastEquipmentState) {
-				checkC = false;
-			}
-
-			boolean check = checkC || checkOneShot;
 			if (check) {
 
 				this.lastCheckTime = time;
@@ -300,13 +324,10 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				logger.debug("Update of <" + EquipmentOnOff.this.calculatedId + "> requested.");
 			}
 
-			boolean screenRestore = !checkC || !equipmentOn;
-
 			if (this.screenRestore != screenRestore) {
 				this.screenRestore = screenRestore;
 				this.solvis.execute(new CommandScreenRestore(this.screenRestore, this));
 			}
-			this.lastEquipmentState = equipmentOn;
 		}
 
 		@Override

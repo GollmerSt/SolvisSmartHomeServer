@@ -40,6 +40,11 @@ public class Correction implements SystemBackup.IValue {
 	public Correction(String id) {
 		this(id, 0, 0);
 	}
+	
+	public void set( Correction correction ) {
+		this.data = correction.data;
+		this.cnt=correction.cnt;
+	}
 
 	public static class Creator extends CreatorByXML<Correction> {
 

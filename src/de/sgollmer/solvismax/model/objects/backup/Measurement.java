@@ -128,6 +128,19 @@ public class Measurement implements SystemBackup.IValue{
 			public ModeValue<?> create(long timeStamp) {
 				return new ModeValue<>(this, timeStamp);
 			}
+			
+			@Override
+			public boolean equals( Object obj) {
+				if ( !(obj instanceof IMode )) {
+					return false ;
+				}
+				return this.getName().equals( ((IMode<?>)obj).getName());
+			}
+
+			@Override
+			public int hashCode() {
+				return this.data.hashCode();
+			}
 		}
 
 		@Override

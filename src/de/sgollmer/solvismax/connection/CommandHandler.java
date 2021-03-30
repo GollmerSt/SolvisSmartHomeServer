@@ -153,10 +153,10 @@ public class CommandHandler {
 				this.terminate(true);
 				break;
 			case GUI_COMMANDS_DISABLE:
-				assignments.enableGuiCommands(solvis, false);
+				assignments.enableControlCommands(solvis, false);
 				break;
 			case GUI_COMMANDS_ENABLE:
-				assignments.enableGuiCommands(solvis, true);
+				assignments.enableControlCommands(solvis, true);
 				break;
 			case SERVICE_RESET:
 				assignments.serviceReset(solvis);
@@ -222,7 +222,7 @@ public class CommandHandler {
 	}
 
 	private synchronized ClientAssignments createClientAssignments(IClient client) {
-		ClientAssignments assignments = new ClientAssignments(client);
+		ClientAssignments assignments = new ClientAssignments(this,client);
 		this.clients.add(assignments);
 		return assignments;
 	}
@@ -465,5 +465,13 @@ public class CommandHandler {
 		for (ClientAssignments assignments : this.clients) {
 			assignments.abort();
 		}
+	}
+	
+	public void handleControlEnable(Solvis solvis) {
+		boolean enable = true ;
+		for ( ClientAssignments client : this.clients ) {
+			enable &= client.getControlEnabled(solvis);
+		}
+		solvis.controlEnable(enable);
 	}
 }

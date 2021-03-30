@@ -138,7 +138,8 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 				}
 			} else if (value instanceof Correction) {
 				String id = value.getId();
-				this.corrections.put(id, (Correction) value);
+				Correction correction = this.getCorrection(id);
+				correction.set((Correction) value);
 			}
 		}
 	}

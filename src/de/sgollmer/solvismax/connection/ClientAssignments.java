@@ -16,11 +16,13 @@ import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Solvis;
 
 public class ClientAssignments {
+	private final CommandHandler commandHandler;
 	private IClient client;
 	private final Map<Solvis, State> states = new HashMap<>();
 	private ClosingThread closingThread = null;
 
-	ClientAssignments(IClient client) {
+	ClientAssignments(CommandHandler commandHandler, IClient client) {
+		this.commandHandler = commandHandler;
 		this.client = client;
 	}
 
@@ -75,7 +77,7 @@ public class ClientAssignments {
 
 	private static class State {
 		private boolean optimizationEnable = true;
-		private boolean commandEnable = true;
+		private boolean controlEnable = true;
 
 		private boolean isOptimizationEnable() {
 			return this.optimizationEnable;
@@ -85,23 +87,23 @@ public class ClientAssignments {
 			this.optimizationEnable = optimizationEnable;
 		}
 
-		private boolean isCommandEnable() {
-			return this.commandEnable;
+		private boolean isControlEnable() {
+			return this.controlEnable;
 		}
 
-		private void setCommandEnable(boolean commandEnable) {
-			this.commandEnable = commandEnable;
+		private void setControlEnable(boolean controlEnable) {
+			this.controlEnable = controlEnable;
 		}
 	}
 
-	void enableGuiCommands(Solvis solvis, boolean enable) throws ClientAssignmentException {
+	void enableControlCommands(Solvis solvis, boolean enable) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
 		}
-		if (enable != state.isCommandEnable()) {
-			state.setCommandEnable(enable);
-			solvis.commandEnable(enable);
+		if (enable != state.isControlEnable()) {
+			state.setControlEnable(enable);
+			this.commandHandler.handleControlEnable(solvis);
 		}
 
 	}
@@ -127,7 +129,7 @@ public class ClientAssignments {
 
 	void clientClosed() throws ClientAssignmentException {
 		for (Solvis solvis : this.states.keySet()) {
-			this.enableGuiCommands(solvis, true);
+			this.enableControlCommands(solvis, true);
 			this.optimizationEnable(solvis, true);
 			this.screenRestoreEnable(solvis, true);
 		}
@@ -156,5 +158,9 @@ public class ClientAssignments {
 		} else {
 			return this.states.keySet().iterator().next();
 		}
+	}
+	
+	boolean getControlEnabled(Solvis solvis) {
+		return this.getState(solvis).controlEnable;
 	}
 }
