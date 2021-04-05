@@ -87,7 +87,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 	}
 
 	private enum Range {
-		UPDATE_ONLY, OUT_OF_RANGE, SYNC_PREFFERED, NO_ACTION
+		UPDATE_ONLY, MUST_SYNC, SYNC_PREFFERED, NO_ACTION
 	};
 
 	private class Executable implements IObserver<SolvisData>, IExecutable {
@@ -144,7 +144,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			}
 		}
 
-		private Result checkRange(SolvisData controlData) throws TypeException {
+		private Result checkRange(SolvisData controlData, boolean equipmentOn) throws TypeException {
 			int factor = this.factor < 0 ? 1 : this.factor;
 			int data = controlData.getInt() * factor;
 			int currentData = this.calculatedValue.getInt();
@@ -153,8 +153,9 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 						new Result(Range.NO_ACTION, currentData, currentData) //
 						: new Result(Range.UPDATE_ONLY, data, currentData);
 			}
-			if (currentData < data || data <= currentData - this.factor) {
-				return new Result(Range.OUT_OF_RANGE, data, currentData);
+			if (currentData < data || data < currentData - 2 * this.factor //
+					|| this.syncActive && this.syncPossible && equipmentOn) {
+				return new Result(Range.MUST_SYNC, data, currentData);
 //			} else if (data > currentData + 0.1 * this.factor) {
 //				return new Result(Range.SYNC_PREFFERED, data, currentData);
 			} else {
@@ -170,6 +171,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 			boolean update = false;
 			Result result = null;
+			UpdateType type = new UpdateType(false);
 
 			synchronized (this) {
 
@@ -194,7 +196,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				this.lastUpdateValue = data.getSingleData();
 
 				try {
-					result = this.checkRange(data);
+					result = this.checkRange(data, equipmentOn);
 				} catch (TypeException e) {
 					logger.error("Type exception, update ignored", e);
 					return;
@@ -206,22 +208,26 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 						this.syncActive = false;
 						this.syncPossible = false;
 						break;
-					case OUT_OF_RANGE:
-						update = true;
+					case MUST_SYNC:
 						String resultString;
-						if (this.syncPossible && this.syncActive) {
-							this.syncActive = false;
+						update = true;
+						type = new UpdateType(this.syncPossible);
+						if (this.syncPossible) {
 							resultString = "finished";
+							this.syncActive = false;
+							this.syncPossible = false;
 						} else {
-							this.syncActive = true;
 							resultString = "activated";
+							this.syncActive = true;
+							this.syncPossible = equipmentOn;
 						}
-						logger.info(
-								"Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> " + resultString + ".");
+						logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> " //
+								+ resultString + ".");
 						break;
 					case SYNC_PREFFERED:
 						if (!this.syncActive) {
 							this.syncActive = true;
+							this.syncPossible = equipmentOn;
 							logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> activated.");
 						}
 						break;
@@ -232,7 +238,6 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				logger.info(
 						"Update of <" + EquipmentOnOff.this.calculatedId + "> by SolvisConrol data take place, former: "
 								+ result.currentValue + ", new: " + result.newValue);
-				UpdateType type = new UpdateType(this.syncPossible);
 				this.calculatedValue.setInteger(result.newValue, data.getTimeStamp(), type);
 				notifyTriggerIds();
 				this.lastSyncValue = result.newValue;

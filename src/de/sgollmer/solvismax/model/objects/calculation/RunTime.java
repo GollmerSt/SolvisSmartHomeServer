@@ -105,20 +105,16 @@ public class RunTime extends Strategy<RunTime> {
 				return;
 			}
 
-			if (!(source instanceof UpdateType)) {
+			if (!RunTime.this.isCorrection() || !(source instanceof UpdateType)
+					|| !((UpdateType) source).isSyncType()) {
 				return;
 			}
 
-			if (!((UpdateType) source).isSyncType() && this.syncCnt == 0) {
-				this.updateSyncValues((long) data.getInt() * 1000L);
-				return;
-			}
+			++this.syncCnt;
 
-			if (!RunTime.this.isCorrection()) {
-				return;
-			}
 			long syncedRunTime = (long) data.getInt() * 1000L;
-			if (++this.syncCnt > 1) {
+
+			if (this.syncCnt > 1) {
 				int delta = (int) (syncedRunTime - this.lastSyncedRunTime - this.runTimeAfterLastSyncCurrent);
 				this.correction.modify(delta, this.equipmentCntSinceLastSync);
 			}
@@ -164,13 +160,17 @@ public class RunTime extends Strategy<RunTime> {
 					long runTime = time - this.lastStartTime;
 
 					this.runTimeAfterLastSyncCurrent = runTime + this.runTimeAfterLastSyncAfterOff;
-					int result;
+					long result;
 
-					result = (int) ((this.lastSyncedRunTime + this.runTimeAfterLastSyncCurrent
-							+ this.getCorrection(this.equipmentCntSinceLastSync) + 500L) / 1000L);
+					result = this.lastSyncedRunTime * 1000L + this.runTimeAfterLastSyncCurrent * 1000L
+							+ this.getCorrection(this.equipmentCntSinceLastSync);
 
-					if (result - former > 60 || !equipmentOn) {
-						this.result.setInteger(result, data.getTimeStamp(), this);
+					long interval = data.getSolvis().getDefaultReadMeasurementsInterval_ms();
+
+					int toSet = (int) (result / interval * interval / 1000L);	// abrunden
+
+					if (Math.abs(toSet - former) > 60 || !equipmentOn) {
+						this.result.setInteger(toSet, data.getTimeStamp(), this);
 					}
 
 					if (!equipmentOn) {
