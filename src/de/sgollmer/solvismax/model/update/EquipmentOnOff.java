@@ -155,7 +155,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 						new Result(Range.NO_ACTION, currentData, currentData) //
 						: new Result(Range.UPDATE_ONLY, data, currentData);
 			}
-			if (currentData < data || data < currentData - 2 * this.factor //
+			int tolerance = Constants.SYNC_TOLERANCE_PERCENT * this.factor / 100;
+			if (currentData + tolerance < data || data < currentData - this.factor - tolerance //
 					|| this.syncActive && this.syncPossible && equipmentOn) {
 				return this.equipmentTimeSynchronisation ? //
 						new Result(Range.MUST_SYNC, data, currentData)

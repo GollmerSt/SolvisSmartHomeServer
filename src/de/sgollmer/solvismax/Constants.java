@@ -56,6 +56,8 @@ public class Constants {
 	 */
 	public static final int TIME_COMMAND_SCREEN_VALID = 5000;
 
+	public static final int SYNC_TOLERANCE_PERCENT = 10;
+
 	public static final int MAX_OUTSIDE_TIME = 120000;
 	public static final int SCREEN_SAVER_WIDTH_INACCURACY = 5;
 	public static final int SCREEN_SAVER_HEIGHT_INACCURACY = 5;

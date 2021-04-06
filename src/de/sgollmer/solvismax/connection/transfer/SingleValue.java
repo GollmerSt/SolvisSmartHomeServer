@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.DoubleValue;
-import de.sgollmer.solvismax.model.objects.data.IntegerValue;
+import de.sgollmer.solvismax.model.objects.data.LongValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 
@@ -58,7 +58,7 @@ public class SingleValue implements IValue {
 		m = INTEGER.matcher(sub);
 		if (m.matches()) {
 			group = m.group(1);
-			this.data = new IntegerValue(Integer.parseInt(group), timeStamp);
+			this.data = new LongValue(Long.parseLong(group), timeStamp);
 			return position + group.length();
 		}
 		m = FLOAT.matcher(sub);

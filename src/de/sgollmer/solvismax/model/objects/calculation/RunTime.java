@@ -99,7 +99,7 @@ public class RunTime extends Strategy<RunTime> {
 
 				@Override
 				public void update(SolvisData data, Object source) {
-					Executable.this.updateByControl(data, source);
+					Executable.this.updateByValue(data, source);
 
 				}
 			});
@@ -123,38 +123,40 @@ public class RunTime extends Strategy<RunTime> {
 
 			if (source instanceof SystemBackup) {
 				this.updateVerifiedValues(verifiedRunTime);
-				this.syncCnt = 0;
 				return;
 			}
-			if (source instanceof UpdateType) {
-				UpdateType updateType = (UpdateType) source;
+			if (!(source instanceof UpdateType)) {
+				return;
+			}
+			
+			UpdateType updateType = (UpdateType) source;
 
-				if (this.syncCnt < 0) {
-					this.syncCnt = 0;
+			if (this.syncCnt < 0) {
+				this.syncCnt = 0;
 
-					if (!updateType.isSyncType() || !RunTime.this.isCorrection()) {
-						this.updateVerifiedValues(verifiedRunTime);
-						return;
-					}
-				} else if (!RunTime.this.isCorrection() || !updateType.isSyncType()) {
+				if (!updateType.isSyncType() || !RunTime.this.isCorrection()) {
+					this.updateVerifiedValues(verifiedRunTime);
 					return;
 				}
-
-			} else {
+			} else if (!RunTime.this.isCorrection() || !updateType.isSyncType()) {
 				return;
 			}
 
 			++this.syncCnt;
 
-			if (this.syncCnt > 1) {
-				int delta = (int) (verifiedRunTime - this.lastVerifiedRunTime - this.runTimeAfterLastVerificationCurrent);
+			if (this.syncCnt > 1)
+
+			{
+				int delta = (int) (verifiedRunTime - this.lastVerifiedRunTime
+						- this.runTimeAfterLastVerificationCurrent);
 				this.correction.modify(delta, this.equipmentCntSinceLastSync);
 			}
 			this.updateVerifiedValues(verifiedRunTime);
 		}
 
-		private void updateByControl(SolvisData data, Object source) {
+		private void updateByValue(SolvisData data, Object source) {
 
+			if (source != this) {
 				try {
 					this.correctionAdjust(data, source);
 					this.update(this.equipmentOn.getBool(), data.getTimeStamp());
@@ -162,7 +164,7 @@ public class RunTime extends Strategy<RunTime> {
 					logger.error("Type error, update ignored", e);
 					return;
 				}
-
+			}
 		}
 
 		private void updateByOnOff(SolvisData data, Object source) {
