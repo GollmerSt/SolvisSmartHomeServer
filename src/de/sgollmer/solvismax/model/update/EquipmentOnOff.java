@@ -101,6 +101,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		private final int checkInterval;
 		private final int readInterval;
 		private final boolean hourly;
+		private final boolean equipmentTimeSynchronisation;
 
 		private long lastCheckTime = -1;
 		private boolean syncActive = true; // Synchronisation forced after restart
@@ -120,6 +121,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			this.checkInterval = checkInterval;
 			this.readInterval = readInterval;
 			this.hourly = hourly;
+			this.equipmentTimeSynchronisation = this.solvis.getUnit().getFeatures().isEquipmentTimeSynchronisation();
 
 			this.equipment.registerContinuousObserver(this);
 			this.updateSource.registerContinuousObserver(new IObserver<SolvisData>() {
@@ -155,7 +157,9 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			}
 			if (currentData < data || data < currentData - 2 * this.factor //
 					|| this.syncActive && this.syncPossible && equipmentOn) {
-				return new Result(Range.MUST_SYNC, data, currentData);
+				return this.equipmentTimeSynchronisation ? //
+						new Result(Range.MUST_SYNC, data, currentData)
+						: new Result(Range.UPDATE_ONLY, data, currentData);
 //			} else if (data > currentData + 0.1 * this.factor) {
 //				return new Result(Range.SYNC_PREFFERED, data, currentData);
 			} else {
@@ -262,7 +266,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				return;
 			}
 
-			if (!this.solvis.getFeatures().isEquipmentTimeSynchronisation()) {
+			if (!this.equipmentTimeSynchronisation) {
 				return;
 			}
 

@@ -61,29 +61,48 @@ public class RunTime extends Strategy<RunTime> {
 			result.setInteger(0, -1);
 		}
 
-		Executable executable = new Executable(result, equipmentOn);
+		Executable executable = new Executable(solvis, result, equipmentOn);
 
-		executable.update(equipmentOn, this);
+		try {
+			executable.update(equipmentOn.getBool(), -1L);
+		} catch (TypeException e) {
+		}
 	}
 
-	private class Executable implements IObserver<SolvisData> {
+	private class Executable {
 
 		private final SolvisData result;
 		private final SolvisData equipmentOn;
+		private final Solvis solvis;
 		private long lastStartTime = -1;
 
 		private int equipmentCntSinceLastSync = 0;
-		private int syncCnt = 0;
-		private long lastSyncedRunTime = -1;
-		private long runTimeAfterLastSyncAfterOff = 0;
-		private long runTimeAfterLastSyncCurrent = 0;
+		private int syncCnt = -1;
+		private long lastVerifiedRunTime = 0;
+		private long runTimeAfterLastVerificationAfterOff = 0;
+		private long runTimeAfterLastVerificationCurrent = 0;
 		private final Correction correction;
 
-		private Executable(SolvisData result, SolvisData equipmentOn) {
+		private Executable(Solvis solvis, SolvisData result, SolvisData equipmentOn) {
+			this.solvis = solvis;
 			this.result = result;
 			this.equipmentOn = equipmentOn;
-			this.equipmentOn.registerContinuousObserver(this);
-			this.result.registerContinuousObserver(this);
+			this.equipmentOn.registerContinuousObserver(new IObserver<SolvisData>() {
+
+				@Override
+				public void update(SolvisData data, Object source) {
+					Executable.this.updateByOnOff(data, source);
+
+				}
+			});
+			this.result.registerContinuousObserver(new IObserver<SolvisData>() {
+
+				@Override
+				public void update(SolvisData data, Object source) {
+					Executable.this.updateByControl(data, source);
+
+				}
+			});
 			if (RunTime.this.isCorrection()) {
 				this.correction = result.getSolvis().getAllSolvisData().getCorrection(this.result.getId());
 			} else {
@@ -91,55 +110,73 @@ public class RunTime extends Strategy<RunTime> {
 			}
 		}
 
-		private void updateSyncValues(long runTime) {
-			this.lastSyncedRunTime = runTime;
-			this.runTimeAfterLastSyncAfterOff = 0;
-			this.runTimeAfterLastSyncCurrent = 0;
+		private void updateVerifiedValues(long runTime) {
+			this.lastVerifiedRunTime = runTime;
+			this.runTimeAfterLastVerificationAfterOff = 0;
+			this.runTimeAfterLastVerificationCurrent = 0;
 			this.equipmentCntSinceLastSync = 0;
 		}
 
 		private void correctionAdjust(SolvisData data, Object source) throws TypeException {
 
+			long verifiedRunTime = (long) data.getInt() * 1000L;
+
 			if (source instanceof SystemBackup) {
-				this.updateSyncValues((long) data.getInt() * 1000L);
+				this.updateVerifiedValues(verifiedRunTime);
+				this.syncCnt = 0;
 				return;
 			}
+			if (source instanceof UpdateType) {
+				UpdateType updateType = (UpdateType) source;
 
-			if (!RunTime.this.isCorrection() || !(source instanceof UpdateType)
-					|| !((UpdateType) source).isSyncType()) {
+				if (this.syncCnt < 0) {
+					this.syncCnt = 0;
+
+					if (!updateType.isSyncType() || !RunTime.this.isCorrection()) {
+						this.updateVerifiedValues(verifiedRunTime);
+						return;
+					}
+				} else if (!RunTime.this.isCorrection() || !updateType.isSyncType()) {
+					return;
+				}
+
+			} else {
 				return;
 			}
 
 			++this.syncCnt;
 
-			long syncedRunTime = (long) data.getInt() * 1000L;
-
 			if (this.syncCnt > 1) {
-				int delta = (int) (syncedRunTime - this.lastSyncedRunTime - this.runTimeAfterLastSyncCurrent);
+				int delta = (int) (verifiedRunTime - this.lastVerifiedRunTime - this.runTimeAfterLastVerificationCurrent);
 				this.correction.modify(delta, this.equipmentCntSinceLastSync);
 			}
-			this.updateSyncValues(syncedRunTime);
+			this.updateVerifiedValues(verifiedRunTime);
 		}
 
-		@Override
-		public void update(SolvisData data, Object source) {
+		private void updateByControl(SolvisData data, Object source) {
+
+				try {
+					this.correctionAdjust(data, source);
+					this.update(this.equipmentOn.getBool(), data.getTimeStamp());
+				} catch (TypeException e) {
+					logger.error("Type error, update ignored", e);
+					return;
+				}
+
+		}
+
+		private void updateByOnOff(SolvisData data, Object source) {
+			try {
+				this.update(data.getBool(), data.getTimeStamp());
+			} catch (TypeException e) {
+				logger.error("Type error, update ignored", e);
+				return;
+			}
+		}
+
+		public void update(Boolean equipmentOn, long timeStamp) {
 
 			try {
-
-				Boolean equipmentOn = null;
-
-				if (data.getDescription() == this.result.getDescription()) {
-					if (source == this) {
-						return;
-					} else {
-						equipmentOn = this.equipmentOn.getBool();
-						this.correctionAdjust(data, source);
-					}
-				}
-
-				if (equipmentOn == null) {
-					equipmentOn = data.getBool();
-				}
 
 				if (equipmentOn && this.lastStartTime < 0) {
 					++this.equipmentCntSinceLastSync;
@@ -147,35 +184,33 @@ public class RunTime extends Strategy<RunTime> {
 
 				if (equipmentOn || this.lastStartTime >= 0) {
 
-					long time = data.getTimeStamp();
-
 					int former = this.result.getInt();
 
 					if (equipmentOn) {
 						if (this.lastStartTime < 0) {
-							this.lastStartTime = time;
+							this.lastStartTime = timeStamp;
 						}
 					}
 
-					long runTime = time - this.lastStartTime;
+					long runTime = timeStamp - this.lastStartTime;
 
-					this.runTimeAfterLastSyncCurrent = runTime + this.runTimeAfterLastSyncAfterOff;
+					this.runTimeAfterLastVerificationCurrent = runTime + this.runTimeAfterLastVerificationAfterOff;
 					long result;
 
-					result = this.lastSyncedRunTime * 1000L + this.runTimeAfterLastSyncCurrent * 1000L
+					result = this.lastVerifiedRunTime + this.runTimeAfterLastVerificationCurrent
 							+ this.getCorrection(this.equipmentCntSinceLastSync);
 
-					long interval = data.getSolvis().getDefaultReadMeasurementsInterval_ms();
+					long interval = this.solvis.getDefaultReadMeasurementsInterval_ms();
 
-					int toSet = (int) (result / interval * interval / 1000L);	// abrunden
+					int toSet = (int) (result / interval * interval / 1000L); // abrunden
 
 					if (Math.abs(toSet - former) > 60 || !equipmentOn) {
-						this.result.setInteger(toSet, data.getTimeStamp(), this);
+						this.result.setInteger(toSet, timeStamp, this);
 					}
 
 					if (!equipmentOn) {
 						this.lastStartTime = -1;
-						this.runTimeAfterLastSyncAfterOff = this.runTimeAfterLastSyncCurrent;
+						this.runTimeAfterLastVerificationAfterOff = this.runTimeAfterLastVerificationCurrent;
 					}
 				}
 			} catch (
