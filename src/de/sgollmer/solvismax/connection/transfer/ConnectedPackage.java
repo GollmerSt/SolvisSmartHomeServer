@@ -12,27 +12,27 @@ import java.util.Collection;
 import de.sgollmer.solvismax.Version;
 import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
-import de.sgollmer.solvismax.model.objects.data.IntegerValue;
+import de.sgollmer.solvismax.model.objects.data.LongValue;
 
 public class ConnectedPackage extends JsonPackage implements ISendData {
 
-	private int clientId;
+	private long clientId;
 
 	@Override
 	public String getClientId() {
-		return Integer.toBinaryString(this.clientId);
+		return Long.toBinaryString(this.clientId);
 	}
 
 	ConnectedPackage() {
 	}
 
-	public ConnectedPackage(int clientId) {
+	public ConnectedPackage(long clientId) {
 		this.clientId = clientId;
 		this.command = Command.CONNECTED;
 		this.data = new Frame();
 		Element element = new Element();
 		element.name = "ClientId";
-		element.value = new SingleValue(new IntegerValue(clientId, -1));
+		element.value = new SingleValue(new LongValue(clientId, -1));
 		this.data.add(element);
 		element = new Element();
 		element.name = "ServerVersion";

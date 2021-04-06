@@ -35,6 +35,11 @@ public class BooleanValue extends SingleData<Boolean> {
 	}
 
 	@Override
+	public Long getLong() {
+		return this.value ? 1L : 0L;
+	}
+
+	@Override
 	public Double getDouble() {
 		return this.value ? 1.0 : 0.0;
 	}

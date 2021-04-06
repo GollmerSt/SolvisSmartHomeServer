@@ -35,6 +35,11 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	}
 
 	@Override
+	public Long getLong() {
+		return null;
+	}
+
+	@Override
 	public Double getDouble() {
 		return null;
 	}

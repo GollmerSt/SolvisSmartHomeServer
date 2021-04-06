@@ -50,6 +50,11 @@ public class StringData extends SingleData<String> {
 	}
 
 	@Override
+	public Long getLong() {
+		return null;
+	}
+
+	@Override
 	public Double getDouble() {
 		return null;
 	}

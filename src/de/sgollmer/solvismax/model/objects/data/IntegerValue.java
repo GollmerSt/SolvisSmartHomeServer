@@ -55,6 +55,15 @@ public class IntegerValue extends SingleData<Integer> {
 	}
 
 	@Override
+	public Long getLong() {
+		if (this.data == null) {
+			return null;
+		} else {
+			return this.data.longValue();
+		}
+	}
+
+	@Override
 	public Double getDouble() {
 		if (this.data != null) {
 			return this.data.doubleValue();

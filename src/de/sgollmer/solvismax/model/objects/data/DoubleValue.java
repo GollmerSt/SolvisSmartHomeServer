@@ -32,6 +32,11 @@ public class DoubleValue extends SingleData<Double> {
 	}
 
 	@Override
+	public Long getLong() {
+		return Math.round(this.value);
+	}
+
+	@Override
 	public Double getDouble() {
 		return this.value;
 	}

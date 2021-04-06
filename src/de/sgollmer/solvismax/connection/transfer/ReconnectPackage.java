@@ -13,7 +13,7 @@ import de.sgollmer.solvismax.model.objects.data.StringData;
 
 public class ReconnectPackage extends JsonPackage implements IReceivedData {
 
-	private Integer clientId = null;
+	private Long clientId = null;
 
 	ReconnectPackage() {
 		this.command = Command.RECONNECT;
@@ -27,7 +27,7 @@ public class ReconnectPackage extends JsonPackage implements IReceivedData {
 			switch (e.name) {
 				case "Id":
 					if (e.value instanceof SingleValue) {
-						this.clientId = ((SingleValue) e.value).getData().getInt();
+						this.clientId = ((SingleValue) e.value).getData().getLong();
 					}
 			}
 		}
@@ -36,7 +36,7 @@ public class ReconnectPackage extends JsonPackage implements IReceivedData {
 
 	@Override
 	public String getClientId() {
-		return Integer.toString(this.clientId);
+		return Long.toString(this.clientId);
 	}
 
 	@Override

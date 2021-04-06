@@ -29,6 +29,12 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 
 	/**
 	 * 
+	 * @return integer value if supported. Otherwise null.
+	 */
+	public abstract Long getLong();
+
+	/**
+	 * 
 	 * @return double value if supported. Otherwise null.
 	 */
 	public abstract Double getDouble();

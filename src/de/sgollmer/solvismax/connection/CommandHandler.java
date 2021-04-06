@@ -43,10 +43,11 @@ public class CommandHandler {
 
 	private final Collection<ClientAssignments> clients;
 	private final Instances instances;
-	private int nextClientId = Long.hashCode(System.currentTimeMillis());
+	private long nextClientId ;
 	private boolean abort = false;
 
 	public CommandHandler(Instances instances) {
+		this.nextClientId = 0x00000000ffffffffL & Long.hashCode(System.currentTimeMillis()) ;
 		this.instances = instances;
 		this.clients = new ArrayList<>();
 
@@ -248,8 +249,8 @@ public class CommandHandler {
 			logger.error("Client doesn't exists. Connection ignored.");
 			return true;
 		}
-		int clientId = this.getNewClientId();
-		((Client) client).setClientId(Integer.toString(clientId));
+		long clientId = this.getNewClientId();
+		((Client) client).setClientId(Long.toString(clientId));
 		if (receivedData.getSingleData().get() != null) {
 			Solvis solvis = null;
 			solvis = this.instances.getInstance((String) receivedData.getSingleData().get());
@@ -400,7 +401,7 @@ public class CommandHandler {
 		return false;
 	}
 
-	private synchronized int getNewClientId() {
+	private synchronized long getNewClientId() {
 		return this.nextClientId++;
 	}
 

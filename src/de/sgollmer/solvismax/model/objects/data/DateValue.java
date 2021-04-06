@@ -36,6 +36,11 @@ public class DateValue extends SingleData<Calendar> {
 	}
 
 	@Override
+	public Long getLong() {
+		return null;
+	}
+
+	@Override
 	public Double getDouble() {
 		return null;
 	}
