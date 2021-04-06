@@ -385,7 +385,10 @@ public class ErrorDetection {
 					+ Constants.Files.GRAFIC_SUFFIX;
 			File file = new File(this.parent, name);
 			try {
-				info.getImage().writeWhole(file);
+				MyImage errorImage = info.getImage();
+				if (errorImage != null) {
+					info.getImage().writeWhole(file);
+				}
 			} catch (IOException e) {
 				logger.error("Error on writing the error image <" + name + ">.");
 			}
