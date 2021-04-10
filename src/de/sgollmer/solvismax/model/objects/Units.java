@@ -94,7 +94,8 @@ public class Units {
 		private final int configOrMask;
 		private final int defaultAverageCount;
 		private final int measurementHysteresisFactor;
-		private final int defaultReadMeasurementsInterval_ms;
+		private final int defaultMeasurementsInterval_ms;
+		private final int defaultMeasurementsIntervalFast_ms;
 		private final int forceUpdateAfterFastChangingIntervals;
 		private final int forcedUpdateInterval_ms;
 		private final int doubleUpdateInterval_ms;
@@ -109,11 +110,12 @@ public class Units {
 		private final Collection<Pattern> ignoredChannels;
 
 		private Unit(String id, String type, String url, String account, CryptAes password, int configOrMask,
-				int defaultAverageCount, int measurementHysteresisFactor, int defaultReadMeasurementsInterval_ms,
-				int forceUpdateAfterFastChangingIntervals, int forcedUpdateInterval_ms, int doubleUpdateInterval_ms,
-				int bufferedInterval_ms, int watchDogTime_ms, int releaseBlockingAfterUserAccess_ms,
-				int releaseBlockingAfterServiceAccess_ms, boolean delayAfterSwitchingOn, boolean fwLth2_21_02A,
-				Features features, int ignoredFrameThicknesScreenSaver, Collection<Pattern> ignoredChannels) {
+				int defaultAverageCount, int measurementHysteresisFactor, int defaultMeasurementsInterval_ms,
+				int defaultMeasurementsIntervalFast_ms, int forceUpdateAfterFastChangingIntervals,
+				int forcedUpdateInterval_ms, int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
+				int releaseBlockingAfterUserAccess_ms, int releaseBlockingAfterServiceAccess_ms,
+				boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, Features features,
+				int ignoredFrameThicknesScreenSaver, Collection<Pattern> ignoredChannels) {
 			this.id = id;
 			this.type = type;
 			this.url = url;
@@ -122,7 +124,8 @@ public class Units {
 			this.configOrMask = configOrMask;
 			this.defaultAverageCount = defaultAverageCount;
 			this.measurementHysteresisFactor = measurementHysteresisFactor;
-			this.defaultReadMeasurementsInterval_ms = defaultReadMeasurementsInterval_ms;
+			this.defaultMeasurementsInterval_ms = defaultMeasurementsInterval_ms;
+			this.defaultMeasurementsIntervalFast_ms = defaultMeasurementsIntervalFast_ms;
 			this.forceUpdateAfterFastChangingIntervals = forceUpdateAfterFastChangingIntervals;
 			this.forcedUpdateInterval_ms = forcedUpdateInterval_ms;
 			this.doubleUpdateInterval_ms = doubleUpdateInterval_ms;
@@ -172,7 +175,8 @@ public class Units {
 			private int configOrMask;
 			private int defaultAverageCount;
 			private int measurementHysteresisFactor;
-			private int defaultReadMeasurementsInterval_ms;
+			private Integer defaultMeasurementsInterval_ms = null;
+			private Integer defaultMeasurementsIntervalFast_ms = null;
 			private int forceUpdateAfterFastChangingIntervals = Constants.FORCE_UPDATE_AFTER_N_INTERVALS;
 			private int forcedUpdateInterval_ms;
 			private int doubleUpdateInterval_ms = 0;
@@ -222,7 +226,13 @@ public class Units {
 							this.measurementHysteresisFactor = Integer.parseInt(value);
 							break;
 						case "defaultReadMeasurementsInterval_ms":
-							this.defaultReadMeasurementsInterval_ms = Integer.parseInt(value);
+							this.defaultMeasurementsInterval_ms = Integer.parseInt(value);
+							break;
+						case "measurementsInterval_s":
+							this.defaultMeasurementsInterval_ms = Integer.parseInt(value) * 1000;
+							break;
+						case "measurementsIntervalFast_s":
+							this.defaultMeasurementsIntervalFast_ms = Integer.parseInt(value) * 1000;
 							break;
 						case "forceUpdateInFastChangingAfterIntervals":
 							this.forceUpdateAfterFastChangingIntervals = Integer.parseInt(value);
@@ -265,9 +275,18 @@ public class Units {
 
 			@Override
 			public Unit create() throws XmlException, IOException {
+
+				if (this.defaultMeasurementsInterval_ms == null) {
+					throw new XmlException("<defaultMeasurementsInterval_s> is missing in base.xml");
+				}
+
+				if (this.defaultMeasurementsIntervalFast_ms == null) {
+					this.defaultMeasurementsIntervalFast_ms = this.defaultMeasurementsInterval_ms;
+				}
+
 				return new Unit(this.id, this.type, this.url, this.account, this.password, this.configOrMask,
-						this.defaultAverageCount, this.measurementHysteresisFactor,
-						this.defaultReadMeasurementsInterval_ms, this.forceUpdateAfterFastChangingIntervals,
+						this.defaultAverageCount, this.measurementHysteresisFactor, this.defaultMeasurementsInterval_ms,
+						this.defaultMeasurementsIntervalFast_ms, this.forceUpdateAfterFastChangingIntervals,
 						this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
 						this.watchDogTime_ms, this.releaseBlockingAfterUserAccess_ms,
 						this.releaseBlockingAfterServiceAccess_ms, this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A,
@@ -325,8 +344,12 @@ public class Units {
 			return this.measurementHysteresisFactor;
 		}
 
-		public int getDefaultReadMeasurementsInterval_ms() {
-			return this.defaultReadMeasurementsInterval_ms;
+		public int getMeasurementsInterval_ms() {
+			return this.defaultMeasurementsInterval_ms;
+		}
+
+		public int getMeasurementsIntervalFast_ms() {
+			return this.defaultMeasurementsIntervalFast_ms;
 		}
 
 		public int getForcedUpdateInterval_ms() {

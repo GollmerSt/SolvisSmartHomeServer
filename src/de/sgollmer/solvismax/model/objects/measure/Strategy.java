@@ -186,7 +186,7 @@ public enum Strategy implements IType {
 				calendar = old ;
 			}
 
-			int measurementsInterval = solvis.getDefaultReadMeasurementsInterval_ms();
+			int measurementsInterval = destin.getScanInterval_ms();
 
 			if (old != null && measurementsInterval >= 2000 && (calendar.getTimeInMillis() == old.getTimeInMillis())) {
 				solvis.getSolvisState().setSolvisClockValid(false);

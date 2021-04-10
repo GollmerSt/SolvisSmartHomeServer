@@ -130,7 +130,7 @@ public class Correction implements SystemBackup.IValue {
 		this.data += data;
 
 		logger.debug(Constants.Debug.CORRECTION,
-				"Correction (data/cnt): (" + data + "/" + cnt + "), current correction value: " + this.get(1));
+				"Correction (data/cnt): (" + this.data + "/" + this.cnt + "), current correction value: " + this.get(1));
 	}
 
 }

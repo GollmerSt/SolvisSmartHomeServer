@@ -324,5 +324,15 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.isDelayed(solvis);
 	}
 
+	@Override
+	public boolean isFast() {
+		return this.channelSource.isFast();
+	}
+
+	@Override
+	public Integer getScanInterval_ms(Solvis solvis) {
+		return this.channelSource.getScanInterval_ms(solvis);
+	}
+
 
 }

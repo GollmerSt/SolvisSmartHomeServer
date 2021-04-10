@@ -64,6 +64,10 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	public Double getAccuracy();
 
 	public boolean isBoolean();
+	
+	public boolean isFast();
+	
+	public Integer getScanInterval_ms(Solvis solvis);
 
 	public void instantiate(Solvis solvis) throws AssignmentException, AliasException;
 

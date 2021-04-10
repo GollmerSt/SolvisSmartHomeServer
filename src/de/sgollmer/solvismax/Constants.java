@@ -174,6 +174,8 @@ public class Constants {
 		
 		public static final boolean CORRECTION = true;
 		
+		public static final boolean BURST = false;
+		
 
 		public static boolean isSolvisTimeFixed() {
 			return DEBUG && SOLVIS_TIME_FIXED;

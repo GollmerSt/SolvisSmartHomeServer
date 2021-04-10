@@ -422,7 +422,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				boolean buffered = this.solvisData.getDescription().isBuffered() && this.solvis.getUnit().isBuffered();
 
 				long intervall = buffered ? this.solvis.getUnit().getBufferedInterval_ms()
-						: this.solvis.getUnit().getDefaultReadMeasurementsInterval_ms();
+						: this.solvis.getUnit().getMeasurementsInterval_ms();
 
 				long forceUpdateAfterFastChangingIntervals = this.solvis.getUnit()
 						.getForceUpdateAfterFastChangingIntervals();
@@ -500,6 +500,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		} else {
 			return this.smartHomeData;
 		}
+	}
+	
+	public Integer getScanInterval_ms() {
+		return this.description.getScanInterval_ms(this.getSolvis());
 	}
 
 }

@@ -135,7 +135,11 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		}
 	}
 
-	public void measure(Solvis solvis, AllSolvisData datas)
+	public enum MeasureMode {
+		ALL, FAST, STANDARD
+	}
+
+	public void measure(Solvis solvis, AllSolvisData datas, MeasureMode mode)
 			throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		solvis.clearMeasuredData();
 		solvis.getMeasureData();
@@ -143,8 +147,9 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		try {
 			for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 				ChannelDescription description = descriptions.get(solvis);
-				if (description != null) {
-					if (description.getType() == IChannelSource.Type.MEASUREMENT) {
+				if (description != null && description.getType() == IChannelSource.Type.MEASUREMENT) {
+					if (mode == MeasureMode.ALL || mode == MeasureMode.FAST && description.isFast()
+							|| mode == MeasureMode.STANDARD && !description.isFast()) {
 						description.getValue(solvis);
 					}
 				}
@@ -298,14 +303,14 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 					Dependency d1 = it1.next();
 					for (Iterator<Dependency> it2 = ds2.iterator(); it2.hasNext();) {
 						Dependency d2 = it2.next();
-						if ( Dependency.equals( d1, d2, solvis)) {
+						if (Dependency.equals(d1, d2, solvis)) {
 							it1.remove();
 							it2.remove();
 							break;
 						}
 					}
 				}
-				
+
 				if (ds1.isEmpty() && ds2.isEmpty()) {
 					return 0;
 				}

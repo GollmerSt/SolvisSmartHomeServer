@@ -8,7 +8,10 @@
 package de.sgollmer.solvismax.helper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
@@ -312,6 +315,62 @@ public class Helper {
 			return false;
 		}
 		return o1.equals(o2);
+	}
+
+	public static class Times {
+		private final long now;
+		private final long startOfDay;
+
+		public Times(long now, long startOfDay) {
+			this.now = now;
+			this.startOfDay = startOfDay;
+		}
+
+		public long getNow() {
+			return this.now;
+		}
+
+		public long getStartOfDay() {
+			return this.startOfDay;
+		}
+	}
+
+	public static Times getStartOfDay() {
+		return getStartOfDay(null, null);
+	}
+
+	/**
+	 * Get the beginning of the day and the current time. The current time ist
+	 * delivered in case of possible consistency problems.
+	 * 
+	 * @param zone
+	 * @param aLocale
+	 * 
+	 * @return
+	 */
+
+	public static Times getStartOfDay(TimeZone zone, Locale aLocale) {
+
+		Calendar calendar;
+
+		if (zone == null && aLocale == null) {
+			calendar = Calendar.getInstance();
+		} else if (zone != null && aLocale != null) {
+			calendar = Calendar.getInstance(zone, aLocale);
+		} else if (aLocale == null) {
+			calendar = Calendar.getInstance(zone);
+		} else {
+			calendar = Calendar.getInstance(aLocale);
+		}
+
+		long now = calendar.getTimeInMillis();
+
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		return new Times(now, calendar.getTimeInMillis());
 	}
 
 }

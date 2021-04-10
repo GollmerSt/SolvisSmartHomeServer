@@ -21,9 +21,12 @@ import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.helper.Helper;
+import de.sgollmer.solvismax.helper.Helper.Times;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Command.Handling;
+import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
@@ -60,8 +63,8 @@ public class SolvisWorkers {
 		});
 
 	}
-	
-	public void controlEnable( boolean enable ) {
+
+	public void controlEnable(boolean enable) {
 		SolvisWorkers.this.controlsThread.controlEnable(enable);
 	}
 
@@ -106,7 +109,7 @@ public class SolvisWorkers {
 							this.channelsOfQueueRead.clear();
 							if (!queueWasEmpty && isScreenRestoreEnabled()) {
 								restoreScreenCnt = 2;
-							} else if (restoreScreenCnt == 0 ) {
+							} else if (restoreScreenCnt == 0) {
 								try {
 									this.wait(watchDogTime);
 								} catch (InterruptedException e) {
@@ -478,31 +481,70 @@ public class SolvisWorkers {
 	private class MeasurementsWorkerThread extends Thread {
 
 		private boolean abort = false;
-		private long nextTime;
+		private long nextFast = -1;
+		private long nextStd = -1;
+		private final int measurementInterval;
+		private final int measurementIntervalFast;
 
 		private MeasurementsWorkerThread() {
 			super("MeasurementsWorkerThread");
+			this.measurementInterval = SolvisWorkers.this.solvis.getUnit().getMeasurementsInterval_ms();
+			this.measurementIntervalFast = SolvisWorkers.this.solvis.getUnit().getMeasurementsIntervalFast_ms();
+		}
 
+		private int calculateNextMeasurementTimes() {
+			Times times = Helper.getStartOfDay();
+			long now = times.getNow();
+			long firstOfDay = times.getStartOfDay() + 500;
+			this.nextStd = firstOfDay + ((now - firstOfDay) / this.measurementInterval + 1) * this.measurementInterval;
+			this.nextFast = firstOfDay
+					+ ((now - firstOfDay) / this.measurementIntervalFast + 1) * this.measurementIntervalFast;
+			long next = Math.min(this.nextStd, this.nextFast);
+			return (int) (next - now);
 		}
 
 		@Override
 		public void run() {
-			int measurementInterval = SolvisWorkers.this.solvis.getDefaultReadMeasurementsInterval_ms();
-			this.nextTime = System.currentTimeMillis();
+
+			calculateNextMeasurementTimes();
+
 			while (!this.abort) {
 
 				try {
-
 					try {
-						SolvisWorkers.this.solvis.measure();
+						MeasureMode mode;
+						
+						long now = System.currentTimeMillis() ;
+						
+						boolean std = now >= this.nextStd;
+						boolean fast = now >= this.nextFast;
+						
+						if ( std&&fast ) {
+							mode = MeasureMode.ALL;
+						} else if ( fast ) {
+							mode = MeasureMode.FAST;
+						} else if (std) {
+							mode = MeasureMode.STANDARD;
+						} else {
+							mode = null ;
+						}
+						
+						if (mode != null) {
+							SolvisWorkers.this.solvis.measure(mode);
+						}
+
 					} catch (IOException e1) {
 					} catch (PowerOnException e2) {
 					}
 
+					int waitTime = this.calculateNextMeasurementTimes();
+
 					synchronized (this) {
-						long now = System.currentTimeMillis();
-						this.nextTime = now - (now - this.nextTime) % measurementInterval + measurementInterval;
-						int waitTime = (int) (this.nextTime - now);
+
+						if (this.abort) {
+							break;
+						}
+
 						try {
 							this.wait(waitTime);
 						} catch (InterruptedException e) {

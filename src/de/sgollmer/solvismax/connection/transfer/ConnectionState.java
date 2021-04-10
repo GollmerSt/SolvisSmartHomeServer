@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax.connection.transfer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.connection.ConnectionStatus;
@@ -47,7 +48,7 @@ public class ConnectionState implements ISendData {
 
 	@Override
 	public Collection<MqttData> createMqttData() {
-		return null;
+		return new ArrayList<MqttData>();
 	}
 
 }

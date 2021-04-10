@@ -67,7 +67,7 @@ public final class Distributor extends Observable<ISendData> {
 				boolean buffered = data.getDescription().isBuffered() && Distributor.this.periodicBurstThread != null;
 
 				if (data.isForce()) {
-					buffered = false ;
+					buffered = false;
 					Distributor.this.collectedBufferedMeasurements.remove(data);
 				}
 
@@ -271,7 +271,9 @@ public final class Distributor extends Observable<ISendData> {
 		}
 
 		String comment = this.burstUpdate ? "started" : "finished";
-		logger.debug("Burst update " + comment);
+		if (Constants.Debug.BURST) {
+			logger.debug("Burst update " + comment);
+		}
 	}
 
 	private SolvisStateObserver getSolvisStateObserver() {

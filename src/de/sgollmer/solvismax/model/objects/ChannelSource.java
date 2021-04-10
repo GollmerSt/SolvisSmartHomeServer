@@ -38,4 +38,16 @@ public abstract class ChannelSource implements IChannelSource {
 	public boolean isGlitchDetectionAllowed() {
 		return true ;
 	}
+	
+	@Override
+	public boolean isFast() {
+		return false;
+	}
+
+
+//	@Override
+//	public Integer getScanInterval_ms(Solvis solvis) {
+//		return null;
+//	}
+
 }

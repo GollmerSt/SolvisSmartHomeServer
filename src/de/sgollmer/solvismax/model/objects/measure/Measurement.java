@@ -40,6 +40,7 @@ public class Measurement extends ChannelSource {
 	private final int divisor;
 	private final boolean average;
 	private final int delayAfterSwitchingOn;
+	private final boolean fast;
 	private final Collection<Field> fields;
 
 	// AA5555AA
@@ -98,24 +99,26 @@ public class Measurement extends ChannelSource {
 	// 49AB00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
 	private Measurement(String channelId, Strategy type, int divisor, boolean average, int delayAfterSwitchingOn,
-			Collection<Field> fields) throws XmlException {
+			boolean fast, Collection<Field> fields) throws XmlException {
 		this.type = type;
 		this.divisor = divisor;
 		this.average = average;
 		this.delayAfterSwitchingOn = delayAfterSwitchingOn;
+		this.fast = fast;
 		this.fields = fields;
 		if (!this.type.validate(fields)) {
 			throw new XmlException("XML-Error: File is not valid of measurement <" + channelId + ">.");
 		}
 	}
-	
+
 	@Override
 	public boolean isDelayed(Solvis solvis) {
 		return solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn;
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) throws PowerOnException, IOException, TerminationException, NumberFormatException {
+	public boolean getValue(SolvisData dest, Solvis solvis)
+			throws PowerOnException, IOException, TerminationException, NumberFormatException {
 
 		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
 			dest.setSingleData((SingleData<?>) null);
@@ -157,6 +160,7 @@ public class Measurement extends ChannelSource {
 		private int divisor = 1;
 		private boolean average = false;
 		private int delayAfterSwitchingOn = -1;
+		private boolean fast = false;
 		private final Collection<Field> fields = new ArrayList<>(2);
 
 		public Creator(String channelId, String id, BaseCreator<?> creator) {
@@ -180,13 +184,17 @@ public class Measurement extends ChannelSource {
 				case "delayAfterSwitchingOn_ms":
 					this.delayAfterSwitchingOn = Integer.parseInt(value);
 					break;
+				case "fast":
+					this.fast = Boolean.parseBoolean(value);
+					break;
 			}
 
 		}
 
 		@Override
 		public Measurement create() throws XmlException {
-			return new Measurement(this.channelId, this.type, this.divisor, this.average, this.delayAfterSwitchingOn, this.fields);
+			return new Measurement(this.channelId, this.type, this.divisor, this.average, this.delayAfterSwitchingOn,
+					this.fast, this.fields);
 		}
 
 		@Override
@@ -268,7 +276,8 @@ public class Measurement extends ChannelSource {
 	}
 
 	interface IType {
-		//public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data)
+		// public boolean get(SolvisData destin, Collection<Field> fields,
+		// SolvisMeasurements data)
 
 		public boolean get(SolvisData dest, Collection<Field> fields, SolvisMeasurements measureData, Solvis solvis)
 				throws PowerOnException, IOException, NumberFormatException;
@@ -288,6 +297,17 @@ public class Measurement extends ChannelSource {
 	@Override
 	public boolean mustBackuped() {
 		return false;
+	}
+
+	@Override
+	public boolean isFast() {
+		return this.fast;
+	}
+
+	@Override
+	public Integer getScanInterval_ms(Solvis solvis) {
+		return this.isFast() ? solvis.getUnit().getMeasurementsIntervalFast_ms()
+				: solvis.getUnit().getMeasurementsInterval_ms();
 	}
 
 }

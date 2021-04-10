@@ -201,7 +201,7 @@
 			</annotation>
 		</attribute>
 		<attribute name="defaultReadMeasurementsInterval_ms" type="int"
-			use="required">
+			use="optional">
 			<annotation>
 				<documentation>
 					Messintervall nach dem die Kanäle immer wieder
@@ -209,8 +209,14 @@
 				</documentation>
 			</annotation>
 		</attribute>
-        <attribute name="forceUpdateAfterFastChangingIntervals" type="int" use="optional"></attribute>
-        <attribute name="forcedUpdateInterval_ms" type="int"
+		<attribute name="measurementsInterval_s" type="int" use="optional"></attribute>
+		<attribute name="measurementsIntervalFast_s" type="int"
+			use="optional">
+		</attribute>
+		<attribute name="forceUpdateAfterFastChangingIntervals"
+			type="int" use="optional">
+		</attribute>
+		<attribute name="forcedUpdateInterval_ms" type="int"
 			use="required">
 			<annotation>
 				<documentation>
@@ -288,7 +294,8 @@
 		</attribute>
 		<attribute name="ignoredFrameThicknesScreenSaver" type="int"
 			use="required">
-		</attribute>
+		</attribute>
+
 	</complexType>
 	<complexType name="ExecutionData">
 		<annotation>

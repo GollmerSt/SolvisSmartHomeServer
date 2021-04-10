@@ -518,4 +518,9 @@ public class Control extends ChannelSource {
 		return false;
 	}
 
+	@Override
+	public Integer getScanInterval_ms(Solvis solvis) {
+		return null;
+	}
+
 }

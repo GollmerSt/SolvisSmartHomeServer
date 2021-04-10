@@ -75,4 +75,23 @@ public class AliasGroup implements IAssigner, Cloneable {
 		return null;
 	}
 
+	public boolean isDelayed(Solvis solvis) {
+		boolean delayed = false;
+		for (ChannelDescription description : this.getChannelDescriptions(solvis)) {
+			delayed |= description.isDelayed(solvis);
+		}
+		return delayed;
+	}
+
+	public Integer getScanInterval_ms(Solvis solvis) {
+		Integer scanInterval = null;
+		for (ChannelDescription description : this.getChannelDescriptions(solvis)) {
+			Integer si = description.getScanInterval_ms(solvis);
+			if ( si != null && ( scanInterval == null || scanInterval < si )) {
+				scanInterval = si;
+			}
+		}
+		return scanInterval;
+	}
+
 }

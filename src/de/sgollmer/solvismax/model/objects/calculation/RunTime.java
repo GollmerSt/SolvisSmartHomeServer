@@ -83,10 +83,14 @@ public class RunTime extends Strategy<RunTime> {
 		private long runTimeAfterLastVerificationCurrent = 0;
 		private final Correction correction;
 
+		private final int scanInterval;
+
 		private Executable(Solvis solvis, SolvisData result, SolvisData equipmentOn) {
 			this.solvis = solvis;
 			this.result = result;
 			this.equipmentOn = equipmentOn;
+			this.scanInterval = RunTime.this.calculation.getAliasGroup().getScanInterval_ms(this.solvis);
+
 			this.equipmentOn.registerContinuousObserver(new IObserver<SolvisData>() {
 
 				@Override
@@ -128,7 +132,7 @@ public class RunTime extends Strategy<RunTime> {
 			if (!(source instanceof UpdateType)) {
 				return;
 			}
-			
+
 			UpdateType updateType = (UpdateType) source;
 
 			if (this.syncCnt < 0) {
@@ -202,9 +206,8 @@ public class RunTime extends Strategy<RunTime> {
 					result = this.lastVerifiedRunTime + this.runTimeAfterLastVerificationCurrent
 							+ this.getCorrection(this.equipmentCntSinceLastSync);
 
-					long interval = this.solvis.getDefaultReadMeasurementsInterval_ms();
 
-					int toSet = (int) (result / interval * interval / 1000L); // abrunden
+					int toSet = (int) (result / this.scanInterval * this.scanInterval / 1000L); // abrunden
 
 					if (Math.abs(toSet - former) > 60 || !equipmentOn) {
 						this.result.setInteger(toSet, timeStamp, this);

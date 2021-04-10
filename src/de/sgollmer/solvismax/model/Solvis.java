@@ -38,6 +38,7 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
+import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Duration;
@@ -77,7 +78,6 @@ public class Solvis {
 	private SolvisWorkers worker;
 
 	private final String type;
-	private final int defaultReadMeasurementsInterval_ms;
 	private final int echoInhibitTime_ms;
 	private int configurationMask = 0;
 	private SolvisScreen currentScreen = null;
@@ -113,7 +113,6 @@ public class Solvis {
 		this.allSolvisData = new AllSolvisData(this);
 		this.unit = unit;
 		this.type = unit.getType();
-		this.defaultReadMeasurementsInterval_ms = unit.getDefaultReadMeasurementsInterval_ms();
 		this.echoInhibitTime_ms = echoInhibitTime_ms;
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
@@ -297,9 +296,9 @@ public class Solvis {
 		this.getSolvisDescription().getChannelDescriptions().updateReadOnlyControlChannels(this);
 	}
 
-	void measure() throws IOException, PowerOnException, TerminationException, NumberFormatException {
+	void measure(MeasureMode mode) throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		synchronized (this.solvisMeasureObject) {
-			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData());
+			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData(), mode);
 		}
 	}
 
@@ -656,10 +655,6 @@ public class Solvis {
 	@SuppressWarnings("unused")
 	private String getTimeZone() {
 		return this.timeZone;
-	}
-
-	public int getDefaultReadMeasurementsInterval_ms() {
-		return this.defaultReadMeasurementsInterval_ms;
 	}
 
 	private void initConfigurationMask() throws TerminationException, LearningException {

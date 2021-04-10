@@ -312,7 +312,13 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				int lowerHourly_s = -Constants.HOURLY_EQUIPMENT_SYNCHRONISATION_READ_INTERVAL_FACTOR * this.readInterval
 						/ 1000;
 				int nextHour = ((this.lastSyncValue - lowerHourly_s) / this.factor + 1) * this.factor;
+				
+				boolean formerSyncActive = this.syncActive;
 				this.syncActive = this.syncActive || this.hourly && nextHour + lowerHourly_s < currentCalcValue;
+
+				if ( !formerSyncActive && this.syncActive ) {
+					logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> activated.");
+				}
 
 				boolean checkC = this.syncActive;
 

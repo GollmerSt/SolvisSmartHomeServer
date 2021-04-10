@@ -561,8 +561,7 @@
 	<complexType name="Measurement">
 		<annotation>
 			<documentation>
-				Definition für das Auslesen eines Solvis-Datums aus
-				dem
+				Definition für das Auslesen eines Solvis-Datums aus dem
 				Solvis-XML Hex-String. Auslesbar über
 				http://192.168.1.40/sc2_val.xml.
 			</documentation>
@@ -601,13 +600,16 @@
 		<attribute name="delayAfterSwitchingOn_ms" type="int"
 			use="optional">
 			<annotation>
-				<documentation>Einige Sensoren der Solvis-Anlage benötigen nach dem
-					Einschalten eine gewise Zeit, bis sie die richtigen Messwerte
-					anzeigen. Mir dem Setzen dieses Wertes wird bewirkt, dass die
-					Weitergabe der Messergebnisse dieses Sensors erst spätererfolgt.
+				<documentation>
+					Einige Sensoren der Solvis-Anlage benötigen nach dem
+					Einschalten eine gewise Zeit, bis sie die richtigen
+					Messwerte anzeigen. Mir dem Setzen dieses Wertes
+					wird bewirkt, dass die Weitergabe der Messergebnisse
+					dieses Sensors erst spätererfolgt.
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="fast" type="boolean" use="optional"></attribute>
 	</complexType>
 
 
