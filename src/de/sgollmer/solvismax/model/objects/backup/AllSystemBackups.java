@@ -15,6 +15,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
@@ -24,14 +25,11 @@ public class AllSystemBackups {
 	private static final String XML_MEASUREMENTS_SYSTEM_MEASUREMENTS = "SystemMeasurements";
 	private static final String XML_MEASUREMENTS_SYSTEM_BACKUP = "SystemBackup";
 
-	private final Collection<SystemBackup> systemBackups;
+	private final Collection<SystemBackup> systemBackups = new ArrayList<>();
+	private final Reference<Long> timeOfLastBackup;
 
-	private AllSystemBackups(Collection<SystemBackup> systemBackups) {
-		this.systemBackups = systemBackups;
-	}
-
-	AllSystemBackups() {
-		this(new ArrayList<>());
+	public AllSystemBackups(Reference<Long> timeOfLastBackup) {
+		this.timeOfLastBackup = timeOfLastBackup;
 	}
 
 	SystemBackup get(String id) {
@@ -43,7 +41,7 @@ public class AllSystemBackups {
 			}
 		}
 		if (result == null) {
-			result = new SystemBackup(id);
+			result = new SystemBackup(id, this.timeOfLastBackup);
 			this.systemBackups.add(result);
 		}
 		return result;
@@ -52,11 +50,13 @@ public class AllSystemBackups {
 	static class Creator extends BaseCreator<AllSystemBackups> {
 
 		private final AllSystemBackups measurements;
+		private final Reference<Long> timeOfLastBackup;
 
-		public Creator(AllSystemBackups measurements, String id) {
+		public Creator(AllSystemBackups measurements, String id, Reference<Long> timeOfLastBackup) {
 			super(id);
 			this.measurements = measurements;
 			this.measurements.systemBackups.clear();
+			this.timeOfLastBackup=timeOfLastBackup;
 		}
 
 		@Override
@@ -74,7 +74,7 @@ public class AllSystemBackups {
 			switch (id) {
 				case XML_MEASUREMENTS_SYSTEM_MEASUREMENTS:
 				case XML_MEASUREMENTS_SYSTEM_BACKUP:
-					return new SystemBackup.Creator(id, this.getBaseCreator());
+					return new SystemBackup.Creator(id, this.getBaseCreator(), this.timeOfLastBackup);
 			}
 			return null;
 		}
@@ -103,5 +103,9 @@ public class AllSystemBackups {
 	 */
 	Collection<SystemBackup> getSystemBackups() {
 		return this.systemBackups;
+	}
+
+	public long getTimeStamp() {
+		return this.timeOfLastBackup.get();
 	}
 }

@@ -15,6 +15,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.update.Correction;
 import de.sgollmer.xmllibrary.BaseCreator;
@@ -26,14 +27,16 @@ public class SystemBackup {
 	private final String id;
 	private final Collection<IValue> values;
 	private Solvis owner;
+	private final Reference<Long> timeOfLastBackup;
 
-	private SystemBackup(String id, Collection<IValue> values) {
+	private SystemBackup(String id, Collection<IValue> values, Reference<Long> timeOfLastBackup) {
 		this.id = id;
 		this.values = values;
+		this.timeOfLastBackup = timeOfLastBackup;
 	}
 
-	SystemBackup(String id) {
-		this(id, new ArrayList<>());
+	SystemBackup(String id, Reference<Long> timeOfLastBackup) {
+		this(id, new ArrayList<>(), timeOfLastBackup);
 	}
 
 	public Collection<IValue> getValues() {
@@ -48,9 +51,11 @@ public class SystemBackup {
 
 		private String id;
 		private final Collection<IValue> values = new ArrayList<>();
+		private final Reference<Long> timeOfLastBackup;
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(String id, BaseCreator<?> creator, Reference<Long> timeOfLastBackup) {
 			super(id, creator);
+			this.timeOfLastBackup = timeOfLastBackup;
 		}
 
 		@Override
@@ -64,7 +69,7 @@ public class SystemBackup {
 
 		@Override
 		public SystemBackup create() throws XmlException, IOException {
-			return new SystemBackup(this.id, this.values);
+			return new SystemBackup(this.id, this.values, this.timeOfLastBackup);
 		}
 
 		@Override
@@ -118,6 +123,10 @@ public class SystemBackup {
 	public void clear() {
 		this.values.clear();
 
+	}
+
+	public long getTimeOfLastBackup() {
+		return this.timeOfLastBackup.get();
 	}
 
 	public interface IValue {

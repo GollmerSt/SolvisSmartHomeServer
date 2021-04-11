@@ -127,13 +127,12 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 	}
 
 	public synchronized void restoreFromBackup(SystemBackup backup) {
-		long timeStamp = System.currentTimeMillis();
 		for (SystemBackup.IValue value : backup.getValues()) {
 			if (value instanceof Measurement) {
 				SolvisData data = this.get(value.getId());
 				if (data != null) {
-					
-					SingleData<?> single = ((Measurement) value).getData().create(timeStamp);
+
+					SingleData<?> single = ((Measurement) value).getData().create(backup.getTimeOfLastBackup());
 					data.setSingleData(single, backup);
 				}
 			} else if (value instanceof Correction) {
@@ -173,7 +172,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 
 	public Correction getCorrection(String id) {
 		Correction correction = this.corrections.get(id);
-		if ( correction == null ) {
+		if (correction == null) {
 			correction = new Correction(id);
 			this.corrections.put(id, correction);
 		}

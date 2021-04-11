@@ -158,9 +158,7 @@ public class SolvisWorkers {
 							SolvisWorkers.this.solvis.getHomeScreen().goTo(SolvisWorkers.this.solvis);
 						}
 						if (command != null && !command.isInhibit()) {
-							ExecutedCommand executedCommand = this.processCommand(command);
-							command = executedCommand.command;
-							status = executedCommand.status;
+							status = this.processCommand(command);
 						}
 					} catch (IOException | PowerOnException e) {
 						status = ResultStatus.NO_SUCCESS;
@@ -200,23 +198,12 @@ public class SolvisWorkers {
 			}
 		}
 
-		private class ExecutedCommand {
-			private final Command command;
-			private final ResultStatus status;
-
-			public ExecutedCommand(Command command, ResultStatus status) {
-				this.command = command;
-				this.status = status;
-			}
-		}
-
-		private ExecutedCommand processCommand(Command command) throws IOException, TerminationException,
+		private final ResultStatus processCommand(Command command) throws IOException, TerminationException,
 				PowerOnException, NumberFormatException, TypeException, XmlException {
-			Command executeCommand = command;
 
-			String commandString = executeCommand.toString();
+			String commandString = command.toString();
 			logger.debug("Command <" + commandString + "> will be executed");
-			ResultStatus status = execute(executeCommand);
+			ResultStatus status = execute(command);
 
 			if (status == ResultStatus.INTERRUPTED) {
 				logger.debug("Command <" + commandString + "> was interrupted. will be continued.");
@@ -225,7 +212,7 @@ public class SolvisWorkers {
 				logger.debug("Command <" + commandString + "> executed "
 						+ (status == ResultStatus.NO_SUCCESS ? "not " : "") + "successfull");
 			}
-			return new ExecutedCommand(executeCommand, status);
+			return status;
 		}
 
 		private synchronized void removeCommand(Command command) {

@@ -25,6 +25,7 @@ import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
@@ -42,10 +43,10 @@ public class BackupHandler {
 	private static final String XML_BACKUP = "SolvisBackup";
 
 	private final File parent;
-	private final AllSystemBackups measurements = new AllSystemBackups();
 	private final BackupThread thread;
 	private boolean xsdWritten = false;
-	private long timeOfLastBackup = -1;
+	private final Reference<Long> timeOfLastBackup = new Reference<Long>(-1L);
+	private final AllSystemBackups measurements = new AllSystemBackups(this.timeOfLastBackup);
 
 	public BackupHandler(File path, int measurementsBackupTime_ms) throws FileException, ReferenceException {
 
@@ -100,7 +101,7 @@ public class BackupHandler {
 			return;
 		}
 
-		this.timeOfLastBackup = xml.lastModified();
+		this.timeOfLastBackup.set(xml.lastModified());
 
 		this.read(xml, XML_BACKUP);
 
@@ -115,7 +116,8 @@ public class BackupHandler {
 
 		XmlStreamReader<AllSystemBackups> reader = new XmlStreamReader<>();
 
-		reader.read(source, rootId, new AllSystemBackups.Creator(this.measurements, rootId), xml.getName());
+		reader.read(source, rootId, new AllSystemBackups.Creator(this.measurements, rootId, this.timeOfLastBackup),
+				xml.getName());
 
 	}
 
@@ -148,6 +150,8 @@ public class BackupHandler {
 		writer.flush();
 		writer.close();
 		outputStream.close();
+
+		this.timeOfLastBackup.set(System.currentTimeMillis());
 
 		logger.info("Backup of measurements written.");
 	}
@@ -224,7 +228,7 @@ public class BackupHandler {
 	}
 
 	public long getTimeOfLastBackup() {
-		return this.timeOfLastBackup;
+		return this.timeOfLastBackup.get();
 	}
 
 }

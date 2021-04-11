@@ -223,6 +223,11 @@ public class CommandControl extends Command {
 	@Override
 	protected synchronized boolean toEndOfQueue() {
 		int cmp = Constants.COMMAND_TO_QUEUE_END_AFTER_N_FAILURES;
+		
+		if ( this.mustBeFinished() ) {
+			logger.error("Fatal error, dependencies couldn't restored");
+			//TODO  hier muss noch eine Smart-Home-Meldung generiert werden. 
+		}
 		return this.writeFailCount.get() >= cmp || this.readFailCount >= cmp || this.dependencyFailCount.get() >= cmp;
 	}
 
