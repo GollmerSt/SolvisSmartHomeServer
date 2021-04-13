@@ -53,7 +53,7 @@ public class CommandControl extends Command {
 	private boolean mustBeFinished = false;
 	private ResultStatus finalStatus = ResultStatus.SUCCESS;
 
-	private Set<ChannelDescription> toRestore = new HashSet<>(3);
+	private Map<ChannelDescription, Dependency> toRestore = new HashMap<>(3);
 
 	private MySet dependencyGroupsToExecute = new MySet();
 	private List<Dependency> dependenciesToExecute = null;
@@ -223,10 +223,10 @@ public class CommandControl extends Command {
 	@Override
 	protected synchronized boolean toEndOfQueue() {
 		int cmp = Constants.COMMAND_TO_QUEUE_END_AFTER_N_FAILURES;
-		
-		if ( this.mustBeFinished() ) {
+
+		if (this.mustBeFinished()) {
 			logger.error("Fatal error, dependencies couldn't restored");
-			//TODO  hier muss noch eine Smart-Home-Meldung generiert werden. 
+			// TODO hier muss noch eine Smart-Home-Meldung generiert werden.
 		}
 		return this.writeFailCount.get() >= cmp || this.readFailCount >= cmp || this.dependencyFailCount.get() >= cmp;
 	}
@@ -289,8 +289,8 @@ public class CommandControl extends Command {
 	}
 
 	/**
-	 * SolvisStatus machine for execution of a command including restore and dependency
-	 * processing
+	 * SolvisStatus machine for execution of a command including restore and
+	 * dependency processing
 	 * 
 	 * @author stefa_000
 	 *
@@ -298,6 +298,7 @@ public class CommandControl extends Command {
 
 	private enum StateEnum {
 		NONE(new None()), //
+		STANDBY_REQUEST(new StandbyRequest()), //
 		EXECUTE_DEPENDENCY(new ExecuteDependency()), //
 		WRITING(new Writing()), //
 		READING(new Reading()), //
@@ -339,7 +340,7 @@ public class CommandControl extends Command {
 
 		@Override
 		public State next(CommandControl command) {
-			return StateEnum.EXECUTE_DEPENDENCY.getState();
+			return StateEnum.STANDBY_REQUEST.getState();
 		}
 
 		@Override
@@ -368,6 +369,45 @@ public class CommandControl extends Command {
 		}
 
 		return itResult;
+	}
+
+	private static class StandbyRequest extends State {
+
+		@Override
+		public State next(CommandControl command) {
+			return StateEnum.EXECUTE_DEPENDENCY.getState();
+		}
+
+		@Override
+		public ResultStatus execute(CommandControl command) throws IOException, TerminationException, TypeException,
+				NumberFormatException, PowerOnException, XmlException {
+
+			Map<String, SingleData<?>> map = new HashMap<>(3);
+
+			Set<String> standbyIds = new HashSet<>(3);
+
+			for (Iterator<DependencyGroup> it = command.dependencyGroupsToExecute.iterator(); it.hasNext();) {
+				DependencyGroup group = it.next();
+
+				for (Dependency dependency : group.get()) {
+					String standbyId = dependency.getStandbyId();
+					if (standbyId != null) {
+						SingleData<?> data = dependency.getData(command.solvis);
+						SingleData<?> former = map.put(dependency.getId(), data);
+						if (former != null && !former.equals(data)) {
+							standbyIds.add(standbyId);
+						}
+					}
+
+				}
+			}
+			
+			for ( String standbyId : standbyIds) {
+				command.solvis.setStandby(standbyId);
+			}
+			
+			return ResultStatus.CONTINUE;
+		}
 	}
 
 	private static class ExecuteDependency extends State {
@@ -414,7 +454,7 @@ public class CommandControl extends Command {
 			SingleData<?> now = command.dependencyCache.get(dependencyChannel);
 
 			if (data == null) {
-				command.toRestore.add(dependencyChannel);
+				command.toRestore.put(dependencyChannel, dependency);
 				data = solvisData.getSingleData();
 				it.remove();
 				return ResultStatus.SUCCESS;
@@ -431,7 +471,13 @@ public class CommandControl extends Command {
 					command.mustBeFinished = true;
 				}
 
-				command.toRestore.add(dependencyChannel);
+				String standbyId = dependency.getStandbyId();
+
+				if (standbyId != null) {
+					command.mustBeFinished |= solvis.setStandby(standbyId);
+				}
+
+				command.toRestore.put(dependencyChannel, dependency);
 
 				status = command.write(solvis, dependencyChannel, data, command.dependencyFailCount, false);
 
@@ -516,7 +562,7 @@ public class CommandControl extends Command {
 			for (Iterator<ChannelDescription> it = command.readChannels.iterator(); it.hasNext();) {
 				ChannelDescription description = it.next();
 				if (DependencyGroup.equals(description.getDependencyGroup(), command.currentDependencyGroup, solvis)
-						&& !command.toRestore.contains(description)) {
+						&& !command.toRestore.containsKey(description)) {
 					boolean success = description.getValue(solvis);
 					if (success) {
 						it.remove();
@@ -553,7 +599,8 @@ public class CommandControl extends Command {
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command) throws IOException, TerminationException, TypeException {
+		public ResultStatus execute(CommandControl command)
+				throws IOException, TerminationException, TypeException, NumberFormatException, PowerOnException {
 
 			if (command.currentDependencyGroup != null) {
 				command.dependencyGroupsToExecute.remove(command.currentDependencyGroup);
@@ -570,11 +617,14 @@ public class CommandControl extends Command {
 			Solvis solvis = command.solvis;
 			AbstractScreen current = SolvisScreen.get(solvis.getCurrentScreen());
 
-			Iterator<ChannelDescription> it;
+			Iterator<Map.Entry<ChannelDescription, Dependency>> it;
+
+			Map.Entry<ChannelDescription, Dependency> entry = null;
 			ChannelDescription description = null;
 
-			for (it = command.toRestore.iterator(); it.hasNext();) {
-				description = it.next();
+			for (it = command.toRestore.entrySet().iterator(); it.hasNext();) {
+				entry = it.next();
+				description = entry.getKey();
 				if (description.getScreen(solvis).equals(current)) {
 					break;
 				}
@@ -601,7 +651,9 @@ public class CommandControl extends Command {
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command) {
+		public ResultStatus execute(CommandControl command)
+				throws NumberFormatException, IOException, PowerOnException, TerminationException {
+			command.solvis.resetStandby();
 			return ResultStatus.SUCCESS;
 		}
 

@@ -23,15 +23,17 @@ public class Dependency implements IAssigner {
 	private final String id;
 	private final String value;
 	private final Integer priority;
+	private final String standbyId ;
 
 	private OfConfigs<ChannelDescription> channel = null;
 
 	protected ChannelDescription description;
 
-	public Dependency(String id, String value, Integer priority) {
+	public Dependency(String id, String value, Integer priority, String standbyId) {
 		this.id = id;
 		this.value = value;
 		this.priority=priority;
+		this.standbyId = standbyId;
 	}
 
 	public static class Creator extends CreatorByXML<Dependency> {
@@ -39,6 +41,7 @@ public class Dependency implements IAssigner {
 		private String id;
 		private String value;
 		private  Integer priority=null;
+		private  String standbyId = null;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -56,14 +59,16 @@ public class Dependency implements IAssigner {
 				case "priority":
 					this.priority = Integer.parseInt(value);
 					break;
-					
+				case "standby":
+					this.standbyId = value;
+					break;
 			}
 
 		}
 
 		@Override
 		public Dependency create() throws XmlException, IOException {
-			return new Dependency(this.id, this.value, this.priority);
+			return new Dependency(this.id, this.value, this.priority, this.standbyId);
 		}
 
 		@Override
@@ -154,6 +159,10 @@ public class Dependency implements IAssigner {
 
 	public String getId() {
 		return this.id;
+	}
+
+	public String getStandbyId() {
+		return this.standbyId;
 	}
 
 }

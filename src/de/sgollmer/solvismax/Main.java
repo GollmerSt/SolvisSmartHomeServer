@@ -36,6 +36,7 @@ import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
@@ -270,7 +271,7 @@ public class Main {
 
 		try {
 			this.instances.init();
-		} catch (IOException | AssignmentException | XMLStreamException | AliasException e) {
+		} catch (IOException | AssignmentException | XMLStreamException | AliasException | TypeException e) {
 			this.logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);

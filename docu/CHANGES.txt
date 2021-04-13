@@ -29,6 +29,16 @@ Version 01.02.11
                 
     21.03.2021  Format des Backup-Files geändert. Die neue Version ist abwärtskompatibel
                 jedoch nicht aufwärtskompatibel!
+                
+    24.03.2021  Runtime-Korrektur implementiert.
+    
+    06.04.2021  Bei A14-Anlagen-Fehler (Brenner-Störung) kam es zu einer Null-Pointer-Exception
+    
+    06.04.2021  ClientId war nicht zufällig und meist negativ.
+    
+    07.04.2021  Runtime-Synchronisation verbessert
+
+    13.04.2021  Standby-Verhalten bei dem Auslesen/Setzen bestimmter Kanäle verbessert (Kurve/Fix)    
 
 
 

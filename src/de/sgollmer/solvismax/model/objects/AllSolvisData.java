@@ -29,7 +29,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 	private final Map<String, Correction> corrections = new HashMap<>();
 	private int averageCount;
 	private int measurementHysteresisFactor;
-	private long lastHumanAcess = 0;
+	private long lastHumanAcess = System.currentTimeMillis();
 	private HumanAccess humanAccess = HumanAccess.NONE;
 
 	public AllSolvisData(Solvis solvis) {

@@ -48,6 +48,7 @@ import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.Standby;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.Units.Unit;
@@ -105,11 +106,12 @@ public class Solvis {
 	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
 	private Object solvisMeasureObject = new Object();
 	private HumanAccess humanAccess = HumanAccess.NONE;
-	private Map< String, Collection<UpdateStrategies.IExecutable> > updateStrategies = new HashMap<>();
+	private Map<String, Collection<UpdateStrategies.IExecutable>> updateStrategies = new HashMap<>();
+	private Standby.Executable standby;
 
 	Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
-			BackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms,
-			File writePath, boolean mustLearn) {
+			BackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms, File writePath,
+			boolean mustLearn) {
 		this.allSolvisData = new AllSolvisData(this);
 		this.unit = unit;
 		this.type = unit.getType();
@@ -259,12 +261,13 @@ public class Solvis {
 
 	}
 
-	void init() throws IOException, XMLStreamException, AssignmentException, AliasException {
+	void init() throws IOException, XMLStreamException, AssignmentException, AliasException, TypeException {
 		this.configurationMask = this.getGrafics().getConfigurationMask();
 
 		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().init(this);
 		}
+		this.standby = this.getSolvisDescription().getStandby().instantiate(this);
 		SystemBackup oldMeasurements = this.backupHandler.getSystemBackup(this.unit.getId());
 		this.worker.init();
 		this.getAllSolvisData().restoreFromBackup(oldMeasurements);
@@ -305,14 +308,11 @@ public class Solvis {
 	public void commandOptimization(boolean enable) {
 		this.worker.commandOptimization(enable);
 	}
-	
-	
+
 	public interface CommandEnable {
-		public void commandEnable(boolean enable) ;
+		public void commandEnable(boolean enable);
 	}
 
-	
-	
 	public void controlEnable(boolean enable) {
 		this.worker.controlEnable(enable);
 	}
@@ -859,20 +859,35 @@ public class Solvis {
 				break;
 		}
 	}
-	
-	public void add( UpdateStrategies.IExecutable executable ) {
+
+	public void add(UpdateStrategies.IExecutable executable) {
 		String triggerId = executable.getTriggerId();
-		
+
 		Collection<UpdateStrategies.IExecutable> collection = this.updateStrategies.get(triggerId);
-		if ( collection == null ) {
+		if (collection == null) {
 			collection = new ArrayList<>();
 			this.updateStrategies.put(triggerId, collection);
 		}
 		collection.add(executable);
 	}
-	
-	public Collection< UpdateStrategies.IExecutable> getUpdateStrategies(String triggerId ) {
+
+	public Collection<UpdateStrategies.IExecutable> getUpdateStrategies(String triggerId) {
 		return this.updateStrategies.get(triggerId);
+	}
+
+	public boolean setStandby(String standbyId)
+			throws NumberFormatException, IOException, PowerOnException, TerminationException {
+		SolvisData data = this.getAllSolvisData().get(standbyId);
+		if (data == null) {
+			logger.error("Standby channel <" + standbyId + "> not definded. Setting ignored.");
+			return false;
+		}
+		return this.standby.set(data);
+	}
+
+	public void resetStandby() throws NumberFormatException, IOException, PowerOnException, TerminationException {
+		this.standby.reset();
+		;
 	}
 
 }

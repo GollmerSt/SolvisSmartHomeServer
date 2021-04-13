@@ -410,14 +410,16 @@
 			<element name="SolvisTypes">
 				<complexType>
 					<sequence>
-						<element name="Type" type="tns:Type" maxOccurs="unbounded"
-							minOccurs="1"></element>
+						<element name="Type" type="tns:Type"
+							maxOccurs="unbounded" minOccurs="1">
+						</element>
 					</sequence>
 				</complexType>
 			</element>
 			<element name="Configurations" type="tns:Configurations"
 				maxOccurs="1" minOccurs="0">
 			</element>
+			<element name="Standby" type="tns:Standby" maxOccurs="1" minOccurs="1"></element>
 			<element name="ScreenSaver" type="tns:ScreenSaver"
 				maxOccurs="1" minOccurs="1">
 			</element>
@@ -431,8 +433,8 @@
 			<element name="ScreenGrafics" maxOccurs="1" minOccurs="1">
 				<complexType>
 					<sequence>
-						<element name="ScreenGrafic" type="tns:ScreenGrafic"
-							maxOccurs="unbounded" minOccurs="0">
+						<element name="ScreenGrafic"
+							type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0">
 						</element>
 					</sequence>
 				</complexType>
@@ -444,11 +446,14 @@
 				minOccurs="1">
 				<complexType>
 					<annotation>
-						<documentation>Alle Definitionen der Solvis-Kanäle</documentation>
+						<documentation>
+							Alle Definitionen der Solvis-Kanäle
+						</documentation>
 					</annotation>
 					<sequence>
 						<element name="ChannelDescription"
-							type="tns:ChannelDescription" maxOccurs="unbounded" minOccurs="0">
+							type="tns:ChannelDescription" maxOccurs="unbounded"
+							minOccurs="0">
 						</element>
 					</sequence>
 				</complexType>
@@ -456,8 +461,8 @@
 			<element name="Preparations" maxOccurs="1" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="Preparation" type="tns:Preparation"
-							maxOccurs="unbounded" minOccurs="0">
+						<element name="Preparation"
+							type="tns:Preparation" maxOccurs="unbounded" minOccurs="0">
 						</element>
 					</sequence>
 				</complexType>
@@ -465,11 +470,13 @@
 			<element name="Clock" type="tns:Clock" maxOccurs="1"
 				minOccurs="1">
 			</element>
-			<element name="Durations" maxOccurs="unbounded" minOccurs="0">
+			<element name="Durations" maxOccurs="unbounded"
+				minOccurs="0">
 				<complexType>
 					<sequence>
 						<element name="Duration" type="tns:Duration"
-							maxOccurs="unbounded" minOccurs="0"></element>
+							maxOccurs="unbounded" minOccurs="0">
+						</element>
 					</sequence>
 				</complexType>
 			</element>
@@ -1619,8 +1626,14 @@
 		<attribute name="value" type="string" use="optional"></attribute>
 		<attribute name="priority" type="positiveInteger">
 			<annotation>
-				<documentation>Sind mehrere Dependencies definiert, gibt "priority" die Priorität an. Ein niedriger Wert hat Vorrang vor einem höheren.</documentation>
-			</annotation></attribute>
+				<documentation>
+					Sind mehrere Dependencies definiert, gibt "priority"
+					die Priorität an. Ein niedriger Wert hat Vorrang vor
+					einem höheren.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="standby" type="string" use="optional"></attribute>
 	</complexType>
 	<complexType name="Feature">
 		<annotation>
@@ -1650,5 +1663,16 @@
 
 	<complexType name="Trigger">
 		<attribute name="id" type="string" use="required"></attribute>
+	</complexType>
+
+	<complexType name="Standby">
+		<sequence>
+			<element name="Channel" type="tns:StandbyChannel" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="StandbyChannel">
+		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="value" type="string" use="required"></attribute>
 	</complexType>
 </schema>

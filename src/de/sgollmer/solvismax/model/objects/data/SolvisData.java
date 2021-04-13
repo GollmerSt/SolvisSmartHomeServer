@@ -365,7 +365,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 //	}
 //
 	public boolean isValid() {
-		if (this.data == null) {
+		if (this.data == null ) {
 			return false;
 		} else if (this.description.isWriteable()) {
 			return this.datas.getLastHumanAccess() < this.data.getTimeStamp();
@@ -501,7 +501,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return this.smartHomeData;
 		}
 	}
-	
+
 	public Integer getScanInterval_ms() {
 		return this.description.getScanInterval_ms(this.getSolvis());
 	}

@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.ErrorDetection.WriteErrorScreens;
@@ -97,7 +98,8 @@ public class Instances {
 	}
 
 	public boolean init()
-			throws IOException, XMLStreamException, LearningException, AssignmentException, AliasException {
+			throws IOException, XMLStreamException, LearningException, AssignmentException, AliasException,
+			TypeException {
 		for (Solvis solvis : this.units) {
 			if (!solvis.getGrafics().isEmpty()) {
 				solvis.init();

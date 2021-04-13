@@ -37,6 +37,7 @@ public class SolvisDescription {
 	private static final String XML_SOLVIS_TYPES = "SolvisTypes";
 	private static final String XML_CONFIGURATIONS = "Configurations";
 	private static final String XML_SCREEN_SAVER = "ScreenSaver";
+	private static final String XML_STANDBY = "Standby";
 	private static final String XML_SCREENS = "Screens";
 	private static final String XML_FALL_BACK = "FallBack";
 	private static final String XML_SCREEN_GRAFICS = "ScreenGrafics";
@@ -51,6 +52,7 @@ public class SolvisDescription {
 
 	private final SolvisTypes types;
 	private final Configurations configurations;
+	private final Standby standby;
 	private final ScreenSaver saver;
 	private final AllScreens screens;
 	private final FallBack fallBack;
@@ -68,13 +70,14 @@ public class SolvisDescription {
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
-	private SolvisDescription(SolvisTypes types, Configurations configurations, ScreenSaver saver, AllScreens screens,
-			FallBack fallBack, AllScreenGraficDescriptions screenGrafics, AllChannelDescriptions dataDescriptions,
-			AllPreparations allPreparations, ClockMonitor clock, AllDurations durations, Miscellaneous miscellaneous,
-			ErrorDetection errorDetection, Service service)
+	private SolvisDescription(SolvisTypes types, Configurations configurations, Standby standby, ScreenSaver saver,
+			AllScreens screens, FallBack fallBack, AllScreenGraficDescriptions screenGrafics,
+			AllChannelDescriptions dataDescriptions, AllPreparations allPreparations, ClockMonitor clock,
+			AllDurations durations, Miscellaneous miscellaneous, ErrorDetection errorDetection, Service service)
 			throws XmlException {
 		this.types = types;
 		this.configurations = configurations;
+		this.standby = standby;
 		this.saver = saver;
 		this.screens = screens;
 		this.fallBack = fallBack;
@@ -124,6 +127,7 @@ public class SolvisDescription {
 		private final AllScreenGraficDescriptions screenGrafics;
 		private SolvisTypes types;
 		private Configurations configurations;
+		private Standby standby;
 		private ScreenSaver saver;
 		private AllScreens screens;
 		private FallBack fallBack;
@@ -147,9 +151,9 @@ public class SolvisDescription {
 
 		@Override
 		public SolvisDescription create() throws XmlException {
-			return new SolvisDescription(this.types, this.configurations, this.saver, this.screens, this.fallBack,
-					this.screenGrafics, this.dataDescriptions, this.allPreparations, this.clock, this.durations,
-					this.miscellaneous, this.errorDetection, this.service);
+			return new SolvisDescription(this.types, this.configurations, this.standby, this.saver, this.screens,
+					this.fallBack, this.screenGrafics, this.dataDescriptions, this.allPreparations, this.clock,
+					this.durations, this.miscellaneous, this.errorDetection, this.service);
 		}
 
 		@Override
@@ -160,6 +164,8 @@ public class SolvisDescription {
 					return new SolvisTypes.Creator(id, getBaseCreator());
 				case XML_CONFIGURATIONS:
 					return new Configurations.Creator(id, this);
+				case XML_STANDBY:
+					return new Standby.Creator(id, this);
 				case XML_SCREEN_SAVER:
 					return new ScreenSaver.Creator(id, this);
 				case XML_SCREENS:
@@ -194,6 +200,9 @@ public class SolvisDescription {
 					break;
 				case XML_CONFIGURATIONS:
 					this.configurations = (Configurations) created;
+					break;
+				case XML_STANDBY:
+					this.standby = (Standby) created;
 					break;
 				case XML_SCREEN_SAVER:
 					this.saver = (ScreenSaver) created;
@@ -325,7 +334,7 @@ public class SolvisDescription {
 		int configurationMask = this.types.getConfiguration(solvis.getType());
 		return configurationMask | this.configurations.get(solvis);
 	}
-	
+
 	public AllPreparations getPreparations() {
 		return this.allPreparations;
 	}
@@ -345,5 +354,9 @@ public class SolvisDescription {
 
 	public void sendToMqtt(Solvis solvis, Mqtt mqtt, boolean deleteRetained) throws MqttException, MqttConnectionLost {
 		this.getChannelDescriptions().sendToMqtt(solvis, mqtt, deleteRetained);
+	}
+
+	public Standby getStandby() {
+		return this.standby;
 	}
 }
