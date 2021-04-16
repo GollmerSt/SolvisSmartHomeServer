@@ -403,6 +403,10 @@ public class Solvis {
 	public void registerSolvisErrorObserver(IObserver<SolvisErrorInfo> observer) {
 		this.solvisErrorObservable.register(observer);
 	}
+	
+	public void registerControlExecutingObserver( IObserver<Boolean> observer) {
+		this.worker.registerControlExecutingObserver(observer);
+	}
 
 	public boolean notifySolvisErrorObserver(SolvisErrorInfo info, Object source) {
 		return this.solvisErrorObservable.notify(info, source);

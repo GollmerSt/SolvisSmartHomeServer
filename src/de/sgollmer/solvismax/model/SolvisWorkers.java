@@ -30,13 +30,14 @@ import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
+import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class SolvisWorkers {
+public class SolvisWorkers{
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
 
@@ -48,6 +49,7 @@ public class SolvisWorkers {
 	private Collection<Command> commandsOfScreen = new ArrayList<>();
 	private AbstractScreen commandScreen = null;
 	private long timeCommandScreen = System.currentTimeMillis();
+	private Observable<Boolean> executingControlObserver = new Observable<>();
 
 	SolvisWorkers(Solvis solvis) {
 		this.solvis = solvis;
@@ -67,8 +69,12 @@ public class SolvisWorkers {
 	public void controlEnable(boolean enable) {
 		SolvisWorkers.this.controlsThread.controlEnable(enable);
 	}
+	
+	public void registerControlExecutingObserver( IObserver<Boolean> executingObserver ) {
+		this.executingControlObserver.register(executingObserver);
+	}
 
-	private class ControlWorkerThread extends Thread {
+	private class ControlWorkerThread extends Thread{
 
 		private final LinkedList<Command> queue = new LinkedList<>();
 		private final Collection<ChannelDescription> channelsOfQueueRead = new ArrayList<>();
@@ -158,7 +164,9 @@ public class SolvisWorkers {
 							SolvisWorkers.this.solvis.getHomeScreen().goTo(SolvisWorkers.this.solvis);
 						}
 						if (command != null && !command.isInhibit()) {
+							SolvisWorkers.this.executingControlObserver.notify(true);
 							status = this.processCommand(command);
+							SolvisWorkers.this.executingControlObserver.notify(false);
 						}
 					} catch (IOException | PowerOnException e) {
 						status = ResultStatus.NO_SUCCESS;

@@ -2,43 +2,47 @@ A E N D E R U N G E N
 
 Version 01.02.11
 
-    11.03.2021  Mqtt-Interface verbessert. Die Mqtt-Schnittstelle hat nun die gleiche Funkrionalität
-                wie die Server-Client-Schnittstelle. Nun erfolgt - gesteuert durch base.xml - um
-                die volle Stunde ein Refresh aller Kanäle. Auf diese Weise bleiben Diagramme lückenlos.
-                
-    11.01.2021  Die Server-Client-Schnittstelle wurde etwas bereinigt. Der Human-Access-Zustände wurde
-                fälschlicherweise als Connection-Staus versendet. Nun wird er als Solvis-Status
-                versendet. Der FHEM-Client ist entsprechend upgedated worden, ist dabei noch
-                abwärtskompatibel. 
-                
-    14.01.2021  Die Messdatentransfer wurde für einen bessere grafische Darstellung optinmiert. Bei
-                einem stärkeren Änderung der Knalwerte nach längerer Pause werden zuerst noch einmal
-                alte Wert transferiert und im Anschluss der neue. Auf diese Weise gibt es kaum 
-                noch unrealistische Verläufe.
-                
-    17.03.2021  forceUpdateAfterFastChangingIntervals in der base.xml hinzugefügt
-    
-    17.03.2021  Trigger-Tag in der control.xml hinzugefügt. Damit lässt sich erreichen, dass
+    11.03.2021  Mqtt-Interface verbessert. Die Mqtt-Schnittstelle hat nun die gleiche
+                Funkrionalitaet wie die Server-Client-Schnittstelle. Nun erfolgt - gesteuert durch
+                base.xml - um die volle Stunde ein Refresh aller Kanaele. Auf diese Weise bleiben
+                Diagramme lueckenlos.
+
+    11.01.2021  Die Server-Client-Schnittstelle wurde etwas bereinigt. Der Human-Access-Zustaende
+                wurde faelschlicherweise als Connection-Staus versendet. Nun wird er als
+                Solvis-Status versendet. Der FHEM-Client ist entsprechend upgedated worden, ist
+                dabei noch abwaertskompatibel.
+
+    14.01.2021  Die Messdatentransfer wurde fuer einen bessere grafische Darstellung optimiert.
+                Bei einem staerkeren Aenderung der Knalwerte nach laengerer Pause werden zuerst
+                noch einmal alte Wert transferiert und im Anschluss der neue. Auf diese Weise gibt
+                es kaum noch unrealistische Verlaeufe.
+
+    17.03.2021  forceUpdateAfterFastChangingIntervals in der base.xml hinzugefuegt
+
+    17.03.2021  Trigger-Tag in der control.xml hinzugefuegt. Damit lässt sich erreichen, dass
                 bei dem Update eines berechneten Wertes aus einem Cxx-Wert (und damit der
-                einen neue Synchronosierung für diesen berechneten Wert erfolgt) noch weitere
+                einen neue Synchronosierung fuer diesen berechneten Wert erfolgt) noch weitere
                 berechnete Werte neu synchronisiert werden.
-                
-    18.03.2021  Betriebssystemabhängig und größenabhängig  erfolgte der Kopie-Vorgang der
+
+    18.03.2021  Betriebssystemabhängig und groeßenabhängig  erfolgte der Kopie-Vorgang der
                 xml- und xsd-Dateien nur teilweise. Dadurch war ein zweiter Start des Server
-                nicht mehr möglich., da die xml-Dateien dadurch Strukturfehler aufwiesen.
-                
+                nicht mehr moeglich., da die xml-Dateien dadurch Strukturfehler aufwiesen.
+
     21.03.2021  Format des Backup-Files geändert. Die neue Version ist abwärtskompatibel
                 jedoch nicht aufwärtskompatibel!
-                
+
     24.03.2021  Runtime-Korrektur implementiert.
-    
-    06.04.2021  Bei A14-Anlagen-Fehler (Brenner-Störung) kam es zu einer Null-Pointer-Exception
-    
+
+    06.04.2021  Bei A14-Anlagen-Fehler (Brenner-Stoerung) kam es zu einer Null-Pointer-Exception
+
     06.04.2021  ClientId war nicht zufällig und meist negativ.
-    
+
     07.04.2021  Runtime-Synchronisation verbessert
 
-    13.04.2021  Standby-Verhalten bei dem Auslesen/Setzen bestimmter Kanäle verbessert (Kurve/Fix)    
+    13.04.2021  Standby-Verhalten bei dem Auslesen/Setzen bestimmter Kanäle verbessert (Kurve/Fix).
+    
+    16.04.2021	Synchronisierung nochmals geändert. Das verpassen der Synchronisation wird nun
+                erkannt.
 
 
 
@@ -48,16 +52,16 @@ Version 01.02.10
                 Ist der Server nicht erreichbar, wurde FHEM bei jedem neuen
                 Verbindungsversuch blockiert. DevIo_OpenDev wird nun mit einer Callback-
                 Methode aufgerufen, so dass kein Blocking mehr erfolgt.
-                
-    08.02.2021	Feature "OnlyMeasurements" durch "InteractiveGUIAccess" mit invertierte
-                Logik ersetzt. Wegen Abwärtskompatibilität wird das Feature "OnlyMeasurements"
-                noch weiterhin unterstützt. Es sollte jedoch durch das neuere ersetzt werden.
-                
-    13.02.2021  Mittels "IgnordChannels" im base.xml kann nun die zum Client/Mqtt-Broker 
-                gesendeten Kanäle schon auf der Server-Seite reduziert werden.
 
-    22.02.2021  Während EquipmentOnOf-Überwachung erfolgt fälschlicherweise in manchen Fällen
-                ein Restore-Screen. 
+    08.02.2021  Feature "OnlyMeasurements" durch "InteractiveGUIAccess" mit invertierte
+                Logik ersetzt. Wegen Abwaertskompatibilitaet wird das Feature "OnlyMeasurements"
+                noch weiterhin unterstuetzt. Es sollte jedoch durch das neuere ersetzt werden.
+
+    13.02.2021  Mittels "IgnordChannels" im base.xml kann nun die zum Client/Mqtt-Broker
+                gesendeten Kanaele schon auf der Server-Seite reduziert werden.
+
+    22.02.2021  Waehrend EquipmentOnOf-Ueberwachung erfolgt faelschlicherweise in manchen Faellen
+                ein Restore-Screen.
 
 
 
@@ -65,62 +69,62 @@ Version 01.02.09
 
     16.01.2021  Die ScreenSaver-Erkennung funktionierte nicht mehr richtig. Dadurch wurde immer
                 bei einem GUI-befehl der Back-Button genutzt, obgleich er der richtige Screen
-                in Wirklichkeit ausgewählt war und ein Klick in den Bildschirm gereicht hätte.
-                
-                Unit-Typen "SolvisMax6" und "SolvisMax7" hinzu gefügt, das sich die SolvisMax7
+                in Wirklichkeit ausgewaehlt war und ein Klick in den Bildschirm gereicht haette.
+
+                Unit-Typen "SolvisMax6" und "SolvisMax7" hinzu gefuegt, das sich die SolvisMax7
                 Bildschirme leicht von den SolisMax6 unterscheiden.
 
     14.01.2021  MustBeWhite der  Screen-Idenitifikation war beim Screen "Anlagenstatus-HK"
-                fälschlicherweise nicht in den Identification-Tag geschrieben. Durch ein
+                faelschlicherweise nicht in den Identification-Tag geschrieben. Durch ein
                 Fehler im xsd-File wurde das nicht erkannt.
                 Dadurch kann bei bestimmten Anlagenkonfigurationen das Learning nicht
                 eindeutig sein.
 
-    12.01.2021  Für den SelctScreen-Befehl dürfen nur Screens auswählbar sein, deren Attribut
+    12.01.2021  Fuer den SelctScreen-Befehl duerfen nur Screens auswaehlbar sein, deren Attribut
                 "noRestore" nicht gesetzt ist.
-                
-                FHEM-Modul: Die Log-Ausgabe bei einem Command-Error erhält nun die
+
+                FHEM-Modul: Die Log-Ausgabe bei einem Command-Error erhaelt nun die
                 Fehlerbeschreibung
 
 
 
 Version 01.02.08
 
-    25.12.2020  Icon für Startmenü hinzugefügt, Innosetup entsprechend geändert
+    25.12.2020  Icon fuer Startmenue hinzugefuegt, Innosetup entsprechend geaendert
 
     23.12.2020  Eine Debugging-Hilfe eingebaut, welche man mit DEBUG_ENABLE un DEBUG_DISABLE
                 steuern kann.
-                    
+
 
     21.12.2020  Einge Screens wegen besserer Lesbarkeit unbenannt
-    
+
                 Mqtt-Meta-Beschreibung der Screens sortiert
-                
+
 
     20.12.2020  Manchmal auftretendes Dead-Problem beim Server-Start im Zusammenhang mit der
                 MQTT-Schnittstelle behoben.
-                
+
 
     11.12.2020  Command "SelectScreen" funktionierte noch nicht ueber die MQTT-Schnittstelle.
-    
+
                 Beim Anfahren des Anlagenstatus gab es im Log noch eine falsche Fehlermeldung.
 
-    08.12.2020  Im Falle eines Anwender-/Service-Zugriffs entstanden seit Version 01.02.04 
-                fehlerhafte Error-Messages. 
-    
+    08.12.2020  Im Falle eines Anwender-/Service-Zugriffs entstanden seit Version 01.02.04
+                fehlerhafte Error-Messages.
+
                 Heizungskreise Installateur: Ignore-Felder fehlten noch.
 
     07.12.2020  Command "SelectScreen" wird nun unterstuetzt. Mit diesem kann man einen
                 Bildschirm speziell auswaehlen, der am Ende eines Zugriffs (egal ob Manuell
                 oder per Server) immer angefahren wird.
-                
+
                 Tiny-Log aktualisiert (Version 2.2.1).
 
     04.12.2020  PowerOn wurde faelschlicherweise auch bei Verbindungsverlust erkannt.
 
     03.12.2020  Equipment On/Off-Zeiten wurden faelschlicherweise beim Neustart auf die
                 ungenaueren Zeiten des GUI gesetzt.
-                
+
     31.11.2020  Es erfolgte ein Fehlerdump im Log, wenn Client die Verbindung schliesst,
                 er wird nun besser abgefangen.
 
@@ -132,16 +136,16 @@ Version 01.02.08
     18.11.2020  Wird die Solvis-Anlage um die volle Stunde eingeschaltet, so werden bei den
                 verzoegerten Messwerten die alten Werte vor dem PowerOff erneut versendet.
                 Das fuehrt zu unrealistischen Diagrammen nach einem Power-On.
-                
+
                 Meldungen fuer das Log-File reduziert. SET-Befehle, welche unterdrueckt werden
                 um einen Rueckkoppelung zu vermeiden, werden nur im Debug-Trace ausgegeben
                 (bisher im INFO-Trace).
-                
+
                 Der Anlagenmodus-Wechsel dauert manchmal laenger. Wartezeit um 0,5s auf 3s erhoeht.
-                
+
                 Die Service-Screens der Heizkreise dauern beim Wechsel laenger. Zeit um 0,5s
                 auf 4,5s erhoeht.
-                
+
                 FHEM-Client, Doku um SERVICE_RESET ergaenzt
 
     17.11.2020  Wird die Solvis-Anlage um die volle Stunde eingeschaltet, so werden bei den
@@ -170,92 +174,97 @@ Version 01.02.07
                 gemeldeten Stellen wurden korrigiert.
                 Hinter den Stellen verbergen sich nach genauer Analyse nicht wirklich um Dinge,
                 welche man aendern muss. So hatte sich ein Bug durch copy und paste vervielfacht,
-                der beim Einlesen der XML-Files eine Rolle spieln wuerde, wenn XML fehlerhaft waeren.
-                XML-Files werden jedoch zuvor gecheckt, so dass diese Bugs eine Auswirkung haben
-                konnten. Bei den anderen Bugs ging es mehr um Fehlervermeidung. Der Code wurde
-                entsprechend den Empfehlungen geaendert.
+                der beim Einlesen der XML-Files eine Rolle spieln wuerde, wenn XML fehlerhaft
+                waeren. XML-Files werden jedoch zuvor gecheckt, so dass diese Bugs eine Auswirkung
+                haben konnten. Bei den anderen Bugs ging es mehr um Fehlervermeidung. Der Code
+                wurde entsprechend den Empfehlungen geaendert.
 
 
 
 Version 01.02.06
 
-    10.10.2020  Der base.xml-Reader war leider doch nicht ganz kompatibel zu aelteren base.xnml files.
-                Bei Verwendung aelterer Versionen konnte einen Nullpointer-Exception auftreten.
+    10.10.2020  Der base.xml-Reader war leider doch nicht ganz kompatibel zu aelteren base.xnml-
+                files. Bei Verwendung aelterer Versionen konnte einen Nullpointer-Exception
+                auftreten.
 
 
 
 Version 01.02.05
 
-    08.10.2020  Es hat sich gezeigt, dass manchmal das Umschalten auf andere Screen vom Home-Screen auf der
-                SolvisControl 2 nicht richtig funktioniert. Das hat zur Folge, dass der Bildschirm Home
-                nach wie vor zu sehen ist, jedoch in der Button-Leiste links ein anderer Button gedrueckt ist
-                (weisser Hintergrund). Dadurch erkennt der Server den Home-Screen nicht mehr.
-                Durch diese fehlende Erkennung kann auch die Anzeige der Uhr nicht mehr ausgeblendet werden
-                und der Server erkennt staendige Aenderung auf der Anzeige. Er nimmt an, es laegen staendig
-                User-Eingriffe vor und der GUI-Access ist entsprechend nicht mehr moeglich.
-                Dieses "Haengen-Bleiben" der Buttons wurde nicht nur in der Button-Leiste beobachtet, es ist
-                bei allen Buttons moeglich. Man kann den Frehler mit der Web-Oberflaeche provozieren, in dem
-                man bei gedrueckter Maustaste den Mauszeiger wegzieht, so dass das Loslassen nicht auf dem
-                Button erfolgt.
+    08.10.2020  Es hat sich gezeigt, dass manchmal das Umschalten auf andere Screen vom Home-Screen
+                auf der SolvisControl 2 nicht richtig funktioniert. Das hat zur Folge, dass der
+                Bildschirm Home nach wie vor zu sehen ist, jedoch in der Button-Leiste links ein
+                anderer Button gedrueckt ist (weisser Hintergrund). Dadurch erkennt der Server den
+                Home-Screen nicht mehr. Durch diese fehlende Erkennung kann auch die Anzeige der
+                Uhr nicht mehr ausgeblendet werden und der Server erkennt staendige Aenderung auf
+                der Anzeige. Er nimmt an, es laegen staendig User-Eingriffe vor und der GUI-Access
+                ist entsprechend nicht mehr moeglich. Dieses "Haengen-Bleiben" der Buttons wurde
+                nicht nur in der Button-Leiste beobachtet, es ist bei allen Buttons moeglich. Man
+                kann den Frehler mit der Web-Oberflaeche provozieren, in dem man bei gedrueckter
+                Maustaste den Mauszeiger wegzieht, so dass das Loslassen nicht auf dem Button
+                erfolgt.
                 Es kommt daher, dass die SolvisRemote manchmal den Release einer Taste verschluckt.
-                NUR eine andere Definition fuer den Home-Screen scheidet aus, da auch eine andere Defintion
-                von diesem Problem betroffen waere.
-                Die XML-Definition wurde daher so erweitert, dass es verschiedene Varianten geben kann,
-                mit denen ein Screen erkannt wird. Der Home-Screen wird nun erkannt, wenn links die
-                entsprechende Button-Leiste ODER rechts die Wippe gleichzeitig mit dem
+                NUR eine andere Definition fuer den Home-Screen scheidet aus, da auch eine andere
+                Defintion von diesem Problem betroffen waere.
+                Die XML-Definition wurde daher so erweitert, dass es verschiedene Varianten geben
+                kann, mit denen ein Screen erkannt wird. Der Home-Screen wird nun erkannt, wenn
+                links die entsprechende Button-Leiste ODER rechts die Wippe gleichzeitig mit dem
                 Urlaubsbutton sichtbar ist.
 
-                Die Release-Time um die Screens "Heizkreis 1 4/11" und "Heizkreis 2 4/11" (in den Installateur-
-                Screens) war zu knapp. Dadurch wurde der Screen nicht immer gefunden.
+                Die Release-Time um die Screens "Heizkreis 1 4/11" und "Heizkreis 2 4/11" (in den
+                Installateur-Screens) war zu knapp. Dadurch wurde der Screen nicht immer gefunden.
                 Sie wurde daher um 0.5s erhoeht
 
                 Einige Einheiten fehlten noch bei den neu hinzugefuegten Control-Kanaelen.
 
-                Es wurde "maxExceeding"-Attribut in der control.xml eingefuehrt. Ist dieses Attribut in
-                Kombination mit dem "wrapAround"-Attribut definiert, wird ein Wrap-Around nur durchgefuehrt,
-                wenn dabei die Grenze von maxExceeding nicht ueberschritten wird.
-                Wichtig fuer das Heisswasser, wenn jemand waehrend einer Verstellung unter der Dusche steht.
-                Aktuell steht der Wert auf 5K, d.h. ein WarpAround wird nur durchgefuehrt, wenn sichergestellt ist,
-                dass durch den WrapAround keine Temperatur eingestellt wird, die den aktuell eingestellten
-                oder einzustellenden Wert um 5K ueberschreitet.
+                Es wurde "maxExceeding"-Attribut in der control.xml eingefuehrt. Ist dieses
+                Attribut in Kombination mit dem "wrapAround"-Attribut definiert, wird ein
+                Wrap-Around nur durchgefuehrt, wenn dabei die Grenze von maxExceeding nicht
+                ueberschritten wird.
+                Wichtig fuer das Heisswasser, wenn jemand waehrend einer Verstellung unter der
+                Dusche steht. Aktuell steht der Wert auf 5K, d.h. ein WarpAround wird nur
+                durchgefuehrt, wenn sichergestellt ist, dass durch den WrapAround keine Temperatur
+                eingestellt wird, die den aktuell eingestellten oder einzustellenden Wert um 5K
+                ueberschreitet.
 
-    07.10.2020  Die Update-Bedingungen fuer die neuen Kanaele waren noch nicht vollstaendig. Bedingungen ergaenzt.
+    07.10.2020  Die Update-Bedingungen fuer die neuen Kanaele waren noch nicht vollstaendig.
+                Bedingungen ergaenzt.
 
 
 
 Version 01.02.04
 
-    04.10.2020  FHEM-SolvisClient: Die Meta-Daten werden nun Device-spezifisch im Client gespeichert.
-                In der Praxis kommt das nicht vor (kaum jemand wird zwei Solvis-Anlagen haben),
-                die bisherige Version hat beim Test haeufig zu Iterationen gefuehrt, da dabei
-                gleichzeitig meherere Server unterscheidlicher Versionen und damit unterschiedlichen
-                Meta-Daten laufen.
+    04.10.2020  FHEM-SolvisClient: Die Meta-Daten werden nun Device-spezifisch im Client
+                gespeichert. In der Praxis kommt das nicht vor (kaum jemand wird zwei
+                Solvis-Anlagen haben), die bisherige Version hat beim Test haeufig zu Iterationen
+                gefuehrt, da dabei gleichzeitig meherere Server unterscheidlicher Versionen und
+                damit unterschiedlichen Meta-Daten laufen.
 
-    03.10.2020  Erfolgt mit dem Client eine Connection vor dem initialen Auslesen der Control-Kanaele
-                trat in bestimmten Faellen eine Null-Pounter-Exception auf. Diese wurde gefixt, ausserdem
-                werden nun auch die Control-Kanaele im Backup abgelegt.
+    03.10.2020  Erfolgt mit dem Client eine Connection vor dem initialen Auslesen der
+                Control-Kanaele trat in bestimmten Faellen eine Null-Pounter-Exception auf. Diese
+                wurde gefixt, ausserdem werden nun auch die Control-Kanaele im Backup abgelegt.
 
                 ioBroker object list mit den neuen Control-Kanaelen erweitert.
 
     02.10.2020  Neuer Einstellmoeglichkeiten noch fuer den zweiten Heizkreis hinzugefuegt. Da beim
-                dritten Heizkreis die Vorlauftemperatur fest eingestellt, wird es diese Einstellungen
-                dort vermutlich nicht geben.
+                dritten Heizkreis die Vorlauftemperatur fest eingestellt, wird es diese
+                Einstellungen dort vermutlich nicht geben.
 
     01.10.2020  C33.Min_Vorlauf_Temp -> C33.Min_Vorlauf_Temp_HK1
 
-    29.09.2020  Features auf ein etwas anderes Format umgestellt, so dass Features ergaenzt werden koennen,
-                ohne dass das Xsd-File und entsprechend das Programm geaendert werden muss. Die alten
-                Definitionen sind noch moeglich.
+    29.09.2020  Features auf ein etwas anderes Format umgestellt, so dass Features ergaenzt werden
+                koennen, ohne dass das Xsd-File und entsprechend das Programm geaendert werden
+                muss. Die alten Definitionen sind noch moeglich.
 
-    28.09.2020  Algorithmus zur Erkennung von Ueberschriften optimiert, bei der Grafik- mit OCR-Erkennung
-                kombiniert ist.
-                Bei der Ergaenzung durch C33.Min_Vorlauf_Temp hatte sich ein Problem gezeigt, dass die
-                Anfang des OCR-Feldes zu stark variert. Abhaengig von der OCR-Stellenanzahl passt
-                die feste Position des OCR-Auschnitts nicht mehr.
-                Noch groessere Schwierigkeiten erhaelt man, wenn man die Sprache umstellt. Dann muesste man
-                noch die Sprache in das config-File beruecksichtigen, wodurch das nicht mehr handlebar wird.
-                Nun wird der Uebergang zwischen Grafik und OCR dynamisch anhand der zu erwartenden
-                OCR-Zeichenanzahl ermittelt.
+    28.09.2020  Algorithmus zur Erkennung von Ueberschriften optimiert, bei der Grafik- mit
+                OCR-Erkennung kombiniert ist.
+                Bei der Ergaenzung durch C33.Min_Vorlauf_Temp hatte sich ein Problem gezeigt, dass
+                die Anfang des OCR-Feldes zu stark variert. Abhaengig von der OCR-Stellenanzahl
+                passt die feste Position des OCR-Auschnitts nicht mehr.
+                Noch groessere Schwierigkeiten erhaelt man, wenn man die Sprache umstellt. Dann
+                muesste man noch die Sprache in das config-File beruecksichtigen, wodurch das nicht
+                mehr handlebar wird. Nun wird der Uebergang zwischen Grafik und OCR dynamisch
+                anhand der zu erwartenden OCR-Zeichenanzahl ermittelt.
 
     27.09.2020  Wenn ein Dependency-Channel im gleichen Command-Ablauf auch zu lesen war, wurde
                 der Dependency-Channel nicht richtig restored.
@@ -265,18 +274,18 @@ Version 01.02.04
     26.09.2020  Beim Learning kann es zu einer Endlosschleife kommen, wenn bei einem Goto beim
                 Zurueckgehen auf den vorherigen Screen, der Screen nicht erkannt wird. Die Ursache
                 dieser Nicht-Erkennung kann ein XML-Fehler sein, aber auch ein Verschlucken eines
-                Touches durch die Solvis-Anlage. Die Fehlerbehandlung war nicht ausreichend, wodurch
-                es danach zu einer Endlosschleife kommt. Nun wird der Goto vom HomeScreen erneut
-                versucht, so dass bei nur verschluckten Touchs die Wiederholung wahrscheinlich
-                erfolgreich sein wird.
+                Touches durch die Solvis-Anlage. Die Fehlerbehandlung war nicht ausreichend,
+                wodurch es danach zu einer Endlosschleife kommt. Nun wird der Goto vom HomeScreen
+                erneut versucht, so dass bei nur verschluckten Touchs die Wiederholung
+                wahrscheinlich erfolgreich sein wird.
 
-                Beim Einbau der MQTT-Schnittstelle ist in den Wiederaufbau der Client-Server-Verbindung
-                ein Bug reingerutscht. Der hat zur Folge, dass nach einem Wiederaufbau ein Neuaufbau
-                der Verbindung nicht mehr moeglich ist.
+                Beim Einbau der MQTT-Schnittstelle ist in den Wiederaufbau der
+                Client-Server-Verbindung ein Bug reingerutscht. Der hat zur Folge, dass nach einem
+                Wiederaufbau ein Neuaufbau der Verbindung nicht mehr moeglich ist.
 
                 Dependency-Reihenfolge noch optimiert.
 
-                DeadLock mit Mqtt gleichzeitig mit Server-Client gefixt
+                DeadLock mit Mqtt gleichzeitig mit Server-Client gefixt.
 
 
 
@@ -287,19 +296,20 @@ Version 01.02.04 rc1
                 Deadlockbeseitigt, der auftrat, wenn der Server bei aktivem Solvis-Fehler
                 gestartet wurde.
 
-                WW_Pumpe_Min_Laufzeit hinzugefuegt, dabei Attribute fuer Step erweitert. Entsprechend
-                auch FHEM-Client ergaenzt. Neues Konfigurationsbit 0x0100 (WW-Kreislauf).
+                WW_Pumpe_Min_Laufzeit hinzugefuegt, dabei Attribute fuer Step erweitert.
+                Entsprechend auch FHEM-Client ergaenzt. Neues Konfigurationsbit 0x0100
+                (WW-Kreislauf).
 
     24.09.2020  Mehr als eine Dependency pro Channel ist nun moeglich
 
     23.09.2020  Dependencies eingefuehrt, um das Problem vom 18.09.2020 zu loesen
 
     18.09.2020  C29.Steilheit_HK1 neu. Aktuell offenes Problem:
-                Dieser Wert ist nur gueltig, wenn die Betriebsart Vorlauf-Temperatur auf "Kurve" steht.
-                Wenn auf "Fix", gibt es feste Vorlauftemperaturen und zwar "Fix-Vorlauf Tag" und
-                "Fix-Vorlauf Absenk".
-                Es muesste noch eine Dependency eingefuehrt werden, so dass die Auswertung von den obigen
-                Status abhaengig ist (nur bei Kurve).
+                Dieser Wert ist nur gueltig, wenn die Betriebsart Vorlauf-Temperatur auf "Kurve"
+                steht. Wenn auf "Fix", gibt es feste Vorlauftemperaturen und zwar "Fix-Vorlauf Tag"
+                und "Fix-Vorlauf Absenk".
+                Es muesste noch eine Dependency eingefuehrt werden, so dass die Auswertung von den
+                obigen Status abhaengig ist (nur bei Kurve).
 
                 C28.BetriebsartVT_HK1 neu.
 
@@ -307,21 +317,23 @@ Version 01.02.04 rc1
 
 Version 01.02.03
 
-    14.09.2020  A01, A01 sowie bei einem System mit 2 Solarpumpen erfolgt die Ausgabe nun in Prozent.
-                Diese Pumpen werden von der Solvis-Anlage quasi analog angesteuert und es werden die
-                Werte entsprechend in Prozent angegeben.
+    14.09.2020  A01, A01 sowie bei einem System mit 2 Solarpumpen erfolgt die Ausgabe nun in
+                Prozent. Diese Pumpen werden von der Solvis-Anlage quasi analog angesteuert und es
+                werden die Werte entsprechend in Prozent angegeben.
                 Anmerkung:
-                    Beim Warmwasser pulst (bei mir) die Pumpe mit einem max. Tastverhaeltnis von 1:1,
-                    der Wert ist daher maximal 50%.
+                    Beim Warmwasser pulst (bei mir) die Pumpe mit einem max. Tastverhaeltnis von
+                    1:1, der Wert ist daher maximal 50%.
 
-    11.09.2020  Weitere Configuration-Bits eingefuehrt, welche die Namen der Kanaele S14 und S15 betreffen.
+    11.09.2020  Weitere Configuration-Bits eingefuehrt, welche die Namen der Kanaele S14 und S15
+                betreffen.
 
-    11.09.2020  Der Installateur-Mode der Anlage wird nur angesteuert, wenn das Admin-Feature gesetzt ist.
+    11.09.2020  Der Installateur-Mode der Anlage wird nur angesteuert, wenn das Admin-Feature
+                gesetzt ist.
 
-    06.09.2020  Die retained MQTT topics werden beim Beenden des Servers auf not retained gesetzt. Dadurch
-                bleiben keine Daten im MQTT-Broker zurueck und es gibt keine fehlerhaften Zeitstempel in der
-                SmartHome-Anwendung, wenn der Server nicht laeuft waehrend das SmartHome-System gestartet
-                wird.
+    06.09.2020  Die retained MQTT topics werden beim Beenden des Servers auf not retained gesetzt.
+                Dadurch bleiben keine Daten im MQTT-Broker zurueck und es gibt keine fehlerhaften
+                Zeitstempel in der SmartHome-Anwendung, wenn der Server nicht laeuft waehrend das
+                SmartHome-System gestartet wird.
 
     06.09.2020  Beim Beenden des Servers konnte in den Log Fehlermeldungen erscheinen.
 
@@ -331,32 +343,38 @@ Version 01.02.03
 
 Version 01.02.03 rc6
 
-    05.09.2020  Um den Anlagenstatus "Heizkreise" zu erkennen, wurde bisher der Bereich des Brenners gesannt.
-                Da es Solvis-Anlagen gibt, welche einen externen Brenner besitzen, wird stattdessen der obere
-                Bereich des linken Rohres hergenommen, bei dem das Heizwasser abgezapft wird.
+    05.09.2020  Um den Anlagenstatus "Heizkreise" zu erkennen, wurde bisher der Bereich des
+                Brenners gesannt. Da es Solvis-Anlagen gibt, welche einen externen Brenner
+                besitzen, wird stattdessen der obere Bereich des linken Rohres hergenommen, bei dem
+                das Heizwasser abgezapft wird.
 
-    04.09.2020  Auf den "Kanaelen" X05.BrennerStatus, X07.MischerPosition0_HK1 und X08.MischerPosition0_HK2
-                konnten Glitches entstehen, da sie von je 2 anderen Kanaelen abhaengig sind, welche (fast)
-                gleichzeitig sich aendern koennen. Dadurch konnten fehlerhafte Events ausgeloest werden.
+    04.09.2020  Auf den "Kanaelen" X05.BrennerStatus, X07.MischerPosition0_HK1 und
+                X08.MischerPosition0_HK2 konnten Glitches entstehen, da sie von je 2 anderen
+                Kanaelen abhaengig sind, welche (fast) gleichzeitig sich aendern koennen. Dadurch
+                konnten fehlerhafte Events ausgeloest werden.
 
 
 
 Version 01.02.03 rc5
 
-    20.08.2020  Die Rechtecke, welche in dem control.cml noch als "Field" bezeichnet wurden in Rectangle umbenannt.
+    20.08.2020  Die Rechtecke, welche in dem control.cml noch als "Field" bezeichnet wurden in
+                Rectangle umbenannt.
 
-    24.08.2020  Nach der Code-Eingabe der Nutzerauswahl muss etwas gewartet werden, da ein Bildschirmwechsel erfolgt.
+    24.08.2020  Nach der Code-Eingabe der Nutzerauswahl muss etwas gewartet werden, da ein
+                Bildschirmwechsel erfolgt.
 
                 Ein paar Koordinaten zur Bildidentifikation geaendert
 
-                Die Screenshots des Learnings sind nun durchnummeriert um den zeitlichen Ablauf des Learnings
-                leichter nachvollziehen zu koennen.
+                Die Screenshots des Learnings sind nun durchnummeriert um den zeitlichen Ablauf des
+                Learnings leichter nachvollziehen zu koennen.
 
-    29.08.2020  Bei Anlagen ohne Raumthermostat tritt faelschlicherweise eine Null-Pointer-Exception auf. Sie
-                wird auch in aelteren Versionen abgefangen, es zeigen sich jedoch irritierende Log-Meldungen.
+    29.08.2020  Bei Anlagen ohne Raumthermostat tritt faelschlicherweise eine
+                Null-Pointer-Exception auf. Sie wird auch in aelteren Versionen abgefangen, es
+                zeigen sich jedoch irritierende Log-Meldungen.
 
-                Es treten bei manchen Anlagen auf der Client-Server-Schnittstelle JSON-Format-Fehler auf.
-                Um diesen Fehler besser analysieren zu koennen, wurden weitere Konsistents-Checks eingebaut.
+                Es treten bei manchen Anlagen auf der Client-Server-Schnittstelle
+                JSON-Format-Fehler auf. Um diesen Fehler besser analysieren zu koennen, wurden
+                weitere Konsistents-Checks eingebaut.
 
     30.08.2020  Weitere Analyse fuer den JSON-Fehler implementiert
 
@@ -366,8 +384,8 @@ Version 01.02.03 rc5
 
 Version 01.02.03 rc4
 
-    19.08.2020  Durch die Integration der Lernphase in den normalen Start, trat nach der Learning-Phase in
-                seltenen Faellen eine Nullpointer-Exception auf.
+    19.08.2020  Durch die Integration der Lernphase in den normalen Start, trat nach der
+                Learning-Phase in seltenen Faellen eine Nullpointer-Exception auf.
 
                 Coordinate des Symbold des Anlagenstatus Heizkreis 3 war fehlerhaft
 
@@ -385,23 +403,25 @@ Version 01.02.03 rc3
 
 Version 01.02.03 rc2
 
-    17.08.2020  Ein mustSave-Attribut in der control.xml eingefuehrt. Mittels dieses Attributs kann man zur Analyse
-                ein Abspeichern eines Screens waehrend des Learnings erzwingen, auch wenn er zum Learning nicht
-                erforderlich ist.
+    17.08.2020  Ein mustSave-Attribut in der control.xml eingefuehrt. Mittels dieses Attributs kann
+                man zur Analyse ein Abspeichern eines Screens waehrend des Learnings erzwingen,
+                auch wenn er zum Learning nicht erforderlich ist.
 
 
 
 Version 01.02.03 rc1
 
-    16.08.2020  control.xml um die Definitionen des 3. Heizkreises ergaenzt. Die ioBroker-Objektliste
-                entsprechend ergaenzt.
+    16.08.2020  control.xml um die Definitionen des 3. Heizkreises ergaenzt. Die
+                ioBroker-Objektliste entsprechend ergaenzt.
 
-    15.08.2020  Bei dem Server-Befehl "UPDATE_CHANNELS" ist es ausreichend, die Read-Only-Channels zu lesen.
-                Die anderen Kanaele sind immer aktuell, da sie nur durch den Anwender veraendert werden koennen.
-                Der Anwenderzugriff wird separat ueberwacht und sind immer aktuell.
+    15.08.2020  Bei dem Server-Befehl "UPDATE_CHANNELS" ist es ausreichend, die Read-Only-Channels
+                zu lesen. Die anderen Kanaele sind immer aktuell, da sie nur durch den Anwender
+                veraendert werden koennen. Der Anwenderzugriff wird separat ueberwacht und sind
+                immer aktuell.
 
-    16.08.2020  Bugfix: Bei einem nicht passenden SET-Wert wurde zwar der naechst moegliche Wert als Sollwert
-                gesetzt, der wirklich eingestellte Wert wurde jedoch nicht an die Clients/MQTT-Broker verteilt.
+    16.08.2020  Bugfix: Bei einem nicht passenden SET-Wert wurde zwar der naechst moegliche Wert
+                als Sollwert gesetzt, der wirklich eingestellte Wert wurde jedoch nicht an die
+                Clients/MQTT-Broker verteilt.
 
                 ioBroker-Script zum Pairing der Solvis-Objekte erstellt.
 
@@ -410,12 +430,13 @@ Version 01.02.03 rc1
 Version 01.02.02
 
     14.08.2020  Die Images, welche beim Learning abgespeichert werden, wurden erweitert.
-                Es werden nun die Bildschirmbereiche, welche aus den Snapshots zur eigentlichen Identifikation
-                herangezogen werden gespeichert.
+                Es werden nun die Bildschirmbereiche, welche aus den Snapshots zur eigentlichen
+                Identifikation herangezogen werden gespeichert.
 
                 Mit Hilfe der obigen Aenderung wurden die Bildschirmbereiche noch optimiert.
 
-                Das Learning wurde nicht in allen erforderlichen Faellen automatisch angestossen. Gefixt.
+                Das Learning wurde nicht in allen erforderlichen Faellen automatisch angestossen.
+                Gefixt.
 
                 BugFix: Nach Ende des Clock-Adjustment trat eine Nullpointer-Exception auf.
 
@@ -423,61 +444,68 @@ Version 01.02.02
 
 Version 01.02.01
 
-    08.08.2020  Beim Learning werden nun immer die Bildschirme in den Ordner "SolvisServerData/learned_images"
-                des im base.xml angegebenen beschreibbaren Pfad geschrieben. Dies dient der einfacheren
-                Analyse von Learning-Problemen bei z.B. anderen bisher unbekannten Anlagekonfigurationen.
-                Da die Bilddateien sich leicht komprimieren lassen (2 kByte/Bild) und daher sehr wenig Platz
-                einnehmen, wurde auf einen speziellen Debug-Mode hierfuer verzichtet.
+    08.08.2020  Beim Learning werden nun immer die Bildschirme in den Ordner
+                "SolvisServerData/learned_images" des im base.xml angegebenen beschreibbaren Pfad
+                geschrieben. Dies dient der einfacheren Analyse von Learning-Problemen bei z.B.
+                anderen bisher unbekannten Anlagekonfigurationen.
+                Da die Bilddateien sich leicht komprimieren lassen (2 kByte/Bild) und daher sehr
+                wenig Platz einnehmen, wurde auf einen speziellen Debug-Mode hierfuer verzichtet.
 
-    09.08.2020  Wenn mehrfach hintereinander vom Anwender ueber die Server-Client- bzw. MQTT-Schnittstelle
-                der gleiche Sollwert veraendert wird, wurde bisher jede Aenderung einzeln nach der wirklichen
-                Aenderung an der SolvisControl zurueckgesendet. Wenn man z.B. die WW-Temperatur von 65°C auf 10°C
-                stellt und direkt anschliessend auf 40°C, so wurde nach ca. 100s 10°C zurueckgesendet und dann nach
-                etwa weiteren 60s die endgueltige Temperatur von 40°C gemeldet. Die Meldung der noch nicht
+    09.08.2020  Wenn mehrfach hintereinander vom Anwender ueber die Server-Client- bzw. MQTT-
+                Schnittstelle der gleiche Sollwert veraendert wird, wurde bisher jede Aenderung
+                einzeln nach der wirklichen Aenderung an der SolvisControl zurueckgesendet. Wenn
+                man z.B. die WW-Temperatur von 65°C auf 10°C stellt und direkt anschliessend auf
+                40°C, so wurde nach ca. 100s 10°C zurueckgesendet und dann nach etwa weiteren 60s
+                die endgueltige Temperatur von 40°C gemeldet. Die Meldung der noch nicht
                 endgueltigen Einstellung (hier 10°C) wird nun unterdrueckt.
 
-                Bei Wertaenderungen, welche mehr als 5 Bildschirmtouches benoetigen, wird nun nach jeweils
-                5 Touches eine Unterbrechung ermoeglicht. Hat man sich z.B. bei der WW-Temperatur geirrt
-                und sie auf 10°C gestellt, so kann man sie korrigieren und die Korrektur wirkt nach spaetestens
-                5 Touches.
+                Bei Wertaenderungen, welche mehr als 5 Bildschirmtouches benoetigen, wird nun nach
+                jeweils 5 Touches eine Unterbrechung ermoeglicht. Hat man sich z.B. bei der
+                WW-Temperatur geirrt und sie auf 10°C gestellt, so kann man sie korrigieren und die
+                Korrektur wirkt nach spaetestens 5 Touches.
 
-    10.08.2020  Da nun Set-Befehle vorzeitig abgebrochen werden koennen, musste der Restore-Mechanismus angepasst
-                werden. Zur Erinnerung: Das Auslesen/Setzen der Solltempersturen von Tag/Nacht bewirkte manchmal,
-                dass der Heizkreiszustand sich veraendert hatte.
+    10.08.2020  Da nun Set-Befehle vorzeitig abgebrochen werden koennen, musste der Restore-
+                Mechanismus angepasst werden. Zur Erinnerung: Das Auslesen/Setzen der
+                Solltempersturen von Tag/Nacht bewirkte manchmal, dass der Heizkreiszustand sich
+                veraendert hatte.
 
-                Die maximale Goto-Tiefe war nicht aureichend, dadurch wurde das Auslesen der Werte des
-                Heizkreises 1 beim esten Versuch immer abgebrochen, erst der 2te, bei der die Goto-Tiefe geringer
-                ist, funktionierte dann.
+                Die maximale Goto-Tiefe war nicht aureichend, dadurch wurde das Auslesen der Werte
+                des Heizkreises 1 beim esten Versuch immer abgebrochen, erst der 2te, bei der die
+                Goto-Tiefe geringer ist, funktionierte dann.
 
-                Die Wartezeit bei einem Bildschirmwechsel von 3s war etwas knapp, sie wurde auf 3,5s erhoeht.
+                Die Wartezeit bei einem Bildschirmwechsel von 3s war etwas knapp, sie wurde auf
+                3,5s erhoeht.
 
                 Reihenfolge beim Update der GUI-Channels optimiert.
 
-    11.08.2020  Ist nach einem Anwenderzugriff die Sollwertvorgaben fuer Nacht-/Tages-Temperaturen ausgewaehlt
-                geblieben, darf nicht - nach dem Holen der GUI-Werte - dieser Bildschirm wieder restauriert werden,
-                da es dabei moeglich ist, dass sich der Heizkreismodus verstellt (siehe auch Aenderung vom 25.05.2020).
+    11.08.2020  Ist nach einem Anwenderzugriff die Sollwertvorgaben fuer Nacht-/Tages-Temperaturen
+                ausgewaehlt geblieben, darf nicht - nach dem Holen der GUI-Werte - dieser
+                Bildschirm wieder restauriert werden, da es dabei moeglich ist, dass sich der
+                Heizkreismodus verstellt (siehe auch Aenderung vom 25.05.2020).
 
-                Meldet die Solvis-Anlage einen Fehler auf der SolvisControl2 wird nun - neben der Moeglichkeit des
-                Mailversandes die Hardcopy in den Ordner "SolvisErrorImages" abgelegt. Bei mehr als 100 abgelegte
-                Images werden die aeltestebn geloescht. Wie schon oben erwaehnt ist die Dateigroesse pro Image max. 2 kByte.
-                Bei 100 Dateien sind das weniger als 200 kByte.
+                Meldet die Solvis-Anlage einen Fehler auf der SolvisControl2 wird nun - neben der
+                Moeglichkeit des Mailversandes die Hardcopy in den Ordner "SolvisErrorImages"
+                abgelegt. Bei mehr als 100 abgelegte Images werden die aeltestebn geloescht.
+                Wie schon oben erwaehnt ist die Dateigroesse pro Image max. 2 kByte. Bei
+                100 Dateien sind das weniger als 200 kByte.
 
-                Die Mode-Umschaltung dauert etwas laenger als 2s. Dadurch laeuft der lernvorgang nicht immer sauber
-                durch. Zeit auf 2,5s geaendert.
+                Die Mode-Umschaltung dauert etwas laenger als 2s. Dadurch laeuft der Lernvorgang
+                nicht immer sauber durch. Zeit auf 2,5s geaendert.
 
-    12.08.2020  Nach einem Power-Off werden immer saemtliche Contol-Register-Werte ueber das GUI neu gelesen.
-                Die Power-Off-Erkennung ist in Wirklichkeit ein Off-Line der Anlage von min. 3 Minuten. Ob die
-                Anlage ausgeschaltet wurde oder nur nicht vom Netz aus zugaenglich kann der Server nicht erkennen.
-                Daher ist es notwendig nach dem "Power-On" alle nur ueber das Gui lesbaren Werte (Cxx) neu zu holen.
+    12.08.2020  Nach einem Power-Off werden immer saemtliche Contol-Register-Werte ueber das GUI
+                neu gelesen. Die Power-Off-Erkennung ist in Wirklichkeit ein Off-Line der Anlage
+                von min. 3 Minuten. Ob die Anlage ausgeschaltet wurde oder nur nicht vom Netz aus
+                zugaenglich kann der Server nicht erkennen. Daher ist es notwendig nach dem
+                "Power-On" alle nur ueber das Gui lesbaren Werte (Cxx) neu zu holen.
 
-                Vorbereitung um Learning automatisch anzustossen: Checksumme zur Controlfile-Ueberwachung unabhaengig
-                nun unabhaengig vom XML-File Reader.
+                Vorbereitung um Learning automatisch anzustossen: Checksumme zur
+                Controlfile-Ueberwachung unabhaengig nun unabhaengig vom XML-File Reader.
 
     13.08.2020  Wenn das Learning erforderlich ist, erfolgt es nun automatisch.
 
-                Einen Deadlock-Problem gefixt, der dann auftritt, wenn man versucht einen Soll-Wert zu aendern oder
-                abzufragen, wenn fast gleichzeitig einen vorherige Abfrage nicht einwandfrei ablaeuft und wiederholt
-                werden muss.
+                Einen Deadlock-Problem gefixt, der dann auftritt, wenn man versucht einen
+                Soll-Wert zu aendern oder abzufragen, wenn fast gleichzeitig einen vorherige
+                Abfrage nicht einwandfrei ablaeuft und wiederholt werden muss.
 
 
 
@@ -489,19 +517,21 @@ Version 01.02.00
 
 Version 01.02.00 rc2
 
-    05.08.2020  Bei einer Solvis-Anlage mit zusaetzlichen Waermeerzeugern (Festbrennstoffkessel/Waermepumpe/Pellets etc.)
-                wurde der Anlagestatus "Heizkreise" nicht erkannt. Die MustBeWhite-Felder wurden entsprechend
-                korrigiert.
+    05.08.2020  Bei einer Solvis-Anlage mit zusaetzlichen Waermeerzeugern (Festbrennstoffkessel/
+                Waermepumpe/Pellets etc.) wurde der Anlagestatus "Heizkreise" nicht erkannt. Die
+                MustBeWhite-Felder wurden entsprechend korrigiert.
 
-                Linux-Paket-Generierung verbessert. Es wurden in das Paket versehentlich Dateien reingepackt,
-                bei denen EOL CR/LF waren (Windows entsprechend).
+                Linux-Paket-Generierung verbessert. Es wurden in das Paket versehentlich Dateien
+                eingepackt, bei denen EOL CR/LF waren (Windows entsprechend).
 
-                Dem Makefile wurde um den Aufrufparameter uninstallAll erweitert. Wird das aufgerufen, werden
-                auch die Dateien geloescht, die vom SolvisSmartHomeServer selber angelegt wurden. Dann sind auch
-                die angelernten Grafiken, die Log-Dateien etc. geloescht.
+                Dem Makefile wurde um den Aufrufparameter uninstallAll erweitert. Wird das
+                aufgerufen, werden auch die Dateien geloescht, die vom SolvisSmartHomeServer selber
+                angelegt wurden. Dann sind auch die angelernten Grafiken, die Log-Dateien etc.
+                geloescht.
 
-                Im Goto-Screen wurde einen IOException nicht richtig abgefangen, daher wurde im Learn-Vorgang
-                bei einer IOException im Goto der angelernte Screen nicht richtig ueberprueft.
+                Im Goto-Screen wurde einen IOException nicht richtig abgefangen, daher wurde im
+                Learn-Vorgang bei einer IOException im Goto der angelernte Screen nicht richtig
+                ueberprueft.
 
 
 
@@ -509,14 +539,15 @@ Version 01.02.00 rc1
 
     01.08.2000  Einige Fehlerklassen muessen auf Exception basieren
 
-    03.08.2000  Das Learning wurde umfangreich ueberarbeitet. Es ist nun nicht mehr notwendig vor dem Learning
-                Den Anlagenstatus auf den WW-Kreislauf zu stellen.
+    03.08.2000  Das Learning wurde umfangreich ueberarbeitet. Es ist nun nicht mehr notwendig vor
+                dem Learning den Anlagenstatus auf den WW-Kreislauf zu stellen.
 
-                Wenn waehrend des Lernvorganges beim Wiederherstellen der Einstellungen eine IO-Exception erfolgte,
-                brach der Lernvorgang komplett ab. Nun wird der 3 mal versucht die Einstellung zu wiederholen.
+                Wenn waehrend des Lernvorganges beim Wiederherstellen der Einstellungen eine
+                IO-Exception erfolgte, brach der Lernvorgang komplett ab. Nun wird der 3 mal
+                versucht die Einstellung zu wiederholen.
 
-    04.08.2020  Weitere Optimierung des Lernvorganges um ihn sicherer gegen Verbindungsabbrueche zur Solvis-Anlage
-                zu machen.
+    04.08.2020  Weitere Optimierung des Lernvorganges um ihn sicherer gegen Verbindungsabbrueche
+                zur Solvis-Anlage zu machen.
 
                 Beim Anlernvorgang wurde ein falscher Screen-Name bei einer IoException gemeldet
 
@@ -524,28 +555,30 @@ Version 01.02.00 rc1
 
 Version 01.01.03 rc3
 
-    31.07.2020  Beim Programmstart wird auf einen valide Systemzeit gewartet, max. nur 120s. Eine valide
-                Systemzeit liegt dann vor, wenn das Datum des Backup-Files aelter als die aktuelle Zeit ist.
+    31.07.2020  Beim Programmstart wird auf einen valide Systemzeit gewartet, max. nur 120s. Eine
+                valide Systemzeit liegt dann vor, wenn das Datum des Backup-Files aelter als die
+                aktuelle Zeit ist.
 
 
 
 Version 01.01.03 rc2
 
-    30.07.2020  Das Verschluesseln von Passwoertern ueber das Startmenue funktionierte unter Windows noch nicht.
+    30.07.2020  Das Verschluesseln von Passwoertern ueber das Startmenue funktionierte unter
+                Windows noch nicht.
 
 
 
 Version 01.01.03 rc1
 
-    29.07.2020  Das Writeable-Verzeichnis wurde nicht rekursiv erzeugt. Daher wurden notwendige Verzeicnisse
-                mit mehreren Ebenen nicht beim ersten Programmstart angelegt.
+    29.07.2020  Das Writeable-Verzeichnis wurde nicht rekursiv erzeugt. Daher wurden notwendige
+                Verzeicnisse mit mehreren Ebenen nicht beim ersten Programmstart angelegt.
 
 
 
 Version 01.01.02
 
-    25.07.2020  Start-Parameter --base.xml hinzugefuegt. Damit koennen auch die Base-Konfiguration aus einem Pfad
-                verwendet werden, der nicht im Start-Pfad des Servers liegt.
+    25.07.2020  Start-Parameter --base.xml hinzugefuegt. Damit koennen auch die Base-Konfiguration
+                aus einem Pfad verwendet werden, der nicht im Start-Pfad des Servers liegt.
 
     25.07.2020  Ant-File Anpassungen zur besseren Release-Package-Generierung
 
@@ -553,18 +586,18 @@ Version 01.01.02
 
 Version 01.01.01
 
-    22.07.2020  Wird die MQTT-Verbindung zum SmartHomeServer hart getrennt, bewirkte der in diesem Fall
-                vom Broker gesendete "LastWill" eine Null-Pointer-Exception, so dass die MQTT-Schnittstelle
-                des Servers nicht mehr reagierte.
+    22.07.2020  Wird die MQTT-Verbindung zum SmartHomeServer hart getrennt, bewirkte der in diesem
+                Fall vom Broker gesendete "LastWill" eine Null-Pointer-Exception, so dass die
+                MQTT-Schnittstelle des Servers nicht mehr reagierte.
 
                 Die IoBroker-Objektliste enthielt noch ueberfluessige Objekte.
 
-    23.07.2020  Die Logging-Daten der MQTT-Library werden nun ebenfalls in den Log des Servers geschrieben
-                vorher wurden sie auf die Console geschrieben, bzw. bei einem im Hintergrund laufenden Server
-                verschwanden sie im Nirwana
+    23.07.2020  Die Logging-Daten der MQTT-Library werden nun ebenfalls in den Log des Servers
+                vorher wurden sie auf die Console geschrieben, bzw. bei einem im Hintergrund
+                laufenden Server verschwanden sie im Nirwana
 
-                Fataler Fehler: Beim Empfang von Daten des Clients konnte eine negative Datenpaket-Laenge
-                entstehen.
+                Fataler Fehler: Beim Empfang von Daten des Clients konnte eine negative Datenpaket-
+                Laenge entstehen.
 
 
 
@@ -573,8 +606,8 @@ Version 01.01.00
     seit 19.06.2020  Implementation der MQTT-Schnittstelle
 
     19.06.2020  Echo inhibit realisiert:
-                Wenn innerhalb der echoInhibitTime_ms der gleiche Wert erneut vom Client gesetzt wird,
-                wird er ignoriert.
+                Wenn innerhalb der echoInhibitTime_ms der gleiche Wert erneut vom Client gesetzt
+                wird, wird er ignoriert.
 
     04.07.2000  Der SET-Befehl des FHEM-Client funktionierte nur bei Boolean-Werten.
 
@@ -582,18 +615,18 @@ Version 01.01.00
 
     13.07.2020  Installationsroutine fuer Windows erstellt
 
-                In manchen Faellen konnte es sein, dass im Home-Screen mehr als ein Feld selektiert war.
-                Aus diesem Zustand hat die Back-Taste der SolvisControl keine  Wirkung, so dass der
-                Server diesen Zustand nicht beheben konnte. In Zukunft wird in der FallBack-Sequenz
-                noch der Warmwasser-Screen ausgewaehlt.
+                In manchen Faellen konnte es sein, dass im Home-Screen mehr als ein Feld selektiert
+                war. Aus diesem Zustand hat die Back-Taste der SolvisControl keine  Wirkung, so
+                dass der Server diesen Zustand nicht beheben konnte. In Zukunft wird in der
+                FallBack-Sequenz noch der Warmwasser-Screen ausgewaehlt.
 
     17.07.2020  Retain-Flag darf bei Client-Fehlermeldungen nicht gesetzt sein.
 
-    18.07.2020  Erfolgt eine Fehlermeldung auf dem Home-Screen, blieb diese trotz aktiviertem Feature
-                ClearErrorMessageAfterMail sichtbar.
+    18.07.2020  Erfolgt eine Fehlermeldung auf dem Home-Screen, blieb diese trotz aktiviertem
+                Feature ClearErrorMessageAfterMail sichtbar.
 
-    20.07.2020  Das Feature UpdateAfterUserAccess war immer aktiviert, auf wenn es in der base.xml scheinbar
-                deaktiviert war.
+    20.07.2020  Das Feature UpdateAfterUserAccess war immer aktiviert, auf wenn es in der base.xml
+                scheinbar deaktiviert war.
 
                 MQTT-Schnittstellen-Implementation abgeschlossen.
 
@@ -627,23 +660,24 @@ Version 01.00.14
 Version 01.00.13
 
     01.06.2020  Es werden nun die Laufzeiten der Solarpumpen in die Readings geschrieben. Dabei
-                werden unter "C24.LaufzeitSolarpumpe" und "C25.LaufzeitSolarpumpe2" die ausgelesenen
-                Werte aus "Sonstig./weiter/Zaehlfunktion" eingetragen.
-                Zusaetzlich gibt es eine sekundengenaue Berechnung unter "X09.LaufzeitSolarpumpe_s" und
-                "X10.LaufzeitSolarpumpe2_s", welche auf dem Beobachten der Ausgaenge "A01.Pumpe_Solar"
-                bzw. A07.Pumpe_Solar2 beruhen.
+                werden unter "C24.LaufzeitSolarpumpe" und "C25.LaufzeitSolarpumpe2" die
+                ausgelesenen Werte aus "Sonstig./weiter/Zaehlfunktion" eingetragen. Zusaetzlich
+                gibt es eine sekundengenaue Berechnung unter "X09.LaufzeitSolarpumpe_s" und
+                "X10.LaufzeitSolarpumpe2_s", welche auf dem Beobachten der Ausgaenge
+                "A01.Pumpe_Solar" bzw. A07.Pumpe_Solar2 beruhen.
 
     03.06.2020  Mailversand ist nun auch ohne Verschluesselung moeglich.
 
                 Der Mailversand ist nun standardmaessig deaktiviert und muss durch das Setzen des
                 Features "SendMailOnError" auf true erst aktiviert werden
 
-    06.06.2020  Es ist nun auch die WW-Zirkulationspumpe steuerbar. "C26.Warmwasserzirkulation_Puls"
-                und "C27.Warmwasserzirkulation_Zeit" sind hinzu gekommen. Da bei das Aktivieren dieser
-                Parameter bei Anlagen ohne Zirkulationspumpe zu Fehlermeldungen fuehren, konnten diese
-                nur wie bisher durch Betaetigung im Learn-Modus angelernt werden. Stattdessen wurde
-                ein neuer Algorithmus (Strategie "TypeButton") notwendig, der auch ohne Learning den
-                Zustand eines Buttons ermitteln kann.
+    06.06.2020  Es ist nun auch die WW-Zirkulationspumpe steuerbar.
+                "C26.Warmwasserzirkulation_Puls" und "C27.Warmwasserzirkulation_Zeit" sind hinzu
+                gekommen. Da bei das Aktivieren dieser Parameter bei Anlagen ohne Zirkulationspumpe
+                zu Fehlermeldungen fuehren, konnten diese nur wie bisher durch Betaetigung im
+                Learn-Modus angelernt werden. Stattdessen wurde ein neuer Algorithmus (Strategie
+                "TypeButton") notwendig, der auch ohne Learning den Zustand eines Buttons ermitteln
+                kann.
 
     07.06.2020  Makefile geaendert. Auf Anforderung wird nun FHEM neu gestartet, falls der
                 SolvisClient aktualisiert wurde.
@@ -682,42 +716,42 @@ Version 01.00.11
 
 Version 01.00.10
 
-    14.05.2020  Die Grafik des Bildschirmschoners ist an einigen Solvis-Anlagen nicht im Bild komplett
-                drin, sondern auch teilweise ausserhalb. Das wurde bei der Bildschirmschone nun
-                beruecksichtigt.
+    14.05.2020  Die Grafik des Bildschirmschoners ist an einigen Solvis-Anlagen nicht im Bild
+                komplett drin, sondern auch teilweise ausserhalb. Das wurde bei der
+                Bildschirmschoner nun beruecksichtigt.
 
-    15.05.2020  Beim Lesen von JSON-Daten wurden Zahlen immer in den Typ float umgewandelt. Das reicht
-                auch normalerweise, weil die Genauigkeit fuer normale Messwerte ausreichend ist.
-                Fuer die Uebergabe der ClientId reichte das nicht, da in nicht in float ohne Rundungs-
-                Verlust abgebildet werden kann. Das hatte zur Folge, dass nur selten ein Reconnect
-                erfolgreich war.
+    15.05.2020  Beim Lesen von JSON-Daten wurden Zahlen immer in den Typ float umgewandelt. Das
+                reicht auch normalerweise, weil die Genauigkeit fuer normale Messwerte ausreichend
+                ist. Fuer die Uebergabe der ClientId reichte es nicht, da in nicht in float ohne
+                Rundungs-Verlust abgebildet werden kann. Das hatte zur Folge, dass nur selten ein
+                Reconnect erfolgreich war.
 
     19.05.2020  Die Fehlermeldungs-Bildschirmueberwachung wurde ueberarbeitet.
 
-    21.05.2020  FHEM-Client: GUI_COMMANDS_ENABLE/DISABLE wurde faelschlicherweise auch bei Wiederaufbau
-                der Verbindung gesendet
+    21.05.2020  FHEM-Client: GUI_COMMANDS_ENABLE/DISABLE wurde faelschlicherweise auch bei
+                Wiederaufbau der Verbindung gesendet
 
-    22.05.2020  Beim manuellen Wechsel auf den HomeScreen wird die Zeit etwas verspaetet eingeblendet.
-                Da die Anlagenfehlererkennung bisher dadurch erkannt wird, dass die Zeit nicht eingeblendet
-                ist, erfolgte bisher in diesem Fall einen falsche Fehlermeldung. Nun wird zusaetzlich
-                getestet, ob in diesem Bereich eine Grafik vorhanden ist. Wenn ja, liegt ein
-                Anlagenfehler vor.
+    22.05.2020  Beim manuellen Wechsel auf den HomeScreen wird die Zeit etwas verspaetet
+                eingeblendet. Da die Anlagenfehlererkennung bisher dadurch erkannt wird, dass die
+                Zeit nicht eingeblendet ist, erfolgte bisher in diesem Fall einen falsche
+                Fehlermeldung. Nun wird zusaetzlich getestet, ob in diesem Bereich eine Grafik
+                vorhanden ist. Wenn ja, liegt ein Anlagenfehler vor.
 
 
 
 Version 01.00.09
 
-    10.05.2020  Fuer die Steuerfiles base.xml und control.xml einen Check gegenueber die entsprechende
-                xsd-Datei realisiert. Damit ist sichergestellt, dass dem Server kein fehlerhaftes oder
-                zu altes xml-File einlesen muss.
+    10.05.2020  Fuer die Steuerfiles base.xml und control.xml einen Check gegenueber die
+                entsprechende xsd-Datei realisiert. Damit ist sichergestellt, dass dem Server kein
+                fehlerhaftes oder zu altes xml-File einlesen muss.
 
-    11.05.2000  Server-Command UPDATE_CHANNELS hinzugefuegt. Er loest ein Aktualisieren saemtlicher nur ueber
-                das GUI erreichbare Kanaele aus.
+    11.05.2000  Server-Command UPDATE_CHANNELS hinzugefuegt. Er loest ein Aktualisieren saemtlicher
+                nur ueber das GUI erreichbare Kanaele aus.
 
                 control.xml bereinigt, es enthielt nicht mehr genutzte Einstellungen.
 
-    12.05.2020  Die Passwort-Verschluesselung kam nicht mit Passwoertern klar, welche eine Laenge von
-                14 + N * 16 und 15 + N * 16 hatten.
+    12.05.2020  Die Passwort-Verschluesselung kam nicht mit Passwoertern klar, welche eine Laenge
+                von 14 + N * 16 und 15 + N * 16 hatten.
 
 
 
@@ -726,11 +760,11 @@ Version 01.00.08
     08.05.2020  Wegen der Artefakte am Rand der Anzeige an manchen Anlagen wurden bisher je 3 Pixel
                 am Rand bei der Bildschirmschonererkennung nicht beruecksichtigt.
 
-    06.05.2020  Ein Bug im Client gefixt. Die Laenge eines JSON-Pakets wurde fehlerhaft an den Server
-                uebergeben. Das fuehrte dazu, dass bei zwei direkt vom Client gesendete JSON-Pakete
-                der Anfang des zweiten verstuemmelt war, wenn das erste noch nicht abgearbeitet war.
-                Das fuehrte sporadisch in der Verbindungsaufbau-Phase zu sporadischen Verbindungs-
-                Abbruechen.
+    06.05.2020  Ein Bug im Client gefixt. Die Laenge eines JSON-Pakets wurde fehlerhaft an den
+                Server uebergeben. Das fuehrte dazu, dass bei zwei direkt vom Client gesendete
+                JSON-Pakete der Anfang des zweiten verstuemmelt war, wenn das erste noch nicht
+                abgearbeitet war. Das fuehrte sporadisch in der Verbindungsaufbau-Phase zu
+                sporadischen Verbindungsabbruechen.
 
     04.05.2020  Bei einem Update des Servers, bei dem sich die Struktur des control.xml-Files
                 sich grundlegend geaendert hat, konnte es passieren, dass der Server nicht mehr
@@ -756,8 +790,8 @@ Version 01.00.07
 
 Version 01.00.06
 
-    28.04.2020  Im Zusammenhang mit der Modbus-Ergaenzung ist auch die Laufzeitanforderung 2 nicht mehr
-                optional gewesen. Gefixt.
+    28.04.2020  Im Zusammenhang mit der Modbus-Ergaenzung ist auch die Laufzeitanforderung 2 nicht
+                mehr optional gewesen. Gefixt.
 
                 Wird ein Control-Befehl verworfen, werden faelschlicherweise noch weitere nicht
                 abgearbeitete verworfen.
@@ -780,15 +814,16 @@ Version 01.00.06
 Version 01.00.05
 
     28.04.2020  Die XML-Struktur des control.xml-Files musste durch die Modbus-Ergaenzung geaendert
-                werden. Durch ein Bug funktionierte danach die Solvis-Konfiguration ohne Raumfuehler
-                nicht mehr.
+                werden. Durch ein Bug funktionierte danach die Solvis-Konfiguration ohne
+                Raumfuehler nicht mehr.
 
 
 
 Version 01.00.04
 
-    28.04.2020  Heizkreis 2-Problem gefixt. Wenn das Heizkreis2-Menue angefahren werden sollte, wurde
-                im Bildschirm "Heizkreise" faelschlicherweise der Button fuer den heizkreis 1 gedrueckt
+    28.04.2020  Heizkreis 2-Problem gefixt. Wenn das Heizkreis2-Menue angefahren werden sollte,
+                wurde im Bildschirm "Heizkreise" faelschlicherweise der Button fuer den Heizkreis 1
+                gedrueckt.
 
                 Uninstall ueber das makefile funktionierte nicht mehr, gefixt
 
@@ -907,8 +942,8 @@ Version 00.11.01
     18.02.2020  Neue Features:
                 Service-User-Zugriffe werden nun ueber die Bildschirme "Schornsteinfeger",
                 "Nutzerauswahl", "Nutzerauswahl Codeeingabe" erkannt. Die GUI-Befehle sind
-                unterdrueckt, solange die SolvisControl diese Bildschirme anzeigt. Ausserdem hat das
-                zur Folge, dass nun jeder weitere erkannte Nutzer-Eingriff eine Sperrung der
+                unterdrueckt, solange die SolvisControl diese Bildschirme anzeigt. Ausserdem hat
+                das zur Folge, dass nun jeder weitere erkannte Nutzer-Eingriff eine Sperrung der
                 GUI-Befehle fuer eine Stunde bewirkt (sonst 5 Minuten). Erst wenn diese Stunde
                 ueberschritten ist, ist der Server im normalen Mode. Will man letztere Zeit
                 verringern, kann man den Server ueber den Fhem-Client mit dem Server-Command
@@ -922,21 +957,21 @@ Version 00.11.01
 
                 Fhem-Client um das Attribut "GuiCommandsEnabled" ergaenzt. Ist dieses Attribut auf
                 FALSE, werden saemtliche Kommandos verhindert, welche das GUI der SolvisControl
-                benoetigen. Nur Messwerte werden aufgezeichnet. TRUE lassen die Kommandos wieder zu.
-                Der Hintergrund ist der, dass Service-Mitarbeiter nicht durch diese Automatiken
+                benoetigen. Nur Messwerte werden aufgezeichnet. TRUE lassen die Kommandos wieder
+                zu. Der Hintergrund ist der, dass Service-Mitarbeiter nicht durch diese Automatiken
                 irritiert werden und einen Defekt der Anlage vermuten. SET/GET-Kommandos,
                 welche in dieser Zeit
                 erfolgen, werden zwischengepuffert und ausgefuehrt, wenn das Attribut wieder auf
                 TRUE gesetzt wurde.
 
     22.02.2020  Die Ermittlung des Origins wurde wieder ausgebaut, da die Beruecksichtigung der
-                Kalibrierung in der SolvisControl nicht auf allen Bildschirmen beruecksichtigt wird.
-                So sind die Bilder des Anlagenstatus unabhaengig von der Kalibrierung. Rein theoretisch
-                haette man das beruecksichtigen koennen, aber da es sich bei der TouchScreen-Kalibrierung
-                es sich nur um wenige Pixel handelt, welche das Bild verschoben sein kann, muss
-                dieser Einfluss grundsaetzlich bei der Definition der Abmessungen der Grafiken
-                beachtet werden. Die Bildschirmschoner-Erkennung wurde angepasst, die aeusseren
-                3 Pixels werden nicht beruecksichtigt.
+                Kalibrierung in der SolvisControl nicht auf allen Bildschirmen beruecksichtigt
+                wird. So sind die Bilder des Anlagenstatus unabhaengig von der Kalibrierung. Rein
+                theoretisch haette man das beruecksichtigen koennen, aber da es sich bei der
+                TouchScreen-Kalibrierung es sich nur um wenige Pixel handelt, welche das Bild
+                verschoben sein kann, muss dieser Einfluss grundsaetzlich bei der Definition der
+                Abmessungen der Grafiken beachtet werden. Die Bildschirmschoner-Erkennung wurde
+                angepasst, die aeusseren 3 Pixels werden nicht beruecksichtigt.
 
     25.02.2020  Im Fehler-Status der Solvis-Anlage wurde auch noch zusaetzlich der Kanal
                 "A14.Entstoerung" beruecksichtigt.
@@ -1024,10 +1059,10 @@ Version 00.10.02
     29.01.2020  Control-Command-Optimierung deaktivierbar
 
 
-    30.01.2020  Bug im Uhr-Abgleich behoben. Es wurde nicht beachtet, dass zum Zeitpunkt der Uhreinstellung
-                (Klick auf den OK-Button) gerade der Minutenwechsel der Solvis-Uhr erfolgen kann. In diesem
-                Fall war es moeglich, dass die Solvis-Uhr danach um 60s nach ging. Der Einstellzeitpunkt ist
-                nun zum Zeitpunkt hh:mm:05 (nach Solvis-Zeit).
+    30.01.2020  Bug im Uhr-Abgleich behoben. Es wurde nicht beachtet, dass zum Zeitpunkt der
+                Uhreinstellung (Klick auf den OK-Button) gerade der Minutenwechsel der Solvis-Uhr
+                erfolgen kann. In diesem Fall war es moeglich, dass die Solvis-Uhr danach um 60s
+                nach ging. Der Einstellzeitpunkt ist nun zum Zeitpunkt hh:mm:05 (nach Solvis-Zeit).
 
 
     31.01.2020  In der Statistik des Uhrenabgleichs wurde eine Auffaelligkeit erkannt:
