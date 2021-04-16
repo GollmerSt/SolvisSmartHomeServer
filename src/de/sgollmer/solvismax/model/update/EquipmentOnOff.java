@@ -168,9 +168,13 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			int currentData = this.calculatedValue.getInt();
 
 			if (this.factor < 0) {
-				return new SynchronisationResult(
-						currentData == data ? Synchronisation.NO_ACTION : Synchronisation.UPDATE_ONLY, //
-						data, currentData);
+				if (!equipmentOn && currentData != data) {
+					return new SynchronisationResult(Synchronisation.UPDATE_ONLY, data, currentData);
+				} else if (data > currentData || data < currentData - 1) {
+					return new SynchronisationResult(Synchronisation.UPDATE_ONLY, data, currentData);
+				} else {
+					return new SynchronisationResult(Synchronisation.NO_ACTION, currentData, currentData);
+				}
 			}
 
 			int tolerance = Constants.SYNC_TOLERANCE_PERCENT * this.factor / 100;
@@ -209,7 +213,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			if (!this.solvis.isInitialized()) {
 				return;
 			}
-			
+
 			this.otherExecuting = false;
 
 			boolean update = false;
