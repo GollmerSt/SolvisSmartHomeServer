@@ -61,6 +61,7 @@ import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen.GotoStatus;
 import de.sgollmer.solvismax.model.update.UpdateStrategies;
 import de.sgollmer.solvismax.objects.Coordinate;
 
@@ -403,8 +404,8 @@ public class Solvis {
 	public void registerSolvisErrorObserver(IObserver<SolvisErrorInfo> observer) {
 		this.solvisErrorObservable.register(observer);
 	}
-	
-	public void registerControlExecutingObserver( IObserver<Boolean> observer) {
+
+	public void registerControlExecutingObserver(IObserver<Boolean> observer) {
 		this.worker.registerControlExecutingObserver(observer);
 	}
 
@@ -436,8 +437,9 @@ public class Solvis {
 			if (screen.isNoRestore()) {
 				screen = this.defaultScreen == null ? this.getHomeScreen() : this.defaultScreen;
 			}
-			screen.goTo(this);
-			logger.info("Screen <" + screen.getId() + "> restored");
+			if (screen.goTo(this) == GotoStatus.CHANGED) {
+				logger.info("Screen <" + screen.getId() + "> restored.");
+			}
 		}
 	}
 
@@ -454,9 +456,9 @@ public class Solvis {
 	void setScreenSaverActive(boolean screenSaverActive) {
 		if (this.screenSaverActive != screenSaverActive) {
 			if (screenSaverActive) {
-				logger.info("Screen saver detected");
+				logger.debug("Screen saver detected");
 			} else {
-				logger.info("Screen saver finished");
+				logger.debug("Screen saver finished");
 			}
 		}
 		this.screenSaverActive = screenSaverActive;

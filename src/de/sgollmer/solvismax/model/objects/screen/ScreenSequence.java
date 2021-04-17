@@ -268,9 +268,9 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public boolean goTo(Solvis solvis) throws IOException, TerminationException {
+	public GotoStatus goTo(Solvis solvis) throws IOException, TerminationException {
 		logger.error("Goto a screen sequence not possible, ignored");
-		return true;
+		return GotoStatus.CHANGED;
 	}
 
 	@Override

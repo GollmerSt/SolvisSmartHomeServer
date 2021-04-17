@@ -436,7 +436,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				for (int gotoRetries = Constants.FAIL_REPEATS; gotoRetries > 0 && !success; --gotoRetries) {
 					try {
 						success = false;
-						success = this.goTo(solvis);
+						success = this.goTo(solvis) != GotoStatus.FAILED;
 					} catch (IOException e) {
 					}
 				}
@@ -637,7 +637,11 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public boolean goTo(Solvis solvis) throws IOException, TerminationException {
+	public GotoStatus goTo(Solvis solvis) throws IOException, TerminationException {
+		
+		if ( SolvisScreen.get(solvis.getCurrentScreen()) == this ) {
+			return GotoStatus.SAME;
+		}
 
 		boolean success = false;
 		for (int failCnt = 0; !success && failCnt < Constants.FAIL_REPEATS; ++failCnt) {
@@ -653,7 +657,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				}
 
 				if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
-					return true;
+					return GotoStatus.CHANGED;
 				}
 				success = true;
 
@@ -716,7 +720,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		if (!gone) {
 			logger.error("Screen <" + this.getId() + "> not found.");
 		}
-		return SolvisScreen.get(solvis.getCurrentScreen()) == this;
+		return SolvisScreen.get(solvis.getCurrentScreen()) == this?GotoStatus.CHANGED:GotoStatus.FAILED;
 
 	}
 
