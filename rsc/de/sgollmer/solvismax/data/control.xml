@@ -709,8 +709,8 @@
 					</tns:Rectangle>
 				</tns:Grafic>
 				<tns:MustBeWhite>
-					<tns:TopLeft X="95" Y="10" />
-					<tns:BottomRight X="135" Y="55" />
+					<tns:TopLeft X="96" Y="10" />
+					<tns:BottomRight X="134" Y="55" />
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
@@ -743,7 +743,7 @@
 					<tns:BottomRight X="235" Y="30" />
 				</tns:MustBeWhite>
 				<tns:MustBeWhite invertFunction="true">
-					<tns:TopLeft X="40" Y="35" />
+					<tns:TopLeft X="47" Y="35" />
 					<tns:BottomRight X="55" Y="65" />
 				</tns:MustBeWhite>
 			</tns:Identification>
@@ -773,7 +773,7 @@
 					</tns:Rectangle>
 				</tns:Grafic>
 				<tns:MustBeWhite>
-					<tns:TopLeft X="82" Y="35" />
+					<tns:TopLeft X="85" Y="35" />
 					<tns:BottomRight X="100" Y="65" />
 				</tns:MustBeWhite>
 			</tns:Identification>

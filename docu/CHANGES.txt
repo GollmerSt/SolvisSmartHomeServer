@@ -1,5 +1,13 @@
 A E N D E R U N G E N
 
+Version 01.02.11 rc2
+
+    18.04.2021  Es gibt bei der SolvisMax7 zwischen den Firmwareversionen im Anlagenstatus kleinere
+                Unterschiede (Überschrift in der oberen linken Ecke). Dei MustBeWhite-
+                Koordinaten mussten leicht angepasst werden.
+
+
+
 Version 01.02.11 rc1
 
     11.03.2021  Mqtt-Interface verbessert. Die Mqtt-Schnittstelle hat nun die gleiche
