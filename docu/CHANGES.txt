@@ -2,6 +2,12 @@ A E N D E R U N G E N
 
 Version 01.02.11 rc2
 
+    18.04.2021  ModeChange-Time von 3s auf 3,5s erhöht.
+
+
+
+Version 01.02.11 rc2
+
     18.04.2021  Es gibt bei der SolvisMax7 zwischen den Firmwareversionen im Anlagenstatus kleinere
                 Unterschiede (Überschrift in der oberen linken Ecke). Dei MustBeWhite-
                 Koordinaten mussten leicht angepasst werden.

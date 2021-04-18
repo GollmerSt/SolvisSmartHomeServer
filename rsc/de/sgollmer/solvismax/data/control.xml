@@ -3740,7 +3740,7 @@
 		<tns:Duration id="ValueChange" time_ms="2000" />
 		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neuer 
 			Mode ausgewählt wurde -->
-		<tns:Duration id="ModeChange" time_ms="3000" />
+		<tns:Duration id="ModeChange" time_ms="3500" />
 		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neues 
 			Fenster ausgewählt wurde -->
 		<tns:Duration id="WindowChange" time_ms="3500" />
