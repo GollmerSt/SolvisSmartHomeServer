@@ -17,7 +17,10 @@
 		<!-- 0x0020: externer Brennkessel mit Temperaturfühler an S14 -->
 		<!-- 0x0040: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
 		<!-- 0x0080: Solar Ost + West S16 Kollektor West -->
+		<!-- 0x0100: Zählfunktion besitzt 2 Screens -->
 	</tns:SolvisTypes>
+
+
 	<tns:Configurations>
 		<tns:HeaterLoops screenRef="Home">
 			<tns:HK1Button>
@@ -45,11 +48,15 @@
 			</tns:OutgoingTemperature>
 		</tns:Solar>
 	</tns:Configurations>
+
+
 	<tns:Standby>
 		<tns:Channel id="C06.Anlagenmodus_HK1" value="Standby" />
 		<tns:Channel id="C12.Anlagenmodus_HK2" value="Standby" />
 		<tns:Channel id="C18.Anlagenmodus_HK3" value="Standby" />
 	</tns:Standby>
+
+
 	<tns:ScreenSaver timeHeight="18">
 		<tns:TimeDateRectangle>
 			<tns:TopLeft X="75" Y="0" />
@@ -61,6 +68,8 @@
 			<tns:Coordinate X="0" Y="0" />
 		</tns:ResetScreenSaver>
 	</tns:ScreenSaver>
+
+
 	<tns:ErrorDetection>
 		<tns:LeftBorder lowerLimit="51" higherLimit="84" />
 		<tns:RightBorder lowerLimit="906" higherLimit="938" />
@@ -78,12 +87,17 @@
 		<tns:ErrorCondition channelId="A14.Entstoerung"
 			value="true" />
 	</tns:ErrorDetection>
+
+
 	<tns:Service>
 		<tns:ServiceScreen id="Schornsteinfeger" />
 		<tns:ServiceScreen id="Sonstiges_Nutzerauswahl" />
 		<tns:ServiceScreen id="Nutzerauswahl" />
 	</tns:Service>
+
+
 	<tns:Screens homeId="Home">
+
 		<tns:Screen id="Home" backId="" previousId="">
 			<tns:Identification>
 				<tns:Grafic id="Home1" exact="true">
@@ -116,6 +130,7 @@
 				<tns:BottomRight X="155" Y="45" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Warmwasser" backId="Home" previousId="Home">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -130,6 +145,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Zirkulation" backId="Home"
 			previousId="Home">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -145,6 +161,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Solar" backId="Home" previousId="Home">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -163,6 +180,7 @@
 				<tns:BottomRight X="239" Y="127" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Sonstiges-1" backId="Home"
 			previousId="Home">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -179,6 +197,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Sonstiges-2" backId="Home"
 			previousId="Sonstiges-1">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -196,6 +215,7 @@
 			</tns:Identification>
 
 		</tns:Screen>
+
 		<tns:Screen id="Sonstiges-3" backId="Home"
 			previousId="Sonstiges-2">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -212,6 +232,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Schornsteinfeger" backId="Sonstiges-1"
 			previousId="Sonstiges-1">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -227,6 +248,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreise" backId="Sonstiges-1"
 			previousId="Sonstiges-1">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -242,6 +264,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-1-1_5" backId="Heizkreise"
 			previousId="Heizkreise" ignoreChanges="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -258,6 +281,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-1-2_5" backId="Heizkreise"
 			previousId="Heizkreis-1-1_5">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -274,6 +298,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-1-3_5" backId="Heizkreise"
 			previousId="Heizkreis-1-2_5">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -290,6 +315,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-1-4_5" backId="Heizkreise"
 			previousId="Heizkreis-1-5_5" mustSave="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -310,6 +336,7 @@
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-1-5_5" backId="Heizkreise"
 			previousId="Heizkreis-1-1_5">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -330,6 +357,7 @@
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-2-1_5" backId="Heizkreise"
 			previousId="Heizkreise" ignoreChanges="true">
 			<tns:Configuration>
@@ -350,6 +378,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-2-2_5" backId="Heizkreise"
 			previousId="Heizkreis-2-1_5">
 			<tns:Configuration>
@@ -370,6 +399,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-2-3_5" backId="Heizkreise"
 			previousId="Heizkreis-2-2_5">
 			<tns:Configuration>
@@ -390,6 +420,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-2-4_5" backId="Heizkreise"
 			previousId="Heizkreis-2-5_5" mustSave="true">
 			<tns:Configuration>
@@ -414,6 +445,7 @@
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-2-5_5" backId="Heizkreise"
 			previousId="Heizkreis-2-1_5">
 			<tns:Configuration>
@@ -438,6 +470,7 @@
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-3-1_5" backId="Heizkreise"
 			previousId="Heizkreise" ignoreChanges="true">
 			<tns:Configuration>
@@ -458,6 +491,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-3-2_5" backId="Heizkreise"
 			previousId="Heizkreis-3-1_5">
 			<tns:Configuration>
@@ -478,6 +512,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-3-3_5" backId="Heizkreise"
 			previousId="Heizkreis-3-2_5">
 			<tns:Configuration>
@@ -498,6 +533,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-3-4_5" backId="Heizkreise"
 			previousId="Heizkreis-3-5_5" mustSave="true">
 			<tns:Configuration>
@@ -522,6 +558,7 @@
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-3-5_5" backId="Heizkreise"
 			previousId="Heizkreis-3-1_5">
 			<tns:Configuration>
@@ -546,6 +583,7 @@
 				<tns:BottomRight X="205" Y="65" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:ScreenSequence id="Anlagenstatus"
 			previousId="Sonstiges-1">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -556,6 +594,7 @@
 			<tns:ScreenRef id="Anlagenstatus-WW" />
 			<tns:ScreenRef id="Anlagenstatus-HK" />
 		</tns:ScreenSequence>
+
 		<!-- SolvisMax-Definitionen für Anlagenstatus -->
 		<tns:Screen id="Anlagenstatus-WW" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">
@@ -584,6 +623,7 @@
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Anlagenstatus-HK" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:Configuration>
@@ -615,6 +655,7 @@
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Anlagenstatus-Solar" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:Configuration>
@@ -642,6 +683,7 @@
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
+
 		<!-- SolvisBen/Max7-Definitionen für Anlagenstatus -->
 		<tns:Screen id="Anlagenstatus-WW" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">
@@ -672,6 +714,7 @@
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Anlagenstatus-HK" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:Configuration>
@@ -705,6 +748,7 @@
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Anlagenstatus-Solar" backId="Sonstiges-1"
 			previousId="Anlagenstatus" ignoreChanges="true">
 			<tns:Configuration>
@@ -734,6 +778,7 @@
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Tagestemperatur_HK1" backId="Home"
 			previousId="Home" noRestore="true">
 			<tns:Configuration>
@@ -749,6 +794,7 @@
 				<tns:GraficRef refId="TagestemperaturNotSelected" />
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Tagestemperatur_HK1" backId="Home"
 			previousId="Home" noRestore="true">
 			<tns:Configuration>
@@ -768,6 +814,7 @@
 			<tns:PreparationRef refId="Button_HK1" />
 			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
+
 		<tns:Screen id="TagestemperaturSelected_HK1" backId="Home"
 			previousId="Tagestemperatur_HK1" noRestore="true">
 			<tns:Configuration>
@@ -783,6 +830,7 @@
 				<tns:GraficRef refId="TagestemperaturSelected" />
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="TagestemperaturSelected_HK1" backId="Home"
 			previousId="Tagestemperatur_HK1" noRestore="true">
 			<tns:Configuration>
@@ -801,6 +849,7 @@
 			</tns:Identification>
 			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
+
 		<tns:Screen id="Tagestemperatur_HK2" backId="Home"
 			previousId="Home" noRestore="true">
 			<tns:Configuration>
@@ -818,6 +867,7 @@
 			<tns:PreparationRef refId="Button_HK2" />
 			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
+
 		<tns:Screen id="TagestemperaturSelected_HK2" backId="Home"
 			previousId="Tagestemperatur_HK2" noRestore="true">
 			<tns:Configuration>
@@ -834,6 +884,7 @@
 			</tns:Identification>
 			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
+
 		<tns:Screen id="Tagestemperatur_HK3" backId="Home"
 			previousId="Home" noRestore="true">
 			<tns:Configuration>
@@ -851,6 +902,7 @@
 			<tns:PreparationRef refId="Button_HK3" />
 			<tns:LastPreparationRef refId="Button_HK3" />
 		</tns:Screen>
+
 		<tns:Screen id="TagestemperaturSelected_HK3" backId="Home"
 			previousId="Tagestemperatur_HK3" noRestore="true">
 			<tns:Configuration>
@@ -867,6 +919,7 @@
 			</tns:Identification>
 			<tns:LastPreparationRef refId="Button_HK3" />
 		</tns:Screen>
+
 		<tns:Screen id="Nachttemperatur_HK1" backId="Home"
 			previousId="Home" noRestore="true">
 			<tns:Configuration>
@@ -882,6 +935,7 @@
 				<tns:GraficRef refId="NachttemperaturNotSelected" />
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Nachttemperatur_HK1" backId="Home"
 			previousId="Home" noRestore="true">
 			<tns:Configuration>
@@ -901,6 +955,7 @@
 			<tns:PreparationRef refId="Button_HK1" />
 			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
+
 		<tns:Screen id="NachttemperaturSelected_HK1" backId="Home"
 			previousId="Nachttemperatur_HK1" noRestore="true">
 			<tns:Configuration>
@@ -916,6 +971,7 @@
 				<tns:GraficRef refId="NachttemperaturSelected" />
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="NachttemperaturSelected_HK1" backId="Home"
 			previousId="Nachttemperatur_HK1" noRestore="true">
 			<tns:Configuration>
@@ -934,6 +990,7 @@
 			</tns:Identification>
 			<tns:LastPreparationRef refId="Button_HK1" />
 		</tns:Screen>
+
 		<tns:Screen id="Nachttemperatur_HK2" backId="Home"
 			previousId="Home" noRestore="true">
 			<tns:Configuration>
@@ -951,6 +1008,7 @@
 			<tns:PreparationRef refId="Button_HK2" />
 			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
+
 		<tns:Screen id="NachttemperaturSelected_HK2" backId="Home"
 			previousId="Nachttemperatur_HK2" noRestore="true">
 			<tns:Configuration>
@@ -967,6 +1025,7 @@
 			</tns:Identification>
 			<tns:LastPreparationRef refId="Button_HK2" />
 		</tns:Screen>
+
 		<tns:Screen id="Nachttemperatur_HK3" backId="Home"
 			previousId="Home" noRestore="true">
 			<tns:Configuration>
@@ -984,6 +1043,7 @@
 			<tns:PreparationRef refId="Button_HK3" />
 			<tns:LastPreparationRef refId="Button_HK3" />
 		</tns:Screen>
+
 		<tns:Screen id="NachttemperaturSelected_HK3" backId="Home"
 			previousId="Nachttemperatur_HK3" noRestore="true">
 			<tns:Configuration>
@@ -1000,6 +1060,7 @@
 			</tns:Identification>
 			<tns:LastPreparationRef refId="Button_HK3" />
 		</tns:Screen>
+
 		<tns:Screen id="Sonstiges_Nutzerauswahl"
 			backId="Sonstiges-2" previousId="Sonstiges-2">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -1015,6 +1076,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Nutzerauswahl"
 			backId="Sonstiges_Nutzerauswahl" previousId="Sonstiges_Nutzerauswahl">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -1030,6 +1092,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Installateur-Menue" backId="Home"
 			previousId="Nutzerauswahl">
 			<tns:Configuration admin="true" />
@@ -1101,6 +1164,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizung-Installateur"
 			backId="Installateur-Menue" previousId="Installateur-Menue">
 			<tns:Configuration admin="true" />
@@ -1117,6 +1181,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizung-Anforderung" ignoreChanges="true"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur">
 			<tns:Configuration admin="true" />
@@ -1133,6 +1198,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Brenner-Stufe-2"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur">
 			<tns:Configuration admin="true" />
@@ -1149,6 +1215,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-1-1_11"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			ignoreChanges="true">
@@ -1167,6 +1234,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-1-2_11"
 			backId="Heizung-Installateur" previousId="Heizkreis-1-1_11">
 			<tns:Configuration admin="true" />
@@ -1184,6 +1252,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-1-3_11"
 			backId="Heizung-Installateur" previousId="Heizkreis-1-2_11">
 			<tns:Configuration admin="true" />
@@ -1201,6 +1270,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-1-4_11"
 			backId="Heizung-Installateur" previousId="Heizkreis-1-3_11">
 			<tns:Configuration admin="true" />
@@ -1222,6 +1292,7 @@
 				<tns:BottomRight X="200" Y="120" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-2-1_11"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			ignoreChanges="true">
@@ -1243,6 +1314,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-2-2_11"
 			backId="Heizung-Installateur" previousId="Heizkreis-2-1_11">
 			<tns:Configuration admin="true">
@@ -1263,6 +1335,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-2-3_11"
 			backId="Heizung-Installateur" previousId="Heizkreis-2-2_11">
 			<tns:Configuration admin="true">
@@ -1283,6 +1356,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Heizkreis-2-4_11"
 			backId="Heizung-Installateur" previousId="Heizkreis-2-3_11">
 			<tns:Configuration admin="true">
@@ -1307,6 +1381,7 @@
 				<tns:BottomRight X="200" Y="120" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Wasser-Installateur"
 			backId="Installateur-Menue" previousId="Installateur-Menue">
 			<tns:Configuration admin="true" />
@@ -1323,6 +1398,7 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Wasser-Anforderung-1/2"
 			backId="Wasser-Installateur" previousId="Wasser-Installateur">
 			<tns:Configuration admin="true" />
@@ -1340,6 +1416,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Wasser-Anforderung-2/2"
 			backId="Wasser-Installateur" previousId="Wasser-Anforderung-1/2">
 			<tns:Configuration admin="true" />
@@ -1357,6 +1434,7 @@
 				</tns:Ocr>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Wasser-Bereitschaft"
 			backId="Wasser-Installateur" previousId="Wasser-Installateur">
 			<tns:Configuration admin="true" />
@@ -1373,8 +1451,13 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 		<tns:Screen id="Zaehlfunktion" backId="Sonstiges-2"
 			previousId="Sonstiges-2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0000"
+					andMask="0x0100" />
+			</tns:Configuration>
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="85" />
@@ -1392,6 +1475,57 @@
 				<tns:BottomRight X="215" Y="120" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
+		<tns:Screen id="Zaehlfunktion-1_2" backId="Sonstiges-2"
+			previousId="Sonstiges-2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0100"
+					andMask="0x0100" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChange">
+				<tns:Coordinate X="220" Y="85" />
+			</tns:TouchPoint>
+			<tns:Identification>
+				<tns:Ocr value="1/2" right="true">
+					<tns:Rectangle>
+						<tns:TopLeft X="20" Y="2" />
+						<tns:BottomRight X="220" Y="13" />
+					</tns:Rectangle>
+					<tns:ScreenGraficRef refId="ZaehlfunktionRef" />
+				</tns:Ocr>
+			</tns:Identification>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="135" Y="15" />
+				<tns:BottomRight X="210" Y="120" />
+			</tns:IgnoreRectangle>
+		</tns:Screen>
+
+		<tns:Screen id="Zaehlfunktion-2_2" backId="Sonstiges-2"
+			previousId="Zaehlfunktion-1_2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0100"
+					andMask="0x0100" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChangeService">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:Identification>
+				<tns:Ocr value="2/2" right="true">
+					<tns:Rectangle>
+						<tns:TopLeft X="20" Y="2" />
+						<tns:BottomRight X="220" Y="13" />
+					</tns:Rectangle>
+					<tns:ScreenGraficRef refId="ZaehlfunktionRef" />
+				</tns:Ocr>
+			</tns:Identification>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="135" Y="15" />
+				<tns:BottomRight X="210" Y="120" />
+			</tns:IgnoreRectangle>
+		</tns:Screen>
+
 		<tns:Screen id="Uhrzeit/Datum" backId="Sonstiges-3"
 			previousId="Sonstiges-3">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -1411,6 +1545,7 @@
 				<tns:BottomRight X="150" Y="95" />
 			</tns:IgnoreRectangle>
 		</tns:Screen>
+
 		<tns:Screen id="Zeiteinstellung" backId="Uhrzeit/Datum"
 			previousId="Uhrzeit/Datum">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -1426,7 +1561,10 @@
 				</tns:Grafic>
 			</tns:Identification>
 		</tns:Screen>
+
 	</tns:Screens>
+
+
 	<tns:ScreenGrafics>
 		<tns:ScreenGrafic exact="true" id="Sonstiges">
 			<tns:Rectangle>
@@ -1434,10 +1572,9 @@
 				<tns:BottomRight X="45" Y="120" />
 			</tns:Rectangle>
 		</tns:ScreenGrafic>
-		<tns:ScreenGrafic id="Heizkreis">
-		</tns:ScreenGrafic>
-		<tns:ScreenGrafic id="Heizkreis Installateur">
-		</tns:ScreenGrafic>
+		<tns:ScreenGrafic id="Heizkreis" />
+		<tns:ScreenGrafic id="Heizkreis Installateur" />
+		<tns:ScreenGrafic id="ZaehlfunktionRef" />
 		<tns:ScreenGrafic id="Tagestemperatur" exact="true">
 			<tns:Rectangle>
 				<tns:TopLeft X="77" Y="80" />
@@ -1496,6 +1633,8 @@
 			<tns:Back />
 		</tns:LastChance>
 	</tns:FallBack>
+
+
 	<tns:ChannelDescriptions>
 		<tns:ChannelDescription id="X06.UhrzeitSolvis">
 			<tns:Measurement type="date">
@@ -1503,16 +1642,19 @@
 				<tns:Field position="202" length="6" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="I1.Anlagentyp">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="6" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="I2.Systemnummer">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="10" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S01.Warmwasserpuffer" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1520,6 +1662,7 @@
 				<tns:Field position="14" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S02.Warmwassertemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1527,6 +1670,7 @@
 				<tns:Field position="18" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S03.Speicherreferenztemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1534,6 +1678,7 @@
 				<tns:Field position="22" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S04.Heizungspuffertemperatur_oben" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1541,6 +1686,7 @@
 				<tns:Field position="26" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S05.Solarvorlauftemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1555,11 +1701,13 @@
 				<tns:Field position="34" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="S07.Solardruck">
 			<tns:Measurement type="signed" divisor="10">
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S08.Solarkollektortemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1567,6 +1715,7 @@
 				<tns:Field position="42" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S09.Heizungspuffertemperatur_unten" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1574,6 +1723,7 @@
 				<tns:Field position="46" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S10.Aussentemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1581,6 +1731,7 @@
 				<tns:Field position="50" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S11.ZirkulationRuecklauftemperatur" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1588,6 +1739,7 @@
 				<tns:Field position="54" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S12.Vorlauftemperatur_HK1" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1595,6 +1747,7 @@
 				<tns:Field position="58" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S13.Vorlauftemperatur_HK2" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1602,6 +1755,7 @@
 				<tns:Field position="62" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="S14"
 			buffered="true" unit="°C">
 			<tns:Configuration>
@@ -1613,6 +1767,7 @@
 				<tns:Field position="66" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="S14.Kesselfuehler"
 			buffered="true" unit="°C">
 			<tns:Configuration>
@@ -1624,6 +1779,7 @@
 				<tns:Field position="66" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S14.ErdwaermequelleVL" buffered="true" unit="°C">
 			<tns:Configuration>
@@ -1635,6 +1791,7 @@
 				<tns:Field position="66" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="S15"
 			buffered="true" unit="°C">
 			<tns:Configuration>
@@ -1646,6 +1803,7 @@
 				<tns:Field position="70" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S15.ErdwaermequelleRL" buffered="true" unit="°C">
 			<tns:Configuration>
@@ -1657,6 +1815,7 @@
 				<tns:Field position="70" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="S16"
 			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1664,53 +1823,63 @@
 				<tns:Field position="74" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S18.Durchfluss_Warmwasserzirkulation" buffered="true" unit="l/h">
 			<tns:Measurement type="unsigned" average="true">
 				<tns:Field position="78" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="S17.Durchfluss_Solarpanel" buffered="true" unit="l/h">
 			<tns:Measurement type="unsigned" average="true">
 				<tns:Field position="82" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="AIn1">
 			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="86" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="AIn2">
 			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="90" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="AIn3">
 			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="94" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="AOut0">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="98" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="AOut1">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="100" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="AOut2">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="102" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="AOut3">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="104" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="RF1.Raumfuehler_HK1" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1718,6 +1887,7 @@
 				<tns:Field position="106" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="RF2.Raumfuehler_HK2" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1725,6 +1895,7 @@
 				<tns:Field position="110" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="RF3.Raumfuehler_HK3" buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
@@ -1732,39 +1903,46 @@
 				<tns:Field position="114" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A01.Pumpe_Solar"
 			unit="%">
 			<tns:Measurement type="unsigned" fast="true">
 				<tns:Field position="118" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="A02.Pumpe_Warmwasser" unit="%">
 			<tns:Measurement type="unsigned" fast="true">
 				<tns:Field position="120" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A03.Pumpe_HK1">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="122" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A04.Pumpe_HK2">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="124" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="A05.Pumpe_Warmwasserzirkulation">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="126" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A06.Pumpe_HK3">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="128" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A07"><!-- not used -->
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x10"
@@ -1774,6 +1952,7 @@
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A07.Pumpe_Solar2"
 			unit="%">
 			<tns:Configuration>
@@ -1784,49 +1963,58 @@
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="A08.Mischer_HK1_auf">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="132" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A09.Mischer.HK1_zu">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="134" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="A10.Mischer_HK2_auf">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="136" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A11.Mischer.HK2_zu">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="138" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A12.Brenner">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="140" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A13.Brenner_S2">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="142" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="A14.Entstoerung">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="144" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="SE.Solarertrag_kWh"
 			buffered="true" unit="kWh">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="162" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="AOut5">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="176" length="2" />
@@ -1837,35 +2025,41 @@
 				<tns:Field position="192" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="SL.Solarleistung_kW" buffered="true" unit="kW">
 			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="196" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="X01.BrennerStarts">
 			<tns:Calculation strategy="starts">
 				<tns:Alias id="equipmentOn" dataId="A12.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="X02.BrennerLaufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime" correction="true">
 				<tns:Alias id="equipmentOn" dataId="A12.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="X03.BrennerStufe2Starts">
 			<tns:Calculation strategy="starts">
 				<tns:Alias id="equipmentOn" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="X04.BrennerStufe2Laufzeit_s" buffered="true" unit="s">
 			<tns:Calculation strategy="runtime" correction="true">
 				<tns:Alias id="equipmentOn" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="X05.BrennerStatus"
 			glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="burnerStatus">
@@ -1873,6 +2067,7 @@
 				<tns:Alias id="burnerLevel2On" dataId="A13.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="X07.MischerPosition0_HK1" glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="mixerPosition0">
@@ -1880,6 +2075,7 @@
 				<tns:Alias id="mixerClosing" dataId="A09.Mischer.HK1_zu" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="X08.MischerPosition0_HK2" glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="mixerPosition0">
@@ -1887,12 +2083,14 @@
 				<tns:Alias id="mixerClosing" dataId="A11.Mischer.HK2_zu" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="X09.LaufzeitSolarpumpe_s">
 			<tns:Calculation strategy="runtime">
 				<tns:Alias id="equipmentOn" dataId="A01.Pumpe_Solar" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="X10.LaufzeitSolarpumpe2_s">
 			<tns:Configuration>
@@ -1903,7 +2101,12 @@
 				<tns:Alias id="equipmentOn" dataId="A07.Pumpe_Solar2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="C01.StartsBrenner">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0000"
+					andMask="0x0100" />
+			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Zaehlfunktion">
 					<tns:CurrentValue>
@@ -1922,8 +2125,37 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
+		<tns:ChannelDescription id="C01.StartsBrenner">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0100"
+					andMask="0x0100" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Zaehlfunktion-2_2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="20" />
+						<tns:BottomRight X="200" Y="30" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="^(\d+)$" />
+				</tns:TypeRead>
+				<tns:UpdateBy>
+					<tns:EquipmentOnOff equipmentId="A12.Brenner"
+						calculatedId="X01.BrennerStarts">
+						<tns:Trigger id="X02.BrennerLaufzeit_s" />
+					</tns:EquipmentOnOff>
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C02.LaufzeitBrenner" unit="h">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0000"
+					andMask="0x0100" />
+			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Zaehlfunktion">
 					<tns:CurrentValue>
@@ -1942,8 +2174,38 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
+		<tns:ChannelDescription
+			id="C02.LaufzeitBrenner" unit="h">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0100"
+					andMask="0x0100" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Zaehlfunktion-2_2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="48" />
+						<tns:BottomRight X="200" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="^(\d+).$" />
+				</tns:TypeRead>
+				<tns:UpdateBy>
+					<tns:EquipmentOnOff equipmentId="A12.Brenner"
+						calculatedId="X02.BrennerLaufzeit_s" factor="3600" hourly="true"
+						checkIntervalId="checkCalculation"
+						readIntervalId="readCalculationInterval" />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C03.LaufzeitAnforderung2" unit="h">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0000"
+					andMask="0x0100" />
+			</tns:Configuration>
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Zaehlfunktion">
 					<tns:CurrentValue>
@@ -1962,6 +2224,32 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
+		<tns:ChannelDescription
+			id="C03.LaufzeitAnforderung2" unit="h">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0100"
+					andMask="0x0100" />
+			</tns:Configuration>
+			<tns:Control optional="true">
+				<tns:GuiAccess screenId="Zaehlfunktion-2_2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="75" />
+						<tns:BottomRight X="200" Y="88" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="^(\d+).$" />
+				</tns:TypeRead>
+				<tns:UpdateBy>
+					<tns:EquipmentOnOff equipmentId="A13.Brenner_S2"
+						calculatedId="X04.BrennerStufe2Laufzeit_s" factor="3600"
+						checkIntervalId="checkCalculation"
+						readIntervalId="readCalculationInterval" hourly="true" />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C04.WarmwasserPumpe">
 			<tns:Control>
@@ -2005,6 +2293,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C05.WassertemperaturSoll" unit="°C">
 			<tns:Control>
@@ -2033,6 +2322,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C06.Anlagenmodus_HK1">
 			<tns:Configuration>
@@ -2089,6 +2379,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C06.Anlagenmodus_HK1">
 			<tns:Configuration>
@@ -2148,6 +2439,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C07.Tagestemperatur_HK1" unit="°C">
 			<tns:Configuration>
@@ -2181,6 +2473,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C08.Nachttemperatur_HK1" unit="°C">
 			<tns:Configuration>
@@ -2214,6 +2507,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C09.TemperaturFeineinstellung_HK1">
 			<tns:Configuration>
@@ -2245,6 +2539,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C09.TemperaturFeineinstellung_HK1">
 			<tns:Configuration>
@@ -2279,6 +2574,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C10.Raumeinfluss_HK1" unit="%">
 			<tns:Control optional="true">
@@ -2307,6 +2603,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C11.Vorlauf_Soll_HK1" unit="°C">
 			<tns:Control>
@@ -2321,6 +2618,7 @@
 				</tns:TypeRead>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C12.Anlagenmodus_HK2">
 			<tns:Configuration>
@@ -2378,6 +2676,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C13.Tagestemperatur_HK2" unit="°C">
 			<tns:Configuration>
@@ -2411,6 +2710,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C14.Nachttemperatur_HK2" unit="°C">
 			<tns:Configuration>
@@ -2444,6 +2744,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C15.TemperaturFeineinstellung_HK2">
 			<tns:Configuration>
@@ -2476,6 +2777,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C16.Raumeinfluss_HK2" unit="%">
 			<tns:Configuration>
@@ -2508,6 +2810,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C17.Vorlauf_Soll_HK2" unit="°C">
 			<tns:Configuration>
@@ -2526,6 +2829,7 @@
 				</tns:TypeRead>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C18.Anlagenmodus_HK3">
 			<tns:Configuration>
@@ -2583,6 +2887,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C19.Tagestemperatur_HK3" unit="°C">
 			<tns:Configuration>
@@ -2616,6 +2921,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C20.Nachttemperatur_HK3" unit="°C">
 			<tns:Configuration>
@@ -2649,6 +2955,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C21.TemperaturFeineinstellung_HK3">
 			<tns:Configuration>
@@ -2681,6 +2988,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C22.Raumeinfluss_HK3" unit="%">
 			<tns:Configuration>
@@ -2713,6 +3021,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C23.Vorlauf_Soll_HK3" unit="°C">
 			<tns:Configuration>
@@ -2731,8 +3040,13 @@
 				</tns:TypeRead>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C24.LaufzeitSolarpumpe" unit="h">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0000"
+					andMask="0x0100" />
+			</tns:Configuration>
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Zaehlfunktion">
 					<tns:CurrentValue>
@@ -2752,11 +3066,38 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
+		<tns:ChannelDescription
+			id="C24.LaufzeitSolarpumpe" unit="h">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0100"
+					andMask="0x0100" />
+			</tns:Configuration>
+			<tns:Control optional="true">
+				<tns:GuiAccess screenId="Zaehlfunktion-1_2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="20" />
+						<tns:BottomRight X="200" Y="30" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="^(\d+).*$" />
+				</tns:TypeRead>
+				<tns:UpdateBy>
+					<tns:EquipmentOnOff
+						equipmentId="A01.Pumpe_Solar"
+						calculatedId="X09.LaufzeitSolarpumpe_s" factor="3600"
+						hourly="true" checkIntervalId="checkCalculation"
+						readIntervalId="readCalculationInterval" />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C25.LaufzeitSolarpumpe2" unit="h">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x10"
-					compareMask="0x10" />
+				<tns:ConfigurationMask andMask="0x0110"
+					compareMask="0x0010" />
 			</tns:Configuration>
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Zaehlfunktion">
@@ -2777,6 +3118,33 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
+		<tns:ChannelDescription
+			id="C25.LaufzeitSolarpumpe2" unit="h">
+			<tns:Configuration>
+				<tns:ConfigurationMask andMask="0x0110"
+					compareMask="0x0110" />
+			</tns:Configuration>
+			<tns:Control optional="true">
+				<tns:GuiAccess screenId="Zaehlfunktion-1_2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="48" />
+						<tns:BottomRight X="200" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="^(\d+).*$" />
+				</tns:TypeRead>
+				<tns:UpdateBy>
+					<tns:EquipmentOnOff
+						equipmentId="A07.Pumpe_Solar2"
+						calculatedId="X10.LaufzeitSolarpumpe2_s" factor="3600"
+						hourly="true" checkIntervalId="checkCalculation"
+						readIntervalId="readCalculationInterval" />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C26.Warmwasserzirkulation_Puls">
 			<tns:Control>
@@ -2793,6 +3161,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C27.Warmwasserzirkulation_Zeit">
 			<tns:Control>
@@ -2809,6 +3178,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C28.WW_Pumpe_Min_Laufzeit" unit="s">
 			<tns:Configuration>
@@ -2842,6 +3212,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C29.BetriebsartVT_HK1">
 			<tns:Configuration>
@@ -2891,6 +3262,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="C30.Steilheit_HK1">
 			<tns:Configuration>
 				<tns:Feature id="BetriebsartVT_HK" value="true" />
@@ -2925,6 +3297,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C31.Fix_Vorlauf_Tag_HK1" unit="°C">
 			<tns:Configuration>
@@ -2957,6 +3330,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C32.Fix_Vorlauf_Absenk_HK1" unit="°C">
 			<tns:Configuration>
@@ -2989,6 +3363,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C33.Min_Vorlauf_Temp_HK1" unit="°C">
 			<tns:Configuration admin="true">
@@ -3019,6 +3394,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C34.BetriebsartVT_HK2">
 			<tns:Configuration>
@@ -3070,6 +3446,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription id="C35.Steilheit_HK2">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x02"
@@ -3106,6 +3483,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C36.Fix_Vorlauf_Tag_HK2" unit="°C">
 			<tns:Configuration>
@@ -3140,6 +3518,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C37.Fix_Vorlauf_Absenk_HK2" unit="°C">
 			<tns:Configuration>
@@ -3174,6 +3553,7 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
 		<tns:ChannelDescription
 			id="C38.Min_Vorlauf_Temp_HK2" unit="°C">
 			<tns:Configuration admin="true">
@@ -3207,6 +3587,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 	</tns:ChannelDescriptions>
+
+
 	<tns:Preparations>
 		<tns:Preparation id="Button_HK1">
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -3220,6 +3602,7 @@
 				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Preparation>
+
 		<tns:Preparation id="Button_HK2">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -3232,6 +3615,7 @@
 				</tns:Rectangle>
 			</tns:ScreenGrafic>
 		</tns:Preparation>
+
 		<tns:Preparation id="Button_HK3">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -3245,6 +3629,8 @@
 			</tns:ScreenGrafic>
 		</tns:Preparation>
 	</tns:Preparations>
+
+
 	<tns:Clock timeChannelId="X06.UhrzeitSolvis"
 		screenId="Zeiteinstellung" okScreenId="Uhrzeit/Datum">
 		<tns:Year least="2008">
@@ -3342,6 +3728,8 @@
 		<tns:DisableClockSetting
 			burnerId="A12.Brenner" hotWaterPumpId="A02.Pumpe_Warmwasser" />
 	</tns:Clock>
+
+
 	<tns:Durations>
 		<!-- Standard-Zeit für das Drücken eines Bildschirmbuttons -->
 		<tns:Duration id="Standard" time_ms="400" />
@@ -3367,6 +3755,8 @@
 		<tns:Duration id="readCalculationInterval"
 			time_ms="30000" />
 	</tns:Durations>
+
+
 	<tns:Miscellaneous powerOffDetectedAfterIoErrors="3"
 		powerOffDetectedAfterTimeout_ms="180000"
 		measurementsBackupTime_ms="3600000" unsuccessfullWaitTime_ms="10000"

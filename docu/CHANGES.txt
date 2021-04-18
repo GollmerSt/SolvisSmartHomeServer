@@ -19,34 +19,35 @@ Version 01.02.11 rc1
 
     17.03.2021  forceUpdateAfterFastChangingIntervals in der base.xml hinzugefuegt
 
-    17.03.2021  Trigger-Tag in der control.xml hinzugefuegt. Damit lässt sich erreichen, dass
+    17.03.2021  Trigger-Tag in der control.xml hinzugefuegt. Damit laesst sich erreichen, dass
                 bei dem Update eines berechneten Wertes aus einem Cxx-Wert (und damit der
                 einen neue Synchronosierung fuer diesen berechneten Wert erfolgt) noch weitere
                 berechnete Werte neu synchronisiert werden.
 
-    18.03.2021  Betriebssystemabhängig und groeßenabhängig  erfolgte der Kopie-Vorgang der
+    18.03.2021  Betriebssystemabhaengig und groeßenabhaengig  erfolgte der Kopie-Vorgang der
                 xml- und xsd-Dateien nur teilweise. Dadurch war ein zweiter Start des Server
                 nicht mehr moeglich., da die xml-Dateien dadurch Strukturfehler aufwiesen.
 
-    21.03.2021  Format des Backup-Files geändert. Die neue Version ist abwärtskompatibel
-                jedoch nicht aufwärtskompatibel!
+    21.03.2021  Format des Backup-Files geaendert. Die neue Version ist abwaertskompatibel
+                jedoch nicht aufwaertskompatibel!
 
     24.03.2021  Runtime-Korrektur implementiert.
 
     06.04.2021  Bei A14-Anlagen-Fehler (Brenner-Stoerung) kam es zu einer Null-Pointer-Exception
 
-    06.04.2021  ClientId war nicht zufällig und meist negativ.
+    06.04.2021  ClientId war nicht zufaellig und meist negativ.
 
     07.04.2021  Runtime-Synchronisation verbessert
 
-    13.04.2021  Standby-Verhalten bei dem Auslesen/Setzen bestimmter Kanäle verbessert (Kurve/Fix).
+    13.04.2021  Standby-Verhalten bei dem Auslesen/Setzen bestimmter Kanaele verbessert
+                (Kurve/Fix).
     
-    16.04.2021	Synchronisierung nochmals geändert. Das verpassen der Synchronisation wird nun
+    16.04.2021	Synchronisierung nochmals geaendert. Das verpassen der Synchronisation wird nun
                 erkannt.
                 
-    17.04.2021  DefaultCorrection für Zählerwerte implementiert
+    17.04.2021  DefaultCorrection fuer Zaehlerwerte implementiert
                 
-    18.04.2021  Die Zählfunktionen sind bei der SolvisMax 7 bei bestimmten Firmwareversioenen auf
+    18.04.2021  Die Zaehlfunktionen sind bei der SolvisMax 7 bei bestimmten Firmwareversioenen auf
                 2 Bildschirmen verteilt. Es wurde daher ein weiteres Bit in der Configuration-Mask
                 reserviert (0x0100) und die Steuerdatei "control.xml" entsprechend erweitert.
 

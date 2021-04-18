@@ -14,15 +14,19 @@
 		<!-- 0x0020: externer Brennkessel mit Temperaturfühler an S14 -->
 		<!-- 0x0040: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
 		<!-- 0x0080: Solar Ost + West, Kollektor West an S16 -->
-		<!-- 0x0100: Zählfunktion besitzt 2 Screens -->
+		<!-- 0x0100: Zählfunktion besitzt 2 Screens (SolvisMax 7) -->
 		<tns:Unit id="mySolvis" type="SolvisMax" configOrMask="0x00"
-			fwLth2_21_02A="true" account="account" passwordCrypt="AES-coded"
-			url="aaa.bbb.ccc.ddd" defaultAverageCount="12"
-			measurementHysteresisFactor="4" measurementsInterval_s="10"
+			fwLth2_21_02A="true" 
+			account="account" passwordCrypt="AES-coded" url="aaa.bbb.ccc.ddd"
+			defaultAverageCount="12"
+			measurementHysteresisFactor="4"
+			measurementsInterval_s="10"
 			measurementsIntervalFast_s="10"
 			forceUpdateAfterFastChangingIntervals="3"
-			forcedUpdateInterval_ms="3600000" doubleUpdateInterval_ms="10000"
-			bufferedInterval_ms="60000" watchDogTime_ms="30000"
+			forcedUpdateInterval_ms="3600000"
+			doubleUpdateInterval_ms="10000"
+			bufferedInterval_ms="60000"
+			watchDogTime_ms="30000"
 			releaseBlockingAfterUserAccess_ms="300000"
 			releaseBlockingAfterServiceAccess_ms="3600000"
 			delayAfterSwitchingOnEnable="true"
