@@ -20,10 +20,10 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis.SynchronizedScreenResult;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver.State;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
+import de.sgollmer.solvismax.model.objects.unit.Unit;
 import de.sgollmer.solvismax.objects.Rectangle;
 
 public class WatchDog {

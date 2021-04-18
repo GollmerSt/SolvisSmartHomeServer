@@ -1,4 +1,4 @@
-package de.sgollmer.solvismax.model.objects;
+package de.sgollmer.solvismax.model.objects.unit;
 
 import java.io.IOException;
 import java.util.HashMap;

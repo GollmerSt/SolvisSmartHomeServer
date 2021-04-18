@@ -24,8 +24,8 @@ import de.sgollmer.solvismax.model.objects.Measurements;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
-import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
+import de.sgollmer.solvismax.model.objects.unit.Unit;
 
 public final class Distributor extends Observable<ISendData> {
 

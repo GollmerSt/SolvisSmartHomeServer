@@ -25,10 +25,10 @@ import de.sgollmer.solvismax.error.MqttInterfaceException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.CommandSetScreen;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Units.Unit;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
+import de.sgollmer.solvismax.model.objects.unit.Unit;
 
 final class Callback implements MqttCallbackExtended {
 	/**

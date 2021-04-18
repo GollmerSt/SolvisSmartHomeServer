@@ -7,7 +7,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.model.objects.Units.Unit;
+import de.sgollmer.solvismax.model.objects.unit.Unit;
 import de.sgollmer.solvismax.helper.Helper.Runnable;
 
 public class MqttQueue extends Runnable {

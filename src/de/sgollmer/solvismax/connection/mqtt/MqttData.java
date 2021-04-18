@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.connection.mqtt;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.Units.Unit;
+import de.sgollmer.solvismax.model.objects.unit.Unit;
 
 public class MqttData implements Cloneable {
 	final String topicSuffix;

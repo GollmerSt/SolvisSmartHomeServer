@@ -142,6 +142,12 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 			}
 		}
 	}
+	
+	public void setDefaultCorrection() {
+		for ( Correction correction : this.corrections.values() ) {
+			this.solvis.getUnit().setDefaultCorrection( correction) ;
+		}
+	}
 
 	public synchronized Measurements getMeasurements() {
 		Measurements measurements = new Measurements();

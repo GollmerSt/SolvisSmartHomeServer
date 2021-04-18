@@ -74,6 +74,9 @@
 			<element name="IgnoredChannels" type="tns:IgnoredChannels"
 				maxOccurs="1" minOccurs="0">
 			</element>
+			<element name="DefaultCorrections"
+				type="tns:DefaultCorrections" maxOccurs="1" minOccurs="0">
+			</element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -633,5 +636,20 @@
 	</complexType>
 
 	<complexType name="RegEx" mixed="true">
+	</complexType>
+
+	<complexType name="DefaultCorrections">
+		<sequence>
+			<element name="Correction" type="tns:Correction" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Correction">
+
+		<attribute name="regEx" type="string" use="required"></attribute>
+		<attribute name="value_us" type="int" use="required">
+			<annotation>
+				<documentation>Correction value. The unit of teh value is specified to us.</documentation>
+			</annotation></attribute>
 	</complexType>
 </schema>

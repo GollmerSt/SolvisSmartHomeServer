@@ -40,10 +40,10 @@ public class Correction implements SystemBackup.IValue {
 	public Correction(String id) {
 		this(id, 0, 0);
 	}
-	
-	public void set( Correction correction ) {
+
+	public void set(Correction correction) {
 		this.data = correction.data;
-		this.cnt=correction.cnt;
+		this.cnt = correction.cnt;
 	}
 
 	public static class Creator extends CreatorByXML<Correction> {
@@ -112,6 +112,10 @@ public class Correction implements SystemBackup.IValue {
 		return (int) (this.data * (long) factor / this.cnt);
 	}
 
+	public boolean valid() {
+		return (this.cnt != 0);
+	}
+
 	public double getDouble() {
 		if (this.cnt == 0) {
 			return 0;
@@ -129,8 +133,8 @@ public class Correction implements SystemBackup.IValue {
 		this.cnt += cnt;
 		this.data += data;
 
-		logger.debug(Constants.Debug.CORRECTION,
-				"Correction (data/cnt): (" + this.data + "/" + this.cnt + "), current correction value: " + this.get(1));
+		logger.debug(Constants.Debug.CORRECTION, "Correction (data/cnt): (" + this.data + "/" + this.cnt
+				+ "), current correction value: " + this.get(1));
 	}
 
 }

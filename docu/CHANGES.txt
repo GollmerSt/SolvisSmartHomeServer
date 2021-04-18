@@ -1,6 +1,6 @@
 A E N D E R U N G E N
 
-Version 01.02.11
+Version 01.02.11 rc1
 
     11.03.2021  Mqtt-Interface verbessert. Die Mqtt-Schnittstelle hat nun die gleiche
                 Funkrionalitaet wie die Server-Client-Schnittstelle. Nun erfolgt - gesteuert durch
@@ -43,6 +43,12 @@ Version 01.02.11
     
     16.04.2021	Synchronisierung nochmals geändert. Das verpassen der Synchronisation wird nun
                 erkannt.
+                
+    17.04.2021  DefaultCorrection für Zählerwerte implementiert
+                
+    18.04.2021  Die Zählfunktionen sind bei der SolvisMax 7 bei bestimmten Firmwareversioenen auf
+                2 Bildschirmen verteilt. Es wurde daher ein weiteres Bit in der Configuration-Mask
+                reserviert (0x0100) und die Steuerdatei "control.xml" entsprechend erweitert.
 
 
 
