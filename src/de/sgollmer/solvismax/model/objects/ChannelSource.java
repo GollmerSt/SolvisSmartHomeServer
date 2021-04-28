@@ -34,20 +34,14 @@ public abstract class ChannelSource implements IChannelSource {
 	}
 
 	protected abstract SingleData<?> createSingleData(String value, long timeStamp) throws TypeException;
-	
+
 	public boolean isGlitchDetectionAllowed() {
-		return true ;
+		return true;
 	}
-	
+
 	@Override
 	public boolean isFast() {
 		return false;
 	}
-
-
-//	@Override
-//	public Integer getScanInterval_ms(Solvis solvis) {
-//		return null;
-//	}
 
 }

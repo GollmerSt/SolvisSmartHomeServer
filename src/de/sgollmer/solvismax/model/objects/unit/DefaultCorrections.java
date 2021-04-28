@@ -35,7 +35,7 @@ public class DefaultCorrections {
 		private final Pattern regEx;
 		private final int correction;
 
-		public DefaultCorrection(Pattern regEx, int correction) {
+		private DefaultCorrection(Pattern regEx, int correction) {
 			this.regEx = regEx;
 			this.correction = correction;
 		}

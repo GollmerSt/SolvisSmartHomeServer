@@ -21,6 +21,7 @@ import de.sgollmer.solvismax.model.objects.Alias;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
+import de.sgollmer.solvismax.model.objects.IInstance;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.IMode;
@@ -46,7 +47,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis) {
+	public boolean getValue(SolvisData dest, Solvis solvis, long executionStartTime) {
 		return this.strategy.getValue(dest, solvis);
 	}
 
@@ -77,8 +78,9 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) throws AssignmentException, AliasException {
+	public IInstance instantiate(Solvis solvis) throws AssignmentException, AliasException {
 		this.strategy.instantiate(solvis);
+		return null;
 	}
 
 	/**

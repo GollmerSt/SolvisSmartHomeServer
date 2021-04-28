@@ -18,6 +18,9 @@
 		<!-- 0x0040: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
 		<!-- 0x0080: Solar Ost + West S16 Kollektor West -->
 		<!-- 0x0100: Zählfunktion besitzt 2 Screens -->
+		<!-- 0x0200: Fernwärme -->
+		<!-- 0x0400: Festbrennstoffkessel -->
+
 	</tns:SolvisTypes>
 
 
@@ -51,9 +54,9 @@
 
 
 	<tns:Standby>
-		<tns:Channel id="C06.Anlagenmodus_HK1" value="Standby" />
-		<tns:Channel id="C12.Anlagenmodus_HK2" value="Standby" />
-		<tns:Channel id="C18.Anlagenmodus_HK3" value="Standby" />
+		<tns:Channel id="C06" value="Standby" />
+		<tns:Channel id="C12" value="Standby" />
+		<tns:Channel id="C18" value="Standby" />
 	</tns:Standby>
 
 
@@ -84,7 +87,7 @@
 			<tns:TopLeft X="190" Y="80" />
 			<tns:BottomRight X="238" Y="91" />
 		</tns:DdMmYy>
-		<tns:ErrorCondition channelId="A14.Entstoerung"
+		<tns:ErrorCondition channelId="A14"
 			value="true" />
 	</tns:ErrorDetection>
 
@@ -1382,6 +1385,95 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 
+		<tns:Screen id="Heizkreis-3-1_11"
+			backId="Heizung-Installateur" previousId="Heizung-Installateur"
+			ignoreChanges="true">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChangeService">
+				<tns:Coordinate X="20" Y="65" />
+			</tns:TouchPoint>
+			<tns:Identification>
+				<tns:Ocr value="31/11" right="true">
+					<tns:Rectangle>
+						<tns:TopLeft X="35" Y="2" />
+						<tns:BottomRight X="205" Y="13" />
+					</tns:Rectangle>
+					<tns:ScreenGraficRef refId="Heizkreis" />
+				</tns:Ocr>
+			</tns:Identification>
+		</tns:Screen>
+
+		<tns:Screen id="Heizkreis-3-2_11"
+			backId="Heizung-Installateur" previousId="Heizkreis-3-1_11">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChangeService">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:Identification>
+				<tns:Ocr value="32/11" right="true">
+					<tns:Rectangle>
+						<tns:TopLeft X="35" Y="2" />
+						<tns:BottomRight X="205" Y="13" />
+					</tns:Rectangle>
+					<tns:ScreenGraficRef refId="Heizkreis" />
+				</tns:Ocr>
+			</tns:Identification>
+		</tns:Screen>
+
+		<tns:Screen id="Heizkreis-3-3_11"
+			backId="Heizung-Installateur" previousId="Heizkreis-3-2_11">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChangeService">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:Identification>
+				<tns:Ocr value="33/11" right="true">
+					<tns:Rectangle>
+						<tns:TopLeft X="35" Y="2" />
+						<tns:BottomRight X="205" Y="13" />
+					</tns:Rectangle>
+					<tns:ScreenGraficRef refId="Heizkreis" />
+				</tns:Ocr>
+			</tns:Identification>
+		</tns:Screen>
+
+		<tns:Screen id="Heizkreis-3-4_11"
+			backId="Heizung-Installateur" previousId="Heizkreis-3-3_11">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+			</tns:Configuration>
+			<tns:TouchPoint pushTimeRefId="Standard"
+				releaseTimeRefId="WindowChangeService">
+				<tns:Coordinate X="225" Y="110" />
+			</tns:TouchPoint>
+			<tns:Identification>
+				<tns:Ocr value="34/11" right="true">
+					<tns:Rectangle>
+						<tns:TopLeft X="35" Y="2" />
+						<tns:BottomRight X="205" Y="13" />
+					</tns:Rectangle>
+					<tns:ScreenGraficRef refId="Heizkreis" />
+				</tns:Ocr>
+			</tns:Identification>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="150" Y="70" />
+				<tns:BottomRight X="200" Y="120" />
+			</tns:IgnoreRectangle>
+		</tns:Screen>
+
 		<tns:Screen id="Wasser-Installateur"
 			backId="Installateur-Menue" previousId="Installateur-Menue">
 			<tns:Configuration admin="true" />
@@ -1636,7 +1728,7 @@
 
 
 	<tns:ChannelDescriptions>
-		<tns:ChannelDescription id="X06.UhrzeitSolvis">
+		<tns:ChannelDescription id="X06">
 			<tns:Measurement type="date">
 				<tns:Field position="0" length="6" />
 				<tns:Field position="202" length="6" />
@@ -1655,101 +1747,101 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S01.Warmwasserpuffer" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S01"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="14" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S02.Warmwassertemperatur" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S02"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="18" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S03.Speicherreferenztemperatur" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S03"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="22" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S04.Heizungspuffertemperatur_oben" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S04"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="26" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S05.Solarvorlauftemperatur" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S05"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="30" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
-		<tns:ChannelDescription
-			id="S06.Solarruecklauftemperatur" buffered="true">
+		<tns:ChannelDescription id="S06"
+			buffered="true">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="34" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="S07.Solardruck">
+		<tns:ChannelDescription id="S07">
 			<tns:Measurement type="signed" divisor="10">
 				<tns:Field position="38" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S08.Solarkollektortemperatur" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S08"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="42" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S09.Heizungspuffertemperatur_unten" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S09"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" delayAfterSwitchingOn_ms="600000">
 				<tns:Field position="46" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S10.Aussentemperatur" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S10"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" delayAfterSwitchingOn_ms="900000">
 				<tns:Field position="50" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S11.ZirkulationRuecklauftemperatur" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S11"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="54" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S12.Vorlauftemperatur_HK1" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S12"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="58" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S13.Vorlauftemperatur_HK2" buffered="true" unit="°C">
+		<tns:ChannelDescription id="S13"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="62" length="4" />
@@ -1758,34 +1850,6 @@
 
 		<tns:ChannelDescription id="S14"
 			buffered="true" unit="°C">
-			<tns:Configuration>
-				<tns:ConfigurationMask compareMask="0x00"
-					andMask="0x20" />
-			</tns:Configuration>
-			<tns:Measurement type="signed" average="true"
-				divisor="10">
-				<tns:Field position="66" length="4" />
-			</tns:Measurement>
-		</tns:ChannelDescription>
-
-		<tns:ChannelDescription id="S14.Kesselfuehler"
-			buffered="true" unit="°C">
-			<tns:Configuration>
-				<tns:ConfigurationMask compareMask="0x60"
-					andMask="0x20" />
-			</tns:Configuration>
-			<tns:Measurement type="signed" average="true"
-				divisor="10">
-				<tns:Field position="66" length="4" />
-			</tns:Measurement>
-		</tns:ChannelDescription>
-
-		<tns:ChannelDescription
-			id="S14.ErdwaermequelleVL" buffered="true" unit="°C">
-			<tns:Configuration>
-				<tns:ConfigurationMask compareMask="0x60"
-					andMask="0x40" />
-			</tns:Configuration>
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="66" length="4" />
@@ -1794,22 +1858,6 @@
 
 		<tns:ChannelDescription id="S15"
 			buffered="true" unit="°C">
-			<tns:Configuration>
-				<tns:ConfigurationMask compareMask="0x00"
-					andMask="0x40" />
-			</tns:Configuration>
-			<tns:Measurement type="signed" average="true"
-				divisor="10">
-				<tns:Field position="70" length="4" />
-			</tns:Measurement>
-		</tns:ChannelDescription>
-
-		<tns:ChannelDescription
-			id="S15.ErdwaermequelleRL" buffered="true" unit="°C">
-			<tns:Configuration>
-				<tns:ConfigurationMask compareMask="0x40"
-					andMask="0x40" />
-			</tns:Configuration>
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="70" length="4" />
@@ -1824,285 +1872,291 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="S18.Durchfluss_Warmwasserzirkulation" buffered="true" unit="l/h">
-			<tns:Measurement type="unsigned" average="true">
-				<tns:Field position="78" length="4" />
-			</tns:Measurement>
-		</tns:ChannelDescription>
-
-		<tns:ChannelDescription
-			id="S17.Durchfluss_Solarpanel" buffered="true" unit="l/h">
+		<tns:ChannelDescription id="S17"
+			buffered="true" unit="l/h">
 			<tns:Measurement type="unsigned" average="true">
 				<tns:Field position="82" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="AIn1">
+		<tns:ChannelDescription id="S18"
+			buffered="true" unit="l/h">
+			<tns:Measurement type="unsigned" average="true">
+				<tns:Field position="78" length="4" />
+			</tns:Measurement>
+		</tns:ChannelDescription>
+
+		<tns:ChannelDescription id="I-1">
 			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="86" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="AIn2">
+		<tns:ChannelDescription id="I-2">
 			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="90" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="AIn3">
+		<tns:ChannelDescription id="I-3">
 			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="94" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="AOut0">
-			<tns:Measurement type="unsigned">
+		<tns:ChannelDescription id="O-1">
+			<tns:Measurement type="unsigned" fast="true">
 				<tns:Field position="98" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="AOut1">
-			<tns:Measurement type="unsigned">
+		<tns:ChannelDescription id="O-2">
+			<tns:Measurement type="unsigned" fast="true">
 				<tns:Field position="100" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="AOut2">
-			<tns:Measurement type="unsigned">
+		<tns:ChannelDescription id="O-3">
+			<tns:Measurement type="unsigned" fast="true">
 				<tns:Field position="102" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="AOut3">
-			<tns:Measurement type="unsigned">
+		<tns:ChannelDescription id="O-4">
+			<tns:Measurement type="unsigned" fast="true">
 				<tns:Field position="104" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="RF1.Raumfuehler_HK1" buffered="true" unit="°C">
+		<tns:ChannelDescription id="O-5">
+			<tns:Measurement type="unsigned" fast="true">
+				<tns:Field position="176" length="2" />
+			</tns:Measurement>
+		</tns:ChannelDescription>
+
+		<tns:ChannelDescription id="RF1"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10" delayAfterSwitchingOn_ms="1500000">
 				<tns:Field position="106" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="RF2.Raumfuehler_HK2" buffered="true" unit="°C">
+		<tns:ChannelDescription id="RF2"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="110" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="RF3.Raumfuehler_HK3" buffered="true" unit="°C">
+		<tns:ChannelDescription id="RF3"
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="114" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A01.Pumpe_Solar"
-			unit="%">
+		<tns:ChannelDescription id="A01">
 			<tns:Measurement type="unsigned" fast="true">
 				<tns:Field position="118" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="A02.Pumpe_Warmwasser" unit="%">
+		<tns:ChannelDescription id="A02">
 			<tns:Measurement type="unsigned" fast="true">
 				<tns:Field position="120" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A03.Pumpe_HK1">
+		<tns:ChannelDescription id="A03">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="122" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A04.Pumpe_HK2">
+		<tns:ChannelDescription id="A04">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="124" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="A05.Pumpe_Warmwasserzirkulation">
+		<tns:ChannelDescription id="A05">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="126" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A06.Pumpe_HK3">
+		<tns:ChannelDescription id="A06">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="128" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A07"><!-- not used -->
-			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x10"
-					compareMask="0x00" />
-			</tns:Configuration>
+		<tns:ChannelDescription id="A07">
 			<tns:Measurement type="boolean">
 				<tns:Field position="130" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A07.Pumpe_Solar2"
-			unit="%">
-			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x10"
-					compareMask="0x10" />
-			</tns:Configuration>
-			<tns:Measurement type="unsigned" fast="true">
-				<tns:Field position="130" length="2" />
-			</tns:Measurement>
-		</tns:ChannelDescription>
-
-		<tns:ChannelDescription
-			id="A08.Mischer_HK1_auf">
+		<tns:ChannelDescription id="A08">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="132" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A09.Mischer.HK1_zu">
+		<tns:ChannelDescription id="A09">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="134" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="A10.Mischer_HK2_auf">
+		<tns:ChannelDescription id="A10">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="136" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A11.Mischer.HK2_zu">
+		<tns:ChannelDescription id="A11">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="138" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A12.Brenner">
+		<tns:ChannelDescription id="A12">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="140" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A13.Brenner_S2">
+		<tns:ChannelDescription id="A13">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="142" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="A14.Entstoerung">
+		<tns:ChannelDescription id="A14">
 			<tns:Measurement type="boolean" fast="true">
 				<tns:Field position="144" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="SE.Solarertrag_kWh"
-			buffered="true" unit="kWh">
+		<tns:ChannelDescription id="SE" buffered="true"
+			unit="kWh">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="162" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="AOut5">
-			<tns:Measurement type="unsigned">
-				<tns:Field position="176" length="2" />
-			</tns:Measurement>
-		</tns:ChannelDescription>
 		<tns:ChannelDescription id=".isSerie7">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="192" length="2" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="SL.Solarleistung_kW" buffered="true" unit="kW">
+		<tns:ChannelDescription id="SL" buffered="true"
+			unit="kW">
 			<tns:Measurement type="unsigned" divisor="10">
 				<tns:Field position="196" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="X01.BrennerStarts">
+		<!-- BrennerStarts -->
+		<tns:ChannelDescription id="X01">
 			<tns:Calculation strategy="starts">
-				<tns:Alias id="equipmentOn" dataId="A12.Brenner" />
+				<tns:Alias id="equipmentOn" dataId="alias.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="X02.BrennerLaufzeit_s" buffered="true" unit="s">
+		<!-- BrennerLaufzeit_s -->
+		<tns:ChannelDescription id="X02"
+			buffered="true" unit="s">
 			<tns:Calculation strategy="runtime" correction="true">
-				<tns:Alias id="equipmentOn" dataId="A12.Brenner" />
+				<tns:Alias id="equipmentOn" dataId="alias.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="X03.BrennerStufe2Starts">
+		<!-- BrennerStufe2Starts -->
+		<tns:ChannelDescription id="X03">
 			<tns:Calculation strategy="starts">
-				<tns:Alias id="equipmentOn" dataId="A13.Brenner_S2" />
+				<tns:Alias id="equipmentOn" dataId="alias.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="X04.BrennerStufe2Laufzeit_s" buffered="true" unit="s">
+		<!-- BrennerStufe2Laufzeit_s -->
+		<tns:ChannelDescription id="X04"
+			buffered="true" unit="s">
 			<tns:Calculation strategy="runtime" correction="true">
-				<tns:Alias id="equipmentOn" dataId="A13.Brenner_S2" />
+				<tns:Alias id="equipmentOn" dataId="alias.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="X05.BrennerStatus"
+		<!-- BrennerStatus -->
+		<tns:ChannelDescription id="X05"
 			glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="burnerStatus">
-				<tns:Alias id="burnerLevel1On" dataId="A12.Brenner" />
-				<tns:Alias id="burnerLevel2On" dataId="A13.Brenner_S2" />
+				<tns:Alias id="burnerLevel1On" dataId="alias.Brenner" />
+				<tns:Alias id="burnerLevel2On" dataId="alias.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="X07.MischerPosition0_HK1" glitchInhibitTime_ms="20000">
+		<!-- MischerPosition0_HK1 -->
+		<tns:ChannelDescription id="X07"
+			glitchInhibitTime_ms="20000">
 			<tns:Calculation strategy="mixerPosition0">
-				<tns:Alias id="pumpOn" dataId="A03.Pumpe_HK1" />
-				<tns:Alias id="mixerClosing" dataId="A09.Mischer.HK1_zu" />
+				<tns:Alias id="pumpOn" dataId="alias.Pumpe_HK1" />
+				<tns:Alias id="mixerClosing" dataId="alias.Mischer_HK1_zu" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="X08.MischerPosition0_HK2" glitchInhibitTime_ms="20000">
-			<tns:Calculation strategy="mixerPosition0">
-				<tns:Alias id="pumpOn" dataId="A04.Pumpe_HK2" />
-				<tns:Alias id="mixerClosing" dataId="A11.Mischer.HK2_zu" />
-			</tns:Calculation>
-		</tns:ChannelDescription>
-
-		<tns:ChannelDescription
-			id="X09.LaufzeitSolarpumpe_s">
-			<tns:Calculation strategy="runtime">
-				<tns:Alias id="equipmentOn" dataId="A01.Pumpe_Solar" />
-			</tns:Calculation>
-		</tns:ChannelDescription>
-
-		<tns:ChannelDescription
-			id="X10.LaufzeitSolarpumpe2_s">
+		<!-- MischerPosition0_HK2 -->
+		<tns:ChannelDescription id="X08"
+			glitchInhibitTime_ms="20000">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x10"
-					compareMask="0x10" />
+				<tns:ConfigurationMask compareMask="0x0002"
+					andMask="0x0002" />
+			</tns:Configuration>
+			<tns:Calculation strategy="mixerPosition0">
+				<tns:Alias id="pumpOn" dataId="alias.Pumpe_HK2" />
+				<tns:Alias id="mixerClosing" dataId="alias.Mischer_HK2_zu" />
+			</tns:Calculation>
+		</tns:ChannelDescription>
+
+		<!-- MischerPosition0_HK3 -->
+		<tns:ChannelDescription id="X09"
+			glitchInhibitTime_ms="20000">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0004"
+					andMask="0x0004" />
+			</tns:Configuration>
+			<tns:Calculation strategy="mixerPosition0">
+				<tns:Alias id="pumpOn" dataId="alias.Pumpe_HK3" />
+				<tns:Alias id="mixerClosing" dataId="alias.Mischer_HK3_zu" />
+			</tns:Calculation>
+		</tns:ChannelDescription>
+
+		<!-- LaufzeitSolarpumpe_s -->
+		<tns:ChannelDescription id="X10">
+		<tns:Configuration><tns:ConfigurationMask compareMask="0x08" andMask="0x08"/></tns:Configuration>
+			<tns:Calculation strategy="runtime">
+				<tns:Alias id="equipmentOn" dataId="alias.Pumpe_Solar" />
+			</tns:Calculation>
+		</tns:ChannelDescription>
+
+		<!-- LaufzeitSolarpumpe2_s -->
+		<tns:ChannelDescription id="X11">
+			<tns:Configuration>
+				<tns:ConfigurationMask andMask="0x18"
+					compareMask="0x18" />
 			</tns:Configuration>
 			<tns:Calculation strategy="runtime">
-				<tns:Alias id="equipmentOn" dataId="A07.Pumpe_Solar2" />
+				<tns:Alias id="equipmentOn" dataId="alias.Pumpe_Solar2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="C01.StartsBrenner">
+		<!-- StartsBrenner -->
+		<tns:ChannelDescription id="C01">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x0000"
 					andMask="0x0100" />
@@ -2118,15 +2172,15 @@
 					<tns:GuiRead format="^(\d+)$" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
-					<tns:EquipmentOnOff equipmentId="A12.Brenner"
-						calculatedId="X01.BrennerStarts">
-						<tns:Trigger id="X02.BrennerLaufzeit_s" />
+					<tns:EquipmentOnOff equipmentId="alias.Brenner"
+						calculatedId="X01">
+						<tns:Trigger id="X02" />
 					</tns:EquipmentOnOff>
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="C01.StartsBrenner">
+		<tns:ChannelDescription id="C01">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x0100"
 					andMask="0x0100" />
@@ -2142,16 +2196,16 @@
 					<tns:GuiRead format="^(\d+)$" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
-					<tns:EquipmentOnOff equipmentId="A12.Brenner"
-						calculatedId="X01.BrennerStarts">
-						<tns:Trigger id="X02.BrennerLaufzeit_s" />
+					<tns:EquipmentOnOff equipmentId="alias.Brenner"
+						calculatedId="X01">
+						<tns:Trigger id="X02" />
 					</tns:EquipmentOnOff>
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C02.LaufzeitBrenner" unit="h">
+		<!-- LaufzeitBrenner -->
+		<tns:ChannelDescription id="C02" unit="h">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x0000"
 					andMask="0x0100" />
@@ -2167,16 +2221,15 @@
 					<tns:GuiRead format="^(\d+).$" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
-					<tns:EquipmentOnOff equipmentId="A12.Brenner"
-						calculatedId="X02.BrennerLaufzeit_s" factor="3600" hourly="true"
+					<tns:EquipmentOnOff equipmentId="alias.Brenner"
+						calculatedId="X02" factor="3600" hourly="true"
 						checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C02.LaufzeitBrenner" unit="h">
+		<tns:ChannelDescription id="C02" unit="h">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x0100"
 					andMask="0x0100" />
@@ -2192,16 +2245,16 @@
 					<tns:GuiRead format="^(\d+).$" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
-					<tns:EquipmentOnOff equipmentId="A12.Brenner"
-						calculatedId="X02.BrennerLaufzeit_s" factor="3600" hourly="true"
+					<tns:EquipmentOnOff equipmentId="alias.Brenner"
+						calculatedId="X02" factor="3600" hourly="true"
 						checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C03.LaufzeitAnforderung2" unit="h">
+		<!-- LaufzeitAnforderung2 -->
+		<tns:ChannelDescription id="C03" unit="h">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x0000"
 					andMask="0x0100" />
@@ -2217,16 +2270,16 @@
 					<tns:GuiRead format="^(\d+).$" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
-					<tns:EquipmentOnOff equipmentId="A13.Brenner_S2"
-						calculatedId="X04.BrennerStufe2Laufzeit_s" factor="3600"
+					<tns:EquipmentOnOff
+						equipmentId="alias.Brenner_S2"
+						calculatedId="X04" factor="3600"
 						checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" hourly="true" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C03.LaufzeitAnforderung2" unit="h">
+		<tns:ChannelDescription id="C03" unit="h">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x0100"
 					andMask="0x0100" />
@@ -2242,16 +2295,17 @@
 					<tns:GuiRead format="^(\d+).$" />
 				</tns:TypeRead>
 				<tns:UpdateBy>
-					<tns:EquipmentOnOff equipmentId="A13.Brenner_S2"
-						calculatedId="X04.BrennerStufe2Laufzeit_s" factor="3600"
+					<tns:EquipmentOnOff
+						equipmentId="alias.Brenner_S2"
+						calculatedId="X04" factor="3600"
 						checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" hourly="true" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C04.WarmwasserPumpe">
+		<!-- WarmwasserPumpe -->
+		<tns:ChannelDescription id="C04">
 			<tns:Control>
 				<tns:GuiAccess screenId="Warmwasser">
 					<tns:CurrentValue>
@@ -2294,8 +2348,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C05.WassertemperaturSoll" unit="°C">
+		<!-- WassertemperaturSoll -->
+		<tns:ChannelDescription id="C05" unit="°C">
 			<tns:Control>
 				<tns:GuiAccess screenId="Warmwasser">
 					<tns:CurrentValue>
@@ -2323,8 +2377,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C06.Anlagenmodus_HK1">
+		<!-- Anlagenmodus_HK1 -->
+		<tns:ChannelDescription id="C06">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
@@ -2380,8 +2434,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C06.Anlagenmodus_HK1">
+		<tns:ChannelDescription id="C06">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -2440,8 +2493,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C07.Tagestemperatur_HK1" unit="°C">
+		<!-- Tagestemperatur_HK1 -->
+		<tns:ChannelDescription id="C07" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
@@ -2452,7 +2505,7 @@
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C06.Anlagenmodus_HK1" />
+					<tns:Dependency id="C06" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2474,8 +2527,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C08.Nachttemperatur_HK1" unit="°C">
+		<!-- Nachttemperatur_HK1 -->
+		<tns:ChannelDescription id="C08" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x01"
 					compareMask="0x01" />
@@ -2486,7 +2539,7 @@
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C06.Anlagenmodus_HK1" />
+					<tns:Dependency id="C06" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2508,8 +2561,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C09.TemperaturFeineinstellung_HK1">
+		<!-- TemperaturFeineinstellung_HK1 -->
+		<tns:ChannelDescription id="C09">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
@@ -2540,8 +2593,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C09.TemperaturFeineinstellung_HK1">
+		<tns:ChannelDescription id="C09">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -2575,8 +2627,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C10.Raumeinfluss_HK1" unit="%">
+		<!-- Raumeinfluss_HK1 -->
+		<tns:ChannelDescription id="C10" unit="%">
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Heizkreis-1-4_5">
 					<tns:CurrentValue>
@@ -2604,8 +2656,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C11.Vorlauf_Soll_HK1" unit="°C">
+		<!-- Vorlauf_Soll_HK1 -->
+		<tns:ChannelDescription id="C11" unit="°C">
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis-1-4_5">
 					<tns:CurrentValue>
@@ -2619,8 +2671,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C12.Anlagenmodus_HK2">
+		<!-- Anlagenmodus_HK2 -->
+		<tns:ChannelDescription id="C12">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -2677,8 +2729,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C13.Tagestemperatur_HK2" unit="°C">
+		<!-- Tagestemperatur_HK2 -->
+		<tns:ChannelDescription id="C13" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -2689,7 +2741,7 @@
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C12.Anlagenmodus_HK2" />
+					<tns:Dependency id="C12" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2711,8 +2763,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C14.Nachttemperatur_HK2" unit="°C">
+		<!-- Nachttemperatur_HK2 -->
+		<tns:ChannelDescription id="C14" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -2723,7 +2775,7 @@
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C12.Anlagenmodus_HK2" />
+					<tns:Dependency id="C12" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2745,8 +2797,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C15.TemperaturFeineinstellung_HK2">
+		<!-- TemperaturFeineinstellung_HK2 -->
+		<tns:ChannelDescription id="C15">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -2778,8 +2830,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C16.Raumeinfluss_HK2" unit="%">
+		<!-- Raumeinfluss_HK2 -->
+		<tns:ChannelDescription id="C16" unit="%">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -2811,8 +2863,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C17.Vorlauf_Soll_HK2" unit="°C">
+		<!-- Vorlauf_Soll_HK2 -->
+		<tns:ChannelDescription id="C17" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -2830,8 +2882,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C18.Anlagenmodus_HK3">
+		<!-- Anlagenmodus_HK3 -->
+		<tns:ChannelDescription id="C18">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -2888,8 +2940,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C19.Tagestemperatur_HK3" unit="°C">
+		<!-- Tagestemperatur_HK3 -->
+		<tns:ChannelDescription id="C19" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -2900,7 +2952,7 @@
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C18.Anlagenmodus_HK3" />
+					<tns:Dependency id="C18" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2922,8 +2974,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C20.Nachttemperatur_HK3" unit="°C">
+		<!-- Nachttemperatur_HK3 -->
+		<tns:ChannelDescription id="C20" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -2934,7 +2986,7 @@
 						<tns:TopLeft X="55" Y="30" />
 						<tns:BottomRight X="110" Y="60" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C18.Anlagenmodus_HK3" />
+					<tns:Dependency id="C18" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="30"
 					least="0">
@@ -2956,8 +3008,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C21.TemperaturFeineinstellung_HK3">
+		<!-- TemperaturFeineinstellung_HK3 -->
+		<tns:ChannelDescription id="C21">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -2989,8 +3041,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C22.Raumeinfluss_HK3" unit="%">
+		<!-- Raumeinfluss_HK3 -->
+		<tns:ChannelDescription id="C22" unit="%">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -3022,8 +3074,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C23.Vorlauf_Soll_HK3" unit="°C">
+		<!-- Vorlauf_Soll_HK3 -->
+		<tns:ChannelDescription id="C23" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -3041,11 +3093,11 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C24.LaufzeitSolarpumpe" unit="h">
+		<!-- LaufzeitSolarpumpe -->
+		<tns:ChannelDescription id="C24" unit="h">
 			<tns:Configuration>
-				<tns:ConfigurationMask compareMask="0x0000"
-					andMask="0x0100" />
+				<tns:ConfigurationMask compareMask="0x0008"
+					andMask="0x0108" />
 			</tns:Configuration>
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Zaehlfunktion">
@@ -3059,19 +3111,18 @@
 				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff
-						equipmentId="A01.Pumpe_Solar"
-						calculatedId="X09.LaufzeitSolarpumpe_s" factor="3600"
+						equipmentId="A01"
+						calculatedId="X09" factor="3600"
 						hourly="true" checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C24.LaufzeitSolarpumpe" unit="h">
+		<tns:ChannelDescription id="C24" unit="h">
 			<tns:Configuration>
-				<tns:ConfigurationMask compareMask="0x0100"
-					andMask="0x0100" />
+				<tns:ConfigurationMask compareMask="0x0108"
+					andMask="0x0108" />
 			</tns:Configuration>
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Zaehlfunktion-1_2">
@@ -3085,19 +3136,19 @@
 				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff
-						equipmentId="A01.Pumpe_Solar"
-						calculatedId="X09.LaufzeitSolarpumpe_s" factor="3600"
+						equipmentId="alias.Pumpe_Solar"
+						calculatedId="X09" factor="3600"
 						hourly="true" checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C25.LaufzeitSolarpumpe2" unit="h">
+		<!-- LaufzeitSolarpumpe2 -->
+		<tns:ChannelDescription id="C25" unit="h">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x0110"
-					compareMask="0x0010" />
+				<tns:ConfigurationMask andMask="0x0118"
+					compareMask="0x0018" />
 			</tns:Configuration>
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Zaehlfunktion">
@@ -3111,19 +3162,18 @@
 				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff
-						equipmentId="A07.Pumpe_Solar2"
-						calculatedId="X10.LaufzeitSolarpumpe2_s" factor="3600"
+						equipmentId="alias.Pumpe_Solar2"
+						calculatedId="X10" factor="3600"
 						hourly="true" checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C25.LaufzeitSolarpumpe2" unit="h">
+		<tns:ChannelDescription id="C25" unit="h">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x0110"
-					compareMask="0x0110" />
+				<tns:ConfigurationMask andMask="0x0118"
+					compareMask="0x0118" />
 			</tns:Configuration>
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Zaehlfunktion-1_2">
@@ -3137,16 +3187,16 @@
 				</tns:TypeRead>
 				<tns:UpdateBy>
 					<tns:EquipmentOnOff
-						equipmentId="A07.Pumpe_Solar2"
-						calculatedId="X10.LaufzeitSolarpumpe2_s" factor="3600"
+						equipmentId="A07"
+						calculatedId="X10" factor="3600"
 						hourly="true" checkIntervalId="checkCalculation"
 						readIntervalId="readCalculationInterval" />
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C26.Warmwasserzirkulation_Puls">
+		<!-- Warmwasserzirkulation_Puls -->
+		<tns:ChannelDescription id="C26">
 			<tns:Control>
 				<tns:GuiAccess screenId="Zirkulation">
 					<tns:CurrentValue>
@@ -3162,8 +3212,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C27.Warmwasserzirkulation_Zeit">
+		<!-- Warmwasserzirkulation_Zeit -->
+		<tns:ChannelDescription id="C27">
 			<tns:Control>
 				<tns:GuiAccess screenId="Zirkulation">
 					<tns:CurrentValue>
@@ -3179,8 +3229,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C28.WW_Pumpe_Min_Laufzeit" unit="s">
+		<!-- WW_Pumpe_Min_Laufzeit -->
+		<tns:ChannelDescription id="C28" unit="s">
 			<tns:Configuration>
 				<tns:Feature id="WW_Pumpe_Min_Laufzeit" value="true" />
 			</tns:Configuration>
@@ -3190,8 +3240,7 @@
 						<tns:TopLeft X="145" Y="18" />
 						<tns:BottomRight Y="45" X="200" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C26.Warmwasserzirkulation_Puls"
-						value="true" />
+					<tns:Dependency id="C26" value="true" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="300"
 					least="0" incrementChange="120" changedIncrement="30">
@@ -3213,8 +3262,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C29.BetriebsartVT_HK1">
+		<!-- BetriebsartVT_HK1 -->
+		<tns:ChannelDescription id="C31">
 			<tns:Configuration>
 				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
@@ -3263,7 +3312,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="C30.Steilheit_HK1">
+		<!-- Steilheit_HK1 -->
+		<tns:ChannelDescription id="C32">
 			<tns:Configuration>
 				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
@@ -3273,8 +3323,8 @@
 						<tns:TopLeft X="155" Y="47" />
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C29.BetriebsartVT_HK1"
-						value="Kurve" priority="20" standby="C06.Anlagenmodus_HK1" />
+					<tns:Dependency id="C31" value="Kurve" priority="20"
+						standby="C06" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite divisor="100" increment="5"
 					most="250" least="20">
@@ -3298,8 +3348,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C31.Fix_Vorlauf_Tag_HK1" unit="°C">
+		<!-- Fix_Vorlauf_Tag_HK1 -->
+		<tns:ChannelDescription id="C33" unit="°C">
 			<tns:Configuration>
 				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
@@ -3309,8 +3359,8 @@
 						<tns:TopLeft X="150" Y="47" />
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C29.BetriebsartVT_HK1"
-						value="Fix" priority="20" standby="C06.Anlagenmodus_HK1" />
+					<tns:Dependency id="C31" value="Fix" priority="20"
+						standby="C06" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
@@ -3331,8 +3381,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C32.Fix_Vorlauf_Absenk_HK1" unit="°C">
+		<!-- Fix_Vorlauf_Absenk_HK1 -->
+		<tns:ChannelDescription id="C34" unit="°C">
 			<tns:Configuration>
 				<tns:Feature id="BetriebsartVT_HK" value="true" />
 			</tns:Configuration>
@@ -3342,8 +3392,8 @@
 						<tns:TopLeft X="150" Y="75" />
 						<tns:BottomRight X="195" Y="87" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C29.BetriebsartVT_HK1"
-						value="Fix" priority="20" standby="C06.Anlagenmodus_HK1" />
+					<tns:Dependency id="C31" value="Fix" priority="20"
+						standby="C06" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
@@ -3364,8 +3414,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C33.Min_Vorlauf_Temp_HK1" unit="°C">
+		<!-- Min_Vorlauf_Temp_HK1 -->
+		<tns:ChannelDescription id="C35" unit="°C">
 			<tns:Configuration admin="true">
 				<tns:Feature id="Min_Vorlauf_Temp" value="true" />
 			</tns:Configuration>
@@ -3395,8 +3445,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C34.BetriebsartVT_HK2">
+		<!-- BetriebsartVT_HK2 -->
+		<tns:ChannelDescription id="C36">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -3447,7 +3497,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="C35.Steilheit_HK2">
+		<!-- Steilheit_HK2 -->
+		<tns:ChannelDescription id="C37">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -3459,8 +3510,8 @@
 						<tns:TopLeft X="155" Y="47" />
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C34.BetriebsartVT_HK2"
-						value="Kurve" priority="20" standby="C12.Anlagenmodus_HK2" />
+					<tns:Dependency id="C36" value="Kurve" priority="20"
+						standby="C12" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite divisor="100" increment="5"
 					most="250" least="20">
@@ -3484,8 +3535,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C36.Fix_Vorlauf_Tag_HK2" unit="°C">
+		<!-- Fix_Vorlauf_Tag_HK2 -->
+		<tns:ChannelDescription id="C38" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -3497,8 +3548,8 @@
 						<tns:TopLeft X="150" Y="47" />
 						<tns:BottomRight X="195" Y="59" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C34.BetriebsartVT_HK2"
-						value="Fix" priority="20" standby="C12.Anlagenmodus_HK2" />
+					<tns:Dependency id="C36" value="Fix" priority="20"
+						standby="C12" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
@@ -3519,8 +3570,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C37.Fix_Vorlauf_Absenk_HK2" unit="°C">
+		<!-- Fix_Vorlauf_Absenk_HK2 -->
+		<tns:ChannelDescription id="C39" unit="°C">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -3532,8 +3583,8 @@
 						<tns:TopLeft X="150" Y="75" />
 						<tns:BottomRight X="195" Y="87" />
 					</tns:CurrentValue>
-					<tns:Dependency id="C34.BetriebsartVT_HK2"
-						value="Fix" priority="20" standby="C12.Anlagenmodus_HK2" />
+					<tns:Dependency id="C36" value="Fix" priority="20"
+						standby="C12" />
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
@@ -3554,8 +3605,8 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription
-			id="C38.Min_Vorlauf_Temp_HK2" unit="°C">
+		<!-- Min_Vorlauf_Temp_HK2 -->
+		<tns:ChannelDescription id="C40" unit="°C">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -3586,6 +3637,200 @@
 				</tns:UpdateBy>
 			</tns:Control>
 		</tns:ChannelDescription>
+
+		<!-- BetriebsartVT_HK3 -->
+		<tns:ChannelDescription id="C41">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis-3-2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="150" Y="19" />
+						<tns:BottomRight X="195" Y="31" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeMode>
+					<tns:ModeEntry id="Kurve">
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="WindowChange">
+								<tns:Coordinate X="145" Y="25" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="BetriebsartVT_Kurve"
+								exact="true">
+							</tns:ScreenGrafic>
+						</tns:GuiSet>
+						<tns:MustBeWhite>
+							<tns:TopLeft X="130" Y="70" />
+							<tns:BottomRight X="215" Y="95" />
+						</tns:MustBeWhite>
+					</tns:ModeEntry>
+					<tns:ModeEntry id="Fix">
+						<tns:GuiSet>
+							<tns:Touch pushTimeRefId="Standard"
+								releaseTimeRefId="WindowChange">
+								<tns:Coordinate X="145" Y="25" />
+							</tns:Touch>
+							<tns:ScreenGrafic id="BetriebsartVT_Fix"
+								exact="true">
+							</tns:ScreenGrafic>
+						</tns:GuiSet>
+						<tns:MustBeWhite invertFunction="true">
+							<tns:TopLeft X="130" Y="70" />
+							<tns:BottomRight X="215" Y="95" />
+						</tns:MustBeWhite>
+					</tns:ModeEntry>
+				</tns:TypeMode>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
+		<!-- Steilheit_HK3 -->
+		<tns:ChannelDescription id="C42">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis-3-2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="47" />
+						<tns:BottomRight X="195" Y="59" />
+					</tns:CurrentValue>
+					<tns:Dependency id="C41" value="Kurve" priority="20"
+						standby="C18" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite divisor="100" increment="5"
+					most="250" least="20">
+					<tns:GuiModification
+						format="(?&lt;integerPlaces&gt;\d*?)\.(?&lt;decimalPlaces&gt;\d*?)"
+						wrapAround="true">
+
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="205" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
+		<!-- Fix_Vorlauf_Tag_HK3 -->
+		<tns:ChannelDescription id="C43" unit="°C">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis-3-2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="150" Y="47" />
+						<tns:BottomRight X="195" Y="59" />
+					</tns:CurrentValue>
+					<tns:Dependency id="C41" value="Fix" priority="20"
+						standby="C18" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="75"
+					least="5">
+					<tns:GuiModification format="(\d+).*">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="205" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
+		<!-- Fix_Vorlauf_Absenk_HK3 -->
+		<tns:ChannelDescription id="C44" unit="°C">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+				<tns:Feature id="BetriebsartVT_HK" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis-3-2_5">
+					<tns:CurrentValue>
+						<tns:TopLeft X="150" Y="75" />
+						<tns:BottomRight X="195" Y="87" />
+					</tns:CurrentValue>
+					<tns:Dependency id="C41" value="Fix" priority="20"
+						standby="C18" />
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="75"
+					least="5">
+					<tns:GuiModification format="(\d+).*">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="205" Y="80" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
+		<!-- Min_Vorlauf_Temp_HK3 -->
+		<tns:ChannelDescription id="C45" unit="°C">
+			<tns:Configuration admin="true">
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+				<tns:Feature id="Min_Vorlauf_Temp" value="true" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Heizkreis-3-4_11">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="46" />
+						<tns:BottomRight X="195" Y="60" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="75"
+					least="0">
+					<tns:GuiModification format="(\d+)..">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="200" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
 	</tns:ChannelDescriptions>
 
 
@@ -3631,7 +3876,7 @@
 	</tns:Preparations>
 
 
-	<tns:Clock timeChannelId="X06.UhrzeitSolvis"
+	<tns:Clock timeChannelId="X06"
 		screenId="Zeiteinstellung" okScreenId="Uhrzeit/Datum">
 		<tns:Year least="2008">
 			<tns:Rectangle>
@@ -3726,7 +3971,7 @@
 			<tns:Coordinate X="185" Y="70" />
 		</tns:Ok>
 		<tns:DisableClockSetting
-			burnerId="A12.Brenner" hotWaterPumpId="A02.Pumpe_Warmwasser" />
+			burnerId="A12" hotWaterPumpId="A02" />
 	</tns:Clock>
 
 
@@ -3762,4 +4007,623 @@
 		measurementsBackupTime_ms="3600000" unsuccessfullWaitTime_ms="10000"
 		connectionHoldTime_ms="300000" solvisConnectionTimeout_ms="10000"
 		solvisReadTimeout_ms="2000" clientTimeoutTime_ms="120000" />
+
+	<tns:ChannelAssignments>
+
+		<tns:Assignment id="S01" name="S01.Warmwasserpuffer" />
+
+		<tns:Assignment id="S02"
+			name="S02.Warmwassertemperatur" />
+
+		<tns:Assignment id="S03"
+			name="S03.Speicherreferenztemperatur" />
+
+		<tns:Assignment id="S04"
+			name="S04.Heizungspuffertemperatur_oben" />
+
+		<tns:Assignment id="S05"
+			name="S05.Solarvorlauftemperatur">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x07000008" andMask="0x07000018" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S05"
+			name="S05.Solarvorlauftemperatur2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x07000018" andMask="0x07000018" />
+				<tns:ConfigurationMask
+					compareMask="0x06000008" andMask="0x07000008" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="S06"
+			name="S06.Solarruecklauftemperatur">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000008" andMask="0x07000018" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S06"
+			name="S06.Solarruecklauftemperatur2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000018" andMask="0x07000018" />
+				<tns:ConfigurationMask
+					compareMask="0x04000008" andMask="0x07000008" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="S07" name="S07.Solardruck">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000008" andMask="0x07000058" />
+				<tns:ConfigurationMask
+					compareMask="0x01000018" andMask="0x07000058" />
+				<tns:ConfigurationMask
+					compareMask="0x01000048" andMask="0x07000058" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S07"
+			name="S07.Solarvorlauftemperatur1">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000058" andMask="0x07000058" />
+				<tns:ConfigurationMask
+					compareMask="0x06000008" andMask="0x07000008" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="S08"
+			name="S08.Solarkollektortemperatur">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0008"
+					andMask="0x0088" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S08"
+			name="S08.Solarkollektortemperatur1">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0088"
+					andMask="0x0088" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment
+			name="S09.Heizungspuffertemperatur_unten" id="S09">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x00000000" andMask="0x00000040" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment name="S09.Heissgas" id="S09">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000040" andMask="0x07000040" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment name="S09.ErdwaermequelleRL" id="S09">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000040" andMask="0x07000040" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="S10" name="S10.Aussentemperatur" />
+
+		<tns:Assignment id="S11"
+			name="S11.ZirkulationRuecklauftemperatur" />
+
+		<tns:Assignment id="S12"
+			name="S12.Vorlauftemperatur_HK1" />
+
+		<tns:Assignment id="S13"
+			name="S13.Vorlauftemperatur_HK2" />
+
+		<tns:Assignment id="S14" name="S14.Kesseltemperatur">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0020"
+					andMask="0x0260" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S14" name="S14.ErdwaermequelleVL">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0040"
+					andMask="0x0260" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S14"
+			name="S14.Ruecklauftemperatur_FW">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0200"
+					andMask="0x0260" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="S15"
+			name="S15.Solarvorlauftemperatur1">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000018" andMask="0x07000058" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S15" name="S15.ErdwaermequelleRL">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000040" andMask="0x07000040" />
+				<tns:ConfigurationMask
+					compareMask="0x06000040" andMask="0x070000c0" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S15"
+			name="S15.Kaltwassertemperatur">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000000" andMask="0x070000c0" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S15"
+			name="S15.Solarkollektortemperatur2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000088" andMask="0x07000088" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="S16"
+			name="S16.Solarkollektortemperatur2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000088" andMask="0x070004c8" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S16"
+			name="S16.Holzkesseltemperatur">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0400"
+					andMask="0x0400" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S16"
+			name="S16.Solarruecklauftemperatur1">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000058" andMask="0x07000458" />
+				<tns:ConfigurationMask
+					compareMask="0x06000058" andMask="0x07000458" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S16"
+			name="S16.Vorlauftemperatur_HK3">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000040" andMask="0x07000450" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="S17"
+			name="S17.Durchfluss_Solarpanel">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x08"
+					andMask="0x08" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="S18"
+			name="S18.Durchfluss_Warmwasserzirkulation"></tns:Assignment>
+
+		<tns:Assignment id="I-1" name="I-1.HD_Sensor">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0040"
+					andMask="0x0040" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="I-1"
+			name="I-1.Brenneranforderung_extern">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000000" andMask="0x07000040" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="I-2" name="I-2.Sperrzeit">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0040"
+					andMask="0x0040" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="I-3" name="I-3.Solardruck">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0048"
+					andMask="0x0048" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment name="RF1.Raumfuehler_HK1" id="RF1"></tns:Assignment>
+
+		<tns:Assignment name="RF2.Raumfuehler_HK2" id="RF2"></tns:Assignment>
+
+		<tns:Assignment name="RF3.Raumfuehler_HK3" id="RF3"></tns:Assignment>
+
+
+		<tns:Assignment id="A01" name="A01.Pumpe_Solar"
+			unit="%" alias="alias.Pumpe_Solar">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000008" andMask="0x07000008" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A01"
+			name="A01.Pumpe_Warmwasserzirkulation" boolean="0">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000000" andMask="0x07000040" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="A02" name="A02.Pumpe_Warmwasser"
+			unit="%">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000000" andMask="0x07000000" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment name="A03.Pumpe_HK1" id="A03"
+			alias="alias.Pumpe_HK1" />
+
+		<tns:Assignment name="A04.Pumpe_HK2" id="A04"
+			alias="alias.Pumpe_HK2" />
+
+		<tns:Assignment id="A05"
+			name="A05.Pumpe_Warmwasserzirkulation">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000000" andMask="0x07000000" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A05" name="A05.Pumpe_HK3">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000000" andMask="0x070000c0" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A05" name="A05.Ventil1">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000080" andMask="0x070000c0" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A05"
+			name="A05.Pumpe_Warmwasserzirkulation">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000040" andMask="0x070000c0" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="A06" name="A06.Pumpe_HK3">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000000" andMask="0x070000c0" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A06" name="A06.Ventil1">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000088" andMask="0x070000c8" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A06" name="A06.E_Heizstab">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0040"
+					andMask="0x0040" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A06" name="A06.Mischer_HK3_auf">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000000" andMask="0x07000440" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment name="A07.Ventil2" id="A07">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000088" andMask="0x07000498" />
+				<tns:ConfigurationMask
+					compareMask="0x06000088" andMask="0x070004d8" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment name="A07.Pumpe_Solar2" id="A07"
+			alias="alias.Pumpe_Solar2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000018" andMask="0x070004f8" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment name="A07.Ladepumpe" id="A07">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000400" andMask="0x07000400" />
+				<tns:ConfigurationMask
+					compareMask="0x01000020" andMask="0x070004a0" />
+				<tns:ConfigurationMask
+					compareMask="0x01000040" andMask="0x070004c0" />
+				<tns:ConfigurationMask
+					compareMask="0x06000400" andMask="0x07000400" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A07" name="A07.Mischer_HK3_zu"
+			alias="alias.Mischer_HK3_zu">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000000" andMask="0x070004c0" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="A08" name="A08.Mischer_HK1_auf" />
+
+		<tns:Assignment id="A09" name="A09.Mischer_HK1_zu"
+			alias="alias.Mischer_HK1_zu" />
+
+		<tns:Assignment id=" A10 " name="A10.Mischer_HK2_auf" />
+
+		<tns:Assignment id="A11" name="A11.Mischer_HK2_zu"
+			alias="alias.Mischer_HK2_zu" />
+
+		<tns:Assignment id="A12" name="A12.Brenner"
+			alias="alias.Brenner">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000000" andMask="0x07000200" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A12" name="A12.Ventil_FW">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x00000200" andMask="0x00000200" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A12"
+			name="A12.Anforderung_Verdichter">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000040" andMask="0x07000240" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="A13" name="A13.Brenner_S2"
+			alias="alias.Brenner_S2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000000" andMask="0x070000d0" />
+				<tns:ConfigurationMask
+					compareMask="0x01000080" andMask="0x070000f0" />
+				<tns:ConfigurationMask
+					compareMask="0x01000010" andMask="0x070000d0" />
+				<tns:ConfigurationMask
+					compareMask="0x06000000" andMask="0x07000020" />
+				<tns:ConfigurationMask
+					compareMask="0x01000020" andMask="0x070000a0" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A13" name="A13.Ladepumpe">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000020" andMask="0x07000020" />
+				<tns:ConfigurationMask
+					compareMask="0x010000a0" andMask="0x070000a0" />
+				<tns:ConfigurationMask
+					compareMask="0x010000c0" andMask="0x070000c0" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A13" name="A13.Ventil2"
+			alias="alias.Brenner_S2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000090" andMask="0x070000f0" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="A14" name="A14.Entstoerung">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0000"
+					andMask="0x0200" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A14" name="A14.Ventil_FW">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0200"
+					andMask="0x0200" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="O-1" name="O-1.Modulation"></tns:Assignment>
+
+		<tns:Assignment id="O-2" name="O-2.Steuerleitung_A1"
+			boolean="0">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000018" andMask="0x01000018" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="O-2" name="SP1.Pumpe_Solar1"
+			unit="%" alias="alias.Pumpe_Solar">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000008" andMask="0x07000008" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="O-3" name="O-3.Steuerleitung_A7"
+			boolean="0">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000018" andMask="0x01000018" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="O-3" name="SP2.Pumpe_Solar2"
+			unit="%" alias="alias.Pumpe_Solar2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000008" andMask="0x07000008" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="O-4" name="LP.Ladepumpe">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000020" andMask="0x07000020" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="O-5" name="W.Pumpe_Warmwasser"
+			unit="%">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x06000000" andMask="0x07000000" />
+			</tns:Configuration>
+		</tns:Assignment>
+
+		<tns:Assignment id="SE" name="SE.Solarertrag_kWh" />
+
+		<tns:Assignment id="SL" name="SL.Solarleistung_kW" />
+
+		<tns:Assignment id="X01" name="X01.BrennerStarts" />
+
+		<tns:Assignment id="X02" name="X02.BrennerLaufzeit_s" />
+
+		<tns:Assignment id="X03" name="X03.BrennerStufe2Starts" />
+
+		<tns:Assignment id="X04"
+			name="X04.BrennerStufe2Laufzeit_s" />
+
+		<tns:Assignment id="X05" name="X05.BrennerStatus" />
+
+		<tns:Assignment id="X06" name="X06.UhrzeitSolvis" />
+
+		<tns:Assignment id="X07"
+			name="X07.MischerPosition0_HK1" />
+
+		<tns:Assignment id="X08"
+			name="X08.MischerPosition0_HK2" />
+
+		<tns:Assignment id="X09"
+			name="X09.MischerPosition0_HK3" />
+
+		<tns:Assignment id="X10"
+			name="X10.LaufzeitSolarpumpe_s" />
+
+		<tns:Assignment id="X11"
+			name="X11.LaufzeitSolarpumpe2_s" />
+
+		<tns:Assignment id="C01" name="C01.StartsBrenner" />
+
+		<tns:Assignment id="C02" name="C02.LaufzeitBrenner" />
+
+		<tns:Assignment id="C03"
+			name="C03.LaufzeitAnforderung2" />
+
+		<tns:Assignment id="C04" name="C04.WarmwasserPumpe" />
+
+		<tns:Assignment id="C05"
+			name="C05.WassertemperaturSoll" />
+
+		<tns:Assignment id="C06" name="C06.Anlagenmodus_HK1" />
+
+		<tns:Assignment id="C07" name="C07.Tagestemperatur_HK1" />
+
+		<tns:Assignment id="C08" name="C08.Nachttemperatur_HK1" />
+
+		<tns:Assignment id="C09"
+			name="C09.TemperaturFeineinstellung_HK1" />
+
+		<tns:Assignment id="C10" name="C10.Raumeinfluss_HK1" />
+
+		<tns:Assignment id="C11" name="C11.Vorlauf_Soll_HK1" />
+
+		<tns:Assignment id="C12" name="C12.Anlagenmodus_HK2" />
+
+		<tns:Assignment id="C13" name="C13.Tagestemperatur_HK2" />
+
+		<tns:Assignment id="C14" name="C14.Nachttemperatur_HK2" />
+
+		<tns:Assignment id="C15"
+			name="C15.TemperaturFeineinstellung_HK2" />
+
+		<tns:Assignment id="C16" name="C16.Raumeinfluss_HK2" />
+
+		<tns:Assignment id="C17" name="C17.Vorlauf_Soll_HK2" />
+
+		<tns:Assignment id="C18" name="C18.Anlagenmodus_HK3" />
+
+		<tns:Assignment id="C19" name="C19.Tagestemperatur_HK3" />
+
+		<tns:Assignment id="C20" name="C20.Nachttemperatur_HK3" />
+
+		<tns:Assignment id="C21"
+			name="C21.TemperaturFeineinstellung_HK3" />
+
+		<tns:Assignment id="C22" name="C22.Raumeinfluss_HK3" />
+
+		<tns:Assignment id="C23" name="C23.Vorlauf_Soll_HK3" />
+
+		<tns:Assignment id="C24" name="C24.LaufzeitSolarpumpe" />
+
+		<tns:Assignment id="C25" name="C25.LaufzeitSolarpumpe2" />
+
+		<tns:Assignment id="C26"
+			name="C26.Warmwasserzirkulation_Puls" />
+
+		<tns:Assignment id="C27"
+			name="C27.Warmwasserzirkulation_Zeit" />
+
+		<tns:Assignment id="C28"
+			name="C28.WW_Pumpe_Min_Laufzeit" />
+
+		<tns:Assignment id="C29" name="C29.WaermemengeWW" />
+
+		<tns:Assignment id="C30" name="C30.WaermemengeSolar" />
+
+		<tns:Assignment id="C31" name="C31.BetriebsartVT_HK1" />
+
+		<tns:Assignment id="C32" name="C32.Steilheit_HK1" />
+
+		<tns:Assignment id="C33" name="C33.Fix_Vorlauf_Tag_HK1" />
+
+		<tns:Assignment id="C34"
+			name="C34.Fix_Vorlauf_Absenk_HK1" />
+
+		<tns:Assignment id="C35"
+			name="C35.Min_Vorlauf_Temp_HK1" />
+
+		<tns:Assignment id="C36" name="C36.BetriebsartVT_HK2" />
+
+		<tns:Assignment id="C37" name="C37.Steilheit_HK2" />
+
+		<tns:Assignment id="C38" name="C38.Fix_Vorlauf_Tag_HK2" />
+
+		<tns:Assignment id="C39"
+			name="C39.Fix_Vorlauf_Absenk_HK2" />
+
+		<tns:Assignment id="C40"
+			name="C40.Min_Vorlauf_Temp_HK2" />
+
+		<tns:Assignment id="C41" name="C41.BetriebsartVT_HK3" />
+
+		<tns:Assignment id="C42" name="C42.Steilheit_HK3" />
+
+		<tns:Assignment id="C43" name="C43.Fix_Vorlauf_Tag_HK3" />
+
+		<tns:Assignment id="C44"
+			name="C44.Fix_Vorlauf_Absenk_HK3" />
+
+		<tns:Assignment id="C45"
+			name="C45.Min_Vorlauf_Temp_HK3" />
+
+
+	</tns:ChannelAssignments>
 </tns:SolvisDescription>

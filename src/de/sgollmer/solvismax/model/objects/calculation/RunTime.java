@@ -121,7 +121,7 @@ public class RunTime extends Strategy<RunTime> {
 			this.equipmentCntSinceLastSync = 0;
 		}
 
-		private void correctionAdjust(SolvisData data, Object source) throws TypeException {
+		private synchronized void correctionByValue(SolvisData data, Object source) throws TypeException {
 
 			long verifiedRunTime = (long) data.getInt() * 1000L;
 
@@ -133,17 +133,24 @@ public class RunTime extends Strategy<RunTime> {
 				return;
 			}
 
+			if (!RunTime.this.isCorrection()) {
+				if (this.lastVerifiedRunTime == 0) {
+					this.updateVerifiedValues(verifiedRunTime);
+				}
+				return;
+			}
 			UpdateType updateType = (UpdateType) source;
 
+			if (!updateType.isSyncType()) {
+				this.syncCnt = -1;
+				this.updateVerifiedValues(verifiedRunTime);
+				return;
+
+			}
+			
 			if (this.syncCnt < 0) {
 				this.syncCnt = 0;
-
-				if (!updateType.isSyncType() || !RunTime.this.isCorrection()) {
-					this.updateVerifiedValues(verifiedRunTime);
-					return;
-				}
-			} else if (!RunTime.this.isCorrection() || !updateType.isSyncType()) {
-				return;
+				this.updateVerifiedValues(verifiedRunTime);
 			}
 
 			++this.syncCnt;
@@ -154,15 +161,16 @@ public class RunTime extends Strategy<RunTime> {
 				int delta = (int) (verifiedRunTime - this.lastVerifiedRunTime
 						- this.runTimeAfterLastVerificationCurrent);
 				this.correction.modify(delta, this.equipmentCntSinceLastSync);
+
+				this.updateVerifiedValues(verifiedRunTime);
 			}
-			this.updateVerifiedValues(verifiedRunTime);
 		}
 
 		private void updateByValue(SolvisData data, Object source) {
 
 			if (source != this) {
 				try {
-					this.correctionAdjust(data, source);
+					this.correctionByValue(data, source);
 					this.update(this.equipmentOn.getBool(), data.getTimeStamp());
 				} catch (TypeException e) {
 					logger.error("Type error, update ignored", e);
@@ -184,39 +192,47 @@ public class RunTime extends Strategy<RunTime> {
 
 			try {
 
-				if (equipmentOn && this.lastStartTime < 0) {
-					++this.equipmentCntSinceLastSync;
-				}
+				Integer toSet = null;
 
-				if (equipmentOn || this.lastStartTime >= 0) {
+				synchronized (this) {
 
-					int former = this.result.getInt();
+					if (equipmentOn && this.lastStartTime < 0) {
+						++this.equipmentCntSinceLastSync;
+					}
 
-					if (equipmentOn) {
-						if (this.lastStartTime < 0) {
-							this.lastStartTime = timeStamp;
+					if (equipmentOn || this.lastStartTime >= 0) {
+
+						int former = this.result.getInt();
+
+						if (equipmentOn) {
+							if (this.lastStartTime < 0) {
+								this.lastStartTime = timeStamp;
+							}
+						}
+
+						long runTime = timeStamp - this.lastStartTime;
+
+						this.runTimeAfterLastVerificationCurrent = runTime + this.runTimeAfterLastVerificationAfterOff;
+						long result;
+
+						result = this.lastVerifiedRunTime + this.runTimeAfterLastVerificationCurrent
+								+ this.getCorrection(this.equipmentCntSinceLastSync);
+
+						int set = (int) (result / this.scanInterval * this.scanInterval / 1000L); // abrunden
+
+						if (Math.abs(set - former) > 60 || !equipmentOn) {
+							toSet = set;
+						}
+
+						if (!equipmentOn) {
+							this.lastStartTime = -1;
+							this.runTimeAfterLastVerificationAfterOff = this.runTimeAfterLastVerificationCurrent;
 						}
 					}
+				}
 
-					long runTime = timeStamp - this.lastStartTime;
-
-					this.runTimeAfterLastVerificationCurrent = runTime + this.runTimeAfterLastVerificationAfterOff;
-					long result;
-
-					result = this.lastVerifiedRunTime + this.runTimeAfterLastVerificationCurrent
-							+ this.getCorrection(this.equipmentCntSinceLastSync);
-
-
-					int toSet = (int) (result / this.scanInterval * this.scanInterval / 1000L); // abrunden
-
-					if (Math.abs(toSet - former) > 60 || !equipmentOn) {
-						this.result.setInteger(toSet, timeStamp, this);
-					}
-
-					if (!equipmentOn) {
-						this.lastStartTime = -1;
-						this.runTimeAfterLastVerificationAfterOff = this.runTimeAfterLastVerificationCurrent;
-					}
+				if (toSet != null) {
+					this.result.setInteger(toSet, timeStamp, this);
 				}
 			} catch (
 

@@ -7,9 +7,15 @@
 
 package de.sgollmer.solvismax.model.objects;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+
+import de.sgollmer.solvismax.connection.mqtt.Mqtt;
+import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
@@ -27,6 +33,8 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 
 	private final Map<String, SolvisData> solvisDatas = new HashMap<>();
 	private final Map<String, Correction> corrections = new HashMap<>();
+	private final Map<String, SolvisData> solvisDatasByAlias = new HashMap<>();
+	private final Map<String, SolvisData> solvisDatasByName = new HashMap<>();
 	private int averageCount;
 	private int measurementHysteresisFactor;
 	private long lastHumanAcess = System.currentTimeMillis();
@@ -62,16 +70,36 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		synchronized (this) {
 			data = this.solvisDatas.get(id);
 			if (data == null) {
-				ChannelDescription description = this.solvis.getChannelDescription(id);
-				if (description != null) {
-					boolean ignore = this.solvis.getUnit().isChannelIgnored(id);
-					data = new SolvisData(description, this, ignore);
-					data.setAsSmartHomedata();
-					this.solvisDatas.put(id, data);
-				}
+				data = this.solvisDatasByAlias.get(id);
+
+// TODO
+//				ChannelDescription description = this.solvis.getChannelDescription(id);
+//				if (description != null) {
+//					boolean ignore = this.solvis.getUnit().isChannelIgnored(id);
+//					data = new SolvisData(description, this, ignore);
+//					data.setAsSmartHomedata();
+//					this.solvisDatas.put(id, data);
+//				}
 			}
 		}
 		return data;
+	}
+
+	public void add(SolvisData data) {
+		String id = data.getDescription().getId();
+		if (this.solvisDatas.put(id, data) != null) {
+			throw new UnknownError("Unknown error: <" + id + "> is not unique!!");
+		}
+		String alias = data.getChannelInstance().getAlias();
+		if (alias != null) {
+			if (this.solvisDatasByAlias.put(alias, data) != null) {
+				throw new UnknownError("Unknown error: Alias <" + alias + "> is not unique!!");
+			}
+		}
+		String name = data.getChannelInstance().getName();
+		if (this.solvisDatasByName.put(name, data) != null) {
+			throw new UnknownError("Unknown error: Name <" + name + "> is not unique!!");
+		}
 	}
 
 	public SolvisData checkAndGet(String id) {
@@ -142,10 +170,10 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 			}
 		}
 	}
-	
+
 	public void setDefaultCorrection() {
-		for ( Correction correction : this.corrections.values() ) {
-			this.solvis.getUnit().setDefaultCorrection( correction) ;
+		for (Correction correction : this.corrections.values()) {
+			this.solvis.getUnit().setDefaultCorrection(correction);
 		}
 	}
 
@@ -158,6 +186,10 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 			}
 		}
 		return measurements;
+	}
+
+	public synchronized Collection<SolvisData> getSolvisDatas() {
+		return this.solvisDatas.values();
 	}
 
 	public synchronized Measurements getMeasurementsForUpdate() {
@@ -183,6 +215,22 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 			this.corrections.put(id, correction);
 		}
 		return correction;
+	}
+
+	public void sendMetaToMqtt(Mqtt mqtt, boolean deleteRetained) throws MqttException, MqttConnectionLost {
+		for (SolvisData data : this.solvisDatas.values()) {
+			MqttData mqttData = data.getChannelInstance().getMqttMeta();
+			if (deleteRetained) {
+				mqtt.unpublish(mqttData);
+			} else {
+				mqtt.publish(mqttData);
+			}
+		}
+
+	}
+
+	public SolvisData getByName(String name) {
+		return this.solvisDatasByName.get(name);
 	}
 
 }

@@ -103,6 +103,7 @@ public class Instances {
 		for (Solvis solvis : this.units) {
 			if (!solvis.getGrafics().isEmpty()) {
 				solvis.init();
+				solvis.start();
 			} else {
 				throw new LearningException("Learning is necessary, start parameter \"--server-learn\" must be used.");
 			}

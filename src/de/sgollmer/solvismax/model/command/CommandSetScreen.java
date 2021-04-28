@@ -1,4 +1,4 @@
-package de.sgollmer.solvismax.model;
+package de.sgollmer.solvismax.model.command;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
@@ -26,7 +27,7 @@ public class CommandSetScreen extends Command {
 	}
 
 	@Override
-	protected ResultStatus execute(Solvis solvis) throws IOException, TerminationException, PowerOnException,
+	public ResultStatus execute(Solvis solvis) throws IOException, TerminationException, PowerOnException,
 			NumberFormatException, TypeException, XmlException {
 		solvis.setDefaultScreen(this.screen);
 		return ResultStatus.SUCCESS;

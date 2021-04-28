@@ -27,7 +27,7 @@ public class Standby {
 
 	private final Map<String, String> standbyChannels;
 
-	public Standby(Map<String, String> standbyChannel) {
+	private Standby(Map<String, String> standbyChannel) {
 		this.standbyChannels = standbyChannel;
 	}
 

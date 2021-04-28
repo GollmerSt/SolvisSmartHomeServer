@@ -13,12 +13,8 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
-
-import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
@@ -49,6 +45,7 @@ public class SolvisDescription {
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
 	private static final String XML_ERROR_DETECTION = "ErrorDetection";
 	private static final String XML_SERVICE = "Service";
+	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
 
 	private final SolvisTypes types;
 	private final Configurations configurations;
@@ -62,6 +59,7 @@ public class SolvisDescription {
 	private final ClockMonitor clock;
 	private final ErrorDetection errorDetection;
 	private final Service service;
+	private final AllChannelAssignments channelAssignments;
 
 	public ClockMonitor getClock() {
 		return this.clock;
@@ -73,8 +71,8 @@ public class SolvisDescription {
 	private SolvisDescription(SolvisTypes types, Configurations configurations, Standby standby, ScreenSaver saver,
 			AllScreens screens, FallBack fallBack, AllScreenGraficDescriptions screenGrafics,
 			AllChannelDescriptions dataDescriptions, AllPreparations allPreparations, ClockMonitor clock,
-			AllDurations durations, Miscellaneous miscellaneous, ErrorDetection errorDetection, Service service)
-			throws XmlException {
+			AllDurations durations, Miscellaneous miscellaneous, ErrorDetection errorDetection, Service service,
+			AllChannelAssignments channelAssignments) throws XmlException {
 		this.types = types;
 		this.configurations = configurations;
 		this.standby = standby;
@@ -89,6 +87,7 @@ public class SolvisDescription {
 		this.miscellaneous = miscellaneous;
 		this.errorDetection = errorDetection;
 		this.service = service;
+		this.channelAssignments = channelAssignments;
 
 	}
 
@@ -136,6 +135,7 @@ public class SolvisDescription {
 		private ClockMonitor clock;
 		private ErrorDetection errorDetection;
 		private Service service;
+		private AllChannelAssignments channelAssignments;
 
 		private AllDurations durations;
 		private Miscellaneous miscellaneous;
@@ -153,7 +153,7 @@ public class SolvisDescription {
 		public SolvisDescription create() throws XmlException {
 			return new SolvisDescription(this.types, this.configurations, this.standby, this.saver, this.screens,
 					this.fallBack, this.screenGrafics, this.dataDescriptions, this.allPreparations, this.clock,
-					this.durations, this.miscellaneous, this.errorDetection, this.service);
+					this.durations, this.miscellaneous, this.errorDetection, this.service, this.channelAssignments);
 		}
 
 		@Override
@@ -188,6 +188,8 @@ public class SolvisDescription {
 					return new ErrorDetection.Creator(id, this);
 				case XML_SERVICE:
 					return new Service.Creator(id, this);
+				case XML_CHANNEL_ASSIGNMENTS:
+					return new AllChannelAssignments.Creator(id, this);
 			}
 			return null;
 		}
@@ -239,6 +241,10 @@ public class SolvisDescription {
 					break;
 				case XML_SERVICE:
 					this.service = (Service) created;
+					break;
+				case XML_CHANNEL_ASSIGNMENTS:
+					this.channelAssignments = (AllChannelAssignments) created;
+					break;
 			}
 
 		}
@@ -352,11 +358,11 @@ public class SolvisDescription {
 		this.errorDetection.instantiate(solvis);
 	}
 
-	public void sendToMqtt(Solvis solvis, Mqtt mqtt, boolean deleteRetained) throws MqttException, MqttConnectionLost {
-		this.getChannelDescriptions().sendToMqtt(solvis, mqtt, deleteRetained);
-	}
-
 	public Standby getStandby() {
 		return this.standby;
+	}
+
+	public AllChannelAssignments getChannelAssignments() {
+		return this.channelAssignments;
 	}
 }

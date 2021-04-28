@@ -38,6 +38,8 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
+import de.sgollmer.solvismax.model.command.Command;
+import de.sgollmer.solvismax.model.command.CommandControl;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -273,9 +275,13 @@ public class Solvis {
 		this.worker.init();
 		this.getAllSolvisData().restoreFromBackup(oldMeasurements);
 		this.getAllSolvisData().setDefaultCorrection();
+		this.getSolvisDescription().instantiate(this);
+		this.initialized = true;
+	}
+	
+	void start() {
 		this.worker.start();
 		this.getDistributor().register();
-		this.getSolvisDescription().instantiate(this);
 		UpdateControlAfterPowerOn updateControlAfterPowerOn = new UpdateControlAfterPowerOn();
 		this.solvisState.register(updateControlAfterPowerOn);
 		updateControlAfterPowerOn.update(this.solvisState.getSolvisStatePackage(), null);
@@ -290,7 +296,6 @@ public class Solvis {
 			}
 		});
 		this.measurementUpdateThread.start();
-		this.initialized = true;
 	}
 
 	public void updateControlChannels() {
@@ -319,7 +324,7 @@ public class Solvis {
 		this.worker.controlEnable(enable);
 	}
 
-	void screenRestore(boolean enable, Object service) {
+	public void screenRestore(boolean enable, Object service) {
 		this.worker.screenRestore(enable, service);
 		;
 	}
@@ -363,7 +368,7 @@ public class Solvis {
 		}
 		if (currentTimeStamp + this.getEchoInhibitTime_ms() < receiveTimeStamp
 				|| !singleData.equals(current.getSingleData())) {
-			this.execute(new de.sgollmer.solvismax.model.CommandControl(description, singleData, this));
+			this.execute(new CommandControl(description, singleData, this));
 			ignored = false;
 		} else {
 			ignored = true;
@@ -371,8 +376,12 @@ public class Solvis {
 		return ignored;
 	}
 
-	public ChannelDescription getChannelDescription(String description) {
-		return this.solvisDescription.getChannelDescriptions().get(description, this);
+	public ChannelDescription getChannelDescription(String id) {
+		SolvisData data = this.allSolvisData.get(id);
+		if ( data == null ) {
+			return null;
+		}
+		return data.getDescription();
 	}
 
 	public Duration getDuration(String id) {
@@ -473,7 +482,7 @@ public class Solvis {
 		if (this.mustLearn || force) {
 			this.learning = true;
 			this.getGrafics().clear();
-			logger.log(LEARN, "Learning started.");
+			logger.log(LEARN, "Learning initialized.");
 			this.initConfigurationMask();
 			logger.log(LEARN, "Configuration mask: 0x" + Integer.toHexString(this.configurationMask));
 			this.getGrafics().setConfigurationMask(this.configurationMask);

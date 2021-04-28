@@ -156,6 +156,10 @@ public class FallBack implements IAssigner {
 	}
 
 	private static class Back implements IFallBackObject {
+		
+		private Back() {
+			
+		}
 
 		@Override
 		public void execute(Solvis solvis) throws IOException, TerminationException {

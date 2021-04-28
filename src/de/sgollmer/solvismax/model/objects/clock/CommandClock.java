@@ -11,8 +11,8 @@ import java.io.IOException;
 
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.model.Command;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.command.Command;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor.NextAdjust;
 

@@ -21,7 +21,7 @@ public class Proxy {
 	private final String user;
 	private final CryptAes password;
 
-	public Proxy(String host, int port, String user, CryptAes password) {
+	private Proxy(String host, int port, String user, CryptAes password) {
 		this.host = host;
 		this.port = port;
 		this.user = user;

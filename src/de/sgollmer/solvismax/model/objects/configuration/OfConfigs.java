@@ -25,7 +25,9 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner, It
 		for (E e : this.elements) {
 			if (!element.isConfigurationVerified(e)) {
 				element.isConfigurationVerified(e);
-				throw new XmlException("Configuration mask of screen <" + element.getName() + "> isn't unique.");
+				throw new XmlException("Configuration mask of " + element.getElementType() + " <" + element.getName() + "> isn't unique.\n"
+						+ "Added mask: " + element.getConfiguration().toString() + "\n"
+								+ "Not unique with: " + e.getConfiguration().toString());
 			}
 		}
 		this.elements.add(element);
@@ -72,10 +74,14 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner, It
 
 	public interface IElement<E> extends IAssigner {
 		public boolean isConfigurationVerified(E e);
+		
+		public Configuration getConfiguration();
 
 		public boolean isInConfiguration(Solvis solvis);
 
 		public String getName();
+		
+		public String getElementType() ;
 	}
 
 	@Override

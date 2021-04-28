@@ -77,6 +77,7 @@
 			<element name="DefaultCorrections"
 				type="tns:DefaultCorrections" maxOccurs="1" minOccurs="0">
 			</element>
+			<element name="ChannelAssignments" type="tns:ChannelAssignments" maxOccurs="1" minOccurs="0"></element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -652,4 +653,30 @@
 				<documentation>Correction value. The unit of teh value is specified to us.</documentation>
 			</annotation></attribute>
 	</complexType>
+	
+		<complexType name="ChannelAssignments">
+		<sequence>
+			<element name="Assignment" type="tns:Assignment"></element>
+		</sequence>
+	</complexType>
+	
+		<complexType name="Assignment">
+		<attribute name="id" type="string" use="required">
+			<annotation>
+				<documentation>
+					id des Kanals laut ChannelDescription (interner
+					Name)
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="name" type="string" use="required">
+			<annotation>
+				<documentation>
+					Name, für die SmartHome-Schnittstelle
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+	
+	
 </schema>

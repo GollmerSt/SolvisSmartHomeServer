@@ -35,7 +35,7 @@ public class UserSelection implements ISelectScreen {
 
 	private int waitTimeAfterLastDigit_ms = 0;
 
-	public UserSelection(Collection<Digit> digits, String waitTimeAfterLastDigitRefId) {
+	private UserSelection(Collection<Digit> digits, String waitTimeAfterLastDigitRefId) {
 		this.digits = digits;
 		this.waitTimeAfterLastDigitRefId = waitTimeAfterLastDigitRefId;
 	}

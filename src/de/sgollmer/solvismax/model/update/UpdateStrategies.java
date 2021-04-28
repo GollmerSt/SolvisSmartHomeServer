@@ -27,7 +27,7 @@ public class UpdateStrategies implements IAssigner {
 
 	private final Collection<Strategy<?>> strategies;
 
-	public UpdateStrategies(Collection<Strategy<?>> strategies) {
+	private UpdateStrategies(Collection<Strategy<?>> strategies) {
 		this.strategies = strategies;
 	}
 

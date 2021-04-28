@@ -26,9 +26,12 @@ public class AllDurations {
 
 	private Map<String, Duration> durations = new HashMap<>();
 
+	private AllDurations() {
+	}
+
 	private void add(Duration duration) {
 		Duration former = this.durations.put(duration.getId(), duration);
-		if ( former != null ) {
+		if (former != null) {
 			logger.error("Duration <" + duration.getId() + "> not unique.");
 		}
 	}

@@ -74,7 +74,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private OfConfigs<AbstractScreen> previousScreen = null;
 	private OfConfigs<AbstractScreen> backScreen = null;
 
-	protected Screen(String id, String previousId, String backId, boolean ignoreChanges, boolean mustSave,
+	private Screen(String id, String previousId, String backId, boolean ignoreChanges, boolean mustSave,
 			Configuration configurationMasks, ISelectScreen selectScreen, TouchPoint sequenceUp,
 			TouchPoint sequenceDown, Collection<Identification> identifications, Collection<Rectangle> ignoreRectangles,
 			String preparationId, String lastPreparationId, boolean noRestore) {
@@ -736,7 +736,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	@Override
 	public Configuration getConfigurationMasks() {
-		return this.configurationMasks;
+		return this.configuration;
 	}
 
 	@Override
@@ -759,6 +759,11 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public boolean isNoRestore() {
 		return this.noRestore;
+	}
+
+	@Override
+	public String getElementType() {
+		return this.getClass().getSimpleName();
 	}
 
 }

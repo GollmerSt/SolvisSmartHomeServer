@@ -10,7 +10,7 @@ class ScreenGraficRef {
 
 	public final String refId;
 
-	public ScreenGraficRef(String refId) {
+	private ScreenGraficRef(String refId) {
 		this.refId = refId;
 	}
 

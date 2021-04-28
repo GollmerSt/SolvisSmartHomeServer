@@ -27,7 +27,7 @@ public class Identification {
 	private final Collection<IScreenPartCompare> screenCompares;
 	private final Collection<String> screenGraficRefs;
 
-	public Identification(Collection<IScreenPartCompare> screenCompares, Collection<String> screenGraficRefs) {
+	private Identification(Collection<IScreenPartCompare> screenCompares, Collection<String> screenGraficRefs) {
 		this.screenCompares = screenCompares;
 		this.screenGraficRefs = screenGraficRefs;
 	}

@@ -23,17 +23,19 @@ import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.connection.transfer.DescriptionsPackage;
 import de.sgollmer.solvismax.error.ClientAssignmentException;
+import de.sgollmer.solvismax.error.CommandError;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.model.CommandSetScreen;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.command.CommandSetScreen;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
+import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
@@ -43,11 +45,11 @@ public class CommandHandler {
 
 	private final Collection<ClientAssignments> clients;
 	private final Instances instances;
-	private long nextClientId ;
+	private long nextClientId;
 	private boolean abort = false;
 
 	public CommandHandler(Instances instances) {
-		this.nextClientId = 0x00000000ffffffffL & Long.hashCode(System.currentTimeMillis()) ;
+		this.nextClientId = 0x00000000ffffffffL & Long.hashCode(System.currentTimeMillis());
 		this.instances = instances;
 		this.clients = new ArrayList<>();
 
@@ -63,39 +65,44 @@ public class CommandHandler {
 			logger.info("Command <" + command.name() + "> received");
 		}
 		boolean abortConnection = false;
-		switch (command) {
-			case CONNECT:
-				abortConnection = this.connect(receivedData, client);
-				break;
-			case RECONNECT:
-				abortConnection = this.reconnect(receivedData, client);
-				break;
-			case DISCONNECT:
-				this.disconnect(receivedData, client, false);
-				break;
-			case SHUTDOWN:
-				this.disconnect(receivedData, client, true);
-				break;
-			case GET:
-				this.get(receivedData);
-				break;
-			case SET:
-				this.set(receivedData);
-				break;
-			case SERVER_COMMAND:
-				this.executeServerCommand(receivedData, client);
-				break;
-			case SELECT_SCREEN:
-				this.selectScreen(receivedData, client);
-				break;
-			case CLIENT_ONLINE:
-				this.clientOnline(receivedData, client);
-				break;
-			default:
-				logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
-				break;
+		try {
+			switch (command) {
+				case CONNECT:
+					abortConnection = this.connect(receivedData, client);
+					break;
+				case RECONNECT:
+					abortConnection = this.reconnect(receivedData, client);
+					break;
+				case DISCONNECT:
+					this.disconnect(receivedData, client, false);
+					break;
+				case SHUTDOWN:
+					this.disconnect(receivedData, client, true);
+					break;
+				case GET:
+					this.get(receivedData);
+					break;
+				case SET:
+					this.set(receivedData);
+					break;
+				case SERVER_COMMAND:
+					this.executeServerCommand(receivedData, client);
+					break;
+				case SELECT_SCREEN:
+					this.selectScreen(receivedData, client);
+					break;
+				case CLIENT_ONLINE:
+					this.clientOnline(receivedData, client);
+					break;
+				default:
+					logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
+					break;
+			}
+			return abortConnection;
+		} catch (CommandError e) {
+			client.sendCommandError(e.getMessage());
+			return abortConnection;
 		}
-		return abortConnection;
 	}
 
 	private void executeServerCommand(IReceivedData receivedData, IClient client)
@@ -205,7 +212,7 @@ public class CommandHandler {
 
 		AbstractScreen screen = null;
 
-		if (!screenId.equals("NONE")) {
+		if (!screenId.equals("START")) {
 			screen = solvis.getSolvisDescription().getScreens().get(screenId, solvis);
 
 			if (screen == null || !(screen instanceof Screen)) {
@@ -223,7 +230,7 @@ public class CommandHandler {
 	}
 
 	private synchronized ClientAssignments createClientAssignments(IClient client) {
-		ClientAssignments assignments = new ClientAssignments(this,client);
+		ClientAssignments assignments = new ClientAssignments(this, client);
 		this.clients.add(assignments);
 		return assignments;
 	}
@@ -264,8 +271,7 @@ public class CommandHandler {
 			ClientAssignments assignments = this.createClientAssignments(client);
 			assignments.add(solvis);
 			client.send(new ConnectedPackage(clientId));
-			DescriptionsPackage channelDescription = new DescriptionsPackage(
-					this.instances.getSolvisDescription().getChannelDescriptions(), solvis);
+			DescriptionsPackage channelDescription = new DescriptionsPackage(solvis);
 			client.send(channelDescription);
 
 			this.sendMeasurements(solvis, (Client) client);
@@ -331,10 +337,16 @@ public class CommandHandler {
 		}
 	}
 
-	private void set(IReceivedData receivedDat) throws JsonException, TypeException {
+	private void set(IReceivedData receivedDat) throws JsonException, TypeException, CommandError {
 		Solvis solvis = receivedDat.getSolvis();
+		String name = receivedDat.getChannelId();
 
-		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
+		SolvisData data = solvis.getAllSolvisData().getByName(name);
+
+		if (data == null) {
+			throw new CommandError("Channel <" + name + "> is unknown. Command ignored.");
+		}
+		ChannelDescription description = data.getDescription();
 
 		SingleData<?> singleData = receivedDat.getSingleData();
 		boolean ignored;
@@ -346,18 +358,24 @@ public class CommandHandler {
 		}
 		if (ignored) {
 			logger.debug("Command <SET> received");
-			logger.debug("Setting the channel <" + description.getId() + "> ignored to prevent feedback loops.");
+			logger.debug("Setting the channel <" + name + "> ignored to prevent feedback loops.");
 		} else {
 			logger.info("Command <SET> received");
-			logger.info("Channel <" + description.getId() + "> will be set to " + singleData.toString() + ">.");
+			logger.info("Channel <" + name + "> will be set to " + singleData.toString() + ">.");
 		}
 	}
 
-	private void get(IReceivedData receivedDat) {
+	private void get(IReceivedData receivedDat) throws CommandError {
 		Solvis solvis = receivedDat.getSolvis();
-		ChannelDescription description = solvis.getChannelDescription(receivedDat.getChannelId());
-		logger.info("Channel <" + description.getId() + "> will be updated by GET command");
-		solvis.execute(new de.sgollmer.solvismax.model.CommandControl(description, solvis));
+		String name = receivedDat.getChannelId();
+
+		SolvisData data = solvis.getAllSolvisData().getByName(name);
+		if (data == null) {
+			throw new CommandError("Channel <" + name + "> is unknown. Command ignored.");
+		}
+		ChannelDescription description = data.getDescription();
+		logger.info("Channel <" + name + "> will be updated by GET command");
+		solvis.execute(new de.sgollmer.solvismax.model.command.CommandControl(description, solvis));
 	}
 
 	private void terminate(boolean restart) {
@@ -467,10 +485,10 @@ public class CommandHandler {
 			assignments.abort();
 		}
 	}
-	
+
 	public void handleControlEnable(Solvis solvis) {
-		boolean enable = true ;
-		for ( ClientAssignments client : this.clients ) {
+		boolean enable = true;
+		for (ClientAssignments client : this.clients) {
 			enable &= client.getControlEnabled(solvis);
 		}
 		solvis.controlEnable(enable);

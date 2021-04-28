@@ -14,7 +14,7 @@ import java.util.jar.Manifest;
 
 public class Version {
 
-	private String serverVersion = "01.02.11-rc3";
+	private String serverVersion = "01.03.00-rc1";
 	private String appendix = "3 heating circuits beta, SolvisMax 7 beta";
 
 	public static Version getInstance() {

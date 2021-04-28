@@ -9,33 +9,34 @@ package de.sgollmer.solvismax.connection.transfer;
 
 import java.util.Collection;
 
+import de.sgollmer.solvismax.model.objects.ChannelInstance;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 
 public class ChannelDescription extends Element {
-	public ChannelDescription(de.sgollmer.solvismax.model.objects.ChannelDescription description) {
+	public ChannelDescription(ChannelInstance instance) {
 		
-		this.name = description.getId();
+		this.name = instance.getName();
 		Frame frame = new Frame();
 		this.value = frame;
 
-		boolean writeable = description.isWriteable();
+		boolean writeable = instance.isWriteable();
 		Element writeableElement = new Element();
 		writeableElement.name = "Writeable";
 		SingleValue sv = new SingleValue(new BooleanValue(writeable, -1));
 		writeableElement.value = sv;
 		frame.add(writeableElement);
 
-		String type = description.getType().name();
+		String type = instance.getType().name();
 		Element typeElement = new Element();
 		typeElement.name = "Type";
 		sv = new SingleValue(type);
 		typeElement.value = sv;
 		frame.add(typeElement);
 
-		String unitString = description.getUnit();
+		String unitString = instance.getUnit();
 		if (unitString != null) {
 			Element unit = new Element();
 			unit.name = "Unit";
@@ -43,7 +44,7 @@ public class ChannelDescription extends Element {
 			frame.add(unit);
 		}
 
-		Double accuracy = description.getAccuracy();
+		Double accuracy = instance.getAccuracy();
 		if (accuracy != null) {
 			Element ac = new Element();
 			ac.name = "Accuracy";
@@ -51,13 +52,13 @@ public class ChannelDescription extends Element {
 			frame.add(ac);
 		}
 
-		boolean isBoolean = description.isBoolean();
+		boolean isBoolean = instance.isBoolean();
 		Element ib = new Element();
 		ib.name = "IsBoolean";
 		ib.value = new SingleValue(new BooleanValue(isBoolean, -1));
 		frame.add(ib);
 
-		UpperLowerStep upperLowerStep = description.getUpperLowerStep();
+		UpperLowerStep upperLowerStep = instance.getUpperLowerStep();
 		if (upperLowerStep != null) {
 			Element upper = new Element();
 			upper.name = "Upper";
@@ -85,7 +86,7 @@ public class ChannelDescription extends Element {
 			}
 		}
 
-		Collection<? extends IMode<?>> modes = description.getModes();
+		Collection<? extends IMode<?>> modes = instance.getModes();
 		if (modes != null) {
 			ArrayValue arrayValue = new ArrayValue();
 

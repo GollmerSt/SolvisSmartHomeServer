@@ -21,6 +21,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisStatus;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
+import de.sgollmer.solvismax.model.objects.ChannelInstance;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
@@ -31,7 +32,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisData.class);
 
-	private final ChannelDescription description;
+	private ChannelInstance channelInstance;
 	private final AllSolvisData datas;
 
 	private final Average average;
@@ -40,19 +41,20 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	private SingleData<?> sentData = null;
 	private final boolean dontSend;
 	private SmartHomeData smartHomeData;
+	private int executionTime;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
 	public SolvisData(ChannelDescription description, AllSolvisData datas, boolean ignore) {
-		this.description = description;
 		this.datas = datas;
 		this.dontSend = ignore;
-		if (this.description.isAverage()) {
-			this.average = new Average(datas.getAverageCount(), datas.getMeasurementHysteresisFactor());
+		this.smartHomeData = null;
+		if (description.isAverage()) {
+			this.average = new Average(this.datas.getAverageCount(), datas.getMeasurementHysteresisFactor());
 		} else {
 			this.average = null;
 		}
-		this.smartHomeData = null;
+		this.channelInstance = ChannelInstance.create(description, this.getSolvis());
 	}
 
 	public void setAsSmartHomedata() {
@@ -60,7 +62,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	private SolvisData(SolvisData data) {
-		this.description = data.description;
+		this.channelInstance = data.channelInstance;
 		this.datas = data.datas;
 		if (data.average != null) {
 			this.average = new Average(data.average);
@@ -74,7 +76,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	public SolvisData(SingleData<?> data) {
 		this.data = data;
-		this.description = null;
+		this.channelInstance = null;
 		this.average = null;
 		this.datas = null;
 		this.dontSend = false;
@@ -109,14 +111,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public String getId() {
-		return this.description.getId();
+		return this.getDescription().getId();
 	}
 
 	private void setData(SingleData<?> data) {
-		this.setData(data, this, ResultStatus.SUCCESS);
+		this.setData(data, this, ResultStatus.SUCCESS, -1L);
 	}
 
-	private synchronized void setData(SingleData<?> data, Object source, ResultStatus status) {
+	private synchronized void setData(SingleData<?> data, Object source, ResultStatus status, long executionStartTime) {
 
 		if (data == null || data.get() == null) {
 			this.data = null;
@@ -124,8 +126,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 
 		boolean fastChange = false;
+		if (executionStartTime > 0L && data.getTimeStamp() > 0L) {
+			this.executionTime = (int) (data.getTimeStamp() - executionStartTime);
+		}
 
-		if (this.description.isAverage()) {
+		if (this.getDescription().isAverage()) {
 			this.average.add(data);
 			Average.Result average = this.average.getAverage(data);
 			if (average == null) {
@@ -139,7 +144,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return;
 		}
 
-		boolean glitchInhibitEnabled = this.description.getGlitchInhibitTime_ms() > 0;
+		boolean glitchInhibitEnabled = this.getDescription().getGlitchInhibitTime_ms() > 0;
 		boolean changed = false;
 
 		if (data.getTimeStamp() > 0 && this.pendingData != null) {
@@ -147,7 +152,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			if (data.equals(this.pendingData)) {
 
 				if (data.getTimeStamp() > this.pendingData.getTimeStamp()
-						+ this.description.getGlitchInhibitTime_ms()) {
+						+ this.getDescription().getGlitchInhibitTime_ms()) {
 
 					glitchInhibitEnabled = false;
 					this.pendingData = null;
@@ -174,7 +179,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 		if (!this.isEmpty() && (changed || status == ResultStatus.VALUE_VIOLATION)) {
 
-			if (!this.description.isWriteable() || !this.datas.getSolvis().willBeModified(this)
+			if (!this.getDescription().isWriteable() || !this.datas.getSolvis().willBeModified(this)
 					|| status == ResultStatus.VALUE_VIOLATION) {
 
 				this.notify(this, source);
@@ -195,11 +200,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	 * @return the description
 	 */
 	public ChannelDescription getDescription() {
-		return this.description;
+		return this.channelInstance.getDescription();
 	}
 
 	public void setInteger(Integer integer, long timeStamp, Object source) {
-		this.setData(new IntegerValue(integer, timeStamp), source, ResultStatus.SUCCESS);
+		this.setData(new IntegerValue(integer, timeStamp), source, ResultStatus.SUCCESS, -1L);
 	}
 
 	public void setInteger(Integer integer, long timeStamp) {
@@ -220,6 +225,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
 	}
 
+// TODO
 //	public Double getDouble() throws TypeException {
 //		SingleData<?> data = this.data;
 //		if (data == null) {
@@ -287,11 +293,15 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public void setSingleData(SetResult data) {
-		this.setData(data.getData(), this, data.getStatus());
+		this.setData(data.getData(), this, data.getStatus(), -1L);
+	}
+
+	public void setSingleData(SingleData<?> data, long executionStartTime) {
+		this.setData(data, this, ResultStatus.SUCCESS, executionStartTime);
 	}
 
 	public void setSingleData(SingleData<?> data, Object source) {
-		this.setData(data, source, ResultStatus.SUCCESS);
+		this.setData(data, source, ResultStatus.SUCCESS, -1L);
 	}
 
 	public void setSingleData(SingleData<?> data) {
@@ -365,9 +375,9 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 //	}
 //
 	public boolean isValid() {
-		if (this.data == null ) {
+		if (this.data == null) {
 			return false;
-		} else if (this.description.isWriteable()) {
+		} else if (this.getDescription().isWriteable()) {
 			return this.datas.getLastHumanAccess() < this.data.getTimeStamp();
 		} else {
 			return true;
@@ -463,6 +473,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return this.solvisData.getDescription();
 		}
 
+		public String getName() {
+			return this.solvisData.channelInstance.getName();
+		}
+
 		public long getTransmittedTimeStamp() {
 			return this.transmittedTimeStamp;
 		}
@@ -479,8 +493,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				return null;
 			}
 			String value = this.getDescription().normalize(this.getData()).toString();
-			return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(this.getDescription().getId()), value, 0,
-					true);
+			String name = this.solvisData.channelInstance.getName();
+			return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(name), value, 0, true);
 		}
 
 		public SingleValue toSingleValue(SingleData<?> data) {
@@ -503,7 +517,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public Integer getScanInterval_ms() {
-		return this.description.getScanInterval_ms(this.getSolvis());
+		return this.getDescription().getScanInterval_ms(this.getSolvis());
 	}
 
+	public ChannelInstance getChannelInstance() {
+		return this.channelInstance;
+	}
+
+	public int getExecutionTime() {
+		return this.executionTime;
+	}
 }

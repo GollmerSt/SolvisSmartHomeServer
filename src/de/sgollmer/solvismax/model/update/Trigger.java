@@ -12,7 +12,7 @@ public class Trigger {
 
 	private final String id;
 
-	public Trigger(String id) {
+	private Trigger(String id) {
 		this.id = id;
 	}
 	

@@ -69,6 +69,16 @@ public class Main {
 	private Server server = null;
 	private Mqtt mqtt = null;
 
+	private enum ExecutionMode {
+		STANDARD(true), LEARN(false), CHANNELS_OF_UNIT(false), CHANNELS_OF_ALL_CONFIGURATIONS(false);
+		
+		private final boolean start; 
+
+		private ExecutionMode( boolean start ) {
+			this.start = start;
+		}
+	}
+
 	private void execute(String[] args) {
 
 		String createTaskName = null;
@@ -179,7 +189,8 @@ public class Main {
 
 		this.logger.info(serverStart);
 		Level.getLevel("LEARN");
-		boolean learn = false;
+		
+		ExecutionMode executionMode = ExecutionMode.STANDARD;
 
 		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
 			String arg = it.next();
@@ -200,7 +211,7 @@ public class Main {
 						this.serverTerminateAndExit(baseData);
 						break;
 					case "server-learn":
-						learn = true;
+						executionMode = ExecutionMode.LEARN;
 						break;
 					case "server-restart":
 						this.logger.info("Restart started");
@@ -219,6 +230,12 @@ public class Main {
 							System.exit(Constants.ExitCodes.MAILING_ERROR);
 						}
 						break;
+					case "channels":
+						executionMode = ExecutionMode.CHANNELS_OF_UNIT;
+						break;
+					case "channels_of_all_configurations":
+						executionMode = ExecutionMode.CHANNELS_OF_ALL_CONFIGURATIONS;
+						break;
 					default:
 						System.err.println("Unknowwn argument: " + arg);
 						System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
@@ -231,7 +248,7 @@ public class Main {
 		ServerSocket serverSocket = this.openSocket(baseData.getPort());
 
 		try {
-			this.instances = new Instances(baseData, learn);
+			this.instances = new Instances(baseData, executionMode == ExecutionMode.LEARN);
 		} catch (IOException | XmlException | XMLStreamException | AssignmentException | FileException
 				| ReferenceException e) {
 			this.logger.error("Exception on reading configuration occured, cause:", e);
@@ -248,12 +265,12 @@ public class Main {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 		this.startTime = format.format(new Date());
 
-		if (learn || this.instances.mustLearn()) {
+		if (executionMode == ExecutionMode.LEARN || this.instances.mustLearn()) {
 
 			this.closeSocket(serverSocket);
 
 			try {
-				this.instances.learn(learn);
+				this.instances.learn(executionMode == ExecutionMode.LEARN);
 			} catch (IOException | XMLStreamException | LearningException | FileException e) {
 				this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
 				e.printStackTrace();
@@ -261,7 +278,7 @@ public class Main {
 			} catch (TerminationException e) {
 				System.exit(ExitCodes.OK);
 			}
-			if (learn) {
+			if (executionMode == ExecutionMode.LEARN) {
 				System.exit(ExitCodes.OK);
 			}
 			serverSocket = this.openSocket(baseData.getPort());

@@ -21,6 +21,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
+import de.sgollmer.solvismax.model.objects.IInstance;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.DependencyGroup;
 import de.sgollmer.solvismax.model.objects.data.IMode;
@@ -117,7 +118,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis)
+	public boolean getValue(SolvisData dest, Solvis solvis, long executionStartTime)
 			throws PowerOnException, IOException, TerminationException, NumberFormatException {
 
 		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
@@ -149,8 +150,8 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
-
+	public IInstance instantiate(Solvis solvis) {
+		return null;
 	}
 
 	public static class Creator extends CreatorByXML<Measurement> {

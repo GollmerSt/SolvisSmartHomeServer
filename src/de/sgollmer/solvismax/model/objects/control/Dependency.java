@@ -29,7 +29,7 @@ public class Dependency implements IAssigner {
 
 	protected ChannelDescription description;
 
-	public Dependency(String id, String value, Integer priority, String standbyId) {
+	private Dependency(String id, String value, Integer priority, String standbyId) {
 		this.id = id;
 		this.value = value;
 		this.priority=priority;

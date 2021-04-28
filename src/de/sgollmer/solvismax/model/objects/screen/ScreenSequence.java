@@ -62,7 +62,7 @@ public class ScreenSequence extends AbstractScreen {
 	private Preparation preparation = null;
 	private OfConfigs<AbstractScreen> previousScreen;
 
-	public ScreenSequence(String id, String previousId, boolean wrapArround, Configuration configurationMasks,
+	private ScreenSequence(String id, String previousId, boolean wrapArround, Configuration configurationMasks,
 			ISelectScreen selectScreen, String preparationId, List<ScreenRef> screenRefs) {
 		super(id, previousId, configurationMasks);
 		this.wrapArround = wrapArround;
@@ -165,7 +165,7 @@ public class ScreenSequence extends AbstractScreen {
 
 	@Override
 	public Configuration getConfigurationMasks() {
-		return this.configurationMasks;
+		return this.configuration;
 	}
 
 	@Override
@@ -433,6 +433,11 @@ public class ScreenSequence extends AbstractScreen {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public String getElementType() {
+		return this.getClass().getSimpleName();
 	}
 
 }

@@ -65,7 +65,7 @@ public class StrategyRead implements IStrategy {
 					return null;
 				}
 			} else {
-				i = (int)(Double.parseDouble(formated) * this.getDivisor() + 0.5);
+				i = (int)Math.round(Double.parseDouble(formated) * this.getDivisor());
 			}
 		}
 		return new IntegerValue(i, System.currentTimeMillis());

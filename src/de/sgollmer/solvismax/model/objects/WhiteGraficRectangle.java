@@ -19,7 +19,7 @@ public class WhiteGraficRectangle implements IScreenPartCompare {
 
 	private Rectangle rectangle;
 
-	public WhiteGraficRectangle(Rectangle rectangle) {
+	private WhiteGraficRectangle(Rectangle rectangle) {
 		this.rectangle = rectangle;
 	}
 

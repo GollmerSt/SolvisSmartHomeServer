@@ -18,21 +18,16 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
-
-import de.sgollmer.solvismax.connection.mqtt.Mqtt;
-import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
-import de.sgollmer.solvismax.model.CommandControl;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.command.CommandControl;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.control.Dependency;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -53,6 +48,9 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	private Map<ChannelConfig, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>(3);
 	private Map<ChannelConfig, Collection<ChannelDescription>> updateReadOnlyControlChannelsSequences = new HashMap<>(
 			3);
+
+	private AllChannelDescriptions() {
+	}
 
 	private void addDescription(ChannelDescription description) throws XmlException {
 		OfConfigs<ChannelDescription> channelConf = this.descriptions.get(description.getId());
@@ -170,10 +168,13 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
 			if (description != null) {
-				SolvisData data = datas.get(description);
+				boolean ignore = solvis.getUnit().isChannelIgnored(description.getId());
+				SolvisData data = new SolvisData(description, solvis.getAllSolvisData(), ignore);
+				data.setAsSmartHomedata();
 				if (description.isAverage()) {
 					solvis.getSolvisState().register(data);
 				}
+				datas.add(data);
 			}
 		}
 
@@ -351,18 +352,4 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		return result;
 	}
 
-	void sendToMqtt(Solvis solvis, Mqtt mqtt, boolean deleteRetained) throws MqttException, MqttConnectionLost {
-		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
-			ChannelDescription meta = descriptionsC.get(solvis);
-			if (meta != null) {
-				MqttData data = meta.getMqttMeta(solvis);
-				if (deleteRetained) {
-					mqtt.unpublish(data);
-				} else {
-					mqtt.publish(data);
-				}
-			}
-		}
-
-	}
 }

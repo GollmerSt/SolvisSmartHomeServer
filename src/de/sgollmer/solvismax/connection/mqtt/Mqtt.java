@@ -424,7 +424,7 @@ public class Mqtt {
 	public void deleteRetainedTopics() throws MqttException, MqttConnectionLost {
 		for (Solvis solvis : this.instances.getUnits()) {
 			this.unpublish(ServerCommand.getMqttMeta(solvis));
-			solvis.getSolvisDescription().sendToMqtt(solvis, this, true);
+			solvis.getAllSolvisData().sendMetaToMqtt(this, true);
 			Collection<SmartHomeData> dates = solvis.getAllSolvisData().getMeasurements().cloneAndClear();
 			for (SmartHomeData smartHomeData : dates) {
 				if (smartHomeData != null) {

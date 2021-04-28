@@ -21,7 +21,7 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	protected final String id;
 	protected final String previousId;
-	protected final Configuration configurationMasks;
+	protected final Configuration configuration;
 	protected List<AbstractScreen> nextScreens = new ArrayList<>(3);
 	protected List<ScreenTouch> allPreviousScreenTouches = null;
 	protected Preparation preparation = null;
@@ -29,7 +29,7 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	protected AbstractScreen(String id, String previousId, Configuration configurationMasks) {
 		this.id = id;
 		this.previousId = previousId;
-		this.configurationMasks = configurationMasks;
+		this.configuration = configurationMasks;
 	}
 
 	public String getId() {
@@ -185,19 +185,19 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	@Override
 	public boolean isInConfiguration(Solvis solvis) {
-		if (this.configurationMasks == null) {
+		if (this.configuration == null) {
 			return true;
 		} else {
-			return this.configurationMasks.isInConfiguration(solvis);
+			return this.configuration.isInConfiguration(solvis);
 		}
 	}
 
 	@Override
 	public boolean isConfigurationVerified(AbstractScreen screen) {
-		if ((this.configurationMasks == null) || (screen.getConfigurationMasks() == null)) {
+		if ((this.configuration == null) || (screen.getConfigurationMasks() == null)) {
 			return false;
 		} else {
-			return this.configurationMasks.isVerified(screen.getConfigurationMasks());
+			return this.configuration.isVerified(screen.getConfigurationMasks());
 		}
 	}
 
@@ -303,6 +303,11 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 		}
 
 		return result;
+	}
+
+	@Override
+	public Configuration getConfiguration() {
+		return this.configuration;
 	}
 
 }

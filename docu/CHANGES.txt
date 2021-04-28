@@ -1,6 +1,27 @@
 A E N D E R U N G E N
 
-Version 01.02.11 rc2
+Version 01.03.00
+
+    25.04.2021  Die stündliche Synchronisation bewirkte einen fehlerhaften Zustand, wenn der Wert
+                auf der Solvis-Control schon incrementiert war (Abfragezeitpunkt verpasst).
+                
+                Wird die stündliche Synchronisation verpasst, wird nun das Beobachtungsfenster von
+                mal zu mal vergrößert. Es wird verkleinert, wenn sie erfolgreich war.
+
+    26.04.2021	Es gibt doch sehr viel unterschiedliche Konfigurationen der Anlagen SolvisMax 6
+                und SolvisMax 7. Die wären mit dem bisherigen Verfahren nur mit großem Aufwand
+                zu vereinen. Es wurde nun einen weitere Beschreibungsebene eingeführt, in der die
+                Zurornung der Kanäle erfolgt. Diese Beschreibung kann im base.xml auch vom User
+                noch modifiziert werden, so dass auch der User bei Bedarf noch Hand anlegen kann.
+
+
+Version 01.02.11 rc4
+
+    18.04.2021  Rundungsfehler bei negativen GUI-Werten gefixt (Temperatur-Feineinstellung).
+
+
+
+Version 01.02.11 rc3
 
     18.04.2021  ModeChange-Time von 3s auf 3,5s erhöht.
 

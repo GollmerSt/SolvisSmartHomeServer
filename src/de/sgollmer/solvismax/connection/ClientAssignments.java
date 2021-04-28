@@ -12,8 +12,8 @@ import java.util.Map;
 
 import de.sgollmer.solvismax.connection.CommandHandler.ClosingThread;
 import de.sgollmer.solvismax.error.ClientAssignmentException;
-import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.command.CommandScreenRestore;
 
 public class ClientAssignments {
 	private final CommandHandler commandHandler;

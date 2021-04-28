@@ -12,8 +12,6 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.connection.mqtt.Mqtt;
-import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
@@ -48,7 +46,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	private final String id;
 	private final boolean buffered;
 	private final String unit;
-	private final Configuration configurationMasks;
+	private final Configuration configuration;
 	private final ChannelSource channelSource;
 	private final int glitchInhibitTime_ms;
 
@@ -57,7 +55,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		this.id = id;
 		this.buffered = buffered;
 		this.unit = unit;
-		this.configurationMasks = configurationMasks;
+		this.configuration = configurationMasks;
 		this.channelSource = channelSource;
 		this.glitchInhibitTime_ms = glitchInhibitTime_ms;
 		if (!this.channelSource.isGlitchDetectionAllowed() && this.glitchInhibitTime_ms > 0) {
@@ -76,15 +74,20 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	public boolean getValue(Solvis solvis)
+			throws NumberFormatException, IOException, PowerOnException, TerminationException {
+		return this.getValue(solvis, -1L);
+	}
+
+	public boolean getValue(Solvis solvis, long executionStartTime)
 			throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
-		return this.getValue(data, solvis);
+		return this.getValue(data, solvis, executionStartTime);
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis)
+	public boolean getValue(SolvisData dest, Solvis solvis, long executionStartTime)
 			throws IOException, PowerOnException, TerminationException, NumberFormatException {
-		return this.channelSource.getValue(dest, solvis);
+		return this.channelSource.getValue(dest, solvis, executionStartTime);
 	}
 
 	@Override
@@ -130,8 +133,9 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) throws AssignmentException, AliasException {
+	public ChannelInstance instantiate(Solvis solvis) throws AssignmentException, AliasException {
 		this.channelSource.instantiate(solvis);
+		return null;
 
 	}
 
@@ -236,19 +240,19 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 
 	@Override
 	public boolean isInConfiguration(Solvis solvis) {
-		if (this.configurationMasks == null) {
+		if (this.configuration == null) {
 			return true;
 		} else {
-			return this.configurationMasks.isInConfiguration(solvis);
+			return this.configuration.isInConfiguration(solvis);
 		}
 	}
 
 	@Override
 	public boolean isConfigurationVerified(ChannelDescription e) {
-		if ((this.configurationMasks == null) || (e.configurationMasks == null)) {
+		if ((this.configuration == null) || (e.configuration == null)) {
 			return false;
 		} else {
-			return this.configurationMasks.isVerified(e.configurationMasks);
+			return this.configuration.isVerified(e.configuration);
 		}
 	}
 
@@ -276,12 +280,6 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.getRestoreChannel(solvis);
 	}
 
-	MqttData getMqttMeta(Solvis solvis) {
-		de.sgollmer.solvismax.connection.transfer.ChannelDescription meta = new de.sgollmer.solvismax.connection.transfer.ChannelDescription(
-				this);
-		return new MqttData(solvis, Mqtt.formatChannelMetaTopic(this.getId()), meta.getValue().toString(), 0, true);
-	}
-
 	public int getGlitchInhibitTime_ms() {
 		return this.glitchInhibitTime_ms;
 	}
@@ -307,7 +305,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 
 		return new IntegerValue((int) Math.round(data.getDouble() * divisor), data.getTimeStamp());
 	}
-	
+
 	public SingleData<?> normalize(SingleData<?> data) {
 		if (data.get() == null) {
 			return null;
@@ -334,5 +332,14 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.getScanInterval_ms(solvis);
 	}
 
+	@Override
+	public String getElementType() {
+		return this.getClass().getSimpleName();
+	}
+
+	@Override
+	public Configuration getConfiguration() {
+		return this.configuration;
+	}
 
 }

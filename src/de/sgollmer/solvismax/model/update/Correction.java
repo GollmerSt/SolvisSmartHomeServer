@@ -31,7 +31,7 @@ public class Correction implements SystemBackup.IValue {
 	private long data;
 	private long cnt;
 
-	public Correction(String id, long data, long cnt) {
+	private Correction(String id, long data, long cnt) {
 		this.id = id;
 		this.data = data;
 		this.cnt = cnt;

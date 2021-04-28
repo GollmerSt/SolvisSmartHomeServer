@@ -41,18 +41,19 @@ public class AliasGroup implements IAssigner, Cloneable {
 			throw new AliasException("Alias error: <" + id + "> unknown");
 		}
 
-		ChannelDescription description = allData.getSolvis().getChannelDescription(alias.getDataId());
-		if (description == null) {
+		SolvisData data = allData.get(alias.getDataId());
+
+		if (data == null) {
 			throw new AliasException("Alias error: <" + alias.getDataId() + "> unknown");
 		}
-		return allData.get(description);
+		return data;
 	}
-	
-	public Collection<ChannelDescription> getChannelDescriptions( Solvis solvis) {
-		Collection<ChannelDescription> descriptions = new ArrayList<>() ;
-		for ( Alias alias : this.aliases) {
-			ChannelDescription description = solvis.getChannelDescription(alias.getDataId()) ;
-			if ( description != null ) {
+
+	public Collection<ChannelDescription> getChannelDescriptions(Solvis solvis) {
+		Collection<ChannelDescription> descriptions = new ArrayList<>();
+		for (Alias alias : this.aliases) {
+			ChannelDescription description = solvis.getChannelDescription(alias.getDataId());
+			if (description != null) {
 				descriptions.add(description);
 			}
 		}
@@ -65,7 +66,7 @@ public class AliasGroup implements IAssigner, Cloneable {
 			alias.assign(description);
 		}
 	}
-	
+
 	@Override
 	public AliasGroup clone() {
 		try {
@@ -87,7 +88,7 @@ public class AliasGroup implements IAssigner, Cloneable {
 		Integer scanInterval = null;
 		for (ChannelDescription description : this.getChannelDescriptions(solvis)) {
 			Integer si = description.getScanInterval_ms(solvis);
-			if ( si != null && ( scanInterval == null || scanInterval < si )) {
+			if (si != null && (scanInterval == null || scanInterval < si)) {
 				scanInterval = si;
 			}
 		}

@@ -190,4 +190,9 @@ public class Configuration {
 			}
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return this.masks.toString();
+	}
 }

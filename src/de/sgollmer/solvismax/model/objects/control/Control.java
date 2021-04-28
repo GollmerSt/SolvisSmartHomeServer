@@ -28,6 +28,7 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
+import de.sgollmer.solvismax.model.objects.IInstance;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -80,7 +81,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData destin, Solvis solvis) throws IOException, TerminationException {
+	public boolean getValue(SolvisData destin, Solvis solvis, long executionStartTime) throws IOException, TerminationException {
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return false;
@@ -90,7 +91,7 @@ public class Control extends ChannelSource {
 		if (data == null) {
 			return false;
 		} else {
-			destin.setSingleData(data);
+			destin.setSingleData(data, executionStartTime);
 			return true;
 		}
 	}
@@ -174,11 +175,11 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
+	public IInstance instantiate(Solvis solvis) {
 		if (this.updateStrategies != null) {
 			this.updateStrategies.instantiate(solvis);
 		}
-
+		return null;
 	}
 
 	@Override

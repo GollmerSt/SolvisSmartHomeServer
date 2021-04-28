@@ -28,10 +28,11 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	public ChannelDescription getRestoreChannel(Solvis solvis);
 
 	public DependencyGroup getDependencyGroup();
-	
+
 	public boolean mustBackuped();
 
-	public boolean getValue(SolvisData dest, Solvis solvis) throws IOException, PowerOnException, TerminationException;
+	public boolean getValue(SolvisData dest, Solvis solvis, long executionStartTime)
+			throws IOException, PowerOnException, TerminationException;
 
 	public static class SetResult {
 		private final ResultStatus status;
@@ -64,12 +65,12 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	public Double getAccuracy();
 
 	public boolean isBoolean();
-	
+
 	public boolean isFast();
-	
+
 	public Integer getScanInterval_ms(Solvis solvis);
 
-	public void instantiate(Solvis solvis) throws AssignmentException, AliasException;
+	public IInstance instantiate(Solvis solvis) throws AssignmentException, AliasException;
 
 	public Type getType();
 
@@ -83,7 +84,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public UpperLowerStep getUpperLowerStep();
 
-	public boolean isDelayed(Solvis solvis) ;
+	public boolean isDelayed(Solvis solvis);
 
 	public boolean isHumanAccessDependend();
 
@@ -124,6 +125,5 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 		}
 
 	}
-	
 
 }

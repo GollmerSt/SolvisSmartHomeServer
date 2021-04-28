@@ -16,9 +16,9 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.model.CommandControl;
-import de.sgollmer.solvismax.model.CommandScreenRestore;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.command.CommandControl;
+import de.sgollmer.solvismax.model.command.CommandScreenRestore;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -116,13 +116,16 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 		private long lastCheckTime = -1;
 		private boolean syncActiveForced; // Synchronisation forced by restart or big difference
-		private boolean syncActiveHourly = false; // Synchronisation forced by hourly request
+		private boolean syncEnableHourly = false; // Synchronisation forced by hourly request
 		private boolean syncPossible = false;
 
 		private boolean lastEquipmentState = false;
 		private SingleData<?> lastUpdateValue = null;
 		private boolean screenRestore = true;
 		private boolean otherExecuting = false;
+		
+		private int executionTime = 0;
+		private int hourlyWindow;
 
 		private Executable(Solvis solvis, SolvisData updateSource, SolvisData equipment, SolvisData calculatedValue,
 				int factor, int checkInterval, int readInterval, boolean hourly) {
@@ -137,6 +140,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			this.equipmentTimeSyncEnabled = this.solvis.getUnit().getFeatures().isEquipmentTimeSynchronisation();
 			this.syncActiveForced = this.equipmentTimeSyncEnabled;
 			this.equipment.registerContinuousObserver(this);
+			this.setHourlyWindow(false);
 			this.updateSource.registerContinuousObserver(new IObserver<SolvisData>() {
 
 				@Override
@@ -158,6 +162,16 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 				}
 			});
+		}
+
+		private void setHourlyWindow(boolean enlarge) {
+			if (enlarge) {
+				this.hourlyWindow += Constants.HOURLY_EQUIPMENT_WINDOW_READ_INTERVAL_FACTOR * this.readInterval / 1000;
+
+			} else {
+				this.hourlyWindow = Constants.HOURLY_EQUIPMENT_WINDOW_READ_INTERVAL_FACTOR * this.readInterval / 1000;
+			}
+
 		}
 
 		private SynchronisationResult checkSynchronisation(SolvisData controlData, boolean equipmentOn, boolean changed)
@@ -191,7 +205,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				range = Synchronisation.UPDATE_ONLY;
 			}
 
-			if (changed && (this.syncActiveForced || this.syncActiveHourly)) {
+			if (changed && (this.syncActiveForced || this.syncEnableHourly)) {
 				if (equipmentOn && this.syncPossible) {
 					range = Synchronisation.SYNC_FINISHED;
 				} else if (range == null) {
@@ -215,7 +229,11 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			}
 
 			this.otherExecuting = false;
-
+			
+			if ( data.getExecutionTime() > this.executionTime) {
+				this.executionTime = data.getExecutionTime();
+			}
+			
 			boolean update = false;
 			SynchronisationResult result = null;
 			UpdateType type = new UpdateType(false);
@@ -260,6 +278,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 						this.syncActiveForced = false;
 						this.syncPossible = false;
 						logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> finished.");
+						this.setHourlyWindow(false);
 						break;
 
 					case ENABLE_SYNC_BY_VALUE:
@@ -272,6 +291,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 					case SYNC_MISSED:
 						this.syncPossible = false;
+						this.setHourlyWindow(true);
+						logger.info("Synchronisation  of <" + EquipmentOnOff.this.calculatedId + "> missed.");
 						break;
 
 					case SYNC_PREFFERED:
@@ -361,15 +382,14 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 					return;
 				}
 
-				int delta_s = Constants.HOURLY_EQUIPMENT_SYNCHRONISATION_READ_INTERVAL_FACTOR * this.readInterval
-						/ 1000;
+				int delta_s = this.hourlyWindow + this.executionTime;
 				int nextHour = (currentControlValue + 1) * this.factor;
 
-				boolean formerSyncActiveHourly = this.syncActiveHourly;
-				this.syncActiveHourly = this.hourly && nextHour - delta_s < currentCalcValue;
+				boolean formerSyncActiveHourly = this.syncEnableHourly;
+				this.syncEnableHourly = this.hourly && nextHour - delta_s < currentCalcValue;
 
-				if (formerSyncActiveHourly != this.syncActiveHourly) {
-					if (this.syncActiveHourly) {
+				if (formerSyncActiveHourly != this.syncEnableHourly) {
+					if (this.syncEnableHourly) {
 						logger.info("Hourly synchronisation of <" + EquipmentOnOff.this.calculatedId + "> activated.");
 					} else {
 						logger.info(
@@ -378,7 +398,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 					}
 				}
 
-				boolean checkC = this.syncActiveForced || this.syncActiveHourly;
+				boolean checkC = this.syncActiveForced || this.syncEnableHourly;
 
 				if (!equipmentOn && !this.lastEquipmentState) {
 					checkC = false;
