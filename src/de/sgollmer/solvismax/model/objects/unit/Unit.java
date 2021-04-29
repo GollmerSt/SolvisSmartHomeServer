@@ -25,7 +25,6 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.StringElement;
 import de.sgollmer.xmllibrary.XmlException;
-import jdk.nashorn.internal.ir.Assignment;
 
 public class Unit implements IAccountInfo {
 
