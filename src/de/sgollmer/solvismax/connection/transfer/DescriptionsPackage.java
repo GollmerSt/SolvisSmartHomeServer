@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.connection.transfer;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.connection.ISendData;
+import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -33,6 +34,13 @@ public class DescriptionsPackage implements ISendData {
 			frame.add(descr);
 		}
 
+		for (ServerCommand command : ServerCommand.values()) {
+			if (command.shouldCreateMeta()) {
+				ServerCommandDescription descr = new ServerCommandDescription(command);
+				frame.add(descr);
+			}
+		}
+		
 		for (Screen screen : this.solvis.getSolvisDescription().getScreens().getScreens(this.solvis)) {
 			if (!screen.isNoRestore()) {
 				SelectScreenDescription descr = new SelectScreenDescription(screen.getId());

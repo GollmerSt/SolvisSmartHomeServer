@@ -64,12 +64,12 @@ public class Instances {
 		this.writeErrorScreens = new WriteErrorScreens(this);
 
 		for (Unit xmlUnit : baseData.getUnits().getUnits()) {
-			
+
 			SystemGrafics systemGrafics = this.graficDatas.get(xmlUnit.getId(), this.xmlHash);
-			
+
 			this.mustLearn |= !systemGrafics.areRelevantFeaturesEqual(xmlUnit.getFeatures().getMap());
 			this.mustLearn |= xmlUnit.getConfigOrMask() != systemGrafics.getBaseConfigurationMask();
-			
+
 			Solvis solvis = this.createSolvisInstance(xmlUnit, this.mustLearn);
 			this.units.add(solvis);
 		}
@@ -97,16 +97,22 @@ public class Instances {
 		}
 	}
 
-	public boolean init()
-			throws IOException, XMLStreamException, LearningException, AssignmentException, AliasException,
-			TypeException {
+	public boolean init() throws IOException, XMLStreamException, LearningException, AssignmentException,
+			AliasException, TypeException {
 		for (Solvis solvis : this.units) {
 			if (!solvis.getGrafics().isEmpty()) {
 				solvis.init();
-				solvis.start();
 			} else {
 				throw new LearningException("Learning is necessary, start parameter \"--server-learn\" must be used.");
 			}
+		}
+		return true;
+	}
+
+	public boolean start() throws IOException, XMLStreamException, AssignmentException,
+			AliasException, TypeException {
+		for (Solvis solvis : this.units) {
+			solvis.start();
 		}
 		return true;
 	}

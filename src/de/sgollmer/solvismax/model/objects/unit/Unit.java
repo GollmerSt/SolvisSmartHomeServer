@@ -3,6 +3,8 @@ package de.sgollmer.solvismax.model.objects.unit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -16,12 +18,14 @@ import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.solvismax.model.objects.ChannelAssignment;
 import de.sgollmer.solvismax.model.update.Correction;
 import de.sgollmer.xmllibrary.ArrayXml;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.StringElement;
 import de.sgollmer.xmllibrary.XmlException;
+import jdk.nashorn.internal.ir.Assignment;
 
 public class Unit implements IAccountInfo {
 
@@ -29,6 +33,8 @@ public class Unit implements IAccountInfo {
 	private static final String XML_IGNORED_CHANNELS = "IgnoredChannels";
 	private static final String XML_DEFAULT_CORRECTIONS = "DefaultCorrections";
 	private static final String XML_REG_EX = "RegEx";
+	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
+	private static final String XML_CHANNEL_ASSIGNMENT = "Assignment";
 
 	private final String id;
 	private final String type;
@@ -53,6 +59,7 @@ public class Unit implements IAccountInfo {
 	private final int ignoredFrameThicknesScreenSaver;
 	private final Collection<Pattern> ignoredChannels;
 	private final DefaultCorrections defaultCorrections;
+	private final Map<String, ChannelAssignment> assignments;
 
 	private Unit(String id, String type, String url, String account, CryptAes password, int configOrMask,
 			int defaultAverageCount, int measurementHysteresisFactor, int defaultMeasurementsInterval_ms,
@@ -61,7 +68,7 @@ public class Unit implements IAccountInfo {
 			int releaseBlockingAfterUserAccess_ms, int releaseBlockingAfterServiceAccess_ms,
 			boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, Features features,
 			int ignoredFrameThicknesScreenSaver, Collection<Pattern> ignoredChannels,
-			DefaultCorrections defaultCorrections) {
+			DefaultCorrections defaultCorrections, Map<String, ChannelAssignment> assignments) {
 		this.id = id;
 		this.type = type;
 		this.url = url;
@@ -85,6 +92,7 @@ public class Unit implements IAccountInfo {
 		this.ignoredFrameThicknesScreenSaver = ignoredFrameThicknesScreenSaver;
 		this.ignoredChannels = ignoredChannels;
 		this.defaultCorrections = defaultCorrections;
+		this.assignments = assignments;
 	}
 
 	public String getId() {
@@ -137,6 +145,7 @@ public class Unit implements IAccountInfo {
 		private int ignoredFrameThicknesScreenSaver;
 		private final Collection<Pattern> ignoredChannels = new ArrayList<>();
 		private DefaultCorrections defaultCorrections = null;
+		private Map<String, ChannelAssignment> assignments = null;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -238,7 +247,8 @@ public class Unit implements IAccountInfo {
 					this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
 					this.watchDogTime_ms, this.releaseBlockingAfterUserAccess_ms,
 					this.releaseBlockingAfterServiceAccess_ms, this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A,
-					this.features, this.ignoredFrameThicknesScreenSaver, this.ignoredChannels, this.defaultCorrections);
+					this.features, this.ignoredFrameThicknesScreenSaver, this.ignoredChannels, this.defaultCorrections,
+					this.assignments);
 
 		}
 
@@ -253,6 +263,8 @@ public class Unit implements IAccountInfo {
 							XML_REG_EX);
 				case XML_DEFAULT_CORRECTIONS:
 					return new DefaultCorrections.Creator(id, this.getBaseCreator());
+				case XML_CHANNEL_ASSIGNMENTS:
+					return new AssignmentsCreator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -278,6 +290,11 @@ public class Unit implements IAccountInfo {
 					break;
 				case XML_DEFAULT_CORRECTIONS:
 					this.defaultCorrections = (DefaultCorrections) created;
+					break;
+				case XML_CHANNEL_ASSIGNMENTS:
+					@SuppressWarnings("unchecked")
+					Map<String, ChannelAssignment> created2 = (Map<String, ChannelAssignment>) created;
+					this.assignments = created2;
 					break;
 
 			}
@@ -364,6 +381,59 @@ public class Unit implements IAccountInfo {
 			this.defaultCorrections.setCorrection(correction);
 		}
 
+	}
+
+	public static class AssignmentsCreator extends CreatorByXML<Map<String, ChannelAssignment>> {
+
+		private Map<String, ChannelAssignment> assignments = null;
+
+		public AssignmentsCreator(String id, BaseCreator<?> creator) {
+			super(id, creator);
+		}
+
+		@Override
+		public void setAttribute(QName name, String value) throws XmlException {
+
+		}
+
+		@Override
+		public Map<String, ChannelAssignment> create() throws XmlException, IOException {
+			return this.assignments;
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			String id = name.getLocalPart();
+			switch (id) {
+				case XML_CHANNEL_ASSIGNMENT:
+					return new ChannelAssignment.Creator(id, this.getBaseCreator());
+			}
+			return null;
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+			switch (creator.getId()) {
+				case XML_CHANNEL_ASSIGNMENT:
+					if (this.assignments == null) {
+						this.assignments = new HashMap<>();
+					}
+					ChannelAssignment assignment = (ChannelAssignment) created;
+					ChannelAssignment former = this.assignments.put(assignment.getName(), assignment);
+					if (former != null) {
+						throw new XmlException("base.xml error, <" + assignment.getName() + "> isn't unique.");
+					}
+			}
+		}
+
+	}
+
+	public ChannelAssignment getChannelAssignment(String id) {
+		if (this.assignments == null) {
+			return null;
+		} else {
+			return this.assignments.get(id);
+		}
 	}
 
 }

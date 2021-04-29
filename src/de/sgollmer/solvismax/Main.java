@@ -71,11 +71,15 @@ public class Main {
 
 	private enum ExecutionMode {
 		STANDARD(true), LEARN(false), CHANNELS_OF_UNIT(false), CHANNELS_OF_ALL_CONFIGURATIONS(false);
-		
-		private final boolean start; 
 
-		private ExecutionMode( boolean start ) {
+		private final boolean start;
+
+		private ExecutionMode(boolean start) {
 			this.start = start;
+		}
+
+		public boolean isStart() {
+			return this.start;
 		}
 	}
 
@@ -189,7 +193,7 @@ public class Main {
 
 		this.logger.info(serverStart);
 		Level.getLevel("LEARN");
-		
+
 		ExecutionMode executionMode = ExecutionMode.STANDARD;
 
 		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
@@ -278,7 +282,7 @@ public class Main {
 			} catch (TerminationException e) {
 				System.exit(ExitCodes.OK);
 			}
-			if (executionMode == ExecutionMode.LEARN) {
+			if (!executionMode.isStart()) {
 				System.exit(ExitCodes.OK);
 			}
 			serverSocket = this.openSocket(baseData.getPort());
@@ -288,6 +292,11 @@ public class Main {
 
 		try {
 			this.instances.init();
+			if (executionMode.isStart()) {
+				this.instances.start();
+			} else {
+				System.exit(ExitCodes.OK);
+			}
 		} catch (IOException | AssignmentException | XMLStreamException | AliasException | TypeException e) {
 			this.logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();

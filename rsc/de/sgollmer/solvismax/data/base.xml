@@ -16,17 +16,13 @@
 		<!-- 0x0080: Solar Ost + West, Kollektor West an S16 -->
 		<!-- 0x0100: Zählfunktion besitzt 2 Screens (SolvisMax 7) -->
 		<tns:Unit id="mySolvis" type="SolvisMax" configOrMask="0x00"
-			fwLth2_21_02A="true" 
-			account="account" passwordCrypt="AES-coded" url="aaa.bbb.ccc.ddd"
-			defaultAverageCount="12"
-			measurementHysteresisFactor="4"
-			measurementsInterval_s="10"
+			fwLth2_21_02A="true" account="account" passwordCrypt="AES-coded"
+			url="aaa.bbb.ccc.ddd" defaultAverageCount="12"
+			measurementHysteresisFactor="4" measurementsInterval_s="10"
 			measurementsIntervalFast_s="10"
 			forceUpdateAfterFastChangingIntervals="3"
-			forcedUpdateInterval_ms="3600000"
-			doubleUpdateInterval_ms="10000"
-			bufferedInterval_ms="60000"
-			watchDogTime_ms="30000"
+			forcedUpdateInterval_ms="3600000" doubleUpdateInterval_ms="10000"
+			bufferedInterval_ms="60000" watchDogTime_ms="30000"
 			releaseBlockingAfterUserAccess_ms="300000"
 			releaseBlockingAfterServiceAccess_ms="3600000"
 			delayAfterSwitchingOnEnable="true"
@@ -103,6 +99,9 @@
 			<tns:DefaultCorrections>
 				<tns:Correction regEx="X0[24]\..*" value_us="7000000" />
 			</tns:DefaultCorrections>
+			<!-- tns:ChannelAssignments>
+				<tns:Assignment id="A03" name="A03.Pumpe_Heizkreis_3" />
+			</tns:ChannelAssignments -->
 		</tns:Unit>
 	</tns:Units>
 	<tns:Mqtt enable="false" brokerUrl="192.168.0.71" port="1883"

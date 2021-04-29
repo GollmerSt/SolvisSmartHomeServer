@@ -14,6 +14,7 @@ public class ChannelInstance implements IInstance {
 	private final ChannelDescription description;
 	private final ChannelAssignment assignment;
 	private final Solvis solvis;
+	private String channelName = null;
 
 	private ChannelInstance(final Solvis solvis, final ChannelDescription description, final ChannelAssignment assignment) {
 
@@ -37,7 +38,14 @@ public class ChannelInstance implements IInstance {
 	}
 
 	public String getName() {
-		return this.assignment.getChannelName();
+		if ( this.channelName == null ) {
+			ChannelAssignment assignment = this.solvis.getUnit().getChannelAssignment(this.assignment.getName());
+			if ( assignment == null) {
+				assignment = this.assignment;
+			}
+			this.channelName = assignment.getChannelName();
+		}
+		return this.channelName;
 	}
 	
 	public String getAlias() {

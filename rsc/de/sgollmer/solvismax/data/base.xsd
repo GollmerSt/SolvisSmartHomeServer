@@ -656,7 +656,7 @@
 	
 		<complexType name="ChannelAssignments">
 		<sequence>
-			<element name="Assignment" type="tns:Assignment"></element>
+			<element name="Assignment" type="tns:Assignment" maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 	
