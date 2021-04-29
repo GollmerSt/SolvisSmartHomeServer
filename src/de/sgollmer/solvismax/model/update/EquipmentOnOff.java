@@ -123,9 +123,9 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		private SingleData<?> lastUpdateValue = null;
 		private boolean screenRestore = true;
 		private boolean otherExecuting = false;
-		
+
 		private int executionTime = 0;
-		private int hourlyWindow;
+		private int hourlyWindow_s = 0;
 
 		private Executable(Solvis solvis, SolvisData updateSource, SolvisData equipment, SolvisData calculatedValue,
 				int factor, int checkInterval, int readInterval, boolean hourly) {
@@ -164,16 +164,28 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			});
 		}
 
+		
 		private void setHourlyWindow(boolean enlarge) {
+			
+			int min = Constants.HOURLY_EQUIPMENT_WINDOW_READ_INTERVAL_FACTOR * this.readInterval / 1000 ;
+			int max = 3600;
+			
 			if (enlarge) {
-				this.hourlyWindow += Constants.HOURLY_EQUIPMENT_WINDOW_READ_INTERVAL_FACTOR * this.readInterval / 1000;
+				this.hourlyWindow_s *= 2;
 
 			} else {
-				this.hourlyWindow = Constants.HOURLY_EQUIPMENT_WINDOW_READ_INTERVAL_FACTOR * this.readInterval / 1000;
+				this.hourlyWindow_s /= 2;
+			}
+			
+			if ( this.hourlyWindow_s > max ) {
+				this.hourlyWindow_s = max;
+			} else if ( this.hourlyWindow_s < min ) {
+				this.hourlyWindow_s = min;
 			}
 
 		}
 
+		
 		private SynchronisationResult checkSynchronisation(SolvisData controlData, boolean equipmentOn, boolean changed)
 				throws TypeException {
 
@@ -229,11 +241,11 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			}
 
 			this.otherExecuting = false;
-			
-			if ( data.getExecutionTime() > this.executionTime) {
+
+			if (data.getExecutionTime() > this.executionTime) {
 				this.executionTime = data.getExecutionTime();
 			}
-			
+
 			boolean update = false;
 			SynchronisationResult result = null;
 			UpdateType type = new UpdateType(false);
@@ -382,7 +394,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 					return;
 				}
 
-				int delta_s = this.hourlyWindow + this.executionTime;
+				int delta_s = this.hourlyWindow_s + this.executionTime;
 				int nextHour = (currentControlValue + 1) * this.factor;
 
 				boolean formerSyncActiveHourly = this.syncEnableHourly;
