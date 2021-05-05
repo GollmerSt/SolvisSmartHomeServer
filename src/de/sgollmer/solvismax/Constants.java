@@ -171,11 +171,10 @@ public class Constants {
 
 		public static final boolean SOLVIS_TIME_FIXED = false;
 		public static final boolean SOLVIS_RESULT_NULL = false;
-		
+
 		public static final boolean CORRECTION = true;
-		
+
 		public static final boolean BURST = false;
-		
 
 		public static boolean isSolvisTimeFixed() {
 			return DEBUG && SOLVIS_TIME_FIXED;
@@ -189,4 +188,31 @@ public class Constants {
 
 	}
 
+	public static class Csv {
+		public static final String ID = "id";
+		public static final String NAME = "NAME";
+		public static final String ALIAS = "ALIAS";
+		public static final String MQTT = "MQTT topic";
+		public static final String CHANNEL_TYPE = "Channel type";
+		public static final String BUFFERED = "Buffered";
+		public static final String UNIT = "Unit";
+		public static final String GLITCH_INHIBIT = "Glitch inhibit";
+		public static final String DIVISOR = "Divisor";
+		public static final String AVERAGE = "Average";
+		public static final String DELAY_AFTER_ON = "Delay after on";
+		public static final String FAST = "Fast";
+		public static final String STRATEGY = "Strategy";
+		public static final String CORRECTION = "Correction";
+		public static final String OPTIONAL = "Optional";
+		public static final String INCREMENT = "Increment";
+		public static final String LEAST = "Least";
+		public static final String MOST = "Most";
+		public static final String INCREMENT_CHANGE = "Increment change";
+		public static final String CHANGED_INCREMENT = "Changed increment";
+		public static final String MODES = "Modes";
+		public static final String[] HEADER = new String[] { ID, NAME, ALIAS, MQTT, CHANNEL_TYPE, BUFFERED, UNIT,
+				GLITCH_INHIBIT, DIVISOR, AVERAGE, DELAY_AFTER_ON, FAST, STRATEGY, CORRECTION, OPTIONAL, INCREMENT,
+				LEAST, MOST, INCREMENT_CHANGE, CHANGED_INCREMENT, MODES };
+
+	}
 }

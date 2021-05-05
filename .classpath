@@ -11,8 +11,8 @@
 	<classpathentry kind="lib" path="lib/log4j-core-2.13.2.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" sourcepath="C:/Users/stefa_000/AppData/Roaming/JavaLibraries/paho 1.2.5/org.eclipse.paho.client.mqttv3-1.2.5-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="lib/tinylog-api-2.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/tinylog-impl-2.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/XMLLibrary_1.0.1.jar" sourcepath="/XMLLibrary"/>
+	<classpathentry kind="lib" path="lib/tinylog-api-2.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/tinylog-impl-2.3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

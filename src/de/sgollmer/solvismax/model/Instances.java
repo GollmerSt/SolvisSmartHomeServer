@@ -31,6 +31,9 @@ import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.backup.BackupHandler;
+import de.sgollmer.solvismax.model.objects.csv.Csv;
+import de.sgollmer.solvismax.model.objects.csv.MaskIterator;
+import de.sgollmer.solvismax.model.objects.csv.MaskIterator.OneConfiguration;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
 import de.sgollmer.solvismax.xml.ControlFileReader;
 import de.sgollmer.solvismax.xml.ControlFileReader.Hashes;
@@ -68,7 +71,8 @@ public class Instances {
 			SystemGrafics systemGrafics = this.graficDatas.get(xmlUnit.getId(), this.xmlHash);
 
 			this.mustLearn |= !systemGrafics.areRelevantFeaturesEqual(xmlUnit.getFeatures().getMap());
-			this.mustLearn |= xmlUnit.getConfigOrMask() != systemGrafics.getBaseConfigurationMask();
+			this.mustLearn |= xmlUnit.getConfiguration().getConfigurationMask(this.solvisDescription) != systemGrafics
+					.getBaseConfigurationMask();
 
 			Solvis solvis = this.createSolvisInstance(xmlUnit, this.mustLearn);
 			this.units.add(solvis);
@@ -109,8 +113,35 @@ public class Instances {
 		return true;
 	}
 
-	public boolean start() throws IOException, XMLStreamException, AssignmentException,
-			AliasException, TypeException {
+	public void createCsvOut(boolean semicolon) throws IOException, XMLStreamException, LearningException,
+			AssignmentException, AliasException, TypeException, XmlException {
+
+		Csv csv = new Csv(semicolon);
+		int cnt = 0;
+
+		for (Unit xmlUnit : this.baseData.getUnits().getUnits()) {
+			if (xmlUnit.isCsvUnit()) {
+				MaskIterator iterator = this.solvisDescription.getConfigurations().getConfigurationIterator();
+				while (iterator.hasNext()) {
+					++cnt;
+					OneConfiguration configuration = iterator.next();
+					long configurationMask = configuration.getMask();
+					if (this.solvisDescription.isValid(configurationMask)) {
+						xmlUnit.setForcedConfigMask(configurationMask);
+						csv.outCommentHeader(xmlUnit, configurationMask, configuration.getComment());
+						Solvis solvis = this.createSolvisInstance(xmlUnit, false);
+						solvis.init();
+						csv.out(solvis, Constants.Csv.HEADER);
+					}
+				}
+				xmlUnit.setForcedConfigMask(null);
+			}
+			System.out.println("Number of configurations: " + cnt);
+		}
+
+	}
+
+	public boolean start() throws IOException, XMLStreamException, AssignmentException, AliasException, TypeException {
 		for (Solvis solvis : this.units) {
 			solvis.start();
 		}

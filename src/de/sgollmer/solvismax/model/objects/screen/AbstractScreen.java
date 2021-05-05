@@ -73,8 +73,10 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	public abstract void learn(Solvis solvis, Collection<IScreenPartCompare> descriptions)
 			throws IOException, TerminationException, LearningException;
-	
-	public enum GotoStatus { FAILED, CHANGED, SAME} 
+
+	public enum GotoStatus {
+		FAILED, CHANGED, SAME
+	}
 
 	public abstract GotoStatus goTo(Solvis solvis) throws IOException, TerminationException;
 
@@ -185,11 +187,7 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	@Override
 	public boolean isInConfiguration(Solvis solvis) {
-		if (this.configuration == null) {
-			return true;
-		} else {
-			return this.configuration.isInConfiguration(solvis);
-		}
+		return this.configuration == null || this.configuration.isInConfiguration(solvis);
 	}
 
 	@Override

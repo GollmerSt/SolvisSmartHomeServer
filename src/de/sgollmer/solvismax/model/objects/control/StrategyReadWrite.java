@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
@@ -384,4 +385,37 @@ public class StrategyReadWrite extends StrategyRead {
 			throw new TypeException(e);
 		}
 	}
+
+	@Override
+	public String getCsvMeta(String column, boolean semicolon) {
+
+		String csv = null;
+		switch (column) {
+			case Csv.INCREMENT:
+				csv = Integer.toString(this.increment);
+				break;
+			case Csv.LEAST:
+				csv = Integer.toString(this.least);
+				break;
+			case Csv.MOST:
+				csv = Integer.toString(this.most);
+				break;
+			case Csv.INCREMENT_CHANGE:
+				if (this.incrementChange != null) {
+					csv = Integer.toString(this.incrementChange);
+				}
+				break;
+			case Csv.CHANGED_INCREMENT:
+				if (this.changedIncrement != null) {
+					csv = Integer.toString(this.changedIncrement);
+				}
+				break;
+		}
+		if (csv == null) {
+			return super.getCsvMeta(column, semicolon);
+		} else {
+			return csv;
+		}
+	}
+
 }

@@ -6,6 +6,41 @@
 	<annotation>
 		<documentation></documentation>
 	</annotation>
+
+	<simpleType name="SolvisType">
+		<restriction base="string">
+			<enumeration value="SolvisMax6"></enumeration>
+			<enumeration value="SolvisMax6PurSolo"></enumeration>
+			<enumeration value="SolvisMax7"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="MainHeating">
+		<restriction base="string">
+			<enumeration value="OelBW"></enumeration>
+			<enumeration value="OelNT"></enumeration>
+			<enumeration value="Gas"></enumeration>
+			<enumeration value="Fern"></enumeration>
+			<enumeration value="WaermeP"></enumeration>
+			<enumeration value="Extern"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="HeaterCircuit">
+		<restriction base="int">
+
+			<minInclusive value="0"></minInclusive>
+			<maxInclusive value="3"></maxInclusive>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="SolarType">
+		<restriction base="string">
+			<enumeration value="None"></enumeration>
+			<enumeration value="Standard"></enumeration>
+			<enumeration value="OstWest"></enumeration>
+		</restriction>
+	</simpleType>
 	<complexType name="Screen">
 		<annotation>
 			<documentation>Bildschirm-Definition</documentation>
@@ -93,7 +128,7 @@
 						ist. Ist etwas unsauber gelöst.
 					</documentation>
 				</annotation>
-			</element>
+			</element>
 			<element name="PreparationRef" type="tns:PreparationRef"
 				maxOccurs="1" minOccurs="0">
 			</element>
@@ -407,15 +442,6 @@
 			<documentation>Root mit der Home-Screen-Definition</documentation>
 		</annotation>
 		<sequence>
-			<element name="SolvisTypes">
-				<complexType>
-					<sequence>
-						<element name="Type" type="tns:Type"
-							maxOccurs="unbounded" minOccurs="1">
-						</element>
-					</sequence>
-				</complexType>
-			</element>
 			<element name="Configurations" type="tns:Configurations"
 				maxOccurs="1" minOccurs="0">
 			</element>
@@ -435,8 +461,8 @@
 			<element name="ScreenGrafics" maxOccurs="1" minOccurs="1">
 				<complexType>
 					<sequence>
-						<element name="ScreenGrafic"
-							type="tns:ScreenGrafic" maxOccurs="unbounded" minOccurs="0">
+						<element name="ScreenGrafic" type="tns:ScreenGrafic"
+							maxOccurs="unbounded" minOccurs="0">
 						</element>
 					</sequence>
 				</complexType>
@@ -454,8 +480,7 @@
 					</annotation>
 					<sequence>
 						<element name="ChannelDescription"
-							type="tns:ChannelDescription" maxOccurs="unbounded"
-							minOccurs="0">
+							type="tns:ChannelDescription" maxOccurs="unbounded" minOccurs="0">
 						</element>
 					</sequence>
 				</complexType>
@@ -463,8 +488,8 @@
 			<element name="Preparations" maxOccurs="1" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="Preparation"
-							type="tns:Preparation" maxOccurs="unbounded" minOccurs="0">
+						<element name="Preparation" type="tns:Preparation"
+							maxOccurs="unbounded" minOccurs="0">
 						</element>
 					</sequence>
 				</complexType>
@@ -472,8 +497,7 @@
 			<element name="Clock" type="tns:Clock" maxOccurs="1"
 				minOccurs="1">
 			</element>
-			<element name="Durations" maxOccurs="unbounded"
-				minOccurs="0">
+			<element name="Durations" maxOccurs="unbounded" minOccurs="0">
 				<complexType>
 					<sequence>
 						<element name="Duration" type="tns:Duration"
@@ -485,7 +509,9 @@
 			<element name="Miscellaneous" type="tns:Miscellaneous"
 				maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="ChannelAssignments" type="tns:ChannelAssignments" maxOccurs="1" minOccurs="1"></element>
+			<element name="ChannelAssignments"
+				type="tns:ChannelAssignments" maxOccurs="1" minOccurs="1">
+			</element>
 		</sequence>
 	</complexType>
 
@@ -571,7 +597,8 @@
 	<complexType name="Measurement">
 		<annotation>
 			<documentation>
-				Definition für das Auslesen eines Solvis-Datums aus dem
+				Definition für das Auslesen eines Solvis-Datums aus
+				dem
 				Solvis-XML Hex-String. Auslesbar über
 				http://192.168.1.40/sc2_val.xml.
 			</documentation>
@@ -613,8 +640,10 @@
 				<documentation>
 					Einige Sensoren der Solvis-Anlage benötigen nach dem
 					Einschalten eine gewise Zeit, bis sie die richtigen
-					Messwerte anzeigen. Mir dem Setzen dieses Wertes
-					wird bewirkt, dass die Weitergabe der Messergebnisse
+					Messwerte
+					anzeigen. Mir dem Setzen dieses Wertes
+					wird bewirkt, dass die
+					Weitergabe der Messergebnisse
 					dieses Sensors erst spätererfolgt.
 				</documentation>
 			</annotation>
@@ -628,7 +657,8 @@
 	<complexType name="Calculation">
 		<annotation>
 			<documentation>
-				Notwendigen Definitionen zur Berechnung für eine aus den
+				Notwendigen Definitionen zur Berechnung für eine aus
+				den
 				Daten zu berechnender Wert
 			</documentation>
 		</annotation>
@@ -638,7 +668,8 @@
 				<annotation>
 					<documentation>
 						Abhängigkeiten von Solvis-Messungen (Brenner
-						an/aus etc.)
+						an/aus
+						etc.)
 					</documentation>
 				</annotation>
 			</element>
@@ -661,8 +692,10 @@
 		</attribute>
 		<attribute name="correction" type="boolean" use="optional">
 			<annotation>
-				<documentation>Korrigiert die Laufzeit automatisisiert.</documentation>
-			</annotation></attribute>
+				<documentation>Korrigiert die Laufzeit automatisisiert.
+				</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
 
 
@@ -753,8 +786,10 @@
 					<documentation>
 						Wenn erkannt wurdedass die "calculatedId"
 						synchronisiert werden muss, können noch weitere
-						Ids neu synchronisiert werden. Die triggerIds
-						sind dan die caculteIds, welche neu
+						Ids neu
+						synchronisiert werden. Die triggerIds
+						sind dan die caculteIds,
+						welche neu
 						synchronisiert werden müssen.
 					</documentation>
 				</annotation>
@@ -786,8 +821,10 @@
 				<documentation>
 					Faktor, um aus der Brennerlaufzeit aus dem GUI auf
 					die berechnete Laufzeit zu kommen, normalerweise
-					3600. Dies wird zur Syynchronisation nach 1h
-					Brennerlaufzeit benötigt. Ist der faktor -1, handelt
+					3600. Dies wird zur
+					Syynchronisation nach 1h
+					Brennerlaufzeit benötigt. Ist der faktor
+					-1, handelt
 					es sich um den Update der Brennerstarts.
 				</documentation>
 			</annotation>
@@ -798,14 +835,17 @@
 				<documentation>
 					Zeit-Intervall, nach dem der berechnete Wert mit dem
 					echten Solvis-Wert verglichen wird und evtl.
-					synchronisiert wird. Zu beachten: Diese
+					synchronisiert wird. Zu
+					beachten: Diese
 					Synchronisationsart ist nur einen Stichprobe und
 					kann so nur Abweichungen von mehr als 1h erkennen.
-					Genauerer Synchronisation erhält man über hourly.
+					Genauerer
+					Synchronisation erhält man über hourly.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="readIntervalId" type="string" use="optional">
+		<attribute name="readIntervalId" type="string"
+			use="optional">
 			<annotation>
 				<documentation>
 					Zeit-Intervall, nach deren Ablauf immer die
@@ -819,9 +859,12 @@
 				<documentation>
 					Wenn der Wert nach jeder Stund der Brennerlaufzeit
 					kontrolliert werden soll. Dazu wird der berechnete
-					Wert (z.B. X2.BrennerLaufzeit_s) genutzt. Kurz bevor
-					der Brenner 1 h gelaufen ist, wird die Überprüfung
-					aktiviert und so der Stellenwechsel genau detektiert
+					Wert (z.B.
+					X2.BrennerLaufzeit_s) genutzt. Kurz bevor
+					der Brenner 1 h gelaufen
+					ist, wird die Überprüfung
+					aktiviert und so der Stellenwechsel genau
+					detektiert
 					wird. Die Überwachung wird dann mit dem Erkennen des
 					Zeitwechsels wieder bis zur nächsten Stunde
 					deaktiviert.
@@ -992,11 +1035,35 @@
 
 	<complexType name="Configurations">
 		<annotation>
-			<documentation>Beschreibungen um die Anlagenkonfiguration zu
+			<documentation>
+				Beschreibungen um die Anlagenkonfiguration zu
 				ermitteln
 			</documentation>
 		</annotation>
 		<sequence>
+			<element name="SolvisTypes" type="tns:SolvisTypes"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="MainHeatings" type="tns:MainHeatings"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="HeaterCircuits" type="tns:HeaterCircuits"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="SolarTypes" type="tns:SolarTypes"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="Extensions" type="tns:Extensions"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="NotValid" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="Configuration" type="tns:UnitConfiguration"
+							maxOccurs="unbounded" minOccurs="0"></element>
+					</sequence>
+				</complexType>
+			</element>
 			<element name="HeaterLoops" type="tns:HeaterLoops"
 				maxOccurs="1" minOccurs="1">
 				<annotation>
@@ -1008,6 +1075,7 @@
 			<element name="Solar" type="tns:Solar" maxOccurs="1"
 				minOccurs="1">
 			</element>
+
 		</sequence>
 	</complexType>
 
@@ -1111,44 +1179,6 @@
 			use="required"></attribute>
 	</complexType>
 
-	<complexType name="Type">
-		<attribute name="id" use="required">
-			<annotation>
-				<documentation>Identifikation des Anlagentypes, aktuell nur
-					SolvisMax/SolvisBen
-				</documentation>
-			</annotation>
-			<simpleType>
-				<restriction base="string">
-					<enumeration value="SolvisMax"></enumeration>
-					<enumeration value="SolvisMax6"></enumeration>
-					<enumeration value="SolvisMax7"></enumeration>
-					<enumeration value="SolvisBen"></enumeration>
-				</restriction>
-			</simpleType>
-		</attribute>
-		<attribute name="configuration" type="tns:UnNBytesHexInt"
-			use="required">
-			<annotation>
-				<documentation>In der Configuration sind die wesentlichen
-					Besonderheiten der Anlage erfasst.
-					Folgende Bits sind aktuell
-					definiert (Bit 0 ist LSB) und ein gesetztes Bit
-					bedeutet::
-
-					Bit 0:
-					Heizkreis 1 vorhanden
-					Bit 1: Heizkreis 2 vorhanden
-					Bit 2: Heizkreis 3
-					vorhanden (wird aktuell ignoriert)
-					Bit 3: Solar-Kreislauf vorhanden
-
-					Bit 24: SolvisMax
-					Bit 25: SolvisBen
-				</documentation>
-			</annotation>
-		</attribute>
-	</complexType>
 
 	<simpleType name="UnNBytesHexInt">
 		<union memberTypes="unsignedInt">
@@ -1300,21 +1330,6 @@
 				maxOccurs="1" minOccurs="1">
 			</element>
 		</sequence>
-		<attribute name="optional" type="boolean">
-			<annotation>
-				<documentation>
-					Wenn das Feld nicht in allen Konfigurationen
-					vorhanden ist, kann das nicht vorhandensein durch
-					setzen von
-					optional auf &amp;quot;true&amp;quot;
-					werden. Das ist z.B. für
-					C03.LaufzeitAnforderung2
-					erforderlich, da diese bei modulierten
-					Gasbrennern
-					nicht vorhanden ist.
-				</documentation>
-			</annotation>
-		</attribute>
 		<attribute name="divisor" type="int">
 			<annotation>
 				<documentation>
@@ -1357,15 +1372,18 @@
 					wrap around. Nutzt man
 					ihn bei
 					den Einstellungen,
-					so besteht die
-					Gefahr, dass kurzzeitig zu hohe Temperaturen eingestellt werden.
+					so
+					besteht die
+					Gefahr, dass kurzzeitig zu hohe Temperaturen eingestellt
+					werden.
 					Beispiel: Heißwassertemperatur:
-					Ein Wrap-Around würde erst bei
+					Ein Wrap-Around würde erst
+					bei
 					65°C
 					eintreten. Würde man ihn
 					bedingungslos nutzen, könnten
 					Verbrühungen
-					die Folge sein.
+					die Folge sein.
 				</documentation>
 			</annotation>
 		</attribute>
@@ -1603,26 +1621,36 @@
 			<documentation>
 				Es gibt in den Solvis-Menüs Einstellungen, welche erst
 				zu erreichen sind, wenn bestimmte Voreinstellungen
-				durchgeführt wurden. Beispiel ist das Menü 2 der
-				Heizkreise. Dort kann man die fixen
+				durchgeführt
+				wurden. Beispiel ist das Menü 2 der
+				Heizkreise. Dort kann man die
+				fixen
 				Vorlauftemperaturwerte nur errichen, wenn man
-				BetriebsartVT_HK1 auf Fix stellt.
+				BetriebsartVT_HK1
+				auf Fix stellt.
 
 				Mit der Dependency-Definition wird festgelegt, unter
 				welchen Besdingungen der Control-Wert erreichbar ist.
 
-				Auch kann man mit der Dependenvcy festlegen, dass z.b.
-				der Heizkreis in den Standby gehen soll, ehe ein
+				Auch kann man
+				mit der Dependenvcy festlegen, dass z.b.
+				der Heizkreis in den Standby
+				gehen soll, ehe ein
 				bestimmter Parameter modifiziert/ausgelesen wird.
 
 				Wird kein Dependency-Value definiert, so wird vor dem
 				Lesen/Schreiben des Kanals der Dependency-Wert ermittelt
-				und nach Ende der Funktion wieder auf den vorherigen
-				Wert zurück gestellt. Dies ist bei der Ermittlung der
-				Soll-Temperaturen Tag/Nacht der Heizkreise notwendig, da
-				es sich gezeigt hat, dass der lange Druck auf den
+				und nach
+				Ende der Funktion wieder auf den vorherigen
+				Wert zurück gestellt.
+				Dies ist bei der Ermittlung der
+				Soll-Temperaturen Tag/Nacht der
+				Heizkreise notwendig, da
+				es sich gezeigt hat, dass der lange Druck
+				auf den
 				Tag/Nacht-Button manchmal dazu führt, dass der
-				Anlagenmodus des Heizkreises verändert wird.
+				Anlagenmodus
+				des Heizkreises verändert wird.
 			</documentation>
 		</annotation>
 		<attribute name="id" type="string" use="required"></attribute>
@@ -1670,7 +1698,8 @@
 
 	<complexType name="Standby">
 		<sequence>
-			<element name="Channel" type="tns:StandbyChannel" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Channel" type="tns:StandbyChannel"
+				maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
@@ -1681,7 +1710,8 @@
 
 	<complexType name="ChannelAssignments">
 		<sequence>
-			<element name="Assignment" type="tns:Assignment" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Assignment" type="tns:Assignment"
+				maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
@@ -1712,15 +1742,126 @@
 			<annotation>
 				<documentation>
 					Abhängig von der Konstellation sind einige Kanäle
-					mal boolean, mal int (z.B. WW-Pumpe bei der
-					SolvisMax 6. Diese Kanäle sind in anderen
+					mal
+					boolean, mal int (z.B. WW-Pumpe bei der
+					SolvisMax 6. Diese Kanäle
+					sind in anderen
 					Konstellationen jedoch boolean. In der
 					ChannelDescription werden diese Kanäle als int
-					ermittelt. Das Attribut "boolean" gibt dann bei der
-					Boolean-Darstellung den Maximalwert von "false"
+					ermittelt. Das
+					Attribut "boolean" gibt dann bei der
+					Boolean-Darstellung den
+					Maximalwert von "false"
 					wieder.
 				</documentation>
 			</annotation>
 		</attribute>
 	</complexType>
+
+	<complexType name="MainHeatings">
+		<sequence>
+			<element name="Type" maxOccurs="unbounded" minOccurs="1">
+				<complexType>
+					<attribute name="id" use="required"
+						type="tns:MainHeating">
+					</attribute>
+					<attribute name="configuration" type="tns:UnNBytesHexInt"
+						use="required"></attribute>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="SolvisTypes">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded" name="Type">
+				<complexType>
+					<attribute use="required" name="id" type="tns:SolvisType">
+					</attribute>
+					<attribute use="required" name="configuration"
+						type="tns:UnNBytesHexInt">
+					</attribute>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="HeaterCircuits">
+		<sequence>
+			<element name="Type" maxOccurs="unbounded" minOccurs="1">
+				<complexType>
+					<attribute name="id" type="tns:HeaterCircuit"
+						use="required"></attribute>
+					<attribute name="configuration" type="tns:UnNBytesHexInt"
+						use="required"></attribute>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<simpleType name="Extension">
+		<restriction base="string">
+			<enumeration value="SolarOstWest"></enumeration>
+			<enumeration value="Festbrennstoff"></enumeration>
+			<enumeration value="Zaehlfunktion2Screens">
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+
+	<complexType name="Extensions">
+		<sequence>
+			<element name="Type" maxOccurs="unbounded" minOccurs="0">
+				<complexType>
+					<attribute name="id" use="required">
+						<simpleType>
+							<restriction base="string">
+								<enumeration value="SolarOstWest"></enumeration>
+								<enumeration value="Festbrennstoff"></enumeration>
+								<enumeration value="Zaehlfunktion2Screens">
+								</enumeration>
+							</restriction>
+						</simpleType>
+					</attribute>
+					<attribute name="configuration" type="string"
+						use="required">
+					</attribute>
+					<attribute name="dontCare" type="boolean"></attribute>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="SolarTypes">
+		<sequence>
+			<element name="Type" maxOccurs="unbounded" minOccurs="1">
+				<complexType>
+					<attribute name="id" use="required" type="tns:SolarType">
+					</attribute>
+					<attribute name="configuration" type="tns:UnNBytesHexInt"
+						use="required"></attribute>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="UnitConfiguration">
+		<sequence>
+			<element name="Extension" maxOccurs="unbounded"
+				minOccurs="0">				<complexType>					<attribute name="id" type="tns:Extension" use="required"></attribute>
+				</complexType></element>
+		</sequence>
+		<attribute name="admin" type="boolean" use="optional" />
+		<attribute name="type" type="tns:SolvisType" use="optional" />
+		<attribute name="mainHeating" type="tns:MainHeating"
+			use="optional" />
+		<attribute name="heatingCircuits" type="tns:HeaterCircuit"
+			use="optional" />
+		<attribute name="configOrMask" type="tns:UnNBytesHexInt"
+			use="optional" />
+	</complexType>
+
+
 </schema>

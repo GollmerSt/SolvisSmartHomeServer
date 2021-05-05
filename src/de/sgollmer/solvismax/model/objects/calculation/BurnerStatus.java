@@ -73,9 +73,9 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 		SolvisData burnerLevel1On = aliasGroup.get(allData, "burnerLevel1On");
-		SolvisData burnerLevel2On = aliasGroup.get(allData, "burnerLevel2On");
+		SolvisData burnerLevel2On = aliasGroup.get(allData, "burnerLevel2On", true);
 
-		if (result == null || burnerLevel1On == null || burnerLevel2On == null) {
+		if (result == null) {
 			throw new AssignmentException("Assignment error: AliasGroup not assigned");
 		}
 
@@ -100,7 +100,9 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 			this.burnerLevel1On = burnerLevel1On;
 			this.burnerLevel2On = burnerLevel2On;
 			this.burnerLevel1On.registerContinuousObserver(this);
-			this.burnerLevel2On.registerContinuousObserver(this);
+			if (this.burnerLevel2On != null) {
+				this.burnerLevel2On.registerContinuousObserver(this);
+			}
 		}
 
 		@Override
@@ -109,10 +111,13 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 			Status result = null;
 
 			boolean level1;
-			boolean level2;
+			boolean level2 = false;
+			;
 			try {
 				level1 = this.burnerLevel1On.getBool();
-				level2 = this.burnerLevel2On.getBool();
+				if (this.burnerLevel2On != null) {
+					level2 = this.burnerLevel2On.getBool();
+				}
 			} catch (TypeException e) {
 				logger.error("Type error, update ignored", e);
 				return;

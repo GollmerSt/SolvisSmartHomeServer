@@ -3,7 +3,7 @@
 	targetNamespace="http://www.example.org/control"
 	xmlns:tns="http://www.example.org/control"
 	elementFormDefault="qualified">
-	<complexType name="BaseData">
+    <complexType name="BaseData">
 		<annotation>
 			<documentation>
 				Root mit der Home-Screen-Definition
@@ -63,6 +63,9 @@
 	<complexType name="Unit">
 
 		<sequence>
+			<element name="Extensions" type="tns:Extensions"
+				maxOccurs="1" minOccurs="0">
+			</element>
 			<element name="Features" type="tns:Features" maxOccurs="1"
 				minOccurs="1">
 				<annotation>
@@ -77,7 +80,10 @@
 			<element name="DefaultCorrections"
 				type="tns:DefaultCorrections" maxOccurs="1" minOccurs="0">
 			</element>
-			<element name="ChannelAssignments" type="tns:ChannelAssignments" maxOccurs="1" minOccurs="0"></element>
+			<element name="ChannelAssignments"
+				type="tns:ChannelAssignments" maxOccurs="1" minOccurs="0">
+			</element>
+
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -86,25 +92,24 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="type" use="required">
+		<attribute name="type" use="required" type="tns:SolvisType">
 			<annotation>
 				<documentation>
 					Typ der Anlage (Max oder Ben)
 				</documentation>
 			</annotation>
-			<simpleType>
-				<annotation>
-					<documentation>SolvisMax/SolvisBen</documentation>
-				</annotation>
-				<restriction base="string">
-					<enumeration value="SolvisMax"></enumeration>
-					<enumeration value="SolvisMax6"></enumeration>
-					<enumeration value="SolvisMax7"></enumeration>
-					<enumeration value="SolvisBen"></enumeration>
-				</restriction>
-			</simpleType>
+
 		</attribute>
-		<attribute name="configOrMask" type="tns:UnNBytesHexInt">
+		<attribute name="mainHeating" use="required"
+			type="tns:MainHeating">
+
+		</attribute>
+		<attribute name="heatingCircuits" use="required"
+			type="tns:HeaterCircuit">
+
+		</attribute>
+		<attribute name="configOrMask" type="tns:UnNBytesHexInt"
+			use="optional">
 			<annotation>
 				<documentation>
 					Or-Maske für die Konfiguration.
@@ -213,7 +218,9 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="measurementsInterval_s" type="int" use="optional"></attribute>
+		<attribute name="measurementsInterval_s" type="int"
+			use="optional">
+		</attribute>
 		<attribute name="measurementsIntervalFast_s" type="int"
 			use="optional">
 		</attribute>
@@ -300,6 +307,7 @@
 			use="required">
 		</attribute>
 
+		<attribute name="csvUnit" type="boolean" use="optional"></attribute>
 	</complexType>
 	<complexType name="ExecutionData">
 		<annotation>
@@ -383,7 +391,8 @@
 						<documentation>
 							Nach jedem erkannnten Anwenderzugriff auf dei
 							SolvisControl werden die Anlagen-Werte wieder
-							gelesen. Dies ist erforderlich, weil der
+							gelesen. Dies ist
+							erforderlich, weil der
 							Anwender diese Werte manuell geändert haben
 							könnte.
 						</documentation>
@@ -395,7 +404,8 @@
 						<documentation>
 							Es wird der Zugriff eines Service-Mitarbeiter
 							(Schornsteinfeger/Installateur) erkannt und die
-							Sperrung des GUI-Zugriffs durch den Server
+							Sperrung des
+							GUI-Zugriffs durch den Server
 							erhöht sich auf 60 Minuten.
 						</documentation>
 					</annotation>
@@ -420,7 +430,8 @@
 					<annotation>
 						<documentation>
 							Dieses Attribut deaktiviert sämtliche Zugriffe
-							zum GUI der Solvis.
+							zum
+							GUI der Solvis.
 						</documentation>
 					</annotation>
 				</element>
@@ -429,7 +440,8 @@
 					<annotation>
 						<documentation>
 							Die Bildschirme der Nutzers "Installateur"
-							können angefahren werden.
+							können
+							angefahren werden.
 						</documentation>
 					</annotation>
 				</element>
@@ -459,7 +471,8 @@
 				minOccurs="0">
 				<annotation>
 					<documentation>Proxy-Definition, wenn Mail_versand nur über Proy
-						möglich.</documentation>
+						möglich.
+					</documentation>
 				</annotation>
 			</element>
 		</sequence>
@@ -608,7 +621,8 @@
 			use="required">
 			<annotation>
 				<documentation>Specifies the port number for the HTTP web proxy
-					server.</documentation>
+					server.
+				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="user" type="string" use="optional">
@@ -636,12 +650,13 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="RegEx" mixed="true">
+	<complexType name="RegEx" mixed="true">
 	</complexType>
 
 	<complexType name="DefaultCorrections">
 		<sequence>
-			<element name="Correction" type="tns:Correction" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Correction" type="tns:Correction"
+				maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
@@ -650,17 +665,20 @@
 		<attribute name="regEx" type="string" use="required"></attribute>
 		<attribute name="value_us" type="int" use="required">
 			<annotation>
-				<documentation>Correction value. The unit of teh value is specified to us.</documentation>
-			</annotation></attribute>
+				<documentation>Correction value. The unit of teh value is specified
+					to us.</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
-	
-		<complexType name="ChannelAssignments">
+
+	<complexType name="ChannelAssignments">
 		<sequence>
-			<element name="Assignment" type="tns:Assignment" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Assignment" type="tns:Assignment"
+				maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
-	
-		<complexType name="Assignment">
+
+	<complexType name="Assignment">
 		<attribute name="id" type="string" use="required">
 			<annotation>
 				<documentation>
@@ -675,8 +693,66 @@
 					Name, für die SmartHome-Schnittstelle
 				</documentation>
 			</annotation>
-		</attribute>
+		</attribute>
 	</complexType>
-	
-	
+
+
+
+	<complexType name="CsvConfigurations">
+		<sequence>
+			<element name="NotPossible" type="tns:Configuration"
+				maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Configuration">
+		<sequence>
+			<element name="Extensions" type="tns:Extensions" maxOccurs="1" minOccurs="0"></element>
+		</sequence>
+		<attribute name="admin" type="boolean" use="optional"></attribute>
+		<attribute name="type" type="tns:SolvisType" use="optional"></attribute>
+		<attribute name="mainHeating" type="tns:MainHeating" use="optional"></attribute>
+		<attribute name="heatingCircuits" type="tns:HeaterCircuit" use="optional"></attribute>
+		<attribute name="configOrMask" type="tns:UnNBytesHexInt"
+			use="optional">
+		</attribute>
+		<attribute name="comment" type="string" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="Extensions">
+		<sequence>
+			<element name="Extension" maxOccurs="unbounded" minOccurs="0">
+				<complexType>
+					<attribute name="id" type="string"></attribute>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<simpleType name="SolvisType">
+		<restriction base="string">
+					<enumeration value="SolvisMax6"></enumeration>
+					<enumeration value="SolvisMax6PurSolo"></enumeration>
+					<enumeration value="SolvisMax7"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="MainHeating">
+		<restriction base="string">
+					<enumeration value="OelBW"></enumeration>
+					<enumeration value="OelNT"></enumeration>
+					<enumeration value="Gas"></enumeration>
+					<enumeration value="Fern"></enumeration>
+					<enumeration value="WaermeP"></enumeration>
+					<enumeration value="Extern"></enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="HeaterCircuit">
+		<restriction base="int">
+
+			<minInclusive value="1"></minInclusive>
+			<maxInclusive value="3"></maxInclusive>
+		</restriction>
+	</simpleType>
 </schema>

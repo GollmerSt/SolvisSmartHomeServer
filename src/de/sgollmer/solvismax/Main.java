@@ -44,6 +44,8 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.LogErrors;
 import de.sgollmer.solvismax.model.Instances;
+import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.csv.Csv;
 import de.sgollmer.solvismax.windows.Task;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.xmllibrary.XmlException;
@@ -266,6 +268,22 @@ public class Main {
 			System.exit(ExitCodes.OK);
 		}
 
+		if (executionMode == ExecutionMode.CHANNELS_OF_ALL_CONFIGURATIONS) {
+			try {
+				this.instances.createCsvOut(true);
+			} catch (IOException | XMLStreamException | LearningException | AssignmentException | AliasException
+					| TypeException | XmlException e) {
+				// TODO Auto-generated catch block
+				System.out.flush();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e1) {
+				}
+				e.printStackTrace();
+			}
+			System.exit(ExitCodes.OK);
+		}
+
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 		this.startTime = format.format(new Date());
 
@@ -292,6 +310,14 @@ public class Main {
 
 		try {
 			this.instances.init();
+			if (executionMode == ExecutionMode.CHANNELS_OF_UNIT) {
+				Csv csv = new Csv(true);
+
+				for (Solvis solvis : this.instances.getUnits()) {
+					csv.out(solvis, Constants.Csv.HEADER);
+				}
+			}
+			
 			if (executionMode.isStart()) {
 				this.instances.start();
 			} else {

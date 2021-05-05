@@ -81,9 +81,8 @@ public class Solvis {
 
 	private SolvisWorkers worker;
 
-	private final String type;
 	private final int echoInhibitTime_ms;
-	private int configurationMask = 0;
+	private long configurationMask = 0;
 	private SolvisScreen currentScreen = null;
 	private AbstractScreen previousScreen = null;
 	private AbstractScreen savedScreen = null;
@@ -117,7 +116,6 @@ public class Solvis {
 			boolean mustLearn) {
 		this.allSolvisData = new AllSolvisData(this);
 		this.unit = unit;
-		this.type = unit.getType();
 		this.echoInhibitTime_ms = echoInhibitTime_ms;
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();
@@ -265,7 +263,12 @@ public class Solvis {
 	}
 
 	void init() throws IOException, XMLStreamException, AssignmentException, AliasException, TypeException {
-		this.configurationMask = this.getGrafics().getConfigurationMask();
+		Long forcedMask = this.getUnit().getForcedConfigMask();
+		if (forcedMask == null) {
+			this.configurationMask = this.getGrafics().getConfigurationMask();
+		} else {
+			this.configurationMask = forcedMask;
+		}
 
 		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().init(this);
@@ -278,7 +281,7 @@ public class Solvis {
 		this.getSolvisDescription().instantiate(this);
 		this.initialized = true;
 	}
-	
+
 	void start() {
 		this.worker.start();
 		this.getDistributor().register();
@@ -378,7 +381,7 @@ public class Solvis {
 
 	public ChannelDescription getChannelDescription(String id) {
 		SolvisData data = this.allSolvisData.get(id);
-		if ( data == null ) {
+		if (data == null) {
 			return null;
 		}
 		return data.getDescription();
@@ -484,9 +487,10 @@ public class Solvis {
 			this.getGrafics().clear();
 			logger.log(LEARN, "Learning initialized.");
 			this.initConfigurationMask();
-			logger.log(LEARN, "Configuration mask: 0x" + Integer.toHexString(this.configurationMask));
+			logger.log(LEARN, "Configuration mask: 0x" + Long.toHexString(this.configurationMask));
 			this.getGrafics().setConfigurationMask(this.configurationMask);
-			this.getGrafics().setBaseConfigurationMask(this.getUnit().getConfigOrMask());
+			this.getGrafics().setBaseConfigurationMask(
+					this.getUnit().getConfiguration().getConfigurationMask(this.solvisDescription));
 			Screen home = this.getHomeScreen();
 			if (home == null) {
 				throw new AssertionError("Assign error: Screen description of <"
@@ -526,10 +530,6 @@ public class Solvis {
 
 	}
 
-	public String getType() {
-		return this.type;
-	}
-
 	public Unit getUnit() {
 		return this.unit;
 	}
@@ -550,7 +550,7 @@ public class Solvis {
 		return this.solvisState;
 	}
 
-	public int getConfigurationMask() {
+	public long getConfigurationMask() {
 		return this.configurationMask;
 	}
 
@@ -681,8 +681,9 @@ public class Solvis {
 		while (!connected) {
 			time = System.currentTimeMillis();
 			try {
-				this.configurationMask = this.getSolvisDescription().getConfigurations(this);
-				this.configurationMask |= this.getUnit().getConfigOrMask();
+				this.configurationMask = this.getSolvisDescription().getConfigurationFromGui(this);
+				this.configurationMask |= this.getUnit().getConfiguration()
+						.getConfigurationMask(this.solvisDescription);
 				if (Debug.DEBUG_TWO_STATIONS) {
 					this.configurationMask |= 0x00000003;
 				}
@@ -832,7 +833,7 @@ public class Solvis {
 	}
 
 	public boolean isAdmin() {
-		return this.unit.getFeatures().isAdmin();
+		return this.unit.isAdmin();
 	}
 
 	public boolean isFeature(Feature feature) {

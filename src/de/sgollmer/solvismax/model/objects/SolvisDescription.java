@@ -20,7 +20,6 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
-import de.sgollmer.solvismax.model.objects.configuration.SolvisTypes;
 import de.sgollmer.solvismax.model.objects.screen.IScreenPartCompare;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
@@ -30,7 +29,6 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public class SolvisDescription {
 
-	private static final String XML_SOLVIS_TYPES = "SolvisTypes";
 	private static final String XML_CONFIGURATIONS = "Configurations";
 	private static final String XML_SCREEN_SAVER = "ScreenSaver";
 	private static final String XML_STANDBY = "Standby";
@@ -47,7 +45,6 @@ public class SolvisDescription {
 	private static final String XML_SERVICE = "Service";
 	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
 
-	private final SolvisTypes types;
 	private final Configurations configurations;
 	private final Standby standby;
 	private final ScreenSaver saver;
@@ -68,12 +65,12 @@ public class SolvisDescription {
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
-	private SolvisDescription(SolvisTypes types, Configurations configurations, Standby standby, ScreenSaver saver,
-			AllScreens screens, FallBack fallBack, AllScreenGraficDescriptions screenGrafics,
-			AllChannelDescriptions dataDescriptions, AllPreparations allPreparations, ClockMonitor clock,
-			AllDurations durations, Miscellaneous miscellaneous, ErrorDetection errorDetection, Service service,
-			AllChannelAssignments channelAssignments) throws XmlException {
-		this.types = types;
+	private SolvisDescription(final Configurations configurations, final Standby standby,
+			final ScreenSaver saver, final AllScreens screens, FallBack fallBack,
+			final AllScreenGraficDescriptions screenGrafics, final AllChannelDescriptions dataDescriptions,
+			final AllPreparations allPreparations, final ClockMonitor clock, final AllDurations durations,
+			final Miscellaneous miscellaneous, final ErrorDetection errorDetection, final Service service,
+			final AllChannelAssignments channelAssignments) throws XmlException {
 		this.configurations = configurations;
 		this.standby = standby;
 		this.saver = saver;
@@ -124,7 +121,6 @@ public class SolvisDescription {
 	public static class Creator extends BaseCreator<SolvisDescription> {
 
 		private final AllScreenGraficDescriptions screenGrafics;
-		private SolvisTypes types;
 		private Configurations configurations;
 		private Standby standby;
 		private ScreenSaver saver;
@@ -151,17 +147,15 @@ public class SolvisDescription {
 
 		@Override
 		public SolvisDescription create() throws XmlException {
-			return new SolvisDescription(this.types, this.configurations, this.standby, this.saver, this.screens,
-					this.fallBack, this.screenGrafics, this.dataDescriptions, this.allPreparations, this.clock,
-					this.durations, this.miscellaneous, this.errorDetection, this.service, this.channelAssignments);
+			return new SolvisDescription(this.configurations, this.standby, this.saver, this.screens, this.fallBack,
+					this.screenGrafics, this.dataDescriptions, this.allPreparations, this.clock, this.durations,
+					this.miscellaneous, this.errorDetection, this.service, this.channelAssignments);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_SOLVIS_TYPES:
-					return new SolvisTypes.Creator(id, getBaseCreator());
 				case XML_CONFIGURATIONS:
 					return new Configurations.Creator(id, this);
 				case XML_STANDBY:
@@ -197,9 +191,6 @@ public class SolvisDescription {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_SOLVIS_TYPES:
-					this.types = (SolvisTypes) created;
-					break;
 				case XML_CONFIGURATIONS:
 					this.configurations = (Configurations) created;
 					break;
@@ -336,9 +327,8 @@ public class SolvisDescription {
 		return this.fallBack;
 	}
 
-	public int getConfigurations(Solvis solvis) throws IOException, TerminationException, LearningException {
-		int configurationMask = this.types.getConfiguration(solvis.getType());
-		return configurationMask | this.configurations.get(solvis);
+	public long getConfigurationFromGui(Solvis solvis) throws IOException, TerminationException, LearningException {
+		return this.configurations.get(solvis);
 	}
 
 	public AllPreparations getPreparations() {
@@ -365,4 +355,14 @@ public class SolvisDescription {
 	public AllChannelAssignments getChannelAssignments() {
 		return this.channelAssignments;
 	}
+
+	public Configurations getConfigurations() {
+		return this.configurations;
+	}
+	
+	public boolean isValid( Long mask) {
+		return this.configurations.isValid(mask, this);
+	}
+
+
 }

@@ -9,6 +9,7 @@ package de.sgollmer.solvismax.model.objects.data;
 
 import java.util.Calendar;
 
+import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
@@ -526,5 +527,28 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	public int getExecutionTime() {
 		return this.executionTime;
+	}
+
+	public String getCsvMeta(String column, boolean semicolon) {
+		if (this.smartHomeData == null || this.getChannelInstance() == null) {
+			return null;
+		}
+		String csv = null;
+		switch (column) {
+			case Csv.NAME:
+				csv = this.getChannelInstance().getName();
+				break;
+			case Csv.ALIAS:
+				csv = this.getChannelInstance().getAlias();
+				break;
+			case Csv.MQTT:
+				String name = this.channelInstance.getName();
+				csv = Mqtt.formatChannelOutTopic(name);
+				break;
+		}
+		if (csv == null) {
+			csv = this.getDescription().getCsvMeta(column, semicolon);
+		}
+		return csv;
 	}
 }

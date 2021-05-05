@@ -206,7 +206,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	private static class ChannelConfig {
 		private final boolean admin;
-		private final int configurationMask;
+		private final long configurationMask;
 
 		public ChannelConfig(Solvis solvis) {
 			this.admin = solvis.isAdmin();
@@ -225,7 +225,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 		@Override
 		public int hashCode() {
-			return (Integer.hashCode(this.configurationMask) * 449) + Boolean.hashCode(this.admin) * 53 + 751;
+			return (Long.hashCode(this.configurationMask) * 449) + Boolean.hashCode(this.admin) * 53 + 751;
 		}
 	}
 

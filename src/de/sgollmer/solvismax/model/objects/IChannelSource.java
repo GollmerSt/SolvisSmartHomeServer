@@ -126,4 +126,5 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	}
 
+	public String getCsvMeta(String column, boolean semicolon);
 }

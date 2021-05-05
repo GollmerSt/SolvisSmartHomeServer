@@ -19,6 +19,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.objects.ChannelAssignment;
+import de.sgollmer.solvismax.model.objects.configuration.NotValidConfigurations;
 import de.sgollmer.solvismax.model.update.Correction;
 import de.sgollmer.xmllibrary.ArrayXml;
 import de.sgollmer.xmllibrary.BaseCreator;
@@ -34,13 +35,13 @@ public class Unit implements IAccountInfo {
 	private static final String XML_REG_EX = "RegEx";
 	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
 	private static final String XML_CHANNEL_ASSIGNMENT = "Assignment";
+	private static final String XML_CSV_CONFIGURATIONS = "NotValidConfigurations";
 
 	private final String id;
-	private final String type;
+	private final Configuration configuration;
 	private final String url;
 	private final String account;
 	private final CryptAes password;
-	private final int configOrMask;
 	private final int defaultAverageCount;
 	private final int measurementHysteresisFactor;
 	private final int defaultMeasurementsInterval_ms;
@@ -59,21 +60,24 @@ public class Unit implements IAccountInfo {
 	private final Collection<Pattern> ignoredChannels;
 	private final DefaultCorrections defaultCorrections;
 	private final Map<String, ChannelAssignment> assignments;
+	private Long forcedConfigMask = null;
+	private final boolean csvUnit;
 
-	private Unit(String id, String type, String url, String account, CryptAes password, int configOrMask,
-			int defaultAverageCount, int measurementHysteresisFactor, int defaultMeasurementsInterval_ms,
-			int defaultMeasurementsIntervalFast_ms, int forceUpdateAfterFastChangingIntervals,
-			int forcedUpdateInterval_ms, int doubleUpdateInterval_ms, int bufferedInterval_ms, int watchDogTime_ms,
-			int releaseBlockingAfterUserAccess_ms, int releaseBlockingAfterServiceAccess_ms,
-			boolean delayAfterSwitchingOn, boolean fwLth2_21_02A, Features features,
-			int ignoredFrameThicknesScreenSaver, Collection<Pattern> ignoredChannels,
-			DefaultCorrections defaultCorrections, Map<String, ChannelAssignment> assignments) {
+	private Unit(final String id, final Configuration configuration, final String url, final String account,
+			final CryptAes password, final int defaultAverageCount, final int measurementHysteresisFactor,
+			final int defaultMeasurementsInterval_ms, final int defaultMeasurementsIntervalFast_ms,
+			final int forceUpdateAfterFastChangingIntervals, final int forcedUpdateInterval_ms,
+			final int doubleUpdateInterval_ms, final int bufferedInterval_ms, final int watchDogTime_ms,
+			final int releaseBlockingAfterUserAccess_ms, final int releaseBlockingAfterServiceAccess_ms,
+			final boolean delayAfterSwitchingOn, final boolean fwLth2_21_02A, final Features features,
+			final int ignoredFrameThicknesScreenSaver, final Collection<Pattern> ignoredChannels,
+			final DefaultCorrections defaultCorrections, final Map<String, ChannelAssignment> assignments,
+			final boolean csvUnit) {
 		this.id = id;
-		this.type = type;
+		this.configuration = configuration;
 		this.url = url;
 		this.account = account;
 		this.password = password;
-		this.configOrMask = configOrMask;
 		this.defaultAverageCount = defaultAverageCount;
 		this.measurementHysteresisFactor = measurementHysteresisFactor;
 		this.defaultMeasurementsInterval_ms = defaultMeasurementsInterval_ms;
@@ -92,14 +96,15 @@ public class Unit implements IAccountInfo {
 		this.ignoredChannels = ignoredChannels;
 		this.defaultCorrections = defaultCorrections;
 		this.assignments = assignments;
+		this.csvUnit = csvUnit;
 	}
 
 	public String getId() {
 		return this.id;
 	}
 
-	public String getType() {
-		return this.type;
+	public Configuration getConfiguration() {
+		return this.configuration;
 	}
 
 	public String getUrl() {
@@ -122,11 +127,11 @@ public class Unit implements IAccountInfo {
 	static class Creator extends CreatorByXML<Unit> {
 
 		private String id;
-		private String type;
+		private Configuration configuration;
+		private final Configuration.Creator configurationCreator;
 		private String url;
 		private String account;
 		private CryptAes password = new CryptAes();
-		private int configOrMask;
 		private int defaultAverageCount;
 		private int measurementHysteresisFactor;
 		private Integer defaultMeasurementsInterval_ms = null;
@@ -145,29 +150,25 @@ public class Unit implements IAccountInfo {
 		private final Collection<Pattern> ignoredChannels = new ArrayList<>();
 		private DefaultCorrections defaultCorrections = null;
 		private Map<String, ChannelAssignment> assignments = null;
+		private boolean csvUnit = false;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
+			this.configurationCreator = new Configuration.Creator(null, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(QName name, String value) throws XmlException {
 			try {
 				switch (name.getLocalPart()) {
 					case "id":
 						this.id = value;
-						break;
-					case "type":
-						this.type = value;
 						break;
 					case "url":
 						this.url = value;
 						break;
 					case "account":
 						this.account = value;
-						break;
-					case "configOrMask":
-						this.configOrMask = Integer.decode(value);
 						break;
 					case "passwordCrypt":
 						this.password.decrypt(value);
@@ -220,12 +221,16 @@ public class Unit implements IAccountInfo {
 					case "ignoredFrameThicknesScreenSaver":
 						this.ignoredFrameThicknesScreenSaver = Integer.parseInt(value);
 						break;
+					case "csvUnit":
+						this.csvUnit = Boolean.parseBoolean(value);
+						break;
 				}
 			} catch (CryptDefaultValueException | CryptExeception e) {
 				String m = "base.xml error of passwordCrypt in Unit tag: " + e.getMessage();
 				LogManager.getInstance().addDelayedErrorMessage(
 						new DelayedMessage(Level.ERROR, m, Unit.class, Constants.ExitCodes.CRYPTION_FAIL));
 			}
+			this.configurationCreator.setAttribute(name, value);
 
 		}
 
@@ -240,14 +245,16 @@ public class Unit implements IAccountInfo {
 				this.defaultMeasurementsIntervalFast_ms = this.defaultMeasurementsInterval_ms;
 			}
 
-			return new Unit(this.id, this.type, this.url, this.account, this.password, this.configOrMask,
+			this.configuration = this.configurationCreator.create();
+
+			return new Unit(this.id, this.configuration, this.url, this.account, this.password,
 					this.defaultAverageCount, this.measurementHysteresisFactor, this.defaultMeasurementsInterval_ms,
 					this.defaultMeasurementsIntervalFast_ms, this.forceUpdateAfterFastChangingIntervals,
 					this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
 					this.watchDogTime_ms, this.releaseBlockingAfterUserAccess_ms,
 					this.releaseBlockingAfterServiceAccess_ms, this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A,
 					this.features, this.ignoredFrameThicknesScreenSaver, this.ignoredChannels, this.defaultCorrections,
-					this.assignments);
+					this.assignments, this.csvUnit);
 
 		}
 
@@ -264,8 +271,10 @@ public class Unit implements IAccountInfo {
 					return new DefaultCorrections.Creator(id, this.getBaseCreator());
 				case XML_CHANNEL_ASSIGNMENTS:
 					return new AssignmentsCreator(id, this.getBaseCreator());
+				case XML_CSV_CONFIGURATIONS:
+					return new NotValidConfigurations.Creator(id, this.getBaseCreator());
 			}
-			return null;
+			return this.configurationCreator.getCreator(name);
 		}
 
 		@Override
@@ -295,8 +304,8 @@ public class Unit implements IAccountInfo {
 					Map<String, ChannelAssignment> created2 = (Map<String, ChannelAssignment>) created;
 					this.assignments = created2;
 					break;
-
 			}
+			this.configurationCreator.created(creator, created);
 		}
 
 	}
@@ -348,10 +357,6 @@ public class Unit implements IAccountInfo {
 
 	public int getIgnoredFrameThicknesScreenSaver() {
 		return this.ignoredFrameThicknesScreenSaver;
-	}
-
-	public int getConfigOrMask() {
-		return this.configOrMask;
 	}
 
 	public int getReleaseBlockingAfterUserAccess_ms() {
@@ -433,6 +438,22 @@ public class Unit implements IAccountInfo {
 		} else {
 			return this.assignments.get(id);
 		}
+	}
+
+	public boolean isCsvUnit() {
+		return this.csvUnit;
+	}
+
+	public boolean isAdmin() {
+		return this.features.isAdmin();
+	}
+
+	public Long getForcedConfigMask() {
+		return this.forcedConfigMask;
+	}
+
+	public void setForcedConfigMask(Long forcedConfigMask) {
+		this.forcedConfigMask = forcedConfigMask;
 	}
 
 }

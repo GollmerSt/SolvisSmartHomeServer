@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
@@ -223,6 +224,15 @@ public class StrategyRead implements IStrategy {
 
 	@Override
 	public SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
+		return null;
+	}
+
+	@Override
+	public String getCsvMeta(String column, boolean semicolon) {
+		switch( column) {
+			case Csv.DIVISOR:
+				return Integer.toString(this.divisor);
+		}
 		return null;
 	}
 

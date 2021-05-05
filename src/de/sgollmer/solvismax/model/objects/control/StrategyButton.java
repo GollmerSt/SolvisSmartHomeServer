@@ -204,4 +204,9 @@ public class StrategyButton implements IStrategy {
 		return null;
 	}
 
+	@Override
+	public String getCsvMeta(String column, boolean semicolon) {
+		return null;
+	}
+
 }

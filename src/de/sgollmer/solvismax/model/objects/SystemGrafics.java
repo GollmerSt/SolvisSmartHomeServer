@@ -33,8 +33,8 @@ public class SystemGrafics implements IXmlWriteable {
 	private static final String XML_FEATURE = "Feature";
 
 	private final String id;
-	private int configurationMask;
-	private int baseConfigurationMask = 0;
+	private long configurationMask;
+	private long baseConfigurationMask = 0;
 	private final Map<String, ScreenGraficData> graficDatas;
 	private final Map<String, Boolean> features;
 
@@ -42,7 +42,7 @@ public class SystemGrafics implements IXmlWriteable {
 		this(id, 0, 0, new HashMap<>(), new HashMap<>());
 	}
 
-	private SystemGrafics(String id, int configurationMask, int baseConfigurationMask,
+	private SystemGrafics(String id, long configurationMask, int baseConfigurationMask,
 			Map<String, ScreenGraficData> graficDatas, Map<String, Boolean> features) {
 		this.id = id;
 		this.configurationMask = configurationMask;
@@ -76,8 +76,8 @@ public class SystemGrafics implements IXmlWriteable {
 	@Override
 	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException {
 		writer.writeAttribute("id", this.id);
-		writer.writeAttribute("configurationMask", Integer.toString(this.configurationMask));
-		writer.writeAttribute("baseConfigurationMask", Integer.toString(this.baseConfigurationMask));
+		writer.writeAttribute("configurationMask", Long.toString(this.configurationMask));
+		writer.writeAttribute("baseConfigurationMask", Long.toString(this.baseConfigurationMask));
 		writer.writeStartElement(XML_FEATURES);
 		for (Map.Entry<String, Boolean> entry : this.features.entrySet()) {
 			writer.writeStartElement(XML_FEATURE);
@@ -163,11 +163,11 @@ public class SystemGrafics implements IXmlWriteable {
 		return this.graficDatas.isEmpty();
 	}
 
-	public int getConfigurationMask() {
+	public long getConfigurationMask() {
 		return this.configurationMask;
 	}
 
-	public void setConfigurationMask(int configurationMask) {
+	public void setConfigurationMask(long configurationMask) {
 		this.configurationMask = configurationMask;
 	}
 
@@ -180,11 +180,11 @@ public class SystemGrafics implements IXmlWriteable {
 //		this.features.put(Features.XML_ADMIN, admin);
 //	}
 //
-	public int getBaseConfigurationMask() {
+	public long getBaseConfigurationMask() {
 		return this.baseConfigurationMask;
 	}
 
-	public void setBaseConfigurationMask(int baseConfigurationMask) {
+	public void setBaseConfigurationMask(long baseConfigurationMask) {
 		this.baseConfigurationMask = baseConfigurationMask;
 	}
 

@@ -12,6 +12,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
@@ -240,11 +241,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 
 	@Override
 	public boolean isInConfiguration(Solvis solvis) {
-		if (this.configuration == null) {
-			return true;
-		} else {
-			return this.configuration.isInConfiguration(solvis);
-		}
+		return this.configuration == null || this.configuration.isInConfiguration(solvis);
 	}
 
 	@Override
@@ -340,6 +337,23 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	@Override
 	public Configuration getConfiguration() {
 		return this.configuration;
+	}
+
+	@Override
+	public String getCsvMeta(String column, boolean semicolon) {
+		switch (column) {
+			case Csv.ID:
+				return this.id;
+			case Csv.CHANNEL_TYPE:
+				return this.channelSource.getClass().getSimpleName();
+			case Csv.BUFFERED:
+				return Boolean.toString(this.buffered);
+			case Csv.UNIT:
+				return this.unit;
+			case Csv.GLITCH_INHIBIT:
+				return Integer.toString(this.glitchInhibitTime_ms);
+		}
+		return this.channelSource.getCsvMeta(column, semicolon);
 	}
 
 }

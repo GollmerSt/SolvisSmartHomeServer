@@ -128,34 +128,34 @@ public class Configuration {
 	}
 
 	private static class ConfigurationMask {
-		private final int andMask;
-		private final int cmpMask;
+		private final long andMask;
+		private final long cmpMask;
 
-		private ConfigurationMask(int andMask, int cmpMask) {
+		private ConfigurationMask(long andMask, long cmpMask) {
 			this.andMask = andMask;
 			this.cmpMask = cmpMask;
 		}
 
-		private boolean isInConfiguration(int configurationMask) {
+		private boolean isInConfiguration(long configurationMask) {
 			
 			return this.cmpMask == (configurationMask & this.andMask);
 		}
 
 		private boolean isVerified(ConfigurationMask mask) {
-			int andMask = this.andMask & mask.andMask;
+			long andMask = this.andMask & mask.andMask;
 			return 0 != ((this.cmpMask ^ mask.cmpMask) & andMask);
 		}
 
 		@Override
 		public String toString() {
-			return "And-Mask: " + Integer.toString(this.andMask, 16) + ", Cmp-Mask: "
-					+ Integer.toString(this.cmpMask, 16);
+			return "And-Mask: " + Long.toString(this.andMask, 16) + ", Cmp-Mask: "
+					+ Long.toString(this.cmpMask, 16);
 		}
 
 		private static class Creator extends CreatorByXML<ConfigurationMask> {
 
-			private int andMask;
-			private int cmpMask;
+			private long andMask;
+			private long cmpMask;
 
 			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -165,10 +165,10 @@ public class Configuration {
 			public void setAttribute(QName name, String value) {
 				switch (name.getLocalPart()) {
 					case "andMask":
-						this.andMask = Integer.decode(value);
+						this.andMask = Long.decode(value);
 						break;
 					case "compareMask":
-						this.cmpMask = Integer.decode(value);
+						this.cmpMask = Long.decode(value);
 						break;
 				}
 

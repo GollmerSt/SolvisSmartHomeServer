@@ -15,6 +15,7 @@ import java.util.ListIterator;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
@@ -346,6 +347,22 @@ public class StrategyMode implements IStrategy {
 
 	@Override
 	public SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
-		return this.interpretSetData(value,timeStamp);
+		return this.interpretSetData(value, timeStamp);
+	}
+
+	@Override
+	public String getCsvMeta(String column, boolean semicolon) {
+		switch (column) {
+			case Csv.MODES:
+				StringBuilder builder = new StringBuilder();
+				for (ModeEntry entry : this.modes) {
+					if (builder.length() != 0) {
+						builder.append(semicolon ? ',' : ';');
+					}
+					builder.append(entry.getId());
+				}
+				return builder.toString();
+		}
+		return null;
 	}
 }

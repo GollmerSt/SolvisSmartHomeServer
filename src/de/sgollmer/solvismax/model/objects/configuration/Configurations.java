@@ -17,6 +17,9 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.configuration.ConfigurationTypes.Type;
+import de.sgollmer.solvismax.model.objects.csv.MaskIterator;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.IScreenPartCompare;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
@@ -26,12 +29,36 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public class Configurations {
 
+	private static final String XML_SOLVIS_TYPES = "SolvisTypes";
+	private static final String XML_MAIN_HEATINGS = "MainHeatings";
+	private static final String XML_EXTENSIONS = "Extensions";
+	private static final String XML_HEATER_CIRCUITS = "HeaterCircuits";
+	private static final String XML_SOLAR_TYPES = "SolarTypes";
 	private static final String XML_HEATER_LOOPS = "HeaterLoops";
 	private static final String XML_SOLAR = "Solar";
+	private static final String XML_NOT_VALID_CONFIGURATIONS = "NotValid";
+
+	private final ConfigurationTypes solvisTypes;
+	private final ConfigurationTypes mainHeatings;
+	private final ConfigurationTypes heaterCircuits;
+	private final ConfigurationTypes solarTypes;
+	private final ConfigurationTypes extensions;
+	private final NotValidConfigurations notValidConfiguartions;
+	
 
 	private final Collection<IConfiguration> configurations;
 
-	private Configurations(Collection<IConfiguration> configurations) {
+	private Configurations(final ConfigurationTypes types, final ConfigurationTypes mainHeatings,
+			final ConfigurationTypes heaterCircuits, final ConfigurationTypes solarTypes,
+			final ConfigurationTypes extensions, final Collection<IConfiguration> configurations,
+			final NotValidConfigurations notValidConfiguartions) {
+		this.solvisTypes = types;
+		this.mainHeatings = mainHeatings;
+		this.heaterCircuits = heaterCircuits;
+		this.solarTypes = solarTypes;
+		this.extensions = extensions;
+		this.notValidConfiguartions = notValidConfiguartions;
+
 		this.configurations = configurations;
 	}
 
@@ -83,6 +110,13 @@ public class Configurations {
 
 	public static class Creator extends CreatorByXML<Configurations> {
 
+		private ConfigurationTypes solvisTypes;
+		private ConfigurationTypes mainHeatings;
+		private ConfigurationTypes heaterCircuits;
+		private ConfigurationTypes solarTypes;
+		private ConfigurationTypes extensions;
+		private NotValidConfigurations notValidConfiguartions = null;
+
 		private final Collection<IConfiguration> configurations = new ArrayList<>();
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -95,17 +129,26 @@ public class Configurations {
 
 		@Override
 		public Configurations create() throws XmlException, IOException {
-			return new Configurations(this.configurations);
+			return new Configurations(this.solvisTypes, this.mainHeatings, this.heaterCircuits, this.solarTypes,
+					this.extensions, this.configurations, this.notValidConfiguartions);
 		}
 
 		@Override
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
+				case XML_SOLVIS_TYPES:
+				case XML_MAIN_HEATINGS:
+				case XML_HEATER_CIRCUITS:
+				case XML_SOLAR_TYPES:
+				case XML_EXTENSIONS:
+					return new ConfigurationTypes.Creator(id, getBaseCreator());
 				case XML_HEATER_LOOPS:
 					return new HeaterLoops.Creator(id, getBaseCreator());
 				case XML_SOLAR:
 					return new Solar.Creator(id, getBaseCreator());
+				case XML_NOT_VALID_CONFIGURATIONS:
+					return new NotValidConfigurations.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -113,14 +156,76 @@ public class Configurations {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
+				case XML_SOLVIS_TYPES:
+					this.solvisTypes = (ConfigurationTypes) created;
+					break;
+				case XML_MAIN_HEATINGS:
+					this.mainHeatings = (ConfigurationTypes) created;
+					break;
+				case XML_HEATER_CIRCUITS:
+					this.heaterCircuits = (ConfigurationTypes) created;
+					break;
+				case XML_SOLAR_TYPES:
+					this.solarTypes = (ConfigurationTypes) created;
+					break;
+				case XML_EXTENSIONS:
+					this.extensions = (ConfigurationTypes) created;
+					break;
 				case XML_HEATER_LOOPS:
 					this.configurations.add((IConfiguration) created);
 					break;
 				case XML_SOLAR:
 					this.configurations.add((IConfiguration) created);
 					break;
+				case XML_NOT_VALID_CONFIGURATIONS:
+					this.notValidConfiguartions = (NotValidConfigurations) created;
 			}
 		}
 
 	}
+
+	public ConfigurationTypes getSolvisTypes() {
+		return this.solvisTypes;
+	}
+
+	public ConfigurationTypes getMainHeatings() {
+		return this.mainHeatings;
+	}
+
+	public ConfigurationTypes getHeaterCircuits() {
+		return this.heaterCircuits;
+	}
+
+	public ConfigurationTypes getSolarTypes() {
+		return this.solarTypes;
+	}
+
+	public ConfigurationTypes getExtensions() {
+		return this.extensions;
+	}
+
+	public MaskIterator getConfigurationIterator() {
+
+		Type emptyType = new Type(null, 0L, false);
+		MaskIterator iterator = new MaskIterator(this.solvisTypes.getTypes(), null);
+		iterator = new MaskIterator(this.mainHeatings.getTypes(), iterator);
+		iterator = new MaskIterator(this.heaterCircuits.getTypes(), iterator);
+		iterator = new MaskIterator(this.solarTypes.getTypes(), iterator);
+
+		for (Type type : this.extensions.getTypes()) {
+			if (type.isDontCare()) {
+				continue;
+			}
+			Collection<Type> types = new ArrayList<>();
+			types.add(emptyType);
+			types.add(type);
+			iterator = new MaskIterator(types, iterator);
+		}
+		return iterator;
+	}
+	
+	public boolean isValid( Long mask, SolvisDescription description) {
+		return this.notValidConfiguartions.isValid(mask, description);
+	}
+
 }

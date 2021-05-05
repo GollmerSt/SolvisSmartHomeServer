@@ -34,8 +34,12 @@ public class AliasGroup implements IAssigner, Cloneable {
 		}
 		return null;
 	}
+	
+	public SolvisData get(AllSolvisData allData, String id ) throws AliasException {
+		return this.get(allData, id, false);
+	}
 
-	public SolvisData get(AllSolvisData allData, String id) throws AliasException {
+	public SolvisData get(AllSolvisData allData, String id, boolean optional ) throws AliasException {
 		Alias alias = this.get(id);
 		if (alias == null) {
 			throw new AliasException("Alias error: <" + id + "> unknown");
@@ -43,7 +47,7 @@ public class AliasGroup implements IAssigner, Cloneable {
 
 		SolvisData data = allData.get(alias.getDataId());
 
-		if (data == null) {
+		if (data == null && !optional) {
 			throw new AliasException("Alias error: <" + alias.getDataId() + "> unknown");
 		}
 		return data;

@@ -17,16 +17,16 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class SolvisTypes {
+public class ConfigurationTypes {
 
 	private static final String XML_TYPE = "Type";
 	private final Collection<Type> types;
 
-	private SolvisTypes(Collection<Type> types) {
+	private ConfigurationTypes(Collection<Type> types) {
 		this.types = types;
 	}
 
-	public static class Creator extends CreatorByXML<SolvisTypes> {
+	public static class Creator extends CreatorByXML<ConfigurationTypes> {
 
 		private Collection<Type> types = new ArrayList<>();
 
@@ -39,8 +39,8 @@ public class SolvisTypes {
 		}
 
 		@Override
-		public SolvisTypes create() throws XmlException, IOException {
-			return new SolvisTypes(this.types);
+		public ConfigurationTypes create() throws XmlException, IOException {
+			return new ConfigurationTypes(this.types);
 		}
 
 		@Override
@@ -65,19 +65,27 @@ public class SolvisTypes {
 
 	}
 
-	private static class Type {
+	public static class Type {
 		private final String id;
-		private final int configuration;
+		private final long configuration;
+		private final boolean dontCare;
 
-		private Type(String is, int configuration) {
+		public Type(final String is, final long configuration, final boolean dontCare) {
 			this.id = is;
 			this.configuration = configuration;
+			this.dontCare = dontCare;
+		}
+
+		@Override
+		public String toString() {
+			return Long.toHexString(this.configuration);
 		}
 
 		private static class Creator extends CreatorByXML<Type> {
 
 			private String id;
-			private int configuration;
+			private long configuration;
+			private boolean dontCare;
 
 			private Creator(String id, BaseCreator<?> creator) {
 				super(id, creator);
@@ -90,17 +98,17 @@ public class SolvisTypes {
 						this.id = value;
 						break;
 					case "configuration":
-						if (value.startsWith("0x")) {
-							value = value.substring(2);
-						}
-						this.configuration = Integer.parseInt(value, 16);
+						this.configuration = Long.decode(value);
+						break;
+					case "dontCare":
+						this.dontCare = Boolean.parseBoolean(value);
 						break;
 				}
 			}
 
 			@Override
 			public Type create() throws XmlException, IOException {
-				return new Type(this.id, this.configuration);
+				return new Type(this.id, this.configuration, this.dontCare);
 			}
 
 			@Override
@@ -113,14 +121,30 @@ public class SolvisTypes {
 			}
 
 		}
+
+		public String getId() {
+			return this.id;
+		}
+
+		public long getConfiguration() {
+			return this.configuration;
+		}
+
+		public boolean isDontCare() {
+			return this.dontCare;
+		}
 	}
 
-	public int getConfiguration(String typeString) {
+	public long getConfiguration(String typeString) {
 		for (Type type : this.types) {
 			if (type.id.equals(typeString)) {
 				return type.configuration;
 			}
 		}
 		return 0;
+	}
+
+	public Collection<Type> getTypes() {
+		return this.types;
 	}
 }

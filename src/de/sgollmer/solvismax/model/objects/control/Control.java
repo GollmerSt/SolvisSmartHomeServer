@@ -13,6 +13,7 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
@@ -522,6 +523,17 @@ public class Control extends ChannelSource {
 	@Override
 	public Integer getScanInterval_ms(Solvis solvis) {
 		return null;
+	}
+
+	@Override
+	public String getCsvMeta(String column, boolean semicolon) {
+		switch( column) {
+			case Csv.OPTIONAL:
+				return Boolean.toString(this.optional);
+			case Csv.STRATEGY:
+				return this.strategy.getClass().getSimpleName().replace("Strategy", "");
+		}
+		return this.strategy.getCsvMeta(column, semicolon);
 	}
 
 }
