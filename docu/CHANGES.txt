@@ -1,6 +1,6 @@
 A E N D E R U N G E N
 
-Version 01.03.00
+Version 01.03.00 rc1
 
     25.04.2021  Die stündliche Synchronisation bewirkte einen fehlerhaften Zustand, wenn der Wert
                 auf der Solvis-Control schon incrementiert war (Abfragezeitpunkt verpasst).
@@ -13,6 +13,14 @@ Version 01.03.00
                 zu vereinen. Es wurde nun einen weitere Beschreibungsebene eingeführt, in der die
                 Zurornung der Kanäle erfolgt. Diese Beschreibung kann im base.xml auch vom User
                 noch modifiziert werden, so dass auch der User bei Bedarf noch Hand anlegen kann.
+                
+    05.05.2021  Die Konfiguration der Anlage wurde nun vereinfacht. Der Anwender muss nicht mehr
+                eine Bitmaske definieren sondern die verscheidenen Konfigurationsmöglichkeiten
+                erfolgen durch verschiedene Attribute mit den entsprechenden Namen und Inhalten.
+                
+                Die Ausgaba der Kanäle der eingestellten Konfiguration samt Informationen - wie 
+                Mqtt-Topic etc. im Csv-Format ist nun möglich. Die Dokumentation in der Wiki wird
+                daher entfallen.  
 
 
 Version 01.02.11 rc4
