@@ -4,6 +4,8 @@ cd /d "%~dp0"
 set paras=
 set java=java
 set pause=pause
+set out=0
+set file=""
 
 goto start_%1
 
@@ -11,6 +13,14 @@ goto start_%1
 	set paras="--server-learn"
 	set java=java
 	set pause=pause
+	goto continue
+
+:start_csv
+	set paras="--channels --csvSemicolon"
+	set java=java
+	set pause=pause
+	set out=1 
+	set file="%HOMEDRIVE%%HOMEPATH%/SolvisChannels.csv"
 	goto continue
 
 :start_terminate
@@ -38,6 +48,11 @@ goto start_%1
 	goto continue
 
 :continue
-	%java% -jar SolvisSmartHomeServer.jar %paras%
+	if %out% GTR 0 (
+		%java% -jar SolvisSmartHomeServer.jar %paras% > %file%
+		echo Die Datei %file% wurde geschrieben.
+	) else (
+		%java% -jar SolvisSmartHomeServer.jar %paras%
+	)
 
 	%pause%
