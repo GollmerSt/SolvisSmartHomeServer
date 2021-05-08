@@ -20,20 +20,17 @@ public class Configuration {
 	private final String mainHeating;
 	private final Integer heaterCircuits;
 	private final Collection<String> extensions;
-	private final long configOrMask;
 
-	private Configuration(final String solvisType, final String mainHeating,
-			final Integer heaterCircuits, final Collection<String> extensions, final long configOrMask,
-			final String comment) {
+	private Configuration(final String solvisType, final String mainHeating, final Integer heaterCircuits,
+			final Collection<String> extensions, final String comment) {
 		this.solvisType = solvisType;
 		this.mainHeating = mainHeating;
 		this.heaterCircuits = heaterCircuits;
 		this.extensions = extensions;
-		this.configOrMask = configOrMask;
 	}
 
 	public long getConfigurationMask(SolvisDescription description) {
-		long mask = this.configOrMask;
+		long mask = 0L;
 		Configurations configurations = description.getConfigurations();
 		if (this.solvisType != null) {
 			mask |= configurations.getSolvisTypes().getConfiguration(this.solvisType);
@@ -56,7 +53,6 @@ public class Configuration {
 		private String mainHeating = null;
 		private Integer heaterCircuits = null;
 		private final Collection<String> extensions = new ArrayList<>();
-		private long configOrMask = 0L;
 		private String comment;
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -75,9 +71,6 @@ public class Configuration {
 				case "heatingCircuits":
 					this.heaterCircuits = Integer.parseInt(value);
 					break;
-				case "configOrMask":
-					this.configOrMask = Long.decode(value);
-					break;
 				case "comment":
 					this.comment = value;
 					break;
@@ -87,8 +80,8 @@ public class Configuration {
 
 		@Override
 		public Configuration create() throws XmlException, IOException {
-			return new Configuration(this.solvisType, this.mainHeating, this.heaterCircuits,
-					this.extensions, this.configOrMask, this.comment);
+			return new Configuration(this.solvisType, this.mainHeating, this.heaterCircuits, this.extensions,
+					this.comment);
 		}
 
 		@Override
@@ -154,6 +147,22 @@ public class Configuration {
 
 		}
 
+	}
+
+	public String getComment() {
+
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.solvisType);
+		builder.append(" - ");
+		builder.append(this.mainHeating);
+		builder.append(" - ");
+		builder.append(Integer.toString(this.heaterCircuits));
+
+		for (String extension : this.extensions) {
+			builder.append(" - ");
+			builder.append(extension);
+		}
+		return builder.toString();
 	}
 
 }

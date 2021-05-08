@@ -17,7 +17,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.update.Correction;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
@@ -78,8 +77,6 @@ public class SystemBackup {
 			switch (id) {
 				case Measurement.XML_MEASUREMENT:
 					return new Measurement.Creator(id, this.getBaseCreator());
-				case Correction.XML_CORRECTION:
-					return new Correction.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -88,9 +85,6 @@ public class SystemBackup {
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
 				case Measurement.XML_MEASUREMENT:
-					this.values.add((IValue) created);
-					break;
-				case Correction.XML_CORRECTION:
 					this.values.add((IValue) created);
 					break;
 			}

@@ -7,8 +7,8 @@
 
 package de.sgollmer.solvismax.model.objects.calculation;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.AliasException;
+import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -19,7 +19,6 @@ import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.backup.SystemBackup;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.update.Correction;
 import de.sgollmer.solvismax.model.update.EquipmentOnOff.UpdateType;
 
 public class RunTime extends Strategy<RunTime> {
@@ -76,12 +75,9 @@ public class RunTime extends Strategy<RunTime> {
 		private final Solvis solvis;
 		private long lastStartTime = -1;
 
-		private int equipmentCntSinceLastSync = 0;
-		private int syncCnt = -1;
 		private long lastVerifiedRunTime = 0;
 		private long runTimeAfterLastVerificationAfterOff = 0;
 		private long runTimeAfterLastVerificationCurrent = 0;
-		private final Correction correction;
 
 		private final int scanInterval;
 
@@ -107,18 +103,12 @@ public class RunTime extends Strategy<RunTime> {
 
 				}
 			});
-			if (RunTime.this.isCorrection()) {
-				this.correction = result.getSolvis().getAllSolvisData().getCorrection(this.result.getId());
-			} else {
-				this.correction = null;
-			}
 		}
 
 		private void updateVerifiedValues(long runTime) {
 			this.lastVerifiedRunTime = runTime;
 			this.runTimeAfterLastVerificationAfterOff = 0;
 			this.runTimeAfterLastVerificationCurrent = 0;
-			this.equipmentCntSinceLastSync = 0;
 		}
 
 		private synchronized void correctionByValue(SolvisData data, Object source) throws TypeException {
@@ -133,37 +123,6 @@ public class RunTime extends Strategy<RunTime> {
 				return;
 			}
 
-			if (!RunTime.this.isCorrection()) {
-				if (this.lastVerifiedRunTime == 0) {
-					this.updateVerifiedValues(verifiedRunTime);
-				}
-				return;
-			}
-			UpdateType updateType = (UpdateType) source;
-
-			if (!updateType.isSyncType()) {
-				this.syncCnt = -1;
-				this.updateVerifiedValues(verifiedRunTime);
-				return;
-
-			}
-			
-			if (this.syncCnt < 0) {
-				this.syncCnt = 0;
-				this.updateVerifiedValues(verifiedRunTime);
-			}
-
-			++this.syncCnt;
-
-			if (this.syncCnt > 1)
-
-			{
-				int delta = (int) (verifiedRunTime - this.lastVerifiedRunTime
-						- this.runTimeAfterLastVerificationCurrent);
-				this.correction.modify(delta, this.equipmentCntSinceLastSync);
-
-				this.updateVerifiedValues(verifiedRunTime);
-			}
 		}
 
 		private void updateByValue(SolvisData data, Object source) {
@@ -196,10 +155,6 @@ public class RunTime extends Strategy<RunTime> {
 
 				synchronized (this) {
 
-					if (equipmentOn && this.lastStartTime < 0) {
-						++this.equipmentCntSinceLastSync;
-					}
-
 					if (equipmentOn || this.lastStartTime >= 0) {
 
 						int former = this.result.getInt();
@@ -215,8 +170,7 @@ public class RunTime extends Strategy<RunTime> {
 						this.runTimeAfterLastVerificationCurrent = runTime + this.runTimeAfterLastVerificationAfterOff;
 						long result;
 
-						result = this.lastVerifiedRunTime + this.runTimeAfterLastVerificationCurrent
-								+ this.getCorrection(this.equipmentCntSinceLastSync);
+						result = this.lastVerifiedRunTime + this.runTimeAfterLastVerificationCurrent;
 
 						int set = (int) (result / this.scanInterval * this.scanInterval / 1000L); // abrunden
 
@@ -241,14 +195,6 @@ public class RunTime extends Strategy<RunTime> {
 				return;
 			}
 
-		}
-
-		private long getCorrection(int cnt) {
-			if (this.correction == null) {
-				return 0L;
-			} else {
-				return this.correction.get(cnt);
-			}
 		}
 
 	}

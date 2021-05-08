@@ -12,6 +12,7 @@
 			<enumeration value="SolvisMax6"></enumeration>
 			<enumeration value="SolvisMax6PurSolo"></enumeration>
 			<enumeration value="SolvisMax7"></enumeration>
+			<enumeration value="SolvisMax"></enumeration>
 		</restriction>
 	</simpleType>
 
@@ -689,13 +690,7 @@
 					<enumeration value="mixerPosition0"></enumeration>
 				</restriction>
 			</simpleType>
-		</attribute>
-		<attribute name="correction" type="boolean" use="optional">
-			<annotation>
-				<documentation>Korrigiert die Laufzeit automatisisiert.
-				</documentation>
-			</annotation>
-		</attribute>
+		</attribute>
 	</complexType>
 
 

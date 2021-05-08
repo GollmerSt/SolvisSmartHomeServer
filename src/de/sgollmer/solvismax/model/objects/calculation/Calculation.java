@@ -38,12 +38,10 @@ public class Calculation extends ChannelSource {
 	private static final String XML_Alias = "Alias";
 
 	private final Strategy<?> strategy;
-	private final boolean correction;
 	private final AliasGroup aliasGroup;
 
-	private Calculation(Strategies strategies, boolean correction, AliasGroup aliasGroup) {
+	private Calculation(Strategies strategies, AliasGroup aliasGroup) {
 		this.strategy = strategies.create(this);
-		this.correction = correction;
 		this.aliasGroup = aliasGroup;
 	}
 
@@ -94,7 +92,6 @@ public class Calculation extends ChannelSource {
 	public static class Creator extends CreatorByXML<Calculation> {
 
 		private Strategies strategy;
-		private boolean correction = false;
 		private final AliasGroup aliasGroup = new AliasGroup();
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -108,15 +105,12 @@ public class Calculation extends ChannelSource {
 				case "strategy":
 					this.strategy = Strategies.getByName(value);
 					break;
-				case "correction":
-					this.correction = Boolean.parseBoolean(value);
-					break;
 			}
 		}
 
 		@Override
 		public Calculation create() throws XmlException {
-			return new Calculation(this.strategy, this.correction, this.aliasGroup);
+			return new Calculation(this.strategy, this.aliasGroup);
 		}
 
 		@Override
@@ -207,10 +201,6 @@ public class Calculation extends ChannelSource {
 		return this.getAliasGroup().isDelayed(solvis);
 	}
 
-	public boolean isCorrection() {
-		return this.correction;
-	}
-
 	@Override
 	public Integer getScanInterval_ms(Solvis solvis) {
 		return this.aliasGroup.getScanInterval_ms(solvis);
@@ -219,8 +209,6 @@ public class Calculation extends ChannelSource {
 	@Override
 	public String getCsvMeta(String column, boolean semicolon) {
 		switch ( column ) {
-			case Csv.CORRECTION:
-				return Boolean.toString(this.correction);
 			case Csv.STRATEGY:
 				return this.strategy.getClass().getSimpleName();
 		}

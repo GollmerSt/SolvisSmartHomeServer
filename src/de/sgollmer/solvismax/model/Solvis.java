@@ -277,7 +277,6 @@ public class Solvis {
 		SystemBackup oldMeasurements = this.backupHandler.getSystemBackup(this.unit.getId());
 		this.worker.init();
 		this.getAllSolvisData().restoreFromBackup(oldMeasurements);
-		this.getAllSolvisData().setDefaultCorrection();
 		this.getSolvisDescription().instantiate(this);
 		this.initialized = true;
 	}

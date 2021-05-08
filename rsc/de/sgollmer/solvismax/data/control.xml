@@ -30,6 +30,7 @@
 
 	<!-- 0x0100: Zählfunktion besitzt 2 Screens -->
 
+
 	<tns:Configurations>
 		<tns:SolvisTypes>
 			<tns:Type id="SolvisMax6" configuration="0x01000000" />
@@ -2131,7 +2132,7 @@
 		<!-- BrennerLaufzeit_s -->
 		<tns:ChannelDescription id="X02"
 			buffered="true" unit="s">
-			<tns:Calculation strategy="runtime" correction="true">
+			<tns:Calculation strategy="runtime">
 				<tns:Alias id="equipmentOn" dataId="alias.Brenner" />
 			</tns:Calculation>
 		</tns:ChannelDescription>
@@ -2154,7 +2155,7 @@
 				<tns:ConfigurationMask compareMask="0x1000"
 					andMask="0xf000" />
 			</tns:Configuration>
-			<tns:Calculation strategy="runtime" correction="true">
+			<tns:Calculation strategy="runtime">
 				<tns:Alias id="equipmentOn" dataId="alias.Brenner_S2" />
 			</tns:Calculation>
 		</tns:ChannelDescription>

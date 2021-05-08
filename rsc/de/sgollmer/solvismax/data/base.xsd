@@ -76,10 +76,7 @@
 			</element>
 			<element name="IgnoredChannels" type="tns:IgnoredChannels"
 				maxOccurs="1" minOccurs="0">
-			</element>
-			<element name="DefaultCorrections"
-				type="tns:DefaultCorrections" maxOccurs="1" minOccurs="0">
-			</element>
+			</element>
 			<element name="ChannelAssignments"
 				type="tns:ChannelAssignments" maxOccurs="1" minOccurs="0">
 			</element>
@@ -107,46 +104,7 @@
 		<attribute name="heatingCircuits" use="required"
 			type="tns:HeaterCircuit">
 
-		</attribute>
-		<attribute name="configOrMask" type="tns:UnNBytesHexInt"
-			use="optional">
-			<annotation>
-				<documentation>
-					Or-Maske für die Konfiguration.
-
-					Reserviert sind in der Konfigurations-Maske aktuell
-					folgende Bits, welche nicht in der configOrMask
-					verwendet werden dürfen:
-
-					0x00000001 HK1 vorhanden
-
-					0x00000002 HK2 vorhanden
-
-					0x00000004 HK3 vorhanden
-
-					0x00000008 mit Solaranlage
-
-					0x01000000 SolvisMax
-
-					0x02000000 SolvisBen
-
-
-					In der configOrMask können folgende Werte verwendet
-					werden:
-
-					0x00000010 Solarpumpe 2 vorhanden und an A07
-					angeschlossen
-
-					0x00000020 externer Brenner
-
-					0x00000040 Wärmepumpe
-
-					0x00000080 für Solar Ost + West S16 Kollektor West
-					reserviert
-
-				</documentation>
-			</annotation>
-		</attribute>
+		</attribute>
 		<attribute name="fwLth2_21_02A" type="boolean" use="optional">
 			<annotation>
 				<documentation>
@@ -723,7 +681,16 @@
 		<sequence>
 			<element name="Extension" maxOccurs="unbounded" minOccurs="0">
 				<complexType>
-					<attribute name="id" type="string"></attribute>
+					<attribute name="id" use="required">
+						<simpleType>
+							<restriction base="string">
+								<enumeration value="SolarOstWest"></enumeration>
+								<enumeration value="Festbrennstoff"></enumeration>
+								<enumeration value="Zaehlfunktion2Screens">
+								</enumeration>
+							</restriction>
+						</simpleType>
+					</attribute>
 				</complexType>
 			</element>
 		</sequence>

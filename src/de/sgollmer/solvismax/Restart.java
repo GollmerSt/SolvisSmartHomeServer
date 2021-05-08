@@ -29,7 +29,6 @@ public class Restart {
 	 * systems).
 	 * http://lewisleo.blogspot.com/2012/08/programmatically-restart-java.html
 	 */
-	private static final String SUN_JAVA_COMMAND = "sun.java.command";
 
 	private String java;
 	private Collection<String> vmArgs = new ArrayList<>();
@@ -54,7 +53,7 @@ public class Restart {
 		// init the command to execute, add the vm args
 		// program main and program arguments
 
-		String javaCommand = System.getProperty(SUN_JAVA_COMMAND);
+		String javaCommand = System.getProperty(Constants.SUN_JAVA_COMMAND);
 
 		int jarIdx = javaCommand.indexOf(".jar");
 		if (jarIdx >= 0) {

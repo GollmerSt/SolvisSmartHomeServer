@@ -25,14 +25,12 @@ import de.sgollmer.solvismax.model.objects.backup.SystemBackup;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
-import de.sgollmer.solvismax.model.update.Correction;
 
 public class AllSolvisData extends Observable<SmartHomeData> {
 
 	private final Solvis solvis;
 
 	private final Map<String, SolvisData> solvisDatas = new HashMap<>();
-	private final Map<String, Correction> corrections = new HashMap<>();
 	private final Map<String, SolvisData> solvisDatasByAlias = new HashMap<>();
 	private final Map<String, SolvisData> solvisDatasByName = new HashMap<>();
 	private int averageCount;
@@ -149,9 +147,6 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 				}
 			}
 		}
-		for (Map.Entry<String, Correction> entry : this.corrections.entrySet()) {
-			systemMeasurements.add(entry.getValue());
-		}
 	}
 
 	public synchronized void restoreFromBackup(SystemBackup backup) {
@@ -163,17 +158,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 					SingleData<?> single = ((Measurement) value).getData().create(backup.getTimeOfLastBackup());
 					data.setSingleData(single, backup);
 				}
-			} else if (value instanceof Correction) {
-				String id = value.getId();
-				Correction correction = this.getCorrection(id);
-				correction.set((Correction) value);
 			}
-		}
-	}
-
-	public void setDefaultCorrection() {
-		for (Correction correction : this.corrections.values()) {
-			this.solvis.getUnit().setDefaultCorrection(correction);
 		}
 	}
 
@@ -206,15 +191,6 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 	public void notifySmartHome(SmartHomeData solvisData, Object source) {
 		this.notify(solvisData, source);
 
-	}
-
-	public Correction getCorrection(String id) {
-		Correction correction = this.corrections.get(id);
-		if (correction == null) {
-			correction = new Correction(id);
-			this.corrections.put(id, correction);
-		}
-		return correction;
 	}
 
 	public void sendMetaToMqtt(Mqtt mqtt, boolean deleteRetained) throws MqttException, MqttConnectionLost {

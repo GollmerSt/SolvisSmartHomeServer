@@ -20,7 +20,12 @@ Version 01.03.00 rc1
                 
                 Die Ausgaba der Kanäle der eingestellten Konfiguration samt Informationen - wie 
                 Mqtt-Topic etc. im Csv-Format ist nun möglich. Die Dokumentation in der Wiki wird
-                daher entfallen.  
+                daher entfallen.
+    
+    07.05.2021  Correction-Algorithmus wieder ausgebaut, da die ermittelte Abweichungen sich nicht
+                asymptotisch an einen bestimmten Wert annähern.
+                
+    07.05.2021  Makefile angepasst
 
 
 Version 01.02.11 rc4

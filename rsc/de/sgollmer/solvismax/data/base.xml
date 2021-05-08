@@ -9,18 +9,29 @@
 	<!-- Es werden immer 2 Ports belegt, der angegebene und der nächst höhere. 
 		Also hier 107545 und 10736 -->
 	<tns:Units>
-		<!-- configOrMask: -->
-		<!-- 0x0010: Solarkreislauf mit zweiter Umwaelzpumpe an A07 -->
-		<!-- 0x0020: externer Brennkessel mit Temperaturfühler an S14 -->
-		<!-- 0x0040: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
-		<!-- 0x0080: Solar Ost + West, Kollektor West an S16 -->
-		<!-- 0x0100: Zählfunktion besitzt 2 Screens (SolvisMax 7) -->
+
+		<!-- type: -->
+		<!----><!-- SolvisMax6 -->
+		<!----><!-- SolvisMax6PurSolo -->
+		<!----><!-- SolvisMax7 -->
+
+		<!-- mainHeating: -->
+		<!----><!-- OelBW -->
+		<!----><!-- OelNT -->
+		<!----><!-- Gas -->
+		<!----><!-- Fern -->
+		<!----><!-- WaermeP -->
+		<!----><!-- Extern -->
+
+		<!-- heatingCircuits: -->
+		<!----><!-- 1-3 -->
+
+
 		<tns:Unit id="mySolvis" type="SolvisMax6PurSolo"
-			mainHeating="OelBW" heatingCircuits="1" configOrMask="0x00"
-			fwLth2_21_02A="true" account="account" passwordCrypt="AES-coded"
-			url="aaa.bbb.ccc.ddd" defaultAverageCount="12"
-			measurementHysteresisFactor="4" measurementsInterval_s="10"
-			measurementsIntervalFast_s="10"
+			mainHeating="OelBW" heatingCircuits="1" fwLth2_21_02A="true"
+			account="account" passwordCrypt="AES-coded" url="aaa.bbb.ccc.ddd"
+			defaultAverageCount="12" measurementHysteresisFactor="4"
+			measurementsInterval_s="10" measurementsIntervalFast_s="10"
 			forceUpdateAfterFastChangingIntervals="3"
 			forcedUpdateInterval_ms="3600000" doubleUpdateInterval_ms="10000"
 			bufferedInterval_ms="60000" watchDogTime_ms="30000"
@@ -28,6 +39,11 @@
 			releaseBlockingAfterServiceAccess_ms="3600000"
 			delayAfterSwitchingOnEnable="true"
 			ignoredFrameThicknesScreenSaver="3">
+			<tns:Extensions>
+				<!-- <tns:Extension id="Festbrennstoff" /> -->
+				<!-- <tns:Extension id="SolarOstWest"/> -->
+				<!-- <tns:Extension id="Zaehlfunktion2Screens"/> -->
+			</tns:Extensions>
 			<tns:Features>
 				<!-- !!!!!!!!! false: GUI controlling disabled -->
 				<tns:Feature id="InteractiveGUIAccess" value="false" />

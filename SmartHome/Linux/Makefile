@@ -146,6 +146,11 @@ learnDebug: stopServices installSolvis
 
 
 
+channelDocumentation:
+	$(start) --channels
+
+
+
 debugServer: stopServices installSolvis
 	$(startDebug)
 

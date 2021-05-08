@@ -46,6 +46,7 @@ import de.sgollmer.solvismax.log.LogManager.LogErrors;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.csv.Csv;
+import de.sgollmer.solvismax.model.objects.unit.Unit;
 import de.sgollmer.solvismax.windows.Task;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.xmllibrary.XmlException;
@@ -72,12 +73,15 @@ public class Main {
 	private Mqtt mqtt = null;
 
 	private enum ExecutionMode {
-		STANDARD(true), LEARN(false), CHANNELS_OF_UNIT(false), CHANNELS_OF_ALL_CONFIGURATIONS(false);
+		STANDARD(true, true), LEARN(false, true), CHANNELS_OF_UNIT(false, false),
+		CHANNELS_OF_ALL_CONFIGURATIONS(false, false);
 
 		private final boolean start;
+		private final boolean ipChannelLock;
 
-		private ExecutionMode(boolean start) {
+		private ExecutionMode(final boolean start, final boolean ipChannelLock) {
 			this.start = start;
+			this.ipChannelLock = ipChannelLock;
 		}
 
 		public boolean isStart() {
@@ -250,8 +254,14 @@ public class Main {
 			}
 		}
 
-		ServerSocket serverSocketHelper = this.openSocket(baseData.getPort() + 1);
-		ServerSocket serverSocket = this.openSocket(baseData.getPort());
+		ServerSocket serverSocketHelper = null;
+		ServerSocket serverSocket = null;
+
+		if (executionMode.ipChannelLock) {
+
+			serverSocketHelper = this.openSocket(baseData.getPort() + 1);
+			serverSocket = this.openSocket(baseData.getPort());
+		}
 
 		try {
 			this.instances = new Instances(baseData, executionMode == ExecutionMode.LEARN);
@@ -268,20 +278,40 @@ public class Main {
 			System.exit(ExitCodes.OK);
 		}
 
-		if (executionMode == ExecutionMode.CHANNELS_OF_ALL_CONFIGURATIONS) {
-			try {
-				this.instances.createCsvOut(true);
-			} catch (IOException | XMLStreamException | LearningException | AssignmentException | AliasException
-					| TypeException | XmlException e) {
-				// TODO Auto-generated catch block
-				System.out.flush();
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e1) {
-				}
-				e.printStackTrace();
+		try {
+			switch (executionMode) {
+				case CHANNELS_OF_ALL_CONFIGURATIONS:
+					this.instances.createCsvOut(true);
+					System.exit(ExitCodes.OK);
+					break;
+
+				case CHANNELS_OF_UNIT:
+					if (this.instances.mustLearn()) {
+						System.err.println("Error: Learning is necessarry!");
+						System.exit(ExitCodes.LEARNING_NECESSARY);
+					}
+						this.instances.init();
+
+					Csv csv = new Csv(true);
+
+					for (Solvis solvis : this.instances.getUnits()) {
+						Unit unit = solvis.getUnit();
+						csv.outCommentHeader(unit, solvis.getConfigurationMask(), unit.getComment());
+						csv.out(solvis, Constants.Csv.HEADER);
+					}
+					System.exit(ExitCodes.OK);
+					break;
 			}
-			System.exit(ExitCodes.OK);
+		} catch (IOException | XMLStreamException | LearningException | AssignmentException | AliasException
+				| TypeException | XmlException e) {
+			System.out.flush();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+			}
+			this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
+			e.printStackTrace();
+			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
@@ -300,9 +330,6 @@ public class Main {
 			} catch (TerminationException e) {
 				System.exit(ExitCodes.OK);
 			}
-			if (!executionMode.isStart()) {
-				System.exit(ExitCodes.OK);
-			}
 			serverSocket = this.openSocket(baseData.getPort());
 		}
 
@@ -310,14 +337,7 @@ public class Main {
 
 		try {
 			this.instances.init();
-			if (executionMode == ExecutionMode.CHANNELS_OF_UNIT) {
-				Csv csv = new Csv(true);
 
-				for (Solvis solvis : this.instances.getUnits()) {
-					csv.out(solvis, Constants.Csv.HEADER);
-				}
-			}
-			
 			if (executionMode.isStart()) {
 				this.instances.start();
 			} else {

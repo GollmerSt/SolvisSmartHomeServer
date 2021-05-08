@@ -20,7 +20,6 @@ import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.objects.ChannelAssignment;
 import de.sgollmer.solvismax.model.objects.configuration.NotValidConfigurations;
-import de.sgollmer.solvismax.model.update.Correction;
 import de.sgollmer.xmllibrary.ArrayXml;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
@@ -31,7 +30,6 @@ public class Unit implements IAccountInfo {
 
 	private static final String XML_FEATURES = "Features";
 	private static final String XML_IGNORED_CHANNELS = "IgnoredChannels";
-	private static final String XML_DEFAULT_CORRECTIONS = "DefaultCorrections";
 	private static final String XML_REG_EX = "RegEx";
 	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
 	private static final String XML_CHANNEL_ASSIGNMENT = "Assignment";
@@ -58,7 +56,6 @@ public class Unit implements IAccountInfo {
 	private final Features features;
 	private final int ignoredFrameThicknesScreenSaver;
 	private final Collection<Pattern> ignoredChannels;
-	private final DefaultCorrections defaultCorrections;
 	private final Map<String, ChannelAssignment> assignments;
 	private Long forcedConfigMask = null;
 	private final boolean csvUnit;
@@ -71,7 +68,7 @@ public class Unit implements IAccountInfo {
 			final int releaseBlockingAfterUserAccess_ms, final int releaseBlockingAfterServiceAccess_ms,
 			final boolean delayAfterSwitchingOn, final boolean fwLth2_21_02A, final Features features,
 			final int ignoredFrameThicknesScreenSaver, final Collection<Pattern> ignoredChannels,
-			final DefaultCorrections defaultCorrections, final Map<String, ChannelAssignment> assignments,
+			final Map<String, ChannelAssignment> assignments,
 			final boolean csvUnit) {
 		this.id = id;
 		this.configuration = configuration;
@@ -94,7 +91,6 @@ public class Unit implements IAccountInfo {
 		this.features = features;
 		this.ignoredFrameThicknesScreenSaver = ignoredFrameThicknesScreenSaver;
 		this.ignoredChannels = ignoredChannels;
-		this.defaultCorrections = defaultCorrections;
 		this.assignments = assignments;
 		this.csvUnit = csvUnit;
 	}
@@ -148,7 +144,6 @@ public class Unit implements IAccountInfo {
 		private Features features;
 		private int ignoredFrameThicknesScreenSaver;
 		private final Collection<Pattern> ignoredChannels = new ArrayList<>();
-		private DefaultCorrections defaultCorrections = null;
 		private Map<String, ChannelAssignment> assignments = null;
 		private boolean csvUnit = false;
 
@@ -253,7 +248,7 @@ public class Unit implements IAccountInfo {
 					this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
 					this.watchDogTime_ms, this.releaseBlockingAfterUserAccess_ms,
 					this.releaseBlockingAfterServiceAccess_ms, this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A,
-					this.features, this.ignoredFrameThicknesScreenSaver, this.ignoredChannels, this.defaultCorrections,
+					this.features, this.ignoredFrameThicknesScreenSaver, this.ignoredChannels,
 					this.assignments, this.csvUnit);
 
 		}
@@ -267,8 +262,6 @@ public class Unit implements IAccountInfo {
 				case XML_IGNORED_CHANNELS:
 					return new ArrayXml.Creator<StringElement>(id, getBaseCreator(), StringElement.getBaseElement(),
 							XML_REG_EX);
-				case XML_DEFAULT_CORRECTIONS:
-					return new DefaultCorrections.Creator(id, this.getBaseCreator());
 				case XML_CHANNEL_ASSIGNMENTS:
 					return new AssignmentsCreator(id, this.getBaseCreator());
 				case XML_CSV_CONFIGURATIONS:
@@ -295,9 +288,6 @@ public class Unit implements IAccountInfo {
 						}
 
 					}
-					break;
-				case XML_DEFAULT_CORRECTIONS:
-					this.defaultCorrections = (DefaultCorrections) created;
 					break;
 				case XML_CHANNEL_ASSIGNMENTS:
 					@SuppressWarnings("unchecked")
@@ -380,13 +370,6 @@ public class Unit implements IAccountInfo {
 		return this.forceUpdateAfterFastChangingIntervals;
 	}
 
-	public void setDefaultCorrection(Correction correction) {
-		if (this.defaultCorrections != null) {
-			this.defaultCorrections.setCorrection(correction);
-		}
-
-	}
-
 	public static class AssignmentsCreator extends CreatorByXML<Map<String, ChannelAssignment>> {
 
 		private Map<String, ChannelAssignment> assignments = null;
@@ -454,6 +437,10 @@ public class Unit implements IAccountInfo {
 
 	public void setForcedConfigMask(Long forcedConfigMask) {
 		this.forcedConfigMask = forcedConfigMask;
+	}
+	
+	public String getComment() {
+		return this.configuration.getComment();
 	}
 
 }
