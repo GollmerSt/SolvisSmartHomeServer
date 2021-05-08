@@ -36,14 +36,18 @@ public class ChannelInstance implements IInstance {
 				solvis);
 		return new ChannelInstance(solvis,description, assignment);
 	}
+	
+	private ChannelAssignment getFunctionalAssignment() {
+		ChannelAssignment assignment = this.solvis.getUnit().getChannelAssignment(this.assignment.getName());
+		if ( assignment == null) {
+			assignment = this.assignment;
+		}
+		return assignment;
+	}
 
 	public String getName() {
 		if ( this.channelName == null ) {
-			ChannelAssignment assignment = this.solvis.getUnit().getChannelAssignment(this.assignment.getName());
-			if ( assignment == null) {
-				assignment = this.assignment;
-			}
-			this.channelName = assignment.getChannelName();
+			this.channelName = this.getFunctionalAssignment().getChannelName();
 		}
 		return this.channelName;
 	}
@@ -61,8 +65,8 @@ public class ChannelInstance implements IInstance {
 	}
 
 	public String getUnit() {
-		String unit = this.assignment.getUnit();
-		if (this.assignment.getUnit() == null) {
+		String unit = this.getFunctionalAssignment().getUnit();
+		if (unit == null) {
 			unit = this.getDescription().getUnit();
 		}
 		return unit;

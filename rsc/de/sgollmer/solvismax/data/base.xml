@@ -113,11 +113,9 @@
 				<!-- Inhibit sending of channel by regular expressions <tns:RegEx>AIn.*</tns:RegEx> 
 					<tns:RegEx>AOut.*</tns:RegEx> -->
 			</tns:IgnoredChannels>
-			<tns:DefaultCorrections>
-				<tns:Correction regEx="X0[24]\..*" value_us="7000000" />
-			</tns:DefaultCorrections>
-			<!-- tns:ChannelAssignments> <tns:Assignment id="A03" name="A03.Pumpe_Heizkreis_3" 
-				/> </tns:ChannelAssignments -->
+			<tns:ChannelAssignments>
+				<!-- tns:Assignment id="A03" name="A03.Another_Name" unit="%"/ -->
+			</tns:ChannelAssignments>
 		</tns:Unit>
 	</tns:Units>
 	<tns:Mqtt enable="false" brokerUrl="192.168.0.71" port="1883"
