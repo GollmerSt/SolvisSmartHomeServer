@@ -23,6 +23,8 @@ public class Constants {
 	public static final String TINY_LOG_CONFIG_FILE = "tinylog.properties";
 	public static final String TINY_LOG_FILE_PROPERTY_PREFIX = "writer";
 	public static final String TINY_LOG_FILE_PROPERTY_SUFFIX = ".file";
+	
+	public static final String SUN_JAVA_COMMAND = "sun.java.command";
 
 	public static final int MIN_TOUCH_TIME = 100;
 	public static final int MAX_WAIT_TIME_ON_STARTUP = 120000;

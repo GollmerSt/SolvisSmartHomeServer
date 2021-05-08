@@ -7,12 +7,14 @@
 
 package de.sgollmer.solvismax;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.jar.Attributes;
+import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 public class Version {
+
 
 	private String serverVersion = "01.03.00-rc1";
 	private String appendix = "3 heating circuits beta, SolvisMax 7 beta";
@@ -47,13 +49,22 @@ public class Version {
 
 	public String getBuildDate() {
 		if (this.buildDate == null) {
-			try {
-				InputStream inputStream = Main.class.getResourceAsStream("/META-INF/MANIFEST.MF");
-				Manifest manifest = new Manifest(inputStream);
-				Attributes attr = manifest.getMainAttributes();
-				this.buildDate = attr.getValue("Built-Date");
-			} catch (IOException e) {
+			String javaCommand = System.getProperty(Constants.SUN_JAVA_COMMAND);
+			int jarIdx = javaCommand.indexOf(".jar");
+			if (jarIdx < 0) {
 				this.buildDate = null;
+			} else {
+				String main = javaCommand.substring(0, jarIdx + 4);
+				File file = new File(main);
+				try {
+					JarFile jar = new JarFile(file);
+					Manifest manifest = jar.getManifest();
+					Attributes attr = manifest.getMainAttributes();
+					this.buildDate = attr.getValue("Built-Date");
+					jar.close();
+				} catch (IOException e) {
+					this.buildDate = e.getMessage();
+				}
 			}
 		}
 		return this.buildDate;
