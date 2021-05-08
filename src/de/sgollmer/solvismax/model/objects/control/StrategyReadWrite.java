@@ -410,6 +410,8 @@ public class StrategyReadWrite extends StrategyRead {
 					csv = Integer.toString(this.changedIncrement);
 				}
 				break;
+			case Csv.WRITE:
+				csv = "true";
 		}
 		if (csv == null) {
 			return super.getCsvMeta(column, semicolon);

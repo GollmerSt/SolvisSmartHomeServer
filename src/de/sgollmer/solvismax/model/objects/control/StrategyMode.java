@@ -362,6 +362,8 @@ public class StrategyMode implements IStrategy {
 					builder.append(entry.getId());
 				}
 				return builder.toString();
+			case Csv.WRITE:
+				return "true";
 		}
 		return null;
 	}

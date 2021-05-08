@@ -78,8 +78,7 @@
 			<tns:Configuration heatingCircuits="3">
 				<tns:Extension id="Festbrennstoff" />
 			</tns:Configuration>
-			<tns:Configuration
-				heatingCircuits="3">
+			<tns:Configuration heatingCircuits="3">
 				<tns:Extension id="SolarOstWest" />
 			</tns:Configuration>
 			<tns:Configuration>
@@ -1795,13 +1794,13 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="I1.Anlagentyp">
+		<tns:ChannelDescription id="I1">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="6" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id="I2.Systemnummer">
+		<tns:ChannelDescription id="I2">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="10" length="4" />
 			</tns:Measurement>
@@ -4075,6 +4074,10 @@
 
 	<tns:ChannelAssignments>
 
+		<tns:Assignment id="I1" name="I1.Anlagentyp"></tns:Assignment>
+
+		<tns:Assignment name="I2.Systemnummer" id="I2"></tns:Assignment>
+
 		<tns:Assignment id="S01" name="S01.Warmwasserpuffer" />
 
 		<tns:Assignment id="S02"
@@ -4423,9 +4426,6 @@
 					compareMask="0x04000000" andMask="0x070000c0" />
 			</tns:Configuration>
 		</tns:Assignment>
-
-
-
 
 		<tns:Assignment name="A07.Ventil2" id="A07">
 			<tns:Configuration>

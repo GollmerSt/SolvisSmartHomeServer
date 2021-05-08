@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -44,9 +43,6 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.LogErrors;
 import de.sgollmer.solvismax.model.Instances;
-import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.csv.Csv;
-import de.sgollmer.solvismax.model.objects.unit.Unit;
 import de.sgollmer.solvismax.windows.Task;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.xmllibrary.XmlException;
@@ -95,7 +91,18 @@ public class Main {
 		String baseXml = null;
 		boolean onBoot = false;
 
-		Collection<String> argCollection = new ArrayList<>(Arrays.asList(args));
+		Collection<String> argCollection = new ArrayList<>();
+
+		for (String argO : args) {
+			String[] comp = argO.split("--");
+
+			for (String argI : comp) {
+				argI = argI.trim();
+				if (!argI.isEmpty()) {
+					argCollection.add("--" + argI);
+				}
+			}
+		}
 
 		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
 			String arg = it.next();
@@ -192,15 +199,10 @@ public class Main {
 
 		this.logger = logManager.getLogger(Main.class);
 
-		String serverStart = "Server started, Version " + Version.getInstance().getVersion();
-		if (Version.getInstance().getBuildDate() != null) {
-			serverStart += ", compiled at " + Version.getInstance().getBuildDate();
-		}
-
-		this.logger.info(serverStart);
 		Level.getLevel("LEARN");
 
 		ExecutionMode executionMode = ExecutionMode.STANDARD;
+		boolean semicolon = false;
 
 		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
 			String arg = it.next();
@@ -246,6 +248,9 @@ public class Main {
 					case "channels_of_all_configurations":
 						executionMode = ExecutionMode.CHANNELS_OF_ALL_CONFIGURATIONS;
 						break;
+					case "csvSemicolon":
+						semicolon = true;
+						break;
 					default:
 						System.err.println("Unknowwn argument: " + arg);
 						System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
@@ -273,15 +278,9 @@ public class Main {
 		}
 
 		try {
-			this.waitForValidTime();
-		} catch (TerminationException e1) {
-			System.exit(ExitCodes.OK);
-		}
-
-		try {
 			switch (executionMode) {
 				case CHANNELS_OF_ALL_CONFIGURATIONS:
-					this.instances.createCsvOut(true);
+					this.instances.createCsvOut(semicolon);
 					System.exit(ExitCodes.OK);
 					break;
 
@@ -290,15 +289,8 @@ public class Main {
 						System.err.println("Error: Learning is necessarry!");
 						System.exit(ExitCodes.LEARNING_NECESSARY);
 					}
-						this.instances.init();
 
-					Csv csv = new Csv(true);
-
-					for (Solvis solvis : this.instances.getUnits()) {
-						Unit unit = solvis.getUnit();
-						csv.outCommentHeader(unit, solvis.getConfigurationMask(), unit.getComment());
-						csv.out(solvis, Constants.Csv.HEADER);
-					}
+					this.instances.createCurrentCsvOut(semicolon);
 					System.exit(ExitCodes.OK);
 					break;
 			}
@@ -313,6 +305,19 @@ public class Main {
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
+
+		try {
+			this.waitForValidTime();
+		} catch (TerminationException e1) {
+			System.exit(ExitCodes.OK);
+		}
+
+		String serverStart = "Server started, Version " + Version.getInstance().getVersion();
+		if (Version.getInstance().getBuildDate() != null) {
+			serverStart += ", compiled at " + Version.getInstance().getBuildDate();
+		}
+
+		this.logger.info(serverStart);
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 		this.startTime = format.format(new Date());

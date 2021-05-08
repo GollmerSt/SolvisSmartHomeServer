@@ -140,6 +140,20 @@ public class Instances {
 		}
 
 	}
+	
+	public void createCurrentCsvOut(boolean semicolon) throws IOException, XMLStreamException, LearningException, AssignmentException, AliasException, TypeException {
+
+		this.init();
+
+		Csv csv = new Csv(semicolon);
+
+		for (Solvis solvis : this.getUnits()) {
+			Unit unit = solvis.getUnit();
+			csv.outCommentHeader(unit, solvis.getConfigurationMask(), unit.getComment());
+			csv.out(solvis, Constants.Csv.HEADER);
+		}
+
+	}
 
 	public boolean start() throws IOException, XMLStreamException, AssignmentException, AliasException, TypeException {
 		for (Solvis solvis : this.units) {

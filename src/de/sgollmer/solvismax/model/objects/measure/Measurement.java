@@ -314,18 +314,18 @@ public class Measurement extends ChannelSource {
 
 	@Override
 	public String getCsvMeta(String column, boolean semicolon) {
-		switch(column) {
+		switch (column) {
 			case Csv.DIVISOR:
 				return Integer.toString(this.divisor);
 			case Csv.AVERAGE:
 				return Boolean.toString(this.average);
 			case Csv.DELAY_AFTER_ON:
-				return Integer.toString(this.delayAfterSwitchingOn);
+				return this.delayAfterSwitchingOn >= 0 ? Integer.toString(this.delayAfterSwitchingOn) : "";
 			case Csv.FAST:
 				return Boolean.toString(this.fast);
 			case Csv.STRATEGY:
 				String s = this.type.toString();
-				return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();  
+				return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 		}
 		return null;
 	}

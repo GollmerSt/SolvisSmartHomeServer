@@ -23,7 +23,7 @@ public class Constants {
 	public static final String TINY_LOG_CONFIG_FILE = "tinylog.properties";
 	public static final String TINY_LOG_FILE_PROPERTY_PREFIX = "writer";
 	public static final String TINY_LOG_FILE_PROPERTY_SUFFIX = ".file";
-	
+
 	public static final String SUN_JAVA_COMMAND = "sun.java.command";
 
 	public static final int MIN_TOUCH_TIME = 100;
@@ -193,11 +193,11 @@ public class Constants {
 	public static class Csv {
 		public static final String ID = "id";
 		public static final String NAME = "NAME";
-		public static final String ALIAS = "ALIAS";
+		public static final String UNIT = "Unit";
+		public static final String WRITE = "Write";
 		public static final String MQTT = "MQTT topic";
 		public static final String CHANNEL_TYPE = "Channel type";
 		public static final String BUFFERED = "Buffered";
-		public static final String UNIT = "Unit";
 		public static final String GLITCH_INHIBIT = "Glitch inhibit";
 		public static final String DIVISOR = "Divisor";
 		public static final String AVERAGE = "Average";
@@ -212,9 +212,10 @@ public class Constants {
 		public static final String INCREMENT_CHANGE = "Increment change";
 		public static final String CHANGED_INCREMENT = "Changed increment";
 		public static final String MODES = "Modes";
-		public static final String[] HEADER = new String[] { ID, NAME, ALIAS, MQTT, CHANNEL_TYPE, BUFFERED, UNIT,
+		public static final String ALIAS = "Alias";
+		public static final String[] HEADER = new String[] { ID, NAME, UNIT, WRITE, MQTT, CHANNEL_TYPE, BUFFERED,
 				GLITCH_INHIBIT, DIVISOR, AVERAGE, DELAY_AFTER_ON, FAST, STRATEGY, CORRECTION, OPTIONAL, INCREMENT,
-				LEAST, MOST, INCREMENT_CHANGE, CHANGED_INCREMENT, MODES };
+				LEAST, MOST, INCREMENT_CHANGE, CHANGED_INCREMENT, MODES, ALIAS };
 
 	}
 }
