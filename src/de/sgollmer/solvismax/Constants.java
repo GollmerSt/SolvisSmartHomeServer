@@ -191,11 +191,11 @@ public class Constants {
 	}
 
 	public static class Csv {
-		public static final String ID = "id";
-		public static final String NAME = "NAME";
+		public static final String ID = "Id";
+		public static final String NAME = "Name";
 		public static final String UNIT = "Unit";
 		public static final String WRITE = "Write";
-		public static final String MQTT = "MQTT topic";
+		public static final String MQTT = "MQTT suffix";
 		public static final String CHANNEL_TYPE = "Channel type";
 		public static final String BUFFERED = "Buffered";
 		public static final String GLITCH_INHIBIT = "Glitch inhibit";
@@ -204,7 +204,6 @@ public class Constants {
 		public static final String DELAY_AFTER_ON = "Delay after on";
 		public static final String FAST = "Fast";
 		public static final String STRATEGY = "Strategy";
-		public static final String CORRECTION = "Correction";
 		public static final String OPTIONAL = "Optional";
 		public static final String INCREMENT = "Increment";
 		public static final String LEAST = "Least";
@@ -214,7 +213,7 @@ public class Constants {
 		public static final String MODES = "Modes";
 		public static final String ALIAS = "Alias";
 		public static final String[] HEADER = new String[] { ID, NAME, UNIT, WRITE, MQTT, CHANNEL_TYPE, BUFFERED,
-				GLITCH_INHIBIT, DIVISOR, AVERAGE, DELAY_AFTER_ON, FAST, STRATEGY, CORRECTION, OPTIONAL, INCREMENT,
+				GLITCH_INHIBIT, DIVISOR, AVERAGE, DELAY_AFTER_ON, FAST, STRATEGY, OPTIONAL, INCREMENT,
 				LEAST, MOST, INCREMENT_CHANGE, CHANGED_INCREMENT, MODES, ALIAS };
 
 	}
