@@ -93,7 +93,14 @@ public class LogManager {
 		public void debug(boolean debug, String message);
 
 		public void debug(boolean debug, String message, Throwable throwable);
+		
+		public void fatalExt(final String message, final Throwable throwable);
 
+		public void errorExt(final String message, final Throwable throwable);
+		
+		public void warnExt(final String message, final Throwable throwable);
+
+		public void infoExt(final String message, final Throwable throwable);
 	}
 
 	public static class DelayedMessage {
@@ -222,6 +229,17 @@ public class LogManager {
 		} catch (InterruptedException e) {
 		}
 	}
+	
+	private String extended( String message, Throwable throwable) {
+		StringBuilder builder = new StringBuilder(message);
+		builder.append('\n');		
+		builder.append(throwable.getMessage());
+		for ( StackTraceElement element: throwable.getStackTrace() ) {
+			builder.append('\n');		
+			builder.append(element.toString());
+		}
+		return builder.toString();
+	}
 
 	private class Logger implements ILogger {
 
@@ -343,6 +361,30 @@ public class LogManager {
 		@Override
 		public void log(Level level, String message, Throwable throwable) {
 			this.getLogger().log(level, message, throwable);
+		}
+
+		@Override
+		public void fatalExt(String message, Throwable throwable) {
+			this.fatal(extended(message, throwable));
+			
+		}
+
+		@Override
+		public void errorExt(String message, Throwable throwable) {
+			this.error(extended(message, throwable));
+			
+		}
+
+		@Override
+		public void warnExt(String message, Throwable throwable) {
+			this.warn(extended(message, throwable));
+			
+		}
+
+		@Override
+		public void infoExt(String message, Throwable throwable) {
+			this.info(extended(message, throwable));
+			
 		}
 
 	}

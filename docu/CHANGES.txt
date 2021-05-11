@@ -31,6 +31,11 @@ Version 01.03.00 rc1
     
     11.05.2021  IoBroker-Dateien werden nun automatisch per CLI erstellt
     
+    11.05.2021  Bugfix: Wird über die MQTT-Schnittstelle versucht ein Kanal mit einem unbekannten
+                Namen zu setzen, führte das zu einer Nullpointer-Exception und einem Wiederaufbau
+                der MQTT-Schnittstelle. Eine vernünftige Fehlermeldung erfolgte weder über die
+                MQTT-Schnittstelle noch den Log.
+    
 
 Version 01.02.11 rc4
 

@@ -138,7 +138,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	}
 
 	public void setDisconnected() {
-		this.setState(SolvisStatus.SOLVIS_DISCONNECTED);
+			this.setState(SolvisStatus.SOLVIS_DISCONNECTED);
 	}
 
 	public synchronized SolvisStatus getState() {
@@ -154,7 +154,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	private void setState(SolvisStatus state) {
 
 		SolvisStatePackage solvisStatePackage = this.setStateWONotify(state);
-			this.notify(solvisStatePackage);
+		this.notify(solvisStatePackage);
 	}
 
 	private synchronized SolvisStatePackage setStateWONotify(SolvisStatus state) {
@@ -184,17 +184,17 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 		}
 
 	}
-	
+
 	@Override
-	public void notify( SolvisStatePackage solvisStatePackage ) {
-		if ( solvisStatePackage != null ) {
+	public void notify(SolvisStatePackage solvisStatePackage) {
+		if (solvisStatePackage != null) {
 			super.notify(solvisStatePackage);
 		}
 	}
 
 	@Override
-	public boolean notify( SolvisStatePackage solvisStatePackage, Object source ) {
-		if ( solvisStatePackage != null ) {
+	public boolean notify(SolvisStatePackage solvisStatePackage, Object source) {
+		if (solvisStatePackage != null) {
 			return super.notify(solvisStatePackage, source);
 		}
 		return true;

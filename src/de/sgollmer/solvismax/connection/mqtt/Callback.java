@@ -27,6 +27,7 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.command.CommandSetScreen;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
+import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
 
@@ -47,7 +48,7 @@ final class Callback implements MqttCallbackExtended {
 	public void connectComplete(boolean reconnect, String serverURI) {
 		Mqtt.logger.info("Connection to MQTT successfull");
 		synchronized (this.mqtt) {
-			PublishObserver observer = this.mqtt.new PublishObserver(); 
+			PublishObserver observer = this.mqtt.new PublishObserver();
 			try {
 				if (!reconnect) {
 					this.mqtt.publish(ServerCommand.getMqttMeta(null));
@@ -106,10 +107,14 @@ final class Callback implements MqttCallbackExtended {
 				data = new StringData(string, timeStamp);
 				break;
 			case FROM_META:
-				de.sgollmer.solvismax.model.objects.ChannelDescription description = solvis
-						.getChannelDescription(subscribeData.getChannelId());
+				SolvisData solvisData = solvis.getAllSolvisData().getByName(subscribeData.getChannelId());
+				if (solvisData == null) {
+					this.mqtt.publishError(subscribeData.getClientId(),
+							"Error: Channel <" + subscribeData.getChannelId() + "> unknown.", unit);
+					return;
+				}
 				try {
-					data = description.interpretSetData(new StringData(string, timeStamp));
+					data = solvisData.getDescription().interpretSetData(new StringData(string, timeStamp));
 					if (data == null) {
 						this.mqtt.publishError(subscribeData.getClientId(),
 								"Error: Channel <" + subscribeData.getChannelId() + "> not writable.", unit);
@@ -138,6 +143,6 @@ final class Callback implements MqttCallbackExtended {
 
 	@Override
 	public void connectionLost(Throwable cause) {
-		Mqtt.logger.info("Connection to MQTT broker lost. Cause:" + cause.getMessage());
+		Mqtt.logger.errorExt("Connection to MQTT broker lost.", cause);
 	}
 }
