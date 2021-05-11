@@ -26,7 +26,9 @@ Version 01.03.00 rc1
                 asymptotisch an einen bestimmten Wert annähern.
                 
     07.05.2021  Makefile angepasst
-
+    
+    11.05.2021  Kanal .isSerie7 entfernt
+    
 
 Version 01.02.11 rc4
 

@@ -2108,11 +2108,11 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<tns:ChannelDescription id=".isSerie7">
+		<!-- tns:ChannelDescription id=".isSerie7">
 			<tns:Measurement type="unsigned">
 				<tns:Field position="192" length="2" />
 			</tns:Measurement>
-		</tns:ChannelDescription>
+		</tns:ChannelDescription-->
 
 		<tns:ChannelDescription id="SL" buffered="true"
 			unit="kW">
