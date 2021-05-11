@@ -276,7 +276,7 @@ public class Mqtt {
 	}
 
 	void publishError(String clientId, String message, Unit unit) {
-		this.publish(new MqttData(clientId + Constants.Mqtt.ERROR, message, 0, false, unit));
+		this.publish(new MqttData(clientId + '/' + Constants.Mqtt.ERROR, message, 0, false, unit));
 	}
 
 	MqttData getLastWill() {
@@ -337,28 +337,30 @@ public class Mqtt {
 			}
 		}
 	}
-
+	
 	private static String formatChannelIn(String mqttChannelId) {
 		String channelId = mqttChannelId.replace(':', '.');
 		return channelId;
 	}
 
 	public static String formatChannelOutTopic(String channelId) {
-		String mqttChannelId = channelId.replace('.', ':');
-		return '/' + mqttChannelId + Constants.Mqtt.DATA_SUFFIX;
+		return formatChannelOut( channelId) + '/' + Constants.Mqtt.DATA_SUFFIX;
+	}
+
+	public static String formatChannelOut( String channelId) {
+		return channelId.replace('.', ':');
 	}
 
 	public static String formatChannelMetaTopic(String channelId) {
-		String mqttChannelId = channelId.replace('.', ':');
-		return '/' + mqttChannelId + Constants.Mqtt.META_SUFFIX;
+		return formatChannelOut( channelId) + '/' + Constants.Mqtt.META_SUFFIX;
 	}
 
 	public static String formatServerMetaTopic() {
-		return Constants.Mqtt.SERVER_PREFIX + Constants.Mqtt.META_SUFFIX;
+		return Constants.Mqtt.SERVER_PREFIX + '/' + Constants.Mqtt.META_SUFFIX;
 	}
 
 	public static String formatScreenMetaTopic() {
-		return Constants.Mqtt.SCREEN_PREFIX + Constants.Mqtt.META_SUFFIX;
+		return Constants.Mqtt.SCREEN_PREFIX + '/' + Constants.Mqtt.META_SUFFIX;
 	}
 
 	class Client implements IClient {

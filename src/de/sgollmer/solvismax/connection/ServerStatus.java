@@ -20,7 +20,7 @@ public enum ServerStatus {
 	}
 
 	public MqttData getMqttData() {
-		return new MqttData(Constants.Mqtt.SERVER_PREFIX + Constants.Mqtt.ONLINE_STATUS, Boolean.toString(this.online),
+		return new MqttData(Constants.Mqtt.SERVER_PREFIX + '/' + Constants.Mqtt.ONLINE_STATUS, Boolean.toString(this.online),
 				0, true, null);
 	}
 }

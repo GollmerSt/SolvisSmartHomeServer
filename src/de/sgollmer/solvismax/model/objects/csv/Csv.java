@@ -1,22 +1,56 @@
 package de.sgollmer.solvismax.model.objects.csv;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
 
 public class Csv {
 
-	private static String HEADER1 = "+-------------------------------------------------------------------------------+";
-	private static String HEADER2 = "|                                                                               |";
+	private static String HEADER1 = "+-------------------------------------------------------------------------------+"
+			+ Constants.CRLF;
+	private static String HEADER2 = "|                                                                               |"
+			+ Constants.CRLF;
 
 	private final boolean semicolon;
 
-	public Csv(final boolean semicolon) {
+	private Writer writer = null;
+	private final File directory;
+	private final String name;
+
+	public Csv(final boolean semicolon, final File directory, final String name) {
 		this.semicolon = semicolon;
+		this.directory = directory;
+		this.name = name;
+	}
+
+	public void open() throws FileNotFoundException {
+
+		FileHelper.mkdir(this.directory);
+
+		try {
+			this.writer = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(new File(this.directory, this.name)), "Cp1252"));
+		} catch (UnsupportedEncodingException e) {
+		}
+	}
+
+	public void close() throws IOException {
+		this.writer.flush();
+		this.writer.close();
 	}
 
 	private String insertInTheMiddle(String text) {
@@ -39,25 +73,29 @@ public class Csv {
 		return middle.toString();
 	}
 
-	public void outCommentHeader(Unit unit, long mask, String comment) {
+	public void outCommentHeader(Unit unit, long mask, String comment) throws IOException {
 
-		System.out.println(HEADER1);
-		System.out.println(HEADER2);
-
-		System.out.println(insertInTheMiddle("Unit id: " + unit.getId()));
-		System.out.println(insertInTheMiddle("Mask: 0x" + String.format("%016x", mask)));
-		System.out.println(insertInTheMiddle("Admin:" + Boolean.toString(unit.isAdmin())));
-		if (comment != null) {
-			System.out.println(insertInTheMiddle(comment));
+		if (this.writer == null) {
+			throw new IOException("Write file not opened.");
 		}
 
-		System.out.println(HEADER2);
-		System.out.println(HEADER1);
-		System.out.println();
+		this.writer.write(HEADER1);
+		this.writer.write(HEADER2);
+
+		this.writer.write(insertInTheMiddle("Unit id: " + unit.getId()));
+		this.writer.write(insertInTheMiddle("Mask: 0x" + String.format("%016x", mask)));
+		this.writer.write(insertInTheMiddle("Admin:" + Boolean.toString(unit.isAdmin())));
+		if (comment != null) {
+			this.writer.write(insertInTheMiddle(comment));
+		}
+
+		this.writer.write(HEADER2);
+		this.writer.write(HEADER1);
+		this.writer.write(Constants.CRLF);
 
 	}
 
-	public void out(Solvis solvis, String[] header) {
+	public void out(Solvis solvis, String[] header) throws IOException {
 
 		StringBuilder line = new StringBuilder();
 		for (String colName : header) {
@@ -66,8 +104,8 @@ public class Csv {
 			}
 			line.append(colName);
 		}
-		System.out.println(line);
-		System.out.println();
+		this.writer.write(line + Constants.CRLF);
+		this.writer.write(Constants.CRLF);
 
 		List<SolvisData> list = new ArrayList<>(solvis.getAllSolvisData().getSolvisDatas());
 
@@ -101,10 +139,11 @@ public class Csv {
 					line.append(cell);
 				}
 			}
-			System.out.println(line);
+			line.append(Constants.CRLF);
+			this.writer.write(line.toString());
 		}
-		System.out.println();
-		System.out.println();
+		this.writer.write(Constants.CRLF);
+		this.writer.write(Constants.CRLF);
 	}
 
 }

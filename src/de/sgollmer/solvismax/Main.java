@@ -37,6 +37,7 @@ import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.iobroker.FilesCreator;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -69,19 +70,25 @@ public class Main {
 	private Mqtt mqtt = null;
 
 	private enum ExecutionMode {
-		STANDARD(true, true), LEARN(false, true), CHANNELS_OF_UNIT(false, false),
-		CHANNELS_OF_ALL_CONFIGURATIONS(false, false);
+		STANDARD(true, true, false), LEARN(false, true, false), CHANNELS_OF_UNIT(false, false, true),
+		CHANNELS_OF_ALL_CONFIGURATIONS(false, false, false), IOBROKER(false, false, true);
 
 		private final boolean start;
 		private final boolean ipChannelLock;
+		private final boolean mustLearned;
 
-		private ExecutionMode(final boolean start, final boolean ipChannelLock) {
+		private ExecutionMode(final boolean start, final boolean ipChannelLock, final boolean mustLearned) {
 			this.start = start;
 			this.ipChannelLock = ipChannelLock;
+			this.mustLearned = mustLearned;
 		}
 
 		public boolean isStart() {
 			return this.start;
+		}
+
+		boolean mustLearned() {
+			return this.mustLearned;
 		}
 	}
 
@@ -251,6 +258,9 @@ public class Main {
 					case "csvSemicolon":
 						semicolon = true;
 						break;
+					case "iobroker":
+						executionMode = ExecutionMode.IOBROKER;
+						break;
 					default:
 						System.err.println("Unknowwn argument: " + arg);
 						System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
@@ -277,6 +287,11 @@ public class Main {
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
+		if (executionMode.mustLearned() && this.instances.mustLearn()) {
+			System.err.println("Error: Learning is necessarry!");
+			System.exit(ExitCodes.LEARNING_NECESSARY);
+		}
+
 		try {
 			switch (executionMode) {
 				case CHANNELS_OF_ALL_CONFIGURATIONS:
@@ -285,12 +300,15 @@ public class Main {
 					break;
 
 				case CHANNELS_OF_UNIT:
-					if (this.instances.mustLearn()) {
-						System.err.println("Error: Learning is necessarry!");
-						System.exit(ExitCodes.LEARNING_NECESSARY);
-					}
-
 					this.instances.createCurrentCsvOut(semicolon);
+					System.exit(ExitCodes.OK);
+					break;
+				case IOBROKER:
+					FilesCreator creator = new FilesCreator(this.instances, "mqtt-client.0", "javascript.0",
+							new String[] { "SolvisSmartHomeServer" }, "IoBroker");
+					this.instances.init();
+					creator.writeObjectList();
+					creator.writePairingScript();
 					System.exit(ExitCodes.OK);
 					break;
 			}

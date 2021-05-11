@@ -55,7 +55,7 @@ public enum ServerCommand {
 		if (solvis == null) {
 			return new MqttData(topic, array.toString(), 0, true, null);
 		} else {
-			return new MqttData(solvis, '/' + topic, array.toString(), 0, true);
+			return new MqttData(solvis, topic, array.toString(), 0, true);
 		}
 	}
 

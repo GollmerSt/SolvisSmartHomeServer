@@ -50,7 +50,7 @@ public class CommandScreenRestore extends Command {
 		for (Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
 			array.add(new SingleValue(screen.getId()));
 		}
-		return new MqttData(solvis, '/' + topic, array.toString(), 0, true);
+		return new MqttData(solvis, topic, array.toString(), 0, true);
 	}
 
 }

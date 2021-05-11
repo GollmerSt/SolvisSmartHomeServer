@@ -543,7 +543,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				break;
 			case Csv.MQTT:
 				String name = this.channelInstance.getName();
-				csv = Mqtt.formatChannelOutTopic(name);
+				csv = Mqtt.formatChannelOut(name);
 				break;
 		}
 		if (csv == null) {

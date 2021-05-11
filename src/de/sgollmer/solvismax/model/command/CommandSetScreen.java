@@ -59,7 +59,7 @@ public class CommandSetScreen extends Command {
 			}
 		});
 		ArrayValue array = new ArrayValue(values);
-		return new MqttData(solvis, '/' + topic, array.toString(), 0, true);
+		return new MqttData(solvis, topic, array.toString(), 0, true);
 	}
 
 	@Override

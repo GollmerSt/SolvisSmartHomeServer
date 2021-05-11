@@ -10,19 +10,31 @@ package de.sgollmer.solvismax.connection.mqtt;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt.Format;
 import de.sgollmer.solvismax.connection.transfer.Command;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
+import de.sgollmer.solvismax.Constants;
 
 enum SubscribeType {
-	SERVER_META(new String[] { "server", "meta" }, 0, false, false, null, Format.NONE), //
-	SERVER_COMMAND(new String[] { "server", "cmnd" }, 1, false, false, Command.SERVER_COMMAND, Format.STRING), //
-	SERVER_ONLINE(new String[] { "server", "online" }, 0, false, false, null, Format.NONE), //
-	CLIENT_ONLINE(new String[] { "online" }, 1, false, false, Command.CLIENT_ONLINE, Format.BOOLEAN), //
-	UNIT_STATUS(new String[] { "status" }, 1, true, false, null, Format.NONE), //
-	UNIT_SERVER_COMMAND(new String[] { "server", "cmnd" }, 2, true, false, Command.SERVER_COMMAND, Format.STRING), //
-	UNIT_SCREEN_COMMAND(new String[] { "screen", "cmnd" }, 2, true, false, Command.SELECT_SCREEN, Format.STRING), //
-	UNIT_CHANNEL_COMMAND(new String[] { "cmnd" }, 3, true, true, Command.SET, Format.FROM_META), //
-	UNIT_CHANNEL_UPDATE(new String[] { "update" }, 3, true, true, Command.GET, Format.NONE), //
-	UNIT_CHANNEL_DATA(new String[] { "data" }, 2, true, true, null, Format.NONE), //
-	UNIT_CHANNEL_META(new String[] { "meta" }, 2, true, true, null, Format.NONE); //
+	SERVER_META(new String[] { Constants.Mqtt.SERVER_PREFIX, Constants.Mqtt.META_SUFFIX, }, //
+			0, false, false, null, Format.NONE), //
+	SERVER_COMMAND(new String[] { Constants.Mqtt.SERVER_PREFIX, Constants.Mqtt.CMND_SUFFIX }, //
+			1, false, false, Command.SERVER_COMMAND, Format.STRING), //
+	SERVER_ONLINE(new String[] { Constants.Mqtt.SERVER_PREFIX, "online" }, //
+			0, false, false, null, Format.NONE), //
+	CLIENT_ONLINE(new String[] { Constants.Mqtt.ONLINE_STATUS }, //
+			1, false, false, Command.CLIENT_ONLINE, Format.BOOLEAN), //
+	UNIT_STATUS(new String[] { Constants.Mqtt.STATUS }, //
+			1, true, false, null, Format.NONE), //
+	UNIT_SERVER_COMMAND(new String[] { Constants.Mqtt.SERVER_PREFIX, Constants.Mqtt.CMND_SUFFIX }, //
+			2, true, false, Command.SERVER_COMMAND, Format.STRING), //
+	UNIT_SCREEN_COMMAND(new String[] { Constants.Mqtt.SCREEN_PREFIX, Constants.Mqtt.CMND_SUFFIX }, 2, true, false,
+			Command.SELECT_SCREEN, Format.STRING), //
+	UNIT_CHANNEL_COMMAND(new String[] { Constants.Mqtt.CMND_SUFFIX }, //
+			3, true, true, Command.SET, Format.FROM_META), //
+	UNIT_CHANNEL_UPDATE(new String[] { Constants.Mqtt.UPDATE_SUFFIX }, //
+			3, true, true, Command.GET, Format.NONE), //
+	UNIT_CHANNEL_DATA(new String[] { Constants.Mqtt.DATA_SUFFIX }, //
+			2, true, true, null, Format.NONE), //
+	UNIT_CHANNEL_META(new String[] { Constants.Mqtt.META_SUFFIX }, //
+			2, true, true, null, Format.NONE); //
 
 	private final String[] cmp;
 	private final int position;
@@ -31,8 +43,8 @@ enum SubscribeType {
 	private final Command command;
 	final Format format;
 
-	private SubscribeType(String[] cmp, int position, boolean unitId, boolean channelId, Command command,
-			Format format) {
+	private SubscribeType(final String[] cmp, final int position, final boolean unitId, final boolean channelId,
+			Command command, final Format format) {
 		this.cmp = cmp;
 		this.position = position;
 		this.unitId = unitId;

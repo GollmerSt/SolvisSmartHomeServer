@@ -37,7 +37,7 @@ public class MqttData implements Cloneable {
 	}
 
 	public MqttData(Solvis solvis, String topicSuffix, String utf8Data, int qoS, boolean retained) {
-		this(solvis.getUnit().getId() + topicSuffix, utf8Data, qoS, retained, solvis.getUnit());
+		this(solvis.getUnit().getId() + '/' + topicSuffix, utf8Data, qoS, retained, solvis.getUnit());
 	}
 
 	byte[] getPayLoad() {

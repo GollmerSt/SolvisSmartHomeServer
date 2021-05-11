@@ -20,6 +20,8 @@ public class Constants {
 	public static final int DELAYED_CLOSING_TIME = 1000;
 	public static final String LOG4J_CONFIG_FILE = "log4j2.xml";
 
+	public static final String CRLF = "\r\n";
+
 	public static final String TINY_LOG_CONFIG_FILE = "tinylog.properties";
 	public static final String TINY_LOG_FILE_PROPERTY_PREFIX = "writer";
 	public static final String TINY_LOG_FILE_PROPERTY_SUFFIX = ".file";
@@ -103,6 +105,7 @@ public class Constants {
 		public static final int INPUT_BUFFER_SIZE = 8192;
 		public static final String RESOURCE_DESTINATION = "SolvisServerData";
 		public static final String LEARN_DESTINATION = "LearnedImages";
+		public static final String APPENDIX_DESTINATION = "Appendix";
 		public static final String SOLVIS_ERROR_DESTINATION = "SolvisErrorImages";
 		public static final String RESOURCE = "data";
 		public static final String ERROR_SCREEN_PREFIX = "ErrorScreen-";
@@ -113,6 +116,8 @@ public class Constants {
 		public static final Pattern ERROR_SCREEN_REGEX = Pattern
 				.compile(Files.ERROR_SCREEN_PREFIX + "\\d+\\." + Files.GRAFIC_SUFFIX);
 		public static final int MAX_NUMBER_OF_ERROR_SCREENS = 100;
+		public static final String CSV_ALL_CHANNELS = "SolvisAllChannels.csv";
+		public static final String CSV_CHANNELS = "SolvisChannels.csv";
 	}
 
 	public static class XmlStrings {
@@ -141,21 +146,23 @@ public class Constants {
 
 	public static class Mqtt {
 		public static final String[] CMND_SUFFIXES = new String[] { //
-				"/+/server/cmnd", // Server commands
-				"/+/online", //
-				"/+/+/server/cmnd", // Server commands
-				"/+/+/+/cmnd", // SET
-				"/+/+/+/update", // GET
+				"/+/server/" + Mqtt.CMND_SUFFIX, // Server commands
+				"/+/" + Mqtt.ONLINE_STATUS, //
+				"/+/+/server/" + Mqtt.CMND_SUFFIX, // Server commands
+				"/+/+/+/" + Mqtt.CMND_SUFFIX, // SET
+				"/+/+/+/" + Mqtt.UPDATE_SUFFIX, // GET
 				// "/#"
 		};
-		public static final String DATA_SUFFIX = "/data";
-		public static final String META_SUFFIX = "/meta";
+		public static final String DATA_SUFFIX = "data";
+		public static final String META_SUFFIX = "meta";
+		public static final String CMND_SUFFIX = "cmnd";
 		public static final String SERVER_PREFIX = "server";
 		public static final String SCREEN_PREFIX = "screen";
-		public static final String ONLINE_STATUS = "/online";
-		public static final String STATUS = "/status";
-		public static final String HUMAN_ACCESS = "/human_access";
-		public static final String ERROR = "/error";
+		public static final String ONLINE_STATUS = "online";
+		public static final String UPDATE_SUFFIX = "update";
+		public static final String STATUS = "status";
+		public static final String HUMAN_ACCESS = "human_access";
+		public static final String ERROR = "error";
 		public static final int MAX_INFLIGHT = 200;
 		public static final int MIN_CONNECTION_REPEAT_TIME = 1000;
 		public static final int MAX_CONNECTION_REPEAT_TIME = 120000;
@@ -213,8 +220,12 @@ public class Constants {
 		public static final String MODES = "Modes";
 		public static final String ALIAS = "Alias";
 		public static final String[] HEADER = new String[] { ID, NAME, UNIT, WRITE, MQTT, CHANNEL_TYPE, BUFFERED,
-				GLITCH_INHIBIT, DIVISOR, AVERAGE, DELAY_AFTER_ON, FAST, STRATEGY, OPTIONAL, INCREMENT,
-				LEAST, MOST, INCREMENT_CHANGE, CHANGED_INCREMENT, MODES, ALIAS };
+				GLITCH_INHIBIT, DIVISOR, AVERAGE, DELAY_AFTER_ON, FAST, STRATEGY, OPTIONAL, INCREMENT, LEAST, MOST,
+				INCREMENT_CHANGE, CHANGED_INCREMENT, MODES, ALIAS };
+	}
 
+	public static class IoBroker {
+		public static final String PAIRING_SCRIPT_NAME = "solvis_pairing.js";
+		public static final String OBJECT_LIST_NAME = "SolvisSmartHomeServer.json";
 	}
 }

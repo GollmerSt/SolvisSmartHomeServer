@@ -138,6 +138,6 @@ final class Callback implements MqttCallbackExtended {
 
 	@Override
 	public void connectionLost(Throwable cause) {
-		Mqtt.logger.info("Connection to MQTT broker lost");
+		Mqtt.logger.info("Connection to MQTT broker lost. Cause:" + cause.getMessage());
 	}
 }

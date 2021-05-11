@@ -29,6 +29,8 @@ Version 01.03.00 rc1
     
     11.05.2021  Kanal .isSerie7 entfernt
     
+    11.05.2021  IoBroker-Dateien werden nun automatisch per CLI erstellt
+    
 
 Version 01.02.11 rc4
 

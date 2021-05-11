@@ -96,7 +96,6 @@ public class Instances {
 			learned = true;
 		}
 		if (learned) {
-			// this.graficDatas.
 			new GraficFileHandler(this.writeablePath).write(this.graficDatas);
 		}
 	}
@@ -116,7 +115,9 @@ public class Instances {
 	public void createCsvOut(boolean semicolon) throws IOException, XMLStreamException, LearningException,
 			AssignmentException, AliasException, TypeException, XmlException {
 
-		Csv csv = new Csv(semicolon);
+		Csv csv = new Csv(semicolon, this.getAppendixPath(), Constants.Files.CSV_ALL_CHANNELS);
+		csv.open();
+
 		int cnt = 0;
 
 		for (Unit xmlUnit : this.baseData.getUnits().getUnits()) {
@@ -138,21 +139,22 @@ public class Instances {
 			}
 			System.out.println("Number of configurations: " + cnt);
 		}
-
+		csv.close();
 	}
 	
 	public void createCurrentCsvOut(boolean semicolon) throws IOException, XMLStreamException, LearningException, AssignmentException, AliasException, TypeException {
 
 		this.init();
 
-		Csv csv = new Csv(semicolon);
+		Csv csv = new Csv(semicolon, this.getAppendixPath(), Constants.Files.CSV_CHANNELS);
+		csv.open();
 
 		for (Solvis solvis : this.getUnits()) {
 			Unit unit = solvis.getUnit();
 			csv.outCommentHeader(unit, solvis.getConfigurationMask(), unit.getComment());
 			csv.out(solvis, Constants.Csv.HEADER);
 		}
-
+		csv.close();
 	}
 
 	public boolean start() throws IOException, XMLStreamException, AssignmentException, AliasException, TypeException {
@@ -222,6 +224,10 @@ public class Instances {
 
 	public File getWritePath() {
 		return this.writeablePath;
+	}
+	
+	public File getAppendixPath() {
+		return new File(this.writeablePath, Constants.Files.APPENDIX_DESTINATION);
 	}
 
 	public boolean mustLearn() {
