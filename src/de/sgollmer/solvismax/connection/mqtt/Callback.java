@@ -102,7 +102,7 @@ final class Callback implements MqttCallbackExtended {
 
 			String string = new String(message.getPayload(), StandardCharsets.UTF_8);
 			SingleData<?> data = null;
-			switch (subscribeData.type.format) {
+			switch (subscribeData.type.getFormat()) {
 				case BOOLEAN:
 					data = new BooleanValue(Boolean.parseBoolean(string), timeStamp);
 					break;

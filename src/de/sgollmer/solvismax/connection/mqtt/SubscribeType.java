@@ -41,7 +41,7 @@ enum SubscribeType {
 	private final boolean unitId;
 	private final boolean channelId;
 	private final Command command;
-	final Format format;
+	private final Format format;
 
 	private SubscribeType(final String[] cmp, final int position, final boolean unitId, final boolean channelId,
 			Command command, final Format format) {
@@ -78,6 +78,10 @@ enum SubscribeType {
 
 	Command getCommand() {
 		return this.command;
+	}
+
+	public Format getFormat() {
+		return this.format;
 	}
 
 }

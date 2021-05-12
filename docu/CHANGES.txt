@@ -38,6 +38,9 @@ Version 01.03.00 rc1
                 
     12.05.2021  Die Daten für die generiertenIoBroker-Dateien werden nun aus der base.xml gelesen.
     
+    12.05.2021  Bugfix: Ein unbekannter Server-Befehl über die MQTT-Schnittstelle bewirkt eine
+                Nullpointer-Exception und damit ein Neuaufbau der MQTT-Verbindung.
+    
 
 Version 01.02.11 rc4
 
