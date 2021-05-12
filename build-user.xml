@@ -16,8 +16,6 @@
 	<property name="pdf" value="docu/SolvisSmartHomeServer.pdf" />
 	<property name="changes" value="docu/CHANGES.txt" />
 	<property name="fhem.pm" value="SmartHome/FHEM/73_SolvisClient.pm" />
-	<property name="iobroker.client.json" value="SmartHome/IoBroker/mqtt-client.0.SolvisSmartHomeServer.json" />
-	<property name="iobroker.javascript" value="SmartHome/IoBroker/solvis_pairing.js" />
 	<property name="makefile" value="SmartHome/Linux/Makefile" />
 	<property name="linux.systemd" value="SmartHome/Linux/SolvisSmartHomeServer.service" />
 	<property name="linux.systemdD" value="SmartHome/Linux/DebugSolvisSmartHomeServer.service" />
@@ -125,9 +123,6 @@
 		</copy>
 		<mkdir dir="${private.dir}/FHEM" />
 		<fixcrlf file="${fhem.pm}" destdir="${private.dir}/FHEM" eol="lf" />
-		<mkdir dir="${private.dir}/ioBroker" />
-		<fixcrlf file="${iobroker.client.json}" destdir="${private.dir}/ioBroker" eol="lf" />
-		<fixcrlf file="${iobroker.javascript}" destdir="${private.dir}/ioBroker" eol="lf" />
 		<fixcrlf file="${linux.systemd}" destdir="${private.dir}" eol="lf" />
 		<fixcrlf file="${linux.systemdD}" destdir="${private.dir}" eol="lf" />
 		<fixcrlf file="${makefile}" destdir="${private.dir}" eol="lf" />
@@ -140,9 +135,6 @@
 		</copy>
 		<mkdir dir="${pubLinux.dir}/FHEM" />
 		<fixcrlf file="${fhem.pm}" destdir="${pubLinux.dir}/FHEM" eol="lf" />
-		<mkdir dir="${pubLinux.dir}/ioBroker" />
-		<fixcrlf file="${iobroker.client.json}" destdir="${pubLinux.dir}/ioBroker" eol="lf" />
-		<fixcrlf file="${iobroker.javascript}" destdir="${pubLinux.dir}/ioBroker" eol="lf" />
 		<fixcrlf file="${linux.systemd}" destdir="${pubLinux.dir}" eol="lf" />
 		<fixcrlf file="${linux.systemdD}" destdir="${pubLinux.dir}" eol="lf" />
 		<fixcrlf file="${makefile}" destdir="${pubLinux.dir}" eol="lf" />
@@ -161,10 +153,6 @@
 		</copy>
 		<copy todir="${pubWindows.dir}/FHEM">
 			<fileset file="${fhem.pm}" casesensitive="yes" />
-		</copy>
-		<copy todir="${pubWindows.dir}/ioBroker">
-			<fileset file="${iobroker.client.json}" casesensitive="yes" />
-			<fileset file="${iobroker.javascript}" casesensitive="yes" />
 		</copy>
 		<zip destfile="${zip.dir}/SolvisSmartHomeServer windows ${version}.zip" basedir="${pubWindows.dir}" />
 	</target>

@@ -58,7 +58,8 @@ Name: "{group}\{#MyAppName}"; Filename: "javaw";  Parameters: "-jar ""{app}\{#My
 Name: "{group}\{#MyAppName} in DOS window"; Filename: "{app}\{#MyAppExeName}"; Parameters: "dos"; IconFilename: "{app}\{#MyIconName}";
 Name: "{group}\Learn"; Filename: "{app}\{#MyAppExeName}"; Parameters: "learn"; IconFilename: "{app}\{#MyIconName}";
 Name: "{group}\Terminate"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}"" --server-terminate"; IconFilename: "{app}\{#MyIconName}";
-Name: "{group}\CreateCsv"; Filename: "{app}\Startup.bat";  Parameters: "csv"; IconFilename: "{app}\{#MyIconName}";
+Name: "{group}\CreateCsv"; Filename: "{app}\{#MyAppExeName}";  Parameters: "csv"; IconFilename: "{app}\{#MyIconName}";
+Name: "{group}\CreateIobroker"; Filename: "{app}\{#MyAppExeName}";  Parameters: "iobroker"; IconFilename: "{app}\{#MyIconName}";
 Name: "{group}\Crypt"; Filename: "{app}\{#MyAppExeName}"; Parameters: "crypt"; IconFilename: "{app}\{#MyIconName}";
 Name: "{group}\Send testmail"; Filename: "javaw";  Parameters: "-jar ""{app}\{#MyJarFile}"" --test-mail"; IconFilename: "{app}\{#MyIconName}";
 Name: "{group}\Uninstall {#MyAppName}}"; Filename: "{uninstallexe}"

@@ -19,8 +19,12 @@ goto start_%1
 	set paras="--channels --csvSemicolon"
 	set java=java
 	set pause=pause
-	set out=1 
-	set file="%HOMEDRIVE%%HOMEPATH%/SolvisChannels.csv"
+	goto continue
+
+:start_iobroker
+	set paras="--iobroker"
+	set java=java
+	set pause=pause
 	goto continue
 
 :start_terminate

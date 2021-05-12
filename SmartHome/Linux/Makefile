@@ -151,6 +151,11 @@ channelDocumentation:
 
 
 
+iobroker:
+	$(start) --iobroker
+
+
+
 debugServer: stopServices installSolvis
 	$(startDebug)
 

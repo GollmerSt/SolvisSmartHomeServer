@@ -29,6 +29,7 @@ public class Csv {
 
 	private Writer writer = null;
 	private final File directory;
+	private File file = null;
 	private final String name;
 
 	public Csv(final boolean semicolon, final File directory, final String name) {
@@ -40,10 +41,11 @@ public class Csv {
 	public void open() throws FileNotFoundException {
 
 		FileHelper.mkdir(this.directory);
+		this.file = new File(this.directory, this.name);
 
 		try {
 			this.writer = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(new File(this.directory, this.name)), "Cp1252"));
+					new OutputStreamWriter(new FileOutputStream(this.file), "Cp1252"));
 		} catch (UnsupportedEncodingException e) {
 		}
 	}
@@ -51,6 +53,8 @@ public class Csv {
 	public void close() throws IOException {
 		this.writer.flush();
 		this.writer.close();
+
+		System.out.println("File <" + this.file.getAbsolutePath() + "> created.");
 	}
 
 	private String insertInTheMiddle(String text) {
