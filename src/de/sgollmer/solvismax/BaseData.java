@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
+import de.sgollmer.solvismax.iobroker.IoBroker;
 import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.model.objects.unit.Units;
 import de.sgollmer.xmllibrary.BaseCreator;
@@ -24,6 +25,7 @@ public class BaseData {
 	private static final String XML_EXECUTION_DATA = "ExecutionData";
 	private static final String XML_MAIL = "ExceptionMail";
 	private static final String XML_MQTT = "Mqtt";
+	private static final String XML_IOBROKER = "Iobroker";
 
 	public static boolean DEBUG = false;
 
@@ -46,13 +48,15 @@ public class BaseData {
 	private final Units units;
 	private final ExceptionMail exceptionMail;
 	private final Mqtt mqtt;
+	private final IoBroker ioBroker;
 
 	public String getTimeZone() {
 		return this.timeZone;
 	}
 
-	private BaseData(String timeZone, int port, String writeablePathWindows, String writablePathLinux,
-			int echoInhibitTime_ms, Units units, ExceptionMail exceptionMail, Mqtt mqtt) {
+	private BaseData(final String timeZone, final int port, final String writeablePathWindows,
+			final String writablePathLinux, final int echoInhibitTime_ms, final Units units,
+			final ExceptionMail exceptionMail, final Mqtt mqtt, final IoBroker ioBroker) {
 		this.timeZone = timeZone;
 		this.port = port;
 		this.writeablePathWindows = writeablePathWindows;
@@ -61,6 +65,7 @@ public class BaseData {
 		this.exceptionMail = exceptionMail;
 		this.echoInhibitTime_ms = echoInhibitTime_ms;
 		this.mqtt = mqtt;
+		this.ioBroker = ioBroker;
 
 	}
 
@@ -76,8 +81,12 @@ public class BaseData {
 		return this.echoInhibitTime_ms;
 	}
 
-	Mqtt getMqtt() {
+	public Mqtt getMqtt() {
 		return this.mqtt;
+	}
+
+	public IoBroker getIoBroker() {
+		return this.ioBroker;
 	}
 
 	public static class Creator extends BaseCreator<BaseData> {
@@ -86,13 +95,14 @@ public class BaseData {
 		private ExecutionData executionData;
 		private ExceptionMail exceptionMail;
 		private Mqtt mqtt = null;
+		private IoBroker ioBroker = new IoBroker();
 
 		public Creator(String id) {
 			super(id);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "DEBUG":
 					DEBUG = Boolean.parseBoolean(value);
@@ -102,13 +112,15 @@ public class BaseData {
 
 		@Override
 		public BaseData create() throws XmlException, IOException {
-			return new BaseData(this.executionData.timeZone, this.executionData.port,
+			BaseData baseData = new BaseData(this.executionData.timeZone, this.executionData.port,
 					this.executionData.writeablePathWindows, this.executionData.writablePathLinux,
-					this.executionData.echoInhibitTime_ms, this.units, this.exceptionMail, this.mqtt);
+					this.executionData.echoInhibitTime_ms, this.units, this.exceptionMail, this.mqtt, this.ioBroker);
+			this.ioBroker.setBaseData(baseData);
+			return baseData;
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_UNITS:
@@ -119,12 +131,14 @@ public class BaseData {
 					return new ExceptionMail.Creator(id, getBaseCreator());
 				case XML_MQTT:
 					return new Mqtt.Creator(id, getBaseCreator());
+				case XML_IOBROKER:
+					return new IoBroker.Creator(id, this.getBaseCreator());
 			}
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_UNITS:
 					this.units = (Units) created;
@@ -138,6 +152,8 @@ public class BaseData {
 				case XML_MQTT:
 					this.mqtt = (Mqtt) created;
 					break;
+				case XML_IOBROKER:
+					this.ioBroker = (IoBroker) created;
 			}
 
 		}
@@ -152,8 +168,8 @@ public class BaseData {
 		private final String writablePathLinux;
 		private final int echoInhibitTime_ms;
 
-		private ExecutionData(String timeZone, int port, String writeablePathWindows, String writablePathLinux,
-				int echoInhibitTime_ms) {
+		private ExecutionData(final String timeZone, final int port, final String writeablePathWindows,
+				final String writablePathLinux, final int echoInhibitTime_ms) {
 			this.timeZone = timeZone;
 			this.port = port;
 			this.writeablePathWindows = writeablePathWindows;
@@ -169,12 +185,12 @@ public class BaseData {
 			private String writablePathLinux;
 			private int echoInhibitTime_ms;
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "timeZone":
 						this.timeZone = value;
@@ -202,12 +218,12 @@ public class BaseData {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 
 			}
 		}

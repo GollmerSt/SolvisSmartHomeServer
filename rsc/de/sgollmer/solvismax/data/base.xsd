@@ -29,7 +29,8 @@
 				</annotation>
 			</element>
 			<element name="Mqtt" type="tns:Mqtt" maxOccurs="1"
-				minOccurs="0"></element>
+				minOccurs="0">
+			</element>
 			<element name="ExceptionMail" type="tns:ExceptionMail"
 				maxOccurs="1" minOccurs="0">
 				<annotation>
@@ -38,8 +39,9 @@
 						Exception
 					</documentation>
 				</annotation>
-			</element>
-		</sequence>
+			</element>
+            <element name="Iobroker" type="tns:Iobroker" maxOccurs="1" minOccurs="0"></element>
+        </sequence>
 		<attribute name="DEBUG" type="boolean" use="optional">
 			<annotation>
 				<documentation>Debug-Mode. Nur zur Entwicklung</documentation>
@@ -723,4 +725,11 @@
 			<maxInclusive value="3"></maxInclusive>
 		</restriction>
 	</simpleType>
+
+	<complexType name="Iobroker">
+
+		<attribute name="mqttInterface" type="string" use="required"></attribute>
+		<attribute name="javascriptInterface" type="string" use="required"></attribute>
+		<attribute name="iobrokerName" type="string" use="required"></attribute>
+	</complexType>
 </schema>

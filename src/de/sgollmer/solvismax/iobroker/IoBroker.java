@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.helper.FileHelper;
@@ -18,31 +21,36 @@ import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.xmllibrary.BaseCreator;
+import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.XmlException;
 
-public class FilesCreator {
-	private final Instances instances;
+public class IoBroker {
+	private final String ioBrokerId;
 	private final String mqttInterface;
 	private final String javascriptInterface;
-	private final String[] prefix;
-	private final String smartHomeId;
+	private BaseData baseData;
 
-	public FilesCreator(final Instances instances, final String ioBrokerInterface, final String javascriptInterface,
-			final String[] prefix, final String smartHomeId) {
-		this.instances = instances;
-		this.mqttInterface = ioBrokerInterface;
+	private IoBroker(final String ioBrokerId, final String mqttInterface, final String javascriptInterface) {
+		this.ioBrokerId = ioBrokerId;
+		this.mqttInterface = mqttInterface;
 		this.javascriptInterface = javascriptInterface;
-		this.prefix = prefix;
-		this.smartHomeId = smartHomeId;
+	}
+
+	public IoBroker() {
+		this.ioBrokerId = Constants.IoBroker.DEFAULT_IOBROKER_ID;
+		this.mqttInterface = Constants.IoBroker.DEFAULT_MQTT_INTERFACE;
+		this.javascriptInterface = Constants.IoBroker.DEFAULT_JAVASCRIPT_INTERFACE;
 	}
 
 	private enum Type {
 		READ, WRITE, WRITEONLY
 	};
 
-	public void writeObjectList() throws IOException {
+	public void writeObjectList(Instances instances) throws IOException {
 
 		Writer writer = null;
-		File directory = this.instances.getAppendixPath();
+		File directory = instances.getAppendixPath();
 		String name = this.mqttInterface + '.' + Constants.IoBroker.OBJECT_LIST_NAME;
 		File file = new File(directory, name);
 
@@ -55,10 +63,10 @@ public class FilesCreator {
 		}
 
 		writer.append("{\n");
-		this.appendObject(writer, false, false, this.smartHomeId, Constants.Mqtt.ERROR);
-		this.appendObject(writer, false, false, this.smartHomeId, Constants.Mqtt.ONLINE_STATUS);
+		this.appendObject(writer, false, false, this.ioBrokerId, Constants.Mqtt.ERROR);
+		this.appendObject(writer, false, false, this.ioBrokerId, Constants.Mqtt.ONLINE_STATUS);
 
-		for (Solvis solvis : this.instances.getUnits()) {
+		for (Solvis solvis : instances.getUnits()) {
 
 			String solvisId = solvis.getUnit().getId();
 
@@ -104,7 +112,7 @@ public class FilesCreator {
 			first = false;
 		}
 
-		for (String p : this.prefix) {
+		for (String p : this.baseData.getMqtt().getTopicPrefix().split("/")) {
 			if (!first) {
 				writer.append(separator);
 			} else {
@@ -115,7 +123,7 @@ public class FilesCreator {
 
 		if (withSmartHomeId) {
 			writer.append(separator);
-			writer.append(this.smartHomeId);
+			writer.append(this.ioBrokerId);
 		}
 
 		for (String a : args) {
@@ -133,6 +141,10 @@ public class FilesCreator {
 		if (name.charAt(0) == '/') {
 			name = name.substring(1);
 		}
+
+		String writeString = Boolean.toString(write);
+		String readString = Boolean.toString(!write);
+
 		writer.append("  \"");
 		this.appendWithSeparator(writer, true, false, '.', args);
 		writer.append("\": {\n");
@@ -143,8 +155,12 @@ public class FilesCreator {
 		writer.append(name);
 		writer.append("\",\n");
 		writer.append("      \"type\": \"mixed\",\n");
-		writer.append("      \"read\": true,\n");
-		writer.append("      \"write\": true,\n");
+		writer.append("      \"read\": ");
+		writer.append(readString);
+		writer.append(",\n");
+		writer.append("      \"write\": ");
+		writer.append(writeString);
+		writer.append(",\n");
 		writer.append("      \"desc\": \"created from SolvisSmartHomeServer\",\n");
 		writer.append("      \"custom\": {\n");
 		writer.append("        \"");
@@ -209,7 +225,7 @@ public class FilesCreator {
 		if (type != Type.WRITEONLY) {
 			this.appendObject(writer, false, false, solvisId, topic, Constants.Mqtt.DATA_SUFFIX);
 			if (update) {
-				this.appendObject(writer, false, false, solvisId, topic, Constants.Mqtt.UPDATE_SUFFIX);
+				this.appendObject(writer, true, false, solvisId, topic, Constants.Mqtt.UPDATE_SUFFIX);
 			}
 		}
 		this.appendObject(writer, false, false, solvisId, topic, Constants.Mqtt.META_SUFFIX);
@@ -219,10 +235,10 @@ public class FilesCreator {
 		}
 	}
 
-	public void writePairingScript() throws IOException {
+	public void writePairingScript(Instances instances) throws IOException {
 
 		Writer writer = null;
-		File directory = this.instances.getAppendixPath();
+		File directory = instances.getAppendixPath();
 		String name = Constants.IoBroker.PAIRING_SCRIPT_NAME;
 		File file = new File(directory, name);
 
@@ -236,7 +252,7 @@ public class FilesCreator {
 
 		writer.append("var channels = [\n");
 
-		for (Solvis solvis : this.instances.getUnits()) {
+		for (Solvis solvis : instances.getUnits()) {
 
 			String solvisId = solvis.getUnit().getId();
 
@@ -310,9 +326,10 @@ public class FilesCreator {
 			writer.append("        on({id: solvisread}, function(obj) {\n");
 
 			writer.append("            var val = obj.state ? obj.state.val : '';\n");
-			writer.append("            if (val != getState(combined).val) {\n");
-			writer.append("                setState(combined, (obj.state ? obj.state.val : ''), true);\n");
-			writer.append("            }\n");
+			writer.append("            setState(combined, (obj.state ? obj.state.val : ''), true);\n");
+//			writer.append("            if (val != getState(combined).val) {\n");
+//			writer.append("                setState(combined, (obj.state ? obj.state.val : ''), true);\n");
+//			writer.append("            }\n");
 
 			writer.append("       });\n\n");
 
@@ -321,7 +338,7 @@ public class FilesCreator {
 			writer.append("            setState(solviswrite, (obj.state ? (obj.state.val === true ?"
 					+ " 1 : (obj.state.val === false ? 0 : obj.state.val)) : ''), false);\n");
 			writer.append("        });\n\n");
-			
+
 			writer.append("        // Beim Beenden dem SolvisSmartHomeServer mitteilen, dass ioBroker offline ist\n");
 			writer.append("        onStop (function(){\n");
 			writer.append("            setState('");
@@ -339,4 +356,50 @@ public class FilesCreator {
 
 	}
 
+	public static class Creator extends CreatorByXML<IoBroker> {
+
+		private String mqttInterface = Constants.IoBroker.DEFAULT_MQTT_INTERFACE;
+		private String javascriptInterface = Constants.IoBroker.DEFAULT_JAVASCRIPT_INTERFACE;
+		private String ioBrokerId = Constants.IoBroker.DEFAULT_IOBROKER_ID;
+
+		public Creator(String id, BaseCreator<?> creator) {
+			super(id, creator);
+		}
+
+		@Override
+		public void setAttribute(QName name, String value) throws XmlException {
+			switch (name.getLocalPart()) {
+				case "iobrokerName":
+					this.ioBrokerId = value;
+					break;
+				case "mqttInterface":
+					this.mqttInterface = value;
+					break;
+				case "javascriptInterface":
+					this.javascriptInterface = value;
+					break;
+			}
+
+		}
+
+		@Override
+		public IoBroker create() throws XmlException, IOException {
+			return new IoBroker(this.ioBrokerId, this.mqttInterface, this.javascriptInterface);
+		}
+
+		@Override
+		public CreatorByXML<?> getCreator(QName name) {
+			return null;
+		}
+
+		@Override
+		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+
+		}
+
+	}
+
+	public void setBaseData(BaseData baseData) {
+		this.baseData = baseData;
+	}
 }

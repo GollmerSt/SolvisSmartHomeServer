@@ -133,4 +133,6 @@
 		</tns:Recipients>
 		<!-- <tns:Proxy host="HttpProxy" port="80" user="user" passwordCrypt="EhDnGP6WICnLIIA2q9ZTew=="/> -->
 	</tns:ExceptionMail>
+	<tns:Iobroker iobrokerName="IoBroker"
+		mqttInterface="mqtt-client.0" javascriptInterface="javascript.0" />
 </tns:BaseData>

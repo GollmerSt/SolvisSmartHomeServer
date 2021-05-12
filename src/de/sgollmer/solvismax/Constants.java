@@ -227,5 +227,8 @@ public class Constants {
 	public static class IoBroker {
 		public static final String PAIRING_SCRIPT_NAME = "solvis_pairing.js";
 		public static final String OBJECT_LIST_NAME = "SolvisSmartHomeServer.json";
+		public static final String DEFAULT_MQTT_INTERFACE = "mqtt-client.0";
+		public static final String DEFAULT_JAVASCRIPT_INTERFACE = "javascript.0";
+		public static final String DEFAULT_IOBROKER_ID = "IoBroker";
 	}
 }

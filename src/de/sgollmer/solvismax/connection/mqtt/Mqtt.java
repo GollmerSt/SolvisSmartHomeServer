@@ -439,4 +439,8 @@ public class Mqtt {
 		this.publish(ServerCommand.getMqttMeta(null));
 
 	}
+
+	public String getTopicPrefix() {
+		return this.topicPrefix;
+	}
 }

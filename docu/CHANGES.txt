@@ -35,6 +35,8 @@ Version 01.03.00 rc1
                 Namen zu setzen, führte das zu einer Nullpointer-Exception und einem Wiederaufbau
                 der MQTT-Schnittstelle. Eine vernünftige Fehlermeldung erfolgte weder über die
                 MQTT-Schnittstelle noch den Log.
+                
+    12.05.2021  Die Daten für die generiertenIoBroker-Dateien werden nun aus der base.xml gelesen.
     
 
 Version 01.02.11 rc4

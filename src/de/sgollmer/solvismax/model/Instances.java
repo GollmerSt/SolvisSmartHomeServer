@@ -25,6 +25,7 @@ import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.iobroker.IoBroker;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.ErrorDetection.WriteErrorScreens;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
@@ -232,5 +233,9 @@ public class Instances {
 
 	public boolean mustLearn() {
 		return this.mustLearn;
+	}
+
+	public IoBroker getIobroker() {
+		return this.baseData.getIoBroker();
 	}
 }

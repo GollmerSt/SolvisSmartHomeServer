@@ -65,75 +65,82 @@ final class Callback implements MqttCallbackExtended {
 					this.mqtt.publish(solvis.getHumanAccessPackage());
 				}
 				this.mqtt.publish(ServerStatus.ONLINE.getMqttData());
-				Mqtt.logger.info("New MQTT connection handling successfull");
+				Mqtt.logger.info("New MQTT connection handling successfull.");
 			} catch (MqttException e) {
-				Mqtt.logger.error("Error: Mqtt exception occured", e);
+				Mqtt.logger.error("Error: Mqtt exception occured. Mqqt message ignored.", e);
 			} catch (MqttConnectionLost e) {
-				Mqtt.logger.error("Connection lost on reconnection");
+				Mqtt.logger.error("Connection lost on reconnection. Mqqt message ignored.");
+			} catch (Throwable e) {
+				Mqtt.logger.errorExt("Unexpected error on connectComplete. Mqqt message ignored.", e);
 			}
 		}
 	}
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) {
-		SubscribeData subscribeData;
-		long timeStamp = System.currentTimeMillis();
 		try {
-			subscribeData = this.mqtt.analyseReceivedTopic(topic);
-		} catch (MqttInterfaceException e) {
-			Mqtt.logger.error(e.getMessage());
-			return;
-		}
-		Mqtt.logger.info("Topic <" + topic + "> with received message: " + message.toString());
-		Solvis solvis = null;
-		if (subscribeData.getUnitId() != null) {
-			solvis = this.mqtt.instances.getUnit(subscribeData.getUnitId());
-			if (solvis == null) {
-				this.mqtt.publishError(subscribeData.getClientId(), "Solvis unit unknown.", null);
+			SubscribeData subscribeData;
+			long timeStamp = System.currentTimeMillis();
+			try {
+				subscribeData = this.mqtt.analyseReceivedTopic(topic);
+			} catch (MqttInterfaceException e) {
+				Mqtt.logger.error(e.getMessage());
 				return;
 			}
-			subscribeData.setSolvis(solvis);
-		}
-
-		Unit unit = solvis == null ? null : solvis.getUnit();
-
-		String string = new String(message.getPayload(), StandardCharsets.UTF_8);
-		SingleData<?> data = null;
-		switch (subscribeData.type.format) {
-			case BOOLEAN:
-				data = new BooleanValue(Boolean.parseBoolean(string), timeStamp);
-				break;
-			case STRING:
-				data = new StringData(string, timeStamp);
-				break;
-			case FROM_META:
-				SolvisData solvisData = solvis.getAllSolvisData().getByName(subscribeData.getChannelId());
-				if (solvisData == null) {
-					this.mqtt.publishError(subscribeData.getClientId(),
-							"Error: Channel <" + subscribeData.getChannelId() + "> unknown.", unit);
+			Mqtt.logger.info("Topic <" + topic + "> with received message: " + message.toString());
+			Solvis solvis = null;
+			if (subscribeData.getUnitId() != null) {
+				solvis = this.mqtt.instances.getUnit(subscribeData.getUnitId());
+				if (solvis == null) {
+					this.mqtt.publishError(subscribeData.getClientId(), "Solvis unit unknown.", null);
 					return;
 				}
-				try {
-					data = solvisData.getDescription().interpretSetData(new StringData(string, timeStamp));
-					if (data == null) {
+				subscribeData.setSolvis(solvis);
+			}
+
+			Unit unit = solvis == null ? null : solvis.getUnit();
+
+			String string = new String(message.getPayload(), StandardCharsets.UTF_8);
+			SingleData<?> data = null;
+			switch (subscribeData.type.format) {
+				case BOOLEAN:
+					data = new BooleanValue(Boolean.parseBoolean(string), timeStamp);
+					break;
+				case STRING:
+					data = new StringData(string, timeStamp);
+					break;
+				case FROM_META:
+					SolvisData solvisData = solvis.getAllSolvisData().getByName(subscribeData.getChannelId());
+					if (solvisData == null) {
 						this.mqtt.publishError(subscribeData.getClientId(),
-								"Error: Channel <" + subscribeData.getChannelId() + "> not writable.", unit);
+								"Error: Channel <" + subscribeData.getChannelId() + "> unknown.", unit);
 						return;
 					}
-				} catch (TypeException e) {
-					this.mqtt.publishError(subscribeData.getClientId(), "Error: Value error, value: " + string, unit);
-					return;
-				}
-		}
-		subscribeData.setValue(data);
-
-		try {
-			if (subscribeData.getCommand() != null) {
-				this.mqtt.commandHandler.commandFromClient(subscribeData,
-						this.mqtt.new Client(subscribeData.getClientId()));
+					try {
+						data = solvisData.getDescription().interpretSetData(new StringData(string, timeStamp));
+						if (data == null) {
+							this.mqtt.publishError(subscribeData.getClientId(),
+									"Error: Channel <" + subscribeData.getChannelId() + "> not writable.", unit);
+							return;
+						}
+					} catch (TypeException e) {
+						this.mqtt.publishError(subscribeData.getClientId(), "Error: Value error, value: " + string,
+								unit);
+						return;
+					}
 			}
-		} catch (IOException | ClientAssignmentException | JsonException | TypeException e) {
-			Mqtt.logger.error("Error: On command handling", e);
+			subscribeData.setValue(data);
+
+			try {
+				if (subscribeData.getCommand() != null) {
+					this.mqtt.commandHandler.commandFromClient(subscribeData,
+							this.mqtt.new Client(subscribeData.getClientId()));
+				}
+			} catch (IOException | ClientAssignmentException | JsonException | TypeException e) {
+				Mqtt.logger.error("Error: On command handling", e);
+			}
+		} catch (Throwable e) {
+			Mqtt.logger.errorExt("Unexpected error on messageArrived. Mqqt message ignored.", e);
 		}
 	}
 

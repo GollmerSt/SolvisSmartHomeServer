@@ -37,7 +37,7 @@ import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
-import de.sgollmer.solvismax.iobroker.FilesCreator;
+import de.sgollmer.solvismax.iobroker.IoBroker;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -304,11 +304,10 @@ public class Main {
 					System.exit(ExitCodes.OK);
 					break;
 				case IOBROKER:
-					FilesCreator creator = new FilesCreator(this.instances, "mqtt-client.0", "javascript.0",
-							new String[] { "SolvisSmartHomeServer" }, "IoBroker");
+					IoBroker ioBroker = this.instances.getIobroker();
 					this.instances.init();
-					creator.writeObjectList();
-					creator.writePairingScript();
+					ioBroker.writeObjectList(this.instances);
+					ioBroker.writePairingScript(this.instances);
 					System.exit(ExitCodes.OK);
 					break;
 			}
