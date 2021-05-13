@@ -64,7 +64,7 @@ public class IoBroker {
 
 		writer.append("{\n");
 		this.appendObject(writer, false, false, this.ioBrokerId, Constants.Mqtt.ERROR);
-		this.appendObject(writer, false, false, this.ioBrokerId, Constants.Mqtt.ONLINE_STATUS);
+		this.appendObject(writer, true, false, this.ioBrokerId, Constants.Mqtt.ONLINE_STATUS);
 
 		for (Solvis solvis : instances.getUnits()) {
 
