@@ -17,7 +17,7 @@ Bei älteren Anlagen gibt es nur die Möglichkeit der Steuerung über die Web-Ob
 (es ist eine Pixelkopie der SolvisControl2 der Anlage). Die Steuerung darüber erfolgt über Maus-Klicks auf bestimmte Koordinaten auf diesem GUI,
 die Rückmeldung erfolgt ebenfalls nur grafisch über das GUI.
 
-Eine Liste mit der Kanäle findet sich u.a. im Kapitel [MQTT-Schnittstelle](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/MQTT-Schnittstelle#aktuell-definierte-channels).
+Eine Liste mit der Kanäle findet sich u.a. im Kapitel [MQTT-Schnittstelle](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/MQTT-Schnittstelle#aktuell-definierte-channels) bzw. kann ab Version 1.03.00 vom Programm selber passend zur Anlagenkonfiguartion generiert werden. Dies ist [hier](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/Dokumentation-der-Kanalbelegung) beschrieben.
 
 ### Funktionsweise der Einstellung der Anlageparameter
 
@@ -68,11 +68,11 @@ Vom Funktionsumfang her gibt es zwischen beiden Interfaces keine Unterschiede. A
 Um bei SmartHome-Systemen nicht auf ein spezielles Modul angewiesen zu sein, wurde die MQTT-Schnittstelle zusätzlich implementiert. Für die
 meisten SmartHome-System gibt es für die MQTT-Schnittstelle entsprechende Module.
 
-#### Im Installationspaket sind für folgende SmartHome-Systeme Anpassungen enthalten:
+#### Es sind für folgende SmartHome-Systeme Anpassungen vorhanden:
 Smart-Home-System | Beschreibung
 ------------------ | ------------
-FHEM | Modul, das auf der Server-Client-Schnittstelle basiert.
-ioBroker | Objektliste für das ioBroker-Modul MQTT Client
+FHEM | Modul, das auf der Server-Client-Schnittstelle basiert (Teil des Progarmmpaketes).
+ioBroker | Objektliste mit Pairing-Script für das ioBroker-Modul MQTT Client (Wird vom Programm konfigurationsspezifisch generiert).
 
 Weitere sind in Vorbereitung
 
