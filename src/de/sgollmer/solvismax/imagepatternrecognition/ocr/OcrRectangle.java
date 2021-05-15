@@ -245,6 +245,39 @@ public class OcrRectangle extends MyImage {
 		String feineinstellung = rectangle.getString();
 
 		System.out.println("Feineinstellung Soll: [-4], Ist: " + feineinstellung);
+
+		// -------------------------------------------------------------
+
+		file = new File(parent, "Zaehlfunktion-Max7.png");
+
+		try {
+			bufferedImage = ImageIO.read(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		myImage = new MyImage(bufferedImage);
+
+		rectangle = new OcrRectangle(myImage,new Coordinate(145, 75), new Coordinate(205,87));
+
+		String kWh = rectangle.getString();
+
+		System.out.println("kWh: " + kWh);
+		
+		try {
+			bufferedImage = ImageIO.read(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		myImage = new MyImage(bufferedImage);
+
+		rectangle = new OcrRectangle(myImage,new Coordinate(145, 104), new Coordinate(205,115));
+
+		kWh = rectangle.getString();
+
+		System.out.println("kWh: " + kWh);
+
 	}
 
 	@SuppressWarnings("unused")

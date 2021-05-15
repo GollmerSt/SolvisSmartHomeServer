@@ -2108,11 +2108,8 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 
-		<!-- tns:ChannelDescription id=".isSerie7">
-			<tns:Measurement type="unsigned">
-				<tns:Field position="192" length="2" />
-			</tns:Measurement>
-		</tns:ChannelDescription-->
+		<!-- tns:ChannelDescription id=".isSerie7"> <tns:Measurement type="unsigned"> 
+			<tns:Field position="192" length="2" /> </tns:Measurement> </tns:ChannelDescription -->
 
 		<tns:ChannelDescription id="SL" buffered="true"
 			unit="kW">
@@ -3323,6 +3320,44 @@
 				<tns:UpdateBy>
 					<tns:HumanAccess />
 				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
+		<!-- Zwei Zählfunktions-Bildschirme: WaermemengeSolar_kWh -->
+		<tns:ChannelDescription id="C29" unit="kWh">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0100"
+					andMask="0x0100" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Zaehlfunktion-1_2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="75" />
+						<tns:BottomRight X="205" Y="87" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="(\d+).." />
+				</tns:TypeRead>
+			</tns:Control>
+		</tns:ChannelDescription>
+
+		<!-- Zwei Zählfunktions-Bildschirme: WaermemengeWW_kWh -->
+		<tns:ChannelDescription id="C30" unit="kWh">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x0100"
+					andMask="0x0100" />
+			</tns:Configuration>
+			<tns:Control>
+				<tns:GuiAccess screenId="Zaehlfunktion-1_2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="145" Y="104" />
+						<tns:BottomRight X="205" Y="115" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeRead>
+					<tns:GuiRead format="(\d+).." />
+				</tns:TypeRead>
 			</tns:Control>
 		</tns:ChannelDescription>
 
@@ -4718,9 +4753,9 @@
 		<tns:Assignment id="C28"
 			name="C28.WW_Pumpe_Min_Laufzeit" />
 
-		<tns:Assignment id="C29" name="C29.WaermemengeWW" />
+		<tns:Assignment id="C29" name="C29.WaermemengeSolar_kWh" />
 
-		<tns:Assignment id="C30" name="C30.WaermemengeSolar" />
+		<tns:Assignment id="C30" name="C30.WaermemengeWW_kWh" />
 
 		<tns:Assignment id="C31" name="C31.BetriebsartVT_HK1" />
 

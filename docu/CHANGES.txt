@@ -40,6 +40,10 @@ Version 01.03.00 rc1
     
     12.05.2021  Bugfix: Ein unbekannter Server-Befehl über die MQTT-Schnittstelle bewirkt eine
                 Nullpointer-Exception und damit ein Neuaufbau der MQTT-Verbindung.
+                
+    15.05.2021  Kanäle C29.WaermemengeSolar_kWh und C30.WaermemengeWW_kWh hinzugefügt. Die sind nur
+                bei SolvisMax7 mit 2 Zählfunktion-Bildschirmen definiert 
+    
     
 
 Version 01.02.11 rc4
