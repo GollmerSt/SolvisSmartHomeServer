@@ -71,19 +71,27 @@
 		<tns:NotValid>
 			<tns:Configuration type="SolvisMax6PurSolo"
 				mainHeating="OelBW">
-				<tns:Extension id="SolarOstWest" />
+				<tns:Extensions>
+					<tns:Extension id="SolarOstWest" />
+				</tns:Extensions>
 			</tns:Configuration>
 			<tns:Configuration type="SolvisMax7"
 				mainHeating="OelNT"></tns:Configuration>
 			<tns:Configuration heatingCircuits="3">
-				<tns:Extension id="Festbrennstoff" />
+				<tns:Extensions>
+					<tns:Extension id="Festbrennstoff" />
+				</tns:Extensions>
 			</tns:Configuration>
 			<tns:Configuration heatingCircuits="3">
-				<tns:Extension id="SolarOstWest" />
+				<tns:Extensions>
+					<tns:Extension id="SolarOstWest" />
+				</tns:Extensions>
 			</tns:Configuration>
 			<tns:Configuration>
-				<tns:Extension id="SolarOstWest" />
-				<tns:Extension id="Festbrennstoff" />
+				<tns:Extensions>
+					<tns:Extension id="SolarOstWest" />
+					<tns:Extension id="Festbrennstoff" />
+				</tns:Extensions>
 			</tns:Configuration>
 			<tns:Configuration type="SolvisMax7"
 				mainHeating="WaermeP" heatingCircuits="3"></tns:Configuration>
@@ -4753,7 +4761,8 @@
 		<tns:Assignment id="C28"
 			name="C28.WW_Pumpe_Min_Laufzeit" />
 
-		<tns:Assignment id="C29" name="C29.WaermemengeSolar_kWh" />
+		<tns:Assignment id="C29"
+			name="C29.WaermemengeSolar_kWh" />
 
 		<tns:Assignment id="C30" name="C30.WaermemengeWW_kWh" />
 

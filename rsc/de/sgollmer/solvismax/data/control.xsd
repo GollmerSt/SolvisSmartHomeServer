@@ -1843,9 +1843,13 @@
 
 
 	<complexType name="UnitConfiguration">
-		<sequence>
-			<element name="Extension" maxOccurs="unbounded"
-				minOccurs="0">				<complexType>					<attribute name="id" type="tns:Extension" use="required"></attribute>
+		<sequence>
+			<element name="Extensions" maxOccurs="1" minOccurs="0">
+				<complexType>
+
+					<sequence>
+						<element name="Extension" type="tns:ExtensionType" maxOccurs="unbounded" minOccurs="0"></element>
+					</sequence>
 				</complexType></element>
 		</sequence>
 		<attribute name="admin" type="boolean" use="optional" />
@@ -1859,4 +1863,8 @@
 	</complexType>
 
 
+
+	<complexType name="ExtensionType">
+		<attribute name="id" type="string"></attribute>
+	</complexType>
 </schema>

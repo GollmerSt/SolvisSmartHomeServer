@@ -14,6 +14,7 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public class Configuration {
 
+	private static final String XML_EXTENSIONS = "Extensions";
 	private static final String XML_EXTENSION = "Extension";
 
 	private final String solvisType;
@@ -52,7 +53,7 @@ public class Configuration {
 		private String solvisType = null;
 		private String mainHeating = null;
 		private Integer heaterCircuits = null;
-		private final Collection<String> extensions = new ArrayList<>();
+		private Collection<String> extensions ;
 		private String comment;
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -88,8 +89,8 @@ public class Configuration {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_EXTENSION:
-					return new ExtensionCreator(id, this.getBaseCreator());
+				case XML_EXTENSIONS:
+					return new ExtensionsCreator(id, this.getBaseCreator());
 			}
 			return null;
 		}
@@ -97,10 +98,57 @@ public class Configuration {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
 			switch (creator.getId()) {
-				case XML_EXTENSION:
-					Extension extension = (Extension) created;
-					this.extensions.add(extension.extension);
+				case XML_EXTENSIONS:
+					Extensions extensions = (Extensions) created;
+					this.extensions=extensions.extensions;
 					break;
+			}
+
+		}
+
+		private static class Extensions {
+			private final Collection<String> extensions;
+
+			private Extensions(final Collection<String> extensions) {
+				this.extensions = extensions;
+			}
+		}
+
+		private static class ExtensionsCreator extends CreatorByXML<Extensions> {
+
+			private final Collection<String> extensions = new ArrayList<>();
+
+			public ExtensionsCreator(String id, BaseCreator<?> creator) {
+				super(id, creator);
+			}
+
+			@Override
+			public void setAttribute(QName name, String value) throws XmlException {
+			}
+
+			@Override
+			public Extensions create() throws XmlException, IOException {
+				return new Extensions(this.extensions);
+			}
+
+			@Override
+			public CreatorByXML<?> getCreator(QName name) {
+				String id = name.getLocalPart();
+				switch (id) {
+					case XML_EXTENSION:
+						return new ExtensionCreator(id, this.getBaseCreator());
+				}
+				return null;
+			}
+
+			@Override
+			public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+				switch ( creator.getId()) {
+					case XML_EXTENSION:
+						this.extensions.add(((Extension)created).extension);
+						break;
+				}
+
 			}
 
 		}

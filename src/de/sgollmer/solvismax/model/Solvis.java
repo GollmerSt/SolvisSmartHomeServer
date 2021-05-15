@@ -705,7 +705,9 @@ public class Solvis {
 				}
 				lastErrorOutTime = time;
 			}
-			AbortHelper.getInstance().sleep(1000);
+			if (!connected) {
+				AbortHelper.getInstance().sleep(1000);
+			}
 
 		}
 
