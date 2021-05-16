@@ -18,8 +18,9 @@ import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.solvismax.model.objects.AllDurations;
 import de.sgollmer.solvismax.model.objects.ChannelAssignment;
-import de.sgollmer.solvismax.model.objects.configuration.NotValidConfigurations;
+import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.xmllibrary.ArrayXml;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
@@ -33,7 +34,7 @@ public class Unit implements IAccountInfo {
 	private static final String XML_REG_EX = "RegEx";
 	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
 	private static final String XML_CHANNEL_ASSIGNMENT = "Assignment";
-	private static final String XML_CSV_CONFIGURATIONS = "NotValidConfigurations";
+	private static final String XML_DURATIONS = "Durations";
 
 	private final String id;
 	private final Configuration configuration;
@@ -59,6 +60,7 @@ public class Unit implements IAccountInfo {
 	private final Map<String, ChannelAssignment> assignments;
 	private Long forcedConfigMask = null;
 	private final boolean csvUnit;
+	private final AllDurations durations;
 
 	private Unit(final String id, final Configuration configuration, final String url, final String account,
 			final CryptAes password, final int defaultAverageCount, final int measurementHysteresisFactor,
@@ -68,8 +70,7 @@ public class Unit implements IAccountInfo {
 			final int releaseBlockingAfterUserAccess_ms, final int releaseBlockingAfterServiceAccess_ms,
 			final boolean delayAfterSwitchingOn, final boolean fwLth2_21_02A, final Features features,
 			final int ignoredFrameThicknesScreenSaver, final Collection<Pattern> ignoredChannels,
-			final Map<String, ChannelAssignment> assignments,
-			final boolean csvUnit) {
+			final Map<String, ChannelAssignment> assignments, final boolean csvUnit, final AllDurations durations) {
 		this.id = id;
 		this.configuration = configuration;
 		this.url = url;
@@ -93,6 +94,7 @@ public class Unit implements IAccountInfo {
 		this.ignoredChannels = ignoredChannels;
 		this.assignments = assignments;
 		this.csvUnit = csvUnit;
+		this.durations = durations;
 	}
 
 	public String getId() {
@@ -146,6 +148,7 @@ public class Unit implements IAccountInfo {
 		private final Collection<Pattern> ignoredChannels = new ArrayList<>();
 		private Map<String, ChannelAssignment> assignments = null;
 		private boolean csvUnit = false;
+		private AllDurations durations = null;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -248,8 +251,8 @@ public class Unit implements IAccountInfo {
 					this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
 					this.watchDogTime_ms, this.releaseBlockingAfterUserAccess_ms,
 					this.releaseBlockingAfterServiceAccess_ms, this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A,
-					this.features, this.ignoredFrameThicknesScreenSaver, this.ignoredChannels,
-					this.assignments, this.csvUnit);
+					this.features, this.ignoredFrameThicknesScreenSaver, this.ignoredChannels, this.assignments,
+					this.csvUnit, this.durations);
 
 		}
 
@@ -264,8 +267,8 @@ public class Unit implements IAccountInfo {
 							XML_REG_EX);
 				case XML_CHANNEL_ASSIGNMENTS:
 					return new AssignmentsCreator(id, this.getBaseCreator());
-				case XML_CSV_CONFIGURATIONS:
-					return new NotValidConfigurations.Creator(id, this.getBaseCreator());
+				case XML_DURATIONS:
+					return new AllDurations.Creator(id, this.getBaseCreator());
 			}
 			return this.configurationCreator.getCreator(name);
 		}
@@ -294,6 +297,10 @@ public class Unit implements IAccountInfo {
 					Map<String, ChannelAssignment> created2 = (Map<String, ChannelAssignment>) created;
 					this.assignments = created2;
 					break;
+				case XML_DURATIONS:
+					this.durations = (AllDurations) created;
+					break;
+
 			}
 			this.configurationCreator.created(creator, created);
 		}
@@ -438,9 +445,17 @@ public class Unit implements IAccountInfo {
 	public void setForcedConfigMask(Long forcedConfigMask) {
 		this.forcedConfigMask = forcedConfigMask;
 	}
-	
+
 	public String getComment() {
 		return this.configuration.getComment();
+	}
+
+	public Duration getDuratio(String id) {
+		if (this.durations == null) {
+			return null;
+		} else {
+			return this.durations.get(id);
+		}
 	}
 
 }

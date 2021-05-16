@@ -29,9 +29,6 @@ public class TouchPoint implements IAssigner, ISelectScreen {
 	private final String pushTimeId;
 	private final String releaseTimeId;
 
-	private Integer pushTime = null;
-	private Integer releaseTime = null;
-
 	private TouchPoint(Coordinate coordinate, String pushTimeId, String releaseTimeId) {
 		this.coordinate = coordinate;
 		this.pushTimeId = pushTimeId;
@@ -94,31 +91,31 @@ public class TouchPoint implements IAssigner, ISelectScreen {
 		if (pushTimeDuration == null || releaseTimeDuration == null) {
 			throw new AssignmentException("Duration time not found");
 		}
-		this.pushTime = pushTimeDuration.getTime_ms();
-		this.releaseTime = releaseTimeDuration.getTime_ms();
 	}
 
 	public Coordinate getCoordinate() {
 		return this.coordinate;
 	}
 
-	public Integer getPushTime() {
-		return this.pushTime;
-	}
-
-	public Integer getReleaseTime() {
-		return this.releaseTime;
-	}
-
 	@Override
 	public int getSettingTime(Solvis solvis) {
-		return this.pushTime + this.releaseTime + solvis.getMaxResponseTime();
+		return solvis.getDuration(
+				this.pushTimeId).getTime_ms() + solvis.getDuration(this.releaseTimeId).getTime_ms()
+				+ solvis.getMaxResponseTime();
 	}
 
 	@Override
 	public boolean execute(Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException {
 		solvis.send(this);
 		return true;
+	}
+
+	public String getPushTimeId() {
+		return this.pushTimeId;
+	}
+
+	public String getReleaseTimeId() {
+		return this.releaseTimeId;
 	}
 
 }

@@ -41,40 +41,35 @@ public class StrategyButton implements IStrategy {
 	private final String pushTimeId;
 	private final String releaseTimeId;
 
-	private Integer pushTime = null;
-	private Integer releaseTime = null;
-
-	private StrategyButton(boolean invert, String pushTimeId, String releaseTimeId) {
+	private StrategyButton(final boolean invert, final String pushTimeId, final String releaseTimeId) {
 		this.invert = invert;
 		this.pushTimeId = pushTimeId;
 		this.releaseTimeId = releaseTimeId;
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws AssignmentException {
+	public void assign(final SolvisDescription description) throws AssignmentException {
 		Duration pushTimeDuration = description.getDuration(this.pushTimeId);
 		Duration releaseTimeDuration = description.getDuration(this.releaseTimeId);
 
 		if (pushTimeDuration == null || releaseTimeDuration == null) {
 			throw new AssignmentException("Duration time not found");
 		}
-		this.pushTime = pushTimeDuration.getTime_ms();
-		this.releaseTime = releaseTimeDuration.getTime_ms();
 	}
 
 	@Override
-	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess,
-			boolean optional) throws TerminationException, IOException {
+	public SingleData<?> getValue(final SolvisScreen solvisScreen, final Solvis solvis,
+			final IControlAccess controlAccess, final boolean optional) throws TerminationException, IOException {
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
-			Button button = new Button(solvisScreen.getImage(), rectangle, this.pushTime, this.releaseTime);
+			Button button = new Button(solvisScreen.getImage(), rectangle, this.pushTimeId, this.releaseTimeId);
 			return new BooleanValue(button.isSelected() ^ this.invert, System.currentTimeMillis());
 		}
 		return null;
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
 			throws IOException, TerminationException, TypeException {
 		Helper.Boolean helperBool = value.getBoolean();
 		if (helperBool == Helper.Boolean.UNDEFINED) {
@@ -84,7 +79,7 @@ public class StrategyButton implements IStrategy {
 		boolean bool = helperBool.result();
 
 		Button button = new Button(solvis.getCurrentScreen().getImage(),
-				((GuiAccess) controlAccess).getValueRectangle(), this.pushTime, this.releaseTime);
+				((GuiAccess) controlAccess).getValueRectangle(), this.pushTimeId, this.releaseTimeId);
 		boolean cmp = button.isSelected() ^ this.invert;
 		if (cmp == bool) {
 			return new SetResult(ResultStatus.SUCCESS, new BooleanValue(cmp, System.currentTimeMillis()));
@@ -115,7 +110,7 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public void setCurrentRectangle(Rectangle rectangle) {
+	public void setCurrentRectangle(final Rectangle rectangle) {
 
 	}
 
@@ -125,12 +120,12 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis, IControlAccess controlAccess) throws IOException {
+	public boolean learn(final Solvis solvis, final IControlAccess controlAccess) throws IOException {
 		return true;
 	}
 
 	@Override
-	public BooleanValue interpretSetData(SingleData<?> singleData) throws TypeException {
+	public BooleanValue interpretSetData(final SingleData<?> singleData) throws TypeException {
 		if (singleData instanceof BooleanValue) {
 			return (BooleanValue) singleData;
 		} else if (singleData instanceof StringData) {
@@ -153,12 +148,12 @@ public class StrategyButton implements IStrategy {
 		private String pushTimeId;
 		private String releaseTimeId;
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "invert":
 					this.invert = Boolean.parseBoolean(value);
@@ -179,12 +174,12 @@ public class StrategyButton implements IStrategy {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 
 		}
 
@@ -196,7 +191,7 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value, long timeStamp) {
+	public SingleData<?> createSingleData(final String value, final long timeStamp) {
 		return new BooleanValue(Boolean.parseBoolean(value), timeStamp);
 	}
 
@@ -206,7 +201,7 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public String getCsvMeta(String column, boolean semicolon) {
+	public String getCsvMeta(final String column, final boolean semicolon) {
 		switch (column) {
 			case Csv.WRITE:
 				return "true";

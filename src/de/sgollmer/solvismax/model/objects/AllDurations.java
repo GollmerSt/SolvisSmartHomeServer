@@ -36,15 +36,15 @@ public class AllDurations {
 		}
 	}
 
-	Duration get(String id) {
+	public Duration get(String id) {
 		return this.durations.get(id);
 	}
 
-	static class Creator extends CreatorByXML<AllDurations> {
+	public static class Creator extends CreatorByXML<AllDurations> {
 
 		private AllDurations durations;
 
-		Creator(String id, BaseCreator<?> creator) {
+		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
 			this.durations = new AllDurations();
 		}

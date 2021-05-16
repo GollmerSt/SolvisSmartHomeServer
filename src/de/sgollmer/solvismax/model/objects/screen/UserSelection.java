@@ -33,15 +33,14 @@ public class UserSelection implements ISelectScreen {
 	private final Collection<Digit> digits;
 	private final String waitTimeAfterLastDigitRefId;
 
-	private int waitTimeAfterLastDigit_ms = 0;
-
-	private UserSelection(Collection<Digit> digits, String waitTimeAfterLastDigitRefId) {
+	private UserSelection(final Collection<Digit> digits, final String waitTimeAfterLastDigitRefId) {
 		this.digits = digits;
 		this.waitTimeAfterLastDigitRefId = waitTimeAfterLastDigitRefId;
 	}
 
 	@Override
-	public boolean execute(Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException {
+	public boolean execute(final Solvis solvis, final AbstractScreen startingScreen)
+			throws IOException, TerminationException {
 
 		boolean success = false;
 
@@ -52,6 +51,9 @@ public class UserSelection implements ISelectScreen {
 				toSet.add(digit);
 			}
 		}
+
+		Duration duration = solvis.getDuration(this.waitTimeAfterLastDigitRefId);
+		int waitTimeAfterLastDigit_ms = duration.getTime_ms();
 
 		for (int repeatFail = 0; !success && repeatFail < Constants.FAIL_REPEATS; ++repeatFail) {
 			success = true;
@@ -71,7 +73,7 @@ public class UserSelection implements ISelectScreen {
 						adjusted = digit.exec(solvis);
 
 						if (!it.hasNext()) {
-							AbortHelper.getInstance().sleep(this.waitTimeAfterLastDigit_ms);
+							AbortHelper.getInstance().sleep(waitTimeAfterLastDigit_ms);
 							adjusted = SolvisScreen.get(solvis.getCurrentScreen()) != startingScreen;
 						}
 
@@ -93,12 +95,12 @@ public class UserSelection implements ISelectScreen {
 		private final Collection<Digit> digits = new ArrayList<>();
 		private String waitTimeAfterLastDigitRefId;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "waitTimeAfterLastDigitRefId":
 					this.waitTimeAfterLastDigitRefId = value;
@@ -111,12 +113,12 @@ public class UserSelection implements ISelectScreen {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return new Digit.Creator(name.getLocalPart(), this.getBaseCreator());
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			this.digits.add((Digit) created);
 
 		}
@@ -129,14 +131,14 @@ public class UserSelection implements ISelectScreen {
 		private final TouchPoint upper;
 		private final TouchPoint lower;
 
-		private Digit(int digit, Rectangle rectangle, TouchPoint upper, TouchPoint lower) {
+		private Digit(final int digit, final Rectangle rectangle, final TouchPoint upper, final TouchPoint lower) {
 			this.digit = digit;
 			this.rectangle = rectangle;
 			this.upper = upper;
 			this.lower = lower;
 		}
 
-		public boolean exec(Solvis solvis) throws IOException, TerminationException, NumberFormatException {
+		public boolean exec(final Solvis solvis) throws IOException, TerminationException, NumberFormatException {
 
 			Calc calc = new Calc(this.getCurrent(solvis));
 			boolean adjusted;
@@ -156,7 +158,7 @@ public class UserSelection implements ISelectScreen {
 			private final int cnt;
 			private final TouchPoint touch;
 
-			public Calc(int current) {
+			public Calc(final int current) {
 				int diff = Digit.this.digit - current;
 				if (diff == 0) {
 					this.cnt = 0;
@@ -178,12 +180,12 @@ public class UserSelection implements ISelectScreen {
 
 		}
 
-		public int getSettingTime(Solvis solvis) {
+		public int getSettingTime(final Solvis solvis) {
 			Calc calc = new Calc(0);
 			return calc.cnt * calc.touch.getSettingTime(solvis);
 		}
 
-		public int getCurrent(Solvis solvis) throws IOException, TerminationException, NumberFormatException {
+		public int getCurrent(final Solvis solvis) throws IOException, TerminationException, NumberFormatException {
 			MyImage image = SolvisScreen.getImage(solvis.getCurrentScreen());
 
 			Ocr ocr = new Ocr(image, this.rectangle);
@@ -198,7 +200,7 @@ public class UserSelection implements ISelectScreen {
 
 		}
 
-		public boolean isCode(Solvis solvis) throws IOException, TerminationException, NumberFormatException {
+		public boolean isCode(final Solvis solvis) throws IOException, TerminationException, NumberFormatException {
 			return this.digit == this.getCurrent(solvis);
 
 		}
@@ -210,12 +212,12 @@ public class UserSelection implements ISelectScreen {
 			private TouchPoint upper;
 			private TouchPoint lower;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			public Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "digit":
 						this.digit = Integer.parseInt(value);
@@ -229,7 +231,7 @@ public class UserSelection implements ISelectScreen {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				String id = name.getLocalPart();
 				switch (id) {
 					case XML_RECTANGLES:
@@ -243,7 +245,7 @@ public class UserSelection implements ISelectScreen {
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+			public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 				switch (creator.getId()) {
 					case XML_RECTANGLES:
 						this.rectangle = (Rectangle) created;
@@ -259,7 +261,7 @@ public class UserSelection implements ISelectScreen {
 
 		}
 
-		public void assign(SolvisDescription description) throws AssignmentException {
+		public void assign(final SolvisDescription description) throws AssignmentException {
 			if (this.upper != null) {
 				this.upper.assign(description);
 			}
@@ -271,13 +273,11 @@ public class UserSelection implements ISelectScreen {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description) throws AssignmentException, ReferenceException {
 		if (this.waitTimeAfterLastDigitRefId != null) {
 			Duration duration = description.getDuration(this.waitTimeAfterLastDigitRefId);
 			if (duration == null) {
 				throw new ReferenceException("Reference <" + this.waitTimeAfterLastDigitRefId + "> unknown.");
-			} else {
-				this.waitTimeAfterLastDigit_ms = duration.getTime_ms();
 			}
 		}
 		for (Digit digit : this.digits) {
@@ -286,8 +286,9 @@ public class UserSelection implements ISelectScreen {
 	}
 
 	@Override
-	public int getSettingTime(Solvis solvis) {
-		int settingTime = this.waitTimeAfterLastDigit_ms;
+	public int getSettingTime(final Solvis solvis) {
+		Duration duration = solvis.getDuration(this.waitTimeAfterLastDigitRefId);
+		int settingTime = duration.getTime_ms();
 		for (Digit digit : this.digits) {
 			settingTime += digit.getSettingTime(solvis);
 		}

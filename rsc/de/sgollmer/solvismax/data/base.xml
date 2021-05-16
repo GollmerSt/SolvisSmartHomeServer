@@ -116,6 +116,13 @@
 			<tns:ChannelAssignments>
 				<!-- tns:Assignment id="A03" name="A03.Another_Name" unit="%"/ -->
 			</tns:ChannelAssignments>
+			<tns:Durations>
+				<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neuer 
+					Mode ausgewählt wurde. Bei manchen Anlagen dauert der Modewechsel recht lang. 
+					Für diesen Fall kan- die Zeit anlagenspezifisch weiter vergrößert werden. 
+					Sonst kann der Wert auskommentiert bleiben. Default ist dann 3500 (ms) -->
+				<!-- <tns:Duration id="ModeChange" time_ms="3500" /> -->
+			</tns:Durations>
 		</tns:Unit>
 	</tns:Units>
 	<tns:Mqtt enable="false" brokerUrl="192.168.0.71" port="1883"

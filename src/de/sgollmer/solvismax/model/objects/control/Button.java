@@ -19,13 +19,13 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public class Button extends Pattern {
 
-	private final int pushTime;
-	private final int releaseTime;
+	private final String pushTimeId;
+	private final String releaseTimeId;
 
-	Button(MyImage image, Rectangle rectangle, int pushTime, int releaseTime) {
+	Button(MyImage image, Rectangle rectangle, String pushTimeId, String releaseTimeId) {
 		super(image, rectangle);
-		this.pushTime = pushTime;
-		this.releaseTime = releaseTime;
+		this.pushTimeId = pushTimeId;
+		this.releaseTimeId = releaseTimeId;
 	}
 
 	private Boolean selected = null;
@@ -67,7 +67,7 @@ public class Button extends Pattern {
 			Coordinate coord = new Coordinate( //
 					this.getOrigin().getX() + this.getWidth() / 2, //
 					this.getOrigin().getY() + this.getHeight() / 2);
-			solvis.send(coord, this.pushTime, this.releaseTime);
+			solvis.send(coord, this.pushTimeId, this.releaseTimeId);
 		}
 	}
 }

@@ -78,11 +78,19 @@
 			</element>
 			<element name="IgnoredChannels" type="tns:IgnoredChannels"
 				maxOccurs="1" minOccurs="0">
-			</element>
+			</element>
+
 			<element name="ChannelAssignments"
 				type="tns:ChannelAssignments" maxOccurs="1" minOccurs="0">
 			</element>
 
+			<element name="Durations" maxOccurs="1" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="Duration" type="tns:Duration" maxOccurs="unbounded" minOccurs="0"></element>
+					</sequence>
+				</complexType>
+			</element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -731,5 +739,17 @@
 		<attribute name="mqttInterface" type="string" use="required"></attribute>
 		<attribute name="javascriptInterface" type="string" use="required"></attribute>
 		<attribute name="iobrokerName" type="string" use="required"></attribute>
+	</complexType>
+
+
+
+	<complexType name="Duration">
+		<annotation>
+			<documentation>Dauer allgemein, meist für Länge eines Druckes auf dem
+				Bildschirm
+			</documentation>
+		</annotation>
+		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="time_ms" type="int" use="required"></attribute>
 	</complexType>
 </schema>
