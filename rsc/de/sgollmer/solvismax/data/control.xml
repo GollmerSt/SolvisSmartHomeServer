@@ -2467,7 +2467,7 @@
 					<tns:ModeEntry id="Tag">
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
-								releaseTimeRefId="ValueChange">
+								releaseTimeRefId="ModeChange">
 								<tns:Coordinate X="95" Y="110" />
 							</tns:Touch>
 							<tns:ScreenGrafic id="ModeTag" />
@@ -2476,7 +2476,7 @@
 					<tns:ModeEntry id="Nacht">
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
-								releaseTimeRefId="ValueChange">
+								releaseTimeRefId="ModeChange">
 								<tns:Coordinate X="125" Y="110" />
 							</tns:Touch>
 							<tns:ScreenGrafic id="ModeNacht" />
@@ -2485,7 +2485,7 @@
 					<tns:ModeEntry id="Standby">
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
-								releaseTimeRefId="ValueChange">
+								releaseTimeRefId="ModeChange">
 								<tns:Coordinate X="160" Y="110" />
 							</tns:Touch>
 							<tns:ScreenGrafic id="ModeStandby" />
@@ -2494,7 +2494,7 @@
 					<tns:ModeEntry id="Timer">
 						<tns:GuiSet>
 							<tns:Touch pushTimeRefId="Standard"
-								releaseTimeRefId="ValueChange">
+								releaseTimeRefId="ModeChange">
 								<tns:Coordinate X="60" Y="110" />
 							</tns:Touch>
 							<tns:ScreenGrafic id="ModeTimer" />
@@ -4092,7 +4092,7 @@
 		<tns:Duration id="ValueChange" time_ms="2000" />
 		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neuer 
 			Mode ausgewählt wurde -->
-		<tns:Duration id="ModeChange" time_ms="3500" />
+		<tns:Duration id="ModeChange" time_ms="3000" />
 		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neues 
 			Fenster ausgewählt wurde -->
 		<tns:Duration id="WindowChange" time_ms="3500" />
