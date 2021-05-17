@@ -4,6 +4,8 @@ Version 01.03.00
 
     17.05.2021  CSV-File noch um die Dokumentation über den Serverbefehl SELECT_SCREEN azswählbaren
                 Screens ergänzt und dabei aucgh den Namen dieses Csv-Files geändert.
+                
+                Synchronisierung funktionierte nach dem Ausbau der Correction nicht mehr, gefixt.
 
 
 Version 01.03.00 rc3

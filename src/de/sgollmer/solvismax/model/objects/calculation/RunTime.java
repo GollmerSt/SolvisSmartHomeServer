@@ -115,14 +115,9 @@ public class RunTime extends Strategy<RunTime> {
 
 			long verifiedRunTime = (long) data.getInt() * 1000L;
 
-			if (source instanceof SystemBackup) {
+			if (source instanceof SystemBackup || source instanceof UpdateType ) {
 				this.updateVerifiedValues(verifiedRunTime);
-				return;
 			}
-			if (!(source instanceof UpdateType)) {
-				return;
-			}
-
 		}
 
 		private void updateByValue(SolvisData data, Object source) {
