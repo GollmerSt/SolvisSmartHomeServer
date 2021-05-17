@@ -16,7 +16,7 @@ goto start_%1
 	goto continue
 
 :start_csv
-	set paras="--channels --csvSemicolon"
+	set paras="--documentation --csvSemicolon"
 	set java=java
 	set pause=pause
 	goto continue

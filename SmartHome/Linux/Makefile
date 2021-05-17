@@ -146,8 +146,8 @@ learnDebug: stopServices installSolvis
 
 
 
-channelDocumentation:
-	$(start) --channels --csvSemicolon
+documentation:
+	$(start) --documentation --csvSemicolon
 
 
 
