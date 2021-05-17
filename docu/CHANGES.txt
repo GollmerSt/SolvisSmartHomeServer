@@ -1,5 +1,21 @@
 A E N D E R U N G E N
 
+Version 01.03.00
+
+    17.05.2021  CSV-File noch um die Dokumentation über den Serverbefehl SELECT_SCREEN azswählbaren
+                Screens ergänzt und dabei aucgh den Namen dieses Csv-Files geändert.
+
+
+Version 01.03.00 rc3
+
+    16.05.2021  Der ModeWechsel für den Heizkreis 1 referenzierte auf einen falsche Duration.
+
+
+Version 01.03.00 rc2
+
+    15.05.2021  Der Parser für die Extensions war für das base.xml nicht richtig angepasst.
+
+
 Version 01.03.00 rc1
 
     25.04.2021  Die stündliche Synchronisation bewirkte einen fehlerhaften Zustand, wenn der Wert

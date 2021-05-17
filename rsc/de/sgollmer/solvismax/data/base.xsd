@@ -566,8 +566,7 @@
 					<enumeration
 						value="EndOfUserInterventionDetectionThroughScreenSaver">
 					</enumeration>
-					<enumeration value="InteractiveGUIAccess"></enumeration>
-					<enumeration value="EquipmentTimeCorrection"></enumeration>
+					<enumeration value="InteractiveGUIAccess"></enumeration>
 				</restriction>
 			</simpleType>
 		</attribute>
@@ -749,7 +748,20 @@
 				Bildschirm
 			</documentation>
 		</annotation>
-		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="id" use="required">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="Standard"></enumeration>
+					<enumeration value="Long"></enumeration>
+					<enumeration value="ValueChange"></enumeration>
+					<enumeration value="ModeChange"></enumeration>
+					<enumeration value="WindowChange"></enumeration>
+					<enumeration value="WindowChangeService"></enumeration>
+					<enumeration value="checkCalculation"></enumeration>
+					<enumeration value="readCalculationInterval"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
 		<attribute name="time_ms" type="int" use="required"></attribute>
 	</complexType>
 </schema>

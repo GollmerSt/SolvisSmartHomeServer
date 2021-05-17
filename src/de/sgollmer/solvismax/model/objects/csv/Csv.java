@@ -16,10 +16,12 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
 
 public class Csv {
-
+	
 	private static String HEADER1 = "+-------------------------------------------------------------------------------+"
 			+ Constants.CRLF;
 	private static String HEADER2 = "|                                                                               |"
@@ -77,7 +79,7 @@ public class Csv {
 		return middle.toString();
 	}
 
-	public void outCommentHeader(Unit unit, long mask, String comment) throws IOException {
+	public void outCommentHeader(final Unit unit, final long mask, final String comment) throws IOException {
 
 		if (this.writer == null) {
 			throw new IOException("Write file not opened.");
@@ -99,7 +101,7 @@ public class Csv {
 
 	}
 
-	public void out(Solvis solvis, String[] header) throws IOException {
+	public void out(final Solvis solvis, final String[] header) throws IOException {
 
 		StringBuilder line = new StringBuilder();
 		for (String colName : header) {
@@ -148,6 +150,45 @@ public class Csv {
 		}
 		this.writer.write(Constants.CRLF);
 		this.writer.write(Constants.CRLF);
+	}
+	
+	public void screensOut( final Solvis solvis ) throws IOException {
+		this.writer.append(HEADER1);
+		this.writer.append(HEADER2);
+		this.writer.write(insertInTheMiddle("Screens"));
+		this.writer.append(HEADER2);
+		this.writer.append(HEADER1);
+		this.writer.write(Constants.CRLF);
+		this.writer.append("screenId;");
+		this.writer.write(Constants.CRLF);
+		this.writer.write(Constants.CRLF);
+		
+		List< Screen> screens = new ArrayList<>();
+		
+		for ( AbstractScreen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
+			if ( screen instanceof Screen ) {
+				screens.add((Screen) screen);
+			}
+		}
+		
+		screens.sort(new Comparator<Screen>() {
+
+			@Override
+			public int compare(Screen o1, Screen o2) {
+				return o1.getSortId().compareTo(o2.getSortId());
+			}
+		});
+		
+		for ( Screen screen : screens ) {
+			this.writer.append(screen.getId());
+			this.writer.append(';');
+			this.writer.append(Constants.CRLF);
+
+		}
+		
+		this.writer.write(Constants.CRLF);
+		this.writer.write(Constants.CRLF);
+		
 	}
 
 }

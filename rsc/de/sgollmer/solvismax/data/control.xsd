@@ -58,18 +58,16 @@
 						<documentation>
 							Bildschirmpunkt des Vorgänger-Bildschirms
 							(previousId), der gedrückt werden muss, um
-							auf den vorliegenden zu
-							gelangen. Können
+							auf den vorliegenden zu gelangen. Können
 							auch mehrere sein (z.B. Main-Bildschirm
-							Auswahl
-							des Heizkreises). Ist der Screen
-							Teil einer Sequenz darf dieser
-							TouchPoint
+							Auswahl des Heizkreises). Ist der Screen
+							Teil einer Sequenz darf dieser TouchPoint
 							nicht definiert sein.
 						</documentation>
 					</annotation>
 				</element>
-				<element name="UserSelection" type="tns:UserSelection">
+				<element name="UserSelection"
+					type="tns:UserSelection">
 				</element>
 				<sequence>
 					<element name="SequenceUp" type="tns:TouchPoint"
@@ -77,8 +75,7 @@
 						<annotation>
 							<documentation>
 								Ist der Screen Teil einer Sequenz wird
-								mit diesem
-								Element der TouchPoint für
+								mit diesem Element der TouchPoint für
 								das vorherige Element definiert.
 							</documentation>
 						</annotation>
@@ -88,8 +85,7 @@
 						<annotation>
 							<documentation>
 								Ist der Screen Teil einer Sequenz wird
-								mit diesem
-								Element der TouchPoint für
+								mit diesem Element der TouchPoint für
 								das nachfolgende Element definiert.
 							</documentation>
 						</annotation>
@@ -97,35 +93,28 @@
 				</sequence>
 			</choice>
 			<element name="Identification"
-				type="tns:ScreenIdentification" maxOccurs="unbounded" minOccurs="1"></element>
+				type="tns:ScreenIdentification" maxOccurs="unbounded"
+				minOccurs="1">
+			</element>
 			<element name="IgnoreRectangle" type="tns:Rectangle"
 				maxOccurs="unbounded" minOccurs="0">
 				<annotation>
 					<documentation>
 						Zur Erkennung von Useraktivitäten, Änderungen
 						innerhalb dieser Rechtecke werden nicht als
-						Useraktivität
-						registriert Dient der Untersuchung
-						von Usereingriffen. Im
-						Ruhezustand wird jede
-						Minute untersucht, ob der Bildschirminhalt
-						sich
+						Useraktivität registriert Dient der Untersuchung
+						von Usereingriffen. Im Ruhezustand wird jede
+						Minute untersucht, ob der Bildschirminhalt sich
 						geändert hat. Da auf einigen Bildschirmen
-						ständig sich ändernde
-						Werte angezeigt werden
-						(Uhrzeit, Istwerte oder Anlegenstatus)
-						können
+						ständig sich ändernde Werte angezeigt werden
+						(Uhrzeit, Istwerte oder Anlegenstatus) können
 						bestimmte Teile des Bildschirms mit Hilfe der
 						"IgnoreRectangle" beim Vergleich ausgeblendt
-						werden. Achtung: Im
-						rectangle-Element gibt es
-						auch noch das "invertFunction"-Attribut,
-						damit
+						werden. Achtung: Im rectangle-Element gibt es
+						auch noch das "invertFunction"-Attribut, damit
 						kann ein bestimmter Bereich doch wieder zum
-						Vergleich
-						herangezogen werden, auch wenn er
-						durch die anderen
-						Ingnorerectangles maskiert
+						Vergleich herangezogen werden, auch wenn er
+						durch die anderen Ingnorerectangles maskiert
 						ist. Ist etwas unsauber gelöst.
 					</documentation>
 				</annotation>
@@ -138,10 +127,8 @@
 				<annotation>
 					<documentation>
 						Sollte der Screeninhalt nicht eindeutig sein
-						(nur bei
-						Heizkreis-Solltemperaturen möglich),
-						wird noch zusätzlich bei der
-						Identifizierung die
+						(nur bei Heizkreis-Solltemperaturen möglich),
+						wird noch zusätzlich bei der Identifizierung die
 						letzte Preparation (evtl. auch eines
 						Vorgängerbildschirms zum Vergleich
 						hinzugenommen.
@@ -150,6 +137,10 @@
 			</element>
 		</sequence>
 		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="sortId" type="string" use="optional">
+			<annotation>
+				<documentation>Id zum sortieren</documentation>
+			</annotation></attribute>
 		<attribute name="previousId" type="string" use="required">
 			<annotation>
 				<documentation>Vorgänger-Bildschirm</documentation>
@@ -162,14 +153,12 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="ignoreChanges" type="boolean"
-			use="optional">
+		<attribute name="ignoreChanges" type="boolean" use="optional">
 			<annotation>
 				<documentation>
 					Zur Erkennung von Useraktivitäten, Änderungen auf
 					diesem Screen werden nicht als Useraktivität
-					registriert. Default:
-					false
+					registriert. Default: false
 				</documentation>
 			</annotation>
 		</attribute>
@@ -179,8 +168,7 @@
 				<documentation>
 					Zur Analyse von unterschiedlichen
 					Anlagenkonfigurationene kann man den
-					Bildschirminhalt während des
-					Learnings abspeichern
+					Bildschirminhalt während des Learnings abspeichern
 					lassen.
 				</documentation>
 			</annotation>

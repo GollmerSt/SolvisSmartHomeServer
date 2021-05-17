@@ -70,7 +70,7 @@ public class Main {
 	private Mqtt mqtt = null;
 
 	private enum ExecutionMode {
-		STANDARD(true, true, false), LEARN(false, true, false), CHANNELS_OF_UNIT(false, false, true),
+		STANDARD(true, true, false), LEARN(false, true, false), DOCUMENTATION_OF_UNIT(false, false, true),
 		CHANNELS_OF_ALL_CONFIGURATIONS(false, false, false), IOBROKER(false, false, true);
 
 		private final boolean start;
@@ -249,8 +249,8 @@ public class Main {
 							System.exit(Constants.ExitCodes.MAILING_ERROR);
 						}
 						break;
-					case "channels":
-						executionMode = ExecutionMode.CHANNELS_OF_UNIT;
+					case "documentation":
+						executionMode = ExecutionMode.DOCUMENTATION_OF_UNIT;
 						break;
 					case "channels_of_all_configurations":
 						executionMode = ExecutionMode.CHANNELS_OF_ALL_CONFIGURATIONS;
@@ -299,8 +299,8 @@ public class Main {
 					System.exit(ExitCodes.OK);
 					break;
 
-				case CHANNELS_OF_UNIT:
-					this.instances.createCurrentCsvOut(semicolon);
+				case DOCUMENTATION_OF_UNIT:
+					this.instances.createCurrentDocumentation(semicolon);
 					System.exit(ExitCodes.OK);
 					break;
 				case IOBROKER:

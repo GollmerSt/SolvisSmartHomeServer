@@ -54,6 +54,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private static final String XML_PREPARATION_REF = "PreparationRef";
 	private static final String XML_LAST_PREPARATION_REF = "LastPreparationRef";
 
+	private final String sortId;
 	private final String backId;
 
 	private final boolean ignoreChanges;
@@ -74,11 +75,13 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private OfConfigs<AbstractScreen> previousScreen = null;
 	private OfConfigs<AbstractScreen> backScreen = null;
 
-	private Screen(String id, String previousId, String backId, boolean ignoreChanges, boolean mustSave,
-			Configuration configurationMasks, ISelectScreen selectScreen, TouchPoint sequenceUp,
-			TouchPoint sequenceDown, Collection<Identification> identifications, Collection<Rectangle> ignoreRectangles,
-			String preparationId, String lastPreparationId, boolean noRestore) {
+	private Screen(final String id, final String sortId, final String previousId, final String backId,
+			final boolean ignoreChanges, final boolean mustSave, final Configuration configurationMasks,
+			final ISelectScreen selectScreen, final TouchPoint sequenceUp, final TouchPoint sequenceDown,
+			final Collection<Identification> identifications, final Collection<Rectangle> ignoreRectangles,
+			final String preparationId, final String lastPreparationId, final boolean noRestore) {
 		super(id, previousId, configurationMasks);
+		this.sortId = sortId;
 		this.backId = backId;
 		this.ignoreChanges = ignoreChanges;
 		this.mustSave = mustSave;
@@ -106,7 +109,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof Screen) {
 			return this.getId().equals(((Screen) obj).getId());
 		}
@@ -119,7 +122,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws ReferenceException, XmlException, AssignmentException {
+	public void assign(final SolvisDescription description)
+			throws ReferenceException, XmlException, AssignmentException {
 		for (Identification identification : this.identifications) {
 			identification.assign(description, this);
 		}
@@ -172,7 +176,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public void addNextScreen(AbstractScreen nextScreen) {
+	public void addNextScreen(final AbstractScreen nextScreen) {
 		this.nextScreens.add(nextScreen);
 //
 //		int thisBack = 0;
@@ -190,7 +194,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public boolean isMatchingScreen(MyImage image, Solvis solvis) {
+	public boolean isMatchingScreen(final MyImage image, final Solvis solvis) {
 
 		if (!this.isInConfiguration(solvis)) {
 			return false;
@@ -208,7 +212,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public boolean isMatchingWOGrafics(MyImage image, Solvis solvis) {
+	public boolean isMatchingWOGrafics(final MyImage image, final Solvis solvis) {
 		for (Identification identification : this.identifications) {
 			if (identification.isMatchingWOGrafics(image, solvis)) {
 				return true;
@@ -217,7 +221,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		return false;
 	}
 
-	public boolean isLearned(Solvis solvis) {
+	public boolean isLearned(final Solvis solvis) {
 
 		for (Identification identification : this.identifications) {
 			if (!identification.isLearned(solvis)) {
@@ -235,7 +239,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	 * @return the previousScreen
 	 */
 	@Override
-	public AbstractScreen getPreviousScreen(Solvis solvis) {
+	public AbstractScreen getPreviousScreen(final Solvis solvis) {
 		return (AbstractScreen) OfConfigs.get(solvis, this.previousScreen);
 	}
 
@@ -250,6 +254,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	public static class Creator extends CreatorByXML<Screen> {
 
 		private String id;
+		private String sortId = null;
 		private String previousId;
 		private String backId;
 		private boolean ignoreChanges;
@@ -264,15 +269,18 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private String lastPreparationId;
 		private boolean noRestore = false;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
+					break;
+				case "sortId":
+					this.sortId = value;
 					break;
 				case "previousId":
 					if (!value.isEmpty()) {
@@ -312,14 +320,14 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 							return 1;
 					}
 				});
-			return new Screen(this.id, this.previousId, this.backId, this.ignoreChanges, this.mustSave,
+			return new Screen(this.id, this.sortId, this.previousId, this.backId, this.ignoreChanges, this.mustSave,
 					this.configurationMasks, this.selectScreen, this.sequenceUp, this.sequenceDown,
 					this.identifications, this.ignoreRectangles, this.preparationId, this.lastPreparationId,
 					this.noRestore);
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (name.getLocalPart()) {
 				case XML_CONFIGURATION:
@@ -343,7 +351,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_CONFIGURATION:
 					this.configurationMasks = (Configuration) created;
@@ -380,14 +388,14 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public void addLearnScreenGrafics(Collection<IScreenPartCompare> descriptions, Solvis solvis) {
+	public void addLearnScreenGrafics(final Collection<IScreenPartCompare> descriptions, final Solvis solvis) {
 		for (Identification identification : this.identifications) {
 			identification.addLearnScreenGrafics(descriptions, solvis);
 		}
 	}
 
 //
-	public static void learnScreens(Solvis solvis) throws IOException, TerminationException, LearningException {
+	public static void learnScreens(final Solvis solvis) throws IOException, TerminationException, LearningException {
 		Collection<IScreenPartCompare> learnGrafics = solvis.getSolvisDescription().getLearnGrafics(solvis);
 		while (learnGrafics.size() > 0) {
 			solvis.getHomeScreen().learn(solvis, learnGrafics);
@@ -396,7 +404,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public void learn(Solvis solvis, Collection<IScreenPartCompare> descriptions)
+	public void learn(final Solvis solvis, final Collection<IScreenPartCompare> descriptions)
 			throws IOException, TerminationException, LearningException {
 
 		// Seach all LearnScreens object of current screen and learn the
@@ -493,7 +501,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public boolean isToBeLearning(Solvis solvis) {
+	public boolean isToBeLearning(final Solvis solvis) {
 		if (!this.isLearned(solvis) || this.mustSave) {
 			return true;
 		}
@@ -516,8 +524,10 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	 * @throws LearningException
 	 */
 	@Override
-	public boolean gotoLearning(Solvis solvis, AbstractScreen current, Collection<IScreenPartCompare> descriptions)
+	public boolean gotoLearning(final Solvis solvis, final AbstractScreen currentScreen,
+			final Collection<IScreenPartCompare> descriptions)
 			throws IOException, TerminationException, LearningException {
+		AbstractScreen current = currentScreen;
 		if (current == null) {
 			if (this != solvis.getHomeScreen()) {
 				logger.log(LEARN, "Warning: Goto screen <" + this + "> not successfull, home screen is forced");
@@ -591,11 +601,11 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	 * @throws TerminationException
 	 * @throws LearningException
 	 */
-	private static AbstractScreen back(Solvis solvis, AbstractScreen current,
+	private static AbstractScreen back(final Solvis solvis, final AbstractScreen currentScreen,
 			Collection<IScreenPartCompare> descriptions) throws IOException, TerminationException, LearningException {
-		AbstractScreen back = current.getBackScreen(solvis);
+		AbstractScreen back = currentScreen.getBackScreen(solvis);
 		solvis.sendBack();
-		current = SolvisScreen.get(solvis.getCurrentScreen());
+		AbstractScreen current = SolvisScreen.get(solvis.getCurrentScreen());
 		if (current == null) {
 			solvis.gotoHome();
 			current = solvis.getHomeScreen();
@@ -617,11 +627,11 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public AbstractScreen getBackScreen(Solvis solvis) {
+	public AbstractScreen getBackScreen(final Solvis solvis) {
 		return (AbstractScreen) OfConfigs.get(solvis, this.backScreen);
 	}
 
-	public Collection<AbstractScreen> getNextScreens(Solvis solvis) {
+	public Collection<AbstractScreen> getNextScreens(final Solvis solvis) {
 		List<AbstractScreen> result = new ArrayList<>(3);
 		for (AbstractScreen screen : this.nextScreens) {
 			if (screen.isInConfiguration(solvis)) {
@@ -637,9 +647,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public GotoStatus goTo(Solvis solvis) throws IOException, TerminationException {
-		
-		if ( SolvisScreen.get(solvis.getCurrentScreen()) == this ) {
+	public GotoStatus goTo(final Solvis solvis) throws IOException, TerminationException {
+
+		if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
 			return GotoStatus.SAME;
 		}
 
@@ -720,7 +730,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		if (!gone) {
 			logger.error("Screen <" + this.getId() + "> not found.");
 		}
-		return SolvisScreen.get(solvis.getCurrentScreen()) == this?GotoStatus.CHANGED:GotoStatus.FAILED;
+		return SolvisScreen.get(solvis.getCurrentScreen()) == this ? GotoStatus.CHANGED : GotoStatus.FAILED;
 
 	}
 
@@ -740,8 +750,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	protected void addToPreviousScreenTouches(AbstractScreen next, Collection<ScreenTouch> allPreviousScreenTouches,
-			Solvis solvis) {
+	protected void addToPreviousScreenTouches(final AbstractScreen next,
+			final Collection<ScreenTouch> allPreviousScreenTouches, final Solvis solvis) {
 		ISelectScreen selectScreen = next.getSelectScreen();
 		Preparation preparation = next.getPreparation();
 
@@ -764,6 +774,14 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public String getElementType() {
 		return this.getClass().getSimpleName();
+	}
+
+	public String getSortId() {
+		if (this.sortId == null) {
+			return this.id;
+		} else {
+			return this.sortId;
+		}
 	}
 
 }

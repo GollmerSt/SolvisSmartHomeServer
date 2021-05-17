@@ -42,8 +42,10 @@ public class Configuration {
 		if (this.heaterCircuits != null) {
 			mask |= configurations.getHeaterCircuits().getConfiguration(Integer.toString(this.heaterCircuits));
 		}
-		for (String extension : this.extensions) {
-			mask |= configurations.getExtensions().getConfiguration(extension);
+		if (this.extensions != null) {
+			for (String extension : this.extensions) {
+				mask |= configurations.getExtensions().getConfiguration(extension);
+			}
 		}
 		return mask;
 	}
@@ -53,7 +55,7 @@ public class Configuration {
 		private String solvisType = null;
 		private String mainHeating = null;
 		private Integer heaterCircuits = null;
-		private Collection<String> extensions ;
+		private Collection<String> extensions;
 		private String comment;
 
 		public Creator(String id, BaseCreator<?> creator) {
@@ -100,7 +102,7 @@ public class Configuration {
 			switch (creator.getId()) {
 				case XML_EXTENSIONS:
 					Extensions extensions = (Extensions) created;
-					this.extensions=extensions.extensions;
+					this.extensions = extensions.extensions;
 					break;
 			}
 
@@ -143,9 +145,9 @@ public class Configuration {
 
 			@Override
 			public void created(CreatorByXML<?> creator, Object created) throws XmlException {
-				switch ( creator.getId()) {
+				switch (creator.getId()) {
 					case XML_EXTENSION:
-						this.extensions.add(((Extension)created).extension);
+						this.extensions.add(((Extension) created).extension);
 						break;
 				}
 

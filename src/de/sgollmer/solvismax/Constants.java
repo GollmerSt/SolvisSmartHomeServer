@@ -117,7 +117,7 @@ public class Constants {
 				.compile(Files.ERROR_SCREEN_PREFIX + "\\d+\\." + Files.GRAFIC_SUFFIX);
 		public static final int MAX_NUMBER_OF_ERROR_SCREENS = 100;
 		public static final String CSV_ALL_CHANNELS = "SolvisAllChannels.csv";
-		public static final String CSV_CHANNELS = "SolvisChannels.csv";
+		public static final String CSV_DOCUMENTATION = "SolvisDocumentation.csv";
 	}
 
 	public static class XmlStrings {

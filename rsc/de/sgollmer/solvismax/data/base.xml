@@ -56,9 +56,6 @@
 					value="false" />
 				<!-- Synchronisation der sekundengenauen Brennerlaufzeiten mit den stuendlichen 
 					der SolvisControl -->
-				<tns:Feature id="EquipmentTimeCorrection" value="false" />
-				<!-- Bei jedem Equipment-Start wird eine automatisch ermittelte Korrektur 
-					durchgeführt -->
 				<tns:Feature id="UpdateAfterUserAccess" value="false" />
 				<!-- Nach jedem Userzugriff werden automatisch der Zustand der Anlage 
 					abgefragt -->
@@ -120,7 +117,7 @@
 				<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein neuer 
 					Mode ausgewählt wurde. Bei manchen Anlagen dauert der Modewechsel recht lang. 
 					Für diesen Fall kan- die Zeit anlagenspezifisch weiter vergrößert werden. 
-					Sonst kann der Wert auskommentiert bleiben. Default ist dann 3500 (ms) -->
+					Sonst kann der Wert auskommentiert bleiben. Default ist dann 3000 (ms) -->
 				<!-- <tns:Duration id="ModeChange" time_ms="3500" /> -->
 			</tns:Durations>
 		</tns:Unit>

@@ -43,7 +43,7 @@ public class Configurations {
 	private final ConfigurationTypes heaterCircuits;
 	private final ConfigurationTypes solarTypes;
 	private final ConfigurationTypes extensions;
-	private final NotValidConfigurations notValidConfiguartions;
+	private final NotValidConfigurations notValidConfigurations;
 	
 
 	private final Collection<IConfiguration> configurations;
@@ -57,7 +57,7 @@ public class Configurations {
 		this.heaterCircuits = heaterCircuits;
 		this.solarTypes = solarTypes;
 		this.extensions = extensions;
-		this.notValidConfiguartions = notValidConfiguartions;
+		this.notValidConfigurations = notValidConfiguartions;
 
 		this.configurations = configurations;
 	}
@@ -225,7 +225,7 @@ public class Configurations {
 	}
 	
 	public boolean isValid( Long mask, SolvisDescription description) {
-		return this.notValidConfiguartions.isValid(mask, description);
+		return this.notValidConfigurations.isValid(mask, description);
 	}
 
 }

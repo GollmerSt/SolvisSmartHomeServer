@@ -339,8 +339,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-1-1_5" backId="Heizkreise"
-			previousId="Heizkreise" ignoreChanges="true">
+		<tns:Screen id="Heizkreis-1-1_5" sortId="Heizkreis-05-1_1"
+			backId="Heizkreise" previousId="Heizkreise" ignoreChanges="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="15" />
@@ -356,8 +356,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-1-2_5" backId="Heizkreise"
-			previousId="Heizkreis-1-1_5">
+		<tns:Screen id="Heizkreis-1-2_5" sortId="Heizkreis-05-1_2"
+			backId="Heizkreise" previousId="Heizkreis-1-1_5">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
@@ -373,8 +373,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-1-3_5" backId="Heizkreise"
-			previousId="Heizkreis-1-2_5">
+		<tns:Screen id="Heizkreis-1-3_5" sortId="Heizkreis-05-1_3"
+			backId="Heizkreise" previousId="Heizkreis-1-2_5">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
@@ -390,8 +390,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-1-4_5" backId="Heizkreise"
-			previousId="Heizkreis-1-5_5" mustSave="true">
+		<tns:Screen id="Heizkreis-1-4_5" sortId="Heizkreis-05-1_4"
+			backId="Heizkreise" previousId="Heizkreis-1-5_5" mustSave="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
@@ -411,8 +411,8 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-1-5_5" backId="Heizkreise"
-			previousId="Heizkreis-1-1_5">
+		<tns:Screen id="Heizkreis-1-5_5" sortId="Heizkreis-05-1_5"
+			backId="Heizkreise" previousId="Heizkreis-1-1_5">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="25" />
@@ -432,8 +432,8 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-2-1_5" backId="Heizkreise"
-			previousId="Heizkreise" ignoreChanges="true">
+		<tns:Screen id="Heizkreis-2-1_5" sortId="Heizkreis-05-2_1"
+			backId="Heizkreise" previousId="Heizkreise" ignoreChanges="true">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -453,8 +453,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-2-2_5" backId="Heizkreise"
-			previousId="Heizkreis-2-1_5">
+		<tns:Screen id="Heizkreis-2-2_5" sortId="Heizkreis-05-2_2"
+			backId="Heizkreise" previousId="Heizkreis-2-1_5">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -474,8 +474,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-2-3_5" backId="Heizkreise"
-			previousId="Heizkreis-2-2_5">
+		<tns:Screen id="Heizkreis-2-3_5" sortId="Heizkreis-05-2_3"
+			backId="Heizkreise" previousId="Heizkreis-2-2_5">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -495,8 +495,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-2-4_5" backId="Heizkreise"
-			previousId="Heizkreis-2-5_5" mustSave="true">
+		<tns:Screen id="Heizkreis-2-4_5" sortId="Heizkreis-05-2_4"
+			backId="Heizkreise" previousId="Heizkreis-2-5_5" mustSave="true">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -520,8 +520,8 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-2-5_5" backId="Heizkreise"
-			previousId="Heizkreis-2-1_5">
+		<tns:Screen id="Heizkreis-2-5_5" sortId="Heizkreis-05-2_5"
+			backId="Heizkreise" previousId="Heizkreis-2-1_5">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
@@ -545,8 +545,8 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-3-1_5" backId="Heizkreise"
-			previousId="Heizkreise" ignoreChanges="true">
+		<tns:Screen id="Heizkreis-3-1_5" sortId="Heizkreis-05-3_1"
+			backId="Heizkreise" previousId="Heizkreise" ignoreChanges="true">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -566,8 +566,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-3-2_5" backId="Heizkreise"
-			previousId="Heizkreis-3-1_5">
+		<tns:Screen id="Heizkreis-3-2_5" sortId="Heizkreis-05-3_2"
+			backId="Heizkreise" previousId="Heizkreis-3-1_5">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -587,8 +587,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-3-3_5" backId="Heizkreise"
-			previousId="Heizkreis-3-2_5">
+		<tns:Screen id="Heizkreis-3-3_5" sortId="Heizkreis-05-3_3"
+			backId="Heizkreise" previousId="Heizkreis-3-2_5">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -608,8 +608,8 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-3-4_5" backId="Heizkreise"
-			previousId="Heizkreis-3-5_5" mustSave="true">
+		<tns:Screen id="Heizkreis-3-4_5" sortId="Heizkreis-05-3_4"
+			backId="Heizkreise" previousId="Heizkreis-3-5_5" mustSave="true">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -633,8 +633,8 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-3-5_5" backId="Heizkreise"
-			previousId="Heizkreis-3-1_5">
+		<tns:Screen id="Heizkreis-3-5_5" sortId="Heizkreis-05-3_5"
+			backId="Heizkreise" previousId="Heizkreis-3-1_5">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
@@ -855,7 +855,7 @@
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
 			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Lang"
+			<tns:TouchPoint pushTimeRefId="Long"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="95" Y="105" />
 			</tns:TouchPoint>
@@ -873,7 +873,7 @@
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
 			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Lang"
+			<tns:TouchPoint pushTimeRefId="Long"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="95" Y="105" />
 			</tns:TouchPoint>
@@ -926,7 +926,7 @@
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
 			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Lang"
+			<tns:TouchPoint pushTimeRefId="Long"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="95" Y="105" />
 			</tns:TouchPoint>
@@ -961,7 +961,7 @@
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
 			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Lang"
+			<tns:TouchPoint pushTimeRefId="Long"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="95" Y="105" />
 			</tns:TouchPoint>
@@ -996,7 +996,7 @@
 				<tns:ConfigurationMask andMask="0x07"
 					compareMask="0x01" />
 			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Lang"
+			<tns:TouchPoint pushTimeRefId="Long"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="125" Y="105" />
 			</tns:TouchPoint>
@@ -1014,7 +1014,7 @@
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
 			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Lang"
+			<tns:TouchPoint pushTimeRefId="Long"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="125" Y="105" />
 			</tns:TouchPoint>
@@ -1067,7 +1067,7 @@
 				<tns:ConfigurationMask andMask="0x02"
 					compareMask="0x02" />
 			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Lang"
+			<tns:TouchPoint pushTimeRefId="Long"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="125" Y="105" />
 			</tns:TouchPoint>
@@ -1102,7 +1102,7 @@
 				<tns:ConfigurationMask andMask="0x04"
 					compareMask="0x04" />
 			</tns:Configuration>
-			<tns:TouchPoint pushTimeRefId="Lang"
+			<tns:TouchPoint pushTimeRefId="Long"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="125" Y="105" />
 			</tns:TouchPoint>
@@ -1286,7 +1286,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-1-1_11"
+		<tns:Screen id="Heizkreis-1-1_11" sortId="Heizkreis-11-1_1"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			ignoreChanges="true">
 			<tns:Configuration admin="true" />
@@ -1305,7 +1305,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-1-2_11"
+		<tns:Screen id="Heizkreis-1-2_11" sortId="Heizkreis-11-1_2"
 			backId="Heizung-Installateur" previousId="Heizkreis-1-1_11">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -1323,7 +1323,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-1-3_11"
+		<tns:Screen id="Heizkreis-1-3_11" sortId="Heizkreis-11-1_3"
 			backId="Heizung-Installateur" previousId="Heizkreis-1-2_11">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -1341,7 +1341,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-1-4_11"
+		<tns:Screen id="Heizkreis-1-4_11" sortId="Heizkreis-11-1_4"
 			backId="Heizung-Installateur" previousId="Heizkreis-1-3_11">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
@@ -1363,7 +1363,7 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-2-1_11"
+		<tns:Screen id="Heizkreis-2-1_11" sortId="Heizkreis-11-2_1"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			ignoreChanges="true">
 			<tns:Configuration admin="true">
@@ -1385,7 +1385,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-2-2_11"
+		<tns:Screen id="Heizkreis-2-2_11" sortId="Heizkreis-11-2_2"
 			backId="Heizung-Installateur" previousId="Heizkreis-2-1_11">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x02"
@@ -1406,7 +1406,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-2-3_11"
+		<tns:Screen id="Heizkreis-2-3_11" sortId="Heizkreis-11-2_3"
 			backId="Heizung-Installateur" previousId="Heizkreis-2-2_11">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x02"
@@ -1427,7 +1427,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-2-4_11"
+		<tns:Screen id="Heizkreis-2-4_11" sortId="Heizkreis-11-2_4"
 			backId="Heizung-Installateur" previousId="Heizkreis-2-3_11">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x02"
@@ -1452,7 +1452,7 @@
 			</tns:IgnoreRectangle>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-3-1_11"
+		<tns:Screen id="Heizkreis-3-1_11" sortId="Heizkreis-11-3_1"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			ignoreChanges="true">
 			<tns:Configuration admin="true">
@@ -1474,7 +1474,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-3-2_11"
+		<tns:Screen id="Heizkreis-3-2_11" sortId="Heizkreis-11-3_2"
 			backId="Heizung-Installateur" previousId="Heizkreis-3-1_11">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x04"
@@ -1495,7 +1495,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-3-3_11"
+		<tns:Screen id="Heizkreis-3-3_11" sortId="Heizkreis-11-3_3"
 			backId="Heizung-Installateur" previousId="Heizkreis-3-2_11">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x04"
@@ -1516,7 +1516,7 @@
 			</tns:Identification>
 		</tns:Screen>
 
-		<tns:Screen id="Heizkreis-3-4_11"
+		<tns:Screen id="Heizkreis-3-4_11" sortId="Heizkreis-11-3_4"
 			backId="Heizung-Installateur" previousId="Heizkreis-3-3_11">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x04"
@@ -4086,7 +4086,7 @@
 		<!-- Standard-Zeit für das Drücken eines Bildschirmbuttons -->
 		<tns:Duration id="Standard" time_ms="400" />
 		<!-- Lange Zeit für das Drücken eines Bildschirmbuttons (z.B. für Solltemperatureinstellung) -->
-		<tns:Duration id="Lang" time_ms="5000" />
+		<tns:Duration id="Long" time_ms="5000" />
 		<!-- Wartezeit nach dem Release eines Bildschirmbuttons, wenn ein Wert 
 			verändert wurde -->
 		<tns:Duration id="ValueChange" time_ms="2000" />
