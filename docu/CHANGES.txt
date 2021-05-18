@@ -6,6 +6,9 @@ Version 01.03.00
                 Screens ergänzt und dabei aucgh den Namen dieses Csv-Files geändert.
                 
                 Synchronisierung funktionierte nach dem Ausbau der Correction nicht mehr, gefixt.
+                
+    18.05.2021  Weiteres Synchronisationsproblem erkannt und gefixt, das auftritt, wenn der Brenner
+                > 6min läuft.
 
 
 Version 01.03.00 rc3
@@ -16,7 +19,7 @@ Version 01.03.00 rc3
 Version 01.03.00 rc2
 
     15.05.2021  Der Parser für die Extensions war für das base.xml nicht richtig angepasst.
-
+    
 
 Version 01.03.00 rc1
 

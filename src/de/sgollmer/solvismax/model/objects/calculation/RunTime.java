@@ -105,18 +105,21 @@ public class RunTime extends Strategy<RunTime> {
 			});
 		}
 
-		private void updateVerifiedValues(long runTime) {
+		private void updateVerifiedValues(long runTime, long timeStamp) {
 			this.lastVerifiedRunTime = runTime;
 			this.runTimeAfterLastVerificationAfterOff = 0;
 			this.runTimeAfterLastVerificationCurrent = 0;
+			this.lastStartTime = timeStamp;
 		}
 
 		private synchronized void correctionByValue(SolvisData data, Object source) throws TypeException {
 
 			long verifiedRunTime = (long) data.getInt() * 1000L;
-
-			if (source instanceof SystemBackup || source instanceof UpdateType ) {
-				this.updateVerifiedValues(verifiedRunTime);
+			 
+			if ( source instanceof SystemBackup ) {
+				this.updateVerifiedValues(verifiedRunTime, -1);
+			} else if ( source instanceof UpdateType) {
+				this.updateVerifiedValues(verifiedRunTime, data.getTimeStamp());
 			}
 		}
 
