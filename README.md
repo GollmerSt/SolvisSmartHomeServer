@@ -17,8 +17,6 @@ Bei älteren Anlagen gibt es nur die Möglichkeit der Steuerung über die Web-Ob
 (es ist eine Pixelkopie der SolvisControl2 der Anlage). Die Steuerung darüber erfolgt über Maus-Klicks auf bestimmte Koordinaten auf diesem GUI,
 die Rückmeldung erfolgt ebenfalls nur grafisch über das GUI.
 
-Eine Liste mit der Kanäle findet sich u.a. im Kapitel [MQTT-Schnittstelle](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/MQTT-Schnittstelle#aktuell-definierte-channels) bzw. kann ab Version 1.03.00 vom Programm selber passend zur Anlagenkonfiguartion generiert werden. Dies ist [hier](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/Dokumentation-der-Kanalbelegung) beschrieben.
-
 ### Funktionsweise der Einstellung der Anlageparameter
 
 Dieses Projekt nutzt diesen Weg. Bei einer Sollwert-Änderung wird mit Hilfe eines OCRs zunächst der aktuelle Wert grafisch aus der Web-Oberfläche ermittelt. Anschließend wird der Wert entsprechend der Anforderung durch entsprechende simulierte Maus-Klicks geändert. Zum Abschluss wird diese Änderung durch das OCR verifiziert.
@@ -43,15 +41,17 @@ Hier ein Beispiel einer solchen Fehlermeldung:
 veränderten Anlagenparameter wieder erneut gelesen.
 * Anbindung über MQTT, damit ist das System in SmartHome-Systeme ohne speziellen Client möglich.
 Voraussetzung ist nur eine MQTT-Schnittstelle(-Erweiterung) im SmartHome-System sowie ein MQTT-Broker (z.B. Mosquitto). U.U.
-bringt ein solcher Broker das Smart-Home-System selber mit.
+bringt ein Smart-Home-System einen solchen Broker das selber mit.
 * Zusätzliche Möglichkeit der Anbindung über eine Client-Server-Verbindung
   * Daten zwischen Server-Client werden im JSON-Format ausgetauscht
   * Es können sich max. 50 Clients mit dem Server verbinden
 * Leichte Anpassungsmöglichkeit an vorhandene Anlage über XML-Files. Die XML Schema sind mit enthalten, so dass Anpassung
 mittels XML-Editor (z.B. integriert in Eclipse) stark vereinfacht wird
 
+Eine Liste der Kanäle findet sich u.a. im Kapitel [MQTT-Schnittstelle](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/MQTT-Schnittstelle#aktuell-definierte-channels) bzw. kann ab Version 1.03.00 vom Programm selber passend zur Anlagenkonfiguartion generiert werden. Dies ist [hier](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/Dokumentation-der-Kanalbelegung) beschrieben.
+
 ### Voraussetzungen
-* Solvis-Heizungsanlage (SolvisMax/SolvisBen) mit einer SolvisControl **2** und SolvisRemote. Bei einer SolvisControl **3** ist der
+* Solvis-Heizungsanlage (SolvisMax6/7) mit einer SolvisControl **2** und SolvisRemote. Bei einer SolvisControl **3** ist der
 Einsatz nicht möglich, da das Web-Interface durch das Solvis-Portal ersetzt wurde. Zur Anbindung an ein Smart-Home-System
 sollte man dort den Modbus verwenden.
 * PC/Raspberry o.ä. mit Linux oder Windows, mit JRE >= 1.8.
