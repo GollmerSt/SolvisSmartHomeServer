@@ -9,6 +9,9 @@ Version 01.03.00
                 
     18.05.2021  Weiteres Synchronisationsproblem erkannt und gefixt, das auftritt, wenn der Brenner
                 > 6min läuft.
+                
+                Der Glitch-Inhibit ist nun nicht mehr auf einen feste Zeit sondern Scan-Intervall
+                bezogen.
 
 
 Version 01.03.00 rc3

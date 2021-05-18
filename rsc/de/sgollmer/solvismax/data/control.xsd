@@ -721,7 +721,7 @@
 			</annotation>
 		</attribute>
 		<attribute name="unit" type="string" use="optional"></attribute>
-		<attribute name="glitchInhibitTime_ms" type="int"
+		<attribute name="glitchInhibitScanIntervals" type="int"
 			use="optional"></attribute>
 	</complexType>
 

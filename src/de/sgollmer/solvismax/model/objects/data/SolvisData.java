@@ -145,7 +145,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return;
 		}
 
-		boolean glitchInhibitEnabled = this.getDescription().getGlitchInhibitTime_ms() > 0;
+		boolean glitchInhibitEnabled = this.getDescription().glitchInhibitScanIntervals() > 0;
 		boolean changed = false;
 
 		if (data.getTimeStamp() > 0 && this.pendingData != null) {
@@ -153,7 +153,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			if (data.equals(this.pendingData)) {
 
 				if (data.getTimeStamp() > this.pendingData.getTimeStamp()
-						+ this.getDescription().getGlitchInhibitTime_ms()) {
+						+ this.getDescription().glitchInhibitScanIntervals()
+								* this.getDescription().getScanInterval_ms(this.getSolvis())) {
 
 					glitchInhibitEnabled = false;
 					this.pendingData = null;

@@ -35,7 +35,7 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public class Calculation extends ChannelSource {
 
-	private static final String XML_Alias = "Alias";
+	private static final String XML_ALIAS = "Alias";
 
 	private final Strategy<?> strategy;
 	private final AliasGroup aliasGroup;
@@ -117,7 +117,7 @@ public class Calculation extends ChannelSource {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_Alias:
+				case XML_ALIAS:
 					return new Alias.Creator(id, this.getBaseCreator());
 			}
 			return null;
@@ -126,7 +126,7 @@ public class Calculation extends ChannelSource {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_Alias:
+				case XML_ALIAS:
 					this.aliasGroup.add((Alias) created);
 			}
 		}

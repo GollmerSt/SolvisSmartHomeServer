@@ -68,6 +68,12 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public boolean isFast();
 
+	/**
+	 * Get the maximum interval of the scanning
+	 * 
+	 * @param solvis
+	 * @return interval if defined, otherwise null
+	 */
 	public Integer getScanInterval_ms(Solvis solvis);
 
 	public IInstance instantiate(Solvis solvis) throws AssignmentException, AliasException;

@@ -49,17 +49,17 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	private final String unit;
 	private final Configuration configuration;
 	private final ChannelSource channelSource;
-	private final int glitchInhibitTime_ms;
+	private final int glitchInhibitScanIntervals;
 
 	private ChannelDescription(String id, boolean buffered, String unit, Configuration configurationMasks,
-			ChannelSource channelSource, int glitchInhibitTime_ms) throws XmlException {
+			ChannelSource channelSource, int glitchInhibitScanIntervals) throws XmlException {
 		this.id = id;
 		this.buffered = buffered;
 		this.unit = unit;
 		this.configuration = configurationMasks;
 		this.channelSource = channelSource;
-		this.glitchInhibitTime_ms = glitchInhibitTime_ms;
-		if (!this.channelSource.isGlitchDetectionAllowed() && this.glitchInhibitTime_ms > 0) {
+		this.glitchInhibitScanIntervals = glitchInhibitScanIntervals;
+		if (!this.channelSource.isGlitchDetectionAllowed() && this.glitchInhibitScanIntervals > 0) {
 			throw new XmlException("Error in description of channel <" + this.id
 					+ ">. Definition of Glitch inhibit time not allowed.");
 		}
@@ -147,7 +147,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		private String unit = null;
 		private Configuration configurationMasks;
 		private ChannelSource channelSource;
-		private int glitchInhibitTime_ms;
+		private int glitchInhibitScanIntervals;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -165,8 +165,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 				case "unit":
 					this.unit = value;
 					break;
-				case "glitchInhibitTime_ms":
-					this.glitchInhibitTime_ms = Integer.parseInt(value);
+				case "glitchInhibitScanIntervals":
+					this.glitchInhibitScanIntervals = Integer.parseInt(value);
 					break;
 			}
 
@@ -175,7 +175,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		@Override
 		public ChannelDescription create() throws XmlException {
 			ChannelDescription description = new ChannelDescription(this.id, this.buffered, this.unit,
-					this.configurationMasks, this.channelSource, this.glitchInhibitTime_ms);
+					this.configurationMasks, this.channelSource, this.glitchInhibitScanIntervals);
 			this.channelSource.setDescription(description);
 			return description;
 		}
@@ -277,8 +277,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.getRestoreChannel(solvis);
 	}
 
-	public int getGlitchInhibitTime_ms() {
-		return this.glitchInhibitTime_ms;
+	public int glitchInhibitScanIntervals() {
+		return this.glitchInhibitScanIntervals;
 	}
 
 	@Override
@@ -351,7 +351,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 			case Csv.UNIT:
 				return this.unit;
 			case Csv.GLITCH_INHIBIT:
-				return Integer.toString(this.glitchInhibitTime_ms);
+				return Integer.toString(this.glitchInhibitScanIntervals);
 		}
 		return this.channelSource.getCsvMeta(column, semicolon);
 	}

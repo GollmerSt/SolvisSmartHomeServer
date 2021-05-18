@@ -2166,7 +2166,7 @@
 
 		<!-- BrennerStatus -->
 		<tns:ChannelDescription id="X05"
-			glitchInhibitTime_ms="20000">
+			glitchInhibitScanIntervals="2">
 			<tns:Calculation strategy="burnerStatus">
 				<tns:Alias id="burnerLevel1On" dataId="alias.Brenner" />
 				<tns:Alias id="burnerLevel2On" dataId="alias.Brenner_S2" />
@@ -2175,7 +2175,7 @@
 
 		<!-- MischerPosition0_HK1 -->
 		<tns:ChannelDescription id="X07"
-			glitchInhibitTime_ms="20000">
+			glitchInhibitScanIntervals="2">
 			<tns:Calculation strategy="mixerPosition0">
 				<tns:Alias id="pumpOn" dataId="alias.Pumpe_HK1" />
 				<tns:Alias id="mixerClosing" dataId="alias.Mischer_HK1_zu" />
@@ -2184,7 +2184,7 @@
 
 		<!-- MischerPosition0_HK2 -->
 		<tns:ChannelDescription id="X08"
-			glitchInhibitTime_ms="20000">
+			glitchInhibitScanIntervals="2">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x0002"
 					andMask="0x0002" />
@@ -2197,7 +2197,7 @@
 
 		<!-- MischerPosition0_HK3 -->
 		<tns:ChannelDescription id="X09"
-			glitchInhibitTime_ms="20000">
+			glitchInhibitScanIntervals="2">
 			<tns:Configuration>
 				<tns:ConfigurationMask
 					compareMask="0x04000004" andMask="0x07000004" />
