@@ -12,6 +12,9 @@ Version 01.03.00
                 
                 Der Glitch-Inhibit ist nun nicht mehr auf einen feste Zeit sondern Scan-Intervall
                 bezogen.
+                
+    20.05.2021  Konfigurationen mit den Solvis-Anlageschemas für SolvisMax6 und Sovismax 7
+                verglichen und korrigiert. 
 
 
 Version 01.03.00 rc3
