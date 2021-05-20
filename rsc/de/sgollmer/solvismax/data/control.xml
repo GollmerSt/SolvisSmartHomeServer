@@ -16,10 +16,10 @@
 	<!-- Hauptwärmequelle -->
 	<!-- 0x00000020: externer Brennkessel mit Temperaturfühler an S14 -->
 	<!-- 0x0040: Wärmepumpe mit Vorlauf-/Rücklauftemp. an S14/S15 -->
-	<!-- 0x0200: Fernwärme -->
 	<!-- 0x1000: Öl BW -->
 	<!-- 0x2000: Öl NT -->
 	<!-- 0x4000: Gas -->
+	<!-- 0x8000: Fernwärme -->
 
 	<!-- 0x0001: Heizkreis 1 vorhanden -->
 	<!-- 0x0002: Heizkreis 2 vorhanden -->
@@ -42,7 +42,7 @@
 			<tns:Type id="OelBW" configuration="0x1000" />
 			<tns:Type id="OelNT" configuration="0x2000" />
 			<tns:Type id="Gas" configuration="0x4000" />
-			<tns:Type id="Fern" configuration="0x0200" />
+			<tns:Type id="Fern" configuration="0x8000" />
 			<tns:Type id="WaermeP" configuration="0x0040" />
 			<tns:Type id="Extern" configuration="0x0020" />
 		</tns:MainHeatings>
@@ -56,7 +56,7 @@
 		<tns:SolarTypes>
 			<!-- nur für Tests, sonst O/W über Extensions -->
 			<tns:Type id="None" configuration="0x0000" />
-			<tns:Type id="Standard" configuration="0x0008" />
+			<tns:Type id="Normal" configuration="0x0008" />
 			<tns:Type id="OstWest" configuration="0x0088" />
 		</tns:SolarTypes>
 
@@ -69,19 +69,6 @@
 		</tns:Extensions>
 
 		<tns:NotValid>
-			<tns:Configuration type="SolvisMax6PurSolo"
-				mainHeating="OelBW">
-				<tns:Extensions>
-					<tns:Extension id="SolarOstWest" />
-				</tns:Extensions>
-			</tns:Configuration>
-			<tns:Configuration type="SolvisMax7"
-				mainHeating="OelNT"></tns:Configuration>
-			<tns:Configuration heatingCircuits="3">
-				<tns:Extensions>
-					<tns:Extension id="Festbrennstoff" />
-				</tns:Extensions>
-			</tns:Configuration>
 			<tns:Configuration heatingCircuits="3">
 				<tns:Extensions>
 					<tns:Extension id="SolarOstWest" />
@@ -93,8 +80,83 @@
 					<tns:Extension id="Festbrennstoff" />
 				</tns:Extensions>
 			</tns:Configuration>
+
+			<tns:Configuration type="SolvisMax6"
+				heatingCircuits="3" mainHeating="WaermeP" />
+
+			<tns:Configuration type="SolvisMax6PurSolo"
+				mainHeating="OelBW">
+				<tns:Extensions>
+					<tns:Extension id="SolarOstWest" />
+				</tns:Extensions>
+			</tns:Configuration>
+			<tns:Configuration type="SolvisMax6PurSolo"
+				mainHeating="WaermeP">
+				<tns:Extensions>
+					<tns:Extension id="Festbrennstoff" />
+				</tns:Extensions>
+			</tns:Configuration>
+			<tns:Configuration type="SolvisMax6PurSolo"
+				heatingCircuits="3" mainHeating="WaermeP" />
+			<tns:Configuration type="SolvisMax6PurSolo"
+				heatingCircuits="3" mainHeating="Fern">
+				<tns:Extensions>
+					<tns:Extension id="Festbrennstoff" />
+				</tns:Extensions>
+			</tns:Configuration>
+			<tns:Configuration type="SolvisMax6PurSolo"
+				mainHeating="OelBW" heatingCircuits="3" solarType="Normal">
+				<tns:Extensions>
+					<tns:Extension id="Festbrennstoff" />
+				</tns:Extensions>
+			</tns:Configuration>
+			<tns:Configuration type="SolvisMax6PurSolo"
+				mainHeating="Extern" heatingCircuits="3">
+				<tns:Extensions>
+					<tns:Extension id="Festbrennstoff" />
+				</tns:Extensions>
+			</tns:Configuration>
+			<tns:Configuration type="SolvisMax6PurSolo"
+				mainHeating="WaermeP">
+				<tns:Extensions>
+					<tns:Extension id="SolarOstWest" />
+				</tns:Extensions>
+			</tns:Configuration>
+			<tns:Configuration type="SolvisMax6PurSolo"
+				mainHeating="WaermeP">
+				<tns:Extensions>
+					<tns:Extension id="Festbrennstoff" />
+				</tns:Extensions>
+			</tns:Configuration>
+			<tns:Configuration type="SolvisMax6PurSolo"
+				mainHeating="Extern">
+				<tns:Extensions>
+					<tns:Extension id="SolarOstWest" />
+				</tns:Extensions>
+			</tns:Configuration>
+
+			<tns:Configuration type="SolvisMax7"
+				mainHeating="OelNT"></tns:Configuration>
+			<tns:Configuration type="SolvisMax7"
+				heatingCircuits="3">
+				<tns:Extensions>
+					<tns:Extension id="Festbrennstoff" />
+				</tns:Extensions>
+			</tns:Configuration>
 			<tns:Configuration type="SolvisMax7"
 				mainHeating="WaermeP" heatingCircuits="3"></tns:Configuration>
+			<tns:Configuration type="SolvisMax7"
+				mainHeating="WaermeP">
+				<tns:Extensions>
+					<tns:Extension id="SolarOstWest" />
+				</tns:Extensions>
+			</tns:Configuration>
+			<tns:Configuration type="SolvisMax7"
+				mainHeating="WaermeP">
+				<tns:Extensions>
+					<tns:Extension id="Festbrennstoff" />
+				</tns:Extensions>
+			</tns:Configuration>
 		</tns:NotValid>
 
 		<tns:HeaterLoops screenRef="Home">
@@ -3938,6 +4000,12 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
+		<!-- Nachheizen TODO -->
+		<!-- tns:ChannelDescription id="C46"> <tns:Control> <tns:GuiAccess screenId="Warmwasser"> 
+			<tns:CurrentValue> <tns:TopLeft X="190" Y="55" /> <tns:BottomRight Y="70" 
+			X="210" /> </tns:CurrentValue> </tns:GuiAccess> <tns:TypeButton pushTimeId="Standard" 
+			releaseTimeId="ValueChange"></tns:TypeButton> </tns:Control> </tns:ChannelDescription -->
+
 	</tns:ChannelDescriptions>
 
 
@@ -4119,7 +4187,7 @@
 
 		<tns:Assignment id="I1" name="I1.Anlagentyp"></tns:Assignment>
 
-		<tns:Assignment name="I2.Systemnummer" id="I2"></tns:Assignment>
+		<tns:Assignment id="I2" name="I2.Systemnummer"></tns:Assignment>
 
 		<tns:Assignment id="S01" name="S01.Warmwasserpuffer" />
 
@@ -4174,7 +4242,7 @@
 			<!-- nur bei Max 6 -->
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000008" andMask="0x07000018" />
+					compareMask="0x01000008" andMask="0x07000058" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="S07"
@@ -4205,8 +4273,8 @@
 			</tns:Configuration>
 		</tns:Assignment>
 
-		<tns:Assignment
-			name="S09.Heizungspuffertemperatur_unten" id="S09">
+		<tns:Assignment id="S09"
+			name="S09.Heizungspuffertemperatur_unten">
 			<tns:Configuration>
 				<!-- Alle außer Max6 mit WP -->
 				<tns:ConfigurationMask
@@ -4215,7 +4283,7 @@
 					compareMask="0x04000000" andMask="0x07000000" />
 			</tns:Configuration>
 		</tns:Assignment>
-		<tns:Assignment name="S09.Heissgas" id="S09">
+		<tns:Assignment id="S09" name="S09.Heissgas">
 			<tns:Configuration>
 				<tns:ConfigurationMask
 					compareMask="0x01000040" andMask="0x07000040" />
@@ -4231,7 +4299,12 @@
 			name="S12.Vorlauftemperatur_HK1" />
 
 		<tns:Assignment id="S13"
-			name="S13.Vorlauftemperatur_HK2" />
+			name="S13.Vorlauftemperatur_HK2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+		</tns:Assignment>
 
 		<tns:Assignment id="S14" name="S14.Kesseltemperatur">
 			<!-- Bei externem Kessel -->
@@ -4287,14 +4360,7 @@
 			name="S15.Kaltwassertemperatur">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x04000000" andMask="0x070000c8" />
-			</tns:Configuration>
-		</tns:Assignment>
-		<tns:Assignment id="S15"
-			name="S15.Solarkollektortemperatur2">
-			<tns:Configuration>
-				<tns:ConfigurationMask
-					compareMask="0x04000088" andMask="0x070000c8" />
+					compareMask="0x04000000" andMask="0x07000040" />
 			</tns:Configuration>
 		</tns:Assignment>
 
@@ -4309,18 +4375,18 @@
 			name="S16.Solarkollektortemperatur2">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000088" andMask="0x070004c8" />
-				<!-- Max6, Max6 Pur, O/W, nicht Fest, nicht WärmeP -->
+					compareMask="0x01000088" andMask="0x07000488" />
+				<!-- Max6, Max6 Pur, O/W, nicht Fest -->
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="S16"
 			name="S16.Solarruecklauftemperatur1">
-			<!-- Ma6 Pur mit WP, -->
+			<!-- Ma6 Pur nicht WP, -->
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000058" andMask="0x07000458" />
+					compareMask="0x01000058" andMask="0x0700f4f8" />
 				<tns:ConfigurationMask
-					compareMask="0x04000058" andMask="0x07000448" />
+					compareMask="0x04000058" andMask="0x07000458" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="S16"
@@ -4328,7 +4394,14 @@
 			<!-- Max7, Ben nicht extern -->
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x04000000" andMask="0x07000440" />
+					compareMask="0x04000004" andMask="0x07000444" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="S16"
+			name="S16.Solarkollektortemperatur2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x04000088" andMask="0x070004cc" />
 			</tns:Configuration>
 		</tns:Assignment>
 
@@ -4369,14 +4442,26 @@
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x0048"
 					andMask="0x0048" />
+				<tns:ConfigurationMask
+					compareMask="0x04000008" andMask="0x07000008" />
 			</tns:Configuration>
 		</tns:Assignment>
 
-		<tns:Assignment name="RF1.Raumfuehler_HK1" id="RF1"></tns:Assignment>
+		<tns:Assignment id="RF1" name="RF1.Raumfuehler_HK1"></tns:Assignment>
 
-		<tns:Assignment name="RF2.Raumfuehler_HK2" id="RF2"></tns:Assignment>
+		<tns:Assignment id="RF2" name="RF2.Raumfuehler_HK2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+		</tns:Assignment>
 
-		<tns:Assignment name="RF3.Raumfuehler_HK3" id="RF3"></tns:Assignment>
+		<tns:Assignment id="RF3" name="RF3.Raumfuehler_HK3">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+			</tns:Configuration>
+		</tns:Assignment>
 
 
 		<tns:Assignment id="A01" name="A01.Pumpe_Solar"
@@ -4390,7 +4475,7 @@
 			name="A01.Pumpe_Warmwasserzirkulation" boolean="0">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x04000040" andMask="0x07000040" />
+					compareMask="0x04000000" andMask="0x07000040" />
 			</tns:Configuration>
 		</tns:Assignment>
 
@@ -4404,11 +4489,16 @@
 			</tns:Configuration>
 		</tns:Assignment>
 
-		<tns:Assignment name="A03.Pumpe_HK1" id="A03"
+		<tns:Assignment id="A03" name="A03.Pumpe_HK1"
 			alias="alias.Pumpe_HK1" />
 
-		<tns:Assignment name="A04.Pumpe_HK2" id="A04"
-			alias="alias.Pumpe_HK2" />
+		<tns:Assignment id="A04" name="A04.Pumpe_HK2"
+			alias="alias.Pumpe_HK2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+		</tns:Assignment>
 
 		<tns:Assignment id="A05"
 			name="A05.Pumpe_Warmwasserzirkulation">
@@ -4423,7 +4513,7 @@
 			alias="alias.Pumpe_HK3">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x04000000" andMask="0x07000040" />
+					compareMask="0x04000004" andMask="0x07000044" />
 			</tns:Configuration>
 		</tns:Assignment>
 
@@ -4432,21 +4522,25 @@
 			<!-- Max6 normal ohne O/W, ohne WP -->
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000000" andMask="0x070000d0" />
+					compareMask="0x01000004" andMask="0x070000d4" />
 				<tns:ConfigurationMask
-					compareMask="0x01002010" andMask="0x0700f0d0" />
+					compareMask="0x01001414" andMask="0x0700f45c" />
 				<tns:ConfigurationMask
-					compareMask="0x01004010" andMask="0x0700f0d0" />
+					compareMask="0x01002014" andMask="0x0700f0d4" />
 				<tns:ConfigurationMask
-					compareMask="0x01008010" andMask="0x0700f0d0" />
+					compareMask="0x01004014" andMask="0x0700f0d4" />
 				<tns:ConfigurationMask
-					compareMask="0x01001010" andMask="0x0700f4d0" />
+					compareMask="0x01008014" andMask="0x0700f0d4" />
+				<tns:ConfigurationMask
+					compareMask="0x01001014" andMask="0x0700f4d4" />
+				<tns:ConfigurationMask
+					compareMask="0x01000034" andMask="0x0700f4f4" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="A06" name="A06.Ventil1">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000088" andMask="0x070000d8" />
+					compareMask="0x01000088" andMask="0x070000c8" />
 				<tns:ConfigurationMask
 					compareMask="0x04000088" andMask="0x070000c8" />
 			</tns:Configuration>
@@ -4454,7 +4548,15 @@
 		<tns:Assignment id="A06" name="A06.Ladepumpe">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01001410" andMask="0x0700f4d0" />
+					compareMask="0x01001418" andMask="0x0700f4d8" />
+				<tns:ConfigurationMask
+					compareMask="0x01008410" andMask="0x0700f4f4" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A06" name="A06.Ladepumpe2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000430" andMask="0x0700f4f0" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="A06" name="A06.E_Heizstab">
@@ -4466,20 +4568,24 @@
 		<tns:Assignment id="A06" name="A06.Mischer_HK3_auf">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x04000000" andMask="0x070000c0" />
+					compareMask="0x04000004" andMask="0x070000c4" />
 			</tns:Configuration>
 		</tns:Assignment>
 
-		<tns:Assignment name="A07.Ventil2" id="A07">
+		<tns:Assignment id="A07" name="A07.Ventil2">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000088" andMask="0x070004d8" />
+					compareMask="0x01000088" andMask="0x07000498" />
 				<tns:ConfigurationMask
 					compareMask="0x04000088" andMask="0x07000488" />
 			</tns:Configuration>
 		</tns:Assignment>
-		<tns:Assignment name="A07.Ladepumpe" id="A07">
+		<tns:Assignment id="A07" name="A07.Ladepumpe">
 			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01008400" andMask="0x0700f4b0" />
+				<tns:ConfigurationMask
+					compareMask="0x01000440" andMask="0x0700f4e0" />
 				<tns:ConfigurationMask
 					compareMask="0x01001400" andMask="0x0700f4b0" />
 				<tns:ConfigurationMask
@@ -4490,24 +4596,26 @@
 					compareMask="0x04000408" andMask="0x07000488" />
 			</tns:Configuration>
 		</tns:Assignment>
-		<tns:Assignment name="A07.Ladepumpe1" id="A07">
+		<tns:Assignment id="A07" name="A07.Ladepumpe1">
 			<tns:Configuration>
 				<tns:ConfigurationMask
 					compareMask="0x01000420" andMask="0x070004b0" />
 			</tns:Configuration>
 		</tns:Assignment>
-		<tns:Assignment name="A07.Pumpe_Solar2" id="A07"
+		<tns:Assignment id="A07" name="A07.Pumpe_Solar2"
 			alias="alias.Pumpe_Solar2">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000018" andMask="0x07000018" />
+					compareMask="0x01000018" andMask="0x07000058" />
+				<tns:ConfigurationMask
+					compareMask="0x01000058" andMask="0x07000458" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="A07" name="A07.Mischer_HK3_zu"
 			alias="alias.Mischer_HK3_zu">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x04000000" andMask="0x070004c0" />
+					compareMask="0x04000004" andMask="0x070004c4" />
 			</tns:Configuration>
 		</tns:Assignment>
 
@@ -4516,10 +4624,20 @@
 		<tns:Assignment id="A09" name="A09.Mischer_HK1_zu"
 			alias="alias.Mischer_HK1_zu" />
 
-		<tns:Assignment id=" A10 " name="A10.Mischer_HK2_auf" />
+		<tns:Assignment id="A10" name="A10.Mischer_HK2_auf">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+		</tns:Assignment>
 
 		<tns:Assignment id="A11" name="A11.Mischer_HK2_zu"
-			alias="alias.Mischer_HK2_zu" />
+			alias="alias.Mischer_HK2_zu">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+		</tns:Assignment>
 
 		<tns:Assignment id="A12" name="A12.Brenner"
 			alias="alias.Brenner">
@@ -4535,7 +4653,8 @@
 					compareMask="0x00000040" andMask="0x00008040" />
 			</tns:Configuration>
 		</tns:Assignment>
-		<tns:Assignment id="A12" name="A12.Ventil_FW">
+		<tns:Assignment id="A12" name="A12.Ventil_FW"
+			alias="alias.Brenner">
 			<tns:Configuration>
 				<tns:ConfigurationMask
 					compareMask="0x00008000" andMask="0x0000f000" />
@@ -4558,21 +4677,43 @@
 		<tns:Assignment id="A13" name="A13.Ladepumpe">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000400" andMask="0x070014a0" />
+					compareMask="0x01000400" andMask="0x070094e0" />
 				<tns:ConfigurationMask
-					compareMask="0x04000020" andMask="0x07001420" />
+					compareMask="0x010000a0" andMask="0x070094e0" />
+				<tns:ConfigurationMask
+					compareMask="0x04000020" andMask="0x0700f020" />
+				<tns:ConfigurationMask
+					compareMask="0x01000030" andMask="0x0700f470" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A13" name="A13.Ladepumpe1">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000430" andMask="0x07001430" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="A13" name="A13.Ladepumpe2">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000420" andMask="0x07001420" />
+					compareMask="0x01000420" andMask="0x07001430" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="A13" name="A13.Ventil2">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000090" andMask="0x070010b0" />
+					compareMask="0x01000090" andMask="0x070010f0" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A13" name="A13.Soleanhebung">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000040" andMask="0x0700f060" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A13" name="A13.E_Heizstab2">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x04000040" andMask="0x0700f060" />
 			</tns:Configuration>
 		</tns:Assignment>
 
@@ -4582,37 +4723,49 @@
 					andMask="0xf020" />
 				<tns:ConfigurationMask compareMask="0x4000"
 					andMask="0xf020" />
+				<tns:ConfigurationMask
+					compareMask="0x04000020" andMask="0x07008020" />
 			</tns:Configuration>
 		</tns:Assignment>
-		<tns:Assignment name="A14" id="A14.Brenner">
+		<tns:Assignment id="A14" name="A14.Brenner">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000020" andMask="0x01007020" />
+					compareMask="0x01000020" andMask="0x0700f060" />
 			</tns:Configuration>
 		</tns:Assignment>
-		<tns:Assignment name="A14" id="A14.Ventil2">
+		<tns:Assignment id="A14" name="A14.Ventil2">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x010000c0" andMask="0x010070c0" />
+					compareMask="0x010000c0" andMask="0x0700f0c0" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="A14" name="A14.Ventil_FW">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x8000"
-					andMask="0x8000" />
+					andMask="0xf040" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="A14" name="A14.Reset">
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x04000040" andMask="0x0700f060" />
 			</tns:Configuration>
 		</tns:Assignment>
 
 		<tns:Assignment id="O-1" name="O-1.Modulation">
 			<tns:Configuration>
-				<tns:ConfigurationMask compareMask="0x0000"
-					andMask="0x0040" />
+				<tns:ConfigurationMask compareMask="0x4000"
+					andMask="0x4040" />
+				<tns:ConfigurationMask
+					compareMask="0x01000020" andMask="0x07000020" />
+				<tns:ConfigurationMask
+					compareMask="0x04000020" andMask="0x07000020" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="O-1" name="O-1.PumpeSole">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x0040"
-					andMask="0x0040" />
+					andMask="0x0060" />
 			</tns:Configuration>
 		</tns:Assignment>
 
@@ -4621,8 +4774,6 @@
 			<tns:Configuration>
 				<tns:ConfigurationMask
 					compareMask="0x01000018" andMask="0x01000018" />
-				<tns:ConfigurationMask
-					compareMask="0x01000020" andMask="0x01000020" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="O-2" name="SP1.Pumpe_Solar1"
@@ -4638,8 +4789,6 @@
 			<tns:Configuration>
 				<tns:ConfigurationMask
 					compareMask="0x01000018" andMask="0x01000018" />
-				<tns:ConfigurationMask
-					compareMask="0x01000020" andMask="0x01000020" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="O-3" name="SP2.Pumpe_Solar2"
@@ -4661,13 +4810,23 @@
 			unit="%">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x04000000" andMask="0x07000000" />
+					compareMask="0x04000040" andMask="0x07000000" />
 			</tns:Configuration>
 		</tns:Assignment>
 
-		<tns:Assignment id="SE" name="SE.Solarertrag_kWh" />
+		<tns:Assignment id="SE" name="SE.Solarertrag_kWh">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x08"
+					andMask="0x08" />
+			</tns:Configuration>
+		</tns:Assignment>
 
-		<tns:Assignment id="SL" name="SL.Solarleistung_kW" />
+		<tns:Assignment id="SL" name="SL.Solarleistung_kW">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x08"
+					andMask="0x08" />
+			</tns:Configuration>
+		</tns:Assignment>
 
 		<tns:Assignment id="X01" name="X01.BrennerStarts" />
 
@@ -4686,10 +4845,20 @@
 			name="X07.MischerPosition0_HK1" />
 
 		<tns:Assignment id="X08"
-			name="X08.MischerPosition0_HK2" />
+			name="X08.MischerPosition0_HK2">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x02"
+					andMask="0x02" />
+			</tns:Configuration>
+		</tns:Assignment>
 
 		<tns:Assignment id="X09"
-			name="X09.MischerPosition0_HK3" />
+			name="X09.MischerPosition0_HK3">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x04"
+					andMask="0x04" />
+			</tns:Configuration>
+		</tns:Assignment>
 
 		<tns:Assignment id="X10"
 			name="X10.LaufzeitSolarpumpe_s" />
@@ -4801,6 +4970,8 @@
 
 		<tns:Assignment id="C45"
 			name="C45.Min_Vorlauf_Temp_HK3" />
+
+		<tns:Assignment id="C46" name="C46.Nachheizen" />
 
 
 	</tns:ChannelAssignments>

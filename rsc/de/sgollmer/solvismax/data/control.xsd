@@ -38,7 +38,7 @@
 	<simpleType name="SolarType">
 		<restriction base="string">
 			<enumeration value="None"></enumeration>
-			<enumeration value="Standard"></enumeration>
+			<enumeration value="Normal"></enumeration>
 			<enumeration value="OstWest"></enumeration>
 		</restriction>
 	</simpleType>
@@ -1831,14 +1831,18 @@
 
 
 	<complexType name="UnitConfiguration">
-		<sequence>
+		<sequence>
+
 			<element name="Extensions" maxOccurs="1" minOccurs="0">
 				<complexType>
 
 					<sequence>
-						<element name="Extension" type="tns:ExtensionType" maxOccurs="unbounded" minOccurs="0"></element>
+						<element name="Extension"
+							type="tns:ExtensionType" maxOccurs="unbounded" minOccurs="0">
+						</element>
 					</sequence>
-				</complexType></element>
+				</complexType>
+			</element>
 		</sequence>
 		<attribute name="admin" type="boolean" use="optional" />
 		<attribute name="type" type="tns:SolvisType" use="optional" />
@@ -1846,13 +1850,20 @@
 			use="optional" />
 		<attribute name="heatingCircuits" type="tns:HeaterCircuit"
 			use="optional" />
-		<attribute name="configOrMask" type="tns:UnNBytesHexInt"
-			use="optional" />
+
+		<attribute name="solarType" use="optional">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="Normal"></enumeration>
+					<enumeration value="None"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
 	</complexType>
 
 
 
 	<complexType name="ExtensionType">
-		<attribute name="id" type="string"></attribute>
+		<attribute name="id" type="tns:Extension" use="required"></attribute>
 	</complexType>
 </schema>

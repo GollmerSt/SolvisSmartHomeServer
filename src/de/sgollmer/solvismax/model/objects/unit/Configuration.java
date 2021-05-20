@@ -19,14 +19,16 @@ public class Configuration {
 
 	private final String solvisType;
 	private final String mainHeating;
+	private final String solarType;
 	private final Integer heaterCircuits;
 	private final Collection<String> extensions;
 
 	private Configuration(final String solvisType, final String mainHeating, final Integer heaterCircuits,
-			final Collection<String> extensions, final String comment) {
+			final String solarType, final Collection<String> extensions) {
 		this.solvisType = solvisType;
 		this.mainHeating = mainHeating;
 		this.heaterCircuits = heaterCircuits;
+		this.solarType = solarType;
 		this.extensions = extensions;
 	}
 
@@ -42,6 +44,9 @@ public class Configuration {
 		if (this.heaterCircuits != null) {
 			mask |= configurations.getHeaterCircuits().getConfiguration(Integer.toString(this.heaterCircuits));
 		}
+		if (this.solarType != null) {
+			mask |= configurations.getSolarTypes().getConfiguration(this.solarType);
+		}
 		if (this.extensions != null) {
 			for (String extension : this.extensions) {
 				mask |= configurations.getExtensions().getConfiguration(extension);
@@ -55,8 +60,8 @@ public class Configuration {
 		private String solvisType = null;
 		private String mainHeating = null;
 		private Integer heaterCircuits = null;
+		private String solarType = null;
 		private Collection<String> extensions;
-		private String comment;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -74,8 +79,8 @@ public class Configuration {
 				case "heatingCircuits":
 					this.heaterCircuits = Integer.parseInt(value);
 					break;
-				case "comment":
-					this.comment = value;
+				case "solarType":
+					this.solarType = value;
 					break;
 			}
 
@@ -83,8 +88,8 @@ public class Configuration {
 
 		@Override
 		public Configuration create() throws XmlException, IOException {
-			return new Configuration(this.solvisType, this.mainHeating, this.heaterCircuits, this.extensions,
-					this.comment);
+			return new Configuration(this.solvisType, this.mainHeating, this.heaterCircuits, this.solarType,
+					this.extensions);
 		}
 
 		@Override

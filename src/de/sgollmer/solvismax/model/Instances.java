@@ -142,8 +142,9 @@ public class Instances {
 		}
 		csv.close();
 	}
-	
-	public void createCurrentDocumentation(boolean semicolon) throws IOException, XMLStreamException, LearningException, AssignmentException, AliasException, TypeException {
+
+	public void createCurrentDocumentation(boolean semicolon) throws IOException, XMLStreamException, LearningException,
+			AssignmentException, AliasException, TypeException {
 
 		this.init();
 
@@ -156,7 +157,7 @@ public class Instances {
 			csv.out(solvis, Constants.Csv.HEADER);
 			csv.screensOut(solvis);
 		}
-				
+
 		csv.close();
 	}
 
@@ -228,7 +229,7 @@ public class Instances {
 	public File getWritePath() {
 		return this.writeablePath;
 	}
-	
+
 	public File getAppendixPath() {
 		return new File(this.writeablePath, Constants.Files.APPENDIX_DESTINATION);
 	}
