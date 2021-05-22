@@ -38,9 +38,9 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public class ScreenSaver implements IAssigner {
 
-	private static final java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+:\\d+");
+	private static final java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+?:\\d+?");
 	private static final java.util.regex.Pattern DATE_PATTERN = java.util.regex.Pattern
-			.compile("\\d+\\.\\d+\\.\\d\\d\\d\\d");
+			.compile("\\d+?\\.\\d+?\\.\\d\\d\\d\\d");
 
 	private static final String XML_RESET_SCREEN_SAVER = "ResetScreenSaver";
 	private static final String XML_TIME_DATA_RECTANGLE = "TimeDateRectangle";

@@ -3375,7 +3375,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="300"
 					least="0" incrementChange="120" changedIncrement="30">
-					<tns:GuiModification format="(\d+)."
+					<tns:GuiModification format="(\d+).$"
 						wrapAround="true">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
@@ -3407,7 +3407,7 @@
 					</tns:CurrentValue>
 				</tns:GuiAccess>
 				<tns:TypeRead>
-					<tns:GuiRead format="(\d+).." />
+					<tns:GuiRead format="(\d+)..$" />
 				</tns:TypeRead>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -3426,7 +3426,7 @@
 					</tns:CurrentValue>
 				</tns:GuiAccess>
 				<tns:TypeRead>
-					<tns:GuiRead format="(\d+).." />
+					<tns:GuiRead format="(\d+)..$" />
 				</tns:TypeRead>
 			</tns:Control>
 		</tns:ChannelDescription>
@@ -3533,7 +3533,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
-					<tns:GuiModification format="(\d+).*">
+					<tns:GuiModification format="(\d+).*$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="205" Y="55" />
@@ -3566,7 +3566,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
-					<tns:GuiModification format="(\d+).*">
+					<tns:GuiModification format="(\d+).*$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="205" Y="80" />
@@ -3597,7 +3597,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="0">
-					<tns:GuiModification format="(\d+)..">
+					<tns:GuiModification format="(\d+)..$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="200" Y="55" />
@@ -3722,7 +3722,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
-					<tns:GuiModification format="(\d+).*">
+					<tns:GuiModification format="(\d+).*$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="205" Y="55" />
@@ -3757,7 +3757,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
-					<tns:GuiModification format="(\d+).*">
+					<tns:GuiModification format="(\d+).*$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="205" Y="80" />
@@ -3790,7 +3790,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="0">
-					<tns:GuiModification format="(\d+)..">
+					<tns:GuiModification format="(\d+)..$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="200" Y="55" />
@@ -3915,7 +3915,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
-					<tns:GuiModification format="(\d+).*">
+					<tns:GuiModification format="(\d+).*$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="205" Y="55" />
@@ -3950,7 +3950,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="5">
-					<tns:GuiModification format="(\d+).*">
+					<tns:GuiModification format="(\d+).*$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="205" Y="80" />
@@ -3983,7 +3983,7 @@
 				</tns:GuiAccess>
 				<tns:TypeReadWrite increment="1" most="75"
 					least="0">
-					<tns:GuiModification format="(\d+)..">
+					<tns:GuiModification format="(\d+)..$">
 						<tns:Upper pushTimeRefId="Standard"
 							releaseTimeRefId="ValueChange">
 							<tns:Coordinate X="200" Y="55" />

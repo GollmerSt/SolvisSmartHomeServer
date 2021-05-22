@@ -19,11 +19,12 @@ import de.sgollmer.solvismax.model.objects.data.StringData;
 
 public class SingleValue implements IValue {
 
-	private static final Pattern NULL = Pattern.compile("(null).*");
-	private static final Pattern BOOLEAN = Pattern.compile("(true|false).*");
-	private static final Pattern INTEGER = Pattern.compile("(-{0,1}\\d+)[^\\.Ee].*");
-	private static final Pattern FLOAT = Pattern.compile("(-{0,1}\\d+(\\.\\d+){0,1}([Ee][+-]{0,1}\\d+){0,1}).*");
-	private static final Pattern STRING = Pattern.compile("\"(((\\\")|[^\"])*)\".*");
+	private static final Pattern VALUE = Pattern.compile("(.*?)[,}\\]].*");
+	private static final Pattern NULL = Pattern.compile("^(null)$");
+	private static final Pattern BOOLEAN = Pattern.compile("^(true|false)$");
+	private static final Pattern INTEGER = Pattern.compile("^(-{0,1}\\d+)$");
+	private static final Pattern FLOAT = Pattern.compile("^(-{0,1}\\d+(\\.\\d+){0,1}([Ee][+-]{0,1}\\d+){0,1})$");
+	private static final Pattern STRING = Pattern.compile("^\"(((\\\")|[^\"])*)\".*$");
 
 	private SingleData<?> data;
 
@@ -47,8 +48,16 @@ public class SingleValue implements IValue {
 	@Override
 	public int from(String json, int position, long timeStamp) throws JsonException {
 		String sub = json.substring(position);
+		Matcher m = VALUE.matcher(sub);
+		if (!m.matches()) {
+			throw new JsonException("Valid single value can't be detected");
+		}
+
+		sub = m.group(1);
+		sub = sub.trim();
+
 		String group = null;
-		Matcher m = STRING.matcher(sub);
+		m = STRING.matcher(sub);
 		if (m.matches()) {
 			group = m.group(1);
 			group = group.replace("\\\"", "\"");
@@ -79,7 +88,7 @@ public class SingleValue implements IValue {
 			this.data = null;
 			return position + group.length();
 		} else {
-			throw new JsonException("Valid single value vcan't be detected");
+			throw new JsonException("Valid single value can't be detected");
 		}
 	}
 

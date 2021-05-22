@@ -114,7 +114,7 @@ public class Constants {
 		public static final String SOLVIS_SCREEN = "SolvisScreen." + Files.GRAFIC_SUFFIX;
 
 		public static final Pattern ERROR_SCREEN_REGEX = Pattern
-				.compile(Files.ERROR_SCREEN_PREFIX + "\\d+\\." + Files.GRAFIC_SUFFIX);
+				.compile(Files.ERROR_SCREEN_PREFIX + "\\d+?\\." + Files.GRAFIC_SUFFIX);
 		public static final int MAX_NUMBER_OF_ERROR_SCREENS = 100;
 		public static final String CSV_ALL_CHANNELS = "SolvisAllChannels.csv";
 		public static final String CSV_DOCUMENTATION = "SolvisDocumentation.csv";

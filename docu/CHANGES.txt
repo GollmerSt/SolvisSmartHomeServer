@@ -1,5 +1,11 @@
 A E N D E R U N G E N
 
+Version 01.03.01
+
+    22.05.2021  Erst mit einer neuen JDK-Versionwurde ein Fehler in einer regulären Expression
+                sichtbar, der schon seit Anbeginn vorhanden war.
+                
+
 Version 01.03.00
 
     17.05.2021  CSV-File noch um die Dokumentation über den Serverbefehl SELECT_SCREEN azswählbaren
