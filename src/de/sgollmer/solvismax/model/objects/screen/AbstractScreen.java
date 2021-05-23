@@ -35,6 +35,11 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	public String getId() {
 		return this.id;
 	}
+	
+	@Override
+	public String getName() {
+		return this.id;
+	}
 
 	/**
 	 * This method tests whether it is the Screen class.
@@ -63,8 +68,6 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	public abstract AbstractScreen getBackScreen(Solvis solvis);
 
 	public abstract AbstractScreen getPreviousScreen(Solvis solvis);
-
-	public abstract Configuration getConfigurationMasks();
 
 	public abstract ISelectScreen getSelectScreen();
 
@@ -192,10 +195,10 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	@Override
 	public boolean isConfigurationVerified(AbstractScreen screen) {
-		if ((this.configuration == null) || (screen.getConfigurationMasks() == null)) {
+		if ((this.configuration == null) || (screen.getConfiguration() == null)) {
 			return false;
 		} else {
-			return this.configuration.isVerified(screen.getConfigurationMasks());
+			return this.configuration.isVerified(screen.getConfiguration());
 		}
 	}
 

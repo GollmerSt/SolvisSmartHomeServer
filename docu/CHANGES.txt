@@ -2,13 +2,17 @@ A E N D E R U N G E N
 
 Version 01.03.01
 
-    22.05.2021  Erst mit einer neuen JDK-Versionwurde ein Fehler in einer regulären Expression
-                sichtbar, der schon seit Anbeginn vorhanden war.
+    22.05.2021  Eine neue FHEM-Installation zeigte ein Problem des Servers bei JSON_Paketen mit
+                Floating-Point-Werten.
+                
+    23.05.2021  Bugfix: Wiederholte man beim Fhem-Client die Define-Routine, beispielsweise bei
+                Änderung der Server-IP-Adresse, wiederholte der Client anschließend immer wieder
+                den Verbindungswiederaufbau.
                 
 
 Version 01.03.00
 
-    17.05.2021  CSV-File noch um die Dokumentation über den Serverbefehl SELECT_SCREEN azswählbaren
+    17.05.2021  CSV-File noch um die Dokumentation über den Serverbefehl SELECT_SCREEN auswählbaren
                 Screens ergänzt und dabei aucgh den Namen dieses Csv-Files geändert.
                 
                 Synchronisierung funktionierte nach dem Ausbau der Correction nicht mehr, gefixt.

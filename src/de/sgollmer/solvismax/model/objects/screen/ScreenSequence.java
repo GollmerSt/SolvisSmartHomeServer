@@ -74,11 +74,6 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public String getName() {
-		return this.id;
-	}
-
-	@Override
 	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
 
 		if (this.previousId != null) {
@@ -161,11 +156,6 @@ public class ScreenSequence extends AbstractScreen {
 	@Override
 	public AbstractScreen getPreviousScreen(Solvis solvis) {
 		return (AbstractScreen) OfConfigs.get(solvis, this.previousScreen);
-	}
-
-	@Override
-	public Configuration getConfigurationMasks() {
-		return this.configuration;
 	}
 
 	@Override

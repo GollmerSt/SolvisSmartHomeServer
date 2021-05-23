@@ -104,11 +104,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public String getName() {
-		return this.getId();
-	}
-
-	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof Screen) {
 			return this.getId().equals(((Screen) obj).getId());
@@ -742,11 +737,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public OfConfigs<AbstractScreen> getBackScreen() {
 		return this.backScreen;
-	}
-
-	@Override
-	public Configuration getConfigurationMasks() {
-		return this.configuration;
 	}
 
 	@Override

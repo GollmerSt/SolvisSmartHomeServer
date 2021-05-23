@@ -14,7 +14,7 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public class AllChannelAssignments {
 
-	private static final String XML_CANNEL_ASSIGNMENT = "Assignment";
+	private static final String XML_CHANNEL_ASSIGNMENT = "Assignment";
 
 	private final Map<String, OfConfigs<ChannelAssignment>> configurations;
 
@@ -45,7 +45,7 @@ public class AllChannelAssignments {
 			String id = name.getLocalPart();
 
 			switch (id) {
-				case XML_CANNEL_ASSIGNMENT:
+				case XML_CHANNEL_ASSIGNMENT:
 					return new ChannelAssignment.Creator(id, this.getBaseCreator());
 			}
 			return null;
@@ -54,7 +54,7 @@ public class AllChannelAssignments {
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
 			switch (creator.getId()) {
-				case XML_CANNEL_ASSIGNMENT:
+				case XML_CHANNEL_ASSIGNMENT:
 					ChannelAssignment assignment = (ChannelAssignment) created;
 					String name = assignment.getName();
 					OfConfigs<ChannelAssignment> config = this.configurations.get(name);

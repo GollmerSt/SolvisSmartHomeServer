@@ -32,6 +32,8 @@
 #   00.02.19    13.02.2021  SCMP77              Fixed: Limit des Connection-Intervalls hatte keine  Wirkung
 #   00.02.20    26.02.2021  SCMP77              testing -> stable
 #   00.02.21    26.02.2021  SCMP77              supports server format version >= 2.0
+#   00.02.22    26.02.2021  SCMP77              Eine define-Anweisung im laufenden Betrieb bewirkte eine ständige
+#                                                 Verbindungsaufbauwiederholung, da die Fehlerbehandlung unvollständig war.
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -269,6 +271,10 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
     my @args = split( '[ \t][ \t]*', $def );
     my $url  = $args[2];
     my $name = $self->{NAME};
+    
+    if ( defined($self->{DeviceName}) && DevIo_IsOpen($self) ) {
+        DevIo_CloseDev($self);
+    }
 
 
     $self->{DeviceName}  = $url;    #Für DevIO, Name fest vorgegeben
@@ -359,14 +365,13 @@ sub Notify {
 sub Connect {
     my $self = shift;
     my $reopen = shift;
-    my $byReady = shift;
 
     my $connectedSub = $reopen?\&SendReconnectionData:\&SendConnectionData;
 
-    if (defined(DevIo_IsOpen($self))) {
+    if (DevIo_IsOpen($self)) {
         Log( $self, 3, "Connection wasn't closed");
-
-        DevIo_CloseDev($self);
+        ReconnectAfterDismiss( $self, GetNextConnectionInterval( $self ) );
+        return;
     }
 
     $self->{helper}{BUFFER} = '';
@@ -390,9 +395,12 @@ sub ConnectionCallback {
     
     if ( defined($error)) {
         Log( $self, 4, "Connection not successfull, error := $error ");
+        ReconnectAfterDismiss( $self, GetNextConnectionInterval( $self ) );
     }
 
 }
+
+
 
 
 
@@ -450,6 +458,22 @@ sub SendReconnectionData {
 } # end SendReconnectionData
 
 
+###############################################
+#
+#       Get new connection interval after error or unsuccessfull onnection
+
+sub GetNextConnectionInterval {
+    
+    my $self = shift;
+    
+    if ( $self->{helper}{ConnectionInterval} < MAX_CONNECTION_INTERVAL ) {
+        $self->{helper}{ConnectionInterval} += MIN_CONNECTION_INTERVAL;
+    }
+
+    return $self->{helper}{ConnectionInterval};
+}
+
+
 
 ################################################
 #
@@ -465,11 +489,7 @@ sub Ready {
         return;
     }
     
-    if ( $self->{helper}{ConnectionInterval} < MAX_CONNECTION_INTERVAL ) {
-        $self->{helper}{ConnectionInterval} += MIN_CONNECTION_INTERVAL;
-    }
-
-    $self->{helper}{NEXT_OPEN} = $now + $self->{helper}{ConnectionInterval};
+    $self->{helper}{NEXT_OPEN} = $now + GetNextConnectionInterval( $self );
 
     Log( $self, 4, 'Reconnection try');
     return Connect($self, 1) ; # reopen
@@ -741,6 +761,10 @@ sub ReconnectAfterDismiss {
 
     return;
 } # end ReconnectAfterDismiss
+
+
+
+
 
 
 
@@ -2032,7 +2056,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "stable",
   "license": "GPL_2",
-  "version": "v00.02.21",
+  "version": "v00.02.22",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

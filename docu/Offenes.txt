@@ -14,6 +14,8 @@ Offene Aufgaben:
 27. Wenn Anlage ausgeschaltet war und um den Stundenwechsel wieder eingeschaltet wird, erfolgt ein
      Reading-Update auch für die Kanäle, welche noch nicht aktualisiert wurden. Dadurch ein unrealistischer
      Temperaturverlauf dargestellt.
+     
+
 
 Erledigt:
 
