@@ -24,7 +24,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class UserSelection implements ISelectScreen {
+public class UserSelectionStrategy implements ISelectScreenStrategy {
 
 	private static final String XML_RECTANGLES = "Rectangle";
 	private static final String XML_UPPER = "Upper";
@@ -33,7 +33,7 @@ public class UserSelection implements ISelectScreen {
 	private final Collection<Digit> digits;
 	private final String waitTimeAfterLastDigitRefId;
 
-	private UserSelection(final Collection<Digit> digits, final String waitTimeAfterLastDigitRefId) {
+	private UserSelectionStrategy(final Collection<Digit> digits, final String waitTimeAfterLastDigitRefId) {
 		this.digits = digits;
 		this.waitTimeAfterLastDigitRefId = waitTimeAfterLastDigitRefId;
 	}
@@ -90,7 +90,7 @@ public class UserSelection implements ISelectScreen {
 		return success;
 	}
 
-	public static class Creator extends CreatorByXML<UserSelection> {
+	public static class Creator extends CreatorByXML<UserSelectionStrategy> {
 
 		private final Collection<Digit> digits = new ArrayList<>();
 		private String waitTimeAfterLastDigitRefId;
@@ -108,8 +108,8 @@ public class UserSelection implements ISelectScreen {
 		}
 
 		@Override
-		public UserSelection create() throws XmlException, IOException {
-			return new UserSelection(this.digits, this.waitTimeAfterLastDigitRefId);
+		public UserSelectionStrategy create() throws XmlException, IOException {
+			return new UserSelectionStrategy(this.digits, this.waitTimeAfterLastDigitRefId);
 		}
 
 		@Override

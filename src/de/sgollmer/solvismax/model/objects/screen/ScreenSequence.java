@@ -26,6 +26,7 @@ import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
+import de.sgollmer.solvismax.model.objects.TouchPointStrategy;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
@@ -55,20 +56,15 @@ public class ScreenSequence extends AbstractScreen {
 
 	private final boolean wrapArround;
 
-	private final ISelectScreen selectScreen;
-	private final String preparationId;
 	private final List<ScreenRef> screenRefs;
 
 	private Preparation preparation = null;
-	private OfConfigs<AbstractScreen> previousScreen;
 
 	private ScreenSequence(String id, String previousId, boolean wrapArround, Configuration configurationMasks,
-			ISelectScreen selectScreen, String preparationId, List<ScreenRef> screenRefs) {
-		super(id, previousId, configurationMasks);
+			ISelectScreenStrategy selectScreenStrategy, String preparationId, List<ScreenRef> screenRefs) {
+		super(id, previousId, preparationId, configurationMasks, selectScreenStrategy);
 		this.wrapArround = wrapArround;
 
-		this.selectScreen = selectScreen;
-		this.preparationId = preparationId;
 		this.screenRefs = screenRefs;
 
 	}
@@ -76,36 +72,10 @@ public class ScreenSequence extends AbstractScreen {
 	@Override
 	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
 
-		if (this.previousId != null) {
-			OfConfigs<AbstractScreen> screen = description.getScreens().get(this.previousId);
-			if (screen == null) {
-				throw new ReferenceException("Screen reference < " + this.previousId + " > not found");
-			}
-			if (!AbstractScreen.isScreen(screen)) {
-				throw new ReferenceException(
-						"Screen reference < " + this.previousId + " > must be an element <Screen>.");
-			}
-
-			this.previousScreen = screen;
-
-			for (AbstractScreen ps : screen.getElements()) {
-				ps.addNextScreen(this);
-			}
-		}
+		super.assign(description);
 
 		for (ScreenRef screenRef : this.screenRefs) {
 			screenRef.assign(description);
-		}
-
-		if (this.preparationId != null) {
-			this.preparation = description.getPreparations().get(this.preparationId);
-			if (this.preparation == null) {
-				throw new AssignmentException("Preparation of id <" + this.preparationId + "> not found.");
-			}
-		}
-
-		if (this.selectScreen != null) {
-			this.selectScreen.assign(description);
 		}
 
 	}
@@ -154,16 +124,6 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public AbstractScreen getPreviousScreen(Solvis solvis) {
-		return (AbstractScreen) OfConfigs.get(solvis, this.previousScreen);
-	}
-
-	@Override
-	public ISelectScreen getSelectScreen() {
-		return this.selectScreen;
-	}
-
-	@Override
 	public boolean gotoLearning(Solvis solvis, AbstractScreen current, Collection<IScreenPartCompare> descriptions)
 			throws IOException, TerminationException {
 		AbstractScreen previous = this.getPreviousScreen(solvis);
@@ -181,7 +141,7 @@ public class ScreenSequence extends AbstractScreen {
 		if (!preparationSuccess) {
 			throw new LearningException("Prepartaion not succesfull, will be tried again");
 		}
-		this.selectScreen.execute(solvis, this);
+		this.getSelectScreenStrategy().execute(solvis, this);
 		SolvisScreen currentScreen = solvis.getCurrentScreen();
 		AbstractScreen start = SolvisScreen.get(currentScreen);
 		if (start != null && !isContaining(start, solvis)) {
@@ -209,12 +169,12 @@ public class ScreenSequence extends AbstractScreen {
 			if (this.isToBeLearning(solvis)) {
 				TouchPoint touch;
 				if (down) {
-					touch = current.getSequenceDown();
+					touch = current.getSequenceDown().getTouchPoint();
 					if (touch == null) {
 						down = false;
 					}
 				} else {
-					touch = current.getSequenceUp();
+					touch = current.getSequenceUp().getTouchPoint();
 					if (touch == null) {
 						throw new LearningException("Not all screens in the sequence could be learned. XML-Error?");
 					}
@@ -292,7 +252,7 @@ public class ScreenSequence extends AbstractScreen {
 		private boolean wrapArround = false;
 
 		private Configuration configurationMasks;
-		private ISelectScreen selectScreen;
+		private ISelectScreenStrategy selectScreen;
 		private String preparationId = null;
 		private List<ScreenRef> screenRefs = new ArrayList<>();
 
@@ -353,7 +313,7 @@ public class ScreenSequence extends AbstractScreen {
 					this.screenRefs.add(screenRef);
 					break;
 				case XML_TOUCH_POINT:
-					this.selectScreen = (ISelectScreen) created;
+					this.selectScreen = new TouchPointStrategy((TouchPoint) created);
 			}
 
 		}
@@ -391,7 +351,7 @@ public class ScreenSequence extends AbstractScreen {
 					}
 				}
 				Screen screen = (Screen) screenList.get(ix);
-				ISelectScreen selectScreen = delta < 0 ? screen.getSequenceUp() : screen.getSequenceDown();
+				ISelectScreenStrategy selectScreen = delta < 0 ? screen.getSequenceUp() : screen.getSequenceDown();
 
 				allPreviousScreenTouches.add(new ScreenTouch(screen, selectScreen, screen.getPreparation()));
 			}

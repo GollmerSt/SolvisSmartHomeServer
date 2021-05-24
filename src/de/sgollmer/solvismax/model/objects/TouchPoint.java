@@ -15,13 +15,12 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
-import de.sgollmer.solvismax.model.objects.screen.ISelectScreen;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class TouchPoint implements IAssigner, ISelectScreen {
+public class TouchPoint implements IAssigner {
 
 	private static final String XML_COORDINATE = "Coordinate";
 
@@ -97,14 +96,12 @@ public class TouchPoint implements IAssigner, ISelectScreen {
 		return this.coordinate;
 	}
 
-	@Override
 	public int getSettingTime(Solvis solvis) {
 		return solvis.getDuration(
 				this.pushTimeId).getTime_ms() + solvis.getDuration(this.releaseTimeId).getTime_ms()
 				+ solvis.getMaxResponseTime();
 	}
 
-	@Override
 	public boolean execute(Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException {
 		solvis.send(this);
 		return true;

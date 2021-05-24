@@ -6,7 +6,7 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
 
-public interface ISelectScreen extends IAssigner{
+public interface ISelectScreenStrategy extends IAssigner{
 	public boolean execute( Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException;
 	public int getSettingTime(Solvis solvis);
 }

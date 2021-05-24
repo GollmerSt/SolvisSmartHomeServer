@@ -137,7 +137,7 @@ public class FallBack implements IAssigner {
 				return;
 			}
 
-			screen.getSelectScreen().execute(solvis, SolvisScreen.get(solvis.getCurrentScreen()));
+			screen.getSelectScreenStrategy().execute(solvis, SolvisScreen.get(solvis.getCurrentScreen()));
 		}
 
 		private static class Creator extends de.sgollmer.solvismax.model.objects.screen.ScreenRef.Creator {

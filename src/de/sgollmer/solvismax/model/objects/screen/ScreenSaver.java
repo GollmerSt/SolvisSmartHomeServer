@@ -152,7 +152,7 @@ public class ScreenSaver implements IAssigner {
 			if (solvis != null) {
 				this.frameThickness = solvis.getUnit().getIgnoredFrameThicknesScreenSaver();
 			} else {
-				this.frameThickness = Constants.SCREEN_SAVER_IGNORED_FRAME_SIZE;
+				this.frameThickness = Constants.SCREEN_IGNORED_FRAME_SIZE;
 			}
 
 		}
@@ -171,7 +171,7 @@ public class ScreenSaver implements IAssigner {
 
 			int fs = this.frameThickness;
 			scanArea = new Rectangle(new Coordinate(fs, fs),
-					new Coordinate(image.getWidth() - 2 * fs, image.getHeight() - 2 * fs));
+					new Coordinate(image.getWidth() - 2 * fs - 1, image.getHeight() - 2 * fs - 1));
 
 			Pattern pattern = new Pattern(image, scanArea);
 

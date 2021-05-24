@@ -32,6 +32,7 @@ import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.Preparation;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
+import de.sgollmer.solvismax.model.objects.TouchPointStrategy;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
@@ -60,37 +61,33 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private final boolean ignoreChanges;
 	private final boolean mustSave;
 
-	private final ISelectScreen selectScreen;
-	private final TouchPoint sequenceUp;
-	private final TouchPoint sequenceDown;
+	private final TouchPointStrategy sequenceUp;
+	private final TouchPointStrategy sequenceDown;
 
 	private final Collection<Identification> identifications;
 
 	private final Collection<Rectangle> ignoreRectangles;
-	private final String preparationId;
 	private final String lastPreparationId;
 	private Preparation lastPreparation = null;
 	private final boolean noRestore;
 
-	private OfConfigs<AbstractScreen> previousScreen = null;
 	private OfConfigs<AbstractScreen> backScreen = null;
 
 	private Screen(final String id, final String sortId, final String previousId, final String backId,
 			final boolean ignoreChanges, final boolean mustSave, final Configuration configurationMasks,
-			final ISelectScreen selectScreen, final TouchPoint sequenceUp, final TouchPoint sequenceDown,
-			final Collection<Identification> identifications, final Collection<Rectangle> ignoreRectangles,
-			final String preparationId, final String lastPreparationId, final boolean noRestore) {
-		super(id, previousId, configurationMasks);
+			final ISelectScreenStrategy selectScreenStrategy, final TouchPointStrategy sequenceUp,
+			final TouchPointStrategy sequenceDown, final Collection<Identification> identifications,
+			final Collection<Rectangle> ignoreRectangles, final String preparationId, final String lastPreparationId,
+			final boolean noRestore) {
+		super(id, previousId, preparationId, configurationMasks,selectScreenStrategy);
 		this.sortId = sortId;
 		this.backId = backId;
 		this.ignoreChanges = ignoreChanges;
 		this.mustSave = mustSave;
-		this.selectScreen = selectScreen;
 		this.sequenceUp = sequenceUp;
 		this.sequenceDown = sequenceDown;
 		this.identifications = identifications;
 		this.ignoreRectangles = ignoreRectangles;
-		this.preparationId = preparationId;
 		this.lastPreparationId = lastPreparationId;
 		this.noRestore = noRestore;
 	}
@@ -119,6 +116,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public void assign(final SolvisDescription description)
 			throws ReferenceException, XmlException, AssignmentException {
+
+		super.assign(description);
+
 		for (Identification identification : this.identifications) {
 			identification.assign(description, this);
 		}
@@ -129,20 +129,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				throw new ReferenceException("Screen reference < " + this.backId + " > not found");
 			}
 		}
-		if (this.previousId != null) {
-			OfConfigs<AbstractScreen> screen = description.getScreens().get(this.previousId);
-			if (screen == null) {
-				throw new ReferenceException("Screen reference <" + this.previousId + "> not found");
-			}
-			this.previousScreen = screen;
-
-			for (AbstractScreen ps : this.previousScreen.getElements()) {
-				ps.addNextScreen(this);
-			}
-		}
-		if (this.selectScreen != null) {
-			this.selectScreen.assign(description);
-		}
 
 		if (this.sequenceDown != null) {
 			this.sequenceDown.assign(description);
@@ -150,14 +136,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 		if (this.sequenceUp != null) {
 			this.sequenceUp.assign(description);
-		}
-
-		if (this.preparationId != null) {
-			this.preparation = description.getPreparations().get(this.preparationId);
-			if (this.preparation == null) {
-				throw new ReferenceException("Preparation of reference < " + this.preparationId + " > not found");
-			}
-			this.preparation.assign(description);
 		}
 
 		if (this.lastPreparationId != null) {
@@ -230,22 +208,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		return true;
 	}
 
-	/**
-	 * @return the previousScreen
-	 */
-	@Override
-	public AbstractScreen getPreviousScreen(final Solvis solvis) {
-		return (AbstractScreen) OfConfigs.get(solvis, this.previousScreen);
-	}
-
-	/**
-	 * @return the touchPoint
-	 */
-	@Override
-	public ISelectScreen getSelectScreen() {
-		return this.selectScreen;
-	}
-
 	public static class Creator extends CreatorByXML<Screen> {
 
 		private String id;
@@ -255,9 +217,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private boolean ignoreChanges;
 		private boolean mustSave = false;
 		private Configuration configurationMasks;
-		private ISelectScreen selectScreen = null;
-		private TouchPoint sequenceUp = null;
-		private TouchPoint sequenceDown = null;
+		private ISelectScreenStrategy selectScreenStrategy = null;
+		private TouchPointStrategy sequenceUp = null;
+		private TouchPointStrategy sequenceDown = null;
 		private Collection<Identification> identifications = new ArrayList<>();
 		private List<Rectangle> ignoreRectangles = null;
 		private String preparationId = null;
@@ -316,7 +278,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					}
 				});
 			return new Screen(this.id, this.sortId, this.previousId, this.backId, this.ignoreChanges, this.mustSave,
-					this.configurationMasks, this.selectScreen, this.sequenceUp, this.sequenceDown,
+					this.configurationMasks, this.selectScreenStrategy, this.sequenceUp, this.sequenceDown,
 					this.identifications, this.ignoreRectangles, this.preparationId, this.lastPreparationId,
 					this.noRestore);
 		}
@@ -332,7 +294,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				case XML_DOWN_TOUCH_POINT:
 					return new TouchPoint.Creator(id, this.getBaseCreator());
 				case XML_USER_SELECTION:
-					return new UserSelection.Creator(id, this.getBaseCreator());
+					return new UserSelectionStrategy.Creator(id, this.getBaseCreator());
 				case XML_IGNORE_RECTANGLE:
 					return new Rectangle.Creator(id, this.getBaseCreator());
 				case XML_IDENTIFICATION:
@@ -352,14 +314,16 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					this.configurationMasks = (Configuration) created;
 					break;
 				case XML_TOUCH_POINT:
+					this.selectScreenStrategy = new TouchPointStrategy((TouchPoint) created);
+					break;
 				case XML_USER_SELECTION:
-					this.selectScreen = (ISelectScreen) created;
+					this.selectScreenStrategy = (ISelectScreenStrategy) created;
 					break;
 				case XML_UP_TOUCH_POINT:
-					this.sequenceUp = (TouchPoint) created;
+					this.sequenceUp = new TouchPointStrategy((TouchPoint) created);
 					break;
 				case XML_DOWN_TOUCH_POINT:
-					this.sequenceDown = (TouchPoint) created;
+					this.sequenceDown = new TouchPointStrategy((TouchPoint) created);
 					break;
 				case XML_IDENTIFICATION:
 					this.identifications.add((Identification) created);
@@ -742,17 +706,17 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	protected void addToPreviousScreenTouches(final AbstractScreen next,
 			final Collection<ScreenTouch> allPreviousScreenTouches, final Solvis solvis) {
-		ISelectScreen selectScreen = next.getSelectScreen();
+		ISelectScreenStrategy selectScreenStrategy = next.getSelectScreenStrategy();
 		Preparation preparation = next.getPreparation();
 
-		allPreviousScreenTouches.add(new ScreenTouch(this, selectScreen, preparation));
+		allPreviousScreenTouches.add(new ScreenTouch(this, selectScreenStrategy, preparation));
 	}
 
-	public TouchPoint getSequenceUp() {
+	public TouchPointStrategy getSequenceUp() {
 		return this.sequenceUp;
 	}
 
-	public TouchPoint getSequenceDown() {
+	public TouchPointStrategy getSequenceDown() {
 		return this.sequenceDown;
 	}
 

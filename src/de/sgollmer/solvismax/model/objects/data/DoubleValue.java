@@ -80,9 +80,10 @@ public class DoubleValue extends SingleData<Double> {
 		if (cmp == null) {
 			return false;
 		}
-		double maxEqualDiff = Math.abs(this.value) * Constants.PRECISION_DOUBLE;
+		double max = Math.max(Math.abs(this.value), Math.abs(cmp));
+		double maxEqualDiff = max * Constants.PRECISION_DOUBLE;
 		double diff = this.value - cmp;
-		return Math.abs(diff) < maxEqualDiff;
+		return Math.abs(diff) <= maxEqualDiff;
 	}
 
 	@Override

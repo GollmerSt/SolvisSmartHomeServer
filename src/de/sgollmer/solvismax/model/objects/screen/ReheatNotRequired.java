@@ -1,145 +1,163 @@
+/************************************************************************
+ * 
+ * $Id$
+ *
+ * 
+ ************************************************************************/
+
 package de.sgollmer.solvismax.model.objects.screen;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
-import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ReferenceException;
-import de.sgollmer.solvismax.error.TerminationException;
+import javax.imageio.ImageIO;
+
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
-import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
-import de.sgollmer.solvismax.model.objects.configuration.Configuration;
-import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
-import de.sgollmer.xmllibrary.XmlException;
 
-public class ReheatNotRequired extends AbstractScreen {
+public class ReheatNotRequired {
 
-	private final String backId;
+	@SuppressWarnings("unused")
+	private static final ILogger logger = LogManager.getInstance().getLogger(ReheatNotRequired.class);
 
-	private OfConfigs<AbstractScreen> previousScreen = null;
-	private OfConfigs<AbstractScreen> backScreen = null;
-
-	protected ReheatNotRequired(final String id, final String previousId, final String backId,
-			final Configuration configurationMasks) {
-		super(id, previousId, configurationMasks);
-		this.backId = backId;
+	private ReheatNotRequired(int timeHeight, Rectangle timeDateRectangle, Coordinate maxGraficSize) {
 	}
 
-	@Override
-	public void addLearnScreenGrafics(Collection<IScreenPartCompare> learnGrafics, Solvis solvis) {
+	public static boolean is(SolvisScreen screen) {
+		MyImage original = SolvisScreen.getImage(screen);
+		return is(original);
 	}
 
-	@Override
-	public String getElementType() {
-		return this.getClass().getSimpleName();
-	}
+	private static boolean is(MyImage image) {
 
-	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+		int fs = Constants.SCREEN_IGNORED_FRAME_SIZE;
 
-		if (this.backId != null) {
-			this.backScreen = description.getScreens().get(this.backId);
-			if (this.backScreen == null) {
-				throw new ReferenceException("Screen reference < " + this.backId + " > not found");
+		Rectangle scanArea = new Rectangle(new Coordinate(fs, fs),
+				new Coordinate(image.getWidth() - 2 * fs - 1, image.getHeight() - 2 * fs - 1));
+
+		MyImage scannedImage = new MyImage(image, scanArea, false);
+		scannedImage.createHistograms(false);
+
+		int areasCnt = 0;
+		boolean found = false;
+		int minY = -1;
+		int maxY = -1;
+
+		for (int y = 0; y < scannedImage.getHeight(); ++y) {
+			boolean black = scannedImage.getHistogramY().get(y) > 0;
+			if (black & !found) {
+				found = true;
+				++areasCnt;
+			} else if (!black && found) {
+				found = false;
+			}
+			if (found && areasCnt == 3) {
+				if (minY < 0) {
+					minY = y;
+				}
+				maxY = y;
 			}
 		}
-		if (this.previousId != null) {
-			OfConfigs<AbstractScreen> screen = description.getScreens().get(this.previousId);
-			if (screen == null) {
-				throw new ReferenceException("Screen reference <" + this.previousId + "> not found");
-			}
-			this.previousScreen = screen;
 
-			for (AbstractScreen ps : this.previousScreen.getElements()) {
-				ps.addNextScreen(this);
+		if (areasCnt != 3) {
+			return false;
+		}
+
+		scanArea = new Rectangle(new Coordinate(fs, minY), new Coordinate(scannedImage.getWidth() - 1 - 2 * fs, maxY));
+
+		scannedImage = new MyImage(scannedImage, scanArea, false);
+		scannedImage.createHistograms(false);
+
+		int minX = -1;
+		int maxX = -1;
+		areasCnt = 0;
+		found = false;
+
+		for (int x = 0; x < scannedImage.getWidth(); ++x) {
+			boolean black = scannedImage.getHistogramX().get(x) > 0;
+			if (black & !found) {
+				found = true;
+				++areasCnt;
+			} else if (!black && found) {
+				found = false;
+			}
+			if (found && areasCnt == 1) {
+				if (minX < 0) {
+					minX = x;
+				}
+				maxX = x;
 			}
 		}
 
+		if (areasCnt < 3) {
+			return false;
+		}
+
+		return maxX - minX == maxY - minY;
 	}
 
-	@Override
-	public boolean isScreen() {
-		return true;
-	}
+	public static void main(String[] args) {
 
-	@Override
-	public boolean isMatchingScreen(MyImage image, Solvis solvis) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		File parent = new File("testFiles\\images");
 
-	@Override
-	public boolean isMatchingWOGrafics(MyImage image, Solvis solvis) {
-		return isMatchingScreen(image, solvis);
-	}
+		final class Test {
+			private final boolean soll;
+			private final String name;
 
-	@Override
-	public OfConfigs<AbstractScreen> getBackScreen() {
-		return this.backScreen;
-	}
+			private Test(boolean soll, String name) {
+				this.soll = soll;
+				this.name = name;
+			}
+		}
 
-	@Override
-	public AbstractScreen getBackScreen(Solvis solvis) {
-		// TODO Auto-generated method stub
-		return this.backScreen.get(solvis);
-	}
+		Collection<Test> names = Arrays.asList( //
+				new Test(false, "Bildschirmschoner V1 Artefakte.bmp"), //
+				new Test(true, "Nachheizen nicht erforderlich.png"),
+				new Test(true, "Nachheizen nicht erforderlich - mit Artefakten.png")//
+		);
 
-	@Override
-	public AbstractScreen getPreviousScreen(Solvis solvis) {
-		return this.previousScreen.get(solvis);
-	}
+		BufferedImage image = null;
 
-	@Override
-	public ISelectScreen getSelectScreen() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public boolean gotoLearning(Solvis solvis, AbstractScreen current, Collection<IScreenPartCompare> desscriptions)
-			throws IOException, TerminationException, LearningException {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		boolean failed = false;
 
-	@Override
-	public void learn(Solvis solvis, Collection<IScreenPartCompare> descriptions)
-			throws IOException, TerminationException, LearningException {
-		// TODO Auto-generated method stub
+		int i = 0;
+		for (Iterator<Test> it = names.iterator(); it.hasNext();) {
+			Test test = it.next();
+			File file = new File(parent, test.name);
+			try {
+				image = ImageIO.read(file);
+			} catch (IOException e) {
+				System.err.println("File: " + file.getName());
+				e.printStackTrace();
+			}
 
-	}
+			MyImage myImage = new MyImage(image);
 
-	@Override
-	public GotoStatus goTo(Solvis solvis) throws IOException, TerminationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+			boolean notRequired = is(myImage);
 
-	@Override
-	public boolean isIgnoreChanges() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+			boolean pass = notRequired == test.soll;
+			if (!pass) {
+				failed = true;
+			}
 
-	@Override
-	public Collection<Rectangle> getIgnoreRectangles() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+			System.out.println("" + ++i + ". " + file.getName() + " SolvisStatus: " + Boolean.toString(notRequired)
+					+ ", Soll: " + Boolean.toString(test.soll) + ", Check: " + pass);
+		}
 
-	@Override
-	public boolean isToBeLearning(Solvis solvis) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	protected void addToPreviousScreenTouches(AbstractScreen next, Collection<ScreenTouch> allPreviousScreenTouches,
-			Solvis solvis) {
-		// TODO Auto-generated method stub
+		if (failed) {
+			System.err.println("Test failed");
+		} else {
+			System.out.println("Test pass");
+		}
 
 	}
 

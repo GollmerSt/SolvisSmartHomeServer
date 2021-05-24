@@ -9,6 +9,8 @@ Version 01.03.01
                 Änderung der Server-IP-Adresse, wiederholte der Client anschließend immer wieder
                 den Verbindungswiederaufbau.
                 
+    24.05.2021  Bugfix: Echo-Inhibit funktionierte wegen eines Rundungsfehlers nicht immer.
+                
 
 Version 01.03.00
 

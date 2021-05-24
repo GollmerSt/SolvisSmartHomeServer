@@ -31,7 +31,7 @@ public class Constants {
 	public static final int MIN_TOUCH_TIME = 100;
 	public static final int MAX_WAIT_TIME_ON_STARTUP = 120000;
 
-	public static final int SCREEN_SAVER_IGNORED_FRAME_SIZE = 3;
+	public static final int SCREEN_IGNORED_FRAME_SIZE = 3;
 	public static final int CRYPT_PREVIOUS = 233;
 	/**
 	 * Max. number of tries, to get to the necessarry screen

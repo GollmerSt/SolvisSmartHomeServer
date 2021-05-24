@@ -7,35 +7,45 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
+import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Preparation;
+import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
+import de.sgollmer.xmllibrary.XmlException;
 
 public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IElement<AbstractScreen> {
 
 	protected final String id;
 	protected final String previousId;
+	protected final String preparationId;
 	protected final Configuration configuration;
 	protected List<AbstractScreen> nextScreens = new ArrayList<>(3);
 	protected List<ScreenTouch> allPreviousScreenTouches = null;
 	protected Preparation preparation = null;
+	private final ISelectScreenStrategy selectScreenStrategy;
 
-	protected AbstractScreen(String id, String previousId, Configuration configurationMasks) {
+	private OfConfigs<AbstractScreen> previousScreen = null;
+
+	protected AbstractScreen(String id, String previousId, final String preparationId, Configuration configurationMasks,
+			final ISelectScreenStrategy selectScreenStrategy) {
 		this.id = id;
 		this.previousId = previousId;
+		this.preparationId = preparationId;
 		this.configuration = configurationMasks;
+		this.selectScreenStrategy = selectScreenStrategy;
 	}
 
 	public String getId() {
 		return this.id;
 	}
-	
+
 	@Override
 	public String getName() {
 		return this.id;
@@ -67,9 +77,13 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	public abstract AbstractScreen getBackScreen(Solvis solvis);
 
-	public abstract AbstractScreen getPreviousScreen(Solvis solvis);
+	public final AbstractScreen getPreviousScreen(final Solvis solvis) {
+		return (AbstractScreen) OfConfigs.get(solvis, this.previousScreen);
+	}
 
-	public abstract ISelectScreen getSelectScreen();
+	public ISelectScreenStrategy getSelectScreenStrategy() {
+		return this.selectScreenStrategy;
+	}
 
 	public abstract boolean gotoLearning(Solvis solvis, AbstractScreen current,
 			Collection<IScreenPartCompare> desscriptions) throws IOException, TerminationException, LearningException;
@@ -144,12 +158,12 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 
 	public static class ScreenTouch {
 		private final AbstractScreen screen;
-		private final ISelectScreen selectScreen;
+		private final ISelectScreenStrategy selectScreenStrategy;
 		private final Preparation preparation;
 
-		ScreenTouch(AbstractScreen previous, ISelectScreen selectScreen, Preparation preparation) {
+		ScreenTouch(AbstractScreen previous, ISelectScreenStrategy selectScreenStrategy, Preparation preparation) {
 			this.screen = previous;
-			this.selectScreen = selectScreen;
+			this.selectScreenStrategy = selectScreenStrategy;
 			this.preparation = preparation;
 		}
 
@@ -162,13 +176,13 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 		}
 
 		boolean selectScreen(Solvis solvis, Screen startingScreen) throws IOException, TerminationException {
-			return this.selectScreen.execute(solvis, startingScreen);
+			return this.selectScreenStrategy.execute(solvis, startingScreen);
 		}
 
 		boolean execute(Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException {
 			boolean success = Preparation.prepare(this.preparation, solvis);
 			if (success) {
-				this.selectScreen.execute(solvis, startingScreen);
+				this.selectScreenStrategy.execute(solvis, startingScreen);
 			}
 			return success;
 		}
@@ -309,6 +323,41 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	@Override
 	public Configuration getConfiguration() {
 		return this.configuration;
+	}
+
+	@Override
+	public void assign(final SolvisDescription description)
+			throws ReferenceException, XmlException, AssignmentException {
+		if (this.previousId != null) {
+			OfConfigs<AbstractScreen> screen = description.getScreens().get(this.previousId);
+			if (screen == null) {
+				throw new ReferenceException("Screen reference <" + this.previousId + "> not found");
+			}
+
+			if (!this.isScreen() && !AbstractScreen.isScreen(screen)) {
+				throw new ReferenceException(
+						"Screen reference < " + this.previousId + " > must be an element <Screen>.");
+			}
+
+			this.previousScreen = screen;
+
+			for (AbstractScreen ps : this.previousScreen.getElements()) {
+				ps.addNextScreen(this);
+			}
+		}
+
+		if (this.preparationId != null) {
+			this.preparation = description.getPreparations().get(this.preparationId);
+			if (this.preparation == null) {
+				throw new ReferenceException("Preparation of reference < " + this.preparationId + " > not found");
+			}
+			this.preparation.assign(description);
+		}
+
+		if (this.selectScreenStrategy != null) {
+			this.selectScreenStrategy.assign(description);
+		}
+
 	}
 
 }

@@ -186,7 +186,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 				adjustmentTime += diff * singleSettingTime + part.touch.getSettingTime(solvis);
 			}
 			adjustmentTime = adjustmentTime + this.ok.getSettingTime(solvis) + solvis.getMaxResponseTime()
-					+ 8 * this.screen.get(solvis).getSelectScreen().getSettingTime(solvis);
+					+ 8 * this.screen.get(solvis).getSelectScreenStrategy().getSettingTime(solvis);
 			adjustmentTime = adjustmentTime * Constants.TIME_ADJUSTMENT_PROPOSAL_FACTOR_PERCENT / 100;
 
 			startAdjustTime = realAdjustTime - adjustmentTime;
