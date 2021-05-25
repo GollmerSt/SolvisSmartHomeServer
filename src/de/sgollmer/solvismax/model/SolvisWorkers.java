@@ -28,7 +28,7 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.command.Command;
 import de.sgollmer.solvismax.model.command.CommandControl;
-import de.sgollmer.solvismax.model.command.Command.Handling;
+import de.sgollmer.solvismax.model.command.Handling;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
@@ -85,6 +85,7 @@ public class SolvisWorkers{
 		private int optimizationInhibitCnt = 0;
 		private boolean controlEnabled = true;
 		private boolean running = false;
+		private Handling.QueueStatus queueStatus = new Handling.QueueStatus();
 
 		private ControlWorkerThread() {
 			super("ControlWorkerThread");
@@ -387,7 +388,7 @@ public class SolvisWorkers{
 			this.commandsOfScreen.add(command);
 		}
 
-		return command.execute(this.solvis);
+		return command.execute(this.solvis, this.controlsThread.queueStatus);
 	}
 
 	void commandOptimization(boolean enable) {
@@ -395,7 +396,7 @@ public class SolvisWorkers{
 			this.controlsThread.push(new Command() {
 
 				@Override
-				public ResultStatus execute(Solvis solvis) throws IOException, TerminationException, PowerOnException {
+				public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus) throws IOException, TerminationException, PowerOnException {
 					SolvisWorkers.this.controlsThread.commandOptimization(true);
 					return ResultStatus.SUCCESS;
 				}

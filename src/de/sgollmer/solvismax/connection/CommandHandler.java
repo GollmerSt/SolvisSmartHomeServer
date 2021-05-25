@@ -212,7 +212,7 @@ public class CommandHandler {
 
 		AbstractScreen screen = null;
 
-		if (!screenId.equals("START")) {
+		if (!screenId.equals("NONE")) {
 			screen = solvis.getSolvisDescription().getScreens().get(screenId, solvis);
 
 			if (screen == null || !(screen instanceof Screen)) {

@@ -4001,10 +4001,22 @@
 		</tns:ChannelDescription>
 
 		<!-- Nachheizen TODO -->
-		<!-- tns:ChannelDescription id="C46"> <tns:Control> <tns:GuiAccess screenId="Warmwasser"> 
-			<tns:CurrentValue> <tns:TopLeft X="190" Y="55" /> <tns:BottomRight Y="70" 
-			X="210" /> </tns:CurrentValue> </tns:GuiAccess> <tns:TypeButton pushTimeId="Standard" 
-			releaseTimeId="ValueChange"></tns:TypeButton> </tns:Control> </tns:ChannelDescription -->
+		<tns:ChannelDescription id="C46">
+			<tns:Control>
+				<tns:GuiAccess screenId="Warmwasser">
+					<tns:CurrentValue>
+						<tns:TopLeft X="190" Y="55" />
+						<tns:BottomRight X="210" Y="70" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReheat>
+					<tns:TouchPoint pushTimeRefId="Standard"
+						releaseTimeRefId="ModeChange">
+						<tns:Coordinate X="225" Y="75" />
+					</tns:TouchPoint>
+				</tns:TypeReheat>
+			</tns:Control>
+		</tns:ChannelDescription>
 
 	</tns:ChannelDescriptions>
 

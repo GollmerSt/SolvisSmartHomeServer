@@ -20,7 +20,6 @@ import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
-import de.sgollmer.solvismax.objects.Rectangle;
 
 public interface IStrategy extends IAssigner {
 
@@ -40,8 +39,6 @@ public interface IStrategy extends IAssigner {
 
 	UpperLowerStep getUpperLowerStep();
 
-	void setCurrentRectangle(Rectangle rectangle);
-
 	boolean isXmlValid();
 
 	boolean mustBeLearned();
@@ -55,5 +52,7 @@ public interface IStrategy extends IAssigner {
 	SingleData<?> createSingleData(String value, long timeStamp) throws TypeException;
 
 	String getCsvMeta(String column, boolean semicolon);
+	
+	void setControl(Control control);
 
 }

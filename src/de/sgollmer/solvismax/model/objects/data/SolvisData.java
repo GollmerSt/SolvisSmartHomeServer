@@ -126,6 +126,15 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return;
 		}
 
+		if (data instanceof TwoValues) {
+
+			TwoValues twoValues = (TwoValues) data;
+
+			this.setData(twoValues.getFirst(), source, status, executionStartTime);
+			this.setData(twoValues.getSecond(), source, status, executionStartTime);
+			return;
+		}
+
 		boolean fastChange = false;
 		if (executionStartTime > 0L && data.getTimeStamp() > 0L) {
 			this.executionTime = (int) (data.getTimeStamp() - executionStartTime);
@@ -315,6 +324,19 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			this.continousObservable = new Observable<>();
 		}
 		this.continousObservable.register(observer);
+	}
+
+	public void unregisterContinuousObserver(Observer.IObserver<SolvisData> observer) {
+		if (this.continousObservable != null) {
+			this.continousObservable.unregister(observer);
+		}		
+	}
+	
+	public Observer.IObserver<SolvisData> getContinuousObserver(Observer.IObserver<SolvisData> observer) {
+		if (this.continousObservable == null) {
+			return null;
+		}
+		return this.continousObservable.getObserver(observer);
 	}
 
 	@Override
@@ -552,4 +574,5 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 		return csv;
 	}
+
 }

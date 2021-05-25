@@ -59,6 +59,20 @@ public class Observer<D> {
 		public synchronized boolean isEmpty() {
 			return this.observers == null || this.observers.isEmpty();
 		}
+		
+		public IObserver<D> getObserver( IObserver<D> object) {
+			if ( isEmpty() ) {
+				return null;
+			}
+			synchronized (this) {
+				for (IObserver<D> observer : this.observers) {
+					if (observer.getClass() == object.getClass() ) {
+						return observer;
+					}
+				}
+			}
+			return null;
+		}
 
 	}
 

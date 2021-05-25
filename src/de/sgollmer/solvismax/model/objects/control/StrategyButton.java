@@ -110,11 +110,6 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public void setCurrentRectangle(final Rectangle rectangle) {
-
-	}
-
-	@Override
 	public boolean mustBeLearned() {
 		return false;
 	}
@@ -207,5 +202,10 @@ public class StrategyButton implements IStrategy {
 				return "true";
 		}
 		return null;
+	}
+
+	@Override
+	public void setControl(Control control) {
+		
 	}
 }

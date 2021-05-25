@@ -10,6 +10,10 @@ Version 01.03.01
                 den Verbindungswiederaufbau.
                 
     24.05.2021  Bugfix: Echo-Inhibit funktionierte wegen eines Rundungsfehlers nicht immer.
+    
+    25.05.2021  Bugfix: Das Disablen des SelectScreen-Befehls mit "NONE" ging nicht.
+    
+                Erste lauffähige Version von WW-Nachheizen, aber nur Zwischenstand. 
                 
 
 Version 01.03.00

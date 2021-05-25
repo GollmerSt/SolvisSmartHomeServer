@@ -29,7 +29,7 @@ public class CommandScreenRestore extends Command {
 	}
 
 	@Override
-	public ResultStatus execute(Solvis solvis) throws IOException, PowerOnException {
+	public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus) throws IOException, PowerOnException {
 		solvis.screenRestore(this.enable, this.service);
 		return ResultStatus.SUCCESS;
 	}

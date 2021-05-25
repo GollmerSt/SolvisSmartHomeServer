@@ -199,14 +199,6 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public void setCurrentRectangle(Rectangle rectangle) {
-		for (ModeEntry mode : this.modes) {
-			if (mode.getGuiSet().getGrafic() != null)
-				mode.getGuiSet().getGrafic().setRectangle(rectangle);
-		}
-	}
-
-	@Override
 	public boolean mustBeLearned() {
 		return true;
 	}
@@ -366,5 +358,14 @@ public class StrategyMode implements IStrategy {
 				return "true";
 		}
 		return null;
+	}
+
+	@Override
+	public void setControl(Control control) {
+		for (ModeEntry mode : this.modes) {
+			if (mode.getGuiSet().getGrafic() != null)
+				mode.getGuiSet().getGrafic().setRectangle(control.getGuiAccess().getValueRectangle());
+		}
+		
 	}
 }

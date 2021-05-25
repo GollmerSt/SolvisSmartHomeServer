@@ -318,8 +318,7 @@
 					<annotation>
 						<documentation>
 							Definitionen, wenn
-							derSolvis-Anlagenparameter nur
-							ein
+							derSolvis-Anlagenparameter nur ein
 							auszulesender Wert (z. B. Brennerstarts) ist
 						</documentation>
 					</annotation>
@@ -329,24 +328,22 @@
 					<annotation>
 						<documentation>
 							Definitionen, wenn Solvis-Anlagenparameter
-							ein
-							einzustellender Modus (z.B. Betriebsart)
+							ein einzustellender Modus (z.B. Betriebsart)
 							ist
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeButton" type="tns:Button" maxOccurs="1"
-					minOccurs="1">
+				<element name="TypeButton" type="tns:Button"
+					maxOccurs="1" minOccurs="1">
 					<annotation>
 						<documentation>
 							Der Kanal-Wert wird durch den Zustand eines
-							Buttons
-							bestimmt. Ist er selektiert (weiße
-							Schrift auf dunklem
-							Hintergrund)
+							Buttons bestimmt. Ist er selektiert (weiße
+							Schrift auf dunklem Hintergrund)
 						</documentation>
 					</annotation>
 				</element>
+				<element name="TypeReheat" type="tns:Reheat" maxOccurs="1" minOccurs="1"></element>
 			</choice>
 
 			<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1"
@@ -1865,5 +1862,11 @@
 
 	<complexType name="ExtensionType">
 		<attribute name="id" type="tns:Extension" use="required"></attribute>
+	</complexType>
+
+	<complexType name="Reheat">
+		<sequence>
+			<element name="TouchPoint" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
 	</complexType>
 </schema>

@@ -59,6 +59,7 @@ public class Control extends ChannelSource {
 	private static final String XML_CONTROL_TYPE_READ = "TypeRead";
 	private static final String XML_CONTROL_TYPE_MODE = "TypeMode";
 	private static final String XML_CONTROL_TYPE_BUTTON = "TypeButton";
+	private static final String XML_CONTROL_TYPE_REHEAT = "TypeReheat";
 	private static final String XML_UPDATE_BY = "UpdateBy";
 	private static final String XML_DEPENDENCY = "Dependency";
 
@@ -73,7 +74,7 @@ public class Control extends ChannelSource {
 		this.guiAccess = guiAccess;
 		this.strategy = strategy;
 		if (strategy != null) {
-			this.strategy.setCurrentRectangle(guiAccess != null ? guiAccess.valueRectangle : null);
+			this.strategy.setControl(this);
 		}
 		this.updateStrategies = updateStrategies;
 		if (this.updateStrategies != null) {
@@ -82,7 +83,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData destin, Solvis solvis, long executionStartTime) throws IOException, TerminationException {
+	public boolean getValue(SolvisData destin, Solvis solvis, long executionStartTime)
+			throws IOException, TerminationException {
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return false;
@@ -232,6 +234,8 @@ public class Control extends ChannelSource {
 					return new StrategyMode.Creator(id, this.getBaseCreator());
 				case XML_CONTROL_TYPE_BUTTON:
 					return new StrategyButton.Creator(id, this.getBaseCreator());
+				case XML_CONTROL_TYPE_REHEAT:
+					return new StrategyReheat.Creator(id, this.getBaseCreator());
 				case XML_UPDATE_BY:
 					return new UpdateStrategies.Creator(id, this.getBaseCreator());
 			}
@@ -248,6 +252,7 @@ public class Control extends ChannelSource {
 				case XML_CONTROL_TYPE_READ:
 				case XML_CONTROL_TYPE_MODE:
 				case XML_CONTROL_TYPE_BUTTON:
+				case XML_CONTROL_TYPE_REHEAT:
 					this.strategy = (IStrategy) created;
 					break;
 				case XML_UPDATE_BY:
@@ -527,13 +532,17 @@ public class Control extends ChannelSource {
 
 	@Override
 	public String getCsvMeta(String column, boolean semicolon) {
-		switch( column) {
+		switch (column) {
 			case Csv.OPTIONAL:
 				return Boolean.toString(this.optional);
 			case Csv.STRATEGY:
 				return this.strategy.getClass().getSimpleName().replace("Strategy", "");
 		}
 		return this.strategy.getCsvMeta(column, semicolon);
+	}
+
+	public GuiAccess getGuiAccess() {
+		return this.guiAccess;
 	}
 
 }

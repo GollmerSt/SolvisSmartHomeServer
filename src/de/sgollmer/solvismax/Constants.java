@@ -86,6 +86,12 @@ public class Constants {
 	public static final int MODBUS_SLAVE_ID = 1;
 
 	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
+	public static final double CIRCLE_AREA_PRECISION = 0.2;
+	
+	public static class Commands {
+		public static final int REHEATING_PRIORITY = 10;
+		public static final int EQUIPMENT_ON_OFF_PRIORITY = 5;
+	}
 
 	public static class Solvis {
 		public static final int INPUT_BUFFER_SIZE = 1024;

@@ -54,6 +54,7 @@ public class CommandControl extends Command {
 	private boolean mustBeFinished = false;
 	private ResultStatus finalStatus = ResultStatus.SUCCESS;
 	private long executionStartTime = -1;
+	private final Integer priority;
 
 	private Map<ChannelDescription, Dependency> toRestore = new HashMap<>(3);
 
@@ -63,17 +64,22 @@ public class CommandControl extends Command {
 	private final DependencyCache dependencyCache;
 
 	public CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) throws TypeException {
-		this(description, solvis);
+		this(description, solvis, null);
 		this.setValue = description.toInternal(setValue);
 	}
 
 	public CommandControl(ChannelDescription description, Solvis solvis) {
+		this(description, solvis, null);
+	}
+
+	public CommandControl(ChannelDescription description, Solvis solvis, Integer priority) {
 		this.setValue = null;
 		this.description = description;
 		this.dependencyGroupsToExecute.add(description.getDependencyGroup().clone(), solvis);
 		this.screen = description.getScreen(solvis);
 		this.solvis = solvis;
 		this.dependencyCache = new DependencyCache(solvis);
+		this.priority = priority;
 	}
 
 	@Override
@@ -192,8 +198,13 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public ResultStatus execute(Solvis solvis) throws IOException, PowerOnException, TerminationException,
-			NumberFormatException, TypeException, XmlException {
+	public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus) throws IOException, PowerOnException,
+			TerminationException, NumberFormatException, TypeException, XmlException {
+
+		if (queueStatus.getCurrentPriority() != null && this.priority != null
+				&& queueStatus.getCurrentPriority() > this.priority) {
+			return ResultStatus.CONTINUE;
+		}
 
 		boolean finished = false;
 		while (!finished && !this.inhibit) {
@@ -223,8 +234,7 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public
-	synchronized boolean toEndOfQueue() {
+	public synchronized boolean toEndOfQueue() {
 		int cmp = Constants.COMMAND_TO_QUEUE_END_AFTER_N_FAILURES;
 
 		if (this.mustBeFinished()) {
@@ -405,11 +415,11 @@ public class CommandControl extends Command {
 
 				}
 			}
-			
-			for ( String standbyId : standbyIds) {
+
+			for (String standbyId : standbyIds) {
 				command.solvis.setStandby(standbyId);
 			}
-			
+
 			return ResultStatus.CONTINUE;
 		}
 	}
@@ -448,7 +458,7 @@ public class CommandControl extends Command {
 			SolvisData solvisData = solvis.getAllSolvisData().get(dependencyChannel);
 
 			if (!solvisData.isValid()) {
-				boolean success = dependencyChannel.getValue(solvisData, solvis,command.executionStartTime);
+				boolean success = dependencyChannel.getValue(solvisData, solvis, command.executionStartTime);
 				if (!success) {
 					return ResultStatus.NO_SUCCESS;
 				}

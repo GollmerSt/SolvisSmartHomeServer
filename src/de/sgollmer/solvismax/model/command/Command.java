@@ -14,6 +14,7 @@ import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.command.Handling.QueueStatus;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
@@ -31,13 +32,10 @@ public abstract class Command {
 	 * @throws PowerOnException
 	 * @throws TypeException
 	 * @throws NumberFormatException
-	 * @throws XmlException 
+	 * @throws XmlException
 	 * @throws FieldException
 	 * @throws ModbusException
 	 */
-	public abstract ResultStatus execute(Solvis solvis)
-			throws IOException, TerminationException, PowerOnException, NumberFormatException, TypeException, XmlException;
-
 	protected abstract void notExecuted();
 
 	/**
@@ -66,74 +64,6 @@ public abstract class Command {
 
 	protected void setInhibit(boolean inhibit) {
 	};
-
-	public static class Handling {
-		/**
-		 * True: The Execution of the command within the queue isn't necessary and was 
-		 * inhibited, because
-		 * the effect of new command is overwriting the effect of the old one.
-		 */
-		private final boolean inQueueInhibited;
-		/**
-		 * True: New command is ignored, because he is redundant
-		 */
-		private final boolean inhibitAdd;
-		/**
-		 * True: The new command must inserted after queue command
-		 */
-		private final boolean insert;
-		/**
-		 * True: no previous entries are of interest
-		 */
-		private final boolean mustFinished;
-
-		/**
-		 * 
-		 * @param inQueueInhibited True: The Execution of the command within the queue
-		 *                       isn't necessary, because the effect of new command is
-		 *                       overwriting the effect of the old one.
-		 * @param inhibitAppend  True: New command is ignored, because he is redundant
-		 * @param insert         True: The new command must inserted after queue command
-		 */
-
-		public Handling(boolean inQueueInhibited, boolean inhibitAppend, boolean insert) {
-			this(inQueueInhibited, inhibitAppend, insert, false);
-		}
-
-		/**
-		 * 
-		 * @param inQueueInhibit True: The Execution of the command within the queue
-		 *                       isn't necessary, because the effect of new command is
-		 *                       overwriting the effect of the old one.
-		 * @param inhibitAppend  True: New command is ignored, because he is redundant
-		 * @param insert         True: The new command must inserted after queue command
-		 * @param mustFinished   True: no previous entries are of interest
-		 */
-
-		Handling(boolean inQueueInhibited, boolean inhibitAdd, boolean insert, boolean mustFinished) {
-			this.inQueueInhibited = inQueueInhibited;
-			this.inhibitAdd = inhibitAdd;
-			this.insert = insert;
-			this.mustFinished = mustFinished;
-		}
-
-		public boolean isInhibitedInQueue() {
-			return this.inQueueInhibited;
-		}
-
-		public boolean isInhibitAdd() {
-			return this.inhibitAdd;
-		}
-
-		public boolean mustInsert() {
-			return this.insert;
-		}
-
-		public boolean mustFinished() {
-			return this.mustFinished;
-		}
-
-	}
 
 	public Handling handle(Command queueEntry, Solvis solvis) {
 		return new Handling(false, false, false);
@@ -186,4 +116,7 @@ public abstract class Command {
 
 	public void setDependencyPrepared(boolean dependencyPrepared) {
 	}
+
+	public abstract ResultStatus execute(Solvis solvis, QueueStatus queueStatus) throws IOException,
+			TerminationException, PowerOnException, NumberFormatException, TypeException, XmlException;
 }

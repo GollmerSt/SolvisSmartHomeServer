@@ -164,28 +164,26 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			});
 		}
 
-		
 		private void setHourlyWindow(boolean enlarge) {
-			
-			int min = Constants.HOURLY_EQUIPMENT_WINDOW_READ_INTERVAL_FACTOR * this.readInterval / 1000 ;
+
+			int min = Constants.HOURLY_EQUIPMENT_WINDOW_READ_INTERVAL_FACTOR * this.readInterval / 1000;
 			int max = 3600;
-			
+
 			if (enlarge) {
 				this.hourlyWindow_s *= 2;
 
 			} else {
 				this.hourlyWindow_s /= 2;
 			}
-			
-			if ( this.hourlyWindow_s > max ) {
+
+			if (this.hourlyWindow_s > max) {
 				this.hourlyWindow_s = max;
-			} else if ( this.hourlyWindow_s < min ) {
+			} else if (this.hourlyWindow_s < min) {
 				this.hourlyWindow_s = min;
 			}
 
 		}
 
-		
 		private SynchronisationResult checkSynchronisation(SolvisData controlData, boolean equipmentOn, boolean changed)
 				throws TypeException {
 
@@ -425,8 +423,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			if (check) {
 
 				this.lastCheckTime = time;
-				this.solvis.execute(
-						new CommandControl(((Control) EquipmentOnOff.this.source).getDescription(), this.solvis));
+				this.solvis.execute(new CommandControl(((Control) EquipmentOnOff.this.source).getDescription(),
+						this.solvis, Constants.Commands.EQUIPMENT_ON_OFF_PRIORITY));
 				logger.debug("Update of <" + EquipmentOnOff.this.calculatedId + "> requested.");
 			}
 

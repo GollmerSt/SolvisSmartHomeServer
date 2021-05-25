@@ -27,8 +27,8 @@ public class CommandSetScreen extends Command {
 	}
 
 	@Override
-	public ResultStatus execute(Solvis solvis) throws IOException, TerminationException, PowerOnException,
-			NumberFormatException, TypeException, XmlException {
+	public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus) throws IOException,
+			TerminationException, PowerOnException, NumberFormatException, TypeException, XmlException {
 		solvis.setDefaultScreen(this.screen);
 		return ResultStatus.SUCCESS;
 	}
@@ -64,7 +64,11 @@ public class CommandSetScreen extends Command {
 
 	@Override
 	public String toString() {
-		return "Select " + this.screen.getId();
+		if (this.screen == null) {
+			return "SelectScreen is set to default (NONE)";
+		} else {
+			return "Select " + this.screen.getId();
+		}
 
 	}
 

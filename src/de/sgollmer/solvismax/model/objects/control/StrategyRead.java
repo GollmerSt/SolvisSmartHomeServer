@@ -148,10 +148,6 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public void setCurrentRectangle(Rectangle rectangle) {
-	}
-
-	@Override
 	public boolean mustBeLearned() {
 		return false;
 	}
@@ -234,6 +230,11 @@ public class StrategyRead implements IStrategy {
 				return Integer.toString(this.divisor);
 		}
 		return null;
+	}
+
+	@Override
+	public void setControl(Control control) {
+		
 	}
 
 }
