@@ -289,12 +289,8 @@ public class StrategyReheat implements IStrategy {
 
 				boolean active = false;
 
-				try {
-					active = data.getBool();
-				} catch (TypeException e) {
-					logger.error("Reheating error, detection aborted", e);
-					active = false;
-				}
+				ModeValue<?> mode = data.getMode();
+				active = mode.get() == Mode.HEATING;
 
 				if (!active) {
 					this.abort = true;
