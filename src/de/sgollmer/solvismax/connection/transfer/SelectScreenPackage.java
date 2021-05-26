@@ -22,10 +22,8 @@ public class SelectScreenPackage extends JsonPackage implements IReceivedData {
 	public SelectScreenPackage(String screenId) {
 		this.command = Command.SELECT_SCREEN;
 		this.data = new Frame();
-		Element element = new Element();
+		Element element = new Element("Screen",new SingleValue(screenId));
 		this.data.add(element);
-		element.name = "Screen";
-		element.value = new SingleValue(screenId);
 	}
 
 	@Override

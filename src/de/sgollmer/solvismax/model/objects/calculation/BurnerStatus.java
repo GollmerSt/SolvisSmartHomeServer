@@ -59,6 +59,11 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		public ModeValue<?> create(long timeStamp) {
 			return new ModeValue<>(this, timeStamp);
 		}
+
+		@Override
+		public Handling getHandling() {
+			return Handling.READ;
+		}
 	}
 
 	@Override

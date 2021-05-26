@@ -38,11 +38,14 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 	private final String id;
 	private final GuiSet guiSet;
 	private final Collection<WhiteGraficRectangle> whiteGraficRectangles;
+	private final Handling handling;
 
-	private ModeEntry(String id, GuiSet guiSet, Collection<WhiteGraficRectangle> whiteGraficRectangles) {
+	private ModeEntry(final String id, final GuiSet guiSet,
+			final Collection<WhiteGraficRectangle> whiteGraficRectangles, final Handling handling) {
 		this.id = id;
 		this.guiSet = guiSet;
 		this.whiteGraficRectangles = whiteGraficRectangles;
+		this.handling = handling;
 	}
 
 	/**
@@ -57,7 +60,7 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws AssignmentException {
+	public void assign(final SolvisDescription description) throws AssignmentException {
 		if (this.guiSet != null) {
 			this.guiSet.assign(description);
 		}
@@ -69,27 +72,32 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 		private String id;
 		private GuiSet guiSet;
 		private final Collection<WhiteGraficRectangle> whiteGraficRectangles = new ArrayList<>();
+		private Handling handling = Handling.BOTH;
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
+					break;
+				case "handling":
+					this.handling = Handling.valueOf(value);
+					break;
 			}
 
 		}
 
 		@Override
 		public ModeEntry create() throws XmlException, IOException {
-			return new ModeEntry(this.id, this.guiSet,this.whiteGraficRectangles);
+			return new ModeEntry(this.id, this.guiSet, this.whiteGraficRectangles, this.handling);
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_GUI_SET:
@@ -101,7 +109,7 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_GUI_SET:
 					this.guiSet = (GuiSet) created;
@@ -119,7 +127,7 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof ModeEntry) {
 			return this.id.equals(((ModeEntry) obj).id);
 		} else {
@@ -136,13 +144,13 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 		private final TouchPoint touch;
 		private final ScreenGraficDescription grafic;
 
-		private GuiSet(TouchPoint touch, ScreenGraficDescription grafic) {
+		private GuiSet(final TouchPoint touch, final ScreenGraficDescription grafic) {
 			this.touch = touch;
 			this.grafic = grafic;
 		}
 
 		@Override
-		public void assign(SolvisDescription description) throws AssignmentException {
+		public void assign(final SolvisDescription description) throws AssignmentException {
 			if (this.touch != null) {
 				this.touch.assign(description);
 			}
@@ -161,12 +169,12 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 			private TouchPoint touch;
 			private ScreenGraficDescription grafic;
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 			}
 
 			@Override
@@ -175,7 +183,7 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				String id = name.getLocalPart();
 				switch (id) {
 					case XML_TOUCH:
@@ -187,7 +195,7 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 				switch (creator.getId()) {
 					case XML_TOUCH:
 						this.touch = (TouchPoint) created;
@@ -210,7 +218,7 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 		return this.whiteGraficRectangles;
 	}
 
-	public boolean isMatchingWhite(MyImage image, Solvis solvis) {
+	public boolean isMatchingWhite(final MyImage image, final Solvis solvis) {
 		for (IScreenPartCompare screenPart : this.whiteGraficRectangles) {
 			if (!screenPart.isElementOf(image, solvis)) {
 				return false;
@@ -220,16 +228,21 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 	}
 
 	@Override
-	public int compareTo(ModeEntry o) {
-		if ( o == null ) {
+	public int compareTo(final ModeEntry o) {
+		if (o == null) {
 			return 1;
 		}
 		return this.id.compareTo(o.getId());
 	}
 
 	@Override
-	public ModeValue<?> create(long timeStamp) {
+	public ModeValue<?> create(final long timeStamp) {
 		return new ModeValue<>(this, timeStamp);
+	}
+
+	@Override
+	public Handling getHandling() {
+		return this.handling;
 	}
 
 }

@@ -13,20 +13,14 @@ import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 public class ServerCommandDescription extends Element {
 
 	ServerCommandDescription(ServerCommand command) {
-		this.name = command.name();
+		super(command.name());
 		Frame frame = new Frame();
 		this.value = frame;
 
-		Element writeableElement = new Element();
-		writeableElement.name = "Writeable";
-		SingleValue sv = new SingleValue(new BooleanValue(false, -1));
-		writeableElement.value = sv;
+		Element writeableElement = new Element("Writeable",new SingleValue(new BooleanValue(false, -1) ));
 		frame.add(writeableElement);
 
-		Element typeElement = new Element();
-		typeElement.name = "Type";
-		sv = new SingleValue("ServerCommand");
-		typeElement.value = sv;
+		Element typeElement = new Element("Type",new SingleValue("ServerCommand"));
 		frame.add(typeElement);
 
 	}

@@ -23,14 +23,8 @@ public class ConnectPackage extends JsonPackage implements IReceivedData {
 		this.id = id;
 		this.command = Command.CONNECT;
 		this.data = new Frame();
-		Element element = new Element();
+		Element element = new Element("Id", id == null ? null : new SingleValue(id));
 		this.data.add(element);
-		element.name = "Id";
-		if (id == null) {
-			element.value = null;
-		} else {
-			element.value = new SingleValue(id);
-		}
 	}
 
 	@Override

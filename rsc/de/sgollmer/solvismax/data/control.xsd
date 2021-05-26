@@ -140,7 +140,8 @@
 		<attribute name="sortId" type="string" use="optional">
 			<annotation>
 				<documentation>Id zum sortieren</documentation>
-			</annotation></attribute>
+			</annotation>
+		</attribute>
 		<attribute name="previousId" type="string" use="required">
 			<annotation>
 				<documentation>Vorgänger-Bildschirm</documentation>
@@ -173,6 +174,7 @@
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="service" type="boolean" use="optional"></attribute>
 	</complexType>
 
 
@@ -376,7 +378,8 @@
 
 	<complexType name="ModeEntry">
 		<annotation>
-			<documentation>Definition um ein Status zu ermitteln/verändern
+			<documentation>
+				Definition um ein Status zu ermitteln/verändern
 				(Betriebsstatus, z.B. Standby)
 			</documentation>
 		</annotation>
@@ -384,23 +387,21 @@
 			<element name="GuiSet" maxOccurs="1" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="Touch" type="tns:TouchPoint" maxOccurs="1"
-							minOccurs="1">
-							<annotation>
-								<documentation>
-									Zu drückender Punkt auf dem
-									Bildschirm um den
-									Modus zu wählen
-								</documentation>
-							</annotation>
-						</element>
-						<element name="ScreenGrafic" type="tns:ScreenGrafic"
+						<element name="Touch" type="tns:TouchPoint"
 							maxOccurs="1" minOccurs="1">
 							<annotation>
 								<documentation>
+									Zu drückender Punkt auf dem
+									Bildschirm um den Modus zu wählen
+								</documentation>
+							</annotation>
+						</element>
+						<element name="ScreenGrafic"
+							type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1">
+							<annotation>
+								<documentation>
 									Bildschirmgrafik, welche den Modus
-									bestimmt. Hier
-									müssen nicht die
+									bestimmt. Hier müssen nicht die
 									Koordinaten der Grafik eingegeben
 									werden.
 								</documentation>
@@ -411,12 +412,22 @@
 			</element>
 
 			<element name="MustBeWhite" type="tns:Rectangle"
-				maxOccurs="unbounded" minOccurs="0"></element>
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
 				<documentation>Modus-Name</documentation>
 			</annotation>
+		</attribute>
+		<attribute name="handling" use="optional">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="READ"></enumeration>
+					<enumeration value="WRITE"></enumeration>
+					<enumeration value="BOTH"></enumeration>
+				</restriction>
+			</simpleType>
 		</attribute>
 	</complexType>
 
@@ -439,8 +450,7 @@
 			</element>
 			<element name="ErrorDetection" type="tns:ErrorDetection"
 				maxOccurs="1" minOccurs="1">
-			</element>
-			<element name="Service" type="tns:Service"></element>
+			</element>
 			<element name="Screens" type="tns:Screens" maxOccurs="1"
 				minOccurs="1">
 			</element>
@@ -1270,12 +1280,6 @@
 			use="optional"></attribute>
 	</complexType>
 
-	<complexType name="Service">
-		<sequence>
-			<element name="ServiceScreen" type="tns:ScreenRef"
-				maxOccurs="unbounded" minOccurs="0"></element>
-		</sequence>
-	</complexType>
 
 	<complexType name="ErrorCondition">
 		<attribute name="channelId" type="string" use="required"></attribute>
@@ -1496,13 +1500,13 @@
 
 	<complexType name="ScreenSequence">
 		<annotation>
-			<documentation>Definiert eine Sequenz von Screens, welche vom
-				Vorgängerscreen nicht eindeutig ausgewählt werden können (z.B.
-				Anlagenstatus). Der vom Vorgängerscreen ausgewählte Screen ist ein
-				beliebiger dieser Sequenz.
-				Es handelt sich dabei um einen Art
-				virtuellerScreen, der einen
-				Vorgänger besitzt.
+			<documentation>
+				Definiert eine Sequenz von Screens, welche vom
+				Vorgängerscreen nicht eindeutig ausgewählt werden können
+				(z.B. Anlagenstatus). Der vom Vorgängerscreen
+				ausgewählte Screen ist ein beliebiger dieser Sequenz. Es
+				handelt sich dabei um einen Art virtuellerScreen, der
+				einen Vorgänger besitzt.
 			</documentation>
 		</annotation>
 		<sequence>
@@ -1515,7 +1519,9 @@
 			<element name="TouchPoint" type="tns:TouchPoint"
 				maxOccurs="1" minOccurs="1">
 				<annotation>
-					<documentation>TouchPoint um auf den virtuellen Screen zu kommen
+					<documentation>
+						TouchPoint um auf den virtuellen Screen zu
+						kommen
 					</documentation>
 				</annotation>
 			</element>
@@ -1528,7 +1534,9 @@
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
-				<documentation>Id des virtuellen Screens der Sequenz</documentation>
+				<documentation>
+					Id des virtuellen Screens der Sequenz
+				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="previousId" type="string" use="required">
@@ -1538,11 +1546,12 @@
 		</attribute>
 		<attribute name="wrapArround" type="boolean" use="optional">
 			<annotation>
-				<documentation>True, wenn die Sequenz bei SequenceUp nach dem
+				<documentation>
+					True, wenn die Sequenz bei SequenceUp nach dem
 					letzten Element zum ersten geht
 				</documentation>
 			</annotation>
-		</attribute>
+		</attribute>
 	</complexType>
 	<complexType name="Configuration">
 		<sequence>

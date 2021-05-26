@@ -52,6 +52,7 @@ public class Unit implements IAccountInfo {
 	private final int watchDogTime_ms;
 	private final int releaseBlockingAfterUserAccess_ms;
 	private final int releaseBlockingAfterServiceAccess_ms;
+	private final int clearNotRequiredTime_ms;
 	private final boolean delayAfterSwitchingOnEnable;
 	private final boolean fwLth2_21_02A;
 	private final Features features;
@@ -68,9 +69,10 @@ public class Unit implements IAccountInfo {
 			final int forceUpdateAfterFastChangingIntervals, final int forcedUpdateInterval_ms,
 			final int doubleUpdateInterval_ms, final int bufferedInterval_ms, final int watchDogTime_ms,
 			final int releaseBlockingAfterUserAccess_ms, final int releaseBlockingAfterServiceAccess_ms,
-			final boolean delayAfterSwitchingOn, final boolean fwLth2_21_02A, final Features features,
-			final int ignoredFrameThicknesScreenSaver, final Collection<Pattern> ignoredChannels,
-			final Map<String, ChannelAssignment> assignments, final boolean csvUnit, final AllDurations durations) {
+			final int clearNotRequiredTime_ms, final boolean delayAfterSwitchingOn, final boolean fwLth2_21_02A,
+			final Features features, final int ignoredFrameThicknesScreenSaver,
+			final Collection<Pattern> ignoredChannels, final Map<String, ChannelAssignment> assignments,
+			final boolean csvUnit, final AllDurations durations) {
 		this.id = id;
 		this.configuration = configuration;
 		this.url = url;
@@ -87,6 +89,7 @@ public class Unit implements IAccountInfo {
 		this.watchDogTime_ms = watchDogTime_ms;
 		this.releaseBlockingAfterUserAccess_ms = releaseBlockingAfterUserAccess_ms;
 		this.releaseBlockingAfterServiceAccess_ms = releaseBlockingAfterServiceAccess_ms;
+		this.clearNotRequiredTime_ms = clearNotRequiredTime_ms;
 		this.delayAfterSwitchingOnEnable = delayAfterSwitchingOn;
 		this.fwLth2_21_02A = fwLth2_21_02A;
 		this.features = features;
@@ -141,6 +144,7 @@ public class Unit implements IAccountInfo {
 		private int watchDogTime_ms;
 		private int releaseBlockingAfterUserAccess_ms;
 		private int releaseBlockingAfterServiceAccess_ms;
+		private int clearNotRequiredTime_ms = Constants.Defaults.CLEAR_NOT_REQUIRED_TIME;
 		private boolean delayAfterSwitchingOnEnable = false;
 		private boolean fwLth2_21_02A = false;
 		private Features features;
@@ -210,6 +214,9 @@ public class Unit implements IAccountInfo {
 					case "releaseBlockingAfterServiceAccess_ms":
 						this.releaseBlockingAfterServiceAccess_ms = Integer.parseInt(value);
 						break;
+					case "clearNotRequiredTime_ms":
+						this.clearNotRequiredTime_ms = Integer.parseInt(value);
+						break;
 					case "delayAfterSwitchingOnEnable":
 						this.delayAfterSwitchingOnEnable = Boolean.parseBoolean(value);
 						break;
@@ -250,9 +257,10 @@ public class Unit implements IAccountInfo {
 					this.defaultMeasurementsIntervalFast_ms, this.forceUpdateAfterFastChangingIntervals,
 					this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
 					this.watchDogTime_ms, this.releaseBlockingAfterUserAccess_ms,
-					this.releaseBlockingAfterServiceAccess_ms, this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A,
-					this.features, this.ignoredFrameThicknesScreenSaver, this.ignoredChannels, this.assignments,
-					this.csvUnit, this.durations);
+					this.releaseBlockingAfterServiceAccess_ms, this.clearNotRequiredTime_ms,
+					this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.features,
+					this.ignoredFrameThicknesScreenSaver, this.ignoredChannels, this.assignments, this.csvUnit,
+					this.durations);
 
 		}
 
@@ -362,6 +370,10 @@ public class Unit implements IAccountInfo {
 
 	public int getReleaseBlockingAfterServiceAccess_ms() {
 		return this.releaseBlockingAfterServiceAccess_ms;
+	}
+
+	public int getClearNotRequiredTime_ms() {
+		return this.clearNotRequiredTime_ms;
 	}
 
 	public boolean isChannelIgnored(String channelId) {

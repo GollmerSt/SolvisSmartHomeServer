@@ -60,9 +60,10 @@ public class ScreenSequence extends AbstractScreen {
 
 	private Preparation preparation = null;
 
-	private ScreenSequence(String id, String previousId, boolean wrapArround, Configuration configurationMasks,
-			ISelectScreenStrategy selectScreenStrategy, String preparationId, List<ScreenRef> screenRefs) {
-		super(id, previousId, preparationId, configurationMasks, selectScreenStrategy);
+	private ScreenSequence(final String id, final String previousId, final boolean wrapArround,
+			final Configuration configurationMasks, final ISelectScreenStrategy selectScreenStrategy,
+			final String preparationId, final List<ScreenRef> screenRefs) {
+		super(id, previousId, preparationId, configurationMasks, selectScreenStrategy, false);
 		this.wrapArround = wrapArround;
 
 		this.screenRefs = screenRefs;
@@ -70,7 +71,8 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 
 		super.assign(description);
 
@@ -91,12 +93,12 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public boolean isMatchingScreen(MyImage image, Solvis solvis) {
+	public boolean isMatchingScreen(final MyImage image, final Solvis solvis) {
 		return false;
 	}
 
 	@Override
-	public void addLearnScreenGrafics(Collection<IScreenPartCompare> learnGrafics, Solvis solvis) {
+	public void addLearnScreenGrafics(final Collection<IScreenPartCompare> learnGrafics, Solvis solvis) {
 		for (ScreenRef screenRef : this.screenRefs) {
 			AbstractScreen screen = screenRef.getScreen(solvis);
 			if (screen != null) {
@@ -113,7 +115,7 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public AbstractScreen getBackScreen(Solvis solvis) {
+	public AbstractScreen getBackScreen(final Solvis solvis) {
 		for (ScreenRef screenRef : this.screenRefs) {
 			AbstractScreen screen = screenRef.getScreen(solvis);
 			if (screen != null) {
@@ -124,15 +126,15 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public boolean gotoLearning(Solvis solvis, AbstractScreen current, Collection<IScreenPartCompare> descriptions)
-			throws IOException, TerminationException {
+	public boolean gotoLearning(final Solvis solvis, final AbstractScreen current,
+			final Collection<IScreenPartCompare> descriptions) throws IOException, TerminationException {
 		AbstractScreen previous = this.getPreviousScreen(solvis);
 		previous.goTo(solvis);
 		return previous == SolvisScreen.get(solvis.getCurrentScreen());
 	}
 
 	@Override
-	public void learn(Solvis solvis, Collection<IScreenPartCompare> descriptions)
+	public void learn(final Solvis solvis, final Collection<IScreenPartCompare> descriptions)
 			throws TerminationException, IOException, LearningException {
 		boolean preparationSuccess = true;
 		if (this.preparation != null) {
@@ -190,7 +192,7 @@ public class ScreenSequence extends AbstractScreen {
 
 	}
 
-	private boolean isContaining(AbstractScreen screen, Solvis solvis) {
+	private boolean isContaining(final AbstractScreen screen, final Solvis solvis) {
 		if (screen == null) {
 			return false;
 		}
@@ -202,7 +204,8 @@ public class ScreenSequence extends AbstractScreen {
 		return false;
 	}
 
-	private AbstractScreen getMatching(Solvis solvis) throws IOException, TerminationException, LearningException {
+	private AbstractScreen getMatching(final Solvis solvis)
+			throws IOException, TerminationException, LearningException {
 		AbstractScreen result = null;
 		MyImage current = SolvisScreen.getImage(solvis.getCurrentScreen());
 		for (ScreenRef screenRef : this.screenRefs) {
@@ -218,7 +221,7 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public GotoStatus goTo(Solvis solvis) throws IOException, TerminationException {
+	public GotoStatus goTo(final Solvis solvis) throws IOException, TerminationException {
 		logger.error("Goto a screen sequence not possible, ignored");
 		return GotoStatus.CHANGED;
 	}
@@ -234,7 +237,7 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public boolean isToBeLearning(Solvis solvis) {
+	public boolean isToBeLearning(final Solvis solvis) {
 
 		for (ScreenRef screenRef : this.screenRefs) {
 			AbstractScreen screen = screenRef.getScreen(solvis);
@@ -256,12 +259,12 @@ public class ScreenSequence extends AbstractScreen {
 		private String preparationId = null;
 		private List<ScreenRef> screenRefs = new ArrayList<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -284,7 +287,7 @@ public class ScreenSequence extends AbstractScreen {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_CONFIGURATION:
@@ -300,7 +303,7 @@ public class ScreenSequence extends AbstractScreen {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_CONFIGURATION:
 					this.configurationMasks = (Configuration) created;
@@ -321,8 +324,8 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	protected void addToPreviousScreenTouches(AbstractScreen next, Collection<ScreenTouch> allPreviousScreenTouches,
-			Solvis solvis) {
+	protected void addToPreviousScreenTouches(final AbstractScreen next,
+			final Collection<ScreenTouch> allPreviousScreenTouches, final Solvis solvis) {
 		List<AbstractScreen> screenList = new ArrayList<AbstractScreen>();
 		int index = -1;
 		int ix = 0;
@@ -360,12 +363,12 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public boolean isMatchingWOGrafics(MyImage image, Solvis solvis) {
+	public boolean isMatchingWOGrafics(final MyImage image, final Solvis solvis) {
 		return false;
 	}
 
 	@Override
-	public AbstractScreen getSurroundScreen(MyImage image, Solvis solvis) {
+	public AbstractScreen getSurroundScreen(final MyImage image, final Solvis solvis) {
 
 		AbstractScreen result = null;
 

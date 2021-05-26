@@ -1,6 +1,6 @@
 A E N D E R U N G E N
 
-Version 01.03.01
+Version 01.04.00
 
     22.05.2021  Eine neue FHEM-Installation zeigte ein Problem des Servers bei JSON_Paketen mit
                 Floating-Point-Werten.
@@ -13,8 +13,19 @@ Version 01.03.01
     
     25.05.2021  Bugfix: Das Disablen des SelectScreen-Befehls mit "NONE" ging nicht.
     
-                Erste lauffähige Version von WW-Nachheizen, aber nur Zwischenstand. 
+                Erste lauffähige Version von WW-Nachheizen, aber nur Zwischenstand.
                 
+    26.05.2021  Service-Tag im control.xml durch Screen-Attribut ersetzt und sämtliche
+                Installateur-Screens mit diesem versehen. Dadurch wird auch bei einer größeren
+                WatchDog-Zeit der Service sicher erkannt.
+                
+                Service-Client-Schnittstelle geändert (Version 3). Mode-Beschreibung geändert.
+                Einzelne Mode-Werte sind nun entweder "nur lesbar", "nur beschreibbar" oder
+                "Beides". Diese Änderung wurde durch das WW-Nachheizen erforderlich.
+                Dort kann nur "heating" geschrieben werden (der Start des Nachheizens kann man
+                nicht rückgängig machen, es sei denn man verändert die WW-Temperatur). Gelesen kann
+                "off", "heating" oder "not_required".
+
 
 Version 01.03.00
 

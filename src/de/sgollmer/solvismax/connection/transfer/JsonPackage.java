@@ -35,9 +35,7 @@ public class JsonPackage implements IReceivedData {
 
 	private Frame getFrame() {
 		Frame result = new Frame();
-		Element element = new Element();
-		element.name = this.command.toString();
-		element.value = this.data;
+		Element element = new Element(this.command.toString(),this.data);
 		result.add(element);
 		return result;
 	}

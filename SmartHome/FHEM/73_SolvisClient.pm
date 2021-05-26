@@ -625,6 +625,9 @@ sub Connected {
         $self->{VERSION_SERVER} = $connected->{ServerVersion};
 
         my $formatVersion = $connected->{FormatVersion}*1.0;
+		
+		$self->{DATA_FORMAT} = $formatVersion;
+		
         if ( $formatVersion < MIN_SUPPORTED_FORMAT ) {
             Log($self, 3, "Format version $formatVersion of server is not supported, use a newer server, if available.");
             $self->{INFO} = 'Format version is too old';
@@ -869,6 +872,7 @@ sub Reconnect {
 #
 #       Create data for Set and Get commands
 #
+
 sub CreateGetSetServerCommands {
     my $self = shift;
     my $descriptions = shift;
@@ -909,10 +913,18 @@ sub CreateGetSetServerCommands {
                 },
                 'Modes' => sub {
                     $ChannelDescriptions{$name}{Modes} = {};
-                    foreach my $mode (@{$channelHash{Modes}}) {
-                        $ChannelDescriptions{$name}{Modes}{$mode} = 1;
-                    }
-                },
+					foreach my $mode (@{$channelHash{Modes}}) {
+						if ( $self->{DATA_FORMAT} < 3) {
+							$ChannelDescriptions{$name}{Modes}{$mode} = 'BOTH';
+						} else {
+							my %modeHash = %$mode;
+							my $modeName = $modeHash{Name};
+							my $handling = $modeHash{Handling};
+							#Log($self, 3, "ModeName: $modeName, Handling: $handling");
+							$ChannelDescriptions{$name}{Modes}{$modeName} = $handling;
+						}
+					}
+				},
                 'Upper' => sub {
                     $ChannelDescriptions{$name}{Upper} = $channelHash{Upper};
                 },
@@ -983,14 +995,19 @@ sub CreateSetParams {
         $setParameters .= $channel;
         my $firstI = _TRUE_;
         if ( defined ($ChannelDescriptions{$channel}{Modes}) ) {
-            foreach my $mode (keys(%{$ChannelDescriptions{$channel}{Modes}})) {
-                if($firstI) {
-                    $setParameters .= ':';
-                    $firstI = _FALSE_;
-                } else {
-                    $setParameters .= ','
-                }
-                $setParameters .=$mode;
+			my %modeHash = %{$ChannelDescriptions{$channel}{Modes}};
+            foreach my $mode (keys(%modeHash)) {
+				my $handling = $modeHash{$mode};
+				#Log($self, 3, "Handling: $handling");
+				if ( $handling =~ m/(BOTH)|(WRITE)/) {
+					if($firstI) {
+						$setParameters .= ':';
+						$firstI = _FALSE_;
+					} else {
+						$setParameters .= ','
+					}
+					$setParameters .=$mode;
+				}
             }
         } elsif ( defined ($ChannelDescriptions{$channel}{Upper}) ) {
             my $upper = $ChannelDescriptions{$channel}{Upper};

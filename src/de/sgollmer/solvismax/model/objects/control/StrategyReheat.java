@@ -8,6 +8,9 @@
 package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -25,7 +28,6 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.command.CommandControl;
 import de.sgollmer.solvismax.model.command.CommandScreenRestore;
 import de.sgollmer.solvismax.model.command.CommandSetQueuePriority;
-import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
@@ -35,10 +37,9 @@ import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
+import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.data.StringData;
-import de.sgollmer.solvismax.model.objects.data.TwoValues;
 import de.sgollmer.solvismax.model.objects.screen.Reheat;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
@@ -54,9 +55,51 @@ public class StrategyReheat implements IStrategy {
 
 	private final TouchPoint touchPoint;
 	private Control control;
+	private Collection<Execute> executes = new ArrayList<>(3);
 
 	private StrategyReheat(final TouchPoint touchPoint) {
 		this.touchPoint = touchPoint;
+	}
+
+	private Execute getExecute(Solvis solvis) {
+		for (Execute execute : this.executes) {
+			if (execute.solvis == solvis) {
+				return execute;
+			}
+		}
+		Execute execute = new Execute(solvis);
+		this.executes.add(execute);
+		return execute;
+	}
+
+	private enum Mode implements IMode<Mode> {
+		OFF("off", Handling.READ), //
+		HEATING("heating", Handling.BOTH), //
+		NOT_REQUIRED("not_required", Handling.READ);
+
+		private final String name;
+		private final Handling handling;
+
+		private Mode(final String name, final Handling handling) {
+			this.name = name;
+			this.handling = handling;
+		}
+
+		@Override
+		public String getName() {
+			return this.name;
+		}
+
+		@Override
+		public ModeValue<?> create(long timeStamp) {
+			return new ModeValue<>(this, timeStamp);
+		}
+
+		@Override
+		public Handling getHandling() {
+			return this.handling;
+		}
+
 	}
 
 	@Override
@@ -64,80 +107,205 @@ public class StrategyReheat implements IStrategy {
 		this.touchPoint.assign(description);
 	}
 
-	@Override
-	public SingleData<?> getValue(final SolvisScreen solvisScreen, final Solvis solvis,
-			final IControlAccess controlAccess, final boolean optional) throws TerminationException, IOException {
-		if (controlAccess instanceof GuiAccess) {
-			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
+	private class Execute {
 
+		private final Solvis solvis;
+		private WaitForReheatingFinished waitForReheatingFinished = null;
+		private ClearNotRequired clearNotRequired = null;
+
+		public Execute(Solvis solvis) {
+			this.solvis = solvis;
+		}
+
+		public SingleData<?> getValue(final SolvisScreen solvisScreen, final IControlAccess controlAccess,
+				final boolean optional) throws TerminationException, IOException {
+			if (controlAccess instanceof GuiAccess) {
+				Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
+
+				Reheat reheat = new Reheat(rectangle);
+
+				boolean active = reheat.isActive(solvisScreen);
+
+				if (!active) {
+					SolvisData former = this.solvis.getAllSolvisData()
+							.get(StrategyReheat.this.control.getDescription());
+					if (former.getMode() != null && former.getMode().get() == Mode.NOT_REQUIRED) {
+						return Mode.NOT_REQUIRED.create(0);
+					} else {
+						return Mode.OFF.create(0);
+					}
+
+				} else {
+					return Mode.HEATING.create(0);
+				}
+			}
+			return null;
+
+		}
+
+		public SetResult setValue(final IControlAccess controlAccess, final SolvisData value)
+				throws IOException, TerminationException, TypeException {
+
+			StrategyReheat.this.interpretSetData(value.getSingleData());
+
+			ClearNotRequired clearNotRequired = this.clearNotRequired;
+
+			if (clearNotRequired != null) {
+				clearNotRequired.abort();
+				this.clearNotRequired = null;
+			}
+
+			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			Reheat reheat = new Reheat(rectangle);
 
-			return new BooleanValue(reheat.isActive(solvisScreen), 0);
-		}
-		return null;
-	}
+			Mode mode = null;
+			ResultStatus status = null;
 
-	@Override
-	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
-			throws IOException, TerminationException, TypeException {
-		Helper.Boolean helperBool = value.getBoolean();
-		if (helperBool == Helper.Boolean.UNDEFINED) {
-			throw new TypeException("Wrong value type, should be boolean");
-		}
+			boolean notRequired = Reheat.isNotRequired(this.solvis.getCurrentScreen());
 
-		Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
-		Reheat reheat = new Reheat(rectangle);
-
-		Boolean first = null;
-		Boolean second = null;
-		ResultStatus status = null;
-
-		boolean notRequired = Reheat.isNotRequired(solvis.getCurrentScreen());
-
-		if (notRequired) {
-			first = true;
-			second = false;
-			status = ResultStatus.SUCCESS;
-			solvis.sendBack();
-		} else {
-
-			boolean bool = helperBool.result();
-
-			boolean active = reheat.isActive(solvis.getCurrentScreen());
-
-			if (active && !bool) {
-				// TODO hier sollte noch eine Fehlermeldung sein. Rücksetzen nicht möglich
-				first = false;
-				second = true;
+			if (notRequired) {
+				mode = Mode.NOT_REQUIRED;
 				status = ResultStatus.SUCCESS;
-			}
+				this.solvis.sendBack();
+				this.clearNotRequired = new ClearNotRequired();
+				this.clearNotRequired.submit();
+			} else {
 
-			if (active == bool) {
-				first = active;
-				status = ResultStatus.SUCCESS;
+				boolean active = reheat.isActive(this.solvis.getCurrentScreen());
 
 				if (active) {
-					Runnable runnable = new Runnable(solvis, this.control.getDescription());
-					runnable.submit();
+					mode = Mode.HEATING;
+
+					status = ResultStatus.SUCCESS;
+
+					if (this.waitForReheatingFinished == null) {
+
+						this.waitForReheatingFinished = new WaitForReheatingFinished();
+						this.waitForReheatingFinished.submit();
+					}
+
+				}
+			}
+
+			if (status != null) {
+
+				return new SetResult(status, new ModeValue<>(mode, System.currentTimeMillis()));
+			}
+
+			this.solvis.getAllSolvisData().get(StrategyReheat.this.control.getDescription()).setMode(Mode.HEATING,
+					System.currentTimeMillis());
+
+			this.solvis.send(StrategyReheat.this.touchPoint);
+
+			return null;
+		}
+
+		private class ClearNotRequired extends Helper.Runnable {
+
+			private boolean abort = false;
+
+			public ClearNotRequired() {
+				super("ClearNotRequired");
+			}
+
+			@Override
+			public void run() {
+
+				int waitTime = Execute.this.solvis.getUnit().getClearNotRequiredTime_ms();
+				if (waitTime <= 0) {
+					return;
 				}
 
+				synchronized (this) {
+					try {
+						AbortHelper.getInstance().sleep(waitTime);
+					} catch (TerminationException e) {
+						this.abort = true;
+					}
+				}
+				if (!this.abort) {
+					SolvisData data = Execute.this.solvis.getAllSolvisData()
+							.get(StrategyReheat.this.control.getDescription());
+					synchronized (data) {
+						ModeValue<?> mode = data.getMode();
+						if (mode == null || !(mode.get() instanceof Mode) || mode.get() == Mode.NOT_REQUIRED) {
+							data.setMode(Mode.OFF, System.currentTimeMillis());
+						}
+					}
+				}
+				Execute.this.clearNotRequired = null;
+			}
+
+			public void abort() {
+				this.abort = true;
+				synchronized (this) {
+					this.notifyAll();
+				}
 			}
 		}
 
-		if (status != null) {
-			long timeStamp = System.currentTimeMillis();
-			BooleanValue firstValue = new BooleanValue(first, timeStamp);
-			if (second == null) {
-				return new SetResult(status, firstValue);
-			} else {
-				BooleanValue secondValue = new BooleanValue(second, timeStamp);
-				return new SetResult(status, new TwoValues(firstValue, secondValue, timeStamp));
+		private class WaitForReheatingFinished extends Helper.Runnable implements IObserver<SolvisData> {
+
+			private boolean abort = false;
+
+			public WaitForReheatingFinished() {
+				super("WaitForReheatingEnd");
 			}
+
+			@Override
+			public void run() {
+
+				int interval = Execute.this.solvis.getUnit().getMeasurementsIntervalFast_ms();
+
+				SolvisData data = Execute.this.solvis.getAllSolvisData()
+						.get(StrategyReheat.this.control.getDescription());
+
+				Execute.this.solvis.execute(new CommandScreenRestore(false, this));
+				Execute.this.solvis.execute(new CommandSetQueuePriority(Constants.Commands.REHEATING_PRIORITY, this));
+
+				data.registerContinuousObserver(this);
+
+				while (!this.abort) {
+					synchronized (this) {
+						try {
+							AbortHelper.getInstance().sleep(interval);
+						} catch (TerminationException e) {
+							this.abort = true;
+						}
+					}
+					if (!this.abort) {
+						Execute.this.solvis.execute(new CommandControl(StrategyReheat.this.control.getDescription(),
+								Execute.this.solvis, Constants.Commands.REHEATING_PRIORITY));
+					}
+				}
+
+				Execute.this.solvis.execute(new CommandSetQueuePriority(Constants.Commands.REHEATING_PRIORITY, this));
+				Execute.this.solvis.execute(new CommandScreenRestore(true, this));
+				data.unregisterContinuousObserver(this);
+			}
+
+			@Override
+			public void update(SolvisData data, Object source) {
+
+				boolean active = false;
+
+				try {
+					active = data.getBool();
+				} catch (TypeException e) {
+					logger.error("Reheating error, detection aborted", e);
+					active = false;
+				}
+
+				if (!active) {
+					this.abort = true;
+					StrategyReheat.Execute.this.waitForReheatingFinished = null;
+					synchronized (this) {
+						this.notifyAll();
+					}
+				}
+			}
+
 		}
-
-		solvis.send(this.touchPoint);
-
-		return null;
 	}
 
 	@Override
@@ -171,21 +339,26 @@ public class StrategyReheat implements IStrategy {
 	}
 
 	@Override
-	public BooleanValue interpretSetData(final SingleData<?> singleData) throws TypeException {
-		if (singleData instanceof BooleanValue) {
-			return (BooleanValue) singleData;
-		} else if (singleData instanceof StringData) {
-			String data = ((StringData) singleData).get();
-			if (data.equalsIgnoreCase("true") || data.equalsIgnoreCase("false")) {
-				return new BooleanValue(data.equalsIgnoreCase("true"), singleData.getTimeStamp());
-			}
+	public ModeValue<Mode> interpretSetData(final SingleData<?> singleData) throws TypeException {
+		return this.interpretSetData(singleData.toString(), singleData.getTimeStamp());
+	}
+
+	private ModeValue<Mode> interpretSetData(String value, long timeStamp) throws TypeException {
+		if (value.equals(Mode.HEATING.getName())) {
+			return new ModeValue<>(Mode.HEATING, timeStamp);
+		} else {
+			throw new TypeException("Mode <" + value + "> is unknown or not allowed");
 		}
-		return null;
 	}
 
 	@Override
 	public boolean isXmlValid() {
 		return true;
+	}
+
+	@Override
+	public List<Mode> getModes() {
+		return Arrays.asList(Mode.values());
 	}
 
 	static class Creator extends CreatorByXML<StrategyReheat> {
@@ -228,7 +401,7 @@ public class StrategyReheat implements IStrategy {
 
 	@Override
 	public boolean isBoolean() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -237,15 +410,20 @@ public class StrategyReheat implements IStrategy {
 	}
 
 	@Override
-	public List<? extends IMode<?>> getModes() {
-		return null;
-	}
-
-	@Override
 	public String getCsvMeta(final String column, final boolean semicolon) {
 		switch (column) {
 			case Csv.WRITE:
 				return "true";
+			case Csv.MODES:
+				StringBuilder builder = new StringBuilder();
+				for (Mode entry : Mode.values()) {
+					if (builder.length() != 0) {
+						builder.append(semicolon ? ',' : ';');
+					}
+					builder.append(entry.getName());
+				}
+				return builder.toString();
+
 		}
 		return null;
 	}
@@ -255,85 +433,17 @@ public class StrategyReheat implements IStrategy {
 		this.control = control;
 	}
 
-	private static class Runnable extends Helper.Runnable implements IObserver<SolvisData> {
+	@Override
+	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess,
+			boolean optional) throws TerminationException, IOException {
 
-		private final Solvis solvis;
-		private final ChannelDescription description;
-		private boolean abort = false;
+		return this.getExecute(solvis).getValue(solvisScreen, controlAccess, optional);
+	}
 
-		public Runnable(final Solvis solvis, final ChannelDescription description) {
-			super("WaitForReheatingEnd");
-			this.solvis = solvis;
-			this.description = description;
-		}
+	@Override
+	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+			throws IOException, TerminationException, TypeException {
 
-		@Override
-		public void submit() {
-
-			SolvisData data = this.solvis.getAllSolvisData().get(this.description);
-
-			if (data.getContinuousObserver(this) != null) {
-				return;
-			}
-			
-			this.solvis.execute(new CommandScreenRestore(false, this));
-			this.solvis.execute(new CommandSetQueuePriority(Constants.Commands.REHEATING_PRIORITY, this));
-
-			super.submit();
-
-		}
-
-		@Override
-		public void run() {
-
-			int interval = this.solvis.getUnit().getMeasurementsIntervalFast_ms();
-
-			SolvisData data = this.solvis.getAllSolvisData().get(this.description);
-
-			if (data.getContinuousObserver(this) != null) {
-				return;
-			}
-
-			data.registerContinuousObserver(this);
-
-			while (!this.abort) {
-				synchronized (this) {
-					try {
-						AbortHelper.getInstance().sleep(interval);
-					} catch (TerminationException e) {
-						this.abort = true;
-					}
-				}
-				if (!this.abort) {
-					this.solvis.execute(
-							new CommandControl(this.description, this.solvis, Constants.Commands.REHEATING_PRIORITY));
-				}
-			}
-
-			this.solvis.execute(new CommandSetQueuePriority(Constants.Commands.REHEATING_PRIORITY, this));
-			this.solvis.execute(new CommandScreenRestore(true, this));
-			data.unregisterContinuousObserver(this);
-		}
-
-		@Override
-		public void update(SolvisData data, Object source) {
-
-			boolean active = false;
-
-			try {
-				active = data.getBool();
-			} catch (TypeException e) {
-				logger.error("Reheating error, detection aborted", e);
-				active = false;
-			}
-
-			if (!active) {
-				this.abort = true;
-				synchronized (this) {
-					this.notifyAll();
-				}
-			}
-		}
-
+		return this.getExecute(solvis).setValue(controlAccess, value);
 	}
 }

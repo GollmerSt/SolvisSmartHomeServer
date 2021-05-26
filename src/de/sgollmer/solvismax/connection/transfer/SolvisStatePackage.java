@@ -16,23 +16,21 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisStatus;
 
 public class SolvisStatePackage implements ISendData {
-	
+
 	private final SolvisStatus state;
 	private final Solvis solvis;
 
 	public SolvisStatePackage(SolvisStatus state, Solvis solvis) {
 		this.state = state;
-		this.solvis = solvis ;
+		this.solvis = solvis;
 	}
 
 	@Override
 	public JsonPackage createJsonPackage() {
-		
+
 		Frame frame = new Frame();
-		Element element = new Element();
+		Element element = new Element("SolvisState", new SingleValue(this.state.name()));
 		frame.add(element);
-		element.name = "SolvisState";
-		element.value = new SingleValue(this.state.name());
 
 		return new JsonPackage(Command.SOLVIS_STATE, frame);
 	}

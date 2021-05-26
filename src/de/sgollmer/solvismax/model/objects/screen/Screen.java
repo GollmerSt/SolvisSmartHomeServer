@@ -78,8 +78,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			final ISelectScreenStrategy selectScreenStrategy, final TouchPointStrategy sequenceUp,
 			final TouchPointStrategy sequenceDown, final Collection<Identification> identifications,
 			final Collection<Rectangle> ignoreRectangles, final String preparationId, final String lastPreparationId,
-			final boolean noRestore) {
-		super(id, previousId, preparationId, configurationMasks,selectScreenStrategy);
+			final boolean noRestore, final boolean service) {
+		super(id, previousId, preparationId, configurationMasks, selectScreenStrategy, service);
 		this.sortId = sortId;
 		this.backId = backId;
 		this.ignoreChanges = ignoreChanges;
@@ -225,6 +225,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private String preparationId = null;
 		private String lastPreparationId;
 		private boolean noRestore = false;
+		private boolean service = false;
 
 		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
@@ -258,6 +259,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 				case "noRestore":
 					this.noRestore = Boolean.parseBoolean(value);
 					break;
+				case "service":
+					this.service = Boolean.parseBoolean(value);
+					break;
 			}
 
 		}
@@ -280,7 +284,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			return new Screen(this.id, this.sortId, this.previousId, this.backId, this.ignoreChanges, this.mustSave,
 					this.configurationMasks, this.selectScreenStrategy, this.sequenceUp, this.sequenceDown,
 					this.identifications, this.ignoreRectangles, this.preparationId, this.lastPreparationId,
-					this.noRestore);
+					this.noRestore, this.service);
 		}
 
 		@Override

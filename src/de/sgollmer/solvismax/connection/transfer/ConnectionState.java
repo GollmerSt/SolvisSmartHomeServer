@@ -32,15 +32,11 @@ public class ConnectionState implements ISendData {
 	@Override
 	public JsonPackage createJsonPackage() {
 		Frame frame = new Frame();
-		Element element = new Element();
+		Element element = new Element("State", new SingleValue(this.status.name()));
 		frame.add(element);
-		element.setName("State");
-		element.setValue(new SingleValue(this.status.name()));
 		if (this.message != null) {
-			element = new Element();
+			element = new Element("Message", new SingleValue(this.message));
 			frame.add(element);
-			element.setName("Message");
-			element.setValue(new SingleValue(this.message));
 		}
 		return new JsonPackage(Command.CONNECTION_STATE, frame);
 

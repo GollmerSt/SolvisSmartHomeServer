@@ -10,8 +10,20 @@ package de.sgollmer.solvismax.connection.transfer;
 import de.sgollmer.solvismax.error.JsonException;
 
 public class Element {
-	protected String name;
-	protected IValue value;
+	protected String name = null;
+	protected IValue value = null;
+
+	public Element(final String name, final IValue value) {
+		this.name = name;
+		this.value = value;
+	}
+
+	public Element(final String name) {
+		this.name = name;
+	}
+
+	public Element() {
+	}
 
 	void addTo(StringBuilder builder) {
 		builder.append('"');

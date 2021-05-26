@@ -30,23 +30,15 @@ public class ConnectedPackage extends JsonPackage implements ISendData {
 		this.clientId = clientId;
 		this.command = Command.CONNECTED;
 		this.data = new Frame();
-		Element element = new Element();
-		element.name = "ClientId";
-		element.value = new SingleValue(new LongValue(clientId, -1));
+		Element element = new Element("ClientId", new SingleValue(new LongValue(clientId, -1)));
 		this.data.add(element);
-		element = new Element();
-		element.name = "ServerVersion";
-		element.value = new SingleValue(Version.getInstance().getVersion());
+		element = new Element("ServerVersion", new SingleValue(Version.getInstance().getVersion()));
 		this.data.add(element);
 		if (Version.getInstance().getBuildDate() != null) {
-			element = new Element();
-			element.name = "BuildDate";
-			element.value = new SingleValue(Version.getInstance().getBuildDate());
+			element = new Element("BuildDate", new SingleValue(Version.getInstance().getBuildDate()));
 			this.data.add(element);
 		}
-		element = new Element();
-		element.name = "FormatVersion";
-		element.value = new SingleValue(Version.getInstance().getServerFormatVersion());
+		element = new Element("FormatVersion", new SingleValue(Version.getInstance().getServerFormatVersion()));
 		this.data.add(element);
 	}
 

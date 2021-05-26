@@ -12,8 +12,7 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 public class Measurement extends Element {
 
 	private Measurement(SmartHomeData data) {
-		this.name = data.getName();
-		this.value = data.toSingleValue(data.getData());
+		super( data.getName(), data.toSingleValue(data.getData()));
 	}
 
 	static Measurement createMeasurement(SmartHomeData data) {

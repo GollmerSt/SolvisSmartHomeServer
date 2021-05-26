@@ -106,6 +106,11 @@ public class Constants {
 		public static final int INTERRUPT_AFTER_N_TOUCHES = 5; // After 5 touches, the screen
 																// command can be interrupted
 	}
+	
+	public static class Defaults {
+		public static final int CLEAR_NOT_REQUIRED_TIME = 60000;
+
+	}
 
 	public static class Files {
 		public static final int INPUT_BUFFER_SIZE = 8192;

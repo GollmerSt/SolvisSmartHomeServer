@@ -225,13 +225,6 @@
 	</tns:ErrorDetection>
 
 
-	<tns:Service>
-		<tns:ServiceScreen id="Schornsteinfeger" />
-		<tns:ServiceScreen id="Sonstiges_Nutzerauswahl" />
-		<tns:ServiceScreen id="Nutzerauswahl" />
-	</tns:Service>
-
-
 	<tns:Screens homeId="Home">
 
 		<tns:Screen id="Home" backId="" previousId="">
@@ -370,7 +363,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Schornsteinfeger" backId="Sonstiges-1"
-			previousId="Sonstiges-1">
+			previousId="Sonstiges-1" service="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="20" />
@@ -1194,7 +1187,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Sonstiges_Nutzerauswahl"
-			backId="Sonstiges-2" previousId="Sonstiges-2">
+			backId="Sonstiges-2" previousId="Sonstiges-2" service="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="65" />
@@ -1210,7 +1203,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Nutzerauswahl"
-			backId="Sonstiges_Nutzerauswahl" previousId="Sonstiges_Nutzerauswahl">
+			backId="Sonstiges_Nutzerauswahl" previousId="Sonstiges_Nutzerauswahl" service="true">
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="75" />
@@ -1226,7 +1219,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Installateur-Menue" backId="Home"
-			previousId="Nutzerauswahl">
+			previousId="Nutzerauswahl" service="true">
 			<tns:Configuration admin="true" />
 			<tns:UserSelection
 				waitTimeAfterLastDigitRefId="WindowChange">
@@ -1298,7 +1291,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizung-Installateur"
-			backId="Installateur-Menue" previousId="Installateur-Menue">
+			backId="Installateur-Menue" previousId="Installateur-Menue" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -1315,7 +1308,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizung-Anforderung" ignoreChanges="true"
-			backId="Heizung-Installateur" previousId="Heizung-Installateur">
+			backId="Heizung-Installateur" previousId="Heizung-Installateur" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -1332,7 +1325,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Brenner-Stufe-2"
-			backId="Heizung-Installateur" previousId="Heizung-Installateur">
+			backId="Heizung-Installateur" previousId="Heizung-Installateur" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -1350,7 +1343,7 @@
 
 		<tns:Screen id="Heizkreis-1-1_11" sortId="Heizkreis-11-1_1"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
-			ignoreChanges="true">
+			ignoreChanges="true" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChangeService">
@@ -1368,7 +1361,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizkreis-1-2_11" sortId="Heizkreis-11-1_2"
-			backId="Heizung-Installateur" previousId="Heizkreis-1-1_11">
+			backId="Heizung-Installateur" previousId="Heizkreis-1-1_11" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChangeService">
@@ -1386,7 +1379,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizkreis-1-3_11" sortId="Heizkreis-11-1_3"
-			backId="Heizung-Installateur" previousId="Heizkreis-1-2_11">
+			backId="Heizung-Installateur" previousId="Heizkreis-1-2_11" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChangeService">
@@ -1404,7 +1397,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizkreis-1-4_11" sortId="Heizkreis-11-1_4"
-			backId="Heizung-Installateur" previousId="Heizkreis-1-3_11">
+			backId="Heizung-Installateur" previousId="Heizkreis-1-3_11" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChangeService">
@@ -1427,7 +1420,7 @@
 
 		<tns:Screen id="Heizkreis-2-1_11" sortId="Heizkreis-11-2_1"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
-			ignoreChanges="true">
+			ignoreChanges="true" service="true">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -1448,7 +1441,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizkreis-2-2_11" sortId="Heizkreis-11-2_2"
-			backId="Heizung-Installateur" previousId="Heizkreis-2-1_11">
+			backId="Heizung-Installateur" previousId="Heizkreis-2-1_11" service="true">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -1469,7 +1462,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizkreis-2-3_11" sortId="Heizkreis-11-2_3"
-			backId="Heizung-Installateur" previousId="Heizkreis-2-2_11">
+			backId="Heizung-Installateur" previousId="Heizkreis-2-2_11" service="true">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -1490,7 +1483,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizkreis-2-4_11" sortId="Heizkreis-11-2_4"
-			backId="Heizung-Installateur" previousId="Heizkreis-2-3_11">
+			backId="Heizung-Installateur" previousId="Heizkreis-2-3_11" service="true">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
@@ -1516,7 +1509,7 @@
 
 		<tns:Screen id="Heizkreis-3-1_11" sortId="Heizkreis-11-3_1"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
-			ignoreChanges="true">
+			ignoreChanges="true" service="true">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x04"
 					andMask="0x04" />
@@ -1537,7 +1530,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizkreis-3-2_11" sortId="Heizkreis-11-3_2"
-			backId="Heizung-Installateur" previousId="Heizkreis-3-1_11">
+			backId="Heizung-Installateur" previousId="Heizkreis-3-1_11" service="true">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x04"
 					andMask="0x04" />
@@ -1558,7 +1551,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizkreis-3-3_11" sortId="Heizkreis-11-3_3"
-			backId="Heizung-Installateur" previousId="Heizkreis-3-2_11">
+			backId="Heizung-Installateur" previousId="Heizkreis-3-2_11" service="true">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x04"
 					andMask="0x04" />
@@ -1579,7 +1572,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Heizkreis-3-4_11" sortId="Heizkreis-11-3_4"
-			backId="Heizung-Installateur" previousId="Heizkreis-3-3_11">
+			backId="Heizung-Installateur" previousId="Heizkreis-3-3_11" service="true">
 			<tns:Configuration admin="true">
 				<tns:ConfigurationMask compareMask="0x04"
 					andMask="0x04" />
@@ -1604,7 +1597,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Wasser-Installateur"
-			backId="Installateur-Menue" previousId="Installateur-Menue">
+			backId="Installateur-Menue" previousId="Installateur-Menue" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -1621,7 +1614,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Wasser-Anforderung-1/2"
-			backId="Wasser-Installateur" previousId="Wasser-Installateur">
+			backId="Wasser-Installateur" previousId="Wasser-Installateur" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -1639,7 +1632,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Wasser-Anforderung-2/2"
-			backId="Wasser-Installateur" previousId="Wasser-Anforderung-1/2">
+			backId="Wasser-Installateur" previousId="Wasser-Anforderung-1/2" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -1657,7 +1650,7 @@
 		</tns:Screen>
 
 		<tns:Screen id="Wasser-Bereitschaft"
-			backId="Wasser-Installateur" previousId="Wasser-Installateur">
+			backId="Wasser-Installateur" previousId="Wasser-Installateur" service="true">
 			<tns:Configuration admin="true" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
@@ -4983,7 +4976,7 @@
 		<tns:Assignment id="C45"
 			name="C45.Min_Vorlauf_Temp_HK3" />
 
-		<tns:Assignment id="C46" name="C46.Nachheizen" />
+		<tns:Assignment id="C46" name="C46.WarmwasserNachheizen" />
 
 
 	</tns:ChannelAssignments>

@@ -332,13 +332,6 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}		
 	}
 	
-	public Observer.IObserver<SolvisData> getContinuousObserver(Observer.IObserver<SolvisData> observer) {
-		if (this.continousObservable == null) {
-			return null;
-		}
-		return this.continousObservable.getObserver(observer);
-	}
-
 	@Override
 	public String toString() {
 		return this.data.toString();

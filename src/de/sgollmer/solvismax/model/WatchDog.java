@@ -57,7 +57,7 @@ public class WatchDog {
 
 		@Override
 		public void update(SolvisStatePackage data, Object source) {
-			
+
 			SolvisStatus state = data.getState();
 
 			synchronized (WatchDog.this) {
@@ -342,8 +342,8 @@ public class WatchDog {
 			case CHANGED:
 				if (this.powerOff) {
 					current = HumanAccess.SERVICE;
-				} else if (this.solvis.getSolvisDescription().getService().isServiceScreen(SolvisScreen.get(realScreen),
-						this.solvis) && this.solvis.getFeatures().isDetectServiceAccess()) {
+				} else if (realScreen != null && realScreen.isService()
+						&& this.solvis.getFeatures().isDetectServiceAccess()) {
 					synchronized (this) {
 						this.serviceScreenDetected = true;
 						current = HumanAccess.SERVICE;
@@ -367,8 +367,7 @@ public class WatchDog {
 				this.solvis.setScreenSaverActive(false);
 				break;
 			case INIT:
-				if (realScreen != null && this.solvis.getSolvisDescription().getService()
-						.isServiceScreen(SolvisScreen.get(realScreen), this.solvis)) {
+				if (realScreen != null && realScreen != null && realScreen.isService()) {
 					synchronized (this) {
 						this.serviceScreenDetected = true;
 						this.humanAccess = HumanAccess.SERVICE;

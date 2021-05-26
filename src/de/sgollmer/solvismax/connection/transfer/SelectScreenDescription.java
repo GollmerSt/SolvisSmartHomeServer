@@ -12,20 +12,14 @@ import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 public class SelectScreenDescription extends Element {
 
 	SelectScreenDescription(String screenId ) {
-		this.name = screenId;
+		super(screenId);
 		Frame frame = new Frame();
 		this.value = frame;
 
-		Element writeableElement = new Element();
-		writeableElement.name = "Writeable";
-		SingleValue sv = new SingleValue(new BooleanValue(false, -1));
-		writeableElement.value = sv;
+		Element writeableElement = new Element("Writeable",new SingleValue(new BooleanValue(false, -1)));
 		frame.add(writeableElement);
 
-		Element typeElement = new Element();
-		typeElement.name = "Type";
-		sv = new SingleValue("SelectScreen");
-		typeElement.value = sv;
+		Element typeElement = new Element("Type",new SingleValue("SelectScreen"));
 		frame.add(typeElement);
 
 	}

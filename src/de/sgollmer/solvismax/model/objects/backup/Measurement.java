@@ -141,6 +141,11 @@ public class Measurement implements SystemBackup.IValue{
 			public int hashCode() {
 				return this.data.hashCode();
 			}
+
+			@Override
+			public Handling getHandling() {
+				return null;
+			}
 		}
 
 		@Override

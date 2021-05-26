@@ -17,71 +17,51 @@ import de.sgollmer.solvismax.model.objects.data.IMode;
 
 public class ChannelDescription extends Element {
 	public ChannelDescription(ChannelInstance instance) {
-		
-		this.name = instance.getName();
+		super(instance.getName());
+
 		Frame frame = new Frame();
 		this.value = frame;
 
 		boolean writeable = instance.isWriteable();
-		Element writeableElement = new Element();
-		writeableElement.name = "Writeable";
-		SingleValue sv = new SingleValue(new BooleanValue(writeable, -1));
-		writeableElement.value = sv;
+		Element writeableElement = new Element("Writeable", new SingleValue(new BooleanValue(writeable, -1)));
 		frame.add(writeableElement);
 
 		String type = instance.getType().name();
-		Element typeElement = new Element();
-		typeElement.name = "Type";
-		sv = new SingleValue(type);
-		typeElement.value = sv;
+		Element typeElement = new Element("Type", new SingleValue(type));
 		frame.add(typeElement);
 
 		String unitString = instance.getUnit();
 		if (unitString != null) {
-			Element unit = new Element();
-			unit.name = "Unit";
-			unit.value = new SingleValue(unitString);
+			Element unit = new Element("Unit", new SingleValue(unitString));
 			frame.add(unit);
 		}
 
 		Double accuracy = instance.getAccuracy();
 		if (accuracy != null) {
-			Element ac = new Element();
-			ac.name = "Accuracy";
-			ac.value = new SingleValue(new DoubleValue(accuracy, -1));
+			Element ac = new Element("Accuracy", new SingleValue(new DoubleValue(accuracy, -1)));
 			frame.add(ac);
 		}
 
 		boolean isBoolean = instance.isBoolean();
-		Element ib = new Element();
-		ib.name = "IsBoolean";
-		ib.value = new SingleValue(new BooleanValue(isBoolean, -1));
+		Element ib = new Element("IsBoolean", new SingleValue(new BooleanValue(isBoolean, -1)));
 		frame.add(ib);
 
 		UpperLowerStep upperLowerStep = instance.getUpperLowerStep();
 		if (upperLowerStep != null) {
-			Element upper = new Element();
-			upper.name = "Upper";
-			upper.value = new SingleValue(new DoubleValue(upperLowerStep.getUpper(), -1));
+			Element upper = new Element("Upper", new SingleValue(new DoubleValue(upperLowerStep.getUpper(), -1)));
 			frame.add(upper);
-			Element lower = new Element();
-			lower.name = "Lower";
-			lower.value = new SingleValue(new DoubleValue(upperLowerStep.getLower(), -1));
+			Element lower = new Element("Lower", new SingleValue(new DoubleValue(upperLowerStep.getLower(), -1)));
 			frame.add(lower);
-			Element step = new Element();
-			step.name = "Step";
-			step.value = new SingleValue(new DoubleValue(upperLowerStep.getStep(), -1));
+			Element step = new Element("Step", new SingleValue(new DoubleValue(upperLowerStep.getStep(), -1)));
 			frame.add(step);
 			if (upperLowerStep.getIncrementChange() != null) {
-				Element incrementChange = new Element();
-				incrementChange.name = "IncrementChange";
-				incrementChange.value = new SingleValue(new DoubleValue(upperLowerStep.getIncrementChange(), -1));
+				Element incrementChange = new Element("IncrementChange",
+						new SingleValue(new DoubleValue(upperLowerStep.getIncrementChange(), -1)));
 				frame.add(incrementChange);
 			}
 			if (upperLowerStep.getChangedIncrement() != null) {
-				Element changedIncrement = new Element();
-				changedIncrement.name = "ChangedIncrement";
-				changedIncrement.value = new SingleValue(new DoubleValue(upperLowerStep.getChangedIncrement(), -1));
+				Element changedIncrement = new Element("ChangedIncrement",
+						new SingleValue(new DoubleValue(upperLowerStep.getChangedIncrement(), -1)));
 				frame.add(changedIncrement);
 			}
 		}
@@ -91,13 +71,15 @@ public class ChannelDescription extends Element {
 			ArrayValue arrayValue = new ArrayValue();
 
 			for (IMode<?> mode : modes) {
-				IValue value = new SingleValue(mode.getName());
-				arrayValue.add(value);
+				Frame modeFrame = new Frame();
+				Element element = new Element("Name",new SingleValue(mode.getName()));
+				modeFrame.add(element);
+				element = new Element("Handling",new SingleValue(mode.getHandling().name()));
+				modeFrame.add(element);
+				arrayValue.add(modeFrame);
 			}
 
-			Element modesElement = new Element();
-			modesElement.name = "Modes";
-			modesElement.value = arrayValue;
+			Element modesElement = new Element("Modes", arrayValue);
 
 			frame.add(modesElement);
 		}

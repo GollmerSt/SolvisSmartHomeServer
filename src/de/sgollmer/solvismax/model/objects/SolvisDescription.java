@@ -42,7 +42,6 @@ public class SolvisDescription {
 	private static final String XML_MISCELLANEOUS = "Miscellaneous";
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
 	private static final String XML_ERROR_DETECTION = "ErrorDetection";
-	private static final String XML_SERVICE = "Service";
 	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
 
 	private final Configurations configurations;
@@ -55,7 +54,6 @@ public class SolvisDescription {
 	private final AllPreparations allPreparations;
 	private final ClockMonitor clock;
 	private final ErrorDetection errorDetection;
-	private final Service service;
 	private final AllChannelAssignments channelAssignments;
 
 	public ClockMonitor getClock() {
@@ -65,12 +63,11 @@ public class SolvisDescription {
 	private final AllDurations durations;
 	private final Miscellaneous miscellaneous;
 
-	private SolvisDescription(final Configurations configurations, final Standby standby,
-			final ScreenSaver saver, final AllScreens screens, FallBack fallBack,
-			final AllScreenGraficDescriptions screenGrafics, final AllChannelDescriptions dataDescriptions,
-			final AllPreparations allPreparations, final ClockMonitor clock, final AllDurations durations,
-			final Miscellaneous miscellaneous, final ErrorDetection errorDetection, final Service service,
-			final AllChannelAssignments channelAssignments) throws XmlException {
+	private SolvisDescription(final Configurations configurations, final Standby standby, final ScreenSaver saver,
+			final AllScreens screens, FallBack fallBack, final AllScreenGraficDescriptions screenGrafics,
+			final AllChannelDescriptions dataDescriptions, final AllPreparations allPreparations,
+			final ClockMonitor clock, final AllDurations durations, final Miscellaneous miscellaneous,
+			final ErrorDetection errorDetection, final AllChannelAssignments channelAssignments) throws XmlException {
 		this.configurations = configurations;
 		this.standby = standby;
 		this.saver = saver;
@@ -83,7 +80,6 @@ public class SolvisDescription {
 		this.durations = durations;
 		this.miscellaneous = miscellaneous;
 		this.errorDetection = errorDetection;
-		this.service = service;
 		this.channelAssignments = channelAssignments;
 
 	}
@@ -107,9 +103,6 @@ public class SolvisDescription {
 		if (this.fallBack != null) {
 			this.fallBack.assign(this);
 		}
-		if (this.service != null) {
-			this.service.assign(this);
-		}
 	}
 
 	public Collection<IScreenPartCompare> getLearnGrafics(Solvis solvis) {
@@ -130,7 +123,6 @@ public class SolvisDescription {
 		private AllPreparations allPreparations;
 		private ClockMonitor clock;
 		private ErrorDetection errorDetection;
-		private Service service;
 		private AllChannelAssignments channelAssignments;
 
 		private AllDurations durations;
@@ -149,7 +141,7 @@ public class SolvisDescription {
 		public SolvisDescription create() throws XmlException {
 			return new SolvisDescription(this.configurations, this.standby, this.saver, this.screens, this.fallBack,
 					this.screenGrafics, this.dataDescriptions, this.allPreparations, this.clock, this.durations,
-					this.miscellaneous, this.errorDetection, this.service, this.channelAssignments);
+					this.miscellaneous, this.errorDetection, this.channelAssignments);
 		}
 
 		@Override
@@ -180,8 +172,6 @@ public class SolvisDescription {
 					return new Miscellaneous.Creator(id, this);
 				case XML_ERROR_DETECTION:
 					return new ErrorDetection.Creator(id, this);
-				case XML_SERVICE:
-					return new Service.Creator(id, this);
 				case XML_CHANNEL_ASSIGNMENTS:
 					return new AllChannelAssignments.Creator(id, this);
 			}
@@ -229,9 +219,6 @@ public class SolvisDescription {
 					break;
 				case XML_ERROR_DETECTION:
 					this.errorDetection = (ErrorDetection) created;
-					break;
-				case XML_SERVICE:
-					this.service = (Service) created;
 					break;
 				case XML_CHANNEL_ASSIGNMENTS:
 					this.channelAssignments = (AllChannelAssignments) created;
@@ -339,10 +326,6 @@ public class SolvisDescription {
 		return this.errorDetection;
 	}
 
-	public Service getService() {
-		return this.service;
-	}
-
 	public void instantiate(Solvis solvis) {
 		this.clock.instantiate(solvis);
 		this.errorDetection.instantiate(solvis);
@@ -359,10 +342,9 @@ public class SolvisDescription {
 	public Configurations getConfigurations() {
 		return this.configurations;
 	}
-	
-	public boolean isValid( Long mask) {
+
+	public boolean isValid(Long mask) {
 		return this.configurations.isValid(mask, this);
 	}
-
 
 }

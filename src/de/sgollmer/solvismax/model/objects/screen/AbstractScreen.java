@@ -30,16 +30,18 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	protected List<ScreenTouch> allPreviousScreenTouches = null;
 	protected Preparation preparation = null;
 	private final ISelectScreenStrategy selectScreenStrategy;
+	private final boolean service;
 
 	private OfConfigs<AbstractScreen> previousScreen = null;
 
 	protected AbstractScreen(String id, String previousId, final String preparationId, Configuration configurationMasks,
-			final ISelectScreenStrategy selectScreenStrategy) {
+			final ISelectScreenStrategy selectScreenStrategy,final boolean service) {
 		this.id = id;
 		this.previousId = previousId;
 		this.preparationId = preparationId;
 		this.configuration = configurationMasks;
 		this.selectScreenStrategy = selectScreenStrategy;
+		this.service = service;
 	}
 
 	public String getId() {
@@ -358,6 +360,10 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 			this.selectScreenStrategy.assign(description);
 		}
 
+	}
+
+	public boolean isService() {
+		return this.service;
 	}
 
 }
