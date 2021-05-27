@@ -146,6 +146,11 @@ public class Measurement implements SystemBackup.IValue{
 			public Handling getHandling() {
 				return null;
 			}
+
+			@Override
+			public String getCvsMeta() {
+				return null;
+			}
 		}
 
 		@Override

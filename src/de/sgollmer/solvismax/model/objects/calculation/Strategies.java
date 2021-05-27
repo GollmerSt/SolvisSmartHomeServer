@@ -67,6 +67,11 @@ public enum Strategies {
 		abstract Double getAccuracy();
 
 		abstract boolean isBoolean();
+		
+		String getCsvMeta(final String column, final boolean semicolon) {
+			return null;
+		}
+
 
 	}
 

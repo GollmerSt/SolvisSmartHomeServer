@@ -208,11 +208,11 @@ public class Calculation extends ChannelSource {
 
 	@Override
 	public String getCsvMeta(String column, boolean semicolon) {
-		switch ( column ) {
+		switch (column) {
 			case Csv.STRATEGY:
 				return this.strategy.getClass().getSimpleName();
 		}
-		return null;
+		return this.strategy.getCsvMeta(column, semicolon);
 	}
 
 }

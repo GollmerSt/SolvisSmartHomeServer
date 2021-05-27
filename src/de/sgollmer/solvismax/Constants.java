@@ -108,7 +108,7 @@ public class Constants {
 	}
 	
 	public static class Defaults {
-		public static final int CLEAR_NOT_REQUIRED_TIME = 60000;
+		public static final int CLEAR_NOT_REQUIRED_TIME = 30000;
 
 	}
 

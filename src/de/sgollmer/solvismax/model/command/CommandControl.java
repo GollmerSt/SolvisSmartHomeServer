@@ -203,7 +203,7 @@ public class CommandControl extends Command {
 
 		if (queueStatus.getCurrentPriority() != null && this.priority != null
 				&& queueStatus.getCurrentPriority() > this.priority) {
-			return ResultStatus.CONTINUE;
+			return ResultStatus.INHIBITED;
 		}
 
 		boolean finished = false;

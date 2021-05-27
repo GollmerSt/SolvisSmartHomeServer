@@ -14,8 +14,14 @@ public interface IMode<C> extends Comparable<C>{
 	public ModeValue<?> create( long timeStamp);
 	
 	public enum Handling {
-		READ, WRITE, BOTH
+		RO, WO, RW;
+		
+		public String getCvsMeta() {
+			return "(" + this.name().toLowerCase() + ")";
+		}
 	}
 	
 	public Handling getHandling();
+	
+	public String getCvsMeta();
 }

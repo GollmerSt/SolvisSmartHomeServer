@@ -915,7 +915,7 @@ sub CreateGetSetServerCommands {
                     $ChannelDescriptions{$name}{Modes} = {};
 					foreach my $mode (@{$channelHash{Modes}}) {
 						if ( $self->{DATA_FORMAT} < 3) {
-							$ChannelDescriptions{$name}{Modes}{$mode} = 'BOTH';
+							$ChannelDescriptions{$name}{Modes}{$mode} = 'RW';
 						} else {
 							my %modeHash = %$mode;
 							my $modeName = $modeHash{Name};
@@ -999,7 +999,7 @@ sub CreateSetParams {
             foreach my $mode (keys(%modeHash)) {
 				my $handling = $modeHash{$mode};
 				#Log($self, 3, "Handling: $handling");
-				if ( $handling =~ m/(BOTH)|(WRITE)/) {
+				if ( $handling =~ m/(RW)|(WO)/) {
 					if($firstI) {
 						$setParameters .= ':';
 						$firstI = _FALSE_;

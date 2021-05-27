@@ -73,9 +73,9 @@ public class StrategyReheat implements IStrategy {
 	}
 
 	private enum Mode implements IMode<Mode> {
-		OFF("off", Handling.READ), //
-		HEATING("heating", Handling.BOTH), //
-		NOT_REQUIRED("not_required", Handling.READ);
+		OFF("off", Handling.RO), //
+		HEATING("heating", Handling.RW), //
+		NOT_REQUIRED("not_required", Handling.RO);
 
 		private final String name;
 		private final Handling handling;
@@ -98,6 +98,11 @@ public class StrategyReheat implements IStrategy {
 		@Override
 		public Handling getHandling() {
 			return this.handling;
+		}
+
+		@Override
+		public String getCvsMeta() {
+			return this.name + this.handling.getCvsMeta();
 		}
 
 	}
@@ -216,12 +221,10 @@ public class StrategyReheat implements IStrategy {
 					return;
 				}
 
-				synchronized (this) {
-					try {
-						AbortHelper.getInstance().sleep(waitTime);
-					} catch (TerminationException e) {
-						this.abort = true;
-					}
+				try {
+					AbortHelper.getInstance().sleepAndLock(waitTime, this);
+				} catch (TerminationException e) {
+					this.abort = true;
 				}
 				if (!this.abort) {
 					SolvisData data = Execute.this.solvis.getAllSolvisData()
@@ -230,10 +233,13 @@ public class StrategyReheat implements IStrategy {
 						ModeValue<?> mode = data.getMode();
 						if (mode == null || !(mode.get() instanceof Mode) || mode.get() == Mode.NOT_REQUIRED) {
 							data.setMode(Mode.OFF, System.currentTimeMillis());
+							logger.debug("not_required cleared");
 						}
 					}
 				}
 				Execute.this.clearNotRequired = null;
+				
+
 			}
 
 			public void abort() {
@@ -266,12 +272,10 @@ public class StrategyReheat implements IStrategy {
 				data.registerContinuousObserver(this);
 
 				while (!this.abort) {
-					synchronized (this) {
-						try {
-							AbortHelper.getInstance().sleep(interval);
-						} catch (TerminationException e) {
-							this.abort = true;
-						}
+					try {
+						AbortHelper.getInstance().sleepAndLock(interval, this);
+					} catch (TerminationException e) {
+						this.abort = true;
 					}
 					if (!this.abort) {
 						Execute.this.solvis.execute(new CommandControl(StrategyReheat.this.control.getDescription(),
@@ -299,6 +303,7 @@ public class StrategyReheat implements IStrategy {
 						this.notifyAll();
 					}
 				}
+				logger.debug("Reheating finished");
 			}
 
 		}
@@ -414,9 +419,9 @@ public class StrategyReheat implements IStrategy {
 				StringBuilder builder = new StringBuilder();
 				for (Mode entry : Mode.values()) {
 					if (builder.length() != 0) {
-						builder.append(semicolon ? ',' : ';');
+						builder.append('|');
 					}
-					builder.append(entry.getName());
+					builder.append(entry.getCvsMeta());
 				}
 				return builder.toString();
 

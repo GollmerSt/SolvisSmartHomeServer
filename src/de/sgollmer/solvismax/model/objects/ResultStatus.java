@@ -1,15 +1,26 @@
 package de.sgollmer.solvismax.model.objects;
 
 public enum ResultStatus {
-	SUCCESS(true), CONTINUE(true), VALUE_VIOLATION(true), INTERRUPTED(false), NO_SUCCESS(false);
+	SUCCESS(true, true), // (Sub-)Command executes successful and is removeFromQueue
+	CONTINUE(true, false), // a sub command removeFromQueue
+	VALUE_VIOLATION(true, true), // (Sub-)Command executes successful but a value violation occurs
+	INTERRUPTED(false, false), // (Sub-)Command is interrupted. An other command can be executed before continuing
+	NO_SUCCESS(false, false), // (Sub-)Command executes not successful 
+	INHIBITED(false, true); // The command was inhibited
 
 	private final boolean executed;
+	private final boolean removeFromQueue;
 
-	private ResultStatus(boolean executed) {
+	private ResultStatus(final boolean executed, final boolean finished) {
 		this.executed = executed;
+		this.removeFromQueue = finished;
 	}
 
 	public boolean isExecuted() {
 		return this.executed;
+	}
+
+	public boolean removeFromQueue() {
+		return this.removeFromQueue;
 	}
 }

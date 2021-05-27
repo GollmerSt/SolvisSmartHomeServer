@@ -349,9 +349,9 @@ public class StrategyMode implements IStrategy {
 				StringBuilder builder = new StringBuilder();
 				for (ModeEntry entry : this.modes) {
 					if (builder.length() != 0) {
-						builder.append(semicolon ? ',' : ';');
+						builder.append('|');
 					}
-					builder.append(entry.getId());
+					builder.append(entry.getCvsMeta());
 				}
 				return builder.toString();
 			case Csv.WRITE:

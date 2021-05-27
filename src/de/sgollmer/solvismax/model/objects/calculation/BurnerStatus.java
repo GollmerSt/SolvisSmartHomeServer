@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
@@ -62,7 +63,12 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 		@Override
 		public Handling getHandling() {
-			return Handling.READ;
+			return Handling.RO;
+		}
+
+		@Override
+		public String getCvsMeta() {
+			return this.name + this.getHandling().getCvsMeta();
 		}
 	}
 
@@ -160,4 +166,19 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		return false;
 	}
 
+	@Override
+	String getCsvMeta(final String column, final boolean semicolon) {
+		switch (column) {
+			case Csv.MODES:
+				StringBuilder builder = new StringBuilder();
+				for (Status entry : Status.values()) {
+					if (builder.length() != 0) {
+						builder.append('|');
+					}
+					builder.append(entry.getCvsMeta());
+				}
+				return builder.toString();
+		}
+		return null;
+	}
 }

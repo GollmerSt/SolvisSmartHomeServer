@@ -72,7 +72,7 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 		private String id;
 		private GuiSet guiSet;
 		private final Collection<WhiteGraficRectangle> whiteGraficRectangles = new ArrayList<>();
-		private Handling handling = Handling.BOTH;
+		private Handling handling = Handling.RW;
 
 		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
@@ -243,6 +243,11 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 	@Override
 	public Handling getHandling() {
 		return this.handling;
+	}
+
+	@Override
+	public String getCvsMeta() {
+		return this.id + this.handling.getCvsMeta();
 	}
 
 }

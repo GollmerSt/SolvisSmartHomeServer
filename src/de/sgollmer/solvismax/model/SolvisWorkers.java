@@ -185,7 +185,7 @@ public class SolvisWorkers{
 				}
 				if (command != null) {
 					synchronized (this) {
-						if (status == ResultStatus.SUCCESS) {
+						if (status.removeFromQueue()) {
 							this.removeCommand(command);
 						} else {
 							if (command.toEndOfQueue()) {
