@@ -97,6 +97,10 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
+	public SetResult setValueFast(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+		return this.channelSource.setValueFast(solvis, value);
+	}
+	@Override
 	public boolean isWriteable() {
 		return this.channelSource.isWriteable();
 	}
@@ -355,5 +359,6 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		}
 		return this.channelSource.getCsvMeta(column, semicolon);
 	}
+
 
 }

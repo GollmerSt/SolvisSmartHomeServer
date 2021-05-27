@@ -54,11 +54,18 @@ public class StrategyReheat implements IStrategy {
 	private static final String XML_TOUCH_POINT = "TouchPoint";
 
 	private final TouchPoint touchPoint;
+	private final String desiredId;
+	private final String actualId;
+	private final String deltaId;
+
 	private Control control;
 	private Collection<Execute> executes = new ArrayList<>(3);
 
-	private StrategyReheat(final TouchPoint touchPoint) {
+	private StrategyReheat(final TouchPoint touchPoint, final String desiredId, final String actualId, String deltaId) {
 		this.touchPoint = touchPoint;
+		this.desiredId = desiredId;
+		this.actualId = actualId;
+		this.deltaId = deltaId;
 	}
 
 	private Execute getExecute(Solvis solvis) {
@@ -110,6 +117,7 @@ public class StrategyReheat implements IStrategy {
 	@Override
 	public void assign(final SolvisDescription description) throws AssignmentException {
 		this.touchPoint.assign(description);
+
 	}
 
 	private class Execute {
@@ -118,12 +126,32 @@ public class StrategyReheat implements IStrategy {
 		private WaitForReheatingFinished waitForReheatingFinished = null;
 		private ClearNotRequired clearNotRequired = null;
 
+		private final SolvisData desiredData;
+		private final SolvisData actualData;
+		private final SolvisData deltaData;
+
+		private boolean quick = true;
+
 		public Execute(Solvis solvis) {
 			this.solvis = solvis;
+			this.desiredData = this.getData(StrategyReheat.this.desiredId);
+
+			this.actualData = this.getData(StrategyReheat.this.actualId);
+			this.deltaData = this.getData(StrategyReheat.this.deltaId);
+		}
+
+		private SolvisData getData(String id) {
+			SolvisData data = this.solvis.getAllSolvisData().get(id);
+			if (data == null) {
+				logger.error("Warning: Channel <" + id + "> is not known.");
+				this.quick = false;
+			}
+			return data;
 		}
 
 		public SingleData<?> getValue(final SolvisScreen solvisScreen, final IControlAccess controlAccess,
 				final boolean optional) throws TerminationException, IOException {
+
 			if (controlAccess instanceof GuiAccess) {
 				Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 
@@ -135,13 +163,13 @@ public class StrategyReheat implements IStrategy {
 					SolvisData former = this.solvis.getAllSolvisData()
 							.get(StrategyReheat.this.control.getDescription());
 					if (former.getMode() != null && former.getMode().get() == Mode.NOT_REQUIRED) {
-						return Mode.NOT_REQUIRED.create(0);
+						return Mode.NOT_REQUIRED.create(System.currentTimeMillis());
 					} else {
-						return Mode.OFF.create(0);
+						return Mode.OFF.create(System.currentTimeMillis());
 					}
 
 				} else {
-					return Mode.HEATING.create(0);
+					return Mode.HEATING.create(System.currentTimeMillis());
 				}
 			}
 			return null;
@@ -153,11 +181,10 @@ public class StrategyReheat implements IStrategy {
 
 			StrategyReheat.this.interpretSetData(value.getSingleData());
 
-			ClearNotRequired clearNotRequired = this.clearNotRequired;
+			SetResult setResult = this.setValueFast(value);
 
-			if (clearNotRequired != null) {
-				clearNotRequired.abort();
-				this.clearNotRequired = null;
+			if (setResult != null) {
+				return setResult;
 			}
 
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
@@ -169,11 +196,7 @@ public class StrategyReheat implements IStrategy {
 			boolean notRequired = Reheat.isNotRequired(this.solvis.getCurrentScreen());
 
 			if (notRequired) {
-				mode = Mode.NOT_REQUIRED;
-				status = ResultStatus.SUCCESS;
-				this.solvis.sendBack();
-				this.clearNotRequired = new ClearNotRequired();
-				this.clearNotRequired.submit();
+				return this.notRequiredHandling(true);
 			} else {
 
 				boolean active = reheat.isActive(this.solvis.getCurrentScreen());
@@ -194,7 +217,7 @@ public class StrategyReheat implements IStrategy {
 
 			if (status != null) {
 
-				return new SetResult(status, new ModeValue<>(mode, System.currentTimeMillis()));
+				return new SetResult(status, new ModeValue<>(mode, System.currentTimeMillis()), true);
 			}
 
 			this.solvis.getAllSolvisData().get(StrategyReheat.this.control.getDescription()).setMode(Mode.HEATING,
@@ -203,6 +226,56 @@ public class StrategyReheat implements IStrategy {
 			this.solvis.send(StrategyReheat.this.touchPoint);
 
 			return null;
+		}
+
+		private SetResult setValueFast(SolvisData value) throws IOException, TerminationException {
+
+			ClearNotRequired clearNotRequired = this.clearNotRequired;
+
+			if (clearNotRequired != null) {
+				clearNotRequired.abort();
+				this.clearNotRequired = null;
+			}
+
+			boolean notRequired = false;
+
+			try {
+				if (this.quick && this.desiredData.isValid() && this.actualData.isValid() && this.deltaData.isValid()) {
+					int actual = this.actualData.getInt() * //
+							this.desiredData.getDescription().getDivisor()
+							* this.deltaData.getDescription().getDivisor();
+					int desired = this.desiredData.getInt() * //
+							this.actualData.getDescription().getDivisor()
+							* this.deltaData.getDescription().getDivisor();
+					int delta = this.deltaData.getInt() * //
+							this.actualData.getDescription().getDivisor()
+							* this.desiredData.getDescription().getDivisor();
+					if (desired + delta < actual) {
+						notRequired = true;
+					}
+				}
+			} catch (TypeException e) {
+				logger.error("Warning: Definition of reheating not correct. Check the xml file. Error ignored.");
+			}
+
+			if (notRequired) {
+				return this.notRequiredHandling(false);
+			} else {
+
+				return null;
+			}
+		}
+
+		private SetResult notRequiredHandling(boolean sendBack) throws IOException, TerminationException {
+
+			if (sendBack) {
+				this.solvis.sendBack();
+			}
+			this.clearNotRequired = new ClearNotRequired();
+			this.clearNotRequired.submit();
+
+			return new SetResult(ResultStatus.SUCCESS, new ModeValue<>(Mode.NOT_REQUIRED, System.currentTimeMillis()), true);
+
 		}
 
 		private class ClearNotRequired extends Helper.Runnable {
@@ -238,7 +311,6 @@ public class StrategyReheat implements IStrategy {
 					}
 				}
 				Execute.this.clearNotRequired = null;
-				
 
 			}
 
@@ -365,6 +437,9 @@ public class StrategyReheat implements IStrategy {
 	static class Creator extends CreatorByXML<StrategyReheat> {
 
 		private TouchPoint touchPoint;
+		private String desiredId;
+		private String actualId;
+		private String deltaId;
 
 		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
@@ -372,11 +447,22 @@ public class StrategyReheat implements IStrategy {
 
 		@Override
 		public void setAttribute(final QName name, final String value) {
+			switch (name.getLocalPart()) {
+				case "desiredId":
+					this.desiredId = value;
+					break;
+				case "actualId":
+					this.actualId = value;
+					break;
+				case "deltaId":
+					this.deltaId = value;
+					break;
+			}
 		}
 
 		@Override
 		public StrategyReheat create() throws XmlException, IOException {
-			return new StrategyReheat(this.touchPoint);
+			return new StrategyReheat(this.touchPoint, this.desiredId, this.actualId, this.deltaId);
 		}
 
 		@Override
@@ -447,4 +533,10 @@ public class StrategyReheat implements IStrategy {
 
 		return this.getExecute(solvis).setValue(controlAccess, value);
 	}
+
+	@Override
+	public SetResult setValueFast(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+		return this.getExecute(solvis).setValueFast(value);
+	}
+
 }

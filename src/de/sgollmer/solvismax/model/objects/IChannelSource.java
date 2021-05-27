@@ -31,16 +31,18 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public boolean mustBackuped();
 
-	public boolean getValue(SolvisData dest, Solvis solvis, long executionStartTime)
+	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime)
 			throws IOException, PowerOnException, TerminationException;
 
 	public static class SetResult {
 		private final ResultStatus status;
 		private final SingleData<?> data;
+		private final boolean forceTransmit;
 
-		public SetResult(ResultStatus status, SingleData<?> data) {
+		public SetResult(final ResultStatus status, final SingleData<?> data, final boolean forceTransmit) {
 			this.status = status;
 			this.data = data;
+			this.forceTransmit = forceTransmit;
 		}
 
 		public ResultStatus getStatus() {
@@ -50,11 +52,17 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 		public SingleData<?> getData() {
 			return this.data;
 		}
+
+		public boolean isForceTransmit() {
+			return this.forceTransmit;
+		}
 	}
 
-	public SetResult setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException;
+	public SetResult setValue(final Solvis solvis, final SolvisData value) throws IOException, TerminationException;
 
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
+	public SetResult setValueFast(final Solvis solvis, final SolvisData value) throws IOException, TerminationException;
+
+	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException;
 
 	public boolean isWriteable();
 
@@ -74,9 +82,9 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	 * @param solvis
 	 * @return interval if defined, otherwise null
 	 */
-	public Integer getScanInterval_ms(Solvis solvis);
+	public Integer getScanInterval_ms(final Solvis solvis);
 
-	public IInstance instantiate(Solvis solvis) throws AssignmentException, AliasException;
+	public IInstance instantiate(final Solvis solvis) throws AssignmentException, AliasException;
 
 	public Type getType();
 
@@ -86,11 +94,11 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public Collection<? extends IMode<?>> getModes();
 
-	public AbstractScreen getScreen(Solvis solvis);
+	public AbstractScreen getScreen(final Solvis solvis);
 
 	public UpperLowerStep getUpperLowerStep();
 
-	public boolean isDelayed(Solvis solvis);
+	public boolean isDelayed(final Solvis solvis);
 
 	public boolean isHumanAccessDependend();
 
@@ -101,8 +109,8 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 		private final Double incrementChange;
 		private final Double changedIncrement;
 
-		public UpperLowerStep(double upper, double lower, double step, Double incrementChange,
-				Double changedIncrement) {
+		public UpperLowerStep(final double upper, final double lower, final double step, final Double incrementChange,
+				final Double changedIncrement) {
 			this.upper = upper;
 			this.lower = lower;
 			this.step = step;
@@ -132,5 +140,5 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	}
 
-	public String getCsvMeta(String column, boolean semicolon);
+	public String getCsvMeta(final String column, final boolean semicolon);
 }

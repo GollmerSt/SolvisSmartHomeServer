@@ -29,6 +29,8 @@ public interface IStrategy extends IAssigner {
 	SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
 			throws IOException, TerminationException, TypeException;
 
+	SetResult setValueFast(Solvis solvis, SolvisData value) throws IOException, TerminationException;
+
 	boolean isWriteable();
 
 	Integer getDivisor();
@@ -52,7 +54,7 @@ public interface IStrategy extends IAssigner {
 	SingleData<?> createSingleData(String value, long timeStamp) throws TypeException;
 
 	String getCsvMeta(String column, boolean semicolon);
-	
+
 	void setControl(Control control);
 
 }

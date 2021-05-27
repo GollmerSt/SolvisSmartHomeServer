@@ -25,6 +25,21 @@ Version 01.04.00
                 Dort kann nur "heating" geschrieben werden (der Start des Nachheizens kann man
                 nicht rückgängig machen, es sei denn man verändert die WW-Temperatur). Gelesen kann
                 "off", "heating" oder "not_required".
+                
+                Mehrere Reheating bugs gefixt.
+                
+    27.05.2021  Cvs-Doku-Generierung ergänzt.
+                
+                "Not_rqired" bei dem WW-Nachheizen direkt aus den Anlagenwerten ermittelt (ohne
+                Umweg über das Gui). Die dafür notwendigen Anlagenparameter können nur aus dem
+                Installateuer-Bildschirmen gelesen werden. Daher ist dies nur möglich, wenn der
+                Admin-Mode in der base.xml auf "true" gesetzt ist. Anderenfalls wird "not_required"
+                erst nach dem Versuch des Nachheizen gemeldet, was wegen der Bildschirmoperationen
+                länger dauert.
+                
+                Ein Problem beim Beenden wurde gefixt, das bewirkte, dass manchmal kein Backup der
+                letzten Messwerte geschrieben wurden.
+
 
 
 Version 01.03.00
@@ -44,6 +59,7 @@ Version 01.03.00
                 verglichen und korrigiert. 
 
 
+
 Version 01.03.00 rc3
 
     16.05.2021  Der ModeWechsel für den Heizkreis 1 referenzierte auf einen falsche Duration.
@@ -52,7 +68,8 @@ Version 01.03.00 rc3
 Version 01.03.00 rc2
 
     15.05.2021  Der Parser für die Extensions war für das base.xml nicht richtig angepasst.
-    
+
+
 
 Version 01.03.00 rc1
 
@@ -97,8 +114,8 @@ Version 01.03.00 rc1
                 
     15.05.2021  Kanäle C29.WaermemengeSolar_kWh und C30.WaermemengeWW_kWh hinzugefügt. Die sind nur
                 bei SolvisMax7 mit 2 Zählfunktion-Bildschirmen definiert 
-    
-    
+
+
 
 Version 01.02.11 rc4
 

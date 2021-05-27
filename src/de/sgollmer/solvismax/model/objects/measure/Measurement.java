@@ -136,6 +136,11 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
+	public SetResult setValueFast(Solvis solvis, SolvisData value) {
+		return null;
+	}
+
+	@Override
 	public boolean isWriteable() {
 		return false;
 	}

@@ -164,15 +164,17 @@ public class CommandControl extends Command {
 	 * @param description
 	 * @param data         value which should be written
 	 * @param failCountRef Reference to the failCount
-	 * @param overwrite    true, if the write value of the stotred data should be
+	 * @param overwrite    true, if the write value of the stored data should be
 	 *                     overwritten after success
 	 * @return ResultStatus
 	 * @throws IOException
 	 * @throws TerminationException
+	 * @throws TypeException
 	 */
 
 	private ResultStatus write(Solvis solvis, ChannelDescription description, SingleData<?> setValue,
-			Reference<Integer> failCountRef, boolean overwrite) throws IOException, TerminationException {
+			Reference<Integer> failCountRef, boolean overwrite)
+			throws IOException, TerminationException {
 		SolvisData data = solvis.getAllSolvisData().get(description);
 		SolvisData clone = data.duplicate();
 		clone.setSingleData(setValue);
@@ -199,11 +201,22 @@ public class CommandControl extends Command {
 
 	@Override
 	public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus) throws IOException, PowerOnException,
-			TerminationException, NumberFormatException, TypeException, XmlException {
+			TerminationException, NumberFormatException, XmlException {
 
 		if (queueStatus.getCurrentPriority() != null && this.priority != null
 				&& queueStatus.getCurrentPriority() > this.priority) {
 			return ResultStatus.INHIBITED;
+		}
+		
+		if ( this.setValue != null ) {
+			SolvisData data = solvis.getAllSolvisData().get(this.description);
+			SolvisData clone = data.duplicate();
+			clone.setSingleData(this.setValue);
+			SetResult setResult = this.description.setValueFast(solvis, clone);
+			if (setResult != null) {
+				data.setSingleData(setResult);
+					return setResult.getStatus();
+			}
 		}
 
 		boolean finished = false;
@@ -337,7 +350,7 @@ public class CommandControl extends Command {
 		public abstract State next(CommandControl command);
 
 		public abstract ResultStatus execute(CommandControl command) throws IOException, TerminationException,
-				TypeException, NumberFormatException, PowerOnException, XmlException;
+				NumberFormatException, PowerOnException, XmlException;
 
 		@Override
 		public String toString() {
@@ -393,7 +406,7 @@ public class CommandControl extends Command {
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command) throws IOException, TerminationException, TypeException,
+		public ResultStatus execute(CommandControl command) throws IOException, TerminationException,
 				NumberFormatException, PowerOnException, XmlException {
 
 			Map<String, SingleData<?>> map = new HashMap<>(3);
@@ -438,7 +451,7 @@ public class CommandControl extends Command {
 
 		@Override
 		public ResultStatus execute(CommandControl command)
-				throws IOException, TerminationException, TypeException, NumberFormatException, PowerOnException {
+				throws IOException, TerminationException, NumberFormatException, PowerOnException {
 
 			if (command.dependenciesToExecute == null) {
 				command.currentDependencyGroup = command.dependencyGroupsToExecute.iterator().next();
@@ -550,7 +563,7 @@ public class CommandControl extends Command {
 
 		@Override
 		public ResultStatus execute(CommandControl command)
-				throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
+				throws NumberFormatException, IOException, PowerOnException, TerminationException {
 
 			Solvis solvis = command.solvis;
 
@@ -614,7 +627,7 @@ public class CommandControl extends Command {
 
 		@Override
 		public ResultStatus execute(CommandControl command)
-				throws IOException, TerminationException, TypeException, NumberFormatException, PowerOnException {
+				throws IOException, TerminationException, NumberFormatException, PowerOnException {
 
 			if (command.currentDependencyGroup != null) {
 				command.dependencyGroupsToExecute.remove(command.currentDependencyGroup);

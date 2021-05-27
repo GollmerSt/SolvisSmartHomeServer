@@ -437,7 +437,6 @@ public class Mqtt {
 			this.unpublish(solvis.getHumanAccessPackage());
 		}
 		this.publish(ServerCommand.getMqttMeta(null));
-
 	}
 
 	public String getTopicPrefix() {

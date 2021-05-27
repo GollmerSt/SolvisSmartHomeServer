@@ -82,7 +82,7 @@ public class StrategyButton implements IStrategy {
 				((GuiAccess) controlAccess).getValueRectangle(), this.pushTimeId, this.releaseTimeId);
 		boolean cmp = button.isSelected() ^ this.invert;
 		if (cmp == bool) {
-			return new SetResult(ResultStatus.SUCCESS, new BooleanValue(cmp, System.currentTimeMillis()));
+			return new SetResult(ResultStatus.SUCCESS, new BooleanValue(cmp, System.currentTimeMillis()), true);
 		}
 		button.set(solvis, bool);
 
@@ -208,4 +208,10 @@ public class StrategyButton implements IStrategy {
 	public void setControl(Control control) {
 		
 	}
+
+	@Override
+	public SetResult setValueFast(Solvis solvis, SolvisData value) {
+		return null;
+	}
+
 }

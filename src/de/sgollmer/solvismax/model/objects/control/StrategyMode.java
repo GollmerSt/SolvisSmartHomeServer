@@ -93,7 +93,7 @@ public class StrategyMode implements IStrategy {
 		}
 		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 		if (cmp != null && value.getMode().equals(cmp)) {
-			return new SetResult(ResultStatus.SUCCESS, cmp);
+			return new SetResult(ResultStatus.SUCCESS, cmp, true);
 		}
 		IMode<?> valueMode = value.getMode().get();
 		ModeEntry mode = null;
@@ -113,10 +113,15 @@ public class StrategyMode implements IStrategy {
 			solvis.send(mode.getGuiSet().getTouch());
 			cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 			if (cmp != null && value.getMode().equals(cmp)) {
-				return new SetResult(ResultStatus.SUCCESS, cmp);
+				return new SetResult(ResultStatus.SUCCESS, cmp,true);
 			}
 		}
 
+		return null;
+	}
+
+	@Override
+	public SetResult setValueFast(Solvis solvis, SolvisData value) {
 		return null;
 	}
 
@@ -368,4 +373,5 @@ public class StrategyMode implements IStrategy {
 		}
 		
 	}
+
 }

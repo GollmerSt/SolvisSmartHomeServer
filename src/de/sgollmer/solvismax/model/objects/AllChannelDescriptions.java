@@ -24,7 +24,6 @@ import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.command.CommandControl;
@@ -337,8 +336,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	}
 
-	public Collection<ChannelDescription> getChannelDescriptions(AbstractScreen screen, Solvis solvis)
-			throws TypeException {
+	public Collection<ChannelDescription> getChannelDescriptions(AbstractScreen screen, Solvis solvis) {
 		Collection<ChannelDescription> result = new ArrayList<>();
 		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
 			ChannelDescription description = descriptionsC.get(solvis);

@@ -1875,7 +1875,15 @@
 
 	<complexType name="Reheat">
 		<sequence>
-			<element name="TouchPoint" type="tns:TouchPoint" maxOccurs="1" minOccurs="1"></element>
-		</sequence>
+			<element name="TouchPoint" type="tns:TouchPoint"
+				maxOccurs="1" minOccurs="1">
+			</element>
+
+		</sequence>
+
+
+		<attribute name="desiredId" type="string" use="required"></attribute>
+		<attribute name="actualId" type="string" use="required"></attribute>
+		<attribute name="deltaId" type="string" use="required"></attribute>
 	</complexType>
 </schema>

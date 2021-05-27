@@ -131,6 +131,13 @@ public class Control extends ChannelSource {
 		}
 		return setResult;
 	}
+	
+	@Override
+	public SetResult setValueFast(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+		return this.strategy.setValueFast(solvis, value);
+	}
+
+
 
 	private boolean guiPrepare(Solvis solvis, IControlAccess controlAccess) throws IOException, TerminationException {
 		((Screen) this.guiAccess.getScreen().get(solvis)).goTo(solvis);

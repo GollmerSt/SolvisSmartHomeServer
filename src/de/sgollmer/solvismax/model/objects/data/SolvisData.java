@@ -27,7 +27,6 @@ import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
-import de.sgollmer.solvismax.model.objects.ResultStatus;
 
 public class SolvisData extends Observer.Observable<SolvisData> implements IObserver<SolvisStatePackage> {
 
@@ -46,7 +45,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
-	public SolvisData(ChannelDescription description, AllSolvisData datas, boolean ignore) {
+	public SolvisData(final ChannelDescription description, final AllSolvisData datas, final boolean ignore) {
 		this.datas = datas;
 		this.dontSend = ignore;
 		this.smartHomeData = null;
@@ -62,7 +61,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		this.smartHomeData = new SmartHomeData(this);
 	}
 
-	private SolvisData(SolvisData data) {
+	private SolvisData(final SolvisData data) {
 		this.channelInstance = data.channelInstance;
 		this.datas = data.datas;
 		if (data.average != null) {
@@ -75,7 +74,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		this.smartHomeData = null;
 	}
 
-	public SolvisData(SingleData<?> data) {
+	public SolvisData(final SingleData<?> data) {
 		this.data = data;
 		this.channelInstance = null;
 		this.average = null;
@@ -94,7 +93,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof SolvisData) {
 			return ((SolvisData) obj).data.equals(this.data);
 		} else {
@@ -115,53 +114,47 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return this.getDescription().getId();
 	}
 
-	private void setData(SingleData<?> data) {
-		this.setData(data, this, ResultStatus.SUCCESS, -1L);
+	private void setData(final SingleData<?> data) {
+		this.setData(data, this, false, -1L);
 	}
 
-	private synchronized void setData(SingleData<?> data, Object source, ResultStatus status, long executionStartTime) {
+	private synchronized void setData( final SingleData<?> setData, final Object source, final boolean forceTransmit,
+			long executionStartTime) {
 
-		if (data == null || data.get() == null) {
+		if (setData == null || setData.get() == null) {
 			this.data = null;
 			return;
 		}
 
-		if (data instanceof TwoValues) {
-
-			TwoValues twoValues = (TwoValues) data;
-
-			this.setData(twoValues.getFirst(), source, status, executionStartTime);
-			this.setData(twoValues.getSecond(), source, status, executionStartTime);
-			return;
-		}
-
 		boolean fastChange = false;
-		if (executionStartTime > 0L && data.getTimeStamp() > 0L) {
-			this.executionTime = (int) (data.getTimeStamp() - executionStartTime);
+		if (executionStartTime > 0L && setData.getTimeStamp() > 0L) {
+			this.executionTime = (int) (setData.getTimeStamp() - executionStartTime);
 		}
+		
+		SingleData<?> sendData = setData;
 
 		if (this.getDescription().isAverage()) {
-			this.average.add(data);
-			Average.Result average = this.average.getAverage(data);
+			this.average.add(setData);
+			Average.Result average = this.average.getAverage(setData);
 			if (average == null) {
 				return;
 			}
-			data = average.getData();
+			sendData = average.getData();
 			fastChange = average.isFastChange();
 		}
 
-		if (data == null) {
+		if (sendData == null) {
 			return;
 		}
 
 		boolean glitchInhibitEnabled = this.getDescription().glitchInhibitScanIntervals() > 0;
 		boolean changed = false;
 
-		if (data.getTimeStamp() > 0 && this.pendingData != null) {
+		if (sendData.getTimeStamp() > 0 && this.pendingData != null) {
 
-			if (data.equals(this.pendingData)) {
+			if (sendData.equals(this.pendingData)) {
 
-				if (data.getTimeStamp() > this.pendingData.getTimeStamp()
+				if (sendData.getTimeStamp() > this.pendingData.getTimeStamp()
 						+ this.getDescription().glitchInhibitScanIntervals()
 								* this.getDescription().getScanInterval_ms(this.getSolvis())) {
 
@@ -171,13 +164,13 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				}
 			} else {
 
-				this.pendingData = data;
+				this.pendingData = sendData;
 			}
-		} else if (!data.equals(this.data)) {
+		} else if (!sendData.equals(this.data)) {
 
-			if (glitchInhibitEnabled && data.getTimeStamp() > 0) {
+			if (glitchInhibitEnabled && sendData.getTimeStamp() > 0) {
 
-				this.pendingData = data;
+				this.pendingData = sendData;
 			} else {
 
 				changed = true;
@@ -185,21 +178,20 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 
 		if (!glitchInhibitEnabled) {
-			this.data = data;
+			this.data = sendData;
 		}
 
-		if (!this.isEmpty() && (changed || status == ResultStatus.VALUE_VIOLATION)) {
+		if (!this.isEmpty() && (changed || forceTransmit)) {
 
-			if (!this.getDescription().isWriteable() || !this.datas.getSolvis().willBeModified(this)
-					|| status == ResultStatus.VALUE_VIOLATION) {
+			if (!this.getDescription().isWriteable() || !this.datas.getSolvis().willBeModified(this) || forceTransmit) {
 
 				this.notify(this, source);
 			}
-			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
+			logger.debug("Channel: " + this.getId() + ", value: " + sendData.toString());
 		}
 
 		if (this.smartHomeData != null) {
-			this.smartHomeData.notify(changed, fastChange, source);
+			this.smartHomeData.notify(changed, fastChange, source, forceTransmit);
 		}
 		if (this.continousObservable != null) {
 
@@ -214,11 +206,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return this.channelInstance.getDescription();
 	}
 
-	public void setInteger(Integer integer, long timeStamp, Object source) {
-		this.setData(new IntegerValue(integer, timeStamp), source, ResultStatus.SUCCESS, -1L);
+	public void setInteger(final Integer integer, final long timeStamp, final Object source) {
+		this.setData(new IntegerValue(integer, timeStamp), source, false, -1L);
 	}
 
-	public void setInteger(Integer integer, long timeStamp) {
+	public void setInteger(final Integer integer, final long timeStamp) {
 		this.setData(new IntegerValue(integer, timeStamp));
 	}
 
@@ -263,12 +255,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return value;
 	}
 
-	public void setDate(Calendar calendar, long timeStamp) {
+	public void setDate(final Calendar calendar, final long timeStamp) {
 		this.setData(new DateValue(calendar, timeStamp));
 
 	}
 
-	public void setBoolean(Boolean bool, long timeStamp) {
+	public void setBoolean(final Boolean bool, final long timeStamp) {
 		this.setData(new BooleanValue(bool, timeStamp));
 
 	}
@@ -290,7 +282,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return bool.result();
 	}
 
-	public void setMode(IMode<?> mode, long timeStamp) {
+	public void setMode(final IMode<?> mode, final long timeStamp) {
 		this.setData(mode.create(timeStamp));
 	}
 
@@ -303,35 +295,35 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 	}
 
-	public void setSingleData(SetResult data) {
-		this.setData(data.getData(), this, data.getStatus(), -1L);
+	public void setSingleData(final SetResult data) {
+		this.setData(data.getData(), this, data.isForceTransmit(), -1L);
 	}
 
-	public void setSingleData(SingleData<?> data, long executionStartTime) {
-		this.setData(data, this, ResultStatus.SUCCESS, executionStartTime);
+	public void setSingleData(final SingleData<?> data, final long executionStartTime) {
+		this.setData(data, this, false, executionStartTime);
 	}
 
-	public void setSingleData(SingleData<?> data, Object source) {
-		this.setData(data, source, ResultStatus.SUCCESS, -1L);
+	public void setSingleData(final SingleData<?> data, final Object source) {
+		this.setData(data, source, false, -1L);
 	}
 
-	public void setSingleData(SingleData<?> data) {
+	public void setSingleData(final SingleData<?> data) {
 		this.setSingleData(data, this);
 	}
 
-	public void registerContinuousObserver(Observer.IObserver<SolvisData> observer) {
+	public void registerContinuousObserver(final Observer.IObserver<SolvisData> observer) {
 		if (this.continousObservable == null) {
 			this.continousObservable = new Observable<>();
 		}
 		this.continousObservable.register(observer);
 	}
 
-	public void unregisterContinuousObserver(Observer.IObserver<SolvisData> observer) {
+	public void unregisterContinuousObserver(final Observer.IObserver<SolvisData> observer) {
 		if (this.continousObservable != null) {
 			this.continousObservable.unregister(observer);
-		}		
+		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.data.toString();
@@ -346,7 +338,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	@Override
-	public void update(SolvisStatePackage data, Object source) {
+	public void update(final SolvisStatePackage data, final Object source) {
 		SolvisStatus state = data.getState();
 		if (state == SolvisStatus.POWER_OFF && this.average != null) {
 			this.average.clear();
@@ -367,7 +359,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 	}
 
-	public synchronized SingleData<?> getSentData() {
+	public synchronized final SingleData<?> getSentData() {
 		if (this.sentData != null) {
 			return this.sentData;
 		} else {
@@ -421,12 +413,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		private long transmittedTimeStamp = 0;
 		private int forceCnt = 0;
 
-		public SmartHomeData(SolvisData solvisData) {
+		public SmartHomeData(final SolvisData solvisData) {
 			this.solvis = solvisData.datas.getSolvis();
 			this.solvisData = solvisData;
 		}
 
-		private void notify(boolean changed, boolean fastChange, Object source) {
+		private void notify(final boolean changed, final boolean fastChange, final Object source, final boolean forceTransmit) {
 
 			if (this.solvisData.dontSend) {
 				return;
@@ -444,6 +436,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				--this.forceCnt;
 			}
 
+			boolean notify = false;
+
 			if (changed && fastChange && this.forceCnt == 0) {
 
 				boolean buffered = this.solvisData.getDescription().isBuffered() && this.solvis.getUnit().isBuffered();
@@ -460,11 +454,14 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 					logger.debug("Quick change after a long constant period of channel <"
 							+ this.solvisData.getDescription() + "> detected.");
 				}
+				notify = true;
 			} else if (this.forceCnt > 0) {
-				changed = true;
+				notify = true;
+			} else {
+				notify = changed || forceTransmit;
 			}
 
-			if (changed) {
+			if (notify) {
 				this.solvis.getAllSolvisData().notifySmartHome(this, source);
 			}
 		}
@@ -498,7 +495,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return this.transmittedTimeStamp;
 		}
 
-		public void setTransmitted(long transmittedTimeStamp) {
+		public void setTransmitted(final long transmittedTimeStamp) {
 			this.transmittedTimeStamp = transmittedTimeStamp;
 			if (this.forceCnt <= 1) {
 				this.lastTransmittedData = this.current;
@@ -514,7 +511,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(name), value, 0, true);
 		}
 
-		public SingleValue toSingleValue(SingleData<?> data) {
+		public SingleValue toSingleValue(final SingleData<?> data) {
 			return new SingleValue(this.getDescription().normalize(data));
 		}
 
@@ -545,7 +542,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return this.executionTime;
 	}
 
-	public String getCsvMeta(String column, boolean semicolon) {
+	public String getCsvMeta(final String column, final boolean semicolon) {
 		if (this.smartHomeData == null || this.getChannelInstance() == null) {
 			return null;
 		}

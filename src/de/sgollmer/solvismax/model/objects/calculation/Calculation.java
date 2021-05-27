@@ -56,6 +56,11 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
+	public SetResult setValueFast(Solvis solvis, SolvisData value) {
+		return null;
+	}
+
+	@Override
 	public boolean isWriteable() {
 		return this.strategy.isWriteable();
 	}

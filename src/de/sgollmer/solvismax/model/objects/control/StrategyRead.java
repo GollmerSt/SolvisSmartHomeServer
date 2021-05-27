@@ -79,6 +79,11 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
+	public SetResult setValueFast(Solvis solvis, SolvisData value) {
+		return null;
+	}
+
+	@Override
 	public Integer getDivisor() {
 		return this.divisor;
 	}

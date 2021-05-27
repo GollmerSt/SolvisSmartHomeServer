@@ -43,14 +43,19 @@ public class AbortHelper {
 			throw new TerminationException();
 		}
 		try {
-			synchronized (this) {
-				this.syncObjects.add(syncObject);
-			}
 			synchronized (syncObject) {
-				syncObject.wait(time);
-			}
-			synchronized (this) {
-				this.syncObjects.remove(syncObject);
+
+				synchronized (this) {
+					this.syncObjects.add(syncObject);
+				}
+
+				if (!this.abort) {
+					syncObject.wait(time);
+				}
+
+				synchronized (this) {
+					this.syncObjects.remove(syncObject);
+				}
 			}
 		} catch (InterruptedException e) {
 		}
@@ -59,11 +64,19 @@ public class AbortHelper {
 		}
 	}
 
-	public synchronized void abort() {
+	public void abort() {
 		this.abort = true;
-		this.notifyAll();
-		for (Object obj : this.syncObjects) {
-			obj.notifyAll();
+		Collection<Object> syncObjects;
+		synchronized (this) {
+
+			syncObjects = new ArrayList<>(this.syncObjects);
+			this.notifyAll();
+		}
+
+		for (Object obj : syncObjects) {
+			synchronized (obj) {
+				obj.notifyAll();
+			}
 		}
 	}
 

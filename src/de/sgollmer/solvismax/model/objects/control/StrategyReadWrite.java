@@ -72,7 +72,7 @@ public class StrategyReadWrite extends StrategyRead {
 			if (data == null) {
 				return null;
 			} else if (data.get() == null) {
-				return new SetResult(ResultStatus.NO_SUCCESS, data);
+				return new SetResult(ResultStatus.NO_SUCCESS, data, true);
 			}
 			int current = data.get();
 
@@ -92,7 +92,7 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 
 			if (current == value) {
-				return new SetResult(target == current ? ResultStatus.SUCCESS : ResultStatus.VALUE_VIOLATION, data);
+				return new SetResult(target == current ? ResultStatus.SUCCESS : ResultStatus.VALUE_VIOLATION, data, true);
 			}
 
 			int[] dist = new int[3];
@@ -137,7 +137,7 @@ public class StrategyReadWrite extends StrategyRead {
 				solvis.send(point);
 			}
 			if (interrupt) {
-				return new SetResult(ResultStatus.INTERRUPTED, data);
+				return new SetResult(ResultStatus.INTERRUPTED, data, false);
 			}
 		}
 		return null;
