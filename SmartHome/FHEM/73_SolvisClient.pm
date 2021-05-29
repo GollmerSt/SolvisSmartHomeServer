@@ -63,6 +63,9 @@ use warnings;
 use FHEM::Meta;
 use GPUtils qw(GP_Import GP_Export);
 
+use constant MIN_SUPPORTED_FORMAT => 1.00 ;          #Violates 'ProhibitConstantPragma'
+use constant MAX_SUPPORTED_FORMAT => 3.99 ;          #Violates 'ProhibitConstantPragma'
+
 use constant MODULE => 'SolvisClient';
 
 use constant WATCH_DOG_INTERVAL => 300 ;            #Violates 'ProhibitConstantPragma'
@@ -78,8 +81,6 @@ use constant MAX_CONNECTION_INTERVAL => 120 ;       #Violates 'ProhibitConstantP
 use constant _FALSE_ => 0 ;                         #Violates 'ProhibitConstantPragma'
 use constant _TRUE_ => 1;   #Violates 'ProhibitConstantPragma'
 
-use constant MIN_SUPPORTED_FORMAT => 1.00 ;          #Violates 'ProhibitConstantPragma'
-use constant MAX_SUPPORTED_FORMAT => 2.99 ;          #Violates 'ProhibitConstantPragma'
 use constant MIN_RECOMMENDED_FORMAT => 2 ;          #Violates 'ProhibitConstantPragma'
 
 use constant _DISABLE_GUI_ => 0 ;                   #Violates 'ProhibitConstantPragma'
