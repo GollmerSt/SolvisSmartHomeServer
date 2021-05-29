@@ -21,18 +21,18 @@ public class ClientAssignments {
 	private final Map<Solvis, State> states = new HashMap<>();
 	private ClosingThread closingThread = null;
 
-	ClientAssignments(CommandHandler commandHandler, IClient client) {
+	ClientAssignments(final CommandHandler commandHandler, final IClient client) {
 		this.commandHandler = commandHandler;
 		this.client = client;
 	}
 
-	void add(Solvis solvis) {
+	void add(final Solvis solvis) {
 		if (solvis != null && !this.states.containsKey(solvis)) {
 			this.states.put(solvis, new State());
 		}
 	}
 
-	void reconnected(IClient client) {
+	void reconnected(final IClient client) {
 		this.abort();
 		this.client = client;
 	}
@@ -48,11 +48,11 @@ public class ClientAssignments {
 		return this.client;
 	}
 
-	void setClient(IClient client) {
+	void setClient(final IClient client) {
 		this.client = client;
 	}
 
-	State getState(Solvis solvis) {
+	State getState(final Solvis solvis) {
 		if (solvis == null) {
 			return this.getState();
 		} else {
@@ -71,7 +71,7 @@ public class ClientAssignments {
 		return this.closingThread;
 	}
 
-	void setClosingThread(ClosingThread closingThread) {
+	void setClosingThread(final ClosingThread closingThread) {
 		this.closingThread = closingThread;
 	}
 
@@ -83,7 +83,7 @@ public class ClientAssignments {
 			return this.optimizationEnable;
 		}
 
-		private void setOptimizationEnable(boolean optimizationEnable) {
+		private void setOptimizationEnable(final boolean optimizationEnable) {
 			this.optimizationEnable = optimizationEnable;
 		}
 
@@ -91,12 +91,12 @@ public class ClientAssignments {
 			return this.controlEnable;
 		}
 
-		private void setControlEnable(boolean controlEnable) {
+		private void setControlEnable(final boolean controlEnable) {
 			this.controlEnable = controlEnable;
 		}
 	}
 
-	void enableControlCommands(Solvis solvis, boolean enable) throws ClientAssignmentException {
+	void enableControlCommands(final Solvis solvis, final boolean enable) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
@@ -108,7 +108,7 @@ public class ClientAssignments {
 
 	}
 
-	void screenRestoreEnable(Solvis solvis, boolean enable) throws ClientAssignmentException {
+	void screenRestoreEnable(final Solvis solvis, final boolean enable) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
@@ -116,7 +116,7 @@ public class ClientAssignments {
 		solvis.execute(new CommandScreenRestore(enable, state));
 	}
 
-	void optimizationEnable(Solvis solvis, boolean enable) throws ClientAssignmentException {
+	void optimizationEnable(final Solvis solvis, final boolean enable) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
@@ -135,7 +135,7 @@ public class ClientAssignments {
 		}
 	}
 
-	void serviceReset(Solvis solvis) throws ClientAssignmentException {
+	void serviceReset(final Solvis solvis) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
@@ -143,7 +143,7 @@ public class ClientAssignments {
 		solvis.serviceReset();
 	}
 
-	void updateControlChannels(Solvis solvis) throws ClientAssignmentException {
+	void updateControlChannels(final Solvis solvis) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
@@ -159,8 +159,11 @@ public class ClientAssignments {
 			return this.states.keySet().iterator().next();
 		}
 	}
-	
-	boolean getControlEnabled(Solvis solvis) {
-		return this.getState(solvis).controlEnable;
+
+	Boolean getControlEnabled(final Solvis solvis) {
+		if (this.getState(solvis) != null) {
+			return this.getState(solvis).controlEnable;
+		}
+		return null;
 	}
 }

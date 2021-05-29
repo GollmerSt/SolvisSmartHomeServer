@@ -40,6 +40,14 @@ Version 01.04.00
                 Ein Problem beim Beenden wurde gefixt, das bewirkte, dass manchmal kein Backup der
                 letzten Messwerte geschrieben wurden.
 
+    28.05.2021  Der "Button", welcher den Status des Nachheizen anzeigt, muss als "ignored"
+                deklariert werden, da andernfalls beim Beenden des Nachheizens fälschlicherweise
+                ein Anwenderzugriff angenommen wird.
+                
+    29.05.2021  Bugfix: Bei der Ausführung einer der FHEM-Set-Befehle GUI_COMMANDS_DISABLE und
+                GUI_COMMANDS_ENABLE gab es bei einer aktiven MQTT-Verbindung aber ohne MQTT-Client
+                ein Verbindungsabbruch zum FHEM-Client.
+                
 
 
 Version 01.03.00
