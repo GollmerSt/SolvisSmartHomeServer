@@ -39,8 +39,8 @@ public class Solar implements IConfiguration {
 	private final int maxTemperatureX10;
 	private final Collection<Rectangle> rectangles = new ArrayList<>();
 
-	private Solar(String screenRef, String format, int maxTemperatureX10, Rectangle returnTemperature,
-			Rectangle outgoingTemperature) {
+	private Solar(final String screenRef, final String format, final int maxTemperatureX10,
+			final Rectangle returnTemperature, final Rectangle outgoingTemperature) {
 		this.screenRef = screenRef;
 		this.format = new Format(format);
 		this.maxTemperatureX10 = maxTemperatureX10;
@@ -61,7 +61,7 @@ public class Solar implements IConfiguration {
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "screenRef":
 					this.screenRef = value;
@@ -83,7 +83,7 @@ public class Solar implements IConfiguration {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_OUTGOING_TEMPERATURE:
@@ -94,7 +94,7 @@ public class Solar implements IConfiguration {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_OUTGOING_TEMPERATURE:
 					this.outgoingTemperature = (Rectangle) created;
@@ -109,7 +109,7 @@ public class Solar implements IConfiguration {
 	}
 
 	@Override
-	public int getConfiguration(Solvis solvis) throws IOException, TerminationException {
+	public int getConfiguration(final Solvis solvis) throws IOException, TerminationException {
 		MyImage image = solvis.getCurrentScreen().getImage();
 		for (Rectangle rectangle : this.rectangles) {
 			OcrRectangle ocr = new OcrRectangle(image, rectangle);
@@ -127,7 +127,7 @@ public class Solar implements IConfiguration {
 	}
 
 	@Override
-	public AbstractScreen getScreen(Solvis solvis) {
+	public AbstractScreen getScreen(final Solvis solvis) {
 		return solvis.getSolvisDescription().getScreens().get(this.screenRef, solvis);
 	}
 

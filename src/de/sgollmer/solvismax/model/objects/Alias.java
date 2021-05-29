@@ -17,7 +17,7 @@ public class Alias implements IAssigner {
 	private final String id;
 	private final String dataId;
 
-	private Alias(String id, String dataId) {
+	private Alias(final String id, final String dataId) {
 		this.id = id;
 		this.dataId = dataId;
 	}
@@ -35,12 +35,12 @@ public class Alias implements IAssigner {
 		private String id;
 		private String dataId;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -58,18 +58,18 @@ public class Alias implements IAssigner {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 		}
 
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 
 	}
 

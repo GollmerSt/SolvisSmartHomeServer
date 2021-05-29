@@ -63,16 +63,17 @@ public class CommandControl extends Command {
 	private DependencyGroup currentDependencyGroup = null;
 	private final DependencyCache dependencyCache;
 
-	public CommandControl(ChannelDescription description, SingleData<?> setValue, Solvis solvis) throws TypeException {
+	public CommandControl(final ChannelDescription description, final SingleData<?> setValue, final Solvis solvis)
+			throws TypeException {
 		this(description, solvis, null);
 		this.setValue = description.toInternal(setValue);
 	}
 
-	public CommandControl(ChannelDescription description, Solvis solvis) {
+	public CommandControl(final ChannelDescription description, final Solvis solvis) {
 		this(description, solvis, null);
 	}
 
-	public CommandControl(ChannelDescription description, Solvis solvis, Integer priority) {
+	public CommandControl(final ChannelDescription description, final Solvis solvis, final Integer priority) {
 		this.setValue = null;
 		this.description = description;
 		this.dependencyGroupsToExecute.add(description.getDependencyGroup().clone(), solvis);
@@ -83,7 +84,7 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public Handling handle(Command queueEntry, Solvis solvis) {
+	public Handling handle(final Command queueEntry, final Solvis solvis) {
 		if (!(queueEntry instanceof CommandControl)) {
 
 			return new Handling( //
@@ -149,12 +150,12 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	protected void setInhibit(boolean inhibit) {
+	protected void setInhibit(final boolean inhibit) {
 		this.inhibit = inhibit;
 	}
 
 	@Override
-	public AbstractScreen getScreen(Solvis solvis) {
+	public AbstractScreen getScreen(final Solvis solvis) {
 		return this.screen;
 	}
 
@@ -172,9 +173,8 @@ public class CommandControl extends Command {
 	 * @throws TypeException
 	 */
 
-	private ResultStatus write(Solvis solvis, ChannelDescription description, SingleData<?> setValue,
-			Reference<Integer> failCountRef, boolean overwrite)
-			throws IOException, TerminationException {
+	private ResultStatus write(final Solvis solvis, final ChannelDescription description, final SingleData<?> setValue,
+			final Reference<Integer> failCountRef, final boolean overwrite) throws IOException, TerminationException {
 		SolvisData data = solvis.getAllSolvisData().get(description);
 		SolvisData clone = data.duplicate();
 		clone.setSingleData(setValue);
@@ -200,22 +200,22 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus) throws IOException, PowerOnException,
-			TerminationException, NumberFormatException, XmlException {
+	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus)
+			throws IOException, PowerOnException, TerminationException, NumberFormatException, XmlException {
 
 		if (queueStatus.getCurrentPriority() != null && this.priority != null
 				&& queueStatus.getCurrentPriority() > this.priority) {
 			return ResultStatus.INHIBITED;
 		}
-		
-		if ( this.setValue != null ) {
+
+		if (this.setValue != null) {
 			SolvisData data = solvis.getAllSolvisData().get(this.description);
 			SolvisData clone = data.duplicate();
 			clone.setSingleData(this.setValue);
 			SetResult setResult = this.description.setValueFast(solvis, clone);
 			if (setResult != null) {
 				data.setSingleData(setResult);
-					return setResult.getStatus();
+				return setResult.getStatus();
 			}
 		}
 
@@ -284,7 +284,7 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public boolean canBeIgnored(Command queueCommand) {
+	public boolean canBeIgnored(final Command queueCommand) {
 		if (!(queueCommand instanceof CommandControl)) {
 			return false;
 		}
@@ -310,7 +310,7 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	ChannelDescription getRestoreChannel(Solvis solvis) {
+	ChannelDescription getRestoreChannel(final Solvis solvis) {
 		return this.description.getRestoreChannel(solvis);
 	}
 
@@ -347,17 +347,17 @@ public class CommandControl extends Command {
 
 		private StateEnum stateEnum;
 
-		public abstract State next(CommandControl command);
+		public abstract State next(final CommandControl command);
 
-		public abstract ResultStatus execute(CommandControl command) throws IOException, TerminationException,
-				NumberFormatException, PowerOnException, XmlException;
+		public abstract ResultStatus execute(final CommandControl command)
+				throws IOException, TerminationException, NumberFormatException, PowerOnException, XmlException;
 
 		@Override
 		public String toString() {
 			return this.stateEnum.name();
 		}
 
-		public void setStateEnum(StateEnum stateEnum) {
+		public void setStateEnum(final StateEnum stateEnum) {
 			this.stateEnum = stateEnum;
 		}
 	}
@@ -365,12 +365,12 @@ public class CommandControl extends Command {
 	private static class Start extends State {
 
 		@Override
-		public State next(CommandControl command) {
+		public State next(final CommandControl command) {
 			return StateEnum.STANDBY_REQUEST.getState();
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command) {
+		public ResultStatus execute(final CommandControl command) {
 			command.executionStartTime = System.currentTimeMillis();
 			return ResultStatus.CONTINUE;
 		}
@@ -401,13 +401,13 @@ public class CommandControl extends Command {
 	private static class StandbyRequest extends State {
 
 		@Override
-		public State next(CommandControl command) {
+		public State next(final CommandControl command) {
 			return StateEnum.EXECUTE_DEPENDENCY.getState();
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command) throws IOException, TerminationException,
-				NumberFormatException, PowerOnException, XmlException {
+		public ResultStatus execute(final CommandControl command)
+				throws IOException, TerminationException, NumberFormatException, PowerOnException, XmlException {
 
 			Map<String, SingleData<?>> map = new HashMap<>(3);
 
@@ -440,7 +440,7 @@ public class CommandControl extends Command {
 	private static class ExecuteDependency extends State {
 
 		@Override
-		public State next(CommandControl command) {
+		public State next(final CommandControl command) {
 			if (command.dependenciesToExecute.isEmpty()) {
 				command.dependenciesToExecute = null;
 				return StateEnum.WRITING.getState();
@@ -450,7 +450,7 @@ public class CommandControl extends Command {
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command)
+		public ResultStatus execute(final CommandControl command)
 				throws IOException, TerminationException, NumberFormatException, PowerOnException {
 
 			if (command.dependenciesToExecute == null) {
@@ -532,12 +532,12 @@ public class CommandControl extends Command {
 	private static class Writing extends State {
 
 		@Override
-		public State next(CommandControl command) {
+		public State next(final CommandControl command) {
 			return StateEnum.READING.getState();
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command) throws IOException, TerminationException {
+		public ResultStatus execute(final CommandControl command) throws IOException, TerminationException {
 			if (command.setValue == null) {
 				return ResultStatus.CONTINUE;
 			}
@@ -557,12 +557,12 @@ public class CommandControl extends Command {
 	private static class Reading extends State {
 
 		@Override
-		public State next(CommandControl command) {
+		public State next(final CommandControl command) {
 			return StateEnum.RESTORE_DEPENDENCY.getState();
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command)
+		public ResultStatus execute(final CommandControl command)
 				throws NumberFormatException, IOException, PowerOnException, TerminationException {
 
 			Solvis solvis = command.solvis;
@@ -614,7 +614,7 @@ public class CommandControl extends Command {
 	private static class RestoreDependency extends State {
 
 		@Override
-		public State next(CommandControl command) {
+		public State next(final CommandControl command) {
 
 			if (!command.dependencyGroupsToExecute.isEmpty()) {
 				return StateEnum.EXECUTE_DEPENDENCY.getState();
@@ -626,7 +626,7 @@ public class CommandControl extends Command {
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command)
+		public ResultStatus execute(final CommandControl command)
 				throws IOException, TerminationException, NumberFormatException, PowerOnException {
 
 			if (command.currentDependencyGroup != null) {
@@ -673,12 +673,12 @@ public class CommandControl extends Command {
 	private static class Finished extends State {
 
 		@Override
-		public State next(CommandControl command) {
+		public State next(final CommandControl command) {
 			return null;
 		}
 
 		@Override
-		public ResultStatus execute(CommandControl command)
+		public ResultStatus execute(final CommandControl command)
 				throws NumberFormatException, IOException, PowerOnException, TerminationException {
 			command.solvis.resetStandby();
 			return ResultStatus.SUCCESS;
@@ -695,11 +695,11 @@ public class CommandControl extends Command {
 		private final Solvis solvis;
 		private final Map<ChannelDescription, SingleData<?>> map = new HashMap<>();
 
-		public DependencyCache(Solvis solvis) {
+		public DependencyCache(final Solvis solvis) {
 			this.solvis = solvis;
 		}
 
-		public SingleData<?> get(ChannelDescription description) {
+		public SingleData<?> get(final ChannelDescription description) {
 			SingleData<?> result = this.map.get(description);
 			if (result == null) {
 				SolvisData solvisData = this.solvis.getAllSolvisData().get(description);
@@ -708,7 +708,7 @@ public class CommandControl extends Command {
 			return result;
 		}
 
-		public void put(ChannelDescription description, SingleData<?> data) {
+		public void put(final ChannelDescription description, final SingleData<?> data) {
 			this.map.put(description, data);
 		}
 
@@ -726,7 +726,7 @@ public class CommandControl extends Command {
 			return this.list.iterator();
 		}
 
-		public boolean contains(DependencyGroup group, Solvis solvis) {
+		public boolean contains(final DependencyGroup group, final Solvis solvis) {
 			for (DependencyGroup g : this.list) {
 				if (DependencyGroup.equals(group, g, solvis)) {
 					return true;
@@ -735,7 +735,7 @@ public class CommandControl extends Command {
 			return false;
 		}
 
-		public boolean add(DependencyGroup e, Solvis solvis) {
+		public boolean add(final DependencyGroup e, final Solvis solvis) {
 			if (this.contains(e, solvis)) {
 				return false;
 			} else {
@@ -756,7 +756,7 @@ public class CommandControl extends Command {
 			}
 		}
 
-		public boolean addAll(MySet c, Solvis solvis) {
+		public boolean addAll(final MySet c, final Solvis solvis) {
 			boolean result = false;
 			for (DependencyGroup group : c.list) {
 				result |= this.add(group, solvis);
@@ -764,7 +764,7 @@ public class CommandControl extends Command {
 			return result;
 		}
 
-		public void remove(DependencyGroup toRemove) {
+		public void remove(final DependencyGroup toRemove) {
 			for (Iterator<DependencyGroup> it = this.list.iterator(); it.hasNext();) {
 				DependencyGroup group = it.next();
 				if (group.equals(toRemove)) {

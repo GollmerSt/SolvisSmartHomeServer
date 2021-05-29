@@ -65,8 +65,9 @@ public class ErrorDetection {
 	private final Rectangle ddMmYy;
 	private final Collection<ErrorCondition> errorConditions;
 
-	private ErrorDetection(Range leftBorder, Range rightBorder, Range topBorder, Range middleBorder, Range bottomBorder,
-			Rectangle hhMm, Rectangle ddMmYy, Collection<ErrorCondition> errorConditions) {
+	private ErrorDetection(final Range leftBorder, final Range rightBorder, final Range topBorder,
+			final Range middleBorder, final Range bottomBorder, final Rectangle hhMm, final Rectangle ddMmYy,
+			final Collection<ErrorCondition> errorConditions) {
 		this.leftBorder = leftBorder;
 		this.rightBorder = rightBorder;
 		this.topBorder = topBorder;
@@ -84,11 +85,11 @@ public class ErrorDetection {
 		ERROR_BUTTON
 	}
 
-	public Type getType(SolvisScreen screen) {
+	public Type getType(final SolvisScreen screen) {
 		return this.getType(screen, false);
 	}
 
-	private Type getType(SolvisScreen screen, boolean isHome) {
+	private Type getType(final SolvisScreen screen, final boolean isHome) {
 
 		MyImage image = screen.getImage();
 
@@ -180,7 +181,7 @@ public class ErrorDetection {
 		return Type.NONE;
 	}
 
-	private int getTreshold(Range upper, Range lower) {
+	private int getTreshold(final Range upper, final Range lower) {
 		return upper.getLower() - lower.getHigher();
 	}
 
@@ -195,12 +196,12 @@ public class ErrorDetection {
 		private Rectangle ddMmYy;
 		private final Collection<ErrorCondition> errorConditions = new ArrayList<>();
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
 
 		@Override
@@ -210,7 +211,7 @@ public class ErrorDetection {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_LEFT_BORDER:
@@ -229,7 +230,7 @@ public class ErrorDetection {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_LEFT_BORDER:
 					this.leftBorder = (Range) created;
@@ -263,7 +264,7 @@ public class ErrorDetection {
 		private final String channelId;
 		private final boolean errorValue;
 
-		private ErrorCondition(String channelId, boolean errorValue) {
+		private ErrorCondition(final String channelId, final boolean errorValue) {
 			this.channelId = channelId;
 			this.errorValue = errorValue;
 		}
@@ -280,12 +281,12 @@ public class ErrorDetection {
 			private String channelId;
 			private boolean value;
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "channelId":
 						this.channelId = value;
@@ -303,17 +304,17 @@ public class ErrorDetection {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 			}
 		}
 	}
 
-	void instantiate(Solvis solvis) {
+	void instantiate(final Solvis solvis) {
 		Execute execute = new Execute(solvis);
 
 		AllSolvisData allData = solvis.getAllSolvisData();
@@ -328,7 +329,7 @@ public class ErrorDetection {
 
 		private Collection<SolvisData> errorSpecificDatas = new ArrayList<>();
 
-		private Execute(Solvis solvis) {
+		private Execute(final Solvis solvis) {
 			for (ErrorCondition condition : ErrorDetection.this.errorConditions) {
 				String name = condition.getChannelId();
 				SolvisData data = solvis.getAllSolvisData().get(name);
@@ -342,7 +343,7 @@ public class ErrorDetection {
 		}
 
 		@Override
-		public void update(SolvisData data, Object source) {
+		public void update(final SolvisData data, final Object source) {
 			for (ErrorCondition condition : ErrorDetection.this.errorConditions) {
 				String channelId = condition.getChannelId();
 				if (channelId.equals(data.getDescription().getId())) {
@@ -365,14 +366,14 @@ public class ErrorDetection {
 
 		private final File parent;
 
-		public WriteErrorScreens(Instances instances) {
+		public WriteErrorScreens(final Instances instances) {
 			File parent = new File(instances.getWritePath(), Constants.Files.RESOURCE_DESTINATION);
 			this.parent = new File(parent, Constants.Files.SOLVIS_ERROR_DESTINATION);
 			FileHelper.mkdir(this.parent);
 		}
 
 		@Override
-		public void update(SolvisErrorInfo info, Object source) {
+		public void update(final SolvisErrorInfo info, final Object source) {
 			if (info.isCleared()) {
 				return;
 			}
@@ -397,7 +398,7 @@ public class ErrorDetection {
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
 		Range leftBorder = new Range(51, 84);
 		Range rightBorder = new Range(906, 938);

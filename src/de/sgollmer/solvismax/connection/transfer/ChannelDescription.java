@@ -16,7 +16,7 @@ import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 
 public class ChannelDescription extends Element {
-	public ChannelDescription(ChannelInstance instance) {
+	public ChannelDescription(final ChannelInstance instance) {
 		super(instance.getName());
 
 		Frame frame = new Frame();
@@ -72,9 +72,9 @@ public class ChannelDescription extends Element {
 
 			for (IMode<?> mode : modes) {
 				Frame modeFrame = new Frame();
-				Element element = new Element("Name",new SingleValue(mode.getName()));
+				Element element = new Element("Name", new SingleValue(mode.getName()));
 				modeFrame.add(element);
-				element = new Element("Handling",new SingleValue(mode.getHandling().name()));
+				element = new Element("Handling", new SingleValue(mode.getHandling().name()));
 				modeFrame.add(element);
 				arrayValue.add(modeFrame);
 			}

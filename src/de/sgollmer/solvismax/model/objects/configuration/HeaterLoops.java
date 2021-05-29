@@ -41,13 +41,13 @@ public class HeaterLoops implements IConfiguration {
 	private final String screenRef;
 	private final Collection<Rectangle> buttons;
 
-	private HeaterLoops(String screenRef, Rectangle hk1, Rectangle hk2, Rectangle hk3) {
+	private HeaterLoops(final String screenRef, final Rectangle hk1, final Rectangle hk2, final Rectangle hk3) {
 		this.screenRef = screenRef;
 		this.buttons = Arrays.asList(hk1, hk2, hk3);
 
 	}
 
-	private int getConfiguration(SolvisScreen screen) throws IOException {
+	private int getConfiguration(final SolvisScreen screen) throws IOException {
 		int circle = 1;
 		int result = 0;
 		for (Rectangle rectangle : this.buttons) {
@@ -66,7 +66,7 @@ public class HeaterLoops implements IConfiguration {
 	}
 
 	@Override
-	public int getConfiguration(Solvis solvis) throws IOException, TerminationException {
+	public int getConfiguration(final Solvis solvis) throws IOException, TerminationException {
 		return this.getConfiguration(solvis.getCurrentScreen());
 	}
 
@@ -81,12 +81,12 @@ public class HeaterLoops implements IConfiguration {
 		private Rectangle hk2;
 		private Rectangle hk3;
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "screenRef":
 					this.screenRef = value;
@@ -100,7 +100,7 @@ public class HeaterLoops implements IConfiguration {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_HEATER_LOOPS_HK1:
@@ -112,7 +112,7 @@ public class HeaterLoops implements IConfiguration {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_HEATER_LOOPS_HK1:
 					this.hk1 = (Rectangle) created;
@@ -143,7 +143,7 @@ public class HeaterLoops implements IConfiguration {
 	}
 
 	@Override
-	public AbstractScreen getScreen(Solvis solvis) {
+	public AbstractScreen getScreen(final Solvis solvis) {
 		return solvis.getSolvisDescription().getScreens().get(this.getScreenRef(), solvis);
 	}
 

@@ -49,7 +49,7 @@ public class MyImage {
 
 	private boolean autoInvert;
 
-	public MyImage(BufferedImage image) {
+	public MyImage(final BufferedImage image) {
 		this.image = image;
 		this.origin = new Coordinate(0, 0);
 		this.size = this.getImageSize();
@@ -58,7 +58,7 @@ public class MyImage {
 		this.ignoreRectangles = null;
 	}
 
-	public MyImage(MyImage image) {
+	public MyImage(final MyImage image) {
 		this.image = image.image;
 		this.origin = image.origin;
 		this.size = image.size;
@@ -74,26 +74,32 @@ public class MyImage {
 
 	}
 
-	public MyImage(MyImage image, Rectangle rectangle, boolean createImageMeta) {
+	public MyImage(final MyImage image, final Rectangle rectangle, final boolean createImageMeta) {
 		this(image, rectangle.getTopLeft(), rectangle.getBottomRight(), createImageMeta);
 	}
 
-	protected MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta) {
+	protected MyImage(final MyImage image, final Coordinate topLeft, final Coordinate bottomRight,
+			final boolean createImageMeta) {
 		this(image, topLeft, bottomRight, createImageMeta, null);
 	}
 
-	public MyImage(MyImage image, boolean createImageMeta, Collection<Rectangle> ignoreRectangles) {
+	public MyImage(final MyImage image, final boolean createImageMeta, final Collection<Rectangle> ignoreRectangles) {
 		this(image, null, null, false, ignoreRectangles);
 	}
 
-	private MyImage(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta,
-			Collection<Rectangle> ignoreRectangles) {
+	private MyImage(final MyImage image, final Coordinate topLeftP, final Coordinate bottomRightP,
+			final boolean createImageMeta, Collection<Rectangle> ignoreRectangles) {
 		this.image = image.image;
-		if (topLeft == null) {
+		Coordinate topLeft, bottomRight;
+		if (topLeftP == null) {
 			topLeft = image.origin;
+		} else {
+			topLeft = topLeftP;
 		}
-		if (bottomRight == null) {
+		if (bottomRightP == null) {
 			bottomRight = image.origin.add(image.size).decrement();
+		} else {
+			bottomRight = bottomRightP;
 		}
 		if (!image.isIn(topLeft) || !image.isIn(bottomRight)) {
 			throw new ErrorNotInRange("UpperLeft or lowerRight not within the image");
@@ -141,24 +147,24 @@ public class MyImage {
 		return image;
 	}
 
-	public boolean isIn(Coordinate coord) {
+	public boolean isIn(final Coordinate coord) {
 		return coord.getX() >= 0 && coord.getY() >= 0 && coord.getX() < this.size.getX()
 				&& coord.getY() < this.size.getY();
 	}
 
-	protected boolean isIn(int x, int y) {
+	protected boolean isIn(final int x, final int y) {
 		return x >= 0 && y >= 0 && x < this.size.getX() && y < this.size.getY();
 	}
 
-	protected int getRGB(int x, int y) {
+	protected int getRGB(final int x, final int y) {
 		return this.image.getRGB(x + this.origin.getX(), y + this.origin.getY());
 	}
 
-	public boolean isActive(Coordinate coord) {
+	public boolean isActive(final Coordinate coord) {
 		return this.isActive(coord.getX(), coord.getY());
 	}
 
-	protected boolean isActive(int x, int y) {
+	protected boolean isActive(final int x, final int y) {
 		if (this.isIn(x, y)) {
 			return this.meta.isActive(this.getRGB(x, y));
 		} else {
@@ -166,7 +172,7 @@ public class MyImage {
 		}
 	}
 
-	protected boolean isLight(int x, int y) {
+	protected boolean isLight(final int x, final int y) {
 		if (this.isIn(x, y)) {
 			return this.meta.isLight(this.getRGB(x, y));
 		} else {
@@ -174,7 +180,7 @@ public class MyImage {
 		}
 	}
 
-	public boolean createHistograms(boolean autoInvert) {
+	public boolean createHistograms(final boolean autoInvert) {
 
 		if (this.histogramX != null && (autoInvert == this.autoInvert)) {
 			return false;
@@ -327,11 +333,11 @@ public class MyImage {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		return this.equals(obj, false);
 	}
 
-	public boolean equals(Object obj, boolean ignoreEnable) {
+	public boolean equals(final Object obj, final boolean ignoreEnable) {
 		if (!(obj instanceof MyImage)) {
 			return false;
 		}
@@ -358,7 +364,7 @@ public class MyImage {
 		return true;
 	}
 
-	private boolean toIgnore(int x, int y) {
+	private boolean toIgnore(final int x, final int y) {
 		if (this.ignoreRectangles == null) {
 			return false;
 		}
@@ -386,7 +392,7 @@ public class MyImage {
 		return new Coordinate(this.image.getWidth(), this.image.getHeight());
 	}
 
-	public boolean isWhite(Rectangle rectangle) {
+	public boolean isWhite(final Rectangle rectangle) {
 		if (this.meta == null) {
 			logger.error("isWhite was tried to execute on an MyImage object without meta informations");
 			return false;
@@ -410,23 +416,23 @@ public class MyImage {
 		return new ByteArrayDataSource(imageBytes, "image/" + Constants.Files.GRAFIC_SUFFIX);
 	}
 
-	public void writeWhole(File file) throws IOException {
+	public void writeWhole(final File file) throws IOException {
 		ImageIO.write(this.image, Constants.Files.GRAFIC_SUFFIX, file);
 	}
 
-	public void write(File file) throws IOException {
+	public void write(final File file) throws IOException {
 		ImageIO.write(this.image.getSubimage(this.origin.getX(), this.origin.getY(), this.getWidth(), this.getHeight()),
 				Constants.Files.GRAFIC_SUFFIX, file);
 	}
-	
+
 	public List<MyImage> split() {
 		this.createHistograms(true);
 
 		this.removeFrame();
 
 		this.shrink();
-		
-		List< MyImage > parts = new ArrayList<>();
+
+		List<MyImage> parts = new ArrayList<>();
 
 		Coordinate start = null;
 
@@ -451,10 +457,10 @@ public class MyImage {
 			Coordinate end = new Coordinate(this.getHistogramX().size() - 1, lower);
 			parts.add(new MyImage(this, start, end, false));
 		}
-		
+
 		return parts;
 	}
-	
+
 	private void removeFrame() {
 		int i;
 		boolean missed = true;
@@ -476,8 +482,8 @@ public class MyImage {
 		}
 
 		int right = i;
-		
-		if ( left > right) {
+
+		if (left > right) {
 			return;
 		}
 
@@ -501,7 +507,7 @@ public class MyImage {
 
 		int bottom = i;
 
-		if ( top > bottom) {
+		if (top > bottom) {
 			return;
 		}
 

@@ -20,11 +20,11 @@ public class CommandSetQueuePriority extends Command {
 	}
 
 	@Override
-	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus) throws IOException, TerminationException, PowerOnException,
-			NumberFormatException, TypeException, XmlException {
-		
+	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus) throws IOException,
+			TerminationException, PowerOnException, NumberFormatException, TypeException, XmlException {
+
 		queueStatus.setCurrentPriority(this.priority, this.setObject);
-		
+
 		return ResultStatus.SUCCESS;
 	}
 

@@ -35,7 +35,7 @@ public class BaseControlFileReader {
 	private final File parent;
 	private final File baseXml;
 
-	public BaseControlFileReader(String baseXmlString) {
+	public BaseControlFileReader(final String baseXmlString) {
 		this.parent = FileHelper.getJarDir(BaseControlFileReader.class);
 		if (baseXmlString == null) {
 			this.baseXml = new File(this.parent, NAME_XML_BASEFILE);
@@ -76,7 +76,7 @@ public class BaseControlFileReader {
 		return reader.read(source, rootId, new BaseData.Creator(rootId), this.baseXml.getName()).getObject();
 	}
 
-	public static void main(String[] args)
+	public static void main(final String[] args)
 			throws IOException, XmlException, XMLStreamException, AssignmentException, ReferenceException {
 
 		BaseControlFileReader reader = new BaseControlFileReader(null);

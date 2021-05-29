@@ -22,28 +22,28 @@ public class AllScreenGraficDescriptions implements IAssigner {
 
 	private final Map<String, ScreenGraficDescription> screenGraficDescriptions = new HashMap<>();
 
-	public void add(ScreenGraficDescription grafic) {
+	public void add(final ScreenGraficDescription grafic) {
 		ScreenGraficDescription former = this.screenGraficDescriptions.put(grafic.getId(), grafic);
 		if (former != null) {
 			logger.error("ScreenGraficDescription <" + grafic.getId() + "> is not unique.");
 		}
 	}
 
-	void addAll(Collection<ScreenGraficDescription> grafics) {
+	void addAll(final Collection<ScreenGraficDescription> grafics) {
 		for (ScreenGraficDescription grafic : grafics) {
 			this.add(grafic);
 		}
 	}
 
-	public ScreenGraficDescription get(String id) throws XmlException {
+	public ScreenGraficDescription get(final String id) throws XmlException {
 		ScreenGraficDescription description = this.screenGraficDescriptions.get(id);
-		if ( description == null) {
-			throw new XmlException( "ScreenGrafic of <" + id + "> not known, check the control.xml");
+		if (description == null) {
+			throw new XmlException("ScreenGrafic of <" + id + "> not known, check the control.xml");
 		}
 		return description;
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 	}
 }

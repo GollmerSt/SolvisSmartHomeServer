@@ -38,54 +38,54 @@ public class Logger4j2 {
 			this.LEARN = null;
 		}
 
-		private Logger(Class<?> clazz) {
+		private Logger(final Class<?> clazz) {
 			this.logger = org.apache.logging.log4j.LogManager.getLogger(clazz);
 			this.LEARN = Level.getLevel("LEARN");
 		}
 
 		@Override
-		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(Class<?> clazz) {
+		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(final Class<?> clazz) {
 			Logger logger = new Logger(clazz);
 			return logger;
 		}
 
 		@Override
-		public void fatal(String message) {
+		public void fatal(final String message) {
 			this.logger.fatal(message);
 
 		}
 
 		@Override
-		public void error(String message) {
+		public void error(final String message) {
 			this.logger.error(message);
 
 		}
 
 		@Override
-		public void learn(String message) {
+		public void learn(final String message) {
 			this.logger.log(this.LEARN, message);
 
 		}
 
 		@Override
-		public void warn(String message) {
+		public void warn(final String message) {
 			this.logger.warn(message);
 
 		}
 
 		@Override
-		public void info(String message) {
+		public void info(final String message) {
 			this.logger.info(message);
 
 		}
 
 		@Override
-		public void debug(String message) {
+		public void debug(final String message) {
 			this.logger.debug(message);
 
 		}
 
-		private Level getLevel(de.sgollmer.solvismax.log.LogManager.Level level) {
+		private Level getLevel(final de.sgollmer.solvismax.log.LogManager.Level level) {
 			switch (level) {
 				case DEBUG:
 					return Level.DEBUG;
@@ -106,54 +106,55 @@ public class Logger4j2 {
 		}
 
 		@Override
-		public void log(de.sgollmer.solvismax.log.LogManager.Level level, String message) {
+		public void log(final de.sgollmer.solvismax.log.LogManager.Level level, final String message) {
 			this.logger.log(this.getLevel(level), message);
 
 		}
 
 		@Override
-		public boolean createInstance(String pathName) throws IOException, FileException {
+		public boolean createInstance(final String pathName) throws IOException, FileException {
 			return new Logger4j2(pathName).setConfiguration();
 		}
 
 		@Override
-		public void fatal(String message, Throwable throwable) {
+		public void fatal(final String message, final Throwable throwable) {
 			this.logger.fatal(message, throwable);
 
 		}
 
 		@Override
-		public void error(String message, Throwable throwable) {
+		public void error(final String message, final Throwable throwable) {
 			this.logger.error(message, throwable);
 
 		}
 
 		@Override
-		public void learn(String message, Throwable throwable) {
+		public void learn(final String message, final Throwable throwable) {
 			this.logger.log(this.LEARN, message, throwable);
 
 		}
 
 		@Override
-		public void warn(String message, Throwable throwable) {
+		public void warn(final String message, final Throwable throwable) {
 			this.logger.warn(message, throwable);
 
 		}
 
 		@Override
-		public void info(String message, Throwable throwable) {
+		public void info(final String message, final Throwable throwable) {
 			this.logger.info(message, throwable);
 
 		}
 
 		@Override
-		public void debug(String message, Throwable throwable) {
+		public void debug(final String message, final Throwable throwable) {
 			this.logger.debug(message, throwable);
 
 		}
 
 		@Override
-		public void log(de.sgollmer.solvismax.log.LogManager.Level level, String message, Throwable throwable) {
+		public void log(final de.sgollmer.solvismax.log.LogManager.Level level, final String message,
+				final Throwable throwable) {
 			this.logger.log(this.getLevel(level), message, throwable);
 
 		}
@@ -167,15 +168,18 @@ public class Logger4j2 {
 
 	private final File parent;
 
-	private Logger4j2(String pathName) {
+	private Logger4j2(final String pathNameP) {
 		File parent;
 
-		if (pathName == null) {
+		String pathName;
+		if (pathNameP == null) {
 			pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
 				pathName = System.getenv("APPDATA");
 			}
 
+		} else {
+			pathName = pathNameP;
 		}
 
 		pathName += File.separator + Constants.Files.RESOURCE_DESTINATION;

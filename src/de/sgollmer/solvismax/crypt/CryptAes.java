@@ -46,8 +46,8 @@ public class CryptAes {
 		return result;
 	}
 
-	public String encrypt(String word) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException {
+	public String encrypt(final String word) throws NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		Key aesKey = new SecretKeySpec(CryptAes.cK(), "AES");
 		Cipher cipher = Cipher.getInstance("AES");
 		cipher.init(Cipher.ENCRYPT_MODE, aesKey);
@@ -57,7 +57,7 @@ public class CryptAes {
 		return base64Encoder.encodeToString(encrypted);
 	}
 
-	public void decrypt(String cryptedString) throws CryptDefaultValueException, CryptExeception {
+	public void decrypt(final String cryptedString) throws CryptDefaultValueException, CryptExeception {
 		try {
 			Decoder base64Decoder = Base64.getDecoder();
 			byte[] crypted = base64Decoder.decode(cryptedString);
@@ -77,7 +77,7 @@ public class CryptAes {
 
 	}
 
-	private void cI(String word) {
+	private void cI(final String word) {
 		byte[] bb = word.getBytes();
 		this.v = new byte[(bb.length + 2 + 16) / 16 * 16 - 1];
 		this.v[0] = (byte) (bb.length & 0xff);
@@ -114,14 +114,15 @@ public class CryptAes {
 		}
 	}
 
-	public void set(String value) {
+	public void set(final String value) {
 		if (this.v == null) {
 			this.cI(value);
 		}
 	}
 
-	public static void main(String[] args) throws CryptDefaultValueException, CryptExeception, InvalidKeyException,
-			NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+	public static void main(final String[] args)
+			throws CryptDefaultValueException, CryptExeception, InvalidKeyException, NoSuchAlgorithmException,
+			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		CryptAes aes = new CryptAes();
 		for (int i = 0; i < 100; ++i) {
 			StringBuilder builder = new StringBuilder();

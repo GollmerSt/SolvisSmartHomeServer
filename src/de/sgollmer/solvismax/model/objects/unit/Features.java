@@ -28,12 +28,12 @@ public class Features {
 	private final Map<String, Boolean> features;
 	private Boolean interactiveGUIAccess = null;
 
-	private Features(Map<String, Boolean> features) throws XmlException {
+	private Features(final Map<String, Boolean> features) throws XmlException {
 		this.features = features;
 		this.checkInteractiveGUIAccess();
 	}
 
-	private boolean get(String feature) {
+	private boolean get(final String feature) {
 		Boolean result = this.features.get(feature);
 		if (result == null) {
 			return false;
@@ -98,7 +98,7 @@ public class Features {
 		return this.get(XML_ADMIN);
 	}
 
-	public Boolean getFeature(String id) {
+	public Boolean getFeature(final String id) {
 		return this.get(id);
 	}
 
@@ -106,12 +106,12 @@ public class Features {
 
 		private final Map<String, Boolean> features = new HashMap<>();
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
 
 		@Override
@@ -120,7 +120,7 @@ public class Features {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_CLOCK_TUNING:
@@ -140,7 +140,7 @@ public class Features {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			if (created instanceof StringElement) {
 				boolean bool = Boolean.parseBoolean(((StringElement) created).toString());
 				String id = creator.getId();

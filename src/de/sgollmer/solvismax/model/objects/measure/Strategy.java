@@ -15,6 +15,7 @@ import java.util.Iterator;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.measure.Measurement.IType;
 import de.sgollmer.solvismax.objects.Field;
@@ -32,8 +33,8 @@ public enum Strategy implements IType {
 	}
 
 	@Override
-	public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data,
-			de.sgollmer.solvismax.model.Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
+	public boolean get(final SolvisData destin, final Collection<Field> fields, final SolvisMeasurements data,
+			final Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
 		return this.type.get(destin, fields, data, solvis);
 	}
 
@@ -43,11 +44,11 @@ public enum Strategy implements IType {
 	}
 
 	@Override
-	public boolean validate(Collection<Field> fields) {
+	public boolean validate(final Collection<Field> fields) {
 		return this.type.validate(fields);
 	}
 
-	private static long toInt(String data) throws NumberFormatException {
+	private static long toInt(final String data) throws NumberFormatException {
 
 		Long result = 0L;
 
@@ -75,7 +76,7 @@ public enum Strategy implements IType {
 		return result;
 	}
 
-	private static Field getFirst(Collection<Field> fields) {
+	private static Field getFirst(final Collection<Field> fields) {
 		Iterator<Field> it = fields.iterator();
 		if (it.hasNext()) {
 			return it.next();
@@ -92,13 +93,13 @@ public enum Strategy implements IType {
 	private static class Integer implements IType {
 		private final boolean signed;
 
-		private Integer(boolean signed) {
+		private Integer(final boolean signed) {
 			this.signed = signed;
 		}
 
 		@Override
-		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data,
-				de.sgollmer.solvismax.model.Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
+		public boolean get(final SolvisData destin, final Collection<Field> fields, final SolvisMeasurements data,
+				final Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
 			Field field = getFirst(fields);
 			String sub = field.subString(data.getHexString());
 			long result = toInt(sub);
@@ -118,7 +119,7 @@ public enum Strategy implements IType {
 		}
 
 		@Override
-		public boolean validate(Collection<Field> fields) {
+		public boolean validate(final Collection<Field> fields) {
 			return fields.size() == 1;
 		}
 
@@ -177,13 +178,13 @@ public enum Strategy implements IType {
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(year, month, date, hour, minute, second);
-			
+
 			Calendar old = destin.getDate();
-			
+
 			boolean debug = Constants.Debug.isSolvisTimeFixed();
 
-			if ( old != null && debug ) {
-				calendar = old ;
+			if (old != null && debug) {
+				calendar = old;
 			}
 
 			int measurementsInterval = destin.getScanInterval_ms();

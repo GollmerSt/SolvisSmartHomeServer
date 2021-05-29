@@ -15,7 +15,7 @@ public class Average implements Cloneable {
 		private final int value10;
 		private final boolean fastChange;
 
-		private InternalResult(int value10, boolean fastChange) {
+		private InternalResult(final int value10, final boolean fastChange) {
 			this.value10 = value10;
 			this.fastChange = fastChange;
 		}
@@ -27,19 +27,19 @@ public class Average implements Cloneable {
 	private int absCount;
 	private AverageInt averageInt;
 
-	Average(int maxCount, int measurementHysteresisFactor) {
+	Average(final int maxCount, final int measurementHysteresisFactor) {
 		this.averageInt = new AverageInt(maxCount);
 		this.measurementHysteresisFactor = measurementHysteresisFactor;
 	}
 
-	Average(Average average) {
+	Average(final Average average) {
 		this.measurementHysteresisFactor = average.measurementHysteresisFactor;
 		this.average = average.average;
 		this.absAverage = average.absAverage;
 		this.absCount = average.absCount;
 	}
 
-	synchronized void add(SingleData<?> data) {
+	synchronized void add(final SingleData<?> data) {
 		Integer value = data.getInt();
 		if (value == null) {
 			return;
@@ -93,7 +93,7 @@ public class Average implements Cloneable {
 		private final SingleData<?> data;
 		private final boolean fastChange;
 
-		public Result(SingleData<?> data, boolean fastChange) {
+		public Result(final SingleData<?> data, final boolean fastChange) {
 			this.data = data;
 			this.fastChange = fastChange;
 		}
@@ -107,7 +107,7 @@ public class Average implements Cloneable {
 		}
 	}
 
-	Result getAverage(SingleData<?> singleData) {
+	Result getAverage(final SingleData<?> singleData) {
 		if (!this.averageInt.isFilled()) {
 			return null;
 		} else {

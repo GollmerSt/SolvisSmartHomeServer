@@ -23,13 +23,13 @@ import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
 public interface IStrategy extends IAssigner {
 
-	SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess, boolean optional)
-			throws TerminationException, IOException;
+	SingleData<?> getValue(final SolvisScreen solvisScreen, final Solvis solvis, final IControlAccess controlAccess,
+			final boolean optional) throws TerminationException, IOException;
 
-	SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
 			throws IOException, TerminationException, TypeException;
 
-	SetResult setValueFast(Solvis solvis, SolvisData value) throws IOException, TerminationException;
+	SetResult setValueFast(final Solvis solvis, final SolvisData value) throws IOException, TerminationException;
 
 	boolean isWriteable();
 
@@ -45,16 +45,16 @@ public interface IStrategy extends IAssigner {
 
 	boolean mustBeLearned();
 
-	boolean learn(Solvis solvis, IControlAccess controlAccess) throws IOException, TerminationException;
+	boolean learn(final Solvis solvis, final IControlAccess controlAccess) throws IOException, TerminationException;
 
-	SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
+	SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException;
 
 	boolean isBoolean();
 
-	SingleData<?> createSingleData(String value, long timeStamp) throws TypeException;
+	SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException;
 
-	String getCsvMeta(String column, boolean semicolon);
+	String getCsvMeta(final String column, final boolean semicolon);
 
-	void setControl(Control control);
+	void setControl(final Control control);
 
 }

@@ -205,12 +205,12 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public void setControl(Control control) {
-		
+	public void setControl(final Control control) {
+
 	}
 
 	@Override
-	public SetResult setValueFast(Solvis solvis, SolvisData value) {
+	public SetResult setValueFast(final Solvis solvis, final SolvisData value) {
 		return null;
 	}
 

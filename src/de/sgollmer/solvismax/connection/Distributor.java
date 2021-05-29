@@ -58,7 +58,7 @@ public final class Distributor extends Observable<ISendData> {
 	private class SolvisDataObserver implements Observer.IObserver<SmartHomeData> {
 
 		@Override
-		public void update(SmartHomeData data, Object source) {
+		public void update(final SmartHomeData data, final Object source) {
 
 			Collection<SmartHomeData> toSend = null;
 
@@ -87,7 +87,7 @@ public final class Distributor extends Observable<ISendData> {
 		}
 	}
 
-	private void add(SmartHomeData data, Measurements measurements) {
+	private void add(final SmartHomeData data, final Measurements measurements) {
 		SmartHomeData former = measurements.add(data);
 		if (former != null) {
 			logger.error("measurements not unique. Timestamps of <" + data.getDescription().getId() + ">: Former: "
@@ -99,7 +99,7 @@ public final class Distributor extends Observable<ISendData> {
 	private class SolvisStateObserver implements Observer.IObserver<SolvisStatePackage> {
 
 		@Override
-		public void update(SolvisStatePackage data, Object source) {
+		public void update(final SolvisStatePackage data, final Object source) {
 			Distributor.this.notify(data);
 		}
 
@@ -108,7 +108,7 @@ public final class Distributor extends Observable<ISendData> {
 	private class ConnectionStateObserver implements Observer.IObserver<ConnectionState> {
 
 		@Override
-		public void update(ConnectionState data, Object source) {
+		public void update(final ConnectionState data, final Object source) {
 			Distributor.this.notify(data);
 
 		}
@@ -118,7 +118,7 @@ public final class Distributor extends Observable<ISendData> {
 	private class HumanAccessObserver implements Observer.IObserver<HumanAccess> {
 
 		@Override
-		public void update(HumanAccess data, Object source) {
+		public void update(final HumanAccess data, final Object source) {
 			try {
 				Distributor.this.notify(new SolvisStatePackage(data.getStatus(), Distributor.this.solvis));
 			} catch (Throwable e) {
@@ -127,7 +127,7 @@ public final class Distributor extends Observable<ISendData> {
 
 	}
 
-	private void sendCollection(Collection<SmartHomeData> sendData) {
+	private void sendCollection(final Collection<SmartHomeData> sendData) {
 		long timeStamp = System.currentTimeMillis();
 		if (!sendData.isEmpty()) {
 			for (SmartHomeData data : sendData) {
@@ -139,7 +139,7 @@ public final class Distributor extends Observable<ISendData> {
 		}
 	}
 
-	public void sendCollection(Measurements measurements) {
+	public void sendCollection(final Measurements measurements) {
 		sendCollection(measurements.cloneAndClear());
 	}
 
@@ -256,7 +256,7 @@ public final class Distributor extends Observable<ISendData> {
 		}
 	}
 
-	public void setBurstUpdate(boolean burstUpdate) {
+	public void setBurstUpdate(final boolean burstUpdate) {
 		boolean send;
 		Collection<SmartHomeData> collection = null;
 		synchronized (this) {

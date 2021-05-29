@@ -21,7 +21,7 @@ public class Proxy {
 	private final String user;
 	private final CryptAes password;
 
-	private Proxy(String host, int port, String user, CryptAes password) {
+	private Proxy(final String host, int port, final String user, final CryptAes password) {
 		this.host = host;
 		this.port = port;
 		this.user = user;
@@ -51,12 +51,12 @@ public class Proxy {
 		private String user = null;
 		private CryptAes password = null;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "host":
 					this.host = value;
@@ -91,12 +91,12 @@ public class Proxy {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 
 		}
 

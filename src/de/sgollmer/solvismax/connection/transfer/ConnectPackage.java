@@ -19,7 +19,7 @@ public class ConnectPackage extends JsonPackage implements IReceivedData {
 		this.command = Command.CONNECT;
 	}
 
-	public ConnectPackage(String id) {
+	public ConnectPackage(final String id) {
 		this.id = id;
 		this.command = Command.CONNECT;
 		this.data = new Frame();

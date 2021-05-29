@@ -71,8 +71,9 @@ public class Mqtt {
 	private MqttThread mqttThread = null;
 	private final MqttQueue mqttQueue;
 
-	private Mqtt(boolean enable, String brokerUrl, int port, String userName, CryptAes passwordCrypt,
-			String topicPrefix, String idPrefix, int publishQoS, int subscribeQoS, Ssl ssl) {
+	private Mqtt(final boolean enable, final String brokerUrl, final int port, final String userName,
+			final CryptAes passwordCrypt, final String topicPrefix, final String idPrefix, final int publishQoS,
+			final int subscribeQoS, final Ssl ssl) {
 		this.enable = enable;
 		this.brokerUrl = brokerUrl;
 		this.port = port;
@@ -106,7 +107,7 @@ public class Mqtt {
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			try {
 				switch (name.getLocalPart()) {
 					case "enable":
@@ -156,7 +157,7 @@ public class Mqtt {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_SSL:
@@ -166,7 +167,7 @@ public class Mqtt {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_SSL:
 					this.ssl = (Ssl) created;
@@ -175,7 +176,7 @@ public class Mqtt {
 
 	}
 
-	public void connect(Instances instances, CommandHandler commandHandler) throws MqttException {
+	public void connect(final Instances instances, final CommandHandler commandHandler) throws MqttException {
 
 		if (!this.enable) {
 			return;
@@ -197,7 +198,7 @@ public class Mqtt {
 	class PublishObserver implements IObserver<ISendData> {
 
 		@Override
-		public void update(ISendData sendData, Object source) {
+		public void update(final ISendData sendData, final Object source) {
 			Mqtt.this.publish(sendData);
 		}
 	}
@@ -205,7 +206,7 @@ public class Mqtt {
 	class PublishStatusObserver implements IObserver<ISendData> {
 
 		@Override
-		public void update(ISendData data, Object source) {
+		public void update(final ISendData data, final Object source) {
 			Mqtt.this.publish(data);
 		}
 
@@ -213,15 +214,15 @@ public class Mqtt {
 
 	MqttCallbackExtended callback = new Callback(this);
 
-	public void unpublish(MqttData data) throws MqttException, MqttConnectionLost {
-		if (data != null) {
-			data = (MqttData) data.clone();
+	public void unpublish(final MqttData dataIn) throws MqttException, MqttConnectionLost {
+		if (dataIn != null) {
+			MqttData data = (MqttData) dataIn.clone();
 			data.prepareDeleteRetained();
 			this.mqttQueue.publish(data);
 		}
 	}
 
-	public void unpublish(ISendData sendData) throws MqttException, MqttConnectionLost {
+	public void unpublish(final ISendData sendData) throws MqttException, MqttConnectionLost {
 		Collection<MqttData> collection = sendData.createMqttData();
 		if (collection != null) {
 			for (MqttData data : collection) {
@@ -232,11 +233,11 @@ public class Mqtt {
 		}
 	}
 
-	public void publish(MqttData data) {
+	public void publish(final MqttData data) {
 		this.mqttQueue.publish(data);
 	}
 
-	public void publish(ISendData sendData) {
+	public void publish(final ISendData sendData) {
 		Collection<MqttData> collection = sendData.createMqttData();
 		if (collection != null) {
 			for (MqttData data : collection) {
@@ -249,7 +250,7 @@ public class Mqtt {
 		}
 	}
 
-	public synchronized void publishRaw(MqttData data) throws MqttException, MqttConnectionLost {
+	public synchronized void publishRaw(final MqttData data) throws MqttException, MqttConnectionLost {
 		if (data == null) {
 			return;
 		}
@@ -268,14 +269,14 @@ public class Mqtt {
 
 	}
 
-	public String getTopic(MqttData data) {
+	public String getTopic(final MqttData data) {
 		StringBuilder builder = new StringBuilder(this.topicPrefix);
 		builder.append('/');
 		builder.append(data.topicSuffix);
 		return builder.toString();
 	}
 
-	void publishError(String clientId, String message, Unit unit) {
+	void publishError(final String clientId, final String message, final Unit unit) {
 		this.publish(new MqttData(clientId + '/' + Constants.Mqtt.ERROR, message, 0, false, unit));
 	}
 
@@ -288,7 +289,7 @@ public class Mqtt {
 		FROM_META, STRING, BOOLEAN, NONE
 	}
 
-	SubscribeData analyseReceivedTopic(String topic) throws MqttInterfaceException {
+	SubscribeData analyseReceivedTopic(final String topic) throws MqttInterfaceException {
 		if (!topic.startsWith(this.topicPrefix + '/')) {
 			throw new MqttInterfaceException("Error: Wrong prefix of MQTT topic <" + topic + ">.");
 		}
@@ -338,20 +339,20 @@ public class Mqtt {
 		}
 	}
 
-	private static String formatChannelIn(String mqttChannelId) {
+	private static String formatChannelIn(final String mqttChannelId) {
 		String channelId = mqttChannelId.replace(':', '.');
 		return channelId;
 	}
 
-	public static String formatChannelOutTopic(String channelId) {
+	public static String formatChannelOutTopic(final String channelId) {
 		return formatChannelOut(channelId) + '/' + Constants.Mqtt.DATA_SUFFIX;
 	}
 
-	public static String formatChannelOut(String channelId) {
+	public static String formatChannelOut(final String channelId) {
 		return channelId.replace('.', ':');
 	}
 
-	public static String formatChannelMetaTopic(String channelId) {
+	public static String formatChannelMetaTopic(final String channelId) {
 		return formatChannelOut(channelId) + '/' + Constants.Mqtt.META_SUFFIX;
 	}
 
@@ -366,19 +367,19 @@ public class Mqtt {
 	class Client implements IClient {
 		private final String clientId;
 
-		Client(String clientId) {
+		Client(final String clientId) {
 			this.clientId = clientId;
 		}
 
 		@Override
-		public void sendCommandError(String message) {
+		public void sendCommandError(final String message) {
 			publishError(this.clientId, message, this.getSolvis() != null ? this.getSolvis().getUnit() : null);
 			logger.info(message);
 
 		}
 
 		@Override
-		public void send(ISendData sendData) {
+		public void send(final ISendData sendData) {
 			logger.error("Unexpected using of iClient");
 		}
 
@@ -398,7 +399,7 @@ public class Mqtt {
 		}
 
 		@Override
-		public boolean equals(Object obj) {
+		public boolean equals(final Object obj) {
 			if (!(obj instanceof Client)) {
 				return false;
 			}

@@ -4,8 +4,9 @@ public enum ResultStatus {
 	SUCCESS(true, true), // (Sub-)Command executes successful and is removeFromQueue
 	CONTINUE(true, false), // a sub command removeFromQueue
 	VALUE_VIOLATION(true, true), // (Sub-)Command executes successful but a value violation occurs
-	INTERRUPTED(false, false), // (Sub-)Command is interrupted. An other command can be executed before continuing
-	NO_SUCCESS(false, false), // (Sub-)Command executes not successful 
+	INTERRUPTED(false, false), // (Sub-)Command is interrupted. An other command can be executed before
+								// continuing
+	NO_SUCCESS(false, false), // (Sub-)Command executes not successful
 	INHIBITED(false, true); // The command was inhibited
 
 	private final boolean executed;

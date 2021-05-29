@@ -22,7 +22,7 @@ public class Helper {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
 
-	static char charAt(String json, int position) throws JsonException {
+	static char charAt(final String json, final int position) throws JsonException {
 		try {
 			return json.charAt(position);
 		} catch (IndexOutOfBoundsException e) {
@@ -30,7 +30,7 @@ public class Helper {
 		}
 	}
 
-	static void read(InputStream in, byte[] bytes, int timeout) throws IOException {
+	static void read(final InputStream in, final byte[] bytes, final int timeout) throws IOException {
 		int transfered = 0;
 		TimeoutThread runnable = null;
 		while (transfered < bytes.length) {
@@ -70,7 +70,7 @@ public class Helper {
 		private final InputStream inputStream;
 		private boolean abort = false;
 
-		private TimeoutThread(InputStream stream, int timeout) {
+		private TimeoutThread(final InputStream stream, final int timeout) {
 			super("ReadTimeout");
 			this.timeout = timeout;
 			this.inputStream = stream;

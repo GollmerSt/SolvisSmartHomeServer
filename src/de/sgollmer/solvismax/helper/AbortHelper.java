@@ -25,7 +25,7 @@ public class AbortHelper {
 	private boolean abort = false;
 	private Collection<Object> syncObjects = new ArrayList<>();
 
-	public synchronized void sleep(int time) throws TerminationException {
+	public synchronized void sleep(final int time) throws TerminationException {
 		if (this.abort) {
 			throw new TerminationException();
 		}
@@ -38,7 +38,7 @@ public class AbortHelper {
 		}
 	}
 
-	public void sleepAndLock(int time, Object syncObject) throws TerminationException {
+	public void sleepAndLock(final int time, final Object syncObject) throws TerminationException {
 		if (this.abort) {
 			throw new TerminationException();
 		}

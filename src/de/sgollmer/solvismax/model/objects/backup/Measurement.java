@@ -24,14 +24,14 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class Measurement implements SystemBackup.IValue{
+public class Measurement implements SystemBackup.IValue {
 
 	static final String XML_MEASUREMENT = "Measurement";
 
 	private final String id;
 	private final SingleData<?> data;
 
-	public Measurement(String id, SingleData<?> data) {
+	public Measurement(final String id, final SingleData<?> data) {
 		this.id = id;
 		this.data = data;
 	}
@@ -48,12 +48,12 @@ public class Measurement implements SystemBackup.IValue{
 		private String id;
 		private SingleData<?> data;
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -68,7 +68,7 @@ public class Measurement implements SystemBackup.IValue{
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case Constants.XmlStrings.XML_MEASUREMENT_BOOLEAN:
@@ -81,7 +81,7 @@ public class Measurement implements SystemBackup.IValue{
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case Constants.XmlStrings.XML_MEASUREMENT_BOOLEAN:
 				case Constants.XmlStrings.XML_MEASUREMENT_INTEGER:
@@ -98,24 +98,24 @@ public class Measurement implements SystemBackup.IValue{
 
 		StringBuilder text = new StringBuilder();
 
-		private ValueCreator(String id, BaseCreator<?> creator) {
+		private ValueCreator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
-		
+
 		private static class Mode implements IMode<Mode> {
-			
-			private final String data ;
-			
-			public Mode(String data) {
-				this.data=data;
+
+			private final String data;
+
+			public Mode(final String data) {
+				this.data = data;
 			}
 
 			@Override
-			public int compareTo(Mode o) {
+			public int compareTo(final Mode o) {
 				return this.data.compareTo(o.data);
 			}
 
@@ -123,18 +123,18 @@ public class Measurement implements SystemBackup.IValue{
 			public String getName() {
 				return this.data;
 			}
-			
+
 			@Override
-			public ModeValue<?> create(long timeStamp) {
+			public ModeValue<?> create(final long timeStamp) {
 				return new ModeValue<>(this, timeStamp);
 			}
-			
+
 			@Override
-			public boolean equals( Object obj) {
-				if ( !(obj instanceof IMode )) {
-					return false ;
+			public boolean equals(final Object obj) {
+				if (!(obj instanceof IMode)) {
+					return false;
 				}
-				return this.getName().equals( ((IMode<?>)obj).getName());
+				return this.getName().equals(((IMode<?>) obj).getName());
 			}
 
 			@Override
@@ -168,25 +168,25 @@ public class Measurement implements SystemBackup.IValue{
 			}
 			return null;
 		}
-		
+
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 		}
 
 		@Override
-		public void addCharacters(String data) {
+		public void addCharacters(final String data) {
 			this.text.append(data.trim());
 		}
 
 	}
 
 	@Override
-	public void writeXml(XMLStreamWriter writer) throws XMLStreamException {
+	public void writeXml(final XMLStreamWriter writer) throws XMLStreamException {
 
 		writer.writeStartElement(XML_MEASUREMENT);
 		writer.writeAttribute("id", this.id);

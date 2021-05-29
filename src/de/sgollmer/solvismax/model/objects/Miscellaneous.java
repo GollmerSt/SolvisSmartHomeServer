@@ -26,9 +26,10 @@ public class Miscellaneous {
 	private final int solvisReadTimeout_ms;
 	private final int clientTimeoutTime_ms;
 
-	private Miscellaneous(int measurementsBackupTime_ms, int powerOffDetectedAfterIoErrors,
-			int powerOffDetectedAfterTimeout_ms, int unsuccessfullWaitTime_ms, int connectionHoldTime_ms,
-			int solvisConnectionTimeout_ms, int solvisReadTimeout_ms, int clientTimeoutTime_ms) {
+	private Miscellaneous(final int measurementsBackupTime_ms, final int powerOffDetectedAfterIoErrors,
+			final int powerOffDetectedAfterTimeout_ms, final int unsuccessfullWaitTime_ms,
+			final int connectionHoldTime_ms, final int solvisConnectionTimeout_ms, final int solvisReadTimeout_ms,
+			final int clientTimeoutTime_ms) {
 		this.measurementsBackupTime_ms = measurementsBackupTime_ms;
 		this.powerOffDetectedAfterIoErrors = powerOffDetectedAfterIoErrors;
 		this.powerOffDetectedAfterTimeout_ms = powerOffDetectedAfterTimeout_ms;
@@ -62,12 +63,12 @@ public class Miscellaneous {
 		private int solvisReadTimeout_ms;
 		private int clientTimeoutTime_ms;
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "measurementsBackupTime_ms":
 					this.measurementsBackupTime_ms = Integer.parseInt(value);
@@ -105,12 +106,12 @@ public class Miscellaneous {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 
 		}
 

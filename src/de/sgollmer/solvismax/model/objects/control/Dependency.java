@@ -23,16 +23,16 @@ public class Dependency implements IAssigner {
 	private final String id;
 	private final String value;
 	private final Integer priority;
-	private final String standbyId ;
+	private final String standbyId;
 
 	private OfConfigs<ChannelDescription> channel = null;
 
 	protected ChannelDescription description;
 
-	private Dependency(String id, String value, Integer priority, String standbyId) {
+	private Dependency(final String id, final String value, final Integer priority, final String standbyId) {
 		this.id = id;
 		this.value = value;
-		this.priority=priority;
+		this.priority = priority;
 		this.standbyId = standbyId;
 	}
 
@@ -40,15 +40,15 @@ public class Dependency implements IAssigner {
 
 		private String id;
 		private String value;
-		private  Integer priority=null;
-		private  String standbyId = null;
+		private Integer priority = null;
+		private String standbyId = null;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -72,22 +72,22 @@ public class Dependency implements IAssigner {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 
 		}
 
 	}
 
-	public ChannelDescription getChannelDescription(Solvis solvis) {
+	public ChannelDescription getChannelDescription(final Solvis solvis) {
 		return solvis.getChannelDescription(this.id);
 	}
 
-	public SingleData<?> getData(Solvis solvis) {
+	public SingleData<?> getData(final Solvis solvis) {
 		ChannelDescription description = this.getChannelDescription(solvis);
 		try {
 			return description.interpretSetData(new StringData(this.value, 0));
@@ -97,7 +97,8 @@ public class Dependency implements IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 		this.channel = description.getChannelDescriptions().get(this.id);
 		if (this.channel == null) {
 			throw new ReferenceException("Channel < " + this.id + " > not found");
@@ -116,7 +117,7 @@ public class Dependency implements IAssigner {
 
 	}
 
-	public static boolean equals(Dependency d1, Dependency d2, Solvis solvis) {
+	public static boolean equals(final Dependency d1, final Dependency d2, final Solvis solvis) {
 
 		Helper.Boolean equals = Helper.checkNull(d1, d2);
 		if (equals != Helper.Boolean.UNDEFINED) {
@@ -132,7 +133,7 @@ public class Dependency implements IAssigner {
 
 	}
 
-	public int compareTo(Dependency o, Solvis solvis) {
+	public int compareTo(final Dependency o, final Solvis solvis) {
 		if (o == null) {
 			return 1;
 		}
@@ -150,7 +151,8 @@ public class Dependency implements IAssigner {
 
 	@Override
 	public String toString() {
-		return "ChannelId: " + this.id + ", value: " + this.value + (this.priority==null?"":", priority: " + this.priority);
+		return "ChannelId: " + this.id + ", value: " + this.value
+				+ (this.priority == null ? "" : ", priority: " + this.priority);
 	}
 
 	public Integer getPriority() {

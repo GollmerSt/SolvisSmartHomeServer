@@ -87,7 +87,7 @@ public class Constants {
 
 	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
 	public static final double CIRCLE_AREA_PRECISION = 0.2;
-	
+
 	public static class Commands {
 		public static final int REHEATING_PRIORITY = 10;
 		public static final int EQUIPMENT_ON_OFF_PRIORITY = 5;
@@ -106,7 +106,7 @@ public class Constants {
 		public static final int INTERRUPT_AFTER_N_TOUCHES = 5; // After 5 touches, the screen
 																// command can be interrupted
 	}
-	
+
 	public static class Defaults {
 		public static final int CLEAR_NOT_REQUIRED_TIME = 30000;
 

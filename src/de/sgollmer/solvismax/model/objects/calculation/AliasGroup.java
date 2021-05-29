@@ -22,11 +22,11 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 public class AliasGroup implements IAssigner, Cloneable {
 	private final Collection<Alias> aliases = new ArrayList<>(2);
 
-	public void add(Alias alias) {
+	public void add(final Alias alias) {
 		this.aliases.add(alias);
 	}
 
-	public Alias get(String id) {
+	public Alias get(final String id) {
 		for (Alias alias : this.aliases) {
 			if (alias.getId().equals(id)) {
 				return alias;
@@ -34,12 +34,12 @@ public class AliasGroup implements IAssigner, Cloneable {
 		}
 		return null;
 	}
-	
-	public SolvisData get(AllSolvisData allData, String id ) throws AliasException {
+
+	public SolvisData get(final AllSolvisData allData, final String id) throws AliasException {
 		return this.get(allData, id, false);
 	}
 
-	public SolvisData get(AllSolvisData allData, String id, boolean optional ) throws AliasException {
+	public SolvisData get(final AllSolvisData allData, final String id, final boolean optional) throws AliasException {
 		Alias alias = this.get(id);
 		if (alias == null) {
 			throw new AliasException("Alias error: <" + id + "> unknown");
@@ -53,7 +53,7 @@ public class AliasGroup implements IAssigner, Cloneable {
 		return data;
 	}
 
-	public Collection<ChannelDescription> getChannelDescriptions(Solvis solvis) {
+	public Collection<ChannelDescription> getChannelDescriptions(final Solvis solvis) {
 		Collection<ChannelDescription> descriptions = new ArrayList<>();
 		for (Alias alias : this.aliases) {
 			ChannelDescription description = solvis.getChannelDescription(alias.getDataId());
@@ -65,7 +65,7 @@ public class AliasGroup implements IAssigner, Cloneable {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 		for (Alias alias : this.aliases) {
 			alias.assign(description);
 		}
@@ -80,7 +80,7 @@ public class AliasGroup implements IAssigner, Cloneable {
 		return null;
 	}
 
-	public boolean isDelayed(Solvis solvis) {
+	public boolean isDelayed(final Solvis solvis) {
 		boolean delayed = false;
 		for (ChannelDescription description : this.getChannelDescriptions(solvis)) {
 			delayed |= description.isDelayed(solvis);
@@ -88,7 +88,7 @@ public class AliasGroup implements IAssigner, Cloneable {
 		return delayed;
 	}
 
-	public Integer getScanInterval_ms(Solvis solvis) {
+	public Integer getScanInterval_ms(final Solvis solvis) {
 		Integer scanInterval = null;
 		for (ChannelDescription description : this.getChannelDescriptions(solvis)) {
 			Integer si = description.getScanInterval_ms(solvis);

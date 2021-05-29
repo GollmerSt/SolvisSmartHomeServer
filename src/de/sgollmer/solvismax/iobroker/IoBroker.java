@@ -47,7 +47,7 @@ public class IoBroker {
 		READ, WRITE, WRITEONLY
 	};
 
-	public void writeObjectList(Instances instances) throws IOException {
+	public void writeObjectList(final Instances instances) throws IOException {
 
 		Writer writer = null;
 		File directory = instances.getAppendixPath();
@@ -235,7 +235,7 @@ public class IoBroker {
 		}
 	}
 
-	public void writePairingScript(Instances instances) throws IOException {
+	public void writePairingScript(final Instances instances) throws IOException {
 
 		Writer writer = null;
 		File directory = instances.getAppendixPath();
@@ -362,12 +362,12 @@ public class IoBroker {
 		private String javascriptInterface = Constants.IoBroker.DEFAULT_JAVASCRIPT_INTERFACE;
 		private String ioBrokerId = Constants.IoBroker.DEFAULT_IOBROKER_ID;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 			switch (name.getLocalPart()) {
 				case "iobrokerName":
 					this.ioBrokerId = value;
@@ -388,18 +388,18 @@ public class IoBroker {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 
 		}
 
 	}
 
-	public void setBaseData(BaseData baseData) {
+	public void setBaseData(final BaseData baseData) {
 		this.baseData = baseData;
 	}
 }

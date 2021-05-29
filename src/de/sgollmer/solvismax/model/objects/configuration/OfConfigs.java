@@ -21,19 +21,19 @@ import de.sgollmer.xmllibrary.XmlException;
 public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner, Iterable<E> {
 	private final Collection<E> elements = new ArrayList<>(1);
 
-	public void verifyAndAdd(E element) throws XmlException {
+	public void verifyAndAdd(final E element) throws XmlException {
 		for (E e : this.elements) {
 			if (!element.isConfigurationVerified(e)) {
 				element.isConfigurationVerified(e);
-				throw new XmlException("Configuration mask of " + element.getElementType() + " <" + element.getName() + "> isn't unique.\n"
-						+ "Added mask: " + element.getConfiguration().toString() + "\n"
-								+ "Not unique with: " + e.getConfiguration().toString());
+				throw new XmlException("Configuration mask of " + element.getElementType() + " <" + element.getName()
+						+ "> isn't unique.\n" + "Added mask: " + element.getConfiguration().toString() + "\n"
+						+ "Not unique with: " + e.getConfiguration().toString());
 			}
 		}
 		this.elements.add(element);
 	}
 
-	public E get(Solvis solvis) {
+	public E get(final Solvis solvis) {
 		if (solvis.getConfigurationMask() == 0 && this.elements.size() == 1) {
 			return this.elements.iterator().next();
 		}
@@ -45,7 +45,7 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner, It
 		return null;
 	}
 
-	public static Object get(Solvis solvis, OfConfigs<?> ofConfigs) {
+	public static Object get(final Solvis solvis, final OfConfigs<?> ofConfigs) {
 		if (ofConfigs == null) {
 			return null;
 		} else {
@@ -54,7 +54,8 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner, It
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 		for (E e : this.elements) {
 			e.assign(description);
 		}
@@ -73,15 +74,15 @@ public class OfConfigs<E extends OfConfigs.IElement<E>> implements IAssigner, It
 	}
 
 	public interface IElement<E> extends IAssigner {
-		public boolean isConfigurationVerified(E e);
-		
+		public boolean isConfigurationVerified(final E e);
+
 		public Configuration getConfiguration();
 
-		public boolean isInConfiguration(Solvis solvis);
+		public boolean isInConfiguration(final Solvis solvis);
 
 		public String getName();
-		
-		public String getElementType() ;
+
+		public String getElementType();
 	}
 
 	@Override

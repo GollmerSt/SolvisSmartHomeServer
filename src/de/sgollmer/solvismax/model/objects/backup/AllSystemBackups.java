@@ -28,11 +28,11 @@ public class AllSystemBackups {
 	private final Collection<SystemBackup> systemBackups = new ArrayList<>();
 	private final Reference<Long> timeOfLastBackup;
 
-	public AllSystemBackups(Reference<Long> timeOfLastBackup) {
+	public AllSystemBackups(final Reference<Long> timeOfLastBackup) {
 		this.timeOfLastBackup = timeOfLastBackup;
 	}
 
-	SystemBackup get(String id) {
+	SystemBackup get(final String id) {
 		SystemBackup result = null;
 		for (SystemBackup measurements : this.systemBackups) {
 			if (id.equals(measurements.getId())) {
@@ -52,15 +52,15 @@ public class AllSystemBackups {
 		private final AllSystemBackups measurements;
 		private final Reference<Long> timeOfLastBackup;
 
-		public Creator(AllSystemBackups measurements, String id, Reference<Long> timeOfLastBackup) {
+		public Creator(final AllSystemBackups measurements, final String id, final Reference<Long> timeOfLastBackup) {
 			super(id);
 			this.measurements = measurements;
 			this.measurements.systemBackups.clear();
-			this.timeOfLastBackup=timeOfLastBackup;
+			this.timeOfLastBackup = timeOfLastBackup;
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
 
 		@Override
@@ -69,7 +69,7 @@ public class AllSystemBackups {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_MEASUREMENTS_SYSTEM_MEASUREMENTS:
@@ -80,7 +80,7 @@ public class AllSystemBackups {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_MEASUREMENTS_SYSTEM_MEASUREMENTS:
 				case XML_MEASUREMENTS_SYSTEM_BACKUP:
@@ -90,7 +90,7 @@ public class AllSystemBackups {
 
 	}
 
-	void writeXml(XMLStreamWriter writer) throws XMLStreamException {
+	void writeXml(final XMLStreamWriter writer) throws XMLStreamException {
 		for (SystemBackup system : this.systemBackups) {
 			writer.writeStartElement(XML_MEASUREMENTS_SYSTEM_BACKUP);
 			system.writeXml(writer);

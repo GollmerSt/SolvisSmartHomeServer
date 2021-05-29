@@ -30,7 +30,8 @@ public class AllSolvisGrafics implements IXmlWriteable {
 	private Long controlResourceHashCode;
 	private Long controlFileHashCode;
 
-	private AllSolvisGrafics(Collection<SystemGrafics> systems, Long controlResourceHashCode, Long controlFileHashCode) {
+	private AllSolvisGrafics(final Collection<SystemGrafics> systems, final Long controlResourceHashCode,
+			final Long controlFileHashCode) {
 		this.systems = systems;
 		this.controlResourceHashCode = controlResourceHashCode;
 		this.controlFileHashCode = controlFileHashCode;
@@ -42,7 +43,7 @@ public class AllSolvisGrafics implements IXmlWriteable {
 		this.controlFileHashCode = null;
 	}
 
-	public SystemGrafics get(String unitId, Hashes hashes) {
+	public SystemGrafics get(final String unitId, final Hashes hashes) {
 		if (this.controlResourceHashCode == null || !this.controlResourceHashCode.equals(hashes.getResourceHash())
 				|| this.controlFileHashCode == null || !this.controlFileHashCode.equals(hashes.getFileHash())) {
 			this.systems.clear();
@@ -67,7 +68,7 @@ public class AllSolvisGrafics implements IXmlWriteable {
 	}
 
 	@Override
-	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException {
+	public void writeXml(final XMLStreamWriter writer) throws XMLStreamException, IOException {
 		for (SystemGrafics system : this.systems) {
 			writer.writeAttribute("controlResourceHashCode", Long.toString(this.controlResourceHashCode));
 			writer.writeAttribute("controlFileHashCode", Long.toString(this.controlFileHashCode));
@@ -89,7 +90,7 @@ public class AllSolvisGrafics implements IXmlWriteable {
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "controlResourceHashCode":
 					this.controlResourceHashCode = Long.parseLong(value);
@@ -106,7 +107,7 @@ public class AllSolvisGrafics implements IXmlWriteable {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_SYSTEM:
@@ -116,7 +117,7 @@ public class AllSolvisGrafics implements IXmlWriteable {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_SYSTEM:
 					this.systems.add((SystemGrafics) created);

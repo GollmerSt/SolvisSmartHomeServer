@@ -61,7 +61,7 @@ public class Mail {
 		private final String address;
 		private final RecipientType type;
 
-		private Recipient(String name, String address, RecipientType type) {
+		private Recipient(final String name, final String address, final RecipientType type) {
 			this.name = name;
 			this.address = address;
 			this.type = type;
@@ -76,12 +76,12 @@ public class Mail {
 			private String address;
 			private RecipientType type;
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "name":
 						this.name = value;
@@ -101,7 +101,7 @@ public class Mail {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
@@ -112,13 +112,14 @@ public class Mail {
 		}
 
 		@Override
-		public CreatorByXML<Recipient> getCreator(String name, BaseCreator<?> creator) {
+		public CreatorByXML<Recipient> getCreator(final String name, final BaseCreator<?> creator) {
 			return new Creator(name, creator);
 		}
 	}
 
-	static void send(String subject, String text, String name, String from, CryptAes password, Security security,
-			String provider, int port, Collection<Recipient> recipients, MyImage image, Proxy proxy)
+	static void send(final String subject, final String text, final String name, final String from,
+			final CryptAes password, final Security security, final String provider, final int port,
+			final Collection<Recipient> recipients, final MyImage image, final Proxy proxy)
 			throws MessagingException, IOException {
 
 		String portString = Integer.toString(port);

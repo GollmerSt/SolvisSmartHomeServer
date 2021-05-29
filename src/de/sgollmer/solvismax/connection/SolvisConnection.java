@@ -53,8 +53,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private long connectTime = -1;
 	private HttpURLConnection urlConnection = null;
 
-	public SolvisConnection(String urlBase, IAccountInfo accountInfo, int connectionTimeout, int readTimeout,
-			int powerOffDetectedAfterIoErrors, int powerOffDetectedAfterTimeout_ms, boolean fwLth2_21_02A) {
+	public SolvisConnection(final String urlBase, final IAccountInfo accountInfo, final int connectionTimeout,
+			final int readTimeout, final int powerOffDetectedAfterIoErrors, final int powerOffDetectedAfterTimeout_ms,
+			final boolean fwLth2_21_02A) {
 		this.urlBase = urlBase;
 		this.accountInfo = accountInfo;
 		this.connectionTimeout = connectionTimeout;
@@ -106,7 +107,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	}
 
-	private InputStream connect(String suffix) throws IOException, TerminationException {
+	private InputStream connect(final String suffix) throws IOException, TerminationException {
 		try {
 			this.connectTime = System.currentTimeMillis();
 			MyAuthenticator authenticator = new MyAuthenticator();
@@ -150,7 +151,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		private final long timeStamp;
 		private final String hexString;
 
-		public SolvisMeasurements(long timeStamp, String hexString) {
+		public SolvisMeasurements(final long timeStamp, final String hexString) {
 			this.timeStamp = timeStamp;
 			this.hexString = hexString;
 		}
@@ -214,7 +215,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 		private final String buttonUrl;
 
-		private Button(String button) {
+		private Button(final String button) {
 			this.buttonUrl = button;
 		}
 
@@ -223,7 +224,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 	}
 
-	public void sendButton(Button button) throws IOException, TerminationException {
+	public void sendButton(final Button button) throws IOException, TerminationException {
 		String buttonString = Constants.Solvis.TASTER + button.getButtonUrl() + '&' + Constants.Solvis.ID
 				+ Math.round((Math.random() * 99999999));
 		try {
@@ -237,7 +238,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.calculateMaxResponseTime();
 	}
 
-	public void sendTouch(Coordinate coord) throws IOException, TerminationException {
+	public void sendTouch(final Coordinate coord) throws IOException, TerminationException {
 		int x = coord.getX() * 2;
 		int y = coord.getY() * 2;
 		String touchString = Constants.Solvis.TOUCH + '?' + Constants.Solvis.X + x + '&' + Constants.Solvis.Y + y;
@@ -269,12 +270,12 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private void setConnected() {
 		this.errorCount = 0;
 		this.firstTimeout = 0;
-		
-		this.solvisState.connectionSuccessfull( this.urlBase ) ;
+
+		this.solvisState.connectionSuccessfull(this.urlBase);
 
 	}
 
-	private void handleExceptionAndThrow(IOException e) throws IOException, TerminationException {
+	private void handleExceptionAndThrow(final IOException e) throws IOException, TerminationException {
 		if (this.urlConnection != null) {
 			try {
 				this.urlConnection.disconnect();
@@ -312,7 +313,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		}
 	}
 
-	public void setSolvisState(SolvisState solvisState) {
+	public void setSolvisState(final SolvisState solvisState) {
 		this.solvisState = solvisState;
 	}
 

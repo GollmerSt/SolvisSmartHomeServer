@@ -40,23 +40,23 @@ public class Calculation extends ChannelSource {
 	private final Strategy<?> strategy;
 	private final AliasGroup aliasGroup;
 
-	private Calculation(Strategies strategies, AliasGroup aliasGroup) {
+	private Calculation(final Strategies strategies, final AliasGroup aliasGroup) {
 		this.strategy = strategies.create(this);
 		this.aliasGroup = aliasGroup;
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis, long executionStartTime) {
+	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime) {
 		return this.strategy.getValue(dest, solvis);
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, SolvisData value) {
+	public SetResult setValue(final Solvis solvis, final SolvisData value) {
 		return this.strategy.setValue(solvis, value);
 	}
 
 	@Override
-	public SetResult setValueFast(Solvis solvis, SolvisData value) {
+	public SetResult setValueFast(final Solvis solvis, final SolvisData value) {
 		return null;
 	}
 
@@ -82,7 +82,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public IInstance instantiate(Solvis solvis) throws AssignmentException, AliasException {
+	public IInstance instantiate(final Solvis solvis) throws AssignmentException, AliasException {
 		this.strategy.instantiate(solvis);
 		return null;
 	}
@@ -99,12 +99,12 @@ public class Calculation extends ChannelSource {
 		private Strategies strategy;
 		private final AliasGroup aliasGroup = new AliasGroup();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case "strategy":
@@ -119,7 +119,7 @@ public class Calculation extends ChannelSource {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_ALIAS:
@@ -129,7 +129,7 @@ public class Calculation extends ChannelSource {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_ALIAS:
 					this.aliasGroup.add((Alias) created);
@@ -139,7 +139,8 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 		this.aliasGroup.assign(description);
 		if (this.strategy != null) {
 			this.strategy.assign(description);
@@ -148,7 +149,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException {
+	public void learn(final Solvis solvis) throws IOException {
 	}
 
 	@Override
@@ -157,7 +158,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public AbstractScreen getScreen(Solvis solvis) {
+	public AbstractScreen getScreen(final Solvis solvis) {
 		return null;
 	}
 
@@ -177,17 +178,17 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
+	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
 		return null;
 	}
 
 	@Override
-	public ChannelDescription getRestoreChannel(Solvis solvis) {
+	public ChannelDescription getRestoreChannel(final Solvis solvis) {
 		return null;
 	}
 
 	@Override
-	protected SingleData<?> createSingleData(String value, long timeStamp) {
+	protected SingleData<?> createSingleData(final String value, final long timeStamp) {
 		return null;
 	}
 
@@ -202,17 +203,17 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public boolean isDelayed(Solvis solvis) {
+	public boolean isDelayed(final Solvis solvis) {
 		return this.getAliasGroup().isDelayed(solvis);
 	}
 
 	@Override
-	public Integer getScanInterval_ms(Solvis solvis) {
+	public Integer getScanInterval_ms(final Solvis solvis) {
 		return this.aliasGroup.getScanInterval_ms(solvis);
 	}
 
 	@Override
-	public String getCsvMeta(String column, boolean semicolon) {
+	public String getCsvMeta(final String column, final boolean semicolon) {
 		switch (column) {
 			case Csv.STRATEGY:
 				return this.strategy.getClass().getSimpleName();

@@ -20,7 +20,7 @@ public class DateValue extends SingleData<Calendar> {
 
 	private final Calendar calendar;
 
-	DateValue(Calendar calendar, long timeStamp) {
+	DateValue(final Calendar calendar, final long timeStamp) {
 		super(timeStamp);
 		this.calendar = calendar;
 	}
@@ -46,7 +46,7 @@ public class DateValue extends SingleData<Calendar> {
 	}
 
 	@Override
-	public SingleData<Calendar> create(int value, long timeStamp) {
+	public SingleData<Calendar> create(final int value, final long timeStamp) {
 		return null;
 	}
 
@@ -57,7 +57,7 @@ public class DateValue extends SingleData<Calendar> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof DateValue) {
 			return this.calendar.equals(((DateValue) obj).calendar);
 		}
@@ -85,7 +85,7 @@ public class DateValue extends SingleData<Calendar> {
 	}
 
 	@Override
-	public int compareTo(SingleData<?> o) {
+	public int compareTo(final SingleData<?> o) {
 		if (o instanceof DateValue) {
 			return this.calendar.compareTo(((DateValue) o).calendar);
 		} else if (o != null) {
@@ -96,7 +96,7 @@ public class DateValue extends SingleData<Calendar> {
 	}
 
 	@Override
-	public SingleData<Calendar> create(long timeStamp) {
+	public SingleData<Calendar> create(final long timeStamp) {
 		return new DateValue(this.calendar, timeStamp);
 	}
 }

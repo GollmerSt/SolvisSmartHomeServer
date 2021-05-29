@@ -28,7 +28,7 @@ public class TouchPoint implements IAssigner {
 	private final String pushTimeId;
 	private final String releaseTimeId;
 
-	private TouchPoint(Coordinate coordinate, String pushTimeId, String releaseTimeId) {
+	private TouchPoint(final Coordinate coordinate, final String pushTimeId, final String releaseTimeId) {
 		this.coordinate = coordinate;
 		this.pushTimeId = pushTimeId;
 		this.releaseTimeId = releaseTimeId;
@@ -40,12 +40,12 @@ public class TouchPoint implements IAssigner {
 		private String releaseTimeId;
 		private Coordinate coordinate;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "pushTimeRefId":
 					this.pushTimeId = value;
@@ -62,7 +62,7 @@ public class TouchPoint implements IAssigner {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_COORDINATE:
@@ -72,7 +72,7 @@ public class TouchPoint implements IAssigner {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_COORDINATE:
 					this.coordinate = (Coordinate) created;
@@ -83,7 +83,7 @@ public class TouchPoint implements IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws AssignmentException {
+	public void assign(final SolvisDescription description) throws AssignmentException {
 		Duration pushTimeDuration = description.getDuration(this.pushTimeId);
 		Duration releaseTimeDuration = description.getDuration(this.releaseTimeId);
 
@@ -96,13 +96,13 @@ public class TouchPoint implements IAssigner {
 		return this.coordinate;
 	}
 
-	public int getSettingTime(Solvis solvis) {
-		return solvis.getDuration(
-				this.pushTimeId).getTime_ms() + solvis.getDuration(this.releaseTimeId).getTime_ms()
+	public int getSettingTime(final Solvis solvis) {
+		return solvis.getDuration(this.pushTimeId).getTime_ms() + solvis.getDuration(this.releaseTimeId).getTime_ms()
 				+ solvis.getMaxResponseTime();
 	}
 
-	public boolean execute(Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException {
+	public boolean execute(final Solvis solvis, final AbstractScreen startingScreen)
+			throws IOException, TerminationException {
 		solvis.send(this);
 		return true;
 	}

@@ -34,102 +34,103 @@ public class TinyLog {
 			this.className = null;
 		}
 
-		private String createMessage(String message) {
+		private String createMessage(final String message) {
 			return "{} - " + message;
 		}
 
-		private LoggerTiny(Class<?> clazz) {
+		private LoggerTiny(final Class<?> clazz) {
 			this.className = clazz.getName();
 		}
 
 		@Override
-		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(Class<?> clazz) {
+		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(final Class<?> clazz) {
 			return new LoggerTiny(clazz);
 		}
 
 		@Override
-		public boolean createInstance(String path) throws IOException, FileException {
+		public boolean createInstance(final String path) throws IOException, FileException {
 			return new TinyLog(path).setConfiguration();
 		}
 
 		@Override
-		public void fatal(String message) {
+		public void fatal(final String message) {
 			this.error(message, null);
 
 		}
 
 		@Override
-		public void fatal(String message, Throwable throwable) {
+		public void fatal(final String message, final Throwable throwable) {
 			Logger.error(throwable, this.createMessage(message), this.className);
 		}
 
 		@Override
-		public void error(String message) {
+		public void error(final String message) {
 			this.error(message, null);
 
 		}
 
 		@Override
-		public void error(String message, Throwable throwable) {
+		public void error(final String message, final Throwable throwable) {
 			Logger.error(throwable, this.createMessage(message), this.className);
 
 		}
 
 		@Override
-		public void learn(String message) {
+		public void learn(final String message) {
 			this.learn(message, null);
 
 		}
 
 		@Override
-		public void learn(String message, Throwable throwable) {
+		public void learn(final String message, final Throwable throwable) {
 			learningLogger.info(throwable, message, this.className);
 		}
 
 		@Override
-		public void warn(String message) {
+		public void warn(final String message) {
 			this.warn(message, null);
 
 		}
 
 		@Override
-		public void warn(String message, Throwable throwable) {
+		public void warn(final String message, final Throwable throwable) {
 			Logger.warn(throwable, this.createMessage(message), this.className);
 
 		}
 
 		@Override
-		public void info(String message) {
+		public void info(final String message) {
 			this.info(message, null);
 
 		}
 
 		@Override
-		public void info(String message, Throwable throwable) {
+		public void info(final String message, final Throwable throwable) {
 			Logger.info(throwable, this.createMessage(message), this.className);
 
 		}
 
 		@Override
-		public void debug(String message) {
+		public void debug(final String message) {
 			this.debug(message, null);
 
 		}
 
 		@Override
-		public void debug(String message, Throwable throwable) {
+		public void debug(final String message, final Throwable throwable) {
 			Logger.debug(throwable, this.createMessage(message), this.className);
 
 		}
 
 		@Override
-		public void log(de.sgollmer.solvismax.log.LogManager.Level level, String message) {
+		public void log(final de.sgollmer.solvismax.log.LogManager.Level level, final String message) {
 			this.log(level, message, null);
 
 		}
 
 		@Override
-		public void log(de.sgollmer.solvismax.log.LogManager.Level level, String message, Throwable throwable) {
+		public void log(final de.sgollmer.solvismax.log.LogManager.Level level, final String message,
+				final Throwable throwable) {
 			switch (level) {
 				case DEBUG:
 					this.debug(message, throwable);
@@ -165,15 +166,20 @@ public class TinyLog {
 
 	private final File parent;
 
-	private TinyLog(String pathName) {
+	private TinyLog(final String pathNameP) {
+
 		File parent;
 
-		if (pathName == null) {
+		String pathName;
+
+		if (pathNameP == null) {
 			pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
 				pathName = System.getenv("APPDATA");
 			}
 
+		} else {
+			pathName = pathNameP;
 		}
 
 		pathName += File.separator + Constants.Files.RESOURCE_DESTINATION;
@@ -210,7 +216,7 @@ public class TinyLog {
 
 		Properties props = System.getProperties();
 		props.setProperty("tinylog.configuration", properties.getAbsolutePath());
-		
+
 		Properties prop = new Properties();
 		InputStream stream = new FileInputStream(properties);
 		prop.load(stream);

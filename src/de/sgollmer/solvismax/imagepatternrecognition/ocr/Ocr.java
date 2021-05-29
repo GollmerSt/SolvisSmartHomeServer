@@ -28,27 +28,27 @@ public class Ocr extends MyImage {
 	private Maxima[] maximaX = new Maxima[] { new Maxima(0, 0), new Maxima(0, 0) };
 	private Maxima[] maximaY = new Maxima[] { new Maxima(0, 0), new Maxima(0, 0) };
 
-	private Ocr(BufferedImage image) {
+	private Ocr(final BufferedImage image) {
 		super(image);
 		this.processing(false);
 	}
 
-	public Ocr(MyImage image) {
+	public Ocr(final MyImage image) {
 		super(image);
 		this.processing(false);
 	}
 
-	Ocr(MyImage image, Coordinate topLeft, Coordinate bottomRight, boolean createImageMeta) {
+	Ocr(final MyImage image, final Coordinate topLeft, final Coordinate bottomRight, final boolean createImageMeta) {
 		super(image, topLeft, bottomRight, createImageMeta);
 
 		this.processing(true);
 	}
 
-	public Ocr(MyImage image, Rectangle rectangle) {
+	public Ocr(final MyImage image, final Rectangle rectangle) {
 		this(image, rectangle.getTopLeft(), rectangle.getBottomRight(), true);
 	}
 
-	private final void processing(boolean coordinatesChanged) {
+	private final void processing(final boolean coordinatesChanged) {
 
 		this.createHistograms(true);
 		this.shrink();
@@ -92,7 +92,7 @@ public class Ocr extends MyImage {
 		private final BlackWhite blackWhite;
 		private final int rotated90Degree;
 
-		private Next(BlackWhite blackWhite, int rotated90Degree) {
+		private Next(final BlackWhite blackWhite, final int rotated90Degree) {
 			this.blackWhite = blackWhite;
 			this.rotated90Degree = rotated90Degree;
 		}
@@ -103,7 +103,7 @@ public class Ocr extends MyImage {
 		private Coordinate black;
 		private Coordinate white;
 
-		private BlackWhite(Coordinate black, Coordinate white) {
+		private BlackWhite(final Coordinate black, final Coordinate white) {
 			this.black = black;
 			this.white = white;
 		}
@@ -126,7 +126,7 @@ public class Ocr extends MyImage {
 			}
 		}
 
-		private BlackWhite nextMonoton(boolean left) {
+		private BlackWhite nextMonoton(final boolean left) {
 			Coordinate diff = this.white.diff(this.black);
 			diff = new Coordinate(left ? diff.getY() : -diff.getY(), diff.getX() > 0 ? diff.getX() : -diff.getX());
 			BlackWhite newBlackWhite = new BlackWhite(this.black.add(diff), this.white.add(diff));
@@ -153,7 +153,7 @@ public class Ocr extends MyImage {
 		}
 
 		@Override
-		public boolean equals(Object obj) {
+		public boolean equals(final Object obj) {
 			if (!(obj instanceof BlackWhite)) {
 				return false;
 			} else {
@@ -178,14 +178,15 @@ public class Ocr extends MyImage {
 		private final Coordinate average;
 		private final List<Coordinate> rotations180Degrees;
 
-		private AnalyseResult(boolean closedStructure, Coordinate average, List<Coordinate> rotations180Degrees) {
+		private AnalyseResult(final boolean closedStructure, final Coordinate average,
+				final List<Coordinate> rotations180Degrees) {
 			this.closedStructure = closedStructure;
 			this.average = average;
 			this.rotations180Degrees = rotations180Degrees;
 		}
 	}
 
-	private AnalyseResult analyse(Coordinate coord) {
+	private AnalyseResult analyse(final Coordinate coord) {
 
 		List<Coordinate> rotations180Degrees = new ArrayList<>();
 
@@ -246,7 +247,7 @@ public class Ocr extends MyImage {
 		return new AnalyseResult(true, returnValue.div(cnt), rotations180Degrees);
 	}
 
-	private boolean detectSlash(boolean backSlash, int startY, int endY) {
+	private boolean detectSlash(final boolean backSlash, final int startY, final int endY) {
 
 		int x = (backSlash ? 0 : this.getWidth() - 1);
 		int add = backSlash ? 1 : -1;
@@ -442,7 +443,7 @@ public class Ocr extends MyImage {
 		return 0x00;
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
 		File parent = new File("testFiles\\images");
 

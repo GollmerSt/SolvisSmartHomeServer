@@ -36,12 +36,12 @@ public class AllScreens implements IScreenLearnable {
 	private final String homeId;
 	private final Map<String, OfConfigs<AbstractScreen>> screens;
 
-	private AllScreens(String homeId, Map<String, OfConfigs<AbstractScreen>> screens) {
+	private AllScreens(final String homeId, final Map<String, OfConfigs<AbstractScreen>> screens) {
 		this.homeId = homeId;
 		this.screens = screens;
 	}
 
-	public OfConfigs<AbstractScreen> get(String id) {
+	public OfConfigs<AbstractScreen> get(final String id) {
 		return this.screens.get(id);
 	}
 
@@ -52,7 +52,7 @@ public class AllScreens implements IScreenLearnable {
 	 * @return Scrreen result of all configurations
 	 * @throws XmlException
 	 */
-	public OfConfigs<AbstractScreen> getScreen(String id) throws XmlException {
+	public OfConfigs<AbstractScreen> getScreen(final String id) throws XmlException {
 		OfConfigs<AbstractScreen> screens = this.screens.get(id);
 		if (screens == null) {
 			throw new XmlException("Screen <" + id + "> is unknown, check the control.xml");
@@ -65,7 +65,7 @@ public class AllScreens implements IScreenLearnable {
 		return screens;
 	}
 
-	public AbstractScreen get(String id, Solvis solvis) {
+	public AbstractScreen get(final String id, final Solvis solvis) {
 		OfConfigs<AbstractScreen> screens = this.screens.get(id);
 		if (screens == null) {
 			return null;
@@ -74,7 +74,7 @@ public class AllScreens implements IScreenLearnable {
 		}
 	}
 
-	public Screen getScreen(MyImage image, Solvis solvis) {
+	public Screen getScreen(final MyImage image, final Solvis solvis) {
 		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
 			AbstractScreen screen = screenConf.get(solvis);
 			if (screen != null && screen.isMatchingScreen(image, solvis) && screen.isScreen()) {
@@ -84,7 +84,7 @@ public class AllScreens implements IScreenLearnable {
 		return null;
 	}
 
-	public Collection<Screen> getScreens(Solvis solvis) {
+	public Collection<Screen> getScreens(final Solvis solvis) {
 		Collection<Screen> screens = new ArrayList<>();
 		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
 			AbstractScreen screen = screenConf.get(solvis);
@@ -95,7 +95,7 @@ public class AllScreens implements IScreenLearnable {
 		return screens;
 	}
 
-	void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	void assign(final SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
 		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
 			screenConf.assign(description);
 		}
@@ -113,11 +113,11 @@ public class AllScreens implements IScreenLearnable {
 		private String homeId;
 		private final Map<String, OfConfigs<AbstractScreen>> screens = new HashMap<>();
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
-		private void add(AbstractScreen screen) throws XmlException {
+		private void add(final AbstractScreen screen) throws XmlException {
 			OfConfigs<AbstractScreen> screenConf = this.screens.get(screen.getId());
 			if (screenConf == null) {
 				screenConf = new OfConfigs<AbstractScreen>();
@@ -127,7 +127,7 @@ public class AllScreens implements IScreenLearnable {
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "homeId":
 					this.homeId = value;
@@ -141,7 +141,7 @@ public class AllScreens implements IScreenLearnable {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_SCREEN:
@@ -153,7 +153,7 @@ public class AllScreens implements IScreenLearnable {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_SCREEN:
 					this.add((AbstractScreen) created);
@@ -167,7 +167,7 @@ public class AllScreens implements IScreenLearnable {
 	}
 
 	@Override
-	public void addLearnScreenGrafics(Collection<IScreenPartCompare> learnScreens, Solvis solvis) {
+	public void addLearnScreenGrafics(final Collection<IScreenPartCompare> learnScreens, final Solvis solvis) {
 		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
 			AbstractScreen screen = screenConf.get(solvis);
 			if (screen != null) {

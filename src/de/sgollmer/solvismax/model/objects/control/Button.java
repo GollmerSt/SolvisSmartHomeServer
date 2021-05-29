@@ -22,7 +22,7 @@ public class Button extends Pattern {
 	private final String pushTimeId;
 	private final String releaseTimeId;
 
-	Button(MyImage image, Rectangle rectangle, String pushTimeId, String releaseTimeId) {
+	Button(final MyImage image, final Rectangle rectangle, final String pushTimeId, final String releaseTimeId) {
 		super(image, rectangle);
 		this.pushTimeId = pushTimeId;
 		this.releaseTimeId = releaseTimeId;
@@ -62,7 +62,7 @@ public class Button extends Pattern {
 		return this.selected;
 	}
 
-	void set(Solvis solvis, boolean value) throws IOException, TerminationException {
+	void set(final Solvis solvis, final boolean value) throws IOException, TerminationException {
 		if (this.isSelected() != value) {
 			Coordinate coord = new Coordinate( //
 					this.getOrigin().getX() + this.getWidth() / 2, //

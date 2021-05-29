@@ -19,12 +19,12 @@ public class WhiteGraficRectangle implements IScreenPartCompare {
 
 	private Rectangle rectangle;
 
-	private WhiteGraficRectangle(Rectangle rectangle) {
+	private WhiteGraficRectangle(final Rectangle rectangle) {
 		this.rectangle = rectangle;
 	}
 
 	@Override
-	public boolean isElementOf(MyImage image, Solvis solvis) {
+	public boolean isElementOf(final MyImage image, final Solvis solvis) {
 		return image.isWhite(this.rectangle) != this.rectangle.isInvertFunction();
 	}
 
@@ -32,31 +32,30 @@ public class WhiteGraficRectangle implements IScreenPartCompare {
 
 		private final Rectangle.Creator rectangeleCreator;;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 			this.rectangeleCreator = new Rectangle.Creator(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			this.rectangeleCreator.setAttribute(name, value);
 
 		}
 
 		@Override
-		public WhiteGraficRectangle create()
-				throws XmlException, IOException {
+		public WhiteGraficRectangle create() throws XmlException, IOException {
 			Rectangle rectangle = this.rectangeleCreator.create();
 			return new WhiteGraficRectangle(rectangle);
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return this.rectangeleCreator.getCreator(name);
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			this.rectangeleCreator.created(creator, created);
 
 		}
@@ -64,17 +63,17 @@ public class WhiteGraficRectangle implements IScreenPartCompare {
 	}
 
 	@Override
-	public boolean isLearned(Solvis solvis) {
+	public boolean isLearned(final Solvis solvis) {
 		return true;
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, TerminationException {
-		
+	public void learn(final Solvis solvis) throws IOException, TerminationException {
+
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description) throws AssignmentException, ReferenceException {
 	}
 
 }

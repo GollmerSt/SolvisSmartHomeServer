@@ -27,7 +27,7 @@ public class ReceivedPackageCreator {
 		private static final ReceivedPackageCreator INSTANCE = new ReceivedPackageCreator();
 	}
 
-	private JsonPackage toSpecificPackage(JsonPackage jsonPackage) {
+	private JsonPackage toSpecificPackage(final JsonPackage jsonPackage) {
 		Command command = jsonPackage.command;
 
 		JsonPackage result = null;
@@ -65,7 +65,7 @@ public class ReceivedPackageCreator {
 		return result;
 	}
 
-	public JsonPackage receive(InputStream stream, int timeout) throws IOException, JsonException {
+	public JsonPackage receive(final InputStream stream, final int timeout) throws IOException, JsonException {
 		JsonPackage receivedPackage = new JsonPackage();
 		receivedPackage.receive(stream, timeout);
 		JsonPackage result = this.toSpecificPackage(receivedPackage);

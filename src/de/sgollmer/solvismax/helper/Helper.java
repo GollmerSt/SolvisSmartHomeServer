@@ -28,11 +28,11 @@ public class Helper {
 	public static class Format {
 		private final Pattern pattern;
 
-		public Format(String regEx) {
+		public Format(final String regEx) {
 			this.pattern = Pattern.compile(regEx);
 		}
 
-		public String getString(String source) {
+		public String getString(final String source) {
 			Matcher matcher = this.pattern.matcher(source);
 			StringBuilder builder = new StringBuilder();
 			if (!matcher.matches()) {
@@ -77,13 +77,13 @@ public class Helper {
 		long sum;
 		int size;
 
-		public AverageInt(int maxSize) {
+		public AverageInt(final int maxSize) {
 			this.maxSize = maxSize;
 			this.lastMeasureValues = new int[this.maxSize];
 			this.clear();
 		}
 
-		public void put(int value) {
+		public void put(final int value) {
 			int next = this.lastIdx + 1;
 			if (next >= this.maxSize) {
 				next = 0;
@@ -131,7 +131,7 @@ public class Helper {
 
 		private final String threadName;
 
-		protected Runnable(String threadName) {
+		protected Runnable(final String threadName) {
 			this.threadName = threadName;
 		}
 
@@ -172,7 +172,7 @@ public class Helper {
 
 	}
 
-	public static String replaceEnvironments(String in) {
+	public static String replaceEnvironments(final String in) {
 		if (!System.getProperty("os.name").toUpperCase().contains("WINDOW")) {
 			return in;
 		}
@@ -195,7 +195,7 @@ public class Helper {
 
 		private R value;
 
-		public Reference(R value) {
+		public Reference(final R value) {
 			this.value = value;
 		}
 
@@ -203,12 +203,12 @@ public class Helper {
 			return this.value;
 		}
 
-		public void set(R value) {
+		public void set(final R value) {
 			this.value = value;
 		}
 
 		@SuppressWarnings("unchecked")
-		private void add(int value) {
+		private void add(final int value) {
 			if (this.value instanceof Integer) {
 				this.value = (R) new Integer((int) (((Integer) this.value).intValue() + value));
 			} else if (this.value instanceof Byte) {
@@ -245,7 +245,7 @@ public class Helper {
 	 * 
 	 * @return copied collection, elements aren't cloned
 	 */
-	public static <T> Collection<T> copy(Collection<T> source) {
+	public static <T> Collection<T> copy(final Collection<T> source) {
 		if (source == null) {
 			return new ArrayList<>();
 		} else {
@@ -253,7 +253,7 @@ public class Helper {
 		}
 	}
 
-	public static <T extends Comparable<T>> Integer compareTo(T o1, T o2) {
+	public static <T extends Comparable<T>> Integer compareTo(final T o1, final T o2) {
 		if (o1 == null & o2 == null) {
 			return 0;
 		}
@@ -265,7 +265,7 @@ public class Helper {
 		return o1.compareTo(o2);
 	}
 
-	public static <T> Integer compareNull(T o1, T o2) {
+	public static <T> Integer compareNull(final T o1, final T o2) {
 		if (o1 == null & o2 == null) {
 			return 0;
 		}
@@ -297,7 +297,7 @@ public class Helper {
 		}
 	}
 
-	public static <T> Helper.Boolean checkNull(T o1, T o2) {
+	public static <T> Helper.Boolean checkNull(final T o1, final T o2) {
 		if (o1 == null & o2 == null) {
 			return Helper.Boolean.TRUE;
 		}
@@ -307,7 +307,7 @@ public class Helper {
 		return Helper.Boolean.UNDEFINED;
 	}
 
-	public static <T> java.lang.Boolean equals(T o1, T o2) {
+	public static <T> java.lang.Boolean equals(final T o1, final T o2) {
 		if (o1 == null & o2 == null) {
 			return true;
 		}
@@ -321,7 +321,7 @@ public class Helper {
 		private final long now;
 		private final long startOfDay;
 
-		public Times(long now, long startOfDay) {
+		public Times(final long now, final long startOfDay) {
 			this.now = now;
 			this.startOfDay = startOfDay;
 		}
@@ -349,7 +349,7 @@ public class Helper {
 	 * @return
 	 */
 
-	public static Times getStartOfDay(TimeZone zone, Locale aLocale) {
+	public static Times getStartOfDay(final TimeZone zone, final Locale aLocale) {
 
 		Calendar calendar;
 

@@ -154,13 +154,13 @@ public class Unit implements IAccountInfo {
 		private boolean csvUnit = false;
 		private AllDurations durations = null;
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 			this.configurationCreator = new Configuration.Creator(null, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 			try {
 				switch (name.getLocalPart()) {
 					case "id":
@@ -265,7 +265,7 @@ public class Unit implements IAccountInfo {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_FEATURES:
@@ -282,7 +282,7 @@ public class Unit implements IAccountInfo {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_FEATURES:
 					this.features = (Features) created;
@@ -376,7 +376,7 @@ public class Unit implements IAccountInfo {
 		return this.clearNotRequiredTime_ms;
 	}
 
-	public boolean isChannelIgnored(String channelId) {
+	public boolean isChannelIgnored(final String channelId) {
 		for (Pattern regEx : this.ignoredChannels) {
 			if (regEx.matcher(channelId).matches()) {
 				return true;
@@ -393,12 +393,12 @@ public class Unit implements IAccountInfo {
 
 		private Map<String, ChannelAssignment> assignments = null;
 
-		public AssignmentsCreator(String id, BaseCreator<?> creator) {
+		public AssignmentsCreator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 
 		}
 
@@ -408,7 +408,7 @@ public class Unit implements IAccountInfo {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_CHANNEL_ASSIGNMENT:
@@ -418,7 +418,7 @@ public class Unit implements IAccountInfo {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_CHANNEL_ASSIGNMENT:
 					if (this.assignments == null) {
@@ -434,7 +434,7 @@ public class Unit implements IAccountInfo {
 
 	}
 
-	public ChannelAssignment getChannelAssignment(String id) {
+	public ChannelAssignment getChannelAssignment(final String id) {
 		if (this.assignments == null) {
 			return null;
 		} else {
@@ -454,7 +454,7 @@ public class Unit implements IAccountInfo {
 		return this.forcedConfigMask;
 	}
 
-	public void setForcedConfigMask(Long forcedConfigMask) {
+	public void setForcedConfigMask(final Long forcedConfigMask) {
 		this.forcedConfigMask = forcedConfigMask;
 	}
 
@@ -462,7 +462,7 @@ public class Unit implements IAccountInfo {
 		return this.configuration.getComment();
 	}
 
-	public Duration getDuratio(String id) {
+	public Duration getDuratio(final String id) {
 		if (this.durations == null) {
 			return null;
 		} else {

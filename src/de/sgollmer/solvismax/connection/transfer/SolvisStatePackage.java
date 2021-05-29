@@ -20,7 +20,7 @@ public class SolvisStatePackage implements ISendData {
 	private final SolvisStatus state;
 	private final Solvis solvis;
 
-	public SolvisStatePackage(SolvisStatus state, Solvis solvis) {
+	public SolvisStatePackage(final SolvisStatus state, final Solvis solvis) {
 		this.state = state;
 		this.solvis = solvis;
 	}

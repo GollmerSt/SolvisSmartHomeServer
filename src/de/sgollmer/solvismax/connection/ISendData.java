@@ -14,6 +14,6 @@ import de.sgollmer.solvismax.connection.transfer.JsonPackage;
 
 public interface ISendData {
 	public JsonPackage createJsonPackage();
-	
+
 	public Collection<MqttData> createMqttData();
 }

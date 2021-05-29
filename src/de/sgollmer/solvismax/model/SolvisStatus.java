@@ -12,12 +12,12 @@ public enum SolvisStatus {
 	SERVICE_ACCESS_DETECTED(Constants.Mqtt.HUMAN_ACCESS), //
 	HUMAN_ACCESS_FINISHED(Constants.Mqtt.HUMAN_ACCESS), //
 	UNDEFINED(Constants.Mqtt.STATUS);
-	
+
 	private final String mqttPrefix;
-	
-	private SolvisStatus( String mqttPrefix ) { 
+
+	private SolvisStatus(final String mqttPrefix) {
 		this.mqttPrefix = mqttPrefix;
-		
+
 	}
 
 	public String getMqttPrefix() {

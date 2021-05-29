@@ -28,12 +28,12 @@ public class OcrRectangle extends MyImage {
 
 	private Collection<Ocr> parts = null;
 
-	private OcrRectangle(MyImage image, Coordinate upperLeft, Coordinate lowerRight) {
+	private OcrRectangle(final MyImage image, final Coordinate upperLeft, final Coordinate lowerRight) {
 		super(image, upperLeft, lowerRight, true);
 		this.splitInParts();
 	}
 
-	public OcrRectangle(MyImage image, Rectangle rectangle) {
+	public OcrRectangle(final MyImage image, final Rectangle rectangle) {
 		super(image, rectangle, true);
 		this.splitInParts();
 	}
@@ -43,7 +43,7 @@ public class OcrRectangle extends MyImage {
 		this.splitInParts();
 	}
 
-	public OcrRectangle(MyImage myImage, Collection<MyImage> images) {
+	public OcrRectangle(final MyImage myImage, final Collection<MyImage> images) {
 		super(myImage);
 		this.parts = new ArrayList<>(images.size());
 		for (MyImage image : images) {
@@ -76,7 +76,7 @@ public class OcrRectangle extends MyImage {
 		return result;
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
 		File parent = new File("testFiles\\images");
 
@@ -258,12 +258,12 @@ public class OcrRectangle extends MyImage {
 
 		myImage = new MyImage(bufferedImage);
 
-		rectangle = new OcrRectangle(myImage,new Coordinate(145, 75), new Coordinate(205,87));
+		rectangle = new OcrRectangle(myImage, new Coordinate(145, 75), new Coordinate(205, 87));
 
 		String kWh = rectangle.getString();
 
 		System.out.println("kWh: " + kWh);
-		
+
 		try {
 			bufferedImage = ImageIO.read(file);
 		} catch (IOException e) {
@@ -272,7 +272,7 @@ public class OcrRectangle extends MyImage {
 
 		myImage = new MyImage(bufferedImage);
 
-		rectangle = new OcrRectangle(myImage,new Coordinate(145, 104), new Coordinate(205,115));
+		rectangle = new OcrRectangle(myImage, new Coordinate(145, 104), new Coordinate(205, 115));
 
 		kWh = rectangle.getString();
 

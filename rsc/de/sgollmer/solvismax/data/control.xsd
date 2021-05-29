@@ -1883,7 +1883,7 @@
 
 
 		<attribute name="desiredId" type="string" use="required"></attribute>
-		<attribute name="actualId" type="string" use="required"></attribute>
+		<attribute name="pufferId" type="string" use="required"></attribute>
 		<attribute name="deltaId" type="string" use="required"></attribute>
 	</complexType>
 </schema>

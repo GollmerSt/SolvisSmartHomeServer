@@ -48,17 +48,22 @@ public class BackupHandler {
 	private final Reference<Long> timeOfLastBackup = new Reference<Long>(-1L);
 	private final AllSystemBackups measurements = new AllSystemBackups(this.timeOfLastBackup);
 
-	public BackupHandler(File path, int measurementsBackupTime_ms) throws FileException, ReferenceException {
+	public BackupHandler(final File path, final int measurementsBackupTime_ms)
+			throws FileException, ReferenceException {
+
+		File writePath;
 
 		if (path == null) {
 			String pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
 				pathName = System.getenv("APPDATA");
 			}
-			path = new File(pathName);
+			writePath = new File(pathName);
+		} else {
+			writePath = path;
 		}
 
-		this.parent = new File(path, Constants.Files.RESOURCE_DESTINATION);
+		this.parent = new File(writePath, Constants.Files.RESOURCE_DESTINATION);
 		this.thread = new BackupThread(this, measurementsBackupTime_ms);
 
 		try {
@@ -111,7 +116,7 @@ public class BackupHandler {
 
 	}
 
-	private void read(File xml, String rootId) throws IOException, XmlException, XMLStreamException {
+	private void read(final File xml, final String rootId) throws IOException, XmlException, XMLStreamException {
 		InputStream source = new FileInputStream(xml);
 
 		XmlStreamReader<AllSystemBackups> reader = new XmlStreamReader<>();
@@ -156,7 +161,7 @@ public class BackupHandler {
 		logger.info("Backup of measurements written.");
 	}
 
-	public void register(Solvis owner, String id) {
+	public void register(final Solvis owner, final String id) {
 		SystemBackup system = this.measurements.get(id);
 		system.setOwner(owner);
 	}
@@ -223,7 +228,7 @@ public class BackupHandler {
 
 	}
 
-	public SystemBackup getSystemBackup(String id) {
+	public SystemBackup getSystemBackup(final String id) {
 		return this.measurements.get(id);
 	}
 

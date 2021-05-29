@@ -27,11 +27,11 @@ public class UpdateStrategies implements IAssigner {
 
 	private final Collection<Strategy<?>> strategies;
 
-	private UpdateStrategies(Collection<Strategy<?>> strategies) {
+	private UpdateStrategies(final Collection<Strategy<?>> strategies) {
 		this.strategies = strategies;
 	}
 
-	public void setSource(ChannelSource source) {
+	public void setSource(final ChannelSource source) {
 		for (Strategy<?> strategy : this.strategies) {
 			strategy.setSource(source);
 		}
@@ -45,7 +45,7 @@ public class UpdateStrategies implements IAssigner {
 		private final UpdateCreator<?> creator;
 		private final String xmlId;
 
-		private StrategyEnum(UpdateCreator<?> creator, String xmlId) {
+		private StrategyEnum(final UpdateCreator<?> creator, final String xmlId) {
 			this.creator = creator;
 			this.xmlId = xmlId;
 		}
@@ -54,7 +54,7 @@ public class UpdateStrategies implements IAssigner {
 			return this.creator;
 		}
 
-		public static UpdateCreator<?> byXml(String xmlId) {
+		public static UpdateCreator<?> byXml(final String xmlId) {
 			for (StrategyEnum strategy : StrategyEnum.values()) {
 				if (strategy.xmlId.equals(xmlId)) {
 					return strategy.creator;
@@ -68,12 +68,12 @@ public class UpdateStrategies implements IAssigner {
 
 		protected ChannelSource source;
 
-		public abstract void instantiate(Solvis solvis);
+		public abstract void instantiate(final Solvis solvis);
 
 		/**
 		 * @param source the source to set
 		 */
-		public void setSource(ChannelSource source) {
+		public void setSource(final ChannelSource source) {
 			this.source = source;
 		}
 
@@ -82,9 +82,10 @@ public class UpdateStrategies implements IAssigner {
 		}
 
 	}
-	
+
 	public interface IExecutable {
 		public void trigger();
+
 		public String getTriggerId();
 	}
 
@@ -92,12 +93,12 @@ public class UpdateStrategies implements IAssigner {
 
 		private final Collection<Strategy<?>> updateStrategies = new ArrayList<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 
 		}
 
@@ -107,7 +108,7 @@ public class UpdateStrategies implements IAssigner {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			UpdateCreator<?> creator = StrategyEnum.byXml(id);
 			if (creator != null) {
@@ -118,7 +119,7 @@ public class UpdateStrategies implements IAssigner {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			if (StrategyEnum.byXml(creator.getId()) != null) {
 				this.updateStrategies.add((Strategy<?>) created);
 			}
@@ -128,22 +129,23 @@ public class UpdateStrategies implements IAssigner {
 
 	public static abstract class UpdateCreator<T> extends CreatorByXML<T> {
 
-		public UpdateCreator(String id, BaseCreator<?> creator) {
+		public UpdateCreator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
-		public abstract UpdateCreator<T> createCreator(String id, BaseCreator<?> creator);
+		public abstract UpdateCreator<T> createCreator(final String id, final BaseCreator<?> creator);
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 		for (Strategy<?> strategy : this.strategies) {
 			strategy.assign(description);
 		}
 
 	}
 
-	public void instantiate(Solvis solvis) {
+	public void instantiate(final Solvis solvis) {
 		for (Strategy<?> strategy : this.strategies) {
 			strategy.instantiate(solvis);
 		}

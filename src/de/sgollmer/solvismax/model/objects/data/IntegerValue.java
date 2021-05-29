@@ -14,7 +14,7 @@ public class IntegerValue extends SingleData<Integer> {
 	private final Integer data;
 	private final boolean fastChange;
 
-	private IntegerValue(Integer value, long timeStamp, boolean fastChange) {
+	private IntegerValue(final Integer value, final long timeStamp, final boolean fastChange) {
 		super(timeStamp);
 		this.data = value;
 		this.fastChange = fastChange;
@@ -28,12 +28,12 @@ public class IntegerValue extends SingleData<Integer> {
 		return Helper.Boolean.UNDEFINED;
 	}
 
-	public IntegerValue(Integer value, long timeStamp) {
+	public IntegerValue(final Integer value, final long timeStamp) {
 		this(value, timeStamp, false);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (!(obj instanceof SingleData<?>)) {
 			return false;
 		}
@@ -72,7 +72,7 @@ public class IntegerValue extends SingleData<Integer> {
 	}
 
 	@Override
-	public SingleData<Integer> create(int value, long timeStamp) {
+	public SingleData<Integer> create(final int value, final long timeStamp) {
 		return new IntegerValue(value, timeStamp);
 	}
 
@@ -102,7 +102,7 @@ public class IntegerValue extends SingleData<Integer> {
 	}
 
 	@Override
-	public int compareTo(SingleData<?> o) {
+	public int compareTo(final SingleData<?> o) {
 		if (o instanceof IntegerValue) {
 			Integer cmp = ((IntegerValue) o).data;
 			if (this.data == null) {
@@ -118,7 +118,7 @@ public class IntegerValue extends SingleData<Integer> {
 	}
 
 	@Override
-	public SingleData<Integer> create(long timeStamp) {
+	public SingleData<Integer> create(final long timeStamp) {
 		return new IntegerValue(this.data, timeStamp);
 	}
 

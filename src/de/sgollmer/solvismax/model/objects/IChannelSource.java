@@ -25,7 +25,7 @@ import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 
 public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
-	public ChannelDescription getRestoreChannel(Solvis solvis);
+	public ChannelDescription getRestoreChannel(final Solvis solvis);
 
 	public DependencyGroup getDependencyGroup();
 

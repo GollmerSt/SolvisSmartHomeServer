@@ -21,7 +21,7 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
 
 public class Csv {
-	
+
 	private static String HEADER1 = "+-------------------------------------------------------------------------------+"
 			+ Constants.CRLF;
 	private static String HEADER2 = "|                                                                               |"
@@ -46,8 +46,7 @@ public class Csv {
 		this.file = new File(this.directory, this.name);
 
 		try {
-			this.writer = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(this.file), "Cp1252"));
+			this.writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.file), "Cp1252"));
 		} catch (UnsupportedEncodingException e) {
 		}
 	}
@@ -59,17 +58,21 @@ public class Csv {
 		System.out.println("File <" + this.file.getAbsolutePath() + "> created.");
 	}
 
-	private String insertInTheMiddle(String text) {
-		if (text == null) {
+	private String insertInTheMiddle(final String insert) {
+		if (insert == null) {
 			return HEADER2;
 		}
 
-		int textLength = text.length();
+		int textLength = insert.length();
 		int maxLength = HEADER2.length() - 4;
+		
+		String text ;
 
 		if (textLength > maxLength) {
-			text = text.substring(0, maxLength);
+			text = insert.substring(0, maxLength);
 			textLength = text.length();
+		} else {
+			text = insert;
 		}
 
 		StringBuilder middle = new StringBuilder();
@@ -151,8 +154,8 @@ public class Csv {
 		this.writer.write(Constants.CRLF);
 		this.writer.write(Constants.CRLF);
 	}
-	
-	public void screensOut( final Solvis solvis ) throws IOException {
+
+	public void screensOut(final Solvis solvis) throws IOException {
 		this.writer.append(HEADER1);
 		this.writer.append(HEADER2);
 		this.writer.write(insertInTheMiddle("Screens"));
@@ -162,15 +165,15 @@ public class Csv {
 		this.writer.append("screenId;");
 		this.writer.write(Constants.CRLF);
 		this.writer.write(Constants.CRLF);
-		
-		List< Screen> screens = new ArrayList<>();
-		
-		for ( AbstractScreen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
-			if ( screen instanceof Screen ) {
+
+		List<Screen> screens = new ArrayList<>();
+
+		for (AbstractScreen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
+			if (screen instanceof Screen) {
 				screens.add((Screen) screen);
 			}
 		}
-		
+
 		screens.sort(new Comparator<Screen>() {
 
 			@Override
@@ -178,17 +181,17 @@ public class Csv {
 				return o1.getSortId().compareTo(o2.getSortId());
 			}
 		});
-		
-		for ( Screen screen : screens ) {
+
+		for (Screen screen : screens) {
 			this.writer.append(screen.getId());
 			this.writer.append(';');
 			this.writer.append(Constants.CRLF);
 
 		}
-		
+
 		this.writer.write(Constants.CRLF);
 		this.writer.write(Constants.CRLF);
-		
+
 	}
 
 }

@@ -19,22 +19,20 @@ public class NotValidConfigurations {
 	private final Collection<Configuration> configurations;
 	private Collection<Long> notValidMasks = null;
 
-
-
 	private NotValidConfigurations(final Collection<Configuration> configurations) {
 		this.configurations = configurations;
 	}
 
 	public static class Creator extends CreatorByXML<NotValidConfigurations> {
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		private final Collection<Configuration> configurations = new ArrayList<>();
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 
 		}
 
@@ -44,7 +42,7 @@ public class NotValidConfigurations {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_CONFIGURATION:
@@ -54,7 +52,7 @@ public class NotValidConfigurations {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_CONFIGURATION:
 					this.configurations.add((Configuration) created);
@@ -65,23 +63,23 @@ public class NotValidConfigurations {
 
 	}
 
-	public Collection< Long> getNotValidMasks( SolvisDescription description ) {
+	public Collection<Long> getNotValidMasks(final SolvisDescription description) {
 		Collection<Long> result = new ArrayList<>();
-		for ( Configuration configuration:this.configurations) {
+		for (Configuration configuration : this.configurations) {
 			result.add(configuration.getConfigurationMask(description));
 		}
 		return result;
 	}
-	
-	public boolean isValid( long mask, SolvisDescription description ) {
-		if ( this.notValidMasks == null ) {
+
+	public boolean isValid(final long mask, final SolvisDescription description) {
+		if (this.notValidMasks == null) {
 			this.notValidMasks = new ArrayList<>();
-			for ( Configuration configuration:this.configurations) {
+			for (Configuration configuration : this.configurations) {
 				this.notValidMasks.add(configuration.getConfigurationMask(description));
 			}
 		}
-		for ( Long invalidMask : this.notValidMasks ) {
-			if ( invalidMask == (mask & invalidMask) ) {
+		for (Long invalidMask : this.notValidMasks) {
+			if (invalidMask == (mask & invalidMask)) {
 				return false;
 			}
 		}

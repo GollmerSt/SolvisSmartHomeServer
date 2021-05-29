@@ -33,7 +33,7 @@ public class Handling {
 	 *                         command
 	 */
 
-	public Handling(boolean inQueueInhibited, boolean inhibitAppend, boolean insert) {
+	public Handling(final boolean inQueueInhibited, final boolean inhibitAppend, final boolean insert) {
 		this(inQueueInhibited, inhibitAppend, insert, false);
 	}
 
@@ -47,7 +47,8 @@ public class Handling {
 	 * @param mustFinished   True: no previous entries are of interest
 	 */
 
-	Handling(boolean inQueueInhibited, boolean inhibitAdd, boolean insert, boolean mustFinished) {
+	Handling(final boolean inQueueInhibited, final boolean inhibitAdd, final boolean insert,
+			final boolean mustFinished) {
 		this.inQueueInhibited = inQueueInhibited;
 		this.inhibitAdd = inhibitAdd;
 		this.insert = insert;
@@ -93,7 +94,7 @@ public class Handling {
 				this.currentPriority = 0;
 
 				for (int i : this.priorities.values()) {
-					if ( i > this.currentPriority ) {
+					if (i > this.currentPriority) {
 						this.currentPriority = i;
 					}
 				}

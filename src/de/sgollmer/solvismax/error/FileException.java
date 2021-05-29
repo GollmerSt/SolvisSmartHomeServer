@@ -13,7 +13,7 @@ public class FileException extends Exception {
 	 */
 	private static final long serialVersionUID = -3664781253838549023L;
 
-	public FileException(String message) {
+	public FileException(final String message) {
 		super(message);
 	}
 }

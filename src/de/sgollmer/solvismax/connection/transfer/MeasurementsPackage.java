@@ -18,7 +18,7 @@ public class MeasurementsPackage implements ISendData {
 
 	private final Collection<SmartHomeData> datas;
 
-	public MeasurementsPackage(Collection<SmartHomeData> datas) {
+	public MeasurementsPackage(final Collection<SmartHomeData> datas) {
 		this.datas = datas;
 	}
 
@@ -38,12 +38,12 @@ public class MeasurementsPackage implements ISendData {
 
 	@Override
 	public Collection<MqttData> createMqttData() {
-		Collection<MqttData > mqtt = new ArrayList<>();
-		
+		Collection<MqttData> mqtt = new ArrayList<>();
+
 		for (SmartHomeData data : this.datas) {
 			mqtt.add(data.getMqttData());
 		}
-		
+
 		return mqtt;
 	}
 

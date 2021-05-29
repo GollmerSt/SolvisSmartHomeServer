@@ -26,7 +26,7 @@ public class ConnectedPackage extends JsonPackage implements ISendData {
 	ConnectedPackage() {
 	}
 
-	public ConnectedPackage(long clientId) {
+	public ConnectedPackage(final long clientId) {
 		this.clientId = clientId;
 		this.command = Command.CONNECTED;
 		this.data = new Frame();

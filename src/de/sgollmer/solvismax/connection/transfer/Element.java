@@ -25,7 +25,7 @@ public class Element {
 	public Element() {
 	}
 
-	void addTo(StringBuilder builder) {
+	void addTo(final StringBuilder builder) {
 		builder.append('"');
 		builder.append(this.name);
 		builder.append("\":");
@@ -43,7 +43,8 @@ public class Element {
 		return builder.toString();
 	}
 
-	int from(String json, int position, long timeStamp) throws JsonException {
+	int from(final String json, final int startPosition, final long timeStamp) throws JsonException {
+		int position = startPosition;
 		while (Character.isWhitespace(Helper.charAt(json, position))) {
 			++position;
 		}

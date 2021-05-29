@@ -82,7 +82,7 @@ public class Restart {
 		return cmd.toArray(new String[1]);
 	}
 
-	private String[] createMainProcessArray(String agentlibOption) {
+	private String[] createMainProcessArray(final String agentlibOption) {
 		Collection<String> cmd = new ArrayList<>();
 		cmd.add(this.java);
 		cmd.addAll(this.vmArgs);
@@ -93,7 +93,7 @@ public class Restart {
 		return cmd.toArray(new String[1]);
 	}
 
-	private void startProcess(String[] cmd) {
+	private void startProcess(final String[] cmd) {
 		String cmdString = "";
 		for (String part : cmd) {
 			cmdString += part + " ";
@@ -113,7 +113,7 @@ public class Restart {
 		this.startProcess(this.createRestartProcessArray());
 	}
 
-	void startMainProcess(String agentlibOption) {
+	void startMainProcess(final String agentlibOption) {
 		this.startProcess(this.createMainProcessArray(agentlibOption));
 	}
 

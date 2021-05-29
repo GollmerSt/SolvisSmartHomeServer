@@ -22,7 +22,7 @@ public class ConfigurationTypes {
 	private static final String XML_TYPE = "Type";
 	private final Collection<Type> types;
 
-	private ConfigurationTypes(Collection<Type> types) {
+	private ConfigurationTypes(final Collection<Type> types) {
 		this.types = types;
 	}
 
@@ -30,12 +30,12 @@ public class ConfigurationTypes {
 
 		private Collection<Type> types = new ArrayList<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
 
 		@Override
@@ -44,7 +44,7 @@ public class ConfigurationTypes {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_TYPE:
@@ -54,7 +54,7 @@ public class ConfigurationTypes {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_TYPE:
 					this.types.add((Type) created);
@@ -87,12 +87,12 @@ public class ConfigurationTypes {
 			private long configuration;
 			private boolean dontCare;
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "id":
 						this.id = value;
@@ -112,12 +112,12 @@ public class ConfigurationTypes {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 			}
 
 		}
@@ -135,7 +135,7 @@ public class ConfigurationTypes {
 		}
 	}
 
-	public long getConfiguration(String typeString) {
+	public long getConfiguration(final String typeString) {
 		for (Type type : this.types) {
 			if (type.id.equals(typeString)) {
 				return type.configuration;

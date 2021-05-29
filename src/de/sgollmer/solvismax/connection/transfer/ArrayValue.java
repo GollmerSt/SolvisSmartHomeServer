@@ -15,9 +15,9 @@ import de.sgollmer.solvismax.error.JsonException;
 
 public class ArrayValue implements IValue {
 
-	private final Collection<? extends IValue> values ;
+	private final Collection<? extends IValue> values;
 
-	public ArrayValue(List<SingleValue> values) {
+	public ArrayValue(final List<SingleValue> values) {
 		this.values = values;
 	}
 
@@ -31,7 +31,7 @@ public class ArrayValue implements IValue {
 	}
 
 	@Override
-	public void addTo(StringBuilder builder) {
+	public void addTo(final StringBuilder builder) {
 		boolean first = true;
 		for (IValue value : this.values) {
 			if (first) {
@@ -46,7 +46,8 @@ public class ArrayValue implements IValue {
 	}
 
 	@Override
-	public int from(String json, int position, long timeStamp) throws JsonException {
+	public int from(final String json, final int startPosition, final long timeStamp) throws JsonException {
+		int position = startPosition;
 		char c = Helper.charAt(json, position);
 		if (c != '[') {
 			throw new JsonException("Wrong character <" + c + "> at starting of a element");
@@ -70,7 +71,7 @@ public class ArrayValue implements IValue {
 					break;
 				default:
 					SingleValue single = new SingleValue();
-					single.from(json, position,timeStamp);
+					single.from(json, position, timeStamp);
 					this.add(single);
 					break;
 			}

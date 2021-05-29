@@ -31,12 +31,12 @@ public enum ServerCommand {
 	private final boolean general;
 	private final boolean createMeta;
 
-	private ServerCommand(boolean general, boolean createMeta) {
+	private ServerCommand(final boolean general, final boolean createMeta) {
 		this.general = general;
 		this.createMeta = createMeta;
 	}
 
-	private ServerCommand(boolean general) {
+	private ServerCommand(final boolean general) {
 		this(general, true);
 	}
 
@@ -44,7 +44,7 @@ public enum ServerCommand {
 		return this.general;
 	}
 
-	public static MqttData getMqttMeta(Solvis solvis) {
+	public static MqttData getMqttMeta(final Solvis solvis) {
 		String topic = Mqtt.formatServerMetaTopic();
 		ArrayValue array = new ArrayValue();
 		for (ServerCommand command : values()) {

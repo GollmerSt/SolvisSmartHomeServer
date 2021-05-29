@@ -13,7 +13,7 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 
 	private final long timeStamp;
 
-	protected SingleData(long timeStamp) {
+	protected SingleData(final long timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 
@@ -45,9 +45,9 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 	 */
 	public abstract Helper.Boolean getBoolean();
 
-	abstract SingleData<T> create(int value, long timeStamp);
+	abstract SingleData<T> create(final int value, final long timeStamp);
 
-	public abstract SingleData<T> create(long timeStamp);
+	public abstract SingleData<T> create(final long timeStamp);
 
 	public abstract String getXmlId();
 

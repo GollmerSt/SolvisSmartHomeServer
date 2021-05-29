@@ -20,7 +20,7 @@ class SubscribeData implements IReceivedData {
 	private Solvis solvis;
 	private SingleData<?> value;
 
-	SubscribeData(String clientId, String unitId, String channelId, SubscribeType type) {
+	SubscribeData(final String clientId, final String unitId, final String channelId, final SubscribeType type) {
 		this.clientId = clientId;
 		this.unitId = unitId;
 		this.type = type;
@@ -56,12 +56,12 @@ class SubscribeData implements IReceivedData {
 		return this.value;
 	}
 
-	void setValue(SingleData<?> value) {
+	void setValue(final SingleData<?> value) {
 		this.value = value;
 	}
 
 	@Override
-	public void setSolvis(Solvis solvis) {
+	public void setSolvis(final Solvis solvis) {
 		this.solvis = solvis;
 	}
 }

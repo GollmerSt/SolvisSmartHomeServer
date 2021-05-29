@@ -23,7 +23,7 @@ public class MqttThread extends Helper.Runnable {
 	private final Mqtt mqtt;
 	private boolean abort = false;
 
-	MqttThread(Mqtt mqtt) {
+	MqttThread(final Mqtt mqtt) {
 		super("Mqtt");
 		this.mqtt = mqtt;
 	}

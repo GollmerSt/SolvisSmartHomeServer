@@ -13,13 +13,13 @@ import de.sgollmer.solvismax.helper.Helper;
 public class StringData extends SingleData<String> {
 	private final String data;
 
-	public StringData(String data, long timeStamp) {
+	public StringData(final String data, final long timeStamp) {
 		super(timeStamp);
 		this.data = data;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof StringData) {
 			return this.data.equals(((StringData) obj).data);
 		} else if (obj == null) {
@@ -60,7 +60,7 @@ public class StringData extends SingleData<String> {
 	}
 
 	@Override
-	public SingleData<String> create(int value, long timeStamp) {
+	public SingleData<String> create(final int value, final long timeStamp) {
 		return null;
 	}
 
@@ -80,7 +80,7 @@ public class StringData extends SingleData<String> {
 	}
 
 	@Override
-	public int compareTo(SingleData<?> o) {
+	public int compareTo(final SingleData<?> o) {
 		if (o instanceof StringData) {
 			String cmp = ((StringData) o).data;
 			if (this.data == null) {
@@ -96,7 +96,7 @@ public class StringData extends SingleData<String> {
 	}
 
 	@Override
-	public SingleData<String> create(long timeStamp) {
+	public SingleData<String> create(final long timeStamp) {
 		return new StringData(this.data, timeStamp);
 	}
 

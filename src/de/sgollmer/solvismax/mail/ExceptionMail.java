@@ -30,7 +30,7 @@ import de.sgollmer.xmllibrary.ArrayXml;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 
-public class ExceptionMail implements IObserver< SolvisErrorInfo> {
+public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(ExceptionMail.class);;
 
@@ -47,8 +47,8 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 	private final Collection<Recipient> recipients;
 	private final Proxy proxy;
 
-	private ExceptionMail(String name, String from, CryptAes password, Security securityType, String provider, int port,
-			Collection<Recipient> recipients, Proxy proxy) {
+	private ExceptionMail(final String name, final String from, final CryptAes password, final Security securityType,
+			final String provider, final int port, final Collection<Recipient> recipients, final Proxy proxy) {
 		this.name = name;
 		this.from = from;
 		this.password = password;
@@ -68,15 +68,15 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 		private String provider;
 		private int port;
 		private Collection<Recipient> recipients;
-		private Proxy proxy = null ;
+		private Proxy proxy = null;
 		private boolean valid = true;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			try {
 				switch (name.getLocalPart()) {
 					case "name":
@@ -106,7 +106,7 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 				this.valid = false;
 				String m = "base.xml error of passwordCrypt in Mail tag, mail disabled: " + e.getMessage();
 				Level level = Level.ERROR;
-				if ( e instanceof CryptDefaultValueException ) {
+				if (e instanceof CryptDefaultValueException) {
 					level = Level.WARN;
 				}
 				LogManager.getInstance()
@@ -125,7 +125,7 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_RECIPIENTS:
@@ -138,7 +138,7 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_RECIPIENTS:
 					this.recipients = ((ArrayXml<Recipient>) created).getArray();
@@ -150,7 +150,8 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 		}
 	}
 
-	public void send(String subject, String text, MyImage image) throws MessagingException, IOException {
+	public void send(final String subject, final String text, final MyImage image)
+			throws MessagingException, IOException {
 		Mail.send(subject, text, this.name, this.from, this.password, this.securityType, this.provider, this.port,
 				this.recipients, image, this.proxy);
 	}
@@ -160,13 +161,13 @@ public class ExceptionMail implements IObserver< SolvisErrorInfo> {
 //	}
 //
 	@Override
-	public void update(SolvisErrorInfo info, Object source) {
+	public void update(final SolvisErrorInfo info, final Object source) {
 		try {
 			this.send(info.getMessage(), "", info.getImage());
 		} catch (MessagingException | IOException e) {
 			logger.error("Mail <" + info.getMessage() + "> couldn't be sent: ", e);
 			throw new ObserverException();
 		}
-		
+
 	}
 }

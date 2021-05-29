@@ -55,20 +55,20 @@ public class StrategyReheat implements IStrategy {
 
 	private final TouchPoint touchPoint;
 	private final String desiredId;
-	private final String actualId;
+	private final String pufferId;
 	private final String deltaId;
 
 	private Control control;
 	private Collection<Execute> executes = new ArrayList<>(3);
 
-	private StrategyReheat(final TouchPoint touchPoint, final String desiredId, final String actualId, String deltaId) {
+	private StrategyReheat(final TouchPoint touchPoint, final String desiredId, final String pufferId, String deltaId) {
 		this.touchPoint = touchPoint;
 		this.desiredId = desiredId;
-		this.actualId = actualId;
+		this.pufferId = pufferId;
 		this.deltaId = deltaId;
 	}
 
-	private Execute getExecute(Solvis solvis) {
+	private Execute getExecute(final Solvis solvis) {
 		for (Execute execute : this.executes) {
 			if (execute.solvis == solvis) {
 				return execute;
@@ -98,7 +98,7 @@ public class StrategyReheat implements IStrategy {
 		}
 
 		@Override
-		public ModeValue<?> create(long timeStamp) {
+		public ModeValue<?> create(final long timeStamp) {
 			return new ModeValue<>(this, timeStamp);
 		}
 
@@ -127,20 +127,20 @@ public class StrategyReheat implements IStrategy {
 		private ClearNotRequired clearNotRequired = null;
 
 		private final SolvisData desiredData;
-		private final SolvisData actualData;
+		private final SolvisData pufferId;
 		private final SolvisData deltaData;
 
 		private boolean quick = true;
 
-		public Execute(Solvis solvis) {
+		public Execute(final Solvis solvis) {
 			this.solvis = solvis;
 			this.desiredData = this.getData(StrategyReheat.this.desiredId);
 
-			this.actualData = this.getData(StrategyReheat.this.actualId);
+			this.pufferId = this.getData(StrategyReheat.this.pufferId);
 			this.deltaData = this.getData(StrategyReheat.this.deltaId);
 		}
 
-		private SolvisData getData(String id) {
+		private SolvisData getData(final String id) {
 			SolvisData data = this.solvis.getAllSolvisData().get(id);
 			if (data == null) {
 				logger.error("Warning: Channel <" + id + "> is not known.");
@@ -228,7 +228,7 @@ public class StrategyReheat implements IStrategy {
 			return null;
 		}
 
-		private SetResult setValueFast(SolvisData value) throws IOException, TerminationException {
+		private SetResult setValueFast(final SolvisData value) throws IOException, TerminationException {
 
 			ClearNotRequired clearNotRequired = this.clearNotRequired;
 
@@ -240,17 +240,16 @@ public class StrategyReheat implements IStrategy {
 			boolean notRequired = false;
 
 			try {
-				if (this.quick && this.desiredData.isValid() && this.actualData.isValid() && this.deltaData.isValid()) {
-					int actual = this.actualData.getInt() * //
+				if (this.quick && this.desiredData.isValid() && this.pufferId.isValid() && this.deltaData.isValid()) {
+					int puffer = this.pufferId.getInt() * //
 							this.desiredData.getDescription().getDivisor()
 							* this.deltaData.getDescription().getDivisor();
 					int desired = this.desiredData.getInt() * //
-							this.actualData.getDescription().getDivisor()
-							* this.deltaData.getDescription().getDivisor();
+							this.pufferId.getDescription().getDivisor() * this.deltaData.getDescription().getDivisor();
 					int delta = this.deltaData.getInt() * //
-							this.actualData.getDescription().getDivisor()
+							this.pufferId.getDescription().getDivisor()
 							* this.desiredData.getDescription().getDivisor();
-					if (desired + delta < actual) {
+					if (desired + delta < puffer) {
 						notRequired = true;
 					}
 				}
@@ -266,7 +265,7 @@ public class StrategyReheat implements IStrategy {
 			}
 		}
 
-		private SetResult notRequiredHandling(boolean sendBack) throws IOException, TerminationException {
+		private SetResult notRequiredHandling(final boolean sendBack) throws IOException, TerminationException {
 
 			if (sendBack) {
 				this.solvis.sendBack();
@@ -274,7 +273,8 @@ public class StrategyReheat implements IStrategy {
 			this.clearNotRequired = new ClearNotRequired();
 			this.clearNotRequired.submit();
 
-			return new SetResult(ResultStatus.SUCCESS, new ModeValue<>(Mode.NOT_REQUIRED, System.currentTimeMillis()), true);
+			return new SetResult(ResultStatus.SUCCESS, new ModeValue<>(Mode.NOT_REQUIRED, System.currentTimeMillis()),
+					true);
 
 		}
 
@@ -361,7 +361,7 @@ public class StrategyReheat implements IStrategy {
 			}
 
 			@Override
-			public void update(SolvisData data, Object source) {
+			public void update(final SolvisData data, final Object source) {
 
 				boolean active = false;
 
@@ -416,7 +416,7 @@ public class StrategyReheat implements IStrategy {
 		return this.interpretSetData(singleData.toString(), singleData.getTimeStamp());
 	}
 
-	private ModeValue<Mode> interpretSetData(String value, long timeStamp) throws TypeException {
+	private ModeValue<Mode> interpretSetData(final String value, final long timeStamp) throws TypeException {
 		if (value.equals(Mode.HEATING.getName())) {
 			return new ModeValue<>(Mode.HEATING, timeStamp);
 		} else {
@@ -438,7 +438,7 @@ public class StrategyReheat implements IStrategy {
 
 		private TouchPoint touchPoint;
 		private String desiredId;
-		private String actualId;
+		private String pufferId;
 		private String deltaId;
 
 		Creator(final String id, final BaseCreator<?> creator) {
@@ -451,8 +451,8 @@ public class StrategyReheat implements IStrategy {
 				case "desiredId":
 					this.desiredId = value;
 					break;
-				case "actualId":
-					this.actualId = value;
+				case "pufferId":
+					this.pufferId = value;
 					break;
 				case "deltaId":
 					this.deltaId = value;
@@ -462,7 +462,7 @@ public class StrategyReheat implements IStrategy {
 
 		@Override
 		public StrategyReheat create() throws XmlException, IOException {
-			return new StrategyReheat(this.touchPoint, this.desiredId, this.actualId, this.deltaId);
+			return new StrategyReheat(this.touchPoint, this.desiredId, this.pufferId, this.deltaId);
 		}
 
 		@Override
@@ -516,26 +516,27 @@ public class StrategyReheat implements IStrategy {
 	}
 
 	@Override
-	public void setControl(Control control) {
+	public void setControl(final Control control) {
 		this.control = control;
 	}
 
 	@Override
-	public SingleData<?> getValue(SolvisScreen solvisScreen, Solvis solvis, IControlAccess controlAccess,
-			boolean optional) throws TerminationException, IOException {
+	public SingleData<?> getValue(final SolvisScreen solvisScreen, final Solvis solvis,
+			final IControlAccess controlAccess, final boolean optional) throws TerminationException, IOException {
 
 		return this.getExecute(solvis).getValue(solvisScreen, controlAccess, optional);
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
 			throws IOException, TerminationException, TypeException {
 
 		return this.getExecute(solvis).setValue(controlAccess, value);
 	}
 
 	@Override
-	public SetResult setValueFast(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+	public SetResult setValueFast(final Solvis solvis, final SolvisData value)
+			throws IOException, TerminationException {
 		return this.getExecute(solvis).setValueFast(value);
 	}
 

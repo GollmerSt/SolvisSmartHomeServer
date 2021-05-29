@@ -48,8 +48,9 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 	private final boolean hourly;
 	private final Collection<String> triggerIds;
 
-	private EquipmentOnOff(String equipmentId, String calculatedId, int factor, String checkIntervalId,
-			String readIntervalId, boolean hourly, Collection<String> triggerIds) {
+	private EquipmentOnOff(final String equipmentId, final String calculatedId, final int factor,
+			final String checkIntervalId, final String readIntervalId, final boolean hourly,
+			final Collection<String> triggerIds) {
 		this.equipmentId = equipmentId;
 		this.calculatedId = calculatedId;
 		this.factor = factor;
@@ -60,7 +61,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
+	public void instantiate(final Solvis solvis) {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData equipment = allData.checkAndGet(this.equipmentId);
 
@@ -82,7 +83,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 
 	}
 
@@ -95,7 +96,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		private final int setValue;
 		private final int currentValue;
 
-		public SynchronisationResult(Synchronisation synchronisation, int newValue, int currentValue) {
+		public SynchronisationResult(final Synchronisation synchronisation, final int newValue,
+				final int currentValue) {
 			this.synchronisation = synchronisation;
 			this.setValue = newValue;
 			this.currentValue = currentValue;
@@ -127,8 +129,9 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		private int executionTime = 0;
 		private int hourlyWindow_s = 0;
 
-		private Executable(Solvis solvis, SolvisData updateSource, SolvisData equipment, SolvisData calculatedValue,
-				int factor, int checkInterval, int readInterval, boolean hourly) {
+		private Executable(final Solvis solvis, final SolvisData updateSource, final SolvisData equipment,
+				final SolvisData calculatedValue, final int factor, final int checkInterval, final int readInterval,
+				final boolean hourly) {
 			this.solvis = solvis;
 			this.updateSource = updateSource;
 			this.equipment = equipment;
@@ -144,7 +147,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			this.updateSource.registerContinuousObserver(new IObserver<SolvisData>() {
 
 				@Override
-				public void update(SolvisData data, Object source) {
+				public void update(final SolvisData data, final Object source) {
 					updateByControl(data, source);
 
 				}
@@ -152,7 +155,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			this.solvis.registerControlExecutingObserver(new IObserver<Boolean>() {
 
 				@Override
-				public void update(Boolean data, Object source) {
+				public void update(final Boolean data, final Object source) {
 					if (data) {
 						Executable.this.otherExecuting = true;
 					} else if (Executable.this.otherExecuting) {
@@ -164,7 +167,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			});
 		}
 
-		private void setHourlyWindow(boolean enlarge) {
+		private void setHourlyWindow(final boolean enlarge) {
 
 			int min = Constants.HOURLY_EQUIPMENT_WINDOW_READ_INTERVAL_FACTOR * this.readInterval / 1000;
 			int max = 3600;
@@ -184,8 +187,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 		}
 
-		private SynchronisationResult checkSynchronisation(SolvisData controlData, boolean equipmentOn, boolean changed)
-				throws TypeException {
+		private SynchronisationResult checkSynchronisation(final SolvisData controlData, final boolean equipmentOn,
+				final boolean changed) throws TypeException {
 
 			int factor = this.factor < 0 ? 1 : this.factor;
 			int data = controlData.getInt() * factor;
@@ -233,7 +236,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 		}
 
-		private void updateByControl(SolvisData data, Object source) {
+		private void updateByControl(final SolvisData data, final Object source) {
 			if (!this.solvis.isInitialized()) {
 				return;
 			}
@@ -336,7 +339,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		}
 
 		@SuppressWarnings("unused")
-		private void updateByMeasurement(SolvisData data) {
+		private void updateByMeasurement(final SolvisData data) {
 
 			if (!(EquipmentOnOff.this.source instanceof Control)) {
 				return;
@@ -435,7 +438,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		}
 
 		@Override
-		public void update(SolvisData data, Object Source) { // by burner
+		public void update(final SolvisData data, final Object Source) { // by burner
 			updateByMeasurement(data);
 		}
 
@@ -468,12 +471,12 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			super(null, null);
 		}
 
-		private Creator(String id, BaseCreator<?> creator) {
+		private Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "equipmentId":
 					this.equipmentId = value;
@@ -502,7 +505,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_TRIGGER:
@@ -513,7 +516,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_TRIGGER:
 					this.triggerIds.add(((Trigger) created).getId());
@@ -522,7 +525,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		}
 
 		@Override
-		public UpdateCreator<EquipmentOnOff> createCreator(String id, BaseCreator<?> creator) {
+		public UpdateCreator<EquipmentOnOff> createCreator(final String id, final BaseCreator<?> creator) {
 			return new Creator(id, creator);
 		}
 	}
@@ -530,7 +533,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 	public static class UpdateType {
 		private final boolean syncType;
 
-		UpdateType(boolean syncType) {
+		UpdateType(final boolean syncType) {
 			this.syncType = syncType;
 		}
 

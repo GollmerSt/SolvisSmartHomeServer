@@ -52,7 +52,7 @@ public class Instances {
 	private final WriteErrorScreens writeErrorScreens;
 	private boolean mustLearn;
 
-	public Instances(BaseData baseData, boolean learn) throws IOException, XmlException, XMLStreamException,
+	public Instances(final BaseData baseData, final boolean learn) throws IOException, XmlException, XMLStreamException,
 			AssignmentException, FileException, ReferenceException {
 		this.baseData = baseData;
 		this.writeablePath = new File(baseData.getWritablePath());
@@ -84,7 +84,7 @@ public class Instances {
 		this.backupHandler.start();
 	}
 
-	public void learn(boolean force)
+	public void learn(final boolean force)
 			throws IOException, LearningException, XMLStreamException, FileException, TerminationException {
 		boolean learned = true;
 		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
@@ -113,7 +113,7 @@ public class Instances {
 		return true;
 	}
 
-	public void createCsvOut(boolean semicolon) throws IOException, XMLStreamException, LearningException,
+	public void createCsvOut(final boolean semicolon) throws IOException, XMLStreamException, LearningException,
 			AssignmentException, AliasException, TypeException, XmlException {
 
 		Csv csv = new Csv(semicolon, this.getAppendixPath(), Constants.Files.CSV_ALL_CHANNELS);
@@ -143,8 +143,8 @@ public class Instances {
 		csv.close();
 	}
 
-	public void createCurrentDocumentation(boolean semicolon) throws IOException, XMLStreamException, LearningException,
-			AssignmentException, AliasException, TypeException {
+	public void createCurrentDocumentation(final boolean semicolon) throws IOException, XMLStreamException,
+			LearningException, AssignmentException, AliasException, TypeException {
 
 		this.init();
 
@@ -168,7 +168,7 @@ public class Instances {
 		return true;
 	}
 
-	public synchronized Solvis getInstance(String solvisId) {
+	public synchronized Solvis getInstance(final String solvisId) {
 		for (Solvis solvis : this.units) {
 			if (solvis.getUnit().getId().equals(solvisId)) {
 				return solvis;
@@ -177,7 +177,7 @@ public class Instances {
 		return null;
 	}
 
-	private Solvis createSolvisInstance(Unit unit, boolean mustLearn)
+	private Solvis createSolvisInstance(final Unit unit, final boolean mustLearn)
 			throws IOException, XmlException, XMLStreamException {
 		Miscellaneous misc = this.solvisDescription.getMiscellaneous();
 		SolvisConnection connection = new SolvisConnection(unit.getUrl(), unit, misc.getSolvisConnectionTimeout_ms(),
@@ -213,7 +213,7 @@ public class Instances {
 		return this.units;
 	}
 
-	public Solvis getUnit(String unitId) {
+	public Solvis getUnit(final String unitId) {
 		for (Solvis solvis : this.units) {
 			if (unitId.equals(solvis.getUnit().getId())) {
 				return solvis;

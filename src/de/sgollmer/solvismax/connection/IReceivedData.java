@@ -17,7 +17,7 @@ public interface IReceivedData {
 	 * 
 	 * @return assigned unit, null if server
 	 */
-	public void setSolvis(Solvis solvis);
+	public void setSolvis(final Solvis solvis);
 
 	public Solvis getSolvis();
 

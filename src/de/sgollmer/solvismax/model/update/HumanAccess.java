@@ -28,7 +28,7 @@ public class HumanAccess extends Strategy<HumanAccess> {
 	}
 
 	@Override
-	public void instantiate(Solvis solvis) {
+	public void instantiate(final Solvis solvis) {
 	}
 
 	@Override
@@ -42,12 +42,12 @@ public class HumanAccess extends Strategy<HumanAccess> {
 			super(null, null);
 		}
 
-		private Creator(String id, BaseCreator<?> creator) {
+		private Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 
 		}
 
@@ -57,24 +57,24 @@ public class HumanAccess extends Strategy<HumanAccess> {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 
 		}
 
 		@Override
-		public UpdateCreator<HumanAccess> createCreator(String id, BaseCreator<?> creator) {
+		public UpdateCreator<HumanAccess> createCreator(final String id, final BaseCreator<?> creator) {
 			return new Creator(id, creator);
 		}
 
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 
 	}
 

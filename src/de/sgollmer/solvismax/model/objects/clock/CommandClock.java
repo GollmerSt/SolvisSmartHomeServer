@@ -22,13 +22,13 @@ public class CommandClock extends Command {
 	private final ClockMonitor.IAdjustStrategy strategy;
 	private final NextAdjust nextAdjust;
 
-	CommandClock(ClockMonitor.IAdjustStrategy strategy, NextAdjust nextAdjust) {
+	CommandClock(final ClockMonitor.IAdjustStrategy strategy, final NextAdjust nextAdjust) {
 		this.strategy = strategy;
 		this.nextAdjust = nextAdjust;
 	}
 
 	@Override
-	public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus)
+	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus)
 			throws IOException, TerminationException, PowerOnException {
 		this.strategy.execute(this.nextAdjust);
 		return ResultStatus.SUCCESS;
@@ -40,7 +40,7 @@ public class CommandClock extends Command {
 	}
 
 	@Override
-	public Handling handle(Command queueEntry, Solvis solvis) {
+	public Handling handle(final Command queueEntry, final Solvis solvis) {
 		return new Handling( //
 				false, // inQueueInhibited
 				queueEntry instanceof CommandClock, // inhibitAppend

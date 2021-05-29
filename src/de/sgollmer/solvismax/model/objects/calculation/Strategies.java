@@ -24,12 +24,12 @@ public enum Strategies {
 	private final Strategy<?> strategy;
 	private final String name;
 
-	private Strategies(Strategy<?> strategy, String name) {
+	private Strategies(final Strategy<?> strategy, final String name) {
 		this.strategy = strategy;
 		this.name = name;
 	}
 
-	static Strategies getByName(String name) {
+	static Strategies getByName(final String name) {
 		for (Strategies strategy : Strategies.values()) {
 			if (strategy.name.equals(name)) {
 				return strategy;
@@ -42,11 +42,11 @@ public enum Strategies {
 
 		protected final Calculation calculation;
 
-		protected Strategy(Calculation calculation) {
+		protected Strategy(final Calculation calculation) {
 			this.calculation = calculation;
 		}
 
-		protected abstract T create(Calculation calculation);
+		protected abstract T create(final Calculation calculation);
 
 		abstract boolean isWriteable();
 
@@ -54,11 +54,11 @@ public enum Strategies {
 			return null; // i.g. is directly set via solvis data
 		}
 
-		boolean getValue(SolvisData dest, Solvis solvis) {
+		boolean getValue(final SolvisData dest, final Solvis solvis) {
 			return true; // i.g. solvis data contains the current value
 		}
 
-		abstract void instantiate(Solvis solvis) throws AssignmentException, AliasException;
+		abstract void instantiate(final Solvis solvis) throws AssignmentException, AliasException;
 
 		Collection<IMode<?>> getModes() {
 			return null;
@@ -67,16 +67,15 @@ public enum Strategies {
 		abstract Double getAccuracy();
 
 		abstract boolean isBoolean();
-		
+
 		String getCsvMeta(final String column, final boolean semicolon) {
 			return null;
 		}
 
-
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Strategy create(Calculation calculation) {
+	public Strategy create(final Calculation calculation) {
 		return this.strategy.create(calculation);
 	}
 

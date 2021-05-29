@@ -19,13 +19,13 @@ public class MqttQueue extends Runnable {
 	private boolean abort = false;
 	private boolean finished = false;
 
-	public MqttQueue(Mqtt mqtt) {
+	public MqttQueue(final Mqtt mqtt) {
 		super("MqttQueue");
 		this.mqtt = mqtt;
 		this.submit();
 	}
 
-	public synchronized void publish(MqttData data) {
+	public synchronized void publish(final MqttData data) {
 		if (data != null) {
 			this.queue.add(data);
 			this.notifyAll();

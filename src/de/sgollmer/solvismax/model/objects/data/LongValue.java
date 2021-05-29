@@ -14,7 +14,7 @@ public class LongValue extends SingleData<Long> {
 	private final Long data;
 	private final boolean fastChange;
 
-	private LongValue(Long value, long timeStamp, boolean fastChange) {
+	private LongValue(final Long value, final long timeStamp, final boolean fastChange) {
 		super(timeStamp);
 		this.data = value;
 		this.fastChange = fastChange;
@@ -28,12 +28,12 @@ public class LongValue extends SingleData<Long> {
 		return Helper.Boolean.UNDEFINED;
 	}
 
-	public LongValue(Long value, long timeStamp) {
+	public LongValue(final Long value, final long timeStamp) {
 		this(value, timeStamp, false);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (!(obj instanceof SingleData<?>)) {
 			return false;
 		}
@@ -64,7 +64,6 @@ public class LongValue extends SingleData<Long> {
 		return this.data;
 	}
 
-
 	@Override
 	public Double getDouble() {
 		if (this.data != null) {
@@ -74,7 +73,7 @@ public class LongValue extends SingleData<Long> {
 	}
 
 	@Override
-	public SingleData<Long> create(int value, long timeStamp) {
+	public SingleData<Long> create(final int value, final long timeStamp) {
 		return new LongValue((long) value, timeStamp);
 	}
 
@@ -104,9 +103,9 @@ public class LongValue extends SingleData<Long> {
 	}
 
 	@Override
-	public int compareTo(SingleData<?> o) {
-		if (o instanceof LongValue|| o instanceof IntegerValue) {
-			Long cmp = ((SingleData<?>)o).getLong();
+	public int compareTo(final SingleData<?> o) {
+		if (o instanceof LongValue || o instanceof IntegerValue) {
+			Long cmp = ((SingleData<?>) o).getLong();
 			if (this.data == null) {
 				return cmp == null ? 0 : -1;
 			} else {
@@ -120,7 +119,7 @@ public class LongValue extends SingleData<Long> {
 	}
 
 	@Override
-	public SingleData<Long> create(long timeStamp) {
+	public SingleData<Long> create(final long timeStamp) {
 		return new LongValue(this.data, timeStamp);
 	}
 

@@ -24,7 +24,7 @@ public abstract class ChannelSource implements IChannelSource {
 	/**
 	 * @param description the description to set
 	 */
-	void setDescription(ChannelDescription description) {
+	void setDescription(final ChannelDescription description) {
 		this.description = description;
 	}
 
@@ -33,7 +33,7 @@ public abstract class ChannelSource implements IChannelSource {
 		return false;
 	}
 
-	protected abstract SingleData<?> createSingleData(String value, long timeStamp) throws TypeException;
+	protected abstract SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException;
 
 	public boolean isGlitchDetectionAllowed() {
 		return true;

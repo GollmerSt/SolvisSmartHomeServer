@@ -15,7 +15,7 @@ public class Feature implements ArrayXml.IElement<Feature> {
 	final String id;
 	final boolean value;
 
-	public Feature(String id, boolean value) {
+	public Feature(final String id, final boolean value) {
 		this.id = id;
 		this.value = value;
 	}
@@ -29,12 +29,12 @@ public class Feature implements ArrayXml.IElement<Feature> {
 		private String id;
 		private boolean value = false;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -52,12 +52,12 @@ public class Feature implements ArrayXml.IElement<Feature> {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 		}
 
 	}

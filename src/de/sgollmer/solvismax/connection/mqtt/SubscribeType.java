@@ -53,7 +53,7 @@ enum SubscribeType {
 		this.format = format;
 	}
 
-	static SubscribeType get(String[] partsWoPrefix) throws MqttInterfaceException {
+	static SubscribeType get(final String[] partsWoPrefix) throws MqttInterfaceException {
 		for (SubscribeType type : SubscribeType.values()) {
 			boolean found = type.cmp.length <= partsWoPrefix.length - type.position;
 			for (int i = 0; found && i < type.cmp.length; ++i) {

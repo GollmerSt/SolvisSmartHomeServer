@@ -43,7 +43,7 @@ public class Server {
 	private boolean abort = false;
 	private final Semaphore permits = new Semaphore(Constants.MAX_CONNECTIONS);
 
-	public Server(ServerSocket serverSocket, CommandHandler commandHandler, Miscellaneous misc) {
+	public Server(final ServerSocket serverSocket, final CommandHandler commandHandler, final Miscellaneous misc) {
 		this.connectedClients = new ArrayList<>(Constants.MAX_CONNECTIONS);
 		this.serverSocket = serverSocket;
 		this.commandHandler = commandHandler;
@@ -101,13 +101,13 @@ public class Server {
 		}
 	}
 
-	private void addClient(Client client) {
+	private void addClient(final Client client) {
 		synchronized (this.connectedClients) {
 			this.connectedClients.add(client);
 		}
 	}
 
-	private void removeClient(Client client) {
+	private void removeClient(final Client client) {
 		synchronized (this.connectedClients) {
 			this.connectedClients.remove(client);
 			this.permits.release();
@@ -120,7 +120,7 @@ public class Server {
 		private String clientId;
 		private Solvis solvis;
 
-		private Client(Socket socket) {
+		private Client(final Socket socket) {
 			super("Client");
 			this.socket = socket;
 		}
@@ -147,13 +147,13 @@ public class Server {
 				logger.info("Client connection closed by client.");
 			} catch (Throwable e) {
 				if (!Server.this.abort) {
-					logger.info("Client connection closed. cause:", e);
+					logger.error("Client connection closed. cause:", e);
 				}
 			}
 			this.close();
 		}
 
-		private synchronized void send(JsonPackage jsonPackage) {
+		private synchronized void send(final JsonPackage jsonPackage) {
 			try {
 				if (this.socket != null) {
 					jsonPackage.send(this.socket.getOutputStream());
@@ -184,7 +184,7 @@ public class Server {
 		}
 
 		@Override
-		public synchronized void update(ISendData data, Object source) {
+		public synchronized void update(final ISendData data, final Object source) {
 			this.send(data);
 
 		}
@@ -212,7 +212,7 @@ public class Server {
 		}
 
 		@Override
-		public void sendCommandError(String message) {
+		public void sendCommandError(final String message) {
 			logger.info(message);
 			ConnectionState state = new ConnectionState(ConnectionStatus.COMMAND_ERROR, message);
 			this.send(state.createJsonPackage());
@@ -223,12 +223,12 @@ public class Server {
 			return this.clientId;
 		}
 
-		void setClientId(String clientId) {
+		void setClientId(final String clientId) {
 			this.clientId = clientId;
 		}
 
 		@Override
-		public boolean equals(Object obj) {
+		public boolean equals(final Object obj) {
 			if (!(obj instanceof Client)) {
 				return false;
 			}
@@ -247,7 +247,7 @@ public class Server {
 		}
 
 		@Override
-		public void send(ISendData sendData) {
+		public void send(final ISendData sendData) {
 			if (sendData != null) {
 				this.send(sendData.createJsonPackage());
 			}
@@ -259,7 +259,7 @@ public class Server {
 			return this.solvis;
 		}
 
-		void setSolvis(Solvis solvis) {
+		void setSolvis(final Solvis solvis) {
 			this.solvis = solvis;
 		}
 

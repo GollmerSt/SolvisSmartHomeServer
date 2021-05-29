@@ -14,7 +14,7 @@ public class BooleanValue extends SingleData<Boolean> {
 
 	boolean value;
 
-	public BooleanValue(boolean value, long timeStamp) {
+	public BooleanValue(final boolean value, final long timeStamp) {
 		super(timeStamp);
 		this.value = value;
 	}
@@ -45,7 +45,7 @@ public class BooleanValue extends SingleData<Boolean> {
 	}
 
 	@Override
-	public SingleData<Boolean> create(int value, long timeStamp) {
+	public SingleData<Boolean> create(final int value, final long timeStamp) {
 		return new BooleanValue(value > 0, timeStamp);
 	}
 
@@ -55,7 +55,7 @@ public class BooleanValue extends SingleData<Boolean> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof BooleanValue) {
 			return this.value == ((BooleanValue) obj).value;
 		}
@@ -78,7 +78,7 @@ public class BooleanValue extends SingleData<Boolean> {
 	}
 
 	@Override
-	public int compareTo(SingleData<?> o) {
+	public int compareTo(final SingleData<?> o) {
 		if (o instanceof BooleanValue) {
 			return Boolean.compare(this.value, ((BooleanValue) o).value);
 		} else if (o != null) {
@@ -89,7 +89,7 @@ public class BooleanValue extends SingleData<Boolean> {
 	}
 
 	@Override
-	public SingleData<Boolean> create(long timeStamp) {
+	public SingleData<Boolean> create(final long timeStamp) {
 		return new BooleanValue(this.value, timeStamp);
 	}
 

@@ -17,18 +17,18 @@ public class Observer<D> {
 	public static class Observable<D> {
 		private Collection<IObserver<D>> observers = null;
 
-		public synchronized void register(IObserver<D> observer) {
+		public synchronized void register(final IObserver<D> observer) {
 			if (this.observers == null) {
 				this.observers = new ArrayList<>();
 			}
 			this.observers.add(observer);
 		}
 
-		public synchronized void unregister(IObserver<D> observer) {
+		public synchronized void unregister(final IObserver<D> observer) {
 			this.observers.remove(observer);
 		}
 
-		public void notify(D data) {
+		public void notify(final D data) {
 			this.notify(data, null);
 		}
 
@@ -38,7 +38,7 @@ public class Observer<D> {
 		 * @param source
 		 * @return true, if successfull
 		 */
-		public boolean notify(D data, Object source) {
+		public boolean notify(final D data, final Object source) {
 			boolean status = true;
 			if (this.observers != null) {
 				Collection<IObserver<D>> copy;
@@ -55,18 +55,18 @@ public class Observer<D> {
 			}
 			return status;
 		}
-		
+
 		public synchronized boolean isEmpty() {
 			return this.observers == null || this.observers.isEmpty();
 		}
-		
-		public IObserver<D> getObserver( IObserver<D> object) {
-			if ( isEmpty() ) {
+
+		public IObserver<D> getObserver(final IObserver<D> object) {
+			if (isEmpty()) {
 				return null;
 			}
 			synchronized (this) {
 				for (IObserver<D> observer : this.observers) {
-					if (observer.getClass() == object.getClass() ) {
+					if (observer.getClass() == object.getClass()) {
 						return observer;
 					}
 				}
@@ -77,7 +77,7 @@ public class Observer<D> {
 	}
 
 	public interface IObserver<D> {
-		public void update(D data, Object source);
+		public void update(final D data, final Object source);
 	}
 
 }

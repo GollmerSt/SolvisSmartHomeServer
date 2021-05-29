@@ -29,14 +29,14 @@ public class AllDurations {
 	private AllDurations() {
 	}
 
-	private void add(Duration duration) {
+	private void add(final Duration duration) {
 		Duration former = this.durations.put(duration.getId(), duration);
 		if (former != null) {
 			logger.error("Duration <" + duration.getId() + "> not unique.");
 		}
 	}
 
-	public Duration get(String id) {
+	public Duration get(final String id) {
 		return this.durations.get(id);
 	}
 
@@ -44,13 +44,13 @@ public class AllDurations {
 
 		private AllDurations durations;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 			this.durations = new AllDurations();
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 
 		}
 
@@ -60,7 +60,7 @@ public class AllDurations {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_DURATION:
@@ -70,7 +70,7 @@ public class AllDurations {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case "Duration":
 					this.durations.add((Duration) created);

@@ -16,7 +16,8 @@ public class ChannelInstance implements IInstance {
 	private final Solvis solvis;
 	private String channelName = null;
 
-	private ChannelInstance(final Solvis solvis, final ChannelDescription description, final ChannelAssignment assignment) {
+	private ChannelInstance(final Solvis solvis, final ChannelDescription description,
+			final ChannelAssignment assignment) {
 
 		this.assignment = assignment;
 		this.description = description;
@@ -31,27 +32,27 @@ public class ChannelInstance implements IInstance {
 		return this.assignment;
 	}
 
-	public static ChannelInstance create(ChannelDescription description, Solvis solvis) {
+	public static ChannelInstance create(final ChannelDescription description, final Solvis solvis) {
 		ChannelAssignment assignment = solvis.getSolvisDescription().getChannelAssignments().get(description.getId(),
 				solvis);
-		return new ChannelInstance(solvis,description, assignment);
+		return new ChannelInstance(solvis, description, assignment);
 	}
-	
+
 	private ChannelAssignment getFunctionalAssignment() {
 		ChannelAssignment assignment = this.solvis.getUnit().getChannelAssignment(this.assignment.getName());
-		if ( assignment == null) {
+		if (assignment == null) {
 			assignment = this.assignment;
 		}
 		return assignment;
 	}
 
 	public String getName() {
-		if ( this.channelName == null ) {
+		if (this.channelName == null) {
 			this.channelName = this.getFunctionalAssignment().getChannelName();
 		}
 		return this.channelName;
 	}
-	
+
 	public String getAlias() {
 		return this.assignment.getAlias();
 	}
@@ -99,8 +100,8 @@ public class ChannelInstance implements IInstance {
 	MqttData getMqttMeta() {
 		de.sgollmer.solvismax.connection.transfer.ChannelDescription meta = new de.sgollmer.solvismax.connection.transfer.ChannelDescription(
 				this);
-		return new MqttData(
-				this.solvis, Mqtt.formatChannelMetaTopic(this.getName()), meta.getValue().toString(), 0, true);
+		return new MqttData(this.solvis, Mqtt.formatChannelMetaTopic(this.getName()), meta.getValue().toString(), 0,
+				true);
 	}
 
 }

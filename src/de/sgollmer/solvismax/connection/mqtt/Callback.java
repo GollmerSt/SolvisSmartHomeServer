@@ -40,12 +40,12 @@ final class Callback implements MqttCallbackExtended {
 	/**
 	 * @param mqtt
 	 */
-	Callback(Mqtt mqtt) {
+	Callback(final Mqtt mqtt) {
 		this.mqtt = mqtt;
 	}
 
 	@Override
-	public void connectComplete(boolean reconnect, String serverURI) {
+	public void connectComplete(final boolean reconnect, final String serverURI) {
 		Mqtt.logger.info("Connection to MQTT successfull");
 		synchronized (this.mqtt) {
 			PublishObserver observer = this.mqtt.new PublishObserver();
@@ -77,7 +77,7 @@ final class Callback implements MqttCallbackExtended {
 	}
 
 	@Override
-	public void messageArrived(String topic, MqttMessage message) {
+	public void messageArrived(final String topic, final MqttMessage message) {
 		try {
 			SubscribeData subscribeData;
 			long timeStamp = System.currentTimeMillis();
@@ -145,11 +145,11 @@ final class Callback implements MqttCallbackExtended {
 	}
 
 	@Override
-	public void deliveryComplete(IMqttDeliveryToken token) {
+	public void deliveryComplete(final IMqttDeliveryToken token) {
 	}
 
 	@Override
-	public void connectionLost(Throwable cause) {
+	public void connectionLost(final Throwable cause) {
 		Mqtt.logger.errorExt("Connection to MQTT broker lost.", cause);
 	}
 }

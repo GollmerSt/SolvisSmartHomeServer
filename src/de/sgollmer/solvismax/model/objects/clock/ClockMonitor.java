@@ -85,9 +85,9 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		CALENDAR_2018.set(Calendar.MILLISECOND, 0);
 	}
 
-	private ClockMonitor(String timeChannelId, String screenId, String okScreenId,
-			List<DatePart> dateParts, TouchPoint upper, TouchPoint lower, TouchPoint ok,
-			DisableClockSetting disableClockSetting) {
+	private ClockMonitor(final String timeChannelId, final String screenId, final String okScreenId,
+			final List<DatePart> dateParts, final TouchPoint upper, final TouchPoint lower, final TouchPoint ok,
+			final DisableClockSetting disableClockSetting) {
 		this.timeChannelId = timeChannelId;
 		this.screenId = screenId;
 		this.okScreenId = okScreenId;
@@ -99,7 +99,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException {
+	public void assign(final SolvisDescription description) throws XmlException, AssignmentException {
 		this.screen = description.getScreens().getScreen(this.screenId);
 		this.okScreen = description.getScreens().getScreen(this.okScreenId);
 		if (this.upper != null) {
@@ -121,13 +121,13 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private final long realAdjustTime;
 		private final long startAdjustTime;
 
-		private NextAdjust(long solvisAdjustTime, long realAdjustTime, long startAdjustTime) {
+		private NextAdjust(final long solvisAdjustTime, final long realAdjustTime, final long startAdjustTime) {
 			this.solvisAdjustTime = solvisAdjustTime;
 			this.realAdjustTime = realAdjustTime;
 			this.startAdjustTime = startAdjustTime;
 		}
 
-		private NextAdjust(int fineAdjusts, long startAdjustTime) {
+		private NextAdjust(final int fineAdjusts, final long startAdjustTime) {
 			this.solvisAdjustTime = -1;
 			this.realAdjustTime = -1;
 			this.startAdjustTime = startAdjustTime;
@@ -155,7 +155,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		void notExecuted();
 	}
 
-	private NextAdjust calculateNextAdjustTime(DateValue dateValue, Solvis solvis) {
+	private NextAdjust calculateNextAdjustTime(final DateValue dateValue, final Solvis solvis) {
 		Calendar solvisTimeCalendar = dateValue.get();
 		long solvisTime = solvisTimeCalendar.getTimeInMillis();
 		int singleSettingTime = Math.max(this.upper.getSettingTime(solvis), this.lower.getSettingTime(solvis))
@@ -199,14 +199,14 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		return new NextAdjust(solvisAdjustTime, realAdjustTime, startAdjustTime);
 	}
 
-	public void instantiate(Solvis solvis) {
+	public void instantiate(final Solvis solvis) {
 
 		Executable executable = new Executable(solvis);
 		AllSolvisData allData = solvis.getAllSolvisData();
-		
+
 		SolvisData timeChannel = allData.get(this.timeChannelId);
 		timeChannel.register(executable);
-		
+
 		this.disableClockSetting.instantiate(solvis, executable);
 	}
 
@@ -221,7 +221,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private TouchPoint ok;
 		private DisableClockSetting disableClockSetting;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 			this.dateParts = new ArrayList<>(5);
 			for (int i = 0; i < 5; ++i) {
@@ -230,7 +230,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "screenId":
 					this.screenId = value;
@@ -246,12 +246,12 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 		@Override
 		public ClockMonitor create() throws XmlException, IOException {
-			return new ClockMonitor(this.timeChannelId, this.screenId, this.okScreenId,
-					this.dateParts, this.upper, this.lower, this.ok, this.disableClockSetting);
+			return new ClockMonitor(this.timeChannelId, this.screenId, this.okScreenId, this.dateParts, this.upper,
+					this.lower, this.ok, this.disableClockSetting);
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_YEAR:
@@ -275,7 +275,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_YEAR:
 					this.dateParts.set(0, (DatePart) created);
@@ -323,12 +323,12 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private boolean hotWaterPump = false;
 		private boolean adjustmentEnable = true;
 
-		private Executable(Solvis solvis) {
+		private Executable(final Solvis solvis) {
 			this.solvis = solvis;
 			solvis.registerAbortObserver(new IObserver<Boolean>() {
 
 				@Override
-				public void update(Boolean data, Object source) {
+				public void update(final Boolean data, final Object source) {
 					if (Executable.this.adjustmentThread != null) {
 						Executable.this.adjustmentThread.abort();
 					}
@@ -339,7 +339,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		}
 
 		@Override
-		public void update(SolvisData data, Object source) {
+		public void update(final SolvisData data, final Object source) {
 			if (!this.solvis.getFeatures().isClockTuning()) {
 				return;
 			}
@@ -415,7 +415,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			}
 		}
 
-		private void sheduleAdjustment(IAdjustStrategy strategy, NextAdjust nextAdjust) {
+		private void sheduleAdjustment(final IAdjustStrategy strategy, final NextAdjust nextAdjust) {
 			if (this.adjustmentThread != null) {
 				this.adjustmentThread.abort();
 			}
@@ -430,7 +430,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private class StrategyAdjust implements IAdjustStrategy {
 
 			@Override
-			public boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException {
+			public boolean execute(final NextAdjust nextAdjust) throws IOException, TerminationException {
 				Solvis solvis = Executable.this.solvis;
 				Calendar adjustmentCalendar = Calendar.getInstance();
 				long now = adjustmentCalendar.getTimeInMillis();
@@ -535,7 +535,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			private CommandClock command;
 			private boolean abort = false;
 
-			private ClockAdjustmentThread(CommandClock command) {
+			private ClockAdjustmentThread(final CommandClock command) {
 				super("ClockAdjustmentThread");
 				this.command = command;
 			}
@@ -570,7 +570,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 	}
 
-	private long calculateNextAdjustmentTime(long time, int ms) {
+	private long calculateNextAdjustmentTime(final long time, final int ms) {
 		int delta = Constants.TIME_ADJUSTMENT_MS_N;
 		long next = time / delta * delta + ms;
 		if (next < time) {
@@ -583,7 +583,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException {
+	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException {
 		Screen screen = (Screen) this.screen.get(solvis);
 		if (screen == null) {
 			String error = "Learning of the clock screens not possible, rejected."
@@ -653,7 +653,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			return this.calendarInt;
 		}
 
-		private void assign(SolvisDescription description) throws AssignmentException {
+		private void assign(final SolvisDescription description) throws AssignmentException {
 			if (this.touch != null) {
 				this.touch.assign(description);
 			}
@@ -666,8 +666,8 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private final int calendarOrigin;
 		private final int solvisOrigin;
 
-		private DatePart(Rectangle rectangle, TouchPoint touch, ScreenGraficDescription screenGrafic, int calendarInt,
-				int calendarOrigin, int solvisOrigin) {
+		private DatePart(final Rectangle rectangle, final TouchPoint touch, final ScreenGraficDescription screenGrafic,
+				final int calendarInt, final int calendarOrigin, final int solvisOrigin) {
 			this.rectangle = rectangle;
 			this.touch = touch;
 			this.screenGrafic = screenGrafic;
@@ -685,7 +685,8 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			private final int calendarOrigin;
 			private final int solvisOrigin;
 
-			private Creator(String id, BaseCreator<?> creator, int calendarInt, int calendarOrigin, int solvisOrigin) {
+			private Creator(final String id, final BaseCreator<?> creator, final int calendarInt,
+					final int calendarOrigin, final int solvisOrigin) {
 				super(id, creator);
 				this.calendarInt = calendarInt;
 				this.calendarOrigin = calendarOrigin;
@@ -693,7 +694,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 			}
 
 			@Override
@@ -703,7 +704,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				String id = name.getLocalPart();
 				switch (id) {
 					case XML_RECTANGLE:
@@ -717,7 +718,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 				switch (creator.getId()) {
 					case XML_RECTANGLE:
 						this.rectangle = (Rectangle) created;
@@ -734,7 +735,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 		}
 
-		private Integer getValue(Solvis solvis) throws IOException, TerminationException {
+		private Integer getValue(final Solvis solvis) throws IOException, TerminationException {
 			solvis.send(this.touch);
 			solvis.clearCurrentScreen();
 			MyImage image = solvis.getCurrentScreen().getImage();
@@ -761,7 +762,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 		private final String burnerId;
 		private final String hotWaterPumpId;
 
-		private DisableClockSetting(String burnerId, String hotWaterPumpId) {
+		private DisableClockSetting(final String burnerId, final String hotWaterPumpId) {
 			this.burnerId = burnerId;
 			this.hotWaterPumpId = hotWaterPumpId;
 		}
@@ -779,12 +780,12 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			private String burnerId;
 			private String hotWaterPumpId = null;
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "burnerId":
 						this.burnerId = value;
@@ -802,25 +803,25 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 			}
 
 		}
-		
-		public void instantiate(Solvis solvis, Executable executable) {
+
+		public void instantiate(final Solvis solvis, final Executable executable) {
 			AllSolvisData allData = solvis.getAllSolvisData();
-			
+
 			SolvisData burnerChannel = allData.get(this.burnerId);
 			burnerChannel.register(executable);
-			
+
 			SolvisData hotWaterPumpChannel = allData.get(this.hotWaterPumpId);
 			hotWaterPumpChannel.register(executable);
-			
+
 		}
 
 	}

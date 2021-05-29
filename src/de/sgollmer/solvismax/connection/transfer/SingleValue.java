@@ -31,22 +31,22 @@ public class SingleValue implements IValue {
 	SingleValue() {
 	}
 
-	public SingleValue(String value) {
+	public SingleValue(final String value) {
 		this.data = new StringData(value, -1);
 	}
 
-	public SingleValue(SingleData<?> data) {
+	public SingleValue(final SingleData<?> data) {
 		this.data = data;
 	}
 
 	@Override
-	public void addTo(StringBuilder builder) {
+	public void addTo(final StringBuilder builder) {
 		builder.append(this.data.toJson());
 
 	}
 
 	@Override
-	public int from(String json, int position, long timeStamp) throws JsonException {
+	public int from(final String json, final int position, final long timeStamp) throws JsonException {
 		String sub = json.substring(position);
 		Matcher m = VALUE.matcher(sub);
 		if (!m.matches()) {

@@ -13,11 +13,11 @@ public class TypeException extends Exception {
 	 */
 	private static final long serialVersionUID = -3880012451025478665L;
 
-	public TypeException(String message) {
+	public TypeException(final String message) {
 		super(message);
 	}
 
-	public TypeException(Throwable throwable) {
+	public TypeException(final Throwable throwable) {
 		super(throwable);
 	}
 }

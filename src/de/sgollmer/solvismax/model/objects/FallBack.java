@@ -37,15 +37,15 @@ public class FallBack implements IAssigner {
 	private final FallBack lastChance;
 
 	private interface IFallBackObject extends IAssigner {
-		void execute(Solvis solvis) throws IOException, TerminationException;
+		void execute(final Solvis solvis) throws IOException, TerminationException;
 	}
 
-	private FallBack(Collection<IFallBackObject> sequence, FallBack lastChance) {
+	private FallBack(final Collection<IFallBackObject> sequence, final FallBack lastChance) {
 		this.sequence = sequence;
 		this.lastChance = lastChance;
 	}
 
-	public void execute(Solvis solvis, boolean lastChance) throws IOException, TerminationException {
+	public void execute(final Solvis solvis, final boolean lastChance) throws IOException, TerminationException {
 		if (lastChance && this.lastChance != null) {
 			this.lastChance.execute(solvis, false);
 		} else {
@@ -56,7 +56,8 @@ public class FallBack implements IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 		for (IFallBackObject obj : this.sequence) {
 			obj.assign(description);
 		}
@@ -72,13 +73,13 @@ public class FallBack implements IAssigner {
 		private FallBack lastChance = null;
 		private final boolean inner;
 
-		Creator(String id, BaseCreator<?> creator, boolean inner) {
+		Creator(final String id, final BaseCreator<?> creator, boolean inner) {
 			super(id, creator);
 			this.inner = inner;
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
 
 		@Override
@@ -87,7 +88,7 @@ public class FallBack implements IAssigner {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_BACK:
@@ -104,7 +105,7 @@ public class FallBack implements IAssigner {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_BACK:
 					this.sequence.add((Back) created);
@@ -123,12 +124,12 @@ public class FallBack implements IAssigner {
 
 	private static class ScreenRef extends de.sgollmer.solvismax.model.objects.screen.ScreenRef
 			implements IFallBackObject {
-		private ScreenRef(String id) {
+		private ScreenRef(final String id) {
 			super(id);
 		}
 
 		@Override
-		public void execute(Solvis solvis) throws IOException, TerminationException {
+		public void execute(final Solvis solvis) throws IOException, TerminationException {
 			Screen screen = (Screen) this.getScreen().getIfSingle();
 
 			if (screen == null) {
@@ -142,7 +143,7 @@ public class FallBack implements IAssigner {
 
 		private static class Creator extends de.sgollmer.solvismax.model.objects.screen.ScreenRef.Creator {
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
@@ -156,9 +157,9 @@ public class FallBack implements IAssigner {
 	}
 
 	private static class Back implements IFallBackObject {
-		
+
 		private Back() {
-			
+
 		}
 
 		@Override
@@ -168,12 +169,12 @@ public class FallBack implements IAssigner {
 
 		private static class Creator extends CreatorByXML<Back> {
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 
 			}
 
@@ -183,18 +184,18 @@ public class FallBack implements IAssigner {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 			}
 
 		}
 
 		@Override
-		public void assign(SolvisDescription description) {
+		public void assign(final SolvisDescription description) {
 		}
 
 	}

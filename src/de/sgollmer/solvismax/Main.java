@@ -92,7 +92,7 @@ public class Main {
 		}
 	}
 
-	private void execute(String[] args) {
+	private void execute(final String[] args) {
 
 		String createTaskName = null;
 		String baseXml = null;
@@ -403,7 +403,7 @@ public class Main {
 
 	}
 
-	private void serverRestartAndExit(BaseData baseData, String agentlibOption) {
+	private void serverRestartAndExit(final BaseData baseData, final String agentlibOption) {
 		try {
 			long unsuccessfullTime = System.currentTimeMillis() + Constants.MAX_WAIT_TIME_TERMINATING_OTHER_SERVER;
 			ServerSocket serverSocket = null;
@@ -434,7 +434,7 @@ public class Main {
 		LogManager.exit(ExitCodes.OK);
 	}
 
-	private void serverTerminateAndExit(BaseData baseData) {
+	private void serverTerminateAndExit(final BaseData baseData) {
 		int port = baseData.getPort();
 		TerminateClient client = new TerminateClient(port);
 		try {
@@ -457,7 +457,7 @@ public class Main {
 		LogManager.exit(ExitCodes.OK);
 	}
 
-	void shutDownHandling(boolean out) {
+	void shutDownHandling(final boolean out) {
 		if (this.shutdownExecuted) {
 			return;
 		}
@@ -485,7 +485,7 @@ public class Main {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		Main.getInstance().execute(args);
 	}
 
@@ -507,7 +507,7 @@ public class Main {
 		}
 	}
 
-	private ServerSocket openSocket(int port) {
+	private ServerSocket openSocket(final int port) {
 		ServerSocket serverSocket = null;
 		;
 		try {
@@ -519,7 +519,7 @@ public class Main {
 		return serverSocket;
 	}
 
-	private void closeSocket(ServerSocket socket) {
+	private void closeSocket(final ServerSocket socket) {
 		try {
 			socket.close();
 		} catch (IOException e) {

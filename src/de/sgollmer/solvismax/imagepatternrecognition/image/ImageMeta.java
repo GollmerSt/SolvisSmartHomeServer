@@ -14,7 +14,7 @@ public class ImageMeta {
 	private final int treshold;
 	private final boolean invert;
 
-	ImageMeta(MyImage image) {
+	ImageMeta(final MyImage image) {
 
 		int minBrightness = 256 * 3;
 		int maxBrightness = 0;
@@ -41,12 +41,12 @@ public class ImageMeta {
 
 	}
 
-	boolean isActive(int rgb) {
+	boolean isActive(final int rgb) {
 		int brightness = ImageHelper.getBrightness(rgb);
 		return (brightness < this.treshold) != this.invert;
 	}
 
-	boolean isLight(int rgb) {
+	boolean isLight(final int rgb) {
 		int brightness = ImageHelper.getBrightness(rgb);
 		return brightness > this.treshold;
 	}

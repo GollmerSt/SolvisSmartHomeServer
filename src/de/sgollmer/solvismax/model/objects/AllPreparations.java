@@ -26,11 +26,11 @@ public class AllPreparations {
 
 	private final Collection<Preparation> preparations;
 
-	private AllPreparations(Collection<Preparation> preparations) {
+	private AllPreparations(final Collection<Preparation> preparations) {
 		this.preparations = preparations;
 	}
 
-	public Preparation get(String id) {
+	public Preparation get(final String id) {
 		if (id == null) {
 			return null;
 		}
@@ -46,12 +46,12 @@ public class AllPreparations {
 
 		private final Collection<Preparation> preparations = new ArrayList<>();
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
 
 		@Override
@@ -60,7 +60,7 @@ public class AllPreparations {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_PREPARATION:
@@ -70,11 +70,11 @@ public class AllPreparations {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_PREPARATION:
-					Preparation p = (Preparation) created ;
-					if ( this.preparations.contains(p)) {
+					Preparation p = (Preparation) created;
+					if (this.preparations.contains(p)) {
 						logger.error("Preparation <" + p.getId() + "> is not unique.");
 					}
 					this.preparations.add((Preparation) created);
@@ -88,7 +88,7 @@ public class AllPreparations {
 	public static class PreparationRef {
 		private final String preparationId;
 
-		private PreparationRef(String preparationId) {
+		private PreparationRef(final String preparationId) {
 			this.preparationId = preparationId;
 		}
 
@@ -100,12 +100,12 @@ public class AllPreparations {
 
 			private String preparationId = null;
 
-			public Creator(String id, BaseCreator<?> creator) {
+			public Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "refId":
 						this.preparationId = value;
@@ -119,12 +119,12 @@ public class AllPreparations {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 			}
 
 		}

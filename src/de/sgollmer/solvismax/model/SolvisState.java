@@ -32,7 +32,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	private boolean solvisClockValid = false;
 	private boolean solvisDataValid = false;
 
-	SolvisState(Solvis solvis) {
+	SolvisState(final Solvis solvis) {
 		this.solvis = solvis;
 	}
 
@@ -48,7 +48,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	 * @param description
 	 */
 
-	public void setError(boolean error, ChannelDescription description) {
+	public void setError(final boolean error, final ChannelDescription description) {
 		ErrorChanged changed;
 		synchronized (this) {
 			if (error) {
@@ -68,7 +68,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	 * @return
 	 */
 
-	boolean setError(Event errorEvent, SolvisScreen errorScreen) {
+	boolean setError(final Event errorEvent, final SolvisScreen errorScreen) {
 		boolean errorVisible = errorEvent.isError();
 		ErrorChanged changed = ErrorChanged.NONE;
 		boolean isHomeScreen = SolvisScreen.get(errorScreen) == this.solvis.getHomeScreen();
@@ -91,7 +91,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 		return processError(changed, null);
 	}
 
-	private boolean processError(ErrorChanged errorChangeState, ChannelDescription description) {
+	private boolean processError(final ErrorChanged errorChangeState, final ChannelDescription description) {
 		String errorName = description == null ? "Message box" : description.getId();
 
 		boolean channelError;
@@ -138,7 +138,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	}
 
 	public void setDisconnected() {
-			this.setState(SolvisStatus.SOLVIS_DISCONNECTED);
+		this.setState(SolvisStatus.SOLVIS_DISCONNECTED);
 	}
 
 	public synchronized SolvisStatus getState() {
@@ -151,13 +151,13 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 		}
 	}
 
-	private void setState(SolvisStatus state) {
+	private void setState(final SolvisStatus state) {
 
 		SolvisStatePackage solvisStatePackage = this.setStateWONotify(state);
 		this.notify(solvisStatePackage);
 	}
 
-	private synchronized SolvisStatePackage setStateWONotify(SolvisStatus state) {
+	private synchronized SolvisStatePackage setStateWONotify(final SolvisStatus state) {
 		if (state == null) {
 			return null;
 		}
@@ -186,14 +186,14 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	}
 
 	@Override
-	public void notify(SolvisStatePackage solvisStatePackage) {
+	public void notify(final SolvisStatePackage solvisStatePackage) {
 		if (solvisStatePackage != null) {
 			super.notify(solvisStatePackage);
 		}
 	}
 
 	@Override
-	public boolean notify(SolvisStatePackage solvisStatePackage, Object source) {
+	public boolean notify(final SolvisStatePackage solvisStatePackage, final Object source) {
 		if (solvisStatePackage != null) {
 			return super.notify(solvisStatePackage, source);
 		}
@@ -250,7 +250,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 		return this.errorScreen != null;
 	}
 
-	public void setSolvisClockValid(boolean valid) {
+	public void setSolvisClockValid(final boolean valid) {
 		SolvisStatePackage solvisStatePackage = null;
 		synchronized (this) {
 			this.solvisClockValid = valid;
@@ -260,7 +260,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 		this.notify(solvisStatePackage);
 	}
 
-	public void setSolvisDataValid(boolean valid) {
+	public void setSolvisDataValid(final boolean valid) {
 		SolvisStatePackage solvisStatePackage = null;
 		synchronized (this) {
 			this.solvisDataValid = valid;
@@ -280,7 +280,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 		return state;
 	}
 
-	public void connectionSuccessfull(String urlBase) {
+	public void connectionSuccessfull(final String urlBase) {
 
 		switch (this.state) {
 			case POWER_OFF:

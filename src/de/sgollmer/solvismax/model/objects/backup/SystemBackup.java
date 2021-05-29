@@ -28,13 +28,13 @@ public class SystemBackup {
 	private Solvis owner;
 	private final Reference<Long> timeOfLastBackup;
 
-	private SystemBackup(String id, Collection<IValue> values, Reference<Long> timeOfLastBackup) {
+	private SystemBackup(final String id, final Collection<IValue> values, final Reference<Long> timeOfLastBackup) {
 		this.id = id;
 		this.values = values;
 		this.timeOfLastBackup = timeOfLastBackup;
 	}
 
-	SystemBackup(String id, Reference<Long> timeOfLastBackup) {
+	SystemBackup(final String id, final Reference<Long> timeOfLastBackup) {
 		this(id, new ArrayList<>(), timeOfLastBackup);
 	}
 
@@ -42,7 +42,7 @@ public class SystemBackup {
 		return this.values;
 	}
 
-	public void add(IValue value) {
+	public void add(final IValue value) {
 		this.values.add(value);
 	}
 
@@ -52,13 +52,13 @@ public class SystemBackup {
 		private final Collection<IValue> values = new ArrayList<>();
 		private final Reference<Long> timeOfLastBackup;
 
-		Creator(String id, BaseCreator<?> creator, Reference<Long> timeOfLastBackup) {
+		Creator(final String id, final BaseCreator<?> creator, final Reference<Long> timeOfLastBackup) {
 			super(id, creator);
 			this.timeOfLastBackup = timeOfLastBackup;
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -72,7 +72,7 @@ public class SystemBackup {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case Measurement.XML_MEASUREMENT:
@@ -82,7 +82,7 @@ public class SystemBackup {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case Measurement.XML_MEASUREMENT:
 					this.values.add((IValue) created);
@@ -93,7 +93,7 @@ public class SystemBackup {
 
 	}
 
-	void writeXml(XMLStreamWriter writer) throws XMLStreamException {
+	void writeXml(final XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeAttribute("id", this.id);
 		for (IValue value : this.values) {
 			value.writeXml(writer);
@@ -110,7 +110,7 @@ public class SystemBackup {
 		return this.owner;
 	}
 
-	void setOwner(Solvis owner) {
+	void setOwner(final Solvis owner) {
 		this.owner = owner;
 	}
 
@@ -124,7 +124,7 @@ public class SystemBackup {
 	}
 
 	public interface IValue {
-		void writeXml(XMLStreamWriter writer) throws XMLStreamException;
+		void writeXml(final XMLStreamWriter writer) throws XMLStreamException;
 
 		public String getId();
 

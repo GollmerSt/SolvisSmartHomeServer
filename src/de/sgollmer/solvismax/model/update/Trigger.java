@@ -15,7 +15,7 @@ public class Trigger {
 	private Trigger(String id) {
 		this.id = id;
 	}
-	
+
 	public String getId() {
 		return this.id;
 	}
@@ -24,7 +24,7 @@ public class Trigger {
 
 		private String id;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -34,23 +34,23 @@ public class Trigger {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> arg0, Object arg1) throws XmlException {
-			
+		public void created(final CreatorByXML<?> arg0, final Object arg1) throws XmlException {
+
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName arg0) {
+		public CreatorByXML<?> getCreator(final QName arg0) {
 			return null;
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
 			}
-			
+
 		}
-		
+
 	}
 }

@@ -100,8 +100,8 @@ public class Measurement extends ChannelSource {
 	// 130B0F Datum 15.11.2019
 	// 49AB00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-	private Measurement(String channelId, Strategy type, int divisor, boolean average, int delayAfterSwitchingOn,
-			boolean fast, Collection<Field> fields) throws XmlException {
+	private Measurement(final String channelId, final Strategy type, final int divisor, final boolean average,
+			final int delayAfterSwitchingOn, final boolean fast, final Collection<Field> fields) throws XmlException {
 		this.type = type;
 		this.divisor = divisor;
 		this.average = average;
@@ -114,12 +114,12 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public boolean isDelayed(Solvis solvis) {
+	public boolean isDelayed(final Solvis solvis) {
 		return solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn;
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis, long executionStartTime)
+	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime)
 			throws PowerOnException, IOException, TerminationException, NumberFormatException {
 
 		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
@@ -131,12 +131,12 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, SolvisData value) {
+	public SetResult setValue(final Solvis solvis, final SolvisData value) {
 		return null;
 	}
 
 	@Override
-	public SetResult setValueFast(Solvis solvis, SolvisData value) {
+	public SetResult setValueFast(final Solvis solvis, final SolvisData value) {
 		return null;
 	}
 
@@ -156,7 +156,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public IInstance instantiate(Solvis solvis) {
+	public IInstance instantiate(final Solvis solvis) {
 		return null;
 	}
 
@@ -170,13 +170,13 @@ public class Measurement extends ChannelSource {
 		private boolean fast = false;
 		private final Collection<Field> fields = new ArrayList<>(2);
 
-		public Creator(String channelId, String id, BaseCreator<?> creator) {
+		public Creator(final String channelId, final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 			this.channelId = channelId;
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case "type":
@@ -205,7 +205,7 @@ public class Measurement extends ChannelSource {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_FIELD:
@@ -215,7 +215,7 @@ public class Measurement extends ChannelSource {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_FIELD:
 					this.fields.add((Field) created);
@@ -227,11 +227,11 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException {
+	public void learn(final Solvis solvis) throws IOException {
 	}
 
 	@Override
@@ -240,7 +240,7 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public Screen getScreen(Solvis solvis) {
+	public Screen getScreen(final Solvis solvis) {
 		return null;
 	}
 
@@ -268,17 +268,17 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
+	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
 		return null;
 	}
 
 	@Override
-	public ChannelDescription getRestoreChannel(Solvis solvis) {
+	public ChannelDescription getRestoreChannel(final Solvis solvis) {
 		return null;
 	}
 
 	@Override
-	protected SingleData<?> createSingleData(String value, long timeStamp) {
+	protected SingleData<?> createSingleData(final String value, final long timeStamp) {
 		return null;
 	}
 
@@ -286,8 +286,8 @@ public class Measurement extends ChannelSource {
 		// public boolean get(SolvisData destin, Collection<Field> fields,
 		// SolvisMeasurements data)
 
-		public boolean get(SolvisData dest, Collection<Field> fields, SolvisMeasurements measureData, Solvis solvis)
-				throws PowerOnException, IOException, NumberFormatException;
+		public boolean get(final SolvisData dest, final Collection<Field> fields, final SolvisMeasurements measureData,
+				final Solvis solvis) throws PowerOnException, IOException, NumberFormatException;
 
 		public boolean isNumeric();
 
@@ -312,13 +312,13 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public Integer getScanInterval_ms(Solvis solvis) {
+	public Integer getScanInterval_ms(final Solvis solvis) {
 		return this.isFast() ? solvis.getUnit().getMeasurementsIntervalFast_ms()
 				: solvis.getUnit().getMeasurementsInterval_ms();
 	}
 
 	@Override
-	public String getCsvMeta(String column, boolean semicolon) {
+	public String getCsvMeta(final String column, final boolean semicolon) {
 		switch (column) {
 			case Csv.DIVISOR:
 				return Integer.toString(this.divisor);

@@ -23,7 +23,7 @@ public class Units {
 
 	private final Collection<Unit> units;
 
-	private Units(Collection<Unit> units) {
+	private Units(final Collection<Unit> units) {
 		this.units = units;
 	}
 
@@ -35,12 +35,12 @@ public class Units {
 
 		private final Collection<Unit> units = new ArrayList<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
 
 		@Override
@@ -49,7 +49,7 @@ public class Units {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_UNITS_UNIT:
@@ -59,7 +59,7 @@ public class Units {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_UNITS_UNIT:
 					this.units.add((Unit) created);

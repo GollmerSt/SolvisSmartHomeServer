@@ -15,12 +15,12 @@ public enum ServerStatus {
 
 	private final boolean online;
 
-	private ServerStatus(boolean online) {
+	private ServerStatus(final boolean online) {
 		this.online = online;
 	}
 
 	public MqttData getMqttData() {
-		return new MqttData(Constants.Mqtt.SERVER_PREFIX + '/' + Constants.Mqtt.ONLINE_STATUS, Boolean.toString(this.online),
-				0, true, null);
+		return new MqttData(Constants.Mqtt.SERVER_PREFIX + '/' + Constants.Mqtt.ONLINE_STATUS,
+				Boolean.toString(this.online), 0, true, null);
 	}
 }

@@ -51,7 +51,7 @@ public class StrategyMode implements IStrategy {
 	private final List<ModeEntry> modes;
 	private final boolean sequence;
 
-	private StrategyMode(List<ModeEntry> modes, boolean sequence) {
+	private StrategyMode(final List<ModeEntry> modes, final boolean sequence) {
 		this.modes = modes;
 		this.sequence = sequence;
 	}
@@ -62,8 +62,8 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public ModeValue<ModeEntry> getValue(SolvisScreen source, Solvis solvis, IControlAccess controlAccess,
-			boolean optional) throws IOException {
+	public ModeValue<ModeEntry> getValue(final SolvisScreen source, final Solvis solvis,
+			final IControlAccess controlAccess, boolean optional) throws IOException {
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
 			MyImage image = new MyImage(source.getImage(), rectangle, true);
@@ -86,7 +86,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
 			throws IOException, TerminationException, TypeException {
 		if (value.getMode() == null) {
 			throw new TypeException("Wrong value type");
@@ -113,7 +113,7 @@ public class StrategyMode implements IStrategy {
 			solvis.send(mode.getGuiSet().getTouch());
 			cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
 			if (cmp != null && value.getMode().equals(cmp)) {
-				return new SetResult(ResultStatus.SUCCESS, cmp,true);
+				return new SetResult(ResultStatus.SUCCESS, cmp, true);
 			}
 		}
 
@@ -121,7 +121,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SetResult setValueFast(Solvis solvis, SolvisData value) {
+	public SetResult setValueFast(final Solvis solvis, final SolvisData value) {
 		return null;
 	}
 
@@ -140,12 +140,12 @@ public class StrategyMode implements IStrategy {
 		private final List<ModeEntry> modes = new ArrayList<>(5);
 		private boolean sequence = false;
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 
 		}
 
@@ -155,7 +155,7 @@ public class StrategyMode implements IStrategy {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_MODE_ENTRY:
@@ -165,7 +165,7 @@ public class StrategyMode implements IStrategy {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_MODE_ENTRY:
 					ModeEntry entry = (ModeEntry) created;
@@ -187,7 +187,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws AssignmentException {
+	public void assign(final SolvisDescription description) throws AssignmentException {
 		for (ModeEntry mode : this.modes) {
 			mode.assign(description);
 		}
@@ -208,7 +208,7 @@ public class StrategyMode implements IStrategy {
 		return true;
 	}
 
-	private boolean learnByButton(Solvis solvis, IControlAccess controlAccess) throws TerminationException {
+	private boolean learnByButton(final Solvis solvis, final IControlAccess controlAccess) throws TerminationException {
 		boolean successfull = true;
 		for (ModeEntry mode : this.getModes()) {
 			try {
@@ -232,7 +232,8 @@ public class StrategyMode implements IStrategy {
 		return successfull;
 	}
 
-	private boolean learnByWhiteRectangles(Solvis solvis, IControlAccess controlAccess) throws TerminationException {
+	private boolean learnByWhiteRectangles(final Solvis solvis, final IControlAccess controlAccess)
+			throws TerminationException {
 		boolean successfull = true;
 		List<ModeEntry> toLearn = new ArrayList<>(this.getModes());
 		try {
@@ -277,7 +278,7 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis, IControlAccess controlAccess) throws TerminationException {
+	public boolean learn(final Solvis solvis, final IControlAccess controlAccess) throws TerminationException {
 		boolean successfull = true;
 		if (this.sequence) {
 			successfull = learnByWhiteRectangles(solvis, controlAccess);
@@ -309,12 +310,12 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
+	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
 		return this.interpretSetData(singleData.toString(), singleData.getTimeStamp());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private SingleData<?> interpretSetData(String value, long timeStamp) throws TypeException {
+	private SingleData<?> interpretSetData(final String value, final long timeStamp) throws TypeException {
 		IMode<?> setMode = null;
 		for (IMode<?> mode : this.getModes()) {
 			if (mode.getName().equals(value)) {
@@ -343,12 +344,12 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
+	public SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException {
 		return this.interpretSetData(value, timeStamp);
 	}
 
 	@Override
-	public String getCsvMeta(String column, boolean semicolon) {
+	public String getCsvMeta(final String column, final boolean semicolon) {
 		switch (column) {
 			case Csv.MODES:
 				StringBuilder builder = new StringBuilder();
@@ -366,12 +367,12 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public void setControl(Control control) {
+	public void setControl(final Control control) {
 		for (ModeEntry mode : this.modes) {
 			if (mode.getGuiSet().getGrafic() != null)
 				mode.getGuiSet().getGrafic().setRectangle(control.getGuiAccess().getValueRectangle());
 		}
-		
+
 	}
 
 }

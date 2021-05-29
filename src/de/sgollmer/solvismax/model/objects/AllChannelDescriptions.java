@@ -51,7 +51,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	private AllChannelDescriptions() {
 	}
 
-	private void addDescription(ChannelDescription description) throws XmlException {
+	private void addDescription(final ChannelDescription description) throws XmlException {
 		OfConfigs<ChannelDescription> channelConf = this.descriptions.get(description.getId());
 		if (channelConf == null) {
 			channelConf = new OfConfigs<ChannelDescription>();
@@ -60,11 +60,11 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		channelConf.verifyAndAdd(description);
 	}
 
-	public OfConfigs<ChannelDescription> get(String id) {
+	public OfConfigs<ChannelDescription> get(final String id) {
 		return this.descriptions.get(id);
 	}
 
-	public ChannelDescription get(String id, Solvis solvis) {
+	public ChannelDescription get(final String id, final Solvis solvis) {
 		OfConfigs<ChannelDescription> descriptions = this.descriptions.get(id);
 		if (descriptions == null) {
 			return null;
@@ -74,7 +74,8 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 		for (OfConfigs<ChannelDescription> channelConf : this.descriptions.values()) {
 			channelConf.assign(description);
 		}
@@ -88,12 +89,12 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 		private final AllChannelDescriptions descriptions = new AllChannelDescriptions();
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 
 		}
 
@@ -103,7 +104,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			if (id.equals(XML_CHANNEL_DESCRIPTION)) {
 				return new ChannelDescription.Creator(id, this.getBaseCreator());
@@ -112,7 +113,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_CHANNEL_DESCRIPTION:
 					this.descriptions.addDescription((ChannelDescription) created);
@@ -123,7 +124,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException {
+	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
 			if (description != null && description instanceof IGraficsLearnable) {
@@ -136,7 +137,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		ALL, FAST, STANDARD
 	}
 
-	public void measure(Solvis solvis, AllSolvisData datas, MeasureMode mode)
+	public void measure(final Solvis solvis, final AllSolvisData datas, final MeasureMode mode)
 			throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		solvis.clearMeasuredData();
 		solvis.getMeasureData();
@@ -162,7 +163,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		}
 	}
 
-	public void init(Solvis solvis) throws IOException, AssignmentException, AliasException {
+	public void init(final Solvis solvis) throws IOException, AssignmentException, AliasException {
 		AllSolvisData datas = solvis.getAllSolvisData();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
@@ -187,15 +188,15 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 //	private Map<ConfigurationMask, Collection<ChannelDescription>> updateByScreenChangeSequences = new HashMap<>();
 
-	public void updateControlChannels(Solvis solvis) {
+	public void updateControlChannels(final Solvis solvis) {
 		this.updateChannels(solvis, Type.ALL_CONTROL, this.updateControlChannelsSequences);
 	}
 
-	public void updateReadOnlyControlChannels(Solvis solvis) {
+	public void updateReadOnlyControlChannels(final Solvis solvis) {
 		this.updateChannels(solvis, Type.READONLY, this.updateReadOnlyControlChannelsSequences);
 	}
 
-	public void updateByHumanAccessFinished(Solvis solvis) {
+	public void updateByHumanAccessFinished(final Solvis solvis) {
 		this.updateChannels(solvis, Type.HUMAN_ACCESS_DEPENDEND, this.updateByScreenChangeSequences);
 	}
 
@@ -207,13 +208,13 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		private final boolean admin;
 		private final long configurationMask;
 
-		public ChannelConfig(Solvis solvis) {
+		public ChannelConfig(final Solvis solvis) {
 			this.admin = solvis.isAdmin();
 			this.configurationMask = solvis.getConfigurationMask();
 		}
 
 		@Override
-		public boolean equals(Object obj) {
+		public boolean equals(final Object obj) {
 			if (!(obj instanceof ChannelConfig)) {
 				return false;
 			} else {
@@ -228,7 +229,8 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		}
 	}
 
-	private void updateChannels(Solvis solvis, Type type, Map<ChannelConfig, Collection<ChannelDescription>> destin) {
+	private void updateChannels(final Solvis solvis, final Type type,
+			final Map<ChannelConfig, Collection<ChannelDescription>> destin) {
 
 		ChannelConfig config = new ChannelConfig(solvis);
 		Collection<ChannelDescription> descriptions = destin.get(config);
@@ -269,7 +271,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		return;
 	}
 
-	private Collection<ChannelDescription> optimize(List<ChannelDescription> descriptions, Solvis solvis) {
+	private Collection<ChannelDescription> optimize(final List<ChannelDescription> descriptions, final Solvis solvis) {
 
 		Collection<ChannelDescription> toFind = new ArrayList<>(descriptions);
 
@@ -280,7 +282,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		return optimized;
 	}
 
-	private void buildOptimized(Screen start, Collection<ChannelDescription> toFind,
+	private void buildOptimized(final Screen start, final Collection<ChannelDescription> toFind,
 			Collection<ChannelDescription> destin, final Solvis solvis) {
 
 		List<ChannelDescription> channelsOfScreenChannelDescriptions = new ArrayList<>();
@@ -336,7 +338,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 	}
 
-	public Collection<ChannelDescription> getChannelDescriptions(AbstractScreen screen, Solvis solvis) {
+	public Collection<ChannelDescription> getChannelDescriptions(final AbstractScreen screen, final Solvis solvis) {
 		Collection<ChannelDescription> result = new ArrayList<>();
 		for (OfConfigs<ChannelDescription> descriptionsC : this.descriptions.values()) {
 			ChannelDescription description = descriptionsC.get(solvis);

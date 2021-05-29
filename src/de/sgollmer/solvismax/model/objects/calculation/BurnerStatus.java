@@ -33,12 +33,12 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		super(null);
 	}
 
-	private BurnerStatus(Calculation calculation) {
+	private BurnerStatus(final Calculation calculation) {
 		super(calculation);
 	}
 
 	@Override
-	protected BurnerStatus create(Calculation calculation) {
+	protected BurnerStatus create(final Calculation calculation) {
 		return new BurnerStatus(calculation);
 	}
 
@@ -47,7 +47,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 
 		private String name;
 
-		private Status(String name) {
+		private Status(final String name) {
 			this.name = name;
 		}
 
@@ -57,7 +57,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		}
 
 		@Override
-		public ModeValue<?> create(long timeStamp) {
+		public ModeValue<?> create(final long timeStamp) {
 			return new ModeValue<>(this, timeStamp);
 		}
 
@@ -78,7 +78,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	}
 
 	@Override
-	void instantiate(Solvis solvis) throws AssignmentException, AliasException {
+	void instantiate(final Solvis solvis) throws AssignmentException, AliasException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		AliasGroup aliasGroup = this.calculation.getAliasGroup();
 
@@ -106,7 +106,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		private final SolvisData burnerLevel1On;
 		private final SolvisData burnerLevel2On;
 
-		private Executable(SolvisData result, SolvisData burnerLevel1On, SolvisData burnerLevel2On) {
+		private Executable(final SolvisData result, final SolvisData burnerLevel1On, final SolvisData burnerLevel2On) {
 			this.result = result;
 			this.burnerLevel1On = burnerLevel1On;
 			this.burnerLevel2On = burnerLevel2On;
@@ -117,7 +117,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 		}
 
 		@Override
-		public void update(SolvisData data, Object source) {
+		public void update(final SolvisData data, final Object source) {
 
 			Status result = null;
 
@@ -147,7 +147,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 
 	}
 

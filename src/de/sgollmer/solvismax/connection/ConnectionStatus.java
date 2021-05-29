@@ -13,16 +13,15 @@ public enum ConnectionStatus {
 //	CONNECTED, DISCONNECTED,
 	COMMAND_ERROR(false), //
 	ALIVE(false);
-	
-	private final boolean humanAccess ;
-	
-	private ConnectionStatus(boolean humanAccess) {
+
+	private final boolean humanAccess;
+
+	private ConnectionStatus(final boolean humanAccess) {
 		this.humanAccess = humanAccess;
 	}
-	
+
 	public boolean isHumanAccess() {
 		return this.humanAccess;
 	}
-	
-	
+
 }

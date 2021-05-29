@@ -26,12 +26,12 @@ public class AllChannelAssignments {
 
 		private final Map<String, OfConfigs<ChannelAssignment>> configurations = new HashMap<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 
 		}
 
@@ -41,7 +41,7 @@ public class AllChannelAssignments {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 
 			switch (id) {
@@ -52,7 +52,7 @@ public class AllChannelAssignments {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_CHANNEL_ASSIGNMENT:
 					ChannelAssignment assignment = (ChannelAssignment) created;
@@ -71,7 +71,7 @@ public class AllChannelAssignments {
 
 	}
 
-	public ChannelAssignment get(String id, Solvis solvis) {
+	public ChannelAssignment get(final String id, final Solvis solvis) {
 		ChannelAssignment result = null;
 		OfConfigs<ChannelAssignment> assignments = this.configurations.get(id);
 		if (assignments != null) {

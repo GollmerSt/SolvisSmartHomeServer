@@ -32,7 +32,7 @@ public class Configuration {
 		this.extensions = extensions;
 	}
 
-	public long getConfigurationMask(SolvisDescription description) {
+	public long getConfigurationMask(final SolvisDescription description) {
 		long mask = 0L;
 		Configurations configurations = description.getConfigurations();
 		if (this.solvisType != null) {
@@ -63,12 +63,12 @@ public class Configuration {
 		private String solarType = null;
 		private Collection<String> extensions;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 			switch (name.getLocalPart()) {
 				case "type":
 					this.solvisType = value;
@@ -93,7 +93,7 @@ public class Configuration {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_EXTENSIONS:
@@ -103,7 +103,7 @@ public class Configuration {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_EXTENSIONS:
 					Extensions extensions = (Extensions) created;
@@ -125,12 +125,12 @@ public class Configuration {
 
 			private final Collection<String> extensions = new ArrayList<>();
 
-			public ExtensionsCreator(String id, BaseCreator<?> creator) {
+			public ExtensionsCreator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) throws XmlException {
+			public void setAttribute(final QName name, final String value) throws XmlException {
 			}
 
 			@Override
@@ -139,7 +139,7 @@ public class Configuration {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				String id = name.getLocalPart();
 				switch (id) {
 					case XML_EXTENSION:
@@ -149,7 +149,7 @@ public class Configuration {
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+			public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 				switch (creator.getId()) {
 					case XML_EXTENSION:
 						this.extensions.add(((Extension) created).extension);
@@ -172,12 +172,12 @@ public class Configuration {
 
 			private String extension;
 
-			public ExtensionCreator(String id, BaseCreator<?> creator) {
+			public ExtensionCreator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) throws XmlException {
+			public void setAttribute(final QName name, final String value) throws XmlException {
 				switch (name.getLocalPart()) {
 					case "id":
 						this.extension = value;
@@ -191,12 +191,12 @@ public class Configuration {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+			public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 
 			}
 

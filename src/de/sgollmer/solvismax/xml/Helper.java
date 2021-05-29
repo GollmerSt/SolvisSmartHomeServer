@@ -19,11 +19,11 @@ public class Helper {
 	public static class IntegerValue {
 		private final java.lang.Integer integer;
 
-		private IntegerValue(java.lang.Integer i) {
+		private IntegerValue(final java.lang.Integer i) {
 			this.integer = i;
 		}
 
-		public java.lang.Integer toInteger() {
+		public Integer toInteger() {
 			return this.integer;
 		}
 
@@ -31,12 +31,12 @@ public class Helper {
 
 			StringBuilder builder = new StringBuilder();
 
-			public Creator(String id, BaseCreator<?> creator) {
+			public Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 			}
 
 			@Override
@@ -49,16 +49,16 @@ public class Helper {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 			}
 
 			@Override
-			public void addCharacters(String chars) {
+			public void addCharacters(final String chars) {
 				this.builder.append(chars.trim());
 			}
 

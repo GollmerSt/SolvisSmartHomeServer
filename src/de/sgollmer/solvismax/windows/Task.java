@@ -69,7 +69,7 @@ public class Task {
 //		</Actions>
 //	</Task>
 
-	public static void createTask(String taskFileName, boolean onBoot) throws XMLStreamException, IOException {
+	public static void createTask(final String taskFileName, final boolean onBoot) throws XMLStreamException, IOException {
 
 		File taskFile = new File(taskFileName);
 		String path = System.getProperty("user.dir");

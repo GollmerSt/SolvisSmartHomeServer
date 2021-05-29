@@ -23,7 +23,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(MixerPosition0.class);
 
-	private MixerPosition0(Calculation calculation) {
+	private MixerPosition0(final Calculation calculation) {
 		super(calculation);
 	}
 
@@ -32,7 +32,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	public MixerPosition0 create(Calculation calculation) {
+	public MixerPosition0 create(final Calculation calculation) {
 		return new MixerPosition0(calculation);
 	}
 
@@ -42,7 +42,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	void instantiate(Solvis solvis) throws AssignmentException, AliasException {
+	void instantiate(final Solvis solvis) throws AssignmentException, AliasException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
@@ -70,7 +70,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		private final SolvisData pumpOn;
 		private final SolvisData mixerClosing;
 
-		private Executable(SolvisData result, SolvisData pumpOn, SolvisData mixerClosing) {
+		private Executable(final SolvisData result, final SolvisData pumpOn, final SolvisData mixerClosing) {
 			this.result = result;
 			this.pumpOn = pumpOn;
 			this.mixerClosing = mixerClosing;
@@ -79,7 +79,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 		}
 
 		@Override
-		public void update(SolvisData data, Object source) {
+		public void update(final SolvisData data, final Object source) {
 
 			boolean mixer;
 			boolean pump;
@@ -101,7 +101,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 
 	}
 

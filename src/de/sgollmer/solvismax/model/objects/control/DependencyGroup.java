@@ -15,7 +15,7 @@ import de.sgollmer.xmllibrary.XmlException;
 public class DependencyGroup implements IAssigner, Cloneable {
 	private ArrayList<Dependency> dependencies = new ArrayList<>(3);
 
-	public void add(Dependency dependency) {
+	public void add(final Dependency dependency) {
 		Integer dPriority = dependency.getPriority();
 		boolean added = false;
 		for (ListIterator<Dependency> it = this.dependencies.listIterator(); it.hasNext() && !added;) {
@@ -42,7 +42,7 @@ public class DependencyGroup implements IAssigner, Cloneable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (!(o instanceof DependencyGroup)) {
 			return false;
 		} else {
@@ -56,7 +56,8 @@ public class DependencyGroup implements IAssigner, Cloneable {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 		for (Dependency dependency : this.dependencies) {
 			dependency.assign(description);
 		}
@@ -72,7 +73,7 @@ public class DependencyGroup implements IAssigner, Cloneable {
 		return group;
 	}
 
-	public static boolean equals(DependencyGroup g1, DependencyGroup g2, Solvis solvis) {
+	public static boolean equals(final DependencyGroup g1, final DependencyGroup g2, final Solvis solvis) {
 		@SuppressWarnings("unchecked")
 		Collection<Dependency> gc1 = (Collection<Dependency>) g1.dependencies.clone();
 		@SuppressWarnings("unchecked")

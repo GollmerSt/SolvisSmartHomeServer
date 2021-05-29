@@ -22,12 +22,12 @@ public class CommandSetScreen extends Command {
 
 	private final AbstractScreen screen;
 
-	public CommandSetScreen(AbstractScreen screen) {
+	public CommandSetScreen(final AbstractScreen screen) {
 		this.screen = screen;
 	}
 
 	@Override
-	public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus) throws IOException,
+	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus) throws IOException,
 			TerminationException, PowerOnException, NumberFormatException, TypeException, XmlException {
 		solvis.setDefaultScreen(this.screen);
 		return ResultStatus.SUCCESS;
@@ -37,7 +37,7 @@ public class CommandSetScreen extends Command {
 	protected void notExecuted() {
 	}
 
-	public static MqttData getMqttMeta(Solvis solvis) {
+	public static MqttData getMqttMeta(final Solvis solvis) {
 		String topic = Mqtt.formatScreenMetaTopic();
 		List<SingleValue> values = new ArrayList<>();
 		for (Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {

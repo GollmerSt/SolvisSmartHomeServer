@@ -38,7 +38,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 	private long lastHumanAcess = System.currentTimeMillis();
 	private HumanAccess humanAccess = HumanAccess.NONE;
 
-	public AllSolvisData(Solvis solvis) {
+	public AllSolvisData(final Solvis solvis) {
 		this.solvis = solvis;
 
 		solvis.registerScreenChangedByHumanObserver(new IObserver<HumanAccess>() {
@@ -58,12 +58,12 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		return this.lastHumanAcess;
 	}
 
-	public SolvisData get(ChannelDescription description) {
+	public SolvisData get(final ChannelDescription description) {
 		String id = description.getId();
 		return this.get(id);
 	}
 
-	public SolvisData get(String id) {
+	public SolvisData get(final String id) {
 		SolvisData data = null;
 		synchronized (this) {
 			data = this.solvisDatas.get(id);
@@ -83,7 +83,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		return data;
 	}
 
-	public void add(SolvisData data) {
+	public void add(final SolvisData data) {
 		String id = data.getDescription().getId();
 		if (this.solvisDatas.put(id, data) != null) {
 			throw new UnknownError("Unknown error: <" + id + "> is not unique!!");
@@ -100,7 +100,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		}
 	}
 
-	public SolvisData checkAndGet(String id) {
+	public SolvisData checkAndGet(final String id) {
 		ChannelDescription description = this.solvis.getChannelDescription(id);
 		if (description == null) {
 			throw new UnknownError("Unknown error: <" + id + "> is unknown");
@@ -118,7 +118,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 	/**
 	 * @param averageCount the averageCount to set
 	 */
-	public void setAverageCount(int averageCount) {
+	public void setAverageCount(final int averageCount) {
 		this.averageCount = averageCount;
 	}
 
@@ -126,7 +126,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		return this.measurementHysteresisFactor;
 	}
 
-	public void setMeasurementHysteresisFactor(int measurementHysteresisFactor) {
+	public void setMeasurementHysteresisFactor(final int measurementHysteresisFactor) {
 		this.measurementHysteresisFactor = measurementHysteresisFactor;
 	}
 
@@ -137,7 +137,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		return this.solvis;
 	}
 
-	public synchronized void saveToBackup(SystemBackup systemMeasurements) {
+	public synchronized void saveToBackup(final SystemBackup systemMeasurements) {
 		systemMeasurements.clear();
 		for (SolvisData data : this.solvisDatas.values()) {
 			if (data.getDescription().mustBackuped()) {
@@ -149,7 +149,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		}
 	}
 
-	public synchronized void restoreFromBackup(SystemBackup backup) {
+	public synchronized void restoreFromBackup(final SystemBackup backup) {
 		for (SystemBackup.IValue value : backup.getValues()) {
 			if (value instanceof Measurement) {
 				SolvisData data = this.get(value.getId());
@@ -188,12 +188,12 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		return measurements;
 	}
 
-	public void notifySmartHome(SmartHomeData solvisData, Object source) {
+	public void notifySmartHome(final SmartHomeData solvisData, final Object source) {
 		this.notify(solvisData, source);
 
 	}
 
-	public void sendMetaToMqtt(Mqtt mqtt, boolean deleteRetained) throws MqttException, MqttConnectionLost {
+	public void sendMetaToMqtt(final Mqtt mqtt, final boolean deleteRetained) throws MqttException, MqttConnectionLost {
 		for (SolvisData data : this.solvisDatas.values()) {
 			MqttData mqttData = data.getChannelInstance().getMqttMeta();
 			if (deleteRetained) {
@@ -205,7 +205,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 
 	}
 
-	public SolvisData getByName(String name) {
+	public SolvisData getByName(final String name) {
 		return this.solvisDatasByName.get(name);
 	}
 

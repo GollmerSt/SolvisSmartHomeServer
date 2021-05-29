@@ -23,13 +23,14 @@ public class CommandScreenRestore extends Command {
 	private final boolean enable;
 	private final Object service;
 
-	public CommandScreenRestore(boolean enable, Object service) {
+	public CommandScreenRestore(final boolean enable, final Object service) {
 		this.enable = enable;
 		this.service = service;
 	}
 
 	@Override
-	public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus) throws IOException, PowerOnException {
+	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus)
+			throws IOException, PowerOnException {
 		solvis.screenRestore(this.enable, this.service);
 		return ResultStatus.SUCCESS;
 	}
@@ -44,7 +45,7 @@ public class CommandScreenRestore extends Command {
 	protected void notExecuted() {
 	}
 
-	public static MqttData getMqttMeta(Solvis solvis) {
+	public static MqttData getMqttMeta(final Solvis solvis) {
 		String topic = Mqtt.formatScreenMetaTopic();
 		ArrayValue array = new ArrayValue();
 		for (Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {

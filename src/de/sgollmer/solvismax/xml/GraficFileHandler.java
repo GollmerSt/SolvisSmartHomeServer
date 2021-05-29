@@ -36,14 +36,18 @@ public class GraficFileHandler {
 
 	private final File parent;
 
-	public GraficFileHandler(File writePath) {
+	public GraficFileHandler(final File path) {
 
-		if (writePath == null) {
+		File writePath;
+
+		if (path == null) {
 			String pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
 				pathName = System.getenv("APPDATA");
 			}
 			writePath = new File(pathName);
+		} else {
+			writePath = path;
 		}
 
 		this.parent = new File(writePath, Constants.Files.RESOURCE_DESTINATION);
@@ -104,7 +108,7 @@ public class GraficFileHandler {
 		return result;
 	}
 
-	public void write(AllSolvisGrafics grafics) throws IOException, XMLStreamException, FileException {
+	public void write(final AllSolvisGrafics grafics) throws IOException, XMLStreamException, FileException {
 		this.copyFiles();
 
 		File output = new File(this.parent, NAME_XML_GRAFICSFILE);

@@ -11,7 +11,7 @@ public class Maxima {
 	private final int coord;
 	private final int value;
 
-	public Maxima(int x, int value) {
+	public Maxima(final int x, final int value) {
 		this.coord = x;
 		this.value = value;
 	}

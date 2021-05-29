@@ -29,31 +29,31 @@ public class Configuration {
 	private final Collection<ConfigurationMask> masks;
 	private final Feature feature;
 
-	private Configuration(boolean admin, Collection<ConfigurationMask> masks, Feature feature) {
+	private Configuration(final boolean admin, final Collection<ConfigurationMask> masks, final Feature feature) {
 		this.admin = admin;
 		this.masks = masks;
 		this.feature = feature;
 	}
 
-	public boolean isInConfiguration(Solvis solvis) {
-		if ( solvis.isLearning() ) {
-			if ( this.admin ) {
-				solvis.addFeatureDependency( Features.XML_ADMIN ) ;
+	public boolean isInConfiguration(final Solvis solvis) {
+		if (solvis.isLearning()) {
+			if (this.admin) {
+				solvis.addFeatureDependency(Features.XML_ADMIN);
 			}
-			if ( this.feature != null ) {
-				solvis.addFeatureDependency( this.feature.getId() ) ;
+			if (this.feature != null) {
+				solvis.addFeatureDependency(this.feature.getId());
 			}
-			
+
 		}
-		if ( !solvis.isAdmin() && this.admin ) {
+		if (!solvis.isAdmin() && this.admin) {
 			return false;
 		}
-		if ( this.feature != null && !solvis.isFeature( this.feature )) {
+		if (this.feature != null && !solvis.isFeature(this.feature)) {
 			return false;
 		}
-		
-		if ( this.masks.isEmpty()) {
-			return true ;
+
+		if (this.masks.isEmpty()) {
+			return true;
 		}
 		for (ConfigurationMask mask : this.masks) {
 			if (mask.isInConfiguration(solvis.getConfigurationMask())) {
@@ -62,11 +62,11 @@ public class Configuration {
 		}
 		return false;
 	}
-	
-	public void setFeatureDependencies(Solvis solvis) {
+
+	public void setFeatureDependencies(final Solvis solvis) {
 	}
 
-	public boolean isVerified(Configuration masks) {
+	public boolean isVerified(final Configuration masks) {
 		for (ConfigurationMask maskO : this.masks) {
 			for (ConfigurationMask maskI : masks.masks) {
 				if (!maskO.isVerified(maskI)) {
@@ -83,12 +83,12 @@ public class Configuration {
 		private final Collection<ConfigurationMask> masks = new ArrayList<>();
 		private Feature feature;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "admin":
 					this.admin = Boolean.parseBoolean(value);
@@ -102,7 +102,7 @@ public class Configuration {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_CONFIGURATION_MASK:
@@ -114,13 +114,13 @@ public class Configuration {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_CONFIGURATION_MASK:
 					this.masks.add((ConfigurationMask) created);
 					break;
 				case XML_FEATURE:
-					this.feature =(Feature) created;
+					this.feature = (Feature) created;
 					break;
 			}
 		}
@@ -131,25 +131,24 @@ public class Configuration {
 		private final long andMask;
 		private final long cmpMask;
 
-		private ConfigurationMask(long andMask, long cmpMask) {
+		private ConfigurationMask(final long andMask, final long cmpMask) {
 			this.andMask = andMask;
 			this.cmpMask = cmpMask;
 		}
 
-		private boolean isInConfiguration(long configurationMask) {
-			
+		private boolean isInConfiguration(final long configurationMask) {
+
 			return this.cmpMask == (configurationMask & this.andMask);
 		}
 
-		private boolean isVerified(ConfigurationMask mask) {
+		private boolean isVerified(final ConfigurationMask mask) {
 			long andMask = this.andMask & mask.andMask;
 			return 0 != ((this.cmpMask ^ mask.cmpMask) & andMask);
 		}
 
 		@Override
 		public String toString() {
-			return "And-Mask: " + Long.toString(this.andMask, 16) + ", Cmp-Mask: "
-					+ Long.toString(this.cmpMask, 16);
+			return "And-Mask: " + Long.toString(this.andMask, 16) + ", Cmp-Mask: " + Long.toString(this.cmpMask, 16);
 		}
 
 		private static class Creator extends CreatorByXML<ConfigurationMask> {
@@ -157,12 +156,12 @@ public class Configuration {
 			private long andMask;
 			private long cmpMask;
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "andMask":
 						this.andMask = Long.decode(value);
@@ -180,17 +179,17 @@ public class Configuration {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.masks.toString();

@@ -15,7 +15,6 @@ import java.util.jar.Manifest;
 
 public class Version {
 
-
 	private String serverVersion = "01.04.00";
 	private String appendix = "3 heating circuits beta";
 

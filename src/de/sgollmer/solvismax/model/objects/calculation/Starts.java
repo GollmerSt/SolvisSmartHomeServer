@@ -22,7 +22,7 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 public class Starts extends Strategy<Starts> {
 	private static final ILogger logger = LogManager.getInstance().getLogger(Starts.class);
 
-	private Starts(Calculation calculation) {
+	private Starts(final Calculation calculation) {
 		super(calculation);
 	}
 
@@ -31,7 +31,7 @@ public class Starts extends Strategy<Starts> {
 	}
 
 	@Override
-	public Starts create(Calculation calculation) {
+	public Starts create(final Calculation calculation) {
 		return new Starts(calculation);
 	}
 
@@ -41,7 +41,7 @@ public class Starts extends Strategy<Starts> {
 	}
 
 	@Override
-	void instantiate(Solvis solvis) throws AssignmentException, AliasException {
+	void instantiate(final Solvis solvis) throws AssignmentException, AliasException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
@@ -57,7 +57,6 @@ public class Starts extends Strategy<Starts> {
 			result.setInteger(0, -1);
 		}
 
-
 		Executable executable = new Executable(result, equipmentOn);
 
 		executable.update(equipmentOn, this);
@@ -68,14 +67,14 @@ public class Starts extends Strategy<Starts> {
 		private final SolvisData equipmentOn;
 		private boolean former = false;
 
-		private Executable(SolvisData result, SolvisData equipmentOn) {
+		private Executable(final SolvisData result, final SolvisData equipmentOn) {
 			this.result = result;
 			this.equipmentOn = equipmentOn;
 			this.equipmentOn.registerContinuousObserver(this);
 		}
 
 		@Override
-		public void update(SolvisData data, Object source) {
+		public void update(final SolvisData data, final Object source) {
 
 			try {
 				boolean equipmentOn = data.getBool();
@@ -95,7 +94,7 @@ public class Starts extends Strategy<Starts> {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 	}
 
 	@Override

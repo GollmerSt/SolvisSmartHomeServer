@@ -118,7 +118,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		this.setData(data, this, false, -1L);
 	}
 
-	private synchronized void setData( final SingleData<?> setData, final Object source, final boolean forceTransmit,
+	private synchronized void setData(final SingleData<?> setData, final Object source, final boolean forceTransmit,
 			long executionStartTime) {
 
 		if (setData == null || setData.get() == null) {
@@ -130,7 +130,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		if (executionStartTime > 0L && setData.getTimeStamp() > 0L) {
 			this.executionTime = (int) (setData.getTimeStamp() - executionStartTime);
 		}
-		
+
 		SingleData<?> sendData = setData;
 
 		if (this.getDescription().isAverage()) {
@@ -418,7 +418,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			this.solvisData = solvisData;
 		}
 
-		private void notify(final boolean changed, final boolean fastChange, final Object source, final boolean forceTransmit) {
+		private void notify(final boolean changed, final boolean fastChange, final Object source,
+				final boolean forceTransmit) {
 
 			if (this.solvisData.dontSend) {
 				return;

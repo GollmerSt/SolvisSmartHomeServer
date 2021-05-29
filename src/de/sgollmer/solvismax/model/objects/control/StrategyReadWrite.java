@@ -46,8 +46,9 @@ public class StrategyReadWrite extends StrategyRead {
 	private final Integer maxExceeding;
 	private final GuiModification guiModification;
 
-	private StrategyReadWrite(int increment, int divisor, int least, int most, Integer incrementChange,
-			Integer changedIncrement, Integer maxExceeding, GuiModification guiModification) {
+	private StrategyReadWrite(final int increment, final int divisor, final int least, final int most,
+			final Integer incrementChange, final Integer changedIncrement, final Integer maxExceeding,
+			final GuiModification guiModification) {
 		super(divisor, guiModification);
 		this.increment = increment;
 		this.least = least;
@@ -64,7 +65,7 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData setValue)
+	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData setValue)
 			throws IOException, TerminationException, TypeException {
 		if (controlAccess instanceof GuiAccess) {
 			Integer target = setValue.getInteger();
@@ -92,7 +93,8 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 
 			if (current == value) {
-				return new SetResult(target == current ? ResultStatus.SUCCESS : ResultStatus.VALUE_VIOLATION, data, true);
+				return new SetResult(target == current ? ResultStatus.SUCCESS : ResultStatus.VALUE_VIOLATION, data,
+						true);
 			}
 
 			int[] dist = new int[3];
@@ -153,7 +155,7 @@ public class StrategyReadWrite extends StrategyRead {
 	 *         limits
 	 */
 
-	private int steps(int value, boolean upper) {
+	private int steps(final int value, final boolean upper) {
 		int result;
 
 		if (this.incrementChange == null) {
@@ -199,7 +201,7 @@ public class StrategyReadWrite extends StrategyRead {
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "divisor":
 					this.divisor = Integer.parseInt(value);
@@ -233,7 +235,7 @@ public class StrategyReadWrite extends StrategyRead {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_GUI_MODIFICATION:
@@ -243,7 +245,7 @@ public class StrategyReadWrite extends StrategyRead {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_GUI_MODIFICATION:
 					this.guiModification = (GuiModification) created;
@@ -255,7 +257,7 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws AssignmentException {
+	public void assign(final SolvisDescription description) throws AssignmentException {
 		if (this.guiModification != null) {
 			this.guiModification.assign(description);
 		}
@@ -281,7 +283,7 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
+	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
 		if (singleData instanceof StringData) {
 			String string = (String) singleData.get();
 			try {
@@ -302,7 +304,8 @@ public class StrategyReadWrite extends StrategyRead {
 		private final TouchPoint upper;
 		private final TouchPoint lower;
 
-		private GuiModification(String format, boolean wrapAround, TouchPoint upper, TouchPoint lower) {
+		private GuiModification(final String format, final boolean wrapAround, final TouchPoint upper,
+				final TouchPoint lower) {
 			super(format);
 			this.wrapAround = wrapAround;
 			this.upper = upper;
@@ -310,7 +313,7 @@ public class StrategyReadWrite extends StrategyRead {
 		}
 
 		@Override
-		public void assign(SolvisDescription description) throws AssignmentException {
+		public void assign(final SolvisDescription description) throws AssignmentException {
 			if (this.upper != null) {
 				this.upper.assign(description);
 			}
@@ -326,12 +329,12 @@ public class StrategyReadWrite extends StrategyRead {
 			private TouchPoint upper;
 			private TouchPoint lower;
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "format":
 						this.format = value;
@@ -347,7 +350,7 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				String id = name.getLocalPart();
 				switch (id) {
 					case XML_UPPER:
@@ -358,7 +361,7 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 				switch (creator.getId()) {
 					case XML_UPPER:
 						this.upper = (TouchPoint) created;
@@ -378,7 +381,7 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
+	public SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException {
 		try {
 			return new IntegerValue(Integer.parseInt(value), timeStamp);
 		} catch (NumberFormatException e) {
@@ -387,7 +390,7 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public String getCsvMeta(String column, boolean semicolon) {
+	public String getCsvMeta(final String column, final boolean semicolon) {
 
 		String csv = null;
 		switch (column) {

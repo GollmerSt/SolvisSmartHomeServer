@@ -273,6 +273,10 @@
 					</tns:Rectangle>
 				</tns:Grafic>
 			</tns:Identification>
+			<tns:IgnoreRectangle>
+				<tns:TopLeft X="190" Y="55" />
+				<tns:BottomRight X="210" Y="70" />
+			</tns:IgnoreRectangle>
 		</tns:Screen>
 
 		<tns:Screen id="Zirkulation" backId="Home"
@@ -4019,8 +4023,7 @@
 						<tns:BottomRight X="210" Y="70" />
 					</tns:CurrentValue>
 				</tns:GuiAccess>
-				<tns:TypeReheat
-					actualId="alias.WarmwassertemperaturIst"
+				<tns:TypeReheat pufferId="alias.Puffertemperatur"
 					desiredId="alias.WarmwassertemperaturSoll"
 					deltaId="alias.PufferdTStart">
 					<tns:TouchPoint pushTimeRefId="Standard"
@@ -4239,13 +4242,14 @@
 		<tns:Assignment id="S01" name="S01.Warmwasserpuffer" />
 
 		<tns:Assignment id="S02"
-			name="S02.Warmwassertemperatur" alias="alias.WarmwassertemperaturIst" />
+			name="S02.Warmwassertemperatur" />
 
 		<tns:Assignment id="S03"
 			name="S03.Speicherreferenztemperatur" />
 
 		<tns:Assignment id="S04"
-			name="S04.Heizungspuffertemperatur_oben" />
+			name="S04.Heizungspuffertemperatur_oben"
+			alias="alias.Puffertemperatur" />
 
 		<tns:Assignment id="S05"
 			name="S05.Solarvorlauftemperatur">
@@ -5022,8 +5026,8 @@
 		<tns:Assignment id="C46"
 			name="C46.WarmwasserNachheizen" />
 
-		<tns:Assignment id="C47"
-			name="C47.Puffer_dT_Start" alias="alias.PufferdTStart"></tns:Assignment>
+		<tns:Assignment id="C47" name="C47.Puffer_dT_Start"
+			alias="alias.PufferdTStart"></tns:Assignment>
 
 
 	</tns:ChannelAssignments>

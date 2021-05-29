@@ -23,15 +23,16 @@ public class Rectangle {
 	private final Coordinate bottomRight;
 	private final String name;
 
-	public Rectangle(Coordinate topLeft, Coordinate bottomRight) {
+	public Rectangle(final Coordinate topLeft, final Coordinate bottomRight) {
 		this(null, false, topLeft, bottomRight);
 	}
 
-	private Rectangle(boolean invertFunction, Coordinate topLeft, Coordinate bottomRight) {
+	private Rectangle(final boolean invertFunction, final Coordinate topLeft, final Coordinate bottomRight) {
 		this(null, invertFunction, topLeft, bottomRight);
 	}
 
-	private Rectangle(String name, boolean invertFunction, Coordinate topLeft, Coordinate bottomRight) {
+	private Rectangle(final String name, final boolean invertFunction, final Coordinate topLeft,
+			final Coordinate bottomRight) {
 		this.invertFunction = invertFunction;
 		this.topLeft = topLeft;
 		this.bottomRight = bottomRight;
@@ -58,17 +59,17 @@ public class Rectangle {
 		private Coordinate bottomRight;
 		private final String name;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			this(null, id, creator);
 		}
 
-		public Creator(String name, String id, BaseCreator<?> creator) {
+		public Creator(final String name, final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 			this.name = name;
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "invertFunction":
 					this.invertFunction = Boolean.parseBoolean(value);
@@ -82,7 +83,7 @@ public class Rectangle {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_TOP_LEFT:
@@ -93,7 +94,7 @@ public class Rectangle {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_TOP_LEFT:
 					this.topLeft = (Coordinate) created;
@@ -107,16 +108,16 @@ public class Rectangle {
 
 	}
 
-	public boolean isIn(int x, int y) {
+	public boolean isIn(final int x, final int y) {
 		return this.topLeft.getX() <= x && x <= this.getBottomRight().getX() //
 				&& this.topLeft.getY() <= y && y <= this.bottomRight.getY();
 	}
 
-	public boolean isIn(Coordinate c) {
+	public boolean isIn(final Coordinate c) {
 		return this.isIn(c.getX(), c.getY());
 	}
 
-	public Rectangle add(Coordinate origin) {
+	public Rectangle add(final Coordinate origin) {
 		return new Rectangle(this.invertFunction, this.getTopLeft().add(origin), this.getBottomRight().add(origin));
 	}
 

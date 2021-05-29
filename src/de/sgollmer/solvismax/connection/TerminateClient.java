@@ -24,7 +24,7 @@ public class TerminateClient {
 
 	private final int port;
 
-	public TerminateClient(int port) {
+	public TerminateClient(final int port) {
 		this.port = port;
 	}
 

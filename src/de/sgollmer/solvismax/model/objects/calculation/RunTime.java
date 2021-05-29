@@ -25,7 +25,7 @@ public class RunTime extends Strategy<RunTime> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(RunTime.class);
 
-	private RunTime(Calculation calculation) {
+	private RunTime(final Calculation calculation) {
 		super(calculation);
 	}
 
@@ -34,7 +34,7 @@ public class RunTime extends Strategy<RunTime> {
 	}
 
 	@Override
-	public RunTime create(Calculation calculation) {
+	public RunTime create(final Calculation calculation) {
 		return new RunTime(calculation);
 	}
 
@@ -44,7 +44,7 @@ public class RunTime extends Strategy<RunTime> {
 	}
 
 	@Override
-	void instantiate(Solvis solvis) throws AssignmentException, AliasException {
+	void instantiate(final Solvis solvis) throws AssignmentException, AliasException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
@@ -81,7 +81,7 @@ public class RunTime extends Strategy<RunTime> {
 
 		private final int scanInterval;
 
-		private Executable(Solvis solvis, SolvisData result, SolvisData equipmentOn) {
+		private Executable(final Solvis solvis, final SolvisData result, final SolvisData equipmentOn) {
 			this.solvis = solvis;
 			this.result = result;
 			this.equipmentOn = equipmentOn;
@@ -90,7 +90,7 @@ public class RunTime extends Strategy<RunTime> {
 			this.equipmentOn.registerContinuousObserver(new IObserver<SolvisData>() {
 
 				@Override
-				public void update(SolvisData data, Object source) {
+				public void update(final SolvisData data, final Object source) {
 					Executable.this.updateByOnOff(data, source);
 
 				}
@@ -98,32 +98,32 @@ public class RunTime extends Strategy<RunTime> {
 			this.result.registerContinuousObserver(new IObserver<SolvisData>() {
 
 				@Override
-				public void update(SolvisData data, Object source) {
+				public void update(final SolvisData data, final Object source) {
 					Executable.this.updateByValue(data, source);
 
 				}
 			});
 		}
 
-		private void updateVerifiedValues(long runTime, long timeStamp) {
+		private void updateVerifiedValues(final long runTime, final long timeStamp) {
 			this.lastVerifiedRunTime = runTime;
 			this.runTimeAfterLastVerificationAfterOff = 0;
 			this.runTimeAfterLastVerificationCurrent = 0;
 			this.lastStartTime = timeStamp;
 		}
 
-		private synchronized void correctionByValue(SolvisData data, Object source) throws TypeException {
+		private synchronized void correctionByValue(final SolvisData data, final Object source) throws TypeException {
 
 			long verifiedRunTime = (long) data.getInt() * 1000L;
-			 
-			if ( source instanceof SystemBackup ) {
+
+			if (source instanceof SystemBackup) {
 				this.updateVerifiedValues(verifiedRunTime, -1);
-			} else if ( source instanceof UpdateType) {
+			} else if (source instanceof UpdateType) {
 				this.updateVerifiedValues(verifiedRunTime, data.getTimeStamp());
 			}
 		}
 
-		private void updateByValue(SolvisData data, Object source) {
+		private void updateByValue(final SolvisData data, final Object source) {
 
 			if (source != this) {
 				try {
@@ -136,7 +136,7 @@ public class RunTime extends Strategy<RunTime> {
 			}
 		}
 
-		private void updateByOnOff(SolvisData data, Object source) {
+		private void updateByOnOff(final SolvisData data, final Object source) {
 			try {
 				this.update(data.getBool(), data.getTimeStamp());
 			} catch (TypeException e) {
@@ -145,7 +145,7 @@ public class RunTime extends Strategy<RunTime> {
 			}
 		}
 
-		public void update(Boolean equipmentOn, long timeStamp) {
+		public void update(final Boolean equipmentOn, final long timeStamp) {
 
 			try {
 
@@ -198,7 +198,7 @@ public class RunTime extends Strategy<RunTime> {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) {
+	public void assign(final SolvisDescription description) {
 	}
 
 	@Override

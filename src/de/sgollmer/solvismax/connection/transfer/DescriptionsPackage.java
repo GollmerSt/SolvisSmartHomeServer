@@ -20,7 +20,7 @@ public class DescriptionsPackage implements ISendData {
 
 	private final Solvis solvis;
 
-	public DescriptionsPackage(Solvis solvis) {
+	public DescriptionsPackage(final Solvis solvis) {
 		this.solvis = solvis;
 	}
 
@@ -40,7 +40,7 @@ public class DescriptionsPackage implements ISendData {
 				frame.add(descr);
 			}
 		}
-		
+
 		for (Screen screen : this.solvis.getSolvisDescription().getScreens().getScreens(this.solvis)) {
 			if (!screen.isNoRestore()) {
 				SelectScreenDescription descr = new SelectScreenDescription(screen.getId());

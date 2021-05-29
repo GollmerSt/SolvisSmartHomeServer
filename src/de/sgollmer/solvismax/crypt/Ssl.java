@@ -23,7 +23,8 @@ public class Ssl {
 	private final String clientCrtFilePath;// = "/your_ssl/client.pem";
 	private final String clientKeyFilePath;// = "/your_ssl/client.key";
 
-	private Ssl(boolean enable, String caFilePath, String clientCrtFilePath, String clientKeyFilePath) {
+	private Ssl(final boolean enable, final String caFilePath, final String clientCrtFilePath,
+			final String clientKeyFilePath) {
 		this.enable = enable;
 		this.caFilePath = caFilePath;
 		this.clientCrtFilePath = clientCrtFilePath;
@@ -37,12 +38,12 @@ public class Ssl {
 		private String clientCrtFilePath;// = "/your_ssl/client.pem";
 		private String clientKeyFilePath;// = "/your_ssl/client.key";
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "enable":
 					this.enable = Boolean.parseBoolean(value);
@@ -66,12 +67,12 @@ public class Ssl {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 
 		}
 

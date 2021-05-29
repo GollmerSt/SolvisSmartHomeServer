@@ -30,7 +30,7 @@ import de.sgollmer.xmllibrary.XmlException;
 import de.sgollmer.xmllibrary.XmlStreamReader;
 
 public class ControlFileReader {
-	
+
 	private static final ILogger logger = LogManager.getInstance().getLogger(Control.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 
@@ -40,20 +40,24 @@ public class ControlFileReader {
 
 	private final File parent;
 
-	public ControlFileReader(File path) {
+	public ControlFileReader(final File path) {
+
+		File writePath;
 
 		if (path == null) {
 			String pathName = System.getProperty("user.home");
 			if (System.getProperty("os.name").startsWith("Windows")) {
 				pathName = System.getenv("APPDATA");
 			}
-			path = new File(pathName);
+			writePath = new File(pathName);
+		} else {
+			writePath = path;
 		}
 
-		this.parent = new File(path, Constants.Files.RESOURCE_DESTINATION);
+		this.parent = new File(writePath, Constants.Files.RESOURCE_DESTINATION);
 	}
 
-	private void copyFiles(boolean copyXml) throws IOException, FileException {
+	private void copyFiles(final boolean copyXml) throws IOException, FileException {
 
 		boolean success = true;
 
@@ -83,7 +87,8 @@ public class ControlFileReader {
 		private final Hashes hashes;
 		private final boolean mustLearn;
 
-		private Result(SolvisDescription description, long resourceHash, long resultHash, boolean mustLearn) {
+		private Result(final SolvisDescription description, final long resourceHash, final long resultHash,
+				final boolean mustLearn) {
 			this.solvisDescription = description;
 			this.hashes = new Hashes(resourceHash, resultHash);
 			this.mustLearn = mustLearn;
@@ -122,7 +127,7 @@ public class ControlFileReader {
 
 	}
 
-	public Result read(Hashes former, boolean learn) throws IOException, XmlException, XMLStreamException,
+	public Result read(final Hashes former, final boolean learn) throws IOException, XmlException, XMLStreamException,
 			AssignmentException, FileException, ReferenceException {
 
 		File xml = new File(this.parent, NAME_XML_CONTROLFILE);
@@ -131,26 +136,26 @@ public class ControlFileReader {
 		String rootId = XML_ROOT_ID;
 
 		SolvisDescription fromFile = null;
-		InputStream inputStreamFromFile ;
+		InputStream inputStreamFromFile;
 
 		boolean mustWrite; // Wenn im Verzeichnis nicht vorhanden, nicht lesbar oder älter
-									// oder Checksumme unbekannt
+							// oder Checksumme unbekannt
 		boolean modifiedByUser; // Wenn vom User modifiziert oder nicht lesbar
-		
+
 		boolean mustLearn;
 
 		Throwable e = null;
 
 		String resourcePath = Constants.Files.RESOURCE + '/' + NAME_XML_CONTROLFILE;
-		
+
 		InputStream resource = Main.class.getResourceAsStream(resourcePath);
-		
-		XmlStreamReader.ReadData<SolvisDescription> result =reader.read(resource, rootId,
+
+		XmlStreamReader.ReadData<SolvisDescription> result = reader.read(resource, rootId,
 				new SolvisDescription.Creator(rootId), NAME_XML_CONTROLFILE);
-		
+
 		SolvisDescription fromResource = result.getObject();
 		long newResourceHash = result.getHash();
-		
+
 		long fileHash = 0;
 
 		boolean xmlExits = xml.exists();
@@ -161,9 +166,9 @@ public class ControlFileReader {
 			boolean mustVerify = true; // Wenn zu verifizieren
 
 			try {
-				
-				XmlStreamReader.ReadData<SolvisDescription> readData = reader.read(inputStreamFromFile, rootId, new SolvisDescription.Creator(rootId),
-						xml.getName());
+
+				XmlStreamReader.ReadData<SolvisDescription> readData = reader.read(inputStreamFromFile, rootId,
+						new SolvisDescription.Creator(rootId), xml.getName());
 
 				fromFile = readData.getObject();
 				fileHash = readData.getHash();
@@ -173,21 +178,19 @@ public class ControlFileReader {
 				e = e1;
 				mustWrite = true;
 			}
-			
-			
-			if ( former.getFileHash() != null ) {
-				mustWrite =  newResourceHash != former.getResourceHash() ;
+
+			if (former.getFileHash() != null) {
+				mustWrite = newResourceHash != former.getResourceHash();
 				modifiedByUser = fileHash != former.getResourceHash() && fileHash != newResourceHash;
 				mustVerify = fileHash != former.getFileHash();
-				mustLearn = fileHash != former.getFileHash() || mustWrite ;
+				mustLearn = fileHash != former.getFileHash() || mustWrite;
 			} else {
 				mustWrite = true;
 				modifiedByUser = fileHash != newResourceHash;
 				mustLearn = true;
 				mustVerify = true;
 			}
-			
-			
+
 			if (mustVerify) {
 				String xsdPath = Constants.Files.RESOURCE + '/' + NAME_XSD_CONTROLFILE;
 				InputStream xsd = Main.class.getResourceAsStream(xsdPath);
@@ -206,7 +209,7 @@ public class ControlFileReader {
 			modifiedByUser = false;
 			mustLearn = true;
 		}
-		
+
 		boolean overwriteOnLearn = Debug.OVERWRITE_ONLY_ON_LEARN;
 
 		if (mustWrite && (learn || !overwriteOnLearn)) {
@@ -226,7 +229,7 @@ public class ControlFileReader {
 			this.copyFiles(true);
 			return new Result(fromResource, newResourceHash, newResourceHash, mustLearn);
 		} else if (mustWrite) {
-			return new Result(fromResource, newResourceHash,newResourceHash, mustLearn);
+			return new Result(fromResource, newResourceHash, newResourceHash, mustLearn);
 		} else if (e != null) {
 			logger.error(
 					"Error on reading control.xml. Learning is necessary, start parameter \"--server-learn\" must be used.");

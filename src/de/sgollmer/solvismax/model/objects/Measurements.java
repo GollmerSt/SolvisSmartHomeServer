@@ -20,7 +20,7 @@ public class Measurements {
 	private Map<String, SmartHomeData> measurements = new HashMap<>();
 	private final boolean clear;
 
-	public Measurements(Map<String, SmartHomeData> measurements) {
+	public Measurements(final Map<String, SmartHomeData> measurements) {
 		this.clear = false;
 		this.measurements = measurements;
 	}
@@ -35,11 +35,11 @@ public class Measurements {
 	 * @param data to add
 	 * @return replaced value
 	 */
-	public synchronized SmartHomeData add(SmartHomeData data) {
+	public synchronized SmartHomeData add(final SmartHomeData data) {
 		return this.measurements.put(data.getDescription().getId(), data);
 	}
 
-	public void remove(SmartHomeData data) {
+	public void remove(final SmartHomeData data) {
 		this.measurements.remove(data.getDescription().getId());
 	}
 
@@ -51,7 +51,7 @@ public class Measurements {
 		return collection;
 	}
 
-	public void sent(IObserver<ISendData> observer) {
+	public void sent(final IObserver<ISendData> observer) {
 		MeasurementsPackage sendPackage = new MeasurementsPackage(this.measurements.values());
 		observer.update(sendPackage, this);
 	}

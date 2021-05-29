@@ -39,7 +39,7 @@ import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class SolvisWorkers{
+public class SolvisWorkers {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisWorkers.class);
 
@@ -53,7 +53,7 @@ public class SolvisWorkers{
 	private long timeCommandScreen = System.currentTimeMillis();
 	private Observable<Boolean> executingControlObserver = new Observable<>();
 
-	SolvisWorkers(Solvis solvis) {
+	SolvisWorkers(final Solvis solvis) {
 		this.solvis = solvis;
 		this.watchDog = new WatchDog(solvis, solvis.getSolvisDescription().getSaver());
 		this.solvis.registerAbortObserver(new IObserver<Boolean>() {
@@ -68,15 +68,15 @@ public class SolvisWorkers{
 
 	}
 
-	public void controlEnable(boolean enable) {
+	public void controlEnable(final boolean enable) {
 		SolvisWorkers.this.controlsThread.controlEnable(enable);
 	}
-	
-	public void registerControlExecutingObserver( IObserver<Boolean> executingObserver ) {
+
+	public void registerControlExecutingObserver(final IObserver<Boolean> executingObserver) {
 		this.executingControlObserver.register(executingObserver);
 	}
 
-	private class ControlWorkerThread extends Thread{
+	private class ControlWorkerThread extends Thread {
 
 		private final LinkedList<Command> queue = new LinkedList<>();
 		private final Collection<ChannelDescription> channelsOfQueueRead = new ArrayList<>();
@@ -209,7 +209,7 @@ public class SolvisWorkers{
 			}
 		}
 
-		private final ResultStatus processCommand(Command command) throws IOException, TerminationException,
+		private final ResultStatus processCommand(final Command command) throws IOException, TerminationException,
 				PowerOnException, NumberFormatException, TypeException, XmlException {
 
 			String commandString = command.toString();
@@ -226,7 +226,7 @@ public class SolvisWorkers{
 			return status;
 		}
 
-		private synchronized void removeCommand(Command command) {
+		private synchronized void removeCommand(final Command command) {
 			boolean deleted = false;
 			for (Iterator<Command> it = this.queue.iterator(); it.hasNext() && !deleted;) {
 				Command cmp = it.next();
@@ -237,7 +237,7 @@ public class SolvisWorkers{
 			}
 		}
 
-		private synchronized void moveToTheEnd(Command command) {
+		private synchronized void moveToTheEnd(final Command command) {
 			boolean deleted = false;
 			Iterator<Command> it = this.queue.iterator();
 			while (it.hasNext() && !deleted) {
@@ -264,7 +264,7 @@ public class SolvisWorkers{
 			this.notifyAll();
 		}
 
-		private void push(Command command) {
+		private void push(final Command command) {
 			if (!SolvisWorkers.this.solvis.getFeatures().isInteractiveGUIAccess()) {
 				return;
 			}
@@ -316,7 +316,7 @@ public class SolvisWorkers{
 			}
 		}
 
-		private synchronized void commandOptimization(boolean enable) {
+		private synchronized void commandOptimization(final boolean enable) {
 			if (enable) {
 				if (this.optimizationInhibitCnt > 0) {
 					--this.optimizationInhibitCnt;
@@ -326,7 +326,7 @@ public class SolvisWorkers{
 			}
 		}
 
-		private synchronized void screenRestore(boolean enable, Object service) {
+		private synchronized void screenRestore(final boolean enable, final Object service) {
 			if (!enable) {
 				this.inhibitScreenResoreServices.add(service);
 			} else {
@@ -338,11 +338,11 @@ public class SolvisWorkers{
 			return this.inhibitScreenResoreServices.size() == 0;
 		}
 
-		private synchronized void controlEnable(boolean enable) {
+		private synchronized void controlEnable(final boolean enable) {
 			this.controlEnabled = enable;
 		}
 
-		public synchronized boolean willBeModified(SolvisData data) {
+		public synchronized boolean willBeModified(final SolvisData data) {
 			for (ListIterator<Command> it = this.queue.listIterator(this.queue.size()); it.hasPrevious();) {
 				Command command = it.previous();
 				if (command instanceof CommandControl) {
@@ -358,7 +358,7 @@ public class SolvisWorkers{
 
 	}
 
-	private ResultStatus execute(Command command) throws IOException, TerminationException, PowerOnException,
+	private ResultStatus execute(final Command command) throws IOException, TerminationException, PowerOnException,
 			NumberFormatException, TypeException, XmlException {
 		AbstractScreen commandScreen = command.getScreen(this.solvis);
 		if (commandScreen != null) {
@@ -391,12 +391,13 @@ public class SolvisWorkers{
 		return command.execute(this.solvis, this.controlsThread.queueStatus);
 	}
 
-	void commandOptimization(boolean enable) {
+	void commandOptimization(final boolean enable) {
 		if (enable) {
 			this.controlsThread.push(new Command() {
 
 				@Override
-				public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus) throws IOException, TerminationException, PowerOnException {
+				public ResultStatus execute(Solvis solvis, Handling.QueueStatus queueStatus)
+						throws IOException, TerminationException, PowerOnException {
 					SolvisWorkers.this.controlsThread.commandOptimization(true);
 					return ResultStatus.SUCCESS;
 				}
@@ -421,12 +422,12 @@ public class SolvisWorkers{
 		}
 	}
 
-	void screenRestore(boolean enable, Object service) {
+	void screenRestore(final boolean enable, final Object service) {
 		this.controlsThread.screenRestore(enable, service);
 
 	}
 
-	void push(Command command) {
+	void push(final Command command) {
 		if (this.controlsThread == null) {
 			return;
 		}
@@ -511,22 +512,22 @@ public class SolvisWorkers{
 				try {
 					try {
 						MeasureMode mode;
-						
-						long now = System.currentTimeMillis() ;
-						
+
+						long now = System.currentTimeMillis();
+
 						boolean std = now >= this.nextStd;
 						boolean fast = now >= this.nextFast;
-						
-						if ( std&&fast ) {
+
+						if (std && fast) {
 							mode = MeasureMode.ALL;
-						} else if ( fast ) {
+						} else if (fast) {
 							mode = MeasureMode.FAST;
 						} else if (std) {
 							mode = MeasureMode.STANDARD;
 						} else {
-							mode = null ;
+							mode = null;
 						}
-						
+
 						if (mode != null) {
 							SolvisWorkers.this.solvis.measure(mode);
 						}
@@ -574,7 +575,7 @@ public class SolvisWorkers{
 
 	}
 
-	public boolean willBeModified(SolvisData data) {
+	public boolean willBeModified(final SolvisData data) {
 		return this.controlsThread.willBeModified(data);
 	}
 

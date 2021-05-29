@@ -28,14 +28,14 @@ public class JsonPackage implements IReceivedData {
 	public JsonPackage() {
 	}
 
-	JsonPackage(Command command, Frame frame) {
+	JsonPackage(final Command command, final Frame frame) {
 		this.command = command;
 		this.data = frame;
 	}
 
 	private Frame getFrame() {
 		Frame result = new Frame();
-		Element element = new Element(this.command.toString(),this.data);
+		Element element = new Element(this.command.toString(), this.data);
 		result.add(element);
 		return result;
 	}
@@ -52,7 +52,7 @@ public class JsonPackage implements IReceivedData {
 
 	}
 
-	public void send(OutputStream stream) throws IOException {
+	public void send(final OutputStream stream) throws IOException {
 		byte[] sendData = this.createSendData();
 		int length = sendData.length;
 		byte[] lengthBytes = new byte[3];
@@ -64,7 +64,7 @@ public class JsonPackage implements IReceivedData {
 		stream.flush();
 	}
 
-	void receive(InputStream stream, int timeout) throws IOException, JsonException {
+	void receive(final InputStream stream, final int timeout) throws IOException, JsonException {
 		byte[] lengthBytes = new byte[3];
 		Helper.read(stream, lengthBytes, timeout);
 		int length = ((int) lengthBytes[0] & 0xff) << 16 | ((int) lengthBytes[1] & 0xff) << 8
@@ -98,7 +98,7 @@ public class JsonPackage implements IReceivedData {
 	}
 
 	@Override
-	public void setSolvis(Solvis solvis) {
+	public void setSolvis(final Solvis solvis) {
 		this.solvis = solvis;
 	}
 

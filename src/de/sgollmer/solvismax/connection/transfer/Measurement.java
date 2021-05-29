@@ -11,11 +11,11 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 
 public class Measurement extends Element {
 
-	private Measurement(SmartHomeData data) {
-		super( data.getName(), data.toSingleValue(data.getData()));
+	private Measurement(final SmartHomeData data) {
+		super(data.getName(), data.toSingleValue(data.getData()));
 	}
 
-	static Measurement createMeasurement(SmartHomeData data) {
+	static Measurement createMeasurement(final SmartHomeData data) {
 		synchronized (data) {
 			if (data.getData() != null) {
 				return new Measurement(data);

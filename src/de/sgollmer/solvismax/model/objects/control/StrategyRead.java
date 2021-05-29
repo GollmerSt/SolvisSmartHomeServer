@@ -40,7 +40,7 @@ public class StrategyRead implements IStrategy {
 	protected final int divisor;
 	private final GuiRead guiRead;
 
-	protected StrategyRead(int divisor, GuiRead guiRead) {
+	protected StrategyRead(final int divisor, final GuiRead guiRead) {
 		this.divisor = divisor;
 		this.guiRead = guiRead;
 	}
@@ -51,8 +51,8 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public IntegerValue getValue(SolvisScreen screen, Solvis solvis, IControlAccess controlAccess, boolean optional)
-			throws IOException {
+	public IntegerValue getValue(final SolvisScreen screen, final Solvis solvis, final IControlAccess controlAccess,
+			final boolean optional) throws IOException {
 		Integer i = null;
 		if (controlAccess instanceof GuiAccess) {
 			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
@@ -66,20 +66,20 @@ public class StrategyRead implements IStrategy {
 					return null;
 				}
 			} else {
-				i = (int)Math.round(Double.parseDouble(formated) * this.getDivisor());
+				i = (int) Math.round(Double.parseDouble(formated) * this.getDivisor());
 			}
 		}
 		return new IntegerValue(i, System.currentTimeMillis());
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, IControlAccess controlAccess, SolvisData value)
+	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
 			throws IOException, TerminationException, TypeException {
 		return null;
 	}
 
 	@Override
-	public SetResult setValueFast(Solvis solvis, SolvisData value) {
+	public SetResult setValueFast(final Solvis solvis, final SolvisData value) {
 		return null;
 	}
 
@@ -93,12 +93,12 @@ public class StrategyRead implements IStrategy {
 		private int divisor = 1;
 		private GuiRead guiRead = null;
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "divisor":
 					this.divisor = Integer.parseInt(value);
@@ -113,7 +113,7 @@ public class StrategyRead implements IStrategy {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_GUI_READ:
@@ -123,7 +123,7 @@ public class StrategyRead implements IStrategy {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_GUI_READ:
 					this.guiRead = (GuiRead) created;
@@ -134,7 +134,7 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws AssignmentException {
+	public void assign(final SolvisDescription description) throws AssignmentException {
 	}
 
 	@Override
@@ -158,19 +158,19 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public boolean learn(Solvis solvis, IControlAccess controlAccess) {
+	public boolean learn(final Solvis solvis, final IControlAccess controlAccess) {
 		return true;
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
+	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
 		return null;
 	}
 
 	protected static class GuiRead {
 		protected final Format format;
 
-		protected GuiRead(String format) {
+		protected GuiRead(final String format) {
 			this.format = new Format(format);
 		}
 
@@ -181,12 +181,12 @@ public class StrategyRead implements IStrategy {
 		private static class Creator extends CreatorByXML<GuiRead> {
 			private String format;
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "format":
 						this.format = value;
@@ -201,12 +201,12 @@ public class StrategyRead implements IStrategy {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				return null;
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 			}
 
 		}
@@ -224,13 +224,13 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
+	public SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException {
 		return null;
 	}
 
 	@Override
-	public String getCsvMeta(String column, boolean semicolon) {
-		switch( column) {
+	public String getCsvMeta(final String column, final boolean semicolon) {
+		switch (column) {
 			case Csv.DIVISOR:
 				return Integer.toString(this.divisor);
 		}
@@ -238,8 +238,8 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public void setControl(Control control) {
-		
+	public void setControl(final Control control) {
+
 	}
 
 }

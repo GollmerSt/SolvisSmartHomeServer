@@ -16,7 +16,7 @@ public class DoubleValue extends SingleData<Double> {
 
 	private final double value;
 
-	public DoubleValue(double value, long timeStamp) {
+	public DoubleValue(final double value, final long timeStamp) {
 		super(timeStamp);
 		this.value = value;
 	}
@@ -42,7 +42,7 @@ public class DoubleValue extends SingleData<Double> {
 	}
 
 	@Override
-	public SingleData<Double> create(int value, long timeStamp) {
+	public SingleData<Double> create(final int value, final long timeStamp) {
 		return new DoubleValue(value, timeStamp);
 	}
 
@@ -72,7 +72,7 @@ public class DoubleValue extends SingleData<Double> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (!(obj instanceof SingleData)) {
 			return false;
 		}
@@ -92,7 +92,7 @@ public class DoubleValue extends SingleData<Double> {
 	}
 
 	@Override
-	public int compareTo(SingleData<?> o) {
+	public int compareTo(final SingleData<?> o) {
 		if (o instanceof DoubleValue) {
 			return Double.compare(this.value, ((DoubleValue) o).value);
 		} else if (o != null) {
@@ -103,7 +103,7 @@ public class DoubleValue extends SingleData<Double> {
 	}
 
 	@Override
-	public SingleData<Double> create(long timeStamp) {
+	public SingleData<Double> create(final long timeStamp) {
 		return new DoubleValue(this.value, timeStamp);
 	}
 

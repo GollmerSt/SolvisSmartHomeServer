@@ -17,14 +17,14 @@ public class Coordinate implements Cloneable {
 	private final int x;
 	private final int y;
 
-	public Coordinate(int x, int y) {
+	public Coordinate(final int x, final int y) {
 		this.x = x;
 		this.y = y;
 	}
 
 	public static class Creator extends CreatorByXML<Coordinate> {
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
@@ -32,7 +32,7 @@ public class Coordinate implements Cloneable {
 		private Integer y = null;
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "X":
 					this.x = Integer.parseInt(value);
@@ -53,12 +53,12 @@ public class Coordinate implements Cloneable {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
@@ -88,15 +88,15 @@ public class Coordinate implements Cloneable {
 		return this.y;
 	}
 
-	public Coordinate add(Coordinate coord) {
+	public Coordinate add(final Coordinate coord) {
 		return new Coordinate(this.getX() + coord.getX(), this.getY() + coord.getY());
 	}
 
-	public Coordinate diff(Coordinate coord) {
+	public Coordinate diff(final Coordinate coord) {
 		return new Coordinate(this.getX() - coord.getX(), this.getY() - coord.getY());
 	}
 
-	public Coordinate div(int value) {
+	public Coordinate div(final int value) {
 		return new Coordinate(this.getX() / value, this.getY() / value);
 	}
 
@@ -109,7 +109,7 @@ public class Coordinate implements Cloneable {
 	}
 
 	@Override
-	public boolean equals(Object coord) {
+	public boolean equals(final Object coord) {
 		if (!(coord instanceof Coordinate)) {
 			return false;
 		}
@@ -122,7 +122,7 @@ public class Coordinate implements Cloneable {
 		return 409 + 761 * Integer.hashCode(this.x) + Integer.hashCode(this.y);
 	}
 
-	public boolean approximately(Coordinate coord, int n) {
+	public boolean approximately(final Coordinate coord, int n) {
 		if (coord == null) {
 			return false;
 		}

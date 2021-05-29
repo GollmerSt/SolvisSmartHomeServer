@@ -15,12 +15,12 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 
 	@Override
-	public void initialise(ResourceBundle messageCatalog, String loggerID, String resourceName) {
+	public void initialise(final ResourceBundle messageCatalog, final String loggerID, String resourceName) {
 
 	}
 
 	@Override
-	public void setResourceName(String logContext) {
+	public void setResourceName(final String logContext) {
 
 	}
 
@@ -37,7 +37,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void severe(String sourceClass, String sourceMethod, String msg) {
+	public void severe(final String sourceClass, final String sourceMethod, final String msg) {
 		if (!isLoggable(SEVERE)) {
 			return;
 		}
@@ -46,7 +46,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void severe(String sourceClass, String sourceMethod, String msg, Object[] inserts) {
+	public void severe(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts) {
 		if (!isLoggable(SEVERE)) {
 			return;
 		}
@@ -55,7 +55,8 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void severe(String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable thrown) {
+	public void severe(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts,
+			final Throwable thrown) {
 		if (!isLoggable(SEVERE)) {
 			return;
 		}
@@ -64,7 +65,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void warning(String sourceClass, String sourceMethod, String msg) {
+	public void warning(final String sourceClass, final String sourceMethod, final String msg) {
 		if (!isLoggable(WARNING)) {
 			return;
 		}
@@ -73,7 +74,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void warning(String sourceClass, String sourceMethod, String msg, Object[] inserts) {
+	public void warning(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts) {
 		if (!isLoggable(WARNING)) {
 			return;
 		}
@@ -82,7 +83,8 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void warning(String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable thrown) {
+	public void warning(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts,
+			final Throwable thrown) {
 		if (!isLoggable(WARNING)) {
 			return;
 		}
@@ -91,7 +93,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void info(String sourceClass, String sourceMethod, String msg) {
+	public void info(final String sourceClass, final String sourceMethod, final String msg) {
 		if (!isLoggable(INFO)) {
 			return;
 		}
@@ -100,7 +102,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void info(String sourceClass, String sourceMethod, String msg, Object[] inserts) {
+	public void info(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts) {
 		if (!isLoggable(INFO)) {
 			return;
 		}
@@ -109,7 +111,8 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void info(String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable thrown) {
+	public void info(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts,
+			final Throwable thrown) {
 		if (!isLoggable(INFO)) {
 			return;
 		}
@@ -118,7 +121,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void config(String sourceClass, String sourceMethod, String msg) {
+	public void config(final String sourceClass, final String sourceMethod, final String msg) {
 		if (!isLoggable(CONFIG)) {
 			return;
 		}
@@ -127,7 +130,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void config(String sourceClass, String sourceMethod, String msg, Object[] inserts) {
+	public void config(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts) {
 		if (!isLoggable(CONFIG)) {
 			return;
 		}
@@ -136,7 +139,8 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void config(String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable thrown) {
+	public void config(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts,
+			final Throwable thrown) {
 		if (!isLoggable(CONFIG)) {
 			return;
 		}
@@ -144,23 +148,24 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 		logger.info(java.text.MessageFormat.format(msg, inserts), thrown);
 	}
 
-	public void debug(String sourceClass, String sourceMethod, String msg) {
+	public void debug(final String sourceClass, final String sourceMethod, final String msg) {
 		ILogger logger = LogManager.getInstance().getLogger(getClass(sourceClass));
 		logger.debug(msg);
 	}
 
-	public void debug(String sourceClass, String sourceMethod, String msg, Object[] inserts) {
+	public void debug(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts) {
 		ILogger logger = LogManager.getInstance().getLogger(getClass(sourceClass));
 		logger.debug(java.text.MessageFormat.format(msg, inserts));
 	}
 
-	public void debug(String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable thrown) {
+	public void debug(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts,
+			final Throwable thrown) {
 		ILogger logger = LogManager.getInstance().getLogger(getClass(sourceClass));
 		logger.debug(java.text.MessageFormat.format(msg, inserts), thrown);
 	}
 
 	@Override
-	public void fine(String sourceClass, String sourceMethod, String msg) {
+	public void fine(final String sourceClass, final String sourceMethod, final String msg) {
 		if (!isLoggable(FINE)) {
 			return;
 		}
@@ -168,7 +173,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void fine(String sourceClass, String sourceMethod, String msg, Object[] inserts) {
+	public void fine(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts) {
 		if (!isLoggable(FINE)) {
 			return;
 		}
@@ -176,7 +181,8 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void fine(String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable thrown) {
+	public void fine(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts,
+			final Throwable thrown) {
 		if (!isLoggable(FINE)) {
 			return;
 		}
@@ -184,7 +190,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void finer(String sourceClass, String sourceMethod, String msg) {
+	public void finer(final String sourceClass, final String sourceMethod, final String msg) {
 		if (!isLoggable(FINER)) {
 			return;
 		}
@@ -192,7 +198,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void finer(String sourceClass, String sourceMethod, String msg, Object[] inserts) {
+	public void finer(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts) {
 		if (!isLoggable(FINER)) {
 			return;
 		}
@@ -200,7 +206,8 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void finer(String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable ex) {
+	public void finer(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts,
+			final Throwable ex) {
 		if (!isLoggable(FINER)) {
 			return;
 		}
@@ -208,7 +215,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void finest(String sourceClass, String sourceMethod, String msg) {
+	public void finest(final String sourceClass, final String sourceMethod, final String msg) {
 		if (!isLoggable(FINEST)) {
 			return;
 		}
@@ -216,7 +223,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void finest(String sourceClass, String sourceMethod, String msg, Object[] inserts) {
+	public void finest(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts) {
 		if (!isLoggable(FINEST)) {
 			return;
 		}
@@ -224,7 +231,8 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void finest(String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable ex) {
+	public void finest(final String sourceClass, final String sourceMethod, final String msg, final Object[] inserts,
+			final Throwable ex) {
 		if (!isLoggable(FINEST)) {
 			return;
 		}
@@ -232,8 +240,8 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void log(int level, String sourceClass, String sourceMethod, String msg, Object[] inserts,
-			Throwable thrown) {
+	public void log(final int level, final String sourceClass, final String sourceMethod, final String msg,
+			final Object[] inserts, final Throwable thrown) {
 		switch (level) {
 			case CONFIG:
 				this.config(sourceClass, sourceMethod, msg, inserts);
@@ -260,7 +268,8 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public void trace(int level, String sourceClass, String sourceMethod, String msg, Object[] inserts, Throwable ex) {
+	public void trace(final int level, final String sourceClass, final String sourceMethod, final String msg,
+			final Object[] inserts, final Throwable ex) {
 		switch (level) {
 			case CONFIG:
 				this.config(sourceClass, sourceMethod, msg, inserts, ex);
@@ -287,7 +296,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 	}
 
 	@Override
-	public String formatMessage(String msg, Object[] inserts) {
+	public String formatMessage(final String msg, final Object[] inserts) {
 		return java.text.MessageFormat.format(msg, inserts);
 	}
 
@@ -297,7 +306,7 @@ public class Logger implements org.eclipse.paho.client.mqttv3.logging.Logger {
 
 	}
 
-	private Class<?> getClass(String sourceClass) {
+	private Class<?> getClass(final String sourceClass) {
 		Class<?> clazz = null;
 		try {
 			clazz = Class.forName(sourceClass);

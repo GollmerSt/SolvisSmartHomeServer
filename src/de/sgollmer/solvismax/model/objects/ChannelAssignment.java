@@ -13,7 +13,7 @@ import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 
-public class ChannelAssignment implements OfConfigs.IElement<ChannelAssignment>{
+public class ChannelAssignment implements OfConfigs.IElement<ChannelAssignment> {
 
 	private static final String XML_CONFIGURATION = "Configuration";
 
@@ -24,8 +24,8 @@ public class ChannelAssignment implements OfConfigs.IElement<ChannelAssignment>{
 	private final Integer booleanValue;
 	private final Configuration configuration;
 
-	public ChannelAssignment(String id, String name, String alias, String unit, Integer booleanValue,
-			Configuration configuration) {
+	public ChannelAssignment(final String id, final String name, final String alias, final String unit,
+			final Integer booleanValue, final Configuration configuration) {
 		this.id = id;
 		this.name = name;
 		this.alias = alias;
@@ -48,7 +48,7 @@ public class ChannelAssignment implements OfConfigs.IElement<ChannelAssignment>{
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -76,7 +76,7 @@ public class ChannelAssignment implements OfConfigs.IElement<ChannelAssignment>{
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_CONFIGURATION:
@@ -87,7 +87,7 @@ public class ChannelAssignment implements OfConfigs.IElement<ChannelAssignment>{
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 			switch (creator.getId()) {
 				case XML_CONFIGURATION:
 					this.configuration = (Configuration) created;
@@ -98,19 +98,20 @@ public class ChannelAssignment implements OfConfigs.IElement<ChannelAssignment>{
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public boolean isConfigurationVerified(ChannelAssignment e) {
+	public boolean isConfigurationVerified(final ChannelAssignment e) {
 		// TODO Auto-generated method stub
 		return this.configuration.isVerified(e.configuration);
 	}
 
 	@Override
-	public boolean isInConfiguration(Solvis solvis) {
+	public boolean isInConfiguration(final Solvis solvis) {
 		return this.configuration == null || this.configuration.isInConfiguration(solvis);
 	}
 

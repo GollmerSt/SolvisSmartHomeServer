@@ -19,13 +19,13 @@ public class ConnectionState implements ISendData {
 	private final ConnectionStatus status;
 	private final String message;
 
-	public ConnectionState(ConnectionStatus status, String message) {
+	public ConnectionState(final ConnectionStatus status, final String message) {
 		this.status = status;
 		this.message = message;
 
 	}
 
-	public ConnectionState(ConnectionStatus status) {
+	public ConnectionState(final ConnectionStatus status) {
 		this(status, null);
 	}
 

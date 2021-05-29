@@ -51,8 +51,9 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	private final ChannelSource channelSource;
 	private final int glitchInhibitScanIntervals;
 
-	private ChannelDescription(String id, boolean buffered, String unit, Configuration configurationMasks,
-			ChannelSource channelSource, int glitchInhibitScanIntervals) throws XmlException {
+	private ChannelDescription(final String id, final boolean buffered, String unit,
+			final Configuration configurationMasks, final ChannelSource channelSource,
+			final int glitchInhibitScanIntervals) throws XmlException {
 		this.id = id;
 		this.buffered = buffered;
 		this.unit = unit;
@@ -74,32 +75,34 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.getId();
 	}
 
-	public boolean getValue(Solvis solvis)
+	public boolean getValue(final Solvis solvis)
 			throws NumberFormatException, IOException, PowerOnException, TerminationException {
 		return this.getValue(solvis, -1L);
 	}
 
-	public boolean getValue(Solvis solvis, long executionStartTime)
+	public boolean getValue(final Solvis solvis, final long executionStartTime)
 			throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
 		return this.getValue(data, solvis, executionStartTime);
 	}
 
 	@Override
-	public boolean getValue(SolvisData dest, Solvis solvis, long executionStartTime)
+	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime)
 			throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		return this.channelSource.getValue(dest, solvis, executionStartTime);
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+	public SetResult setValue(final Solvis solvis, final SolvisData value) throws IOException, TerminationException {
 		return this.channelSource.setValue(solvis, value);
 	}
 
 	@Override
-	public SetResult setValueFast(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+	public SetResult setValueFast(final Solvis solvis, final SolvisData value)
+			throws IOException, TerminationException {
 		return this.channelSource.setValueFast(solvis, value);
 	}
+
 	@Override
 	public boolean isWriteable() {
 		return this.channelSource.isWriteable();
@@ -130,7 +133,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
+	public void assign(final SolvisDescription description)
+			throws XmlException, AssignmentException, ReferenceException {
 		if (this.channelSource != null) {
 			this.channelSource.assign(description);
 		}
@@ -138,7 +142,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public ChannelInstance instantiate(Solvis solvis) throws AssignmentException, AliasException {
+	public ChannelInstance instantiate(final Solvis solvis) throws AssignmentException, AliasException {
 		this.channelSource.instantiate(solvis);
 		return null;
 
@@ -158,7 +162,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -185,7 +189,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String source = name.getLocalPart();
 			switch (source) {
 				case XML_CONFIGURATION:
@@ -201,7 +205,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_CONFIGURATION:
 					this.configurationMasks = (Configuration) created;
@@ -218,7 +222,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException {
+	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException {
 		this.channelSource.learn(solvis);
 
 	}
@@ -229,7 +233,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public AbstractScreen getScreen(Solvis solvis) {
+	public AbstractScreen getScreen(final Solvis solvis) {
 		return this.channelSource.getScreen(solvis);
 	}
 
@@ -244,12 +248,12 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public boolean isInConfiguration(Solvis solvis) {
+	public boolean isInConfiguration(final Solvis solvis) {
 		return this.configuration == null || this.configuration.isInConfiguration(solvis);
 	}
 
 	@Override
-	public boolean isConfigurationVerified(ChannelDescription e) {
+	public boolean isConfigurationVerified(final ChannelDescription e) {
 		if ((this.configuration == null) || (e.configuration == null)) {
 			return false;
 		} else {
@@ -262,7 +266,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
+	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
 		return this.channelSource.interpretSetData(singleData);
 	}
 
@@ -277,7 +281,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public ChannelDescription getRestoreChannel(Solvis solvis) {
+	public ChannelDescription getRestoreChannel(final Solvis solvis) {
 		return this.channelSource.getRestoreChannel(solvis);
 	}
 
@@ -295,19 +299,20 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.mustBackuped();
 	}
 
-	public SingleData<?> toInternal(SingleData<?> data) throws TypeException {
-		data = this.interpretSetData(data);
+	public SingleData<?> toInternal(final SingleData<?> data) throws TypeException {
+		SingleData<?> interpretedData = this.interpretSetData(data);
 
 		Integer divisor = this.getDivisor();
 
 		if (divisor == null) {
-			return data;
+			return interpretedData;
 		}
 
-		return new IntegerValue((int) Math.round(data.getDouble() * divisor), data.getTimeStamp());
+		return new IntegerValue((int) Math.round(interpretedData.getDouble() * divisor),
+				interpretedData.getTimeStamp());
 	}
 
-	public SingleData<?> normalize(SingleData<?> data) {
+	public SingleData<?> normalize(final SingleData<?> data) {
 		if (data.get() == null) {
 			return null;
 		}
@@ -319,7 +324,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public boolean isDelayed(Solvis solvis) {
+	public boolean isDelayed(final Solvis solvis) {
 		return this.channelSource.isDelayed(solvis);
 	}
 
@@ -329,7 +334,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public Integer getScanInterval_ms(Solvis solvis) {
+	public Integer getScanInterval_ms(final Solvis solvis) {
 		return this.channelSource.getScanInterval_ms(solvis);
 	}
 
@@ -344,7 +349,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public String getCsvMeta(String column, boolean semicolon) {
+	public String getCsvMeta(final String column, final boolean semicolon) {
 		switch (column) {
 			case Csv.ID:
 				return this.id;
@@ -359,6 +364,5 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		}
 		return this.channelSource.getCsvMeta(column, semicolon);
 	}
-
 
 }

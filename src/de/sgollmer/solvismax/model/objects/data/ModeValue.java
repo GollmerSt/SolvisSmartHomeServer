@@ -14,7 +14,7 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 
 	private final M mode;
 
-	public ModeValue(M mode, long timeStamp) {
+	public ModeValue(final M mode, final long timeStamp) {
 		super(timeStamp);
 		this.mode = mode;
 	}
@@ -45,12 +45,12 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	}
 
 	@Override
-	public SingleData<M> create(int value, long timeStamp) {
+	public SingleData<M> create(final int value, final long timeStamp) {
 		return null;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (!(obj instanceof SingleData)) {
 			return false;
 		} else if (obj instanceof ModeValue<?>) {
@@ -83,7 +83,7 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	}
 
 	@Override
-	public int compareTo(SingleData<?> o) {
+	public int compareTo(final SingleData<?> o) {
 		if (o instanceof ModeValue) {
 			@SuppressWarnings("unchecked")
 			M cmp = (M) ((ModeValue<?>) o).mode;
@@ -100,7 +100,7 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	}
 
 	@Override
-	public SingleData<M> create(long timeStamp) {
+	public SingleData<M> create(final long timeStamp) {
 		return new ModeValue<M>(this.mode, timeStamp);
 	}
 

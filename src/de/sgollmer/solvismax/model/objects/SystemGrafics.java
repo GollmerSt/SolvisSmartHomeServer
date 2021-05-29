@@ -42,8 +42,8 @@ public class SystemGrafics implements IXmlWriteable {
 		this(id, 0, 0, new HashMap<>(), new HashMap<>());
 	}
 
-	private SystemGrafics(String id, long configurationMask, int baseConfigurationMask,
-			Map<String, ScreenGraficData> graficDatas, Map<String, Boolean> features) {
+	private SystemGrafics(final String id, final long configurationMask, final int baseConfigurationMask,
+			final Map<String, ScreenGraficData> graficDatas, final Map<String, Boolean> features) {
 		this.id = id;
 		this.configurationMask = configurationMask;
 		this.baseConfigurationMask = baseConfigurationMask;
@@ -60,21 +60,21 @@ public class SystemGrafics implements IXmlWriteable {
 		this.graficDatas.clear();
 	}
 
-	public ScreenGraficData get(String id) {
+	public ScreenGraficData get(final String id) {
 		return this.graficDatas.get(id);
 	}
 
-	public ScreenGraficData remove(String id) {
+	public ScreenGraficData remove(final String id) {
 		return this.graficDatas.remove(id);
 	}
 
-	public void put(String id, MyImage image) {
+	public void put(final String id, final MyImage image) {
 		ScreenGraficData data = new ScreenGraficData(id, image);
 		this.graficDatas.put(id, data);
 	}
 
 	@Override
-	public void writeXml(XMLStreamWriter writer) throws XMLStreamException, IOException {
+	public void writeXml(final XMLStreamWriter writer) throws XMLStreamException, IOException {
 		writer.writeAttribute("id", this.id);
 		writer.writeAttribute("configurationMask", Long.toString(this.configurationMask));
 		writer.writeAttribute("baseConfigurationMask", Long.toString(this.baseConfigurationMask));
@@ -102,12 +102,12 @@ public class SystemGrafics implements IXmlWriteable {
 		private final Map<String, ScreenGraficData> graficDatas = new HashMap<>();
 		private final Map<String, Boolean> features = new HashMap<>();
 
-		Creator(String id, BaseCreator<?> creator) {
+		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -130,7 +130,7 @@ public class SystemGrafics implements IXmlWriteable {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_SCREEN_GRAFIC:
@@ -142,7 +142,7 @@ public class SystemGrafics implements IXmlWriteable {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_SCREEN_GRAFIC:
 					ScreenGraficData data = (ScreenGraficData) created;
@@ -167,7 +167,7 @@ public class SystemGrafics implements IXmlWriteable {
 		return this.configurationMask;
 	}
 
-	public void setConfigurationMask(long configurationMask) {
+	public void setConfigurationMask(final long configurationMask) {
 		this.configurationMask = configurationMask;
 	}
 
@@ -184,16 +184,16 @@ public class SystemGrafics implements IXmlWriteable {
 		return this.baseConfigurationMask;
 	}
 
-	public void setBaseConfigurationMask(long baseConfigurationMask) {
+	public void setBaseConfigurationMask(final long baseConfigurationMask) {
 		this.baseConfigurationMask = baseConfigurationMask;
 	}
 
-	public void add(Feature feature) {
+	public void add(final Feature feature) {
 		this.features.put(feature.getId(), feature.isSet());
 
 	}
 
-	public boolean areRelevantFeaturesEqual(Map<String, Boolean> features) {
+	public boolean areRelevantFeaturesEqual(final Map<String, Boolean> features) {
 		for (Map.Entry<String, Boolean> entry : this.features.entrySet()) {
 			if (Features.XML_ADMIN.equals(entry.getKey())) {
 				if (!entry.getValue() && features.get(Features.XML_ADMIN)) {

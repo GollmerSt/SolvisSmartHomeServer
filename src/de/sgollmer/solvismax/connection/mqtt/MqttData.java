@@ -17,7 +17,8 @@ public class MqttData implements Cloneable {
 	final MqttMessage message;
 	final Unit unit;
 
-	private MqttData(String topicSuffix, byte[] payload, int qoS, boolean retained, Unit unit) {
+	private MqttData(final String topicSuffix, final byte[] payload, final int qoS, final boolean retained,
+			final Unit unit) {
 		this.topicSuffix = topicSuffix;
 		this.message = new MqttMessage(payload);
 		this.message.setQos(qoS);
@@ -27,16 +28,18 @@ public class MqttData implements Cloneable {
 
 	@Override
 	public MqttData clone() {
-		return new MqttData(
-				this.topicSuffix, this.message.getPayload(), this.message.getQos(), this.message.isRetained(), this.unit);
+		return new MqttData(this.topicSuffix, this.message.getPayload(), this.message.getQos(),
+				this.message.isRetained(), this.unit);
 
 	}
 
-	public MqttData(String topicSuffix, String utf8Data, int qoS, boolean retained, Unit unit) {
+	public MqttData(final String topicSuffix, final String utf8Data, final int qoS, final boolean retained,
+			final Unit unit) {
 		this(topicSuffix, utf8Data.getBytes(Mqtt.UTF_8), qoS, retained, unit);
 	}
 
-	public MqttData(Solvis solvis, String topicSuffix, String utf8Data, int qoS, boolean retained) {
+	public MqttData(final Solvis solvis, final String topicSuffix, final String utf8Data, final int qoS,
+			final boolean retained) {
 		this(solvis.getUnit().getId() + '/' + topicSuffix, utf8Data, qoS, retained, solvis.getUnit());
 	}
 
@@ -44,7 +47,7 @@ public class MqttData implements Cloneable {
 		return this.message.getPayload();
 	}
 
-	int getQoS(int defaultQoS) {
+	int getQoS(final int defaultQoS) {
 		int qoS = this.message.getQos();
 		if (qoS == 0) {
 			return defaultQoS;
@@ -64,9 +67,9 @@ public class MqttData implements Cloneable {
 	public Unit getUnit() {
 		return this.unit;
 	}
-	
+
 	@Override
 	public String toString() {
-		return this.topicSuffix ;
+		return this.topicSuffix;
 	}
 }

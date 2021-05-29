@@ -17,7 +17,7 @@ public class Field {
 	private final int position;
 	private final int length;
 
-	private Field(int position, int length) {
+	private Field(final int position, final int length) {
 		this.position = position;
 		this.length = length;
 	}
@@ -26,7 +26,7 @@ public class Field {
 		return this.length;
 	}
 
-	public String subString(String data) {
+	public String subString(final String data) {
 		return data.substring(this.position, this.position + this.length);
 	}
 
@@ -35,12 +35,12 @@ public class Field {
 		private int position;
 		private int length;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "position":
 					this.position = Integer.parseInt(value);
@@ -57,12 +57,12 @@ public class Field {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 		}
 
 	}

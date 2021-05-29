@@ -44,7 +44,7 @@ public abstract class Command {
 	 * @param solvis
 	 * @return screen
 	 */
-	public AbstractScreen getScreen(Solvis solvis) {
+	public AbstractScreen getScreen(final Solvis solvis) {
 		return null;
 	}
 
@@ -62,10 +62,10 @@ public abstract class Command {
 	 * @param inhibit true if the command should be inhibited
 	 */
 
-	protected void setInhibit(boolean inhibit) {
+	protected void setInhibit(final boolean inhibit) {
 	};
 
-	public Handling handle(Command queueEntry, Solvis solvis) {
+	public Handling handle(final Command queueEntry, final Solvis solvis) {
 		return new Handling(false, false, false);
 	}
 
@@ -98,11 +98,11 @@ public abstract class Command {
 	 * @param command
 	 * @return true both commands write to the same channel
 	 */
-	public boolean canBeIgnored(Command queueCommand) {
+	public boolean canBeIgnored(final Command queueCommand) {
 		return false;
 	}
 
-	ChannelDescription getRestoreChannel(Solvis solvis) {
+	ChannelDescription getRestoreChannel(final Solvis solvis) {
 		return null;
 	}
 
@@ -114,9 +114,9 @@ public abstract class Command {
 		return true;
 	}
 
-	public void setDependencyPrepared(boolean dependencyPrepared) {
+	public void setDependencyPrepared(final boolean dependencyPrepared) {
 	}
 
-	public abstract ResultStatus execute(Solvis solvis, QueueStatus queueStatus) throws IOException,
+	public abstract ResultStatus execute(final Solvis solvis, final QueueStatus queueStatus) throws IOException,
 			TerminationException, PowerOnException, NumberFormatException, TypeException, XmlException;
 }

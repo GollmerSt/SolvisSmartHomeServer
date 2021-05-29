@@ -21,22 +21,22 @@ public class Pattern extends MyImage {
 
 	private Integer hashCode = null;
 
-	private Pattern(BufferedImage image) {
+	private Pattern(final BufferedImage image) {
 		super(image);
 		processing();
 	}
 
-	public Pattern(MyImage image) {
+	public Pattern(final MyImage image) {
 		super(image);
 		processing();
 	}
 
-	private Pattern(MyImage image, Coordinate topLeft, Coordinate bottomRight) {
+	private Pattern(final MyImage image, final Coordinate topLeft, final Coordinate bottomRight) {
 		super(image, topLeft, bottomRight, false);
 		processing();
 	}
 
-	public Pattern(MyImage image, Rectangle rectangle) {
+	public Pattern(final MyImage image, final Rectangle rectangle) {
 		super(image, rectangle, false);
 		processing();
 	}
@@ -61,7 +61,7 @@ public class Pattern extends MyImage {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (!(obj instanceof Pattern)) {
 			return false;
 		}
@@ -85,7 +85,7 @@ public class Pattern extends MyImage {
 		return true;
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
 		File parent = new File("testFiles\\images");
 

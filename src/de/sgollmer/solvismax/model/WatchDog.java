@@ -56,7 +56,7 @@ public class WatchDog {
 		private SolvisStatus lastState = SolvisStatus.UNDEFINED;
 
 		@Override
-		public void update(SolvisStatePackage data, Object source) {
+		public void update(final SolvisStatePackage data, final Object source) {
 
 			SolvisStatus state = data.getState();
 
@@ -84,7 +84,7 @@ public class WatchDog {
 
 	}
 
-	WatchDog(Solvis solvis, ScreenSaver saver) {
+	WatchDog(final Solvis solvis, final ScreenSaver saver) {
 		this.solvis = solvis;
 		this.clearErrorMessageAfterMail = solvis.getFeatures().isClearErrorMessageAfterMail();
 		this.saver = saver.createExecutable(solvis);
@@ -245,7 +245,7 @@ public class WatchDog {
 
 	}
 
-	private Event checkError(SolvisScreen realScreen) {
+	private Event checkError(final SolvisScreen realScreen) {
 		Event event = null;
 		switch (this.solvis.getSolvisDescription().getErrorDetection().getType(realScreen)) {
 			case MESSAGE_BOX:
@@ -268,7 +268,7 @@ public class WatchDog {
 		return event;
 	}
 
-	private boolean isHumanAccess(SolvisScreen screen) throws IOException, TerminationException {
+	private boolean isHumanAccess(final SolvisScreen screen) throws IOException, TerminationException {
 		boolean humanAccess = false;
 		if (!screen.imagesEquals(WatchDog.this.solvis.getCurrentScreen(false))) {
 
@@ -292,7 +292,8 @@ public class WatchDog {
 		return humanAccess;
 	}
 
-	private void processEvent(Event event, SolvisScreen realScreen) throws IOException, TerminationException {
+	private void processEvent(final Event event, final SolvisScreen realScreen)
+			throws IOException, TerminationException {
 		HumanAccess current = this.humanAccess;
 		long currentTime = System.currentTimeMillis();
 		switch (event) {
@@ -379,7 +380,8 @@ public class WatchDog {
 		processHumanAccess(current);
 	}
 
-	private void processHumanAccess(HumanAccess current) throws IOException, TerminationException {
+	private void processHumanAccess(final HumanAccess currentP) throws IOException, TerminationException {
+		HumanAccess current = currentP;
 		if (this.humanAccess != HumanAccess.UNKNOWN) {
 			if (this.humanAccess == current) {
 				return;

@@ -10,7 +10,7 @@ package de.sgollmer.solvismax.connection.transfer;
 import de.sgollmer.solvismax.error.JsonException;
 
 public interface IValue {
-	public void addTo(StringBuilder builder);
+	public void addTo(final StringBuilder builder);
 
-	public int from(String json, int position, long timeStamp) throws JsonException;
+	public int from(final String json, final int position, final long timeStamp) throws JsonException;
 }

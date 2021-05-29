@@ -15,12 +15,12 @@ import de.sgollmer.solvismax.error.JsonException;
 public class Frame implements IValue {
 	protected final List<Element> elements = new ArrayList<>();
 
-	void add(Element element) {
+	void add(final Element element) {
 		this.elements.add(element);
 	}
 
 	@Override
-	public void addTo(StringBuilder builder) {
+	public void addTo(final StringBuilder builder) {
 		boolean first = true;
 		for (Element element : this.elements) {
 			if (!first) {
@@ -46,7 +46,8 @@ public class Frame implements IValue {
 	}
 
 	@Override
-	public int from(String json, int position, long timeStamp) throws JsonException {
+	public int from(final String json, final int startPosition, final long timeStamp) throws JsonException {
+		int position = startPosition;
 		while (Character.isWhitespace(Helper.charAt(json, position))) {
 			++position;
 		}
@@ -59,7 +60,7 @@ public class Frame implements IValue {
 		boolean finished = false;
 		while (!finished) {
 			Element element = new Element();
-			position = element.from(json, position,timeStamp);
+			position = element.from(json, position, timeStamp);
 			this.elements.add(element);
 			c = Helper.charAt(json, position);
 			switch (c) {

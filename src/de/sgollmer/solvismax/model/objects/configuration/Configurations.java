@@ -44,7 +44,6 @@ public class Configurations {
 	private final ConfigurationTypes solarTypes;
 	private final ConfigurationTypes extensions;
 	private final NotValidConfigurations notValidConfigurations;
-	
 
 	private final Collection<IConfiguration> configurations;
 
@@ -62,7 +61,7 @@ public class Configurations {
 		this.configurations = configurations;
 	}
 
-	public int get(Solvis solvis) throws IOException, TerminationException, LearningException {
+	public int get(final Solvis solvis) throws IOException, TerminationException, LearningException {
 
 		solvis.gotoHome(true);
 		AbstractScreen current = solvis.getHomeScreen();
@@ -119,12 +118,12 @@ public class Configurations {
 
 		private final Collection<IConfiguration> configurations = new ArrayList<>();
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
 
 		@Override
@@ -134,7 +133,7 @@ public class Configurations {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_SOLVIS_TYPES:
@@ -154,7 +153,7 @@ public class Configurations {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_SOLVIS_TYPES:
 					this.solvisTypes = (ConfigurationTypes) created;
@@ -223,8 +222,8 @@ public class Configurations {
 		}
 		return iterator;
 	}
-	
-	public boolean isValid( Long mask, SolvisDescription description) {
+
+	public boolean isValid(final Long mask, final SolvisDescription description) {
 		return this.notValidConfigurations.isValid(mask, description);
 	}
 

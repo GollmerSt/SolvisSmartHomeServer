@@ -20,7 +20,7 @@ public class ServerCommandPackage extends JsonPackage implements IReceivedData {
 		super.command = Command.SERVER_COMMAND;
 	}
 
-	public ServerCommandPackage(ServerCommand command) {
+	public ServerCommandPackage(final ServerCommand command) {
 		this.command = Command.SERVER_COMMAND;
 		this.data = new Frame();
 		Element element = new Element("Command", new SingleValue(command.name()));

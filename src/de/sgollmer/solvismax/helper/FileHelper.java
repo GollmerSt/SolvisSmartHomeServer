@@ -33,12 +33,12 @@ import de.sgollmer.solvismax.Main;
 
 public class FileHelper {
 
-	public static void copyFromResourceText(String resourcePath, File destination) throws IOException {
+	public static void copyFromResourceText(final String resourcePath, final File destination) throws IOException {
 		FileHelper.copyFromResource(resourcePath, destination, null, null);
 	}
 
-	public static void copyFromResource(String resourcePath, File destination, String target, String replacement)
-			throws IOException {
+	public static void copyFromResource(final String resourcePath, File destination, final String target,
+			final String replacement) throws IOException {
 
 		InputStream inputStream = Main.class.getResourceAsStream(resourcePath);
 
@@ -64,7 +64,7 @@ public class FileHelper {
 		}
 	}
 
-	public static void copyFromResourceBinary(String resourcePath, File destination) throws IOException {
+	public static void copyFromResourceBinary(final String resourcePath, final File destination) throws IOException {
 
 		InputStream inputStream = Main.class.getResourceAsStream(resourcePath);
 		OutputStream outputStream = new FileOutputStream(destination);
@@ -87,7 +87,7 @@ public class FileHelper {
 		outputStream.close();
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(final String[] args) throws IOException {
 
 		String writeDirectory = System.getProperty("user.home");
 		if (System.getProperty("os.name").startsWith("Windows")) {
@@ -125,7 +125,7 @@ public class FileHelper {
 	 *         testing with NetBeans, the result is ./build/classes/, which is the
 	 *         directory containing what will be in the jar.
 	 */
-	public static File getJarDir(Class<?> aclass) {
+	public static File getJarDir(final Class<?> aclass) {
 		URL url;
 		String extURL; // url.toExternalForm();
 
@@ -171,7 +171,7 @@ public class FileHelper {
 		}
 	}
 
-	public static boolean renameDuplicates(File source, int noOfDuplicates) {
+	public static boolean renameDuplicates(final File source, final int noOfDuplicates) {
 		boolean success = false;
 		for (int i = noOfDuplicates; i > 0; --i) {
 			String sourceName = source.getName();
@@ -186,7 +186,7 @@ public class FileHelper {
 		return success;
 	}
 
-	public static boolean mkdir(File directory) {
+	public static boolean mkdir(final File directory) {
 		if (directory == null || directory.isDirectory()) {
 			return true;
 		}
@@ -196,7 +196,7 @@ public class FileHelper {
 		return directory.mkdir();
 	}
 
-	public static boolean canDelete(File file) {
+	public static boolean canDelete(final File file) {
 		if (file == null || !file.exists()) {
 			return true;
 		}
@@ -212,7 +212,7 @@ public class FileHelper {
 
 	}
 
-	public static boolean rmDir(File file) {
+	public static boolean rmDir(final File file) {
 		if (!canDelete(file)) {
 			return false;
 		}
@@ -230,7 +230,7 @@ public class FileHelper {
 
 	}
 
-	public static String makeOSCompatible(String child) {
+	public static String makeOSCompatible(final String child) {
 
 		String[] parts = child.split("/|<|>|:|\"|\\\\|\\||\\?|\\*|\\s");
 		StringBuilder builder = new StringBuilder();
@@ -243,11 +243,11 @@ public class FileHelper {
 		return builder.toString();
 	}
 
-	public static Collection<File> getSortedbyDate(File parent, final Pattern regex) {
+	public static Collection<File> getSortedbyDate(final File parent, final Pattern regex) {
 		File[] filteredFiles = parent.listFiles(new FilenameFilter() {
 
 			@Override
-			public boolean accept(File dir, String name) {
+			public boolean accept(final File dir, String name) {
 				Matcher matcher = regex.matcher(name);
 				return matcher.matches();
 			}
@@ -259,7 +259,7 @@ public class FileHelper {
 		files.sort(new Comparator<File>() {
 
 			@Override
-			public int compare(File o1, File o2) {
+			public int compare(final File o1, final File o2) {
 				long diff = o1.lastModified() - o2.lastModified();
 				return diff > 0 ? 1 : diff == 0 ? 0 : -1;
 			}
@@ -274,11 +274,11 @@ public class FileHelper {
 		private long hash = 61;
 		private long hashSave = 0;
 
-		private void hash(int out) {
+		private void hash(final int out) {
 			this.hash = 397 * this.hash + 43 * Integer.hashCode(out);
 		}
 
-		public ChecksumInputStream(InputStream comp) {
+		public ChecksumInputStream(final InputStream comp) {
 			this.inputStream = comp;
 		}
 
@@ -297,7 +297,7 @@ public class FileHelper {
 		}
 
 		@Override
-		public void mark(int readlimit) {
+		public void mark(final int readlimit) {
 			this.hashSave = this.hash;
 			this.inputStream.mark(readlimit);
 		}
@@ -317,12 +317,12 @@ public class FileHelper {
 		}
 
 		@Override
-		public int read(byte[] array) throws IOException {
+		public int read(final byte[] array) throws IOException {
 			return this.read(array, 0, array.length);
 		}
 
 		@Override
-		public int read(byte[] array, int off, int len) throws IOException {
+		public int read(final byte[] array, int off, int len) throws IOException {
 			int cnt = this.inputStream.read(array, off, len);
 			for (int i = off; i < cnt + off; ++i) {
 				this.hash(array[i]);
@@ -337,11 +337,11 @@ public class FileHelper {
 		}
 
 		@Override
-		public long skip(long n) throws IOException {
+		public long skip(final long n) throws IOException {
 			return this.skip(Long.valueOf(n));
 		}
 
-		private long skip(Long n) throws IOException {
+		private long skip(final Long n) throws IOException {
 			if (n != null && n < 0) {
 				return 0;
 			}

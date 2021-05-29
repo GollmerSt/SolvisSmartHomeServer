@@ -69,7 +69,8 @@ public class Control extends ChannelSource {
 	private final IStrategy strategy;
 	private final UpdateStrategies updateStrategies;
 
-	private Control(boolean optional, GuiAccess guiAccess, IStrategy strategy, UpdateStrategies updateStrategies) {
+	private Control(final boolean optional, final GuiAccess guiAccess, final IStrategy strategy,
+			final UpdateStrategies updateStrategies) {
 		this.optional = optional;
 		this.guiAccess = guiAccess;
 		this.strategy = strategy;
@@ -83,7 +84,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean getValue(SolvisData destin, Solvis solvis, long executionStartTime)
+	public boolean getValue(final SolvisData destin, final Solvis solvis, final long executionStartTime)
 			throws IOException, TerminationException {
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
@@ -100,7 +101,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public SetResult setValue(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+	public SetResult setValue(final Solvis solvis, final SolvisData value) throws IOException, TerminationException {
 
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
@@ -131,15 +132,15 @@ public class Control extends ChannelSource {
 		}
 		return setResult;
 	}
-	
+
 	@Override
-	public SetResult setValueFast(Solvis solvis, SolvisData value) throws IOException, TerminationException {
+	public SetResult setValueFast(final Solvis solvis, final SolvisData value)
+			throws IOException, TerminationException {
 		return this.strategy.setValueFast(solvis, value);
 	}
 
-
-
-	private boolean guiPrepare(Solvis solvis, IControlAccess controlAccess) throws IOException, TerminationException {
+	private boolean guiPrepare(final Solvis solvis, final IControlAccess controlAccess)
+			throws IOException, TerminationException {
 		((Screen) this.guiAccess.getScreen().get(solvis)).goTo(solvis);
 		if (!this.guiAccess.prepare(solvis)) {
 			return false;
@@ -168,7 +169,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws ReferenceException, XmlException, AssignmentException {
+	public void assign(final SolvisDescription description)
+			throws ReferenceException, XmlException, AssignmentException {
 
 		if (this.updateStrategies != null) {
 			this.updateStrategies.assign(description);
@@ -185,7 +187,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public IInstance instantiate(Solvis solvis) {
+	public IInstance instantiate(final Solvis solvis) {
 		if (this.updateStrategies != null) {
 			this.updateStrategies.instantiate(solvis);
 		}
@@ -204,12 +206,12 @@ public class Control extends ChannelSource {
 		private IStrategy strategy;
 		private UpdateStrategies updateStrategies = null;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "optional":
 					this.optional = Boolean.parseBoolean(value);
@@ -228,7 +230,7 @@ public class Control extends ChannelSource {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_GUI_ACCESS:
@@ -250,7 +252,7 @@ public class Control extends ChannelSource {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_GUI_ACCESS:
 					this.guiAccess = (GuiAccess) created;
@@ -271,7 +273,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void learn(Solvis solvis) throws IOException, LearningException, TerminationException {
+	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException {
 		if (this.strategy.mustBeLearned()) {
 			SingleData<?> data = null;
 			AbstractScreen screen = this.guiAccess.getScreen().get(solvis);
@@ -344,7 +346,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public AbstractScreen getScreen(Solvis solvis) {
+	public AbstractScreen getScreen(final Solvis solvis) {
 		return this.guiAccess.getScreen().get(solvis);
 	}
 
@@ -364,7 +366,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
+	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
 		return this.strategy.interpretSetData(singleData);
 	}
 
@@ -379,8 +381,8 @@ public class Control extends ChannelSource {
 		private Preparation preparation = null;
 		private OfConfigs<ChannelDescription> restoreChannel = null;
 
-		private GuiAccess(String screenId, Rectangle valueRectangle, String preparationId, String restoreChannelId,
-				DependencyGroup dependencies) {
+		private GuiAccess(final String screenId, final Rectangle valueRectangle, final String preparationId,
+				final String restoreChannelId, DependencyGroup dependencies) {
 			this.screenId = screenId;
 			this.valueRectangle = valueRectangle;
 			this.preparationId = preparationId;
@@ -408,12 +410,12 @@ public class Control extends ChannelSource {
 			private String restoreChannelId;
 			private DependencyGroup dependencies = new DependencyGroup();
 
-			private Creator(String id, BaseCreator<?> creator) {
+			private Creator(final String id, final BaseCreator<?> creator) {
 				super(id, creator);
 			}
 
 			@Override
-			public void setAttribute(QName name, String value) {
+			public void setAttribute(final QName name, final String value) {
 				switch (name.getLocalPart()) {
 					case "screenId":
 						this.screenId = value;
@@ -432,7 +434,7 @@ public class Control extends ChannelSource {
 			}
 
 			@Override
-			public CreatorByXML<?> getCreator(QName name) {
+			public CreatorByXML<?> getCreator(final QName name) {
 				String id = name.getLocalPart();
 				switch (id) {
 					case XML_CONTROL_CURRENT:
@@ -446,7 +448,7 @@ public class Control extends ChannelSource {
 			}
 
 			@Override
-			public void created(CreatorByXML<?> creator, Object created) {
+			public void created(final CreatorByXML<?> creator, final Object created) {
 				switch (creator.getId()) {
 					case XML_CONTROL_CURRENT:
 						this.valueRectangle = (Rectangle) created;
@@ -466,7 +468,8 @@ public class Control extends ChannelSource {
 		}
 
 		@Override
-		public void assign(SolvisDescription description) throws ReferenceException, XmlException, AssignmentException {
+		public void assign(final SolvisDescription description)
+				throws ReferenceException, XmlException, AssignmentException {
 			this.screen = description.getScreens().getScreen(this.screenId);
 			if (this.screen == null) {
 				throw new ReferenceException("Screen of reference < " + this.screenId + " > not found");
@@ -489,18 +492,18 @@ public class Control extends ChannelSource {
 			this.dependencies.assign(description);
 		}
 
-		boolean prepare(Solvis solvis) throws IOException, TerminationException {
+		boolean prepare(final Solvis solvis) throws IOException, TerminationException {
 			return Preparation.prepare(this.preparation, solvis);
 		}
 
 	}
 
-	private IControlAccess getControlAccess(Solvis solvis) {
+	private IControlAccess getControlAccess(final Solvis solvis) {
 		return this.guiAccess;
 	}
 
 	@Override
-	public ChannelDescription getRestoreChannel(Solvis solvis) {
+	public ChannelDescription getRestoreChannel(final Solvis solvis) {
 		if (this.guiAccess.restoreChannel != null) {
 			return this.guiAccess.restoreChannel.get(solvis);
 		}
@@ -508,7 +511,7 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	protected SingleData<?> createSingleData(String value, long timeStamp) throws TypeException {
+	protected SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException {
 		return this.strategy.createSingleData(value, timeStamp);
 	}
 
@@ -528,17 +531,17 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean isDelayed(Solvis solvis) {
+	public boolean isDelayed(final Solvis solvis) {
 		return false;
 	}
 
 	@Override
-	public Integer getScanInterval_ms(Solvis solvis) {
+	public Integer getScanInterval_ms(final Solvis solvis) {
 		return null;
 	}
 
 	@Override
-	public String getCsvMeta(String column, boolean semicolon) {
+	public String getCsvMeta(final String column, final boolean semicolon) {
 		switch (column) {
 			case Csv.OPTIONAL:
 				return Boolean.toString(this.optional);

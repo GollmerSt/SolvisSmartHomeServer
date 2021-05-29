@@ -105,7 +105,7 @@ public class SolvisDescription {
 		}
 	}
 
-	public Collection<IScreenPartCompare> getLearnGrafics(Solvis solvis) {
+	public Collection<IScreenPartCompare> getLearnGrafics(final Solvis solvis) {
 		Collection<IScreenPartCompare> learnGrafics = new ArrayList<>();
 		this.screens.addLearnScreenGrafics(learnGrafics, solvis);
 		return learnGrafics;
@@ -128,13 +128,13 @@ public class SolvisDescription {
 		private AllDurations durations;
 		private Miscellaneous miscellaneous;
 
-		public Creator(String id) {
+		public Creator(final String id) {
 			super(id);
 			this.screenGrafics = new AllScreenGraficDescriptions();
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 		}
 
 		@Override
@@ -145,7 +145,7 @@ public class SolvisDescription {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_CONFIGURATIONS:
@@ -179,7 +179,7 @@ public class SolvisDescription {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_CONFIGURATIONS:
 					this.configurations = (Configurations) created;
@@ -239,12 +239,12 @@ public class SolvisDescription {
 
 		private final Collection<ScreenGraficDescription> grafics = new ArrayList<>();
 
-		private CreatorScreenGrafics(String id, BaseCreator<?> creator) {
+		private CreatorScreenGrafics(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 
 		}
 
@@ -254,7 +254,7 @@ public class SolvisDescription {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_SCREEN_GRAFIC:
@@ -264,7 +264,7 @@ public class SolvisDescription {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_SCREEN_GRAFIC:
 					this.grafics.add((ScreenGraficDescription) created);
@@ -302,7 +302,7 @@ public class SolvisDescription {
 		return this.dataDescriptions;
 	}
 
-	public Duration getDuration(String id) {
+	public Duration getDuration(final String id) {
 		return this.durations.get(id);
 	}
 
@@ -314,7 +314,8 @@ public class SolvisDescription {
 		return this.fallBack;
 	}
 
-	public long getConfigurationFromGui(Solvis solvis) throws IOException, TerminationException, LearningException {
+	public long getConfigurationFromGui(final Solvis solvis)
+			throws IOException, TerminationException, LearningException {
 		return this.configurations.get(solvis);
 	}
 
@@ -326,7 +327,7 @@ public class SolvisDescription {
 		return this.errorDetection;
 	}
 
-	public void instantiate(Solvis solvis) {
+	public void instantiate(final Solvis solvis) {
 		this.clock.instantiate(solvis);
 		this.errorDetection.instantiate(solvis);
 	}
@@ -343,7 +344,7 @@ public class SolvisDescription {
 		return this.configurations;
 	}
 
-	public boolean isValid(Long mask) {
+	public boolean isValid(final Long mask) {
 		return this.configurations.isValid(mask, this);
 	}
 

@@ -97,7 +97,7 @@ public class BaseData {
 		private Mqtt mqtt = null;
 		private IoBroker ioBroker = new IoBroker();
 
-		public Creator(String id) {
+		public Creator(final String id) {
 			super(id);
 		}
 

@@ -19,7 +19,7 @@ public class Range {
 	private final int lower;
 	private final int higher;
 
-	public Range(int lower, int higher) {
+	public Range(final int lower, final int higher) {
 		this.lower = lower;
 		this.higher = higher;
 	}
@@ -37,12 +37,12 @@ public class Range {
 		private int lower;
 		private int higher;
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) {
+		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "lowerLimit":
 					this.lower = Integer.parseInt(value);
@@ -60,12 +60,12 @@ public class Range {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) {
+		public void created(final CreatorByXML<?> creator, final Object created) {
 		}
 
 	}

@@ -111,9 +111,9 @@ public class Solvis {
 	private Map<String, Collection<UpdateStrategies.IExecutable>> updateStrategies = new HashMap<>();
 	private Standby.Executable standby;
 
-	Solvis(Unit unit, SolvisDescription solvisDescription, SystemGrafics grafics, SolvisConnection connection,
-			BackupHandler measurementsBackupHandler, String timeZone, int echoInhibitTime_ms, File writePath,
-			boolean mustLearn) {
+	Solvis(final Unit unit, final SolvisDescription solvisDescription, final SystemGrafics grafics,
+			final SolvisConnection connection, final BackupHandler measurementsBackupHandler, final String timeZone,
+			final int echoInhibitTime_ms, final File writePath, final boolean mustLearn) {
 		this.allSolvisData = new AllSolvisData(this);
 		this.unit = unit;
 		this.echoInhibitTime_ms = echoInhibitTime_ms;
@@ -135,7 +135,7 @@ public class Solvis {
 		this.mustLearn = mustLearn;
 	}
 
-	void setCurrentScreen(SolvisScreen screen) {
+	void setCurrentScreen(final SolvisScreen screen) {
 		this.currentScreen = screen;
 	}
 
@@ -143,7 +143,7 @@ public class Solvis {
 		return this.getCurrentScreen(true);
 	}
 
-	SolvisScreen getCurrentScreen(boolean screensaverOff) throws IOException, TerminationException {
+	SolvisScreen getCurrentScreen(final boolean screensaverOff) throws IOException, TerminationException {
 		if (this.screenSaverActive && (screensaverOff || this.currentScreen == null)) {
 			this.resetScreensaver();
 		}
@@ -158,7 +158,7 @@ public class Solvis {
 		return screen;
 	}
 
-	private boolean forceCurrentScreen(Screen current) throws IOException, TerminationException {
+	private boolean forceCurrentScreen(final Screen current) throws IOException, TerminationException {
 		this.getCurrentScreen();
 		this.currentScreen.forceScreen(current);
 		return true;
@@ -199,29 +199,31 @@ public class Solvis {
 		this.send(this.resetSceenSaver);
 	}
 
-	public void send(TouchPoint point) throws IOException, TerminationException {
+	public void send(final TouchPoint point) throws IOException, TerminationException {
 		if (point == null) {
 			logger.warn("TouchPoint is <null>, ignored");
 			return;
 		}
 		this.send(point.getCoordinate(), point.getPushTimeId(), point.getReleaseTimeId());
 	}
-	
-	public void send(Coordinate coord, String pushTimeId, String releaseTimeId) throws IOException, TerminationException {
-		
+
+	public void send(final Coordinate coord, final String pushTimeId, final String releaseTimeId)
+			throws IOException, TerminationException {
+
 		Duration push = this.getDuration(pushTimeId);
 		Duration release = this.getDuration(releaseTimeId);
-		
-		if ( push == null || release == null ) {
+
+		if (push == null || release == null) {
 			logger.error("Push time or release time isn't defined, ignored");
 			return;
 		}
 
 		this.send(coord, push.getTime_ms(), release.getTime_ms());
-		
+
 	}
 
-	private void send(Coordinate coord, int pushTime, int releaseTime) throws IOException, TerminationException {
+	private void send(final Coordinate coord, final int pushTime, final int releaseTime)
+			throws IOException, TerminationException {
 		this.getConnection().sendTouch(coord);
 		try {
 			Thread.sleep(Constants.MIN_TOUCH_TIME);
@@ -249,7 +251,7 @@ public class Solvis {
 		this.setPreviousScreen(this.getHomeScreen());
 	}
 
-	public void gotoHome(boolean lastChance) throws IOException, TerminationException {
+	public void gotoHome(final boolean lastChance) throws IOException, TerminationException {
 		this.getHistory().set(null);
 		this.solvisDescription.getFallBack().execute(this, lastChance);
 	}
@@ -258,7 +260,7 @@ public class Solvis {
 		private boolean powerOff = true;
 
 		@Override
-		public void update(SolvisStatePackage data, Object source) {
+		public void update(final SolvisStatePackage data, final Object source) {
 			boolean update = false;
 			synchronized (this) {
 				SolvisStatus state = data.getState();
@@ -322,13 +324,14 @@ public class Solvis {
 		this.getSolvisDescription().getChannelDescriptions().updateReadOnlyControlChannels(this);
 	}
 
-	void measure(MeasureMode mode) throws IOException, PowerOnException, TerminationException, NumberFormatException {
+	void measure(final MeasureMode mode)
+			throws IOException, PowerOnException, TerminationException, NumberFormatException {
 		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData(), mode);
 		}
 	}
 
-	public void commandOptimization(boolean enable) {
+	public void commandOptimization(final boolean enable) {
 		this.worker.commandOptimization(enable);
 	}
 
@@ -336,16 +339,16 @@ public class Solvis {
 		public void commandEnable(boolean enable);
 	}
 
-	public void controlEnable(boolean enable) {
+	public void controlEnable(final boolean enable) {
 		this.worker.controlEnable(enable);
 	}
 
-	public void screenRestore(boolean enable, Object service) {
+	public void screenRestore(final boolean enable, final Object service) {
 		this.worker.screenRestore(enable, service);
 		;
 	}
 
-	public void execute(Command command) {
+	public void execute(final Command command) {
 		this.worker.push(command);
 	}
 
@@ -358,7 +361,8 @@ public class Solvis {
 	 * @return True: Command was ignored to prevent feedback loops
 	 * @throws TypeException
 	 */
-	public boolean setFromExternal(ChannelDescription description, SingleData<?> singleData) throws TypeException {
+	public boolean setFromExternal(final ChannelDescription description, final SingleData<?> singleData)
+			throws TypeException {
 
 		boolean ignored;
 
@@ -392,7 +396,7 @@ public class Solvis {
 		return ignored;
 	}
 
-	public ChannelDescription getChannelDescription(String id) {
+	public ChannelDescription getChannelDescription(final String id) {
 		SolvisData data = this.allSolvisData.get(id);
 		if (data == null) {
 			return null;
@@ -400,7 +404,7 @@ public class Solvis {
 		return data.getDescription();
 	}
 
-	public Duration getDuration(String id) {
+	public Duration getDuration(final String id) {
 		Duration duration = this.unit.getDuratio(id);
 		if (duration == null) {
 			duration = this.solvisDescription.getDuration(id);
@@ -408,11 +412,11 @@ public class Solvis {
 		return duration;
 	}
 
-	public void registerScreenChangedByHumanObserver(IObserver<HumanAccess> observer) {
+	public void registerScreenChangedByHumanObserver(final IObserver<HumanAccess> observer) {
 		this.screenChangedByHumanObserable.register(observer);
 	}
 
-	void notifyScreenChangedByHumanObserver(HumanAccess humanAccess) {
+	void notifyScreenChangedByHumanObserver(final HumanAccess humanAccess) {
 		this.humanAccess = humanAccess;
 		this.screenChangedByHumanObserable.notify(humanAccess);
 		switch (humanAccess) {
@@ -431,15 +435,15 @@ public class Solvis {
 		return new SolvisStatePackage(this.humanAccess.getStatus(), this);
 	}
 
-	public void registerSolvisErrorObserver(IObserver<SolvisErrorInfo> observer) {
+	public void registerSolvisErrorObserver(final IObserver<SolvisErrorInfo> observer) {
 		this.solvisErrorObservable.register(observer);
 	}
 
-	public void registerControlExecutingObserver(IObserver<Boolean> observer) {
+	public void registerControlExecutingObserver(final IObserver<Boolean> observer) {
 		this.worker.registerControlExecutingObserver(observer);
 	}
 
-	public boolean notifySolvisErrorObserver(SolvisErrorInfo info, Object source) {
+	public boolean notifySolvisErrorObserver(final SolvisErrorInfo info, final Object source) {
 		return this.solvisErrorObservable.notify(info, source);
 	}
 
@@ -483,7 +487,7 @@ public class Solvis {
 	/**
 	 * @param screenSaver the screenSaver to set
 	 */
-	void setScreenSaverActive(boolean screenSaverActive) {
+	void setScreenSaverActive(final boolean screenSaverActive) {
 		if (this.screenSaverActive != screenSaverActive) {
 			if (screenSaverActive) {
 				logger.debug("Screen saver detected");
@@ -498,7 +502,7 @@ public class Solvis {
 		return this.grafics;
 	}
 
-	void learning(boolean force) throws IOException, LearningException, TerminationException {
+	void learning(final boolean force) throws IOException, LearningException, TerminationException {
 		if (this.mustLearn || force) {
 			this.learning = true;
 			this.getGrafics().clear();
@@ -542,7 +546,7 @@ public class Solvis {
 		return this.solvisDescription;
 	}
 
-	public void backupMeasurements(SystemBackup system) {
+	public void backupMeasurements(final SystemBackup system) {
 		this.allSolvisData.saveToBackup(system);
 
 	}
@@ -555,7 +559,7 @@ public class Solvis {
 		return this.unit.getFeatures();
 	}
 
-	public void registerSmartHomeObserver(Observer.IObserver<SmartHomeData> observer) {
+	public void registerSmartHomeObserver(final Observer.IObserver<SmartHomeData> observer) {
 		this.allSolvisData.register(observer);
 	}
 
@@ -583,7 +587,7 @@ public class Solvis {
 		private boolean power = false;
 		private boolean singleUpdate = false;
 
-		private MeasurementUpdateThread(Unit unit) {
+		private MeasurementUpdateThread(final Unit unit) {
 			super("MeasurementUpdateThread");
 			this.updateInterval = unit.getForcedUpdateInterval_ms();
 			this.doubleUpdateInterval = unit.getDoubleUpdateInterval_ms();
@@ -593,7 +597,7 @@ public class Solvis {
 		private class PowerObserver implements IObserver<SolvisStatePackage> {
 
 			@Override
-			public void update(SolvisStatePackage data, Object source) {
+			public void update(final SolvisStatePackage data, final Object source) {
 				SolvisStatus state = data.getState();
 				switch (state) {
 					case SOLVIS_CONNECTED:
@@ -676,7 +680,7 @@ public class Solvis {
 		return this.connection.getMaxResponseTime();
 	}
 
-	public void registerAbortObserver(IObserver<Boolean> observer) {
+	public void registerAbortObserver(final IObserver<Boolean> observer) {
 		this.abortObservable.register(observer);
 	}
 
@@ -764,7 +768,7 @@ public class Solvis {
 		private final boolean changed;
 		private final SolvisScreen screen;
 
-		static SolvisScreen getScreen(SynchronizedScreenResult result) {
+		static SolvisScreen getScreen(final SynchronizedScreenResult result) {
 			if (result == null) {
 				return null;
 			} else {
@@ -772,7 +776,7 @@ public class Solvis {
 			}
 		}
 
-		private SynchronizedScreenResult(boolean changed, SolvisScreen screen) {
+		private SynchronizedScreenResult(final boolean changed, final SolvisScreen screen) {
 			this.changed = changed;
 			this.screen = screen;
 		}
@@ -816,7 +820,7 @@ public class Solvis {
 		return this.writePath;
 	}
 
-	public boolean willBeModified(SolvisData data) {
+	public boolean willBeModified(final SolvisData data) {
 		return this.worker.willBeModified(data);
 	}
 
@@ -824,11 +828,11 @@ public class Solvis {
 		return String.format("%03d", ++this.learningPictureIndex);
 	}
 
-	public void writeLearningImage(SolvisScreen solvisScreen, String id) {
+	public void writeLearningImage(final SolvisScreen solvisScreen, final String id) {
 		this.writeLearningImage(SolvisScreen.getImage(solvisScreen), id);
 	}
 
-	public void writeLearningImage(MyImage image, String id) {
+	public void writeLearningImage(final MyImage image, final String id) {
 		if (image == null) {
 			return;
 		}
@@ -855,7 +859,7 @@ public class Solvis {
 		return this.unit.isAdmin();
 	}
 
-	public boolean isFeature(Feature feature) {
+	public boolean isFeature(final Feature feature) {
 		Boolean value = this.unit.getFeatures().getFeature(feature.getId());
 		if (value == null) {
 			return false;
@@ -867,7 +871,7 @@ public class Solvis {
 		return this.learning;
 	}
 
-	public void addFeatureDependency(String id) {
+	public void addFeatureDependency(final String id) {
 		Boolean value = this.getFeatures().getFeature(id);
 		value = value == null ? false : value;
 		Feature feature = new Feature(id, value);
@@ -879,7 +883,7 @@ public class Solvis {
 		return this.initialized;
 	}
 
-	public void setDefaultScreen(AbstractScreen defaultScreen) {
+	public void setDefaultScreen(final AbstractScreen defaultScreen) {
 		this.defaultScreen = defaultScreen;
 	}
 
@@ -887,7 +891,7 @@ public class Solvis {
 		return this.previousScreen;
 	}
 
-	public void setPreviousScreen(AbstractScreen previousScreen) {
+	public void setPreviousScreen(final AbstractScreen previousScreen) {
 		switch (this.humanAccess) {
 			case UNKNOWN:
 			case NONE:
@@ -896,7 +900,7 @@ public class Solvis {
 		}
 	}
 
-	public void add(UpdateStrategies.IExecutable executable) {
+	public void add(final UpdateStrategies.IExecutable executable) {
 		String triggerId = executable.getTriggerId();
 
 		Collection<UpdateStrategies.IExecutable> collection = this.updateStrategies.get(triggerId);
@@ -907,11 +911,11 @@ public class Solvis {
 		collection.add(executable);
 	}
 
-	public Collection<UpdateStrategies.IExecutable> getUpdateStrategies(String triggerId) {
+	public Collection<UpdateStrategies.IExecutable> getUpdateStrategies(final String triggerId) {
 		return this.updateStrategies.get(triggerId);
 	}
 
-	public boolean setStandby(String standbyId)
+	public boolean setStandby(final String standbyId)
 			throws NumberFormatException, IOException, PowerOnException, TerminationException {
 		SolvisData data = this.getAllSolvisData().get(standbyId);
 		if (data == null) {

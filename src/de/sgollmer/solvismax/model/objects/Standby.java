@@ -27,11 +27,11 @@ public class Standby {
 
 	private final Map<String, String> standbyChannels;
 
-	private Standby(Map<String, String> standbyChannel) {
+	private Standby(final Map<String, String> standbyChannel) {
 		this.standbyChannels = standbyChannel;
 	}
 
-	public Executable instantiate(Solvis solvis) throws TypeException {
+	public Executable instantiate(final Solvis solvis) throws TypeException {
 		return new Executable(solvis);
 	}
 
@@ -39,12 +39,12 @@ public class Standby {
 
 		private final Map<String, String> standbyChannels = new HashMap<>(4);
 
-		public Creator(String id, BaseCreator<?> creator) {
+		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 
 		}
 
@@ -54,7 +54,7 @@ public class Standby {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 
 			String id = name.getLocalPart();
 			switch (id) {
@@ -65,7 +65,7 @@ public class Standby {
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 		}
 
 	}
@@ -76,13 +76,13 @@ public class Standby {
 		private final SingleData<?> standbyState;
 		private SingleData<?> savedState = null;
 
-		public StandbyChannel(Solvis solvis, SolvisData solvisData, SingleData<?> standbyState) {
+		public StandbyChannel(final Solvis solvis, final SolvisData solvisData, final SingleData<?> standbyState) {
 			this.solvis = solvis;
 			this.solvisData = solvisData;
 			this.standbyState = standbyState;
 		}
 
-		public boolean set(boolean standby)
+		public boolean set(final boolean standby)
 				throws NumberFormatException, IOException, PowerOnException, TerminationException {
 			ChannelDescription description = this.solvisData.getDescription();
 			SingleData<?> state = null;
@@ -122,7 +122,7 @@ public class Standby {
 
 		private final Map<ChannelDescription, StandbyChannel> standbyChannels = new HashMap<>(4);
 
-		private Executable(Solvis solvis) throws TypeException {
+		private Executable(final Solvis solvis) throws TypeException {
 			for (Map.Entry<String, String> entry : Standby.this.standbyChannels.entrySet()) {
 				ChannelDescription description = solvis.getChannelDescription(entry.getKey());
 				if (description != null) {
@@ -134,7 +134,7 @@ public class Standby {
 			}
 		}
 
-		public boolean set(SolvisData data)
+		public boolean set(final SolvisData data)
 				throws NumberFormatException, IOException, PowerOnException, TerminationException {
 			StandbyChannel channel = this.standbyChannels.get(data.getDescription());
 			if (channel == null) {
@@ -159,13 +159,14 @@ public class Standby {
 		private String id = null;
 		private String value = null;
 
-		public StandbyChannelCreator(String id, BaseCreator<?> creator, Map<String, String> standbyChannel) {
+		public StandbyChannelCreator(final String id, final BaseCreator<?> creator,
+				Map<String, String> standbyChannel) {
 			super(id, creator);
 			this.standbyChannels = standbyChannel;
 		}
 
 		@Override
-		public void setAttribute(QName name, String value) throws XmlException {
+		public void setAttribute(final QName name, final String value) throws XmlException {
 			switch (name.getLocalPart()) {
 				case "id":
 					this.id = value;
@@ -187,12 +188,12 @@ public class Standby {
 		}
 
 		@Override
-		public CreatorByXML<?> getCreator(QName name) {
+		public CreatorByXML<?> getCreator(final QName name) {
 			return null;
 		}
 
 		@Override
-		public void created(CreatorByXML<?> creator, Object created) throws XmlException {
+		public void created(final CreatorByXML<?> creator, final Object created) throws XmlException {
 
 		}
 
