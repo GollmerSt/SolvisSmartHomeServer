@@ -355,7 +355,7 @@ public class StrategyReheat implements IStrategy {
 					}
 				}
 
-				Execute.this.solvis.execute(new CommandSetQueuePriority(Constants.Commands.REHEATING_PRIORITY, this));
+				Execute.this.solvis.execute(new CommandSetQueuePriority(null, this));
 				Execute.this.solvis.execute(new CommandScreenRestore(true, this));
 				data.unregisterContinuousObserver(this);
 			}
