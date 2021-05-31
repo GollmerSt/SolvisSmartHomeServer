@@ -271,12 +271,14 @@ public class Server {
 
 	public void abort() {
 		this.abort = true;
+		Collection<Client> clients;
 		synchronized (this.connectedClients) {
-			for (Iterator<Client> it = this.connectedClients.iterator(); it.hasNext();) {
-				Client client = it.next();
-				client.abort();
-				it.remove(); // Wird durch client.abort gelöscht
-			}
+			clients = new ArrayList<>(this.connectedClients);
+		}
+		for (Iterator<Client> it = clients.iterator(); it.hasNext();) {
+			Client client = it.next();
+			client.abort();
+			it.remove(); // Wird durch client.abort gelöscht
 		}
 		this.serverThread.abort();
 	}

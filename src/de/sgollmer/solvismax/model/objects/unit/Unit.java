@@ -16,7 +16,7 @@ import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.CryptDefaultValueException;
 import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.objects.AllDurations;
 import de.sgollmer.solvismax.model.objects.ChannelAssignment;
@@ -28,6 +28,8 @@ import de.sgollmer.xmllibrary.StringElement;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class Unit implements IAccountInfo {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(Unit.class);
 
 	private static final String XML_FEATURES = "Features";
 	private static final String XML_IGNORED_CHANNELS = "IgnoredChannels";
@@ -232,8 +234,7 @@ public class Unit implements IAccountInfo {
 				}
 			} catch (CryptDefaultValueException | CryptExeception e) {
 				String m = "base.xml error of passwordCrypt in Unit tag: " + e.getMessage();
-				LogManager.getInstance().addDelayedErrorMessage(
-						new DelayedMessage(Level.ERROR, m, Unit.class, Constants.ExitCodes.CRYPTION_FAIL));
+				logger.log(Level.ERROR, m, null, Constants.ExitCodes.CRYPTION_FAIL);
 			}
 			this.configurationCreator.setAttribute(name, value);
 

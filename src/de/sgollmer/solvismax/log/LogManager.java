@@ -19,7 +19,14 @@ import de.sgollmer.solvismax.error.FileException;
 
 public class LogManager {
 
-	private final String loggerName = "TinyLog"; // Possibilities: "Log4j2", "TinyLog"
+	private final String loggerName = "TinyLogNew"; // Possibilities: "Log4j2", "TinyLog", "TinyLogNew"
+
+	private final ILoggerBase loggerBase;
+
+	private Collection<DelayedMessage> delayedErrorMessages = new ArrayList<>();
+	private int delayedErrorCode = -1;
+	private boolean initialized = false;
+	private boolean bufferMessages = false;
 
 	public static LogManager getInstance() {
 		LogManager logManager = LogManagerHolder.INSTANCE;
@@ -54,12 +61,20 @@ public class LogManager {
 	}
 
 	public interface ILoggerExt {
-		public ILoggerExt create(Class<?> clazz);
 
-		public boolean createInstance(final String path) throws IOException, FileException;
+		public void log(final Level level, final String message, Throwable throwable);
+	}
+
+	public interface ILoggerBase {
+
+		public boolean initInstance(final String path) throws IOException, FileException;
 
 		public void shutdown() throws InterruptedException;
 
+		public ILoggerExt create(final String className);
+	}
+
+	public interface ILogger extends ILoggerExt {
 		public void fatal(final String message);
 
 		public void fatal(final String message, final Throwable throwable);
@@ -84,12 +99,6 @@ public class LogManager {
 
 		public void debug(final String message, final Throwable throwable);
 
-		public void log(final Level level, final String message);
-
-		public void log(final Level level, final String message, Throwable throwable);
-	}
-
-	public interface ILogger extends ILoggerExt {
 		public void debug(final boolean debug, final String message);
 
 		public void debug(final boolean debug, final String message, final Throwable throwable);
@@ -101,12 +110,18 @@ public class LogManager {
 		public void warnExt(final String message, final Throwable throwable);
 
 		public void infoExt(final String message, final Throwable throwable);
+
+		public void log(final Level level, final String message);
+
+		public void log(final Level level, final String message, Throwable throwable, Integer errorCode);
+
 	}
 
 	public static class DelayedMessage {
 		private final Level level;
 		private final String message;
 		private final Class<?> loggedClass;
+		private final ILoggerExt logger;
 		private final Integer errorCode;
 
 		public DelayedMessage(final Level level, final String message, final Class<?> loggedClass,
@@ -120,17 +135,23 @@ public class LogManager {
 			} else if (level.isLessSpecificThan(Level.INFO)) {
 				System.out.println(message);
 			}
+			this.logger = null;
+		}
+
+		public DelayedMessage(final Level level, final String message, ILoggerExt logger, final Integer errorCode) {
+			this.level = level;
+			this.message = message;
+			this.loggedClass = null;
+			this.errorCode = errorCode;
+			this.logger = logger;
 		}
 	}
 
-	private final ILoggerExt loggerBase;
-
-	private Collection<DelayedMessage> delayedErrorMessages = new ArrayList<>();
-	private int delayedErrorCode = -1;
-	private boolean initialized = false;
-
 	private LogManager() {
 		switch (this.loggerName) {
+			case "TinyLogNew":
+				this.loggerBase = new TinyLogNew();
+				break;
 			case "TinyLog":
 				this.loggerBase = new TinyLog.LoggerTiny();
 				break;
@@ -143,7 +164,7 @@ public class LogManager {
 	}
 
 	public LogErrors createInstance(final String path) throws IOException, FileException {
-		boolean successfull = this.loggerBase.createInstance(path);
+		boolean successfull = this.loggerBase.initInstance(path);
 		if (!successfull) {
 			return LogErrors.INIT;
 		}
@@ -155,32 +176,28 @@ public class LogManager {
 		return new Logger(loggedClass);
 	}
 
-	public void addDelayedErrorMessage(final DelayedMessage message) {
-		if (this.initialized) {
-			ILogger logger = this.getLogger(message.loggedClass);
-			logger.log(message.level, message.message);
-
-		} else {
-			this.delayedErrorMessages.add(message);
-		}
-	}
-
 	private boolean outputDelayedMessages() {
 		Level level = Level.INFO;
-		for (DelayedMessage message : this.delayedErrorMessages) {
-			if (message.errorCode != null && !message.level.equals(level) && message.level.isLessSpecificThan(level)) {
-				this.delayedErrorCode = message.errorCode;
-				level = message.level;
-			}
+		synchronized (this.delayedErrorMessages) {
+			for (DelayedMessage message : this.delayedErrorMessages) {
+				if (message.errorCode != null && !message.level.equals(level)
+						&& message.level.isLessSpecificThan(level)) {
+					this.delayedErrorCode = message.errorCode;
+					level = message.level;
+				}
 
-			if (this.initialized) {
-				ILoggerExt logger = this.loggerBase.create(message.loggedClass);
-				logger.log(message.level, message.message);
-			} else {
-				System.err.println(message.level.toString() + ": " + message.message);
+				if (this.initialized) {
+					ILoggerExt logger = message.logger;
+					if (logger == null) {
+						logger = this.loggerBase.create(message.loggedClass.getName());
+					}
+					logger.log(message.level, message.message, null);
+				} else {
+					System.err.println(message.level.toString() + ": " + message.message);
+				}
 			}
+			this.delayedErrorMessages.clear();
 		}
-		this.delayedErrorMessages.clear();
 		return this.delayedErrorCode != -1;
 	}
 
@@ -207,12 +224,12 @@ public class LogManager {
 			builder.append('\n');
 			builder.append(element.toString());
 		}
-		logger.log(level, builder.toString());
+		logger.log(level, builder.toString(), null);
 	}
 
 	public static void exit(final int errorCode) {
 		LogManager logManager = LogManager.getInstance();
-		if (!logManager.initialized && logManager.delayedErrorMessages.isEmpty()) {
+		if (!logManager.initialized && !logManager.delayedErrorMessages.isEmpty()) {
 			boolean error = logManager.outputDelayedMessages();
 			if (error) {
 				logManager.shutdown();
@@ -246,93 +263,78 @@ public class LogManager {
 	private class Logger implements ILogger {
 
 		private ILoggerExt logger = null;
-		private final Class<?> clazz;
+		private final String className;
 
-		public Logger(final Class<?> clazz) {
-			this.clazz = clazz;
-		}
-
-		@Override
-		public ILogger create(final Class<?> clazz) {
-			return new Logger(clazz);
-		}
-
-		@Override
-		public boolean createInstance(final String path) throws IOException, FileException {
-			return false;
-		}
-
-		@Override
-		public void shutdown() throws InterruptedException {
-			LogManager.this.loggerBase.shutdown();
+		private Logger(final Class<?> clazz) {
+			this.className = clazz.getName();
 		}
 
 		private ILoggerExt getLogger() {
 			if (this.logger == null) {
-				this.logger = LogManager.this.loggerBase.create(this.clazz);
+				this.logger = LogManager.this.loggerBase.create(this.className);
 			}
 			return this.logger;
 		}
 
 		@Override
 		public void fatal(final String message) {
-			this.getLogger().fatal(message);
+			LogManager.this.log(this.getLogger(), Level.FATAL, message, null);
 
 		}
 
 		@Override
 		public void fatal(final String message, final Throwable throwable) {
-			this.getLogger().fatal(message, throwable);
+			LogManager.this.log(this.getLogger(), Level.FATAL, message, throwable);
 
 		}
 
 		@Override
 		public void error(final String message) {
-			this.getLogger().error(message);
+			LogManager.this.log(this.getLogger(), Level.ERROR, message, null);
 
 		}
 
 		@Override
 		public void error(final String message, final Throwable throwable) {
-			this.getLogger().error(message, throwable);
+			LogManager.this.log(this.getLogger(), Level.ERROR, message, throwable);
 		}
 
 		@Override
 		public void learn(final String message) {
-			this.getLogger().learn(message);
+			LogManager.this.log(this.getLogger(), Level.LEARN, message, null);
 		}
 
 		@Override
 		public void learn(final String message, final Throwable throwable) {
-			this.getLogger().learn(message, throwable);
+			LogManager.this.log(this.getLogger(), Level.LEARN, message, throwable);
 		}
 
 		@Override
 		public void warn(final String message) {
-			this.getLogger().warn(message);
+			LogManager.this.log(this.getLogger(), Level.WARN, message, null);
 		}
 
 		@Override
 		public void warn(final String message, final Throwable throwable) {
-			this.getLogger().warn(message, throwable);
+			LogManager.this.log(this.getLogger(), Level.WARN, message, throwable);
 		}
 
 		@Override
 		public void info(final String message) {
-			this.getLogger().info(message);
+			LogManager.this.log(this.getLogger(), Level.INFO, message, null);
 		}
 
 		@Override
 		public void info(final String message, final Throwable throwable) {
-			this.getLogger().info(message, throwable);
+			LogManager.this.log(this.getLogger(), Level.INFO, message, throwable);
 		}
 
 		@Override
 		public void debug(final boolean debug, final String message) {
 			if (debug) {
-				this.info(message);
+				this.info(message, null);
 			} else {
-				this.debug(message);
+				this.debug(message, null);
 			}
 		};
 
@@ -347,22 +349,22 @@ public class LogManager {
 
 		@Override
 		public void debug(final String message) {
-			this.getLogger().debug(message);
+			LogManager.this.log(this.getLogger(), Level.DEBUG, message, null);
 		}
 
 		@Override
 		public void debug(final String message, final Throwable throwable) {
-			this.getLogger().debug(message, throwable);
+			LogManager.this.log(this.getLogger(), Level.DEBUG, message, throwable);
 		}
 
 		@Override
 		public void log(final Level level, final String message) {
-			this.getLogger().log(level, message);
+			LogManager.this.log(this.getLogger(), level, message, null);
 		}
 
 		@Override
 		public void log(final Level level, final String message, final Throwable throwable) {
-			this.getLogger().log(level, message, throwable);
+			LogManager.this.log(this.getLogger(), level, message, throwable);
 		}
 
 		@Override
@@ -389,6 +391,44 @@ public class LogManager {
 
 		}
 
+		@Override
+		public void log(Level level, String message, Throwable throwable, Integer errorCode) {
+			LogManager.this.log(this.getLogger(), level, message, throwable, errorCode);
+		}
+
+	}
+
+	public void setBufferedMessages(boolean enable) {
+		if (enable) {
+			this.bufferMessages = true;
+		} else {
+			synchronized (this.delayedErrorMessages) {
+				if (this.initialized) {
+					this.outputDelayedMessages();
+				}
+			}
+			this.bufferMessages = false;
+		}
+	}
+
+	private void log(ILoggerExt loggerExt, Level level, final String message, Throwable throwable, Integer errorCode) {
+		DelayedMessage delayedMessage = null;
+
+		if (this.initialized && !this.bufferMessages) {
+			loggerExt.log(level, message, throwable);
+		} else if (!this.initialized || this.bufferMessages) {
+			delayedMessage = new DelayedMessage(level, message, loggerExt, errorCode);
+		}
+
+		if (delayedMessage != null) {
+			synchronized (this.delayedErrorMessages) {
+				this.delayedErrorMessages.add(delayedMessage);
+			}
+		}
+	}
+
+	private void log(ILoggerExt loggerExt, Level level, final String message, Throwable throwable) {
+		this.log(loggerExt, level, message, throwable, null);
 	}
 
 }

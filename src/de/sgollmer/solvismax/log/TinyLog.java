@@ -21,12 +21,14 @@ import org.tinylog.provider.ProviderRegistry;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.log.LogManager.ILoggerBase;
+import de.sgollmer.solvismax.log.LogManager.ILoggerExt;
 
 public class TinyLog {
 
 	private static TaggedLogger learningLogger;
 
-	static class LoggerTiny implements de.sgollmer.solvismax.log.LogManager.ILoggerExt {
+	static class LoggerTiny implements ILoggerExt, ILoggerBase {
 
 		private final String className;
 
@@ -38,94 +40,18 @@ public class TinyLog {
 			return "{} - " + message;
 		}
 
-		private LoggerTiny(final Class<?> clazz) {
-			this.className = clazz.getName();
+		private LoggerTiny(String className) {
+			this.className = className;
 		}
 
 		@Override
-		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(final Class<?> clazz) {
-			return new LoggerTiny(clazz);
+		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(String className) {
+			return new LoggerTiny(className);
 		}
 
 		@Override
-		public boolean createInstance(final String path) throws IOException, FileException {
+		public boolean initInstance(final String path) throws IOException, FileException {
 			return new TinyLog(path).setConfiguration();
-		}
-
-		@Override
-		public void fatal(final String message) {
-			this.error(message, null);
-
-		}
-
-		@Override
-		public void fatal(final String message, final Throwable throwable) {
-			Logger.error(throwable, this.createMessage(message), this.className);
-		}
-
-		@Override
-		public void error(final String message) {
-			this.error(message, null);
-
-		}
-
-		@Override
-		public void error(final String message, final Throwable throwable) {
-			Logger.error(throwable, this.createMessage(message), this.className);
-
-		}
-
-		@Override
-		public void learn(final String message) {
-			this.learn(message, null);
-
-		}
-
-		@Override
-		public void learn(final String message, final Throwable throwable) {
-			learningLogger.info(throwable, message, this.className);
-		}
-
-		@Override
-		public void warn(final String message) {
-			this.warn(message, null);
-
-		}
-
-		@Override
-		public void warn(final String message, final Throwable throwable) {
-			Logger.warn(throwable, this.createMessage(message), this.className);
-
-		}
-
-		@Override
-		public void info(final String message) {
-			this.info(message, null);
-
-		}
-
-		@Override
-		public void info(final String message, final Throwable throwable) {
-			Logger.info(throwable, this.createMessage(message), this.className);
-
-		}
-
-		@Override
-		public void debug(final String message) {
-			this.debug(message, null);
-
-		}
-
-		@Override
-		public void debug(final String message, final Throwable throwable) {
-			Logger.debug(throwable, this.createMessage(message), this.className);
-
-		}
-
-		@Override
-		public void log(final de.sgollmer.solvismax.log.LogManager.Level level, final String message) {
-			this.log(level, message, null);
-
 		}
 
 		@Override
@@ -133,25 +59,23 @@ public class TinyLog {
 				final Throwable throwable) {
 			switch (level) {
 				case DEBUG:
-					this.debug(message, throwable);
+					Logger.debug(throwable, this.createMessage(message), this.className);
 					break;
 				case ERROR:
-					this.error(message, throwable);
-					break;
 				case FATAL:
-					this.fatal(message, throwable);
+					Logger.error(throwable, this.createMessage(message), this.className);
 					break;
 				case INFO:
-					this.info(message, throwable);
+					Logger.info(throwable, this.createMessage(message), this.className);
 					break;
 				case LEARN:
-					this.learn(message, throwable);
+					learningLogger.info(throwable, message, this.className);
 					break;
 				case WARN:
-					this.warn(message, throwable);
+					Logger.warn(throwable, this.createMessage(message), this.className);
 					break;
 				default:
-					this.error("unknown level " + level.name());
+					Logger.error((Throwable) null, this.createMessage("unknown level " + level.name()), this.className);
 			}
 
 		}

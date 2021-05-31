@@ -39,7 +39,6 @@ import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.iobroker.IoBroker;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.LogErrors;
@@ -49,6 +48,8 @@ import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class Main {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(Main.class);
 
 	public static Main getInstance() {
 		Main main = MainHolder.INSTANCE;
@@ -61,7 +62,6 @@ public class Main {
 	}
 
 	private static final Pattern cmdPattern = Pattern.compile("--([^=]*)(=(.*)){0,1}");
-	private ILogger logger;
 	private String startTime = null;
 	private boolean shutdownExecuted = false;
 	private Instances instances = null;
@@ -182,8 +182,7 @@ public class Main {
 			}
 		} catch (IOException | XmlException | XMLStreamException | AssignmentException | ReferenceException e) {
 			e.printStackTrace();
-			logManager.addDelayedErrorMessage(new DelayedMessage(Level.FATAL, "base.xml couldn't be read.", Main.class,
-					ExitCodes.READING_CONFIGURATION_FAIL));
+			logger.log(Level.FATAL, "base.xml couldn't be read.", null, ExitCodes.READING_CONFIGURATION_FAIL);
 			LogManager.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
 
@@ -203,8 +202,6 @@ public class Main {
 		} else if (error == LogErrors.PREVIOUS) {
 			LogManager.exit(0);
 		}
-
-		this.logger = logManager.getLogger(Main.class);
 
 		Level.getLevel("LEARN");
 
@@ -226,14 +223,14 @@ public class Main {
 
 				switch (command) {
 					case "server-terminate":
-						this.logger.info("Termination started");
+						logger.info("Termination started");
 						this.serverTerminateAndExit(baseData);
 						break;
 					case "server-learn":
 						executionMode = ExecutionMode.LEARN;
 						break;
 					case "server-restart":
-						this.logger.info("Restart started");
+						logger.info("Restart started");
 						this.serverRestartAndExit(baseData, value);
 						break;
 					case "test-mail":
@@ -245,7 +242,7 @@ public class Main {
 							baseData.getExceptionMail().send("Test mail", "This is a test mail", null);
 							System.exit(Constants.ExitCodes.OK);
 						} catch (Throwable e) {
-							this.logger.error("Mailing error", e);
+							logger.error("Mailing error", e);
 							System.exit(Constants.ExitCodes.MAILING_ERROR);
 						}
 						break;
@@ -282,7 +279,7 @@ public class Main {
 			this.instances = new Instances(baseData, executionMode == ExecutionMode.LEARN);
 		} catch (IOException | XmlException | XMLStreamException | AssignmentException | FileException
 				| ReferenceException e) {
-			this.logger.error("Exception on reading configuration occured, cause:", e);
+			logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
@@ -318,7 +315,7 @@ public class Main {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) {
 			}
-			this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
+			logger.error("Exception on reading configuration or learning files occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		}
@@ -334,7 +331,7 @@ public class Main {
 			serverStart += ", compiled at " + Version.getInstance().getBuildDate();
 		}
 
-		this.logger.info(serverStart);
+		logger.info(serverStart);
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 		this.startTime = format.format(new Date());
@@ -346,7 +343,7 @@ public class Main {
 			try {
 				this.instances.learn(executionMode == ExecutionMode.LEARN);
 			} catch (IOException | XMLStreamException | LearningException | FileException e) {
-				this.logger.error("Exception on reading configuration or learning files occured, cause:", e);
+				logger.error("Exception on reading configuration or learning files occured, cause:", e);
 				e.printStackTrace();
 				System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 			} catch (TerminationException e) {
@@ -366,11 +363,11 @@ public class Main {
 				System.exit(ExitCodes.OK);
 			}
 		} catch (IOException | AssignmentException | XMLStreamException | AliasException | TypeException e) {
-			this.logger.error("Exception on reading configuration occured, cause:", e);
+			logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 		} catch (LearningException e2) {
-			this.logger.error(e2.getMessage());
+			logger.error(e2.getMessage());
 			System.exit(ExitCodes.LEARNING_NECESSARY);
 		}
 
@@ -381,7 +378,7 @@ public class Main {
 		try {
 			this.mqtt.connect(this.instances, this.commandHandler);
 		} catch (MqttException e) {
-			this.logger.error("Error: Mqtt connection error", e);
+			logger.error("Error: Mqtt connection error", e);
 			System.exit(Constants.ExitCodes.MQTT_ERROR);
 		}
 		Runnable runnable = new Runnable() {
@@ -407,7 +404,7 @@ public class Main {
 		try {
 			long unsuccessfullTime = System.currentTimeMillis() + Constants.MAX_WAIT_TIME_TERMINATING_OTHER_SERVER;
 			ServerSocket serverSocket = null;
-			this.logger.info("Wait for server termination");
+			logger.info("Wait for server termination");
 			while (System.currentTimeMillis() < unsuccessfullTime && serverSocket == null) {
 				try {
 					serverSocket = new ServerSocket(baseData.getPort());
@@ -425,12 +422,12 @@ public class Main {
 				Restart restart = new Restart();
 				restart.startMainProcess(agentlibOption);
 			} else {
-				this.logger.error("Restart not possible, server still running");
+				logger.error("Restart not possible, server still running");
 			}
 		} catch (Throwable e) {
-			this.logger.info("Unexpected error on restart: " + e.getMessage());
+			logger.info("Unexpected error on restart: " + e.getMessage());
 		}
-		this.logger.info("Restart finished");
+		logger.info("Restart finished");
 		LogManager.exit(ExitCodes.OK);
 	}
 
@@ -444,7 +441,7 @@ public class Main {
 			System.err.println("Terminate not successfull.");
 			LogManager.exit(ExitCodes.SERVER_TERMINATION_FAIL);
 		}
-		this.logger.info("Termination finished.");
+		logger.info("Termination finished.");
 		LogManager.exit(ExitCodes.OK);
 
 	}
@@ -453,7 +450,7 @@ public class Main {
 		this.shutDownHandling(false);
 		Restart restart = new Restart();
 		restart.startRestartProcess();
-		this.logger.info("Server terminated (started at " + Main.this.startTime + ")");
+		logger.info("Server terminated (started at " + Main.this.startTime + ")");
 		LogManager.exit(ExitCodes.OK);
 	}
 
@@ -473,7 +470,7 @@ public class Main {
 			try {
 				this.mqtt.deleteRetainedTopics();
 			} catch (MqttException | MqttConnectionLost e) {
-				this.logger.error("Error on deleting Mqtt retained topics", e);
+				logger.error("Error on deleting Mqtt retained topics", e);
 			}
 			this.mqtt.abort();
 		}
@@ -481,7 +478,7 @@ public class Main {
 			this.server.abort();
 		}
 		if (out) {
-			this.logger.info("Server terminated (started at " + Main.this.startTime + ")");
+			logger.info("Server terminated (started at " + Main.this.startTime + ")");
 		}
 	}
 
@@ -498,12 +495,12 @@ public class Main {
 				&& timeOfLastBackup > System.currentTimeMillis(); currentWaitTime += waitTime) {
 			if (!waiting) {
 				waiting = true;
-				this.logger.info("Waiting for valid system time");
+				logger.info("Waiting for valid system time");
 			}
 			AbortHelper.getInstance().sleep(waitTime);
 		}
 		if (waiting) {
-			this.logger.info("Valid system time detected after " + currentWaitTime / 1000 + "s.");
+			logger.info("Valid system time detected after " + currentWaitTime / 1000 + "s.");
 		}
 	}
 

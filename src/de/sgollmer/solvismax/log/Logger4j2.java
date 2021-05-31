@@ -21,6 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.log.LogManager.ILoggerBase;
+import de.sgollmer.solvismax.log.LogManager.ILoggerExt;
 
 /**
  *
@@ -28,7 +30,7 @@ import de.sgollmer.solvismax.helper.FileHelper;
  */
 public class Logger4j2 {
 
-	static class Logger implements de.sgollmer.solvismax.log.LogManager.ILoggerExt {
+	static class Logger implements ILoggerExt, ILoggerBase {
 
 		private final org.apache.logging.log4j.Logger logger;
 		private final Level LEARN;
@@ -38,51 +40,15 @@ public class Logger4j2 {
 			this.LEARN = null;
 		}
 
-		private Logger(final Class<?> clazz) {
-			this.logger = org.apache.logging.log4j.LogManager.getLogger(clazz);
+		private Logger(final String className) {
+			this.logger = org.apache.logging.log4j.LogManager.getLogger(className);
 			this.LEARN = Level.getLevel("LEARN");
 		}
 
 		@Override
-		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(final Class<?> clazz) {
-			Logger logger = new Logger(clazz);
+		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(final String className) {
+			Logger logger = new Logger(className);
 			return logger;
-		}
-
-		@Override
-		public void fatal(final String message) {
-			this.logger.fatal(message);
-
-		}
-
-		@Override
-		public void error(final String message) {
-			this.logger.error(message);
-
-		}
-
-		@Override
-		public void learn(final String message) {
-			this.logger.log(this.LEARN, message);
-
-		}
-
-		@Override
-		public void warn(final String message) {
-			this.logger.warn(message);
-
-		}
-
-		@Override
-		public void info(final String message) {
-			this.logger.info(message);
-
-		}
-
-		@Override
-		public void debug(final String message) {
-			this.logger.debug(message);
-
 		}
 
 		private Level getLevel(final de.sgollmer.solvismax.log.LogManager.Level level) {
@@ -106,50 +72,8 @@ public class Logger4j2 {
 		}
 
 		@Override
-		public void log(final de.sgollmer.solvismax.log.LogManager.Level level, final String message) {
-			this.logger.log(this.getLevel(level), message);
-
-		}
-
-		@Override
-		public boolean createInstance(final String pathName) throws IOException, FileException {
+		public boolean initInstance(final String pathName) throws IOException, FileException {
 			return new Logger4j2(pathName).setConfiguration();
-		}
-
-		@Override
-		public void fatal(final String message, final Throwable throwable) {
-			this.logger.fatal(message, throwable);
-
-		}
-
-		@Override
-		public void error(final String message, final Throwable throwable) {
-			this.logger.error(message, throwable);
-
-		}
-
-		@Override
-		public void learn(final String message, final Throwable throwable) {
-			this.logger.log(this.LEARN, message, throwable);
-
-		}
-
-		@Override
-		public void warn(final String message, final Throwable throwable) {
-			this.logger.warn(message, throwable);
-
-		}
-
-		@Override
-		public void info(final String message, final Throwable throwable) {
-			this.logger.info(message, throwable);
-
-		}
-
-		@Override
-		public void debug(final String message, final Throwable throwable) {
-			this.logger.debug(message, throwable);
-
 		}
 
 		@Override

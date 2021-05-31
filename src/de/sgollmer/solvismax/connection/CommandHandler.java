@@ -181,6 +181,12 @@ public class CommandHandler {
 			case DEBUG_DISABLE:
 				Constants.Debug.DEBUG = false;
 				break;
+			case LOG_STANDARD:
+				LogManager.getInstance().setBufferedMessages(false);
+				break;
+			case LOG_BUFFERED:
+				LogManager.getInstance().setBufferedMessages(true);
+				break;
 
 			default:
 				String message = "Server command <" + commandString + ">unknown.";

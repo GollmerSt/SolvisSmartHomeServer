@@ -34,7 +34,6 @@ import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Instances;
@@ -145,7 +144,7 @@ public class Mqtt {
 				if (e instanceof CryptDefaultValueException) {
 					level = Level.WARN;
 				}
-				LogManager.getInstance().addDelayedErrorMessage(new DelayedMessage(level, m, Mqtt.class, null));
+				logger.log(level, m);
 			}
 
 		}

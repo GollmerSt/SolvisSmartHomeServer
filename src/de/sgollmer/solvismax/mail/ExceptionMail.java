@@ -19,7 +19,6 @@ import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.error.ObserverException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.mail.Mail.Recipient;
@@ -109,8 +108,7 @@ public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 				if (e instanceof CryptDefaultValueException) {
 					level = Level.WARN;
 				}
-				LogManager.getInstance()
-						.addDelayedErrorMessage(new DelayedMessage(level, m, ExceptionMail.class, null));
+				logger.log(level, m);
 			}
 		}
 

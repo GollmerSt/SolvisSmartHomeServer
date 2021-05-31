@@ -21,12 +21,14 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.xmllibrary.XmlException;
 import de.sgollmer.xmllibrary.XmlStreamReader;
 
 public class BaseControlFileReader {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(BaseControlFileReader.class);
 
 	private static final String NAME_XML_BASEFILE = "base.xml";
 	private static final String NAME_XSD_BASEFILE = "base.xsd";
@@ -57,18 +59,16 @@ public class BaseControlFileReader {
 		InputStream xsd = Main.class.getResourceAsStream(resourcePath);
 
 		if (xsd == null) {
-			LogManager.getInstance().addDelayedErrorMessage(
-					new DelayedMessage(Level.FATAL, "Getting of " + NAME_XSD_BASEFILE + " fails",
-							BaseControlFileReader.class, Constants.ExitCodes.BASE_XML_ERROR));
+			logger.log(Level.FATAL, "Getting of " + NAME_XSD_BASEFILE + " fails", null,
+					Constants.ExitCodes.BASE_XML_ERROR);
 			source.close();
 			return null;
 		}
 
 		boolean verified = reader.validate(source, xsd);
 		if (!verified) {
-			LogManager.getInstance().addDelayedErrorMessage(
-					new DelayedMessage(Level.FATAL, "Reading of " + NAME_XML_BASEFILE + " not successfull",
-							BaseControlFileReader.class, Constants.ExitCodes.BASE_XML_ERROR));
+			logger.log(Level.FATAL, "Reading of " + NAME_XML_BASEFILE + " not successfull", null,
+					Constants.ExitCodes.BASE_XML_ERROR);
 			return null;
 		}
 

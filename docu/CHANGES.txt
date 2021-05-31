@@ -48,6 +48,9 @@ Version 01.04.00
                 GUI_COMMANDS_ENABLE gab es bei einer aktiven MQTT-Verbindung aber ohne MQTT-Client
                 ein Verbindungsabbruch zum FHEM-Client.
                 
+    31.05.2021  Logging überarbeitet und dabei ein Logging-Buffer implementiert, um zeitweilig
+                das Logging zu puffern um . 
+                
 
 
 Version 01.03.00

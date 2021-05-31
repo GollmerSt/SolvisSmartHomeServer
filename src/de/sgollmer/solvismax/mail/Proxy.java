@@ -8,13 +8,15 @@ import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.CryptDefaultValueException;
 import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.DelayedMessage;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class Proxy {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(Proxy.class);;
 
 	private final String host;
 	private final int port;
@@ -78,8 +80,7 @@ public class Proxy {
 						if (e instanceof CryptDefaultValueException) {
 							level = Level.WARN;
 						}
-						LogManager.getInstance()
-								.addDelayedErrorMessage(new DelayedMessage(level, m, ExceptionMail.class, null));
+						logger.log(level, m);
 					}
 					break;
 			}
