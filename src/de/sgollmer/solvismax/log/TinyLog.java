@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.tinylog.Logger;
-import org.tinylog.TaggedLogger;
+import org.tinylog.Level;
 import org.tinylog.configuration.Configuration;
+import org.tinylog.format.AdvancedMessageFormatter;
+import org.tinylog.format.MessageFormatter;
+import org.tinylog.provider.LoggingProvider;
 import org.tinylog.provider.ProviderRegistry;
 
 import de.sgollmer.solvismax.Constants;
@@ -24,91 +26,120 @@ import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.log.LogManager.ILoggerBase;
 import de.sgollmer.solvismax.log.LogManager.ILoggerExt;
 
-public class TinyLog {
+public class TinyLog implements ILoggerBase {
 
-	private static TaggedLogger learningLogger;
+	private LoggingProvider provider;
+	private MessageFormatter formatter;
 
-	static class LoggerTiny implements ILoggerExt, ILoggerBase {
+	private boolean minimumLevelCoversDebug;
+	private boolean minimumLevelCoversInfo;
+	private boolean minimumLevelCoversWarn;
+	private boolean minimumLevelCoversLearn;
+	private boolean minimumLevelCoversError;
+	private boolean minimumLevelCoversFatal;
+
+	private boolean isCoveredByMinimumLevel(final Level level) {
+		return this.provider.getMinimumLevel(null).ordinal() <= level.ordinal();
+	}
+
+	private void init() {
+		this.provider = ProviderRegistry.getLoggingProvider();
+		this.formatter = new AdvancedMessageFormatter(Configuration.getLocale(), Configuration.isEscapingEnabled());
+
+		this.minimumLevelCoversDebug = isCoveredByMinimumLevel(Level.DEBUG);
+		this.minimumLevelCoversInfo = isCoveredByMinimumLevel(Level.INFO);
+		this.minimumLevelCoversWarn = isCoveredByMinimumLevel(Level.WARN);
+		this.minimumLevelCoversLearn = isCoveredByMinimumLevel(Level.ERROR);
+		this.minimumLevelCoversError = isCoveredByMinimumLevel(Level.ERROR);
+		this.minimumLevelCoversFatal = isCoveredByMinimumLevel(Level.ERROR);
+
+	}
+
+	private class LoggerTiny implements ILoggerExt {
 
 		private final String className;
+		private StringBuilder builder = new StringBuilder();
 
-		LoggerTiny() {
-			this.className = null;
-		}
-
-		private String createMessage(final String message) {
-			return "{} - " + message;
-		}
-
-		private LoggerTiny(String className) {
+		private LoggerTiny(final String className) {
 			this.className = className;
 		}
 
-		@Override
-		public de.sgollmer.solvismax.log.LogManager.ILoggerExt create(String className) {
-			return new LoggerTiny(className);
-		}
-
-		@Override
-		public boolean initInstance(final String path) throws IOException, FileException {
-			return new TinyLog(path).setConfiguration();
+		private Level getLevel(final de.sgollmer.solvismax.log.LogManager.Level level) {
+			switch (level) {
+				case FATAL:
+					if (TinyLog.this.minimumLevelCoversFatal) {
+						return Level.ERROR;
+					} else {
+						return null;
+					}
+				case ERROR:
+					if (TinyLog.this.minimumLevelCoversError) {
+						return Level.ERROR;
+					} else {
+						return null;
+					}
+				case LEARN:
+					if (TinyLog.this.minimumLevelCoversLearn) {
+						return Level.INFO;
+					} else {
+						return null;
+					}
+				case INFO:
+					if (TinyLog.this.minimumLevelCoversInfo) {
+						return Level.INFO;
+					} else {
+						return null;
+					}
+				case WARN:
+					if (TinyLog.this.minimumLevelCoversWarn) {
+						return Level.WARN;
+					} else {
+						return null;
+					}
+				case DEBUG:
+					if (TinyLog.this.minimumLevelCoversDebug) {
+						return Level.DEBUG;
+					} else {
+						return null;
+					}
+				default:
+					TinyLog.this.provider.log(2, null, Level.ERROR, null, TinyLog.this.formatter,
+							"unknown level " + level.name(), (Object[]) null);
+			}
+			return null;
 		}
 
 		@Override
 		public void log(final de.sgollmer.solvismax.log.LogManager.Level level, final String message,
 				final Throwable throwable) {
-			switch (level) {
-				case DEBUG:
-					Logger.debug(throwable, this.createMessage(message), this.className);
-					break;
-				case ERROR:
-				case FATAL:
-					Logger.error(throwable, this.createMessage(message), this.className);
-					break;
-				case INFO:
-					Logger.info(throwable, this.createMessage(message), this.className);
-					break;
-				case LEARN:
-					learningLogger.info(throwable, message, this.className);
-					break;
-				case WARN:
-					Logger.warn(throwable, this.createMessage(message), this.className);
-					break;
-				default:
-					Logger.error((Throwable) null, this.createMessage("unknown level " + level.name()), this.className);
+
+			Level tinyLevel = this.getLevel(level);
+			if (tinyLevel == null) {
+				return;
 			}
 
-		}
+			String tag = null;
 
-		@Override
-		public void shutdown() throws InterruptedException {
-			ProviderRegistry.getLoggingProvider().shutdown();
+			switch (level) {
+				case LEARN:
+					tag = "LEARN";
+			}
+			
+			this.builder.delete(0, this.builder.length());
+			this.builder.append(this.className);
+			this.builder.append(" - ");
+			this.builder.append(message);
+
+			TinyLog.this.provider.log(4, tag, tinyLevel, throwable, null, this.builder.toString());
 
 		}
 
 	}
 
-	private final File parent;
+	private File parent;
 
-	private TinyLog(final String pathNameP) {
-
-		File parent;
-
-		String pathName;
-
-		if (pathNameP == null) {
-			pathName = System.getProperty("user.home");
-			if (System.getProperty("os.name").startsWith("Windows")) {
-				pathName = System.getenv("APPDATA");
-			}
-
-		} else {
-			pathName = pathNameP;
-		}
-
-		pathName += File.separator + Constants.Files.RESOURCE_DESTINATION;
-		parent = new File(pathName);
-		this.parent = parent;
+	public TinyLog() {
+		this.parent = null;
 	}
 
 	private void copyFiles() throws IOException, FileException {
@@ -132,7 +163,25 @@ public class TinyLog {
 
 	}
 
-	private boolean setConfiguration() throws IOException, FileException {
+	private boolean setConfiguration(String pathNameP) throws IOException, FileException {
+
+		File parent;
+
+		String pathName;
+
+		if (pathNameP == null) {
+			pathName = System.getProperty("user.home");
+			if (System.getProperty("os.name").startsWith("Windows")) {
+				pathName = System.getenv("APPDATA");
+			}
+
+		} else {
+			pathName = pathNameP;
+		}
+
+		pathName += File.separator + Constants.Files.RESOURCE_DESTINATION;
+		parent = new File(pathName);
+		this.parent = parent;
 
 		copyFiles();
 
@@ -157,9 +206,25 @@ public class TinyLog {
 				Configuration.set(key, this.parent.getAbsolutePath() + File.separator + file);
 			}
 		}
-
-		learningLogger = Logger.tag("LEARN");
+		this.init();
+		// Logger.tag("LEARN");
 		return true;
+	}
+
+	@Override
+	public boolean initInstance(final String path) throws IOException, FileException {
+		return this.setConfiguration(path);
+	}
+
+	@Override
+	public void shutdown() throws InterruptedException {
+		TinyLog.this.provider.shutdown();
+
+	}
+
+	@Override
+	public ILoggerExt create(final String className) {
+		return new LoggerTiny(className);
 	}
 
 }

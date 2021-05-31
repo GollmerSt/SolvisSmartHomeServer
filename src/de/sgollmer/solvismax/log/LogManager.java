@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.error.FileException;
 
 public class LogManager {
 
-	private final String loggerName = "TinyLogNew"; // Possibilities: "Log4j2", "TinyLog", "TinyLogNew"
+	private final String loggerName = "TinyLog"; // Possibilities: "Log4j2", "TinyLog"
 
 	private final ILoggerBase loggerBase;
 
@@ -149,11 +149,8 @@ public class LogManager {
 
 	private LogManager() {
 		switch (this.loggerName) {
-			case "TinyLogNew":
-				this.loggerBase = new TinyLogNew();
-				break;
 			case "TinyLog":
-				this.loggerBase = new TinyLog.LoggerTiny();
+				this.loggerBase = new TinyLog();
 				break;
 			case "Log4j2":
 				this.loggerBase = new Logger4j2.Logger();
