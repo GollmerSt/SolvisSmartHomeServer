@@ -204,7 +204,7 @@ public class Solvis {
 			logger.warn("TouchPoint is <null>, ignored");
 			return;
 		}
-		this.send(point.getCoordinate(), point.getPushTimeId(), point.getReleaseTimeId());
+		this.send(point.getCoordinate(), point.getPushTime(this), point.getReleaseTime(this));
 	}
 
 	public void send(final Coordinate coord, final String pushTimeId, final String releaseTimeId)
@@ -222,8 +222,15 @@ public class Solvis {
 
 	}
 
-	private void send(final Coordinate coord, final int pushTime, final int releaseTime)
+	private void send(final Coordinate coord, final Integer pushTime, final Integer releaseTime)
 			throws IOException, TerminationException {
+		
+		if (pushTime == null || releaseTime == null) {
+			logger.error("Push time or release time isn't defined, ignored");
+			return;
+		}
+
+
 		this.getConnection().sendTouch(coord);
 		try {
 			Thread.sleep(Constants.MIN_TOUCH_TIME);
@@ -405,7 +412,7 @@ public class Solvis {
 	}
 
 	public Duration getDuration(final String id) {
-		Duration duration = this.unit.getDuratio(id);
+		Duration duration = this.unit.getDuration(id);
 		if (duration == null) {
 			duration = this.solvisDescription.getDuration(id);
 		}

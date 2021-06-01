@@ -19,6 +19,7 @@ import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
@@ -29,6 +30,7 @@ import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
+import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
@@ -212,9 +214,18 @@ public class StrategyMode implements IStrategy {
 		boolean successfull = true;
 		for (ModeEntry mode : this.getModes()) {
 			try {
-				solvis.send(mode.getGuiSet().getTouch());
-				ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
 				SolvisScreen currentScreen = solvis.getCurrentScreen();
+				ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
+				MyImage former = grafic.getImage(solvis);
+				TouchPoint touch = mode.getGuiSet().getTouch();
+				solvis.send(touch);
+				boolean changed = !former.equals(grafic.getImage(solvis));
+				if (!changed) {
+					logger.learn("Mode symbol not changed after touch, it will be waited a little longer.");
+					AbortHelper.getInstance().sleep(touch.getReleaseTime(solvis));
+					solvis.clearCurrentScreen();
+				}
+				currentScreen = solvis.getCurrentScreen();
 				solvis.writeLearningImage(currentScreen, currentScreen.get().getId() + "__" + grafic.getId());
 				grafic.learn(solvis);
 				solvis.clearCurrentScreen();

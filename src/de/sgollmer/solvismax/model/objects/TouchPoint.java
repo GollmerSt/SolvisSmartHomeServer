@@ -107,12 +107,22 @@ public class TouchPoint implements IAssigner {
 		return true;
 	}
 
-	public String getPushTimeId() {
-		return this.pushTimeId;
+	public Integer getPushTime(Solvis solvis) {
+		Duration duration =  solvis.getDuration(this.pushTimeId);
+		if ( duration == null ) {
+			return null;
+		} else {
+			return duration.getTime_ms();
+		}
 	}
 
-	public String getReleaseTimeId() {
-		return this.releaseTimeId;
+	public Integer getReleaseTime(Solvis solvis) {
+		Duration duration =  solvis.getDuration(this.releaseTimeId);
+		if ( duration == null ) {
+			return null;
+		} else {
+			return duration.getTime_ms();
+		}
 	}
 
 }

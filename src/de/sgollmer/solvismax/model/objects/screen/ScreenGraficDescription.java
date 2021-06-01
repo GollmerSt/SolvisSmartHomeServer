@@ -153,14 +153,20 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 	public void assign(SolvisDescription description) {
 	}
 
-	@Override
-	public void learn(Solvis solvis) throws IOException, TerminationException {
+	public MyImage getImage(Solvis solvis) throws IOException, TerminationException {
 		MyImage image = solvis.getCurrentScreen().getImage();
 		if (this.exact) {
 			image = new MyImage(image, this.rectangle, true);
 		} else {
 			image = new Pattern(image, this.rectangle);
 		}
+		return image;
+	}
+
+	@Override
+	public void learn(Solvis solvis) throws IOException, TerminationException {
+		MyImage image = getImage(solvis);
+
 		ScreenGraficData grafic = solvis.getGrafics().get(this.getId());
 
 		if (grafic != null) {
@@ -174,7 +180,7 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 		logger.log(LEARN, "Screen grafic <" + this.getId() + "> learned.");
 		solvis.writeLearningImage(image, "graphic__" + this.id);
 	}
-	
+
 	public void setRectangle(Rectangle rectangle) {
 		if (rectangle != null) {
 			this.rectangle = rectangle;

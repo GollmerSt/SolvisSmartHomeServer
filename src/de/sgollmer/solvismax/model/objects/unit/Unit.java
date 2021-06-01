@@ -463,7 +463,7 @@ public class Unit implements IAccountInfo {
 		return this.configuration.getComment();
 	}
 
-	public Duration getDuratio(final String id) {
+	public Duration getDuration(final String id) {
 		if (this.durations == null) {
 			return null;
 		} else {

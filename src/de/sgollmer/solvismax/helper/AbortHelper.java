@@ -25,7 +25,10 @@ public class AbortHelper {
 	private boolean abort = false;
 	private Collection<Object> syncObjects = new ArrayList<>();
 
-	public synchronized void sleep(final int time) throws TerminationException {
+	public synchronized void sleep(final Integer time) throws TerminationException {
+		if ( time == null || time == 0 ) {
+			return;
+		}
 		if (this.abort) {
 			throw new TerminationException();
 		}

@@ -67,6 +67,7 @@ public class Button extends Pattern {
 			Coordinate coord = new Coordinate( //
 					this.getOrigin().getX() + this.getWidth() / 2, //
 					this.getOrigin().getY() + this.getHeight() / 2);
+			
 			solvis.send(coord, this.pushTimeId, this.releaseTimeId);
 		}
 	}
