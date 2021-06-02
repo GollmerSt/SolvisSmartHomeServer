@@ -121,7 +121,12 @@
 				<!-- <tns:Duration id="ModeChange" time_ms="3500" /> -->
 			</tns:Durations>
 			<tns:FixChannelValues>
-				<tns:ChannelValue id="C47" value="5" />
+				<!-- Kanäle können fest auf einen Wert voreingestellt werden. Sinnvoll 
+					ist das bei Werten aus den Installateur-Menüs, wenn der Server nicht im Admin-Mode 
+					arbeiten soll. Aktuell ist hier nur der Kanal "C47.Puffer_dT_Start" sinnvoll, 
+					dessen Wert im Admin-Mode aus dem Installateur-Menü "Sonstig.\weiter\Nutzerauswahl\Installateur\Wasser\Anforderung\2/2" 
+					ermittelt wird. -->
+				<!-- tns:ChannelValue id="C47.Puffer_dT_Start" value="12" -->
 			</tns:FixChannelValues>
 		</tns:Unit>
 	</tns:Units>

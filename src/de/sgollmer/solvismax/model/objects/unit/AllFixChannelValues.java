@@ -44,16 +44,19 @@ public class AllFixChannelValues {
 		}
 
 		public void initialize(Solvis solvis) {
-			SolvisData data = solvis.getAllSolvisData().get(this.id);
+			SolvisData data = solvis.getAllSolvisData().getByName(this.id);
 			if (data == null) {
 				logger.error("base.xml error: Fix channel <" + this.id + "> no defined.");
 			}
 			DoubleValue doubleValue = new DoubleValue(this.value, -1L);
 			try {
 				data.setFixData(doubleValue);
+				logger.info("The channel <" + this.id + "> was set to the fix value \"" + data.getSingleData().toString()
+						+ "\".");
 			} catch (TypeException e) {
 				logger.error("base.xml error: Fix channel <" + this.id + "> can't be set by the given format.");
 			}
+
 		}
 
 		private static class Creator extends CreatorByXML<ChannelValue> {

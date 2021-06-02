@@ -52,7 +52,12 @@ Version 01.04.00
                 das Logging zu puffern um.
                 
      1.06.2021  Learning verbessert: Wird beim Mode-learning erkannt, dass das Symbol sich nicht
-                geändert hat, wird noch etwas länger auf die Reaktion des Touches gewartet. 
+                geändert hat, wird noch etwas länger auf die Reaktion des Touches gewartet.
+                
+     2.06.2021  Fix-Values in der base.xml eingeführt. Mit ihnen kann man bestimmte Kanäle mit
+                einem Wert vorbelegen, ohne dass er über das Gui der Solvis Control 2 vom Server
+                ausgelesen werden muss. Beispiel: C47.Puffer_dT_Start, was die Funktion Nachheizen
+                (C46.WarmwasserNachheizen) beschleunigen kann. 
                 
 
 
