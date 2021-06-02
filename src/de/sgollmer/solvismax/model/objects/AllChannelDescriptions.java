@@ -166,7 +166,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	public void init(final Solvis solvis) throws IOException, AssignmentException, AliasException {
 		AllSolvisData datas = solvis.getAllSolvisData();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
-			ChannelDescription description = descriptions.get(solvis);
+			ChannelDescription description = descriptions.get(solvis, true);
 			if (description != null) {
 				boolean ignore = solvis.getUnit().isChannelIgnored(description.getId());
 				SolvisData data = new SolvisData(description, solvis.getAllSolvisData(), ignore);
@@ -241,7 +241,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 
 			for (OfConfigs<ChannelDescription> confDescriptions : this.descriptions.values()) {
 				ChannelDescription description = confDescriptions.get(solvis);
-				if (description != null && description.isInConfiguration(solvis)) {
+				if (description != null && description.isInConfiguration(solvis, false)) {
 					boolean add = false;
 					switch (type) {
 						case ALL_CONTROL:

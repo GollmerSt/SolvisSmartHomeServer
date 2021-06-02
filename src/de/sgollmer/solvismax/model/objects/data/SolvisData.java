@@ -42,6 +42,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	private final boolean dontSend;
 	private SmartHomeData smartHomeData;
 	private int executionTime;
+	private boolean fix = false;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
@@ -124,6 +125,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		if (setData == null || setData.get() == null) {
 			this.data = null;
 			return;
+		}
+
+		if (this.fix) {
+			logger.info("Warning: Fix value of <" + this.getDescription().getId() + "> is overwritten ");
 		}
 
 		boolean fastChange = false;
@@ -295,6 +300,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 	}
 
+	public void setFixData(final SingleData<?> data) throws TypeException {
+		this.data = this.getDescription().toInternal(data);
+		this.fix = true;
+	}
+
 	public void setSingleData(final SetResult data) {
 		this.setData(data.getData(), this, data.isForceTransmit(), -1L);
 	}
@@ -387,7 +397,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		if (this.data == null) {
 			return false;
 		} else if (this.getDescription().isWriteable()) {
-			return this.datas.getLastHumanAccess() < this.data.getTimeStamp();
+			return this.fix || this.datas.getLastHumanAccess() < this.data.getTimeStamp();
 		} else {
 			return true;
 		}
@@ -564,6 +574,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			csv = this.getDescription().getCsvMeta(column, semicolon);
 		}
 		return csv;
+	}
+
+	public boolean isFix() {
+		return this.fix;
 	}
 
 }

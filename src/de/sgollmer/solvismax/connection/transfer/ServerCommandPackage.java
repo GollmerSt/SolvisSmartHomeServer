@@ -44,7 +44,7 @@ public class ServerCommandPackage extends JsonPackage implements IReceivedData {
 
 	@Override
 	public SingleData<?> getSingleData() {
-		return new StringData(this.serverCommand.name(), 0);
+		return new StringData(this.serverCommand.name(), -1L);
 	}
 
 }

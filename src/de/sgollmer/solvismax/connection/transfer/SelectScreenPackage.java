@@ -43,7 +43,7 @@ public class SelectScreenPackage extends JsonPackage implements IReceivedData {
 
 	@Override
 	public SingleData<?> getSingleData() {
-		return new StringData(this.screenId, 0);
+		return new StringData(this.screenId, -1L);
 	}
 
 }

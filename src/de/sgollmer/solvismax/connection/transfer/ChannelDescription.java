@@ -23,7 +23,7 @@ public class ChannelDescription extends Element {
 		this.value = frame;
 
 		boolean writeable = instance.isWriteable();
-		Element writeableElement = new Element("Writeable", new SingleValue(new BooleanValue(writeable, -1)));
+		Element writeableElement = new Element("Writeable", new SingleValue(new BooleanValue(writeable, -1L)));
 		frame.add(writeableElement);
 
 		String type = instance.getType().name();
@@ -38,30 +38,30 @@ public class ChannelDescription extends Element {
 
 		Double accuracy = instance.getAccuracy();
 		if (accuracy != null) {
-			Element ac = new Element("Accuracy", new SingleValue(new DoubleValue(accuracy, -1)));
+			Element ac = new Element("Accuracy", new SingleValue(new DoubleValue(accuracy, -1L)));
 			frame.add(ac);
 		}
 
 		boolean isBoolean = instance.isBoolean();
-		Element ib = new Element("IsBoolean", new SingleValue(new BooleanValue(isBoolean, -1)));
+		Element ib = new Element("IsBoolean", new SingleValue(new BooleanValue(isBoolean, -1L)));
 		frame.add(ib);
 
 		UpperLowerStep upperLowerStep = instance.getUpperLowerStep();
 		if (upperLowerStep != null) {
-			Element upper = new Element("Upper", new SingleValue(new DoubleValue(upperLowerStep.getUpper(), -1)));
+			Element upper = new Element("Upper", new SingleValue(new DoubleValue(upperLowerStep.getUpper(), -1L)));
 			frame.add(upper);
-			Element lower = new Element("Lower", new SingleValue(new DoubleValue(upperLowerStep.getLower(), -1)));
+			Element lower = new Element("Lower", new SingleValue(new DoubleValue(upperLowerStep.getLower(), -1L)));
 			frame.add(lower);
-			Element step = new Element("Step", new SingleValue(new DoubleValue(upperLowerStep.getStep(), -1)));
+			Element step = new Element("Step", new SingleValue(new DoubleValue(upperLowerStep.getStep(), -1L)));
 			frame.add(step);
 			if (upperLowerStep.getIncrementChange() != null) {
 				Element incrementChange = new Element("IncrementChange",
-						new SingleValue(new DoubleValue(upperLowerStep.getIncrementChange(), -1)));
+						new SingleValue(new DoubleValue(upperLowerStep.getIncrementChange(), -1L)));
 				frame.add(incrementChange);
 			}
 			if (upperLowerStep.getChangedIncrement() != null) {
 				Element changedIncrement = new Element("ChangedIncrement",
-						new SingleValue(new DoubleValue(upperLowerStep.getChangedIncrement(), -1)));
+						new SingleValue(new DoubleValue(upperLowerStep.getChangedIncrement(), -1L)));
 				frame.add(changedIncrement);
 			}
 		}

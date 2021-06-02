@@ -37,6 +37,7 @@ public class Unit implements IAccountInfo {
 	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
 	private static final String XML_CHANNEL_ASSIGNMENT = "Assignment";
 	private static final String XML_DURATIONS = "Durations";
+	private static final String XML_FIX_CHANNEL_VALUES = "FixChannelValues";
 
 	private final String id;
 	private final Configuration configuration;
@@ -64,6 +65,7 @@ public class Unit implements IAccountInfo {
 	private Long forcedConfigMask = null;
 	private final boolean csvUnit;
 	private final AllDurations durations;
+	private final AllFixChannelValues fixChannelValues;
 
 	private Unit(final String id, final Configuration configuration, final String url, final String account,
 			final CryptAes password, final int defaultAverageCount, final int measurementHysteresisFactor,
@@ -74,7 +76,7 @@ public class Unit implements IAccountInfo {
 			final int clearNotRequiredTime_ms, final boolean delayAfterSwitchingOn, final boolean fwLth2_21_02A,
 			final Features features, final int ignoredFrameThicknesScreenSaver,
 			final Collection<Pattern> ignoredChannels, final Map<String, ChannelAssignment> assignments,
-			final boolean csvUnit, final AllDurations durations) {
+			final boolean csvUnit, final AllDurations durations, final AllFixChannelValues fixChannelValues) {
 		this.id = id;
 		this.configuration = configuration;
 		this.url = url;
@@ -100,6 +102,7 @@ public class Unit implements IAccountInfo {
 		this.assignments = assignments;
 		this.csvUnit = csvUnit;
 		this.durations = durations;
+		this.fixChannelValues = fixChannelValues;
 	}
 
 	public String getId() {
@@ -155,6 +158,7 @@ public class Unit implements IAccountInfo {
 		private Map<String, ChannelAssignment> assignments = null;
 		private boolean csvUnit = false;
 		private AllDurations durations = null;
+		private AllFixChannelValues fixChannelValues = null;
 
 		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
@@ -261,7 +265,7 @@ public class Unit implements IAccountInfo {
 					this.releaseBlockingAfterServiceAccess_ms, this.clearNotRequiredTime_ms,
 					this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.features,
 					this.ignoredFrameThicknesScreenSaver, this.ignoredChannels, this.assignments, this.csvUnit,
-					this.durations);
+					this.durations, this.fixChannelValues);
 
 		}
 
@@ -278,6 +282,8 @@ public class Unit implements IAccountInfo {
 					return new AssignmentsCreator(id, this.getBaseCreator());
 				case XML_DURATIONS:
 					return new AllDurations.Creator(id, this.getBaseCreator());
+				case XML_FIX_CHANNEL_VALUES:
+					return new AllFixChannelValues.Creator(id, this.getBaseCreator());
 			}
 			return this.configurationCreator.getCreator(name);
 		}
@@ -308,6 +314,9 @@ public class Unit implements IAccountInfo {
 					break;
 				case XML_DURATIONS:
 					this.durations = (AllDurations) created;
+					break;
+				case XML_FIX_CHANNEL_VALUES:
+					this.fixChannelValues = (AllFixChannelValues) created;
 					break;
 
 			}
@@ -469,6 +478,10 @@ public class Unit implements IAccountInfo {
 		} else {
 			return this.durations.get(id);
 		}
+	}
+
+	public AllFixChannelValues getFixChannelValues() {
+		return this.fixChannelValues;
 	}
 
 }

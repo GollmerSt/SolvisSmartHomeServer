@@ -87,10 +87,13 @@
 			<element name="Durations" maxOccurs="1" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="Duration" type="tns:Duration" maxOccurs="unbounded" minOccurs="0"></element>
+						<element name="Duration" type="tns:Duration"
+							maxOccurs="unbounded" minOccurs="0">
+						</element>
 					</sequence>
 				</complexType>
 			</element>
+			<element name="FixChannelValues" type="tns:FixChannelValues" maxOccurs="1" minOccurs="0"></element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -763,5 +766,16 @@
 			</simpleType>
 		</attribute>
 		<attribute name="time_ms" type="int" use="required"></attribute>
+	</complexType>
+
+	<complexType name="FixChannelValues">
+		<sequence>
+			<element name="ChannelValue" type="tns:ChannelValue" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ChannelValue">
+		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="value" type="float" use="required"></attribute>
 	</complexType>
 </schema>

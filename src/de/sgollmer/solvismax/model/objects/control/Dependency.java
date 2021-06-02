@@ -90,7 +90,7 @@ public class Dependency implements IAssigner {
 	public SingleData<?> getData(final Solvis solvis) {
 		ChannelDescription description = this.getChannelDescription(solvis);
 		try {
-			return description.interpretSetData(new StringData(this.value, 0));
+			return description.interpretSetData(new StringData(this.value, -1L));
 		} catch (TypeException e) {
 		}
 		return null;
@@ -107,7 +107,7 @@ public class Dependency implements IAssigner {
 		for (ChannelDescription cd : this.channel) {
 			if (this.value != null) {
 				try {
-					cd.interpretSetData(new StringData(this.value, 0));
+					cd.interpretSetData(new StringData(this.value, -1L));
 				} catch (TypeException e) {
 					throw new XmlException("Error in control.xml, invalid dependency value <" + this.value
 							+ "> defined for channel <" + cd.getId() + ">.");

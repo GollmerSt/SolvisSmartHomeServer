@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
+import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -164,7 +165,12 @@ public class StrategyRead implements IStrategy {
 
 	@Override
 	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		return null;
+		if (singleData instanceof DoubleValue) {
+			DoubleValue doubleValue = (DoubleValue) singleData;
+			return new IntegerValue((int) Math.round(doubleValue.getDouble() * this.divisor), -1l);
+		} else {
+			return null;
+		}
 	}
 
 	protected static class GuiRead {

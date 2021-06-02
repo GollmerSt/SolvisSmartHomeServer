@@ -56,6 +56,6 @@ public class ConnectPackage extends JsonPackage implements IReceivedData {
 
 	@Override
 	public SingleData<?> getSingleData() {
-		return new StringData(this.getId(), 0);
+		return new StringData(this.getId(), -1L);
 	}
 }

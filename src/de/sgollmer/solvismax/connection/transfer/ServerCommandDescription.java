@@ -17,7 +17,7 @@ public class ServerCommandDescription extends Element {
 		Frame frame = new Frame();
 		this.value = frame;
 
-		Element writeableElement = new Element("Writeable", new SingleValue(new BooleanValue(false, -1)));
+		Element writeableElement = new Element("Writeable", new SingleValue(new BooleanValue(false, -1L)));
 		frame.add(writeableElement);
 
 		Element typeElement = new Element("Type", new SingleValue("ServerCommand"));

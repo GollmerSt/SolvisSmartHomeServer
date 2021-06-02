@@ -169,7 +169,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	@Override
 	public boolean isMatchingScreen(final MyImage image, final Solvis solvis) {
 
-		if (!this.isInConfiguration(solvis)) {
+		if (!this.isInConfiguration(solvis, false)) {
 			return false;
 		}
 
@@ -597,7 +597,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	public Collection<AbstractScreen> getNextScreens(final Solvis solvis) {
 		List<AbstractScreen> result = new ArrayList<>(3);
 		for (AbstractScreen screen : this.nextScreens) {
-			if (screen.isInConfiguration(solvis)) {
+			if (screen.isInConfiguration(solvis, false)) {
 				if (screen.getBackScreen(solvis) == screen.getPreviousScreen(solvis)) {
 					result.add(0, screen);
 				} else {

@@ -295,6 +295,8 @@ public class StrategyReadWrite extends StrategyRead {
 			} catch (NumberFormatException e) {
 				throw new TypeException(e);
 			}
+		} else if (singleData instanceof StringData) {
+			return super.interpretSetData(singleData);
 		}
 		return singleData;
 	}

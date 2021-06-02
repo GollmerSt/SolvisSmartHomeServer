@@ -205,8 +205,8 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	}
 
 	@Override
-	public boolean isInConfiguration(Solvis solvis) {
-		return this.configuration == null || this.configuration.isInConfiguration(solvis);
+	public boolean isInConfiguration(Solvis solvis, final boolean init) {
+		return this.configuration == null || this.configuration.isInConfiguration(solvis, init);
 	}
 
 	@Override

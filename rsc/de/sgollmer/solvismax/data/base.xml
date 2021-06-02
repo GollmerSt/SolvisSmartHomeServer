@@ -120,6 +120,9 @@
 					Sonst kann der Wert auskommentiert bleiben. Default ist dann 3000 (ms) -->
 				<!-- <tns:Duration id="ModeChange" time_ms="3500" /> -->
 			</tns:Durations>
+			<tns:FixChannelValues>
+				<tns:ChannelValue id="C47" value="5" />
+			</tns:FixChannelValues>
 		</tns:Unit>
 	</tns:Units>
 	<tns:Mqtt enable="false" brokerUrl="192.168.0.71" port="1883"

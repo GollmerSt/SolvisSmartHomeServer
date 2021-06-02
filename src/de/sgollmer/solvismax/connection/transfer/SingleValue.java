@@ -32,7 +32,7 @@ public class SingleValue implements IValue {
 	}
 
 	public SingleValue(final String value) {
-		this.data = new StringData(value, -1);
+		this.data = new StringData(value, -1L);
 	}
 
 	public SingleValue(final SingleData<?> data) {

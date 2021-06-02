@@ -41,7 +41,7 @@ public class ReconnectPackage extends JsonPackage implements IReceivedData {
 
 	@Override
 	public SingleData<?> getSingleData() {
-		return new StringData(this.getClientId(), 0);
+		return new StringData(this.getClientId(), -1L);
 	}
 
 }

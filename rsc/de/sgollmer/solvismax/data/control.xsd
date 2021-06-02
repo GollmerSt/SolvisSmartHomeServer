@@ -1567,7 +1567,20 @@
 				</annotation>
 			</element>
 		</sequence>
-		<attribute name="admin" type="boolean" use="optional"></attribute>
+		<attribute name="admin" use="optional">
+            <annotation>
+            	<documentation>ADMIN:	Only used and defined in admin mode.
+VALUE:		Only used in admin mode but is always defined.
+NONE:		Always defined and used (default)</documentation>
+            </annotation>
+            <simpleType>
+				<restriction base="string">
+					<enumeration value="ADMIN"></enumeration>
+					<enumeration value="NONE"></enumeration>
+					<enumeration value="VALUE"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
 		<attribute name="feature" type="string" use="optional">
 			<annotation>
 				<documentation>Enable-Feature. Wenn das </documentation>

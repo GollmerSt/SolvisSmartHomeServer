@@ -111,8 +111,8 @@ public class ChannelAssignment implements OfConfigs.IElement<ChannelAssignment> 
 	}
 
 	@Override
-	public boolean isInConfiguration(final Solvis solvis) {
-		return this.configuration == null || this.configuration.isInConfiguration(solvis);
+	public boolean isInConfiguration(final Solvis solvis, final boolean init) {
+		return this.configuration == null || this.configuration.isInConfiguration(solvis, init);
 	}
 
 	@Override

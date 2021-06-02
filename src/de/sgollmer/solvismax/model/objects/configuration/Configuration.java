@@ -25,19 +25,28 @@ public class Configuration {
 	private static final String XML_CONFIGURATION_MASK = "ConfigurationMask";
 	private static final String XML_FEATURE = "Feature";
 
-	private final boolean admin;
+	public enum Admin {
+		ADMIN, VALUE, NONE;
+
+		public boolean isAdmin(boolean init) {
+			return this == ADMIN || !init && this == VALUE;
+		}
+
+	}
+
+	private final Admin admin;
 	private final Collection<ConfigurationMask> masks;
 	private final Feature feature;
 
-	private Configuration(final boolean admin, final Collection<ConfigurationMask> masks, final Feature feature) {
+	private Configuration(Admin admin, final Collection<ConfigurationMask> masks, final Feature feature) {
 		this.admin = admin;
 		this.masks = masks;
 		this.feature = feature;
 	}
 
-	public boolean isInConfiguration(final Solvis solvis) {
+	public boolean isInConfiguration(final Solvis solvis, boolean init) {
 		if (solvis.isLearning()) {
-			if (this.admin) {
+			if (this.admin.isAdmin(false)) {
 				solvis.addFeatureDependency(Features.XML_ADMIN);
 			}
 			if (this.feature != null) {
@@ -45,7 +54,7 @@ public class Configuration {
 			}
 
 		}
-		if (!solvis.isAdmin() && this.admin) {
+		if (!solvis.isAdmin() && this.admin.isAdmin(init)) {
 			return false;
 		}
 		if (this.feature != null && !solvis.isFeature(this.feature)) {
@@ -79,7 +88,7 @@ public class Configuration {
 
 	public static class Creator extends CreatorByXML<Configuration> {
 
-		private boolean admin = false;
+		private Admin admin = Admin.NONE;
 		private final Collection<ConfigurationMask> masks = new ArrayList<>();
 		private Feature feature;
 
@@ -91,7 +100,7 @@ public class Configuration {
 		public void setAttribute(final QName name, final String value) {
 			switch (name.getLocalPart()) {
 				case "admin":
-					this.admin = Boolean.parseBoolean(value);
+					this.admin = Admin.valueOf(value);
 					break;
 			}
 		}
@@ -124,7 +133,6 @@ public class Configuration {
 					break;
 			}
 		}
-
 	}
 
 	private static class ConfigurationMask {

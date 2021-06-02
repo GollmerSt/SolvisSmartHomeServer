@@ -1225,7 +1225,7 @@
 
 		<tns:Screen id="Installateur-Menue" backId="Home"
 			previousId="Nutzerauswahl" service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:UserSelection
 				waitTimeAfterLastDigitRefId="WindowChange">
 				<tns:Digit digit="0">
@@ -1298,7 +1298,7 @@
 		<tns:Screen id="Heizung-Installateur"
 			backId="Installateur-Menue" previousId="Installateur-Menue"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="15" />
@@ -1316,7 +1316,7 @@
 		<tns:Screen id="Heizung-Anforderung" ignoreChanges="true"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="20" />
@@ -1334,7 +1334,7 @@
 		<tns:Screen id="Brenner-Stufe-2"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="220" Y="45" />
@@ -1352,7 +1352,7 @@
 		<tns:Screen id="Heizkreis-1-1_11" sortId="Heizkreis-11-1_1"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			ignoreChanges="true" service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="20" Y="15" />
@@ -1371,7 +1371,7 @@
 		<tns:Screen id="Heizkreis-1-2_11" sortId="Heizkreis-11-1_2"
 			backId="Heizung-Installateur" previousId="Heizkreis-1-1_11"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="225" Y="110" />
@@ -1390,7 +1390,7 @@
 		<tns:Screen id="Heizkreis-1-3_11" sortId="Heizkreis-11-1_3"
 			backId="Heizung-Installateur" previousId="Heizkreis-1-2_11"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="225" Y="110" />
@@ -1409,7 +1409,7 @@
 		<tns:Screen id="Heizkreis-1-4_11" sortId="Heizkreis-11-1_4"
 			backId="Heizung-Installateur" previousId="Heizkreis-1-3_11"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChangeService">
 				<tns:Coordinate X="225" Y="110" />
@@ -1432,7 +1432,7 @@
 		<tns:Screen id="Heizkreis-2-1_11" sortId="Heizkreis-11-2_1"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			ignoreChanges="true" service="true">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
 			</tns:Configuration>
@@ -1454,7 +1454,7 @@
 		<tns:Screen id="Heizkreis-2-2_11" sortId="Heizkreis-11-2_2"
 			backId="Heizung-Installateur" previousId="Heizkreis-2-1_11"
 			service="true">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
 			</tns:Configuration>
@@ -1476,7 +1476,7 @@
 		<tns:Screen id="Heizkreis-2-3_11" sortId="Heizkreis-11-2_3"
 			backId="Heizung-Installateur" previousId="Heizkreis-2-2_11"
 			service="true">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
 			</tns:Configuration>
@@ -1498,7 +1498,7 @@
 		<tns:Screen id="Heizkreis-2-4_11" sortId="Heizkreis-11-2_4"
 			backId="Heizung-Installateur" previousId="Heizkreis-2-3_11"
 			service="true">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
 			</tns:Configuration>
@@ -1524,7 +1524,7 @@
 		<tns:Screen id="Heizkreis-3-1_11" sortId="Heizkreis-11-3_1"
 			backId="Heizung-Installateur" previousId="Heizung-Installateur"
 			ignoreChanges="true" service="true">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x04"
 					andMask="0x04" />
 			</tns:Configuration>
@@ -1546,7 +1546,7 @@
 		<tns:Screen id="Heizkreis-3-2_11" sortId="Heizkreis-11-3_2"
 			backId="Heizung-Installateur" previousId="Heizkreis-3-1_11"
 			service="true">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x04"
 					andMask="0x04" />
 			</tns:Configuration>
@@ -1568,7 +1568,7 @@
 		<tns:Screen id="Heizkreis-3-3_11" sortId="Heizkreis-11-3_3"
 			backId="Heizung-Installateur" previousId="Heizkreis-3-2_11"
 			service="true">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x04"
 					andMask="0x04" />
 			</tns:Configuration>
@@ -1590,7 +1590,7 @@
 		<tns:Screen id="Heizkreis-3-4_11" sortId="Heizkreis-11-3_4"
 			backId="Heizung-Installateur" previousId="Heizkreis-3-3_11"
 			service="true">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x04"
 					andMask="0x04" />
 			</tns:Configuration>
@@ -1616,7 +1616,7 @@
 		<tns:Screen id="Wasser-Installateur"
 			backId="Installateur-Menue" previousId="Installateur-Menue"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="25" Y="40" />
@@ -1634,7 +1634,7 @@
 		<tns:Screen id="Wasser-Anforderung-1/2"
 			backId="Wasser-Installateur" previousId="Wasser-Installateur"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="25" />
@@ -1653,7 +1653,7 @@
 		<tns:Screen id="Wasser-Anforderung-2/2"
 			backId="Wasser-Installateur" previousId="Wasser-Anforderung-1/2"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="225" Y="110" />
@@ -1672,7 +1672,7 @@
 		<tns:Screen id="Wasser-Bereitschaft"
 			backId="Wasser-Installateur" previousId="Wasser-Installateur"
 			service="true">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="ADMIN" />
 			<tns:TouchPoint pushTimeRefId="Standard"
 				releaseTimeRefId="WindowChange">
 				<tns:Coordinate X="20" Y="45" />
@@ -3599,7 +3599,7 @@
 
 		<!-- Min_Vorlauf_Temp_HK1 -->
 		<tns:ChannelDescription id="C35" unit="°C">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:Feature id="Min_Vorlauf_Temp" value="true" />
 			</tns:Configuration>
 			<tns:Control>
@@ -3790,7 +3790,7 @@
 
 		<!-- Min_Vorlauf_Temp_HK2 -->
 		<tns:ChannelDescription id="C40" unit="°C">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x02"
 					andMask="0x02" />
 				<tns:Feature id="Min_Vorlauf_Temp" value="true" />
@@ -3983,7 +3983,7 @@
 
 		<!-- Min_Vorlauf_Temp_HK3 -->
 		<tns:ChannelDescription id="C45" unit="°C">
-			<tns:Configuration admin="true">
+			<tns:Configuration admin="ADMIN">
 				<tns:ConfigurationMask compareMask="0x04"
 					andMask="0x04" />
 				<tns:Feature id="Min_Vorlauf_Temp" value="true" />
@@ -4039,7 +4039,7 @@
 
 		<!-- Puffer_dT_Start -->
 		<tns:ChannelDescription id="C47" unit="K">
-			<tns:Configuration admin="true" />
+			<tns:Configuration admin="VALUE" />
 			<tns:Control>
 				<tns:GuiAccess screenId="Wasser-Anforderung-2/2">
 					<tns:CurrentValue>

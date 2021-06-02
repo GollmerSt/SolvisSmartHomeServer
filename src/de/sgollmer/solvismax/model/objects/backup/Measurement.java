@@ -158,13 +158,13 @@ public class Measurement implements SystemBackup.IValue {
 			final String dataString = this.text.toString();
 			switch (this.getId()) {
 				case Constants.XmlStrings.XML_MEASUREMENT_BOOLEAN:
-					return new BooleanValue(Boolean.parseBoolean(dataString), -1);
+					return new BooleanValue(Boolean.parseBoolean(dataString), -1L);
 				case Constants.XmlStrings.XML_MEASUREMENT_INTEGER:
-					return new IntegerValue(Integer.parseInt(dataString), -1);
+					return new IntegerValue(Integer.parseInt(dataString), -1L);
 				case Constants.XmlStrings.XML_MEASUREMENT_MODE:
-					return new ModeValue<Mode>(new Mode(dataString), -1);
+					return new ModeValue<Mode>(new Mode(dataString), -1L);
 				case Constants.XmlStrings.XML_MEASUREMENT_STRING:
-					return new StringData(dataString, -1);
+					return new StringData(dataString, -1L);
 			}
 			return null;
 		}

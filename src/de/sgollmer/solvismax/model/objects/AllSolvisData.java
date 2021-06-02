@@ -140,7 +140,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 	public synchronized void saveToBackup(final SystemBackup systemMeasurements) {
 		systemMeasurements.clear();
 		for (SolvisData data : this.solvisDatas.values()) {
-			if (data.getDescription().mustBackuped()) {
+			if (data.getDescription().mustBackuped() && !data.isFix()) {
 				SingleData<?> sd = data.getSingleData();
 				if (sd != null) {
 					systemMeasurements.add(new Measurement(data.getId(), data.getSingleData()));
