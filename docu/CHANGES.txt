@@ -59,7 +59,10 @@ Version 01.04.00
                 ausgelesen werden muss. Beispiel: C47.Puffer_dT_Start, was die Funktion Nachheizen
                 (C46.WarmwasserNachheizen) beschleunigen kann.
                 
-    03.06.2021  Nachheizen wird auch nach einem manuellen Anstoßen erkannt (mit Einschränkungen)
+    03.06.2021  Nachheizen wird auch nach einem manuellen Anstoßen erkannt (mit Einschränkungen).
+    
+                Die SolvisStatus CONTROL_WRITE_ONGOING, CONTROL_READ_ONGOING und CONTROL_FINISHED
+                hinzugefügt, welche Anzeigen, dass noch Gui-Befehle ausgeführt werden.
                 
 
 

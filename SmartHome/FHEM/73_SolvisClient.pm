@@ -32,8 +32,9 @@
 #   00.02.19    13.02.2021  SCMP77              Fixed: Limit des Connection-Intervalls hatte keine  Wirkung
 #   00.02.20    26.02.2021  SCMP77              testing -> stable
 #   00.02.21    26.02.2021  SCMP77              supports server format version >= 2.0
-#   00.02.22    26.02.2021  SCMP77              Eine define-Anweisung im laufenden Betrieb bewirkte eine ständige
+#   00.02.22    23.05.2021  SCMP77              Eine define-Anweisung im laufenden Betrieb bewirkte eine ständige
 #                                                 Verbindungsaufbauwiederholung, da die Fehlerbehandlung unvollständig war.
+#   00.02.23    26.02.2021  SCMP77              Format 3 & SolvisStatus CONTROL_WRITE_ONGOING, CONTROL_READ_ONGOING, CONTROL_FINISHED supported
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -811,6 +812,18 @@ sub InterpreteSolvisState {
             readingsSingleUpdate($self,'state',$stateString,1);
              Log($self, 3, 'Solvis disconnected');
         },
+        'CONTROL_WRITE_ONGOING' => sub {
+            readingsSingleUpdate($self,'Control','wr_ongoing',1);
+             Log($self, 3, 'Solvis connected');
+       },
+        'CONTROL_READ_ONGOING' => sub {
+            readingsSingleUpdate($self,'Control','rd_ongoing',1);
+             Log($self, 3, 'Solvis disconnected');
+        },
+        'CONTROL_FINISHED' => sub {
+            readingsSingleUpdate($self,'Control','finished',1);
+             Log($self, 3, 'Solvis disconnected');
+        },
         'USER_ACCESS_DETECTED' => sub {
             readingsSingleUpdate($self,'HumanAccess','user',1);
             Log($self, 3, 'User access detected');
@@ -828,7 +841,7 @@ sub InterpreteSolvisState {
     if ( defined($switch{ $stateString  })) {
         $switch{ $stateString  }->();
     } else {
-        Log($self, 3, "Connection status unknown: $stateString");
+        Log($self, 3, "Solvis status unknown: $stateString");
     }
 
     #DoTrigger($self->{NAME}, $stateString);
@@ -2074,7 +2087,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "stable",
   "license": "GPL_2",
-  "version": "v00.02.22",
+  "version": "v00.02.23",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],

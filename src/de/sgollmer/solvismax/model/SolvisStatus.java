@@ -11,6 +11,9 @@ public enum SolvisStatus {
 	USER_ACCESS_DETECTED(Constants.Mqtt.HUMAN_ACCESS), //
 	SERVICE_ACCESS_DETECTED(Constants.Mqtt.HUMAN_ACCESS), //
 	HUMAN_ACCESS_FINISHED(Constants.Mqtt.HUMAN_ACCESS), //
+	CONTROL_WRITE_ONGOING(Constants.Mqtt.CONTROL),//
+	CONTROL_READ_ONGOING(Constants.Mqtt.CONTROL),//
+	CONTROL_FINISHED(Constants.Mqtt.CONTROL),//
 	UNDEFINED(Constants.Mqtt.STATUS);
 
 	private final String mqttPrefix;

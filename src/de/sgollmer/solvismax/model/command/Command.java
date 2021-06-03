@@ -22,6 +22,10 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public abstract class Command {
 
+	public enum Type {
+		CONTROL_READ, CONTROL_WRITE, CONTROL_UPDATE, OTHER
+	}
+
 	/**
 	 * Executes the command
 	 * 
@@ -89,7 +93,7 @@ public abstract class Command {
 	 * 
 	 * @return true if the command is changed a solvis parameter
 	 */
-	protected boolean isWriting() {
+	public boolean isWriting() {
 		return false;
 	}
 
@@ -119,4 +123,8 @@ public abstract class Command {
 
 	public abstract ResultStatus execute(final Solvis solvis, final QueueStatus queueStatus) throws IOException,
 			TerminationException, PowerOnException, NumberFormatException, TypeException, XmlException;
+
+	public Type getType() {
+		return Type.OTHER;
+	}
 }

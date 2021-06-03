@@ -19,6 +19,7 @@ import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.SolvisStatus;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Measurements;
 import de.sgollmer.solvismax.model.objects.Observer;
@@ -38,6 +39,7 @@ public final class Distributor extends Observable<ISendData> {
 	private final ConnectionStateObserver connectionStateObserver = new ConnectionStateObserver();
 	private final SolvisStateObserver solvisStateObserver = new SolvisStateObserver();
 	private final HumanAccessObserver humanAccessObserver = new HumanAccessObserver();
+	private final AllSettingsDoneObserver allSettingsDoneObserver = new AllSettingsDoneObserver();
 	private final AliveThread aliveThread = new AliveThread();
 	private final PeriodicBurstThread periodicBurstThread;
 	private final int bufferedIntervall_ms;
@@ -121,6 +123,18 @@ public final class Distributor extends Observable<ISendData> {
 		public void update(final HumanAccess data, final Object source) {
 			try {
 				Distributor.this.notify(new SolvisStatePackage(data.getStatus(), Distributor.this.solvis));
+			} catch (Throwable e) {
+			}
+		}
+
+	}
+
+	private class AllSettingsDoneObserver implements Observer.IObserver<SolvisStatus> {
+
+		@Override
+		public void update(final SolvisStatus status, final Object source) {
+			try {
+				Distributor.this.notify(new SolvisStatePackage(status, Distributor.this.solvis));
 			} catch (Throwable e) {
 			}
 		}
@@ -293,6 +307,7 @@ public final class Distributor extends Observable<ISendData> {
 		this.solvis.getConnection().register(this.getConnectionStateObserver());
 		this.solvis.getSolvisState().register(this.getSolvisStateObserver());
 		this.solvis.registerScreenChangedByHumanObserver(this.humanAccessObserver);
+		this.solvis.registerAllSettingsDoneObserver(this.allSettingsDoneObserver);
 		this.aliveThread.start();
 	}
 

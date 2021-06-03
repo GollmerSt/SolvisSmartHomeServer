@@ -177,6 +177,7 @@ public class Constants {
 		public static final int MAX_INFLIGHT = 200;
 		public static final int MIN_CONNECTION_REPEAT_TIME = 1000;
 		public static final int MAX_CONNECTION_REPEAT_TIME = 120000;
+		public static final String CONTROL = "settings";
 
 	}
 

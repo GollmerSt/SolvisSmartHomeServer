@@ -52,6 +52,7 @@ public class SolvisWorkers {
 	private AbstractScreen commandScreen = null;
 	private long timeCommandScreen = System.currentTimeMillis();
 	private Observable<Boolean> executingControlObserver = new Observable<>();
+	private Observable<SolvisStatus> allSettingsDoneObserver = new Observable<>();
 
 	SolvisWorkers(final Solvis solvis) {
 		this.solvis = solvis;
@@ -86,6 +87,8 @@ public class SolvisWorkers {
 		private boolean controlEnabled = true;
 		private boolean running = false;
 		private Handling.QueueStatus queueStatus = new Handling.QueueStatus();
+		private int writeCnt = 0;
+		private int readCnt = 0;
 
 		private ControlWorkerThread() {
 			super("ControlWorkerThread");
@@ -113,6 +116,9 @@ public class SolvisWorkers {
 				SolvisStatus state = SolvisWorkers.this.solvis.getSolvisState().getState();
 				if (state == SolvisStatus.SOLVIS_CONNECTED || state == SolvisStatus.ERROR) {
 					synchronized (this) {
+						if (this.queue.isEmpty() ) {
+							this.handleCommandAddedRemoved(null, false);
+						}
 						if (this.queue.isEmpty() || !this.controlEnabled
 								|| !SolvisWorkers.this.solvis.getFeatures().isInteractiveGUIAccess()) {
 							this.channelsOfQueueRead.clear();
@@ -186,6 +192,8 @@ public class SolvisWorkers {
 				if (command != null) {
 					synchronized (this) {
 						if (status.removeFromQueue()) {
+							this.handleCommandAddedRemoved(command, false);
+
 							this.removeCommand(command);
 						} else {
 							if (command.toEndOfQueue()) {
@@ -298,6 +306,8 @@ public class SolvisWorkers {
 					add = true;
 				}
 				if (add) {
+					this.handleCommandAddedRemoved(command, true);
+
 					if (command.first()) {
 						this.queue.addFirst(command);
 						logger.debug("Command <" + command.toString()
@@ -312,6 +322,61 @@ public class SolvisWorkers {
 					}
 					this.notifyAll();
 					SolvisWorkers.this.watchDog.bufferNotEmpty();
+				}
+			}
+		}
+
+		private void handleCommandAddedRemoved(final Command command, final boolean addedToQueue) {
+			if (command == null) {
+				if (this.readCnt != 0 || this.writeCnt != 0) {
+					logger.error("Programing error: Queue is empty, but readCnt/writeCnt !=0.");
+					this.writeCnt = 0;
+					this.readCnt = 0;
+					SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_FINISHED);
+				}
+				return;
+			}
+
+			boolean write = false;
+
+			switch (command.getType()) {
+				case OTHER:
+				case CONTROL_UPDATE:
+					return;
+				case CONTROL_READ:
+					if (addedToQueue) {
+						++this.readCnt;
+					} else {
+						--this.readCnt;
+					}
+					break;
+				case CONTROL_WRITE:
+					if (addedToQueue) {
+						++this.writeCnt;
+					} else {
+						--this.writeCnt;
+					}
+					write = true;
+					break;
+				default:
+					return;
+			}
+			if (addedToQueue) {
+				if (write) {
+					if (this.writeCnt == 1) {
+						SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_WRITE_ONGOING);
+					}
+				} else {
+					if (this.writeCnt == 0 && this.readCnt == 1) {
+						SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_READ_ONGOING);
+					}
+				}
+
+			} else {
+				if (this.writeCnt == 0 && this.readCnt == 0) {
+					SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_FINISHED);
+				} else if (write && this.writeCnt == 0) {
+					SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_READ_ONGOING);
 				}
 			}
 		}
@@ -577,6 +642,21 @@ public class SolvisWorkers {
 
 	public boolean willBeModified(final SolvisData data) {
 		return this.controlsThread.willBeModified(data);
+	}
+
+	public void registerAllSettingsDoneObserver(final IObserver<SolvisStatus> observer) {
+		this.allSettingsDoneObserver.register(observer);
+
+	}
+
+	public SolvisStatus getSettingStatus() {
+		if (this.controlsThread.writeCnt != 0) {
+			return SolvisStatus.CONTROL_WRITE_ONGOING;
+		} else if ( this.controlsThread.readCnt != 0) {
+			return SolvisStatus.CONTROL_READ_ONGOING;
+		} else {
+			return SolvisStatus.CONTROL_FINISHED;
+		}
 	}
 
 }

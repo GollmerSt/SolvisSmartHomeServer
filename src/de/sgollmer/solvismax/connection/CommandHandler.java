@@ -322,6 +322,7 @@ public class CommandHandler {
 		solvis.getDistributor().sendCollection(solvis.getAllSolvisData().getMeasurements());
 		client.send(solvis.getSolvisState().getSolvisStatePackage());
 		client.send(solvis.getHumanAccessPackage());
+		client.send(solvis.getSettingsPackage());
 
 	}
 

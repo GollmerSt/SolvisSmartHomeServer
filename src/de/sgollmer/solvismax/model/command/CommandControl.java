@@ -43,6 +43,7 @@ public class CommandControl extends Command {
 
 	private final ChannelDescription description;
 	private SingleData<?> setValue;
+	private boolean write;
 	private final AbstractScreen screen;
 	private boolean inhibit = false;
 	private Reference<Integer> writeFailCount = new Reference<Integer>(0);
@@ -67,6 +68,7 @@ public class CommandControl extends Command {
 			throws TypeException {
 		this(description, solvis, null);
 		this.setValue = description.toInternal(setValue);
+		this.write = true;
 	}
 
 	public CommandControl(final ChannelDescription description, final Solvis solvis) {
@@ -276,7 +278,7 @@ public class CommandControl extends Command {
 
 	@Override
 	public boolean isWriting() {
-		return this.setValue != null && !this.inhibit;
+		return this.write && !this.inhibit;
 	}
 
 	@Override
@@ -774,6 +776,17 @@ public class CommandControl extends Command {
 			}
 		}
 
+	}
+
+	@Override
+	public Type getType() {
+		if (this.write) {
+			return Type.CONTROL_WRITE;
+		} else if (this.priority == null) {
+			return Type.CONTROL_READ;
+		} else {
+			return Type.CONTROL_UPDATE;
+		}
 	}
 
 }

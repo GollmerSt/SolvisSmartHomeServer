@@ -57,10 +57,10 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
+import de.sgollmer.solvismax.model.objects.screen.AbstractScreen.GotoStatus;
 import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
-import de.sgollmer.solvismax.model.objects.screen.AbstractScreen.GotoStatus;
 import de.sgollmer.solvismax.model.objects.unit.Feature;
 import de.sgollmer.solvismax.model.objects.unit.Features;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
@@ -224,12 +224,11 @@ public class Solvis {
 
 	private void send(final Coordinate coord, final Integer pushTime, final Integer releaseTime)
 			throws IOException, TerminationException {
-		
+
 		if (pushTime == null || releaseTime == null) {
 			logger.error("Push time or release time isn't defined, ignored");
 			return;
 		}
-
 
 		this.getConnection().sendTouch(coord);
 		try {
@@ -424,6 +423,10 @@ public class Solvis {
 		this.screenChangedByHumanObserable.register(observer);
 	}
 
+	public void registerAllSettingsDoneObserver(final IObserver<SolvisStatus> observer) {
+		this.worker.registerAllSettingsDoneObserver(observer);
+	}
+
 	void notifyScreenChangedByHumanObserver(final HumanAccess humanAccess) {
 		this.humanAccess = humanAccess;
 		this.screenChangedByHumanObserable.notify(humanAccess);
@@ -442,6 +445,10 @@ public class Solvis {
 	public SolvisStatePackage getHumanAccessPackage() {
 		return new SolvisStatePackage(this.humanAccess.getStatus(), this);
 	}
+
+	public SolvisStatePackage getSettingsPackage() {
+		 return new SolvisStatePackage(this.worker.getSettingStatus(), this);
+		}
 
 	public void registerSolvisErrorObserver(final IObserver<SolvisErrorInfo> observer) {
 		this.solvisErrorObservable.register(observer);
