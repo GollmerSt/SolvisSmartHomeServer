@@ -119,7 +119,7 @@ public class Reheat {
 		for (int x = 0; x < pattern.getWidth(); ++x) {
 			blackPixel += pattern.getHistogramX().get(x);
 		}
-		double area = Math.PI * pattern.getWidth() * pattern.getWidth() / 4;
+		double area = Math.PI * (double) pattern.getWidth() * (double) pattern.getWidth() / 4.0;
 
 		int lower = (int) (area * (1 - Constants.CIRCLE_AREA_PRECISION));
 		int upper = (int) (area * (1 + Constants.CIRCLE_AREA_PRECISION));
@@ -177,6 +177,7 @@ public class Reheat {
 
 			boolean pass1 = notRequired == test.sollReheatNotRequired;
 			boolean pass2 = active == test.sollActive;
+			
 			if (!pass1 || !pass2) {
 				failed = true;
 			}

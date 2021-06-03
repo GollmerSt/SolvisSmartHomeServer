@@ -130,6 +130,8 @@ public class StrategyReheat implements IStrategy {
 		private final SolvisData pufferId;
 		private final SolvisData deltaData;
 
+		private final Object syncFinishedObject = new Object();
+
 		private boolean quick = true;
 
 		public Execute(final Solvis solvis) {
@@ -169,6 +171,7 @@ public class StrategyReheat implements IStrategy {
 					}
 
 				} else {
+					this.startWaitForReheatingFinished();
 					return Mode.HEATING.create(System.currentTimeMillis());
 				}
 			}
@@ -206,12 +209,7 @@ public class StrategyReheat implements IStrategy {
 
 					status = ResultStatus.SUCCESS;
 
-					if (this.waitForReheatingFinished == null) {
-
-						this.waitForReheatingFinished = new WaitForReheatingFinished();
-						this.waitForReheatingFinished.submit();
-					}
-
+					this.startWaitForReheatingFinished();
 				}
 			}
 
@@ -322,6 +320,15 @@ public class StrategyReheat implements IStrategy {
 			}
 		}
 
+		private void startWaitForReheatingFinished() {
+			synchronized (this.syncFinishedObject) {
+				if (this.waitForReheatingFinished == null) {
+					this.waitForReheatingFinished = new WaitForReheatingFinished();
+					this.waitForReheatingFinished.submit();
+				}
+			}
+		}
+
 		private class WaitForReheatingFinished extends Helper.Runnable implements IObserver<SolvisData> {
 
 			private boolean abort = false;
@@ -345,7 +352,7 @@ public class StrategyReheat implements IStrategy {
 
 				while (!this.abort) {
 					try {
-						AbortHelper.getInstance().sleepAndLock(interval, this);
+						AbortHelper.getInstance().sleepAndLock(interval, Execute.this.syncFinishedObject);
 					} catch (TerminationException e) {
 						this.abort = true;
 					}
@@ -370,8 +377,8 @@ public class StrategyReheat implements IStrategy {
 
 				if (!active) {
 					this.abort = true;
-					StrategyReheat.Execute.this.waitForReheatingFinished = null;
-					synchronized (this) {
+					synchronized (Execute.this.syncFinishedObject) {
+						StrategyReheat.Execute.this.waitForReheatingFinished = null;
 						this.notifyAll();
 					}
 				}
