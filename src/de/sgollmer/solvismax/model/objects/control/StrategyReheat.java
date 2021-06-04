@@ -379,7 +379,7 @@ public class StrategyReheat implements IStrategy {
 					this.abort = true;
 					synchronized (Execute.this.syncFinishedObject) {
 						StrategyReheat.Execute.this.waitForReheatingFinished = null;
-						this.notifyAll();
+						Execute.this.syncFinishedObject.notifyAll();
 					}
 				}
 				logger.debug("Reheating finished");

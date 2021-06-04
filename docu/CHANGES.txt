@@ -64,6 +64,10 @@ Version 01.04.00
                 Die SolvisStatus CONTROL_WRITE_ONGOING, CONTROL_READ_ONGOING und CONTROL_FINISHED
                 hinzugefügt, welche Anzeigen, dass noch Gui-Befehle ausgeführt werden.
                 
+    04.06.2021  Werden Gui-Kanäle gelsen, erfolgt imm er ein Transfer der gelesenen Daten zum
+                Smarthome-System, auch dann, wenn sie nicht verändert wurden. Bisher erfolgte das
+                nur bei Änderungen.
+                
 
 
 Version 01.03.00

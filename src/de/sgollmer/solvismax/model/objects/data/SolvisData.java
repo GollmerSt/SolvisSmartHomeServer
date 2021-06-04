@@ -309,8 +309,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		this.setData(data.getData(), this, data.isForceTransmit(), -1L);
 	}
 
-	public void setSingleData(final SingleData<?> data, final long executionStartTime) {
-		this.setData(data, this, false, executionStartTime);
+	public void setSingleDataWithTransmit(final SingleData<?> data, final long executionStartTime) {
+		this.setData(data, this, true, executionStartTime);
 	}
 
 	public void setSingleData(final SingleData<?> data, final Object source) {

@@ -47,6 +47,7 @@ public class AllFixChannelValues {
 			SolvisData data = solvis.getAllSolvisData().getByName(this.id);
 			if (data == null) {
 				logger.error("base.xml error: Fix channel <" + this.id + "> no defined.");
+				return;
 			}
 			DoubleValue doubleValue = new DoubleValue(this.value, -1L);
 			try {

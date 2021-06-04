@@ -368,7 +368,7 @@ public class WatchDog {
 				this.solvis.setScreenSaverActive(false);
 				break;
 			case INIT:
-				if (realScreen != null && realScreen != null && realScreen.isService()) {
+				if (realScreen != null && realScreen.isService()) {
 					synchronized (this) {
 						this.serviceScreenDetected = true;
 						this.humanAccess = HumanAccess.SERVICE;

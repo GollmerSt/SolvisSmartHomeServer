@@ -95,7 +95,7 @@ public class Control extends ChannelSource {
 		if (data == null) {
 			return false;
 		} else {
-			destin.setSingleData(data, executionStartTime);
+			destin.setSingleDataWithTransmit(data, executionStartTime);
 			return true;
 		}
 	}
