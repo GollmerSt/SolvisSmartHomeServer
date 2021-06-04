@@ -12,9 +12,9 @@ public enum ResultStatus {
 	private final boolean executed;
 	private final boolean removeFromQueue;
 
-	private ResultStatus(final boolean executed, final boolean finished) {
+	private ResultStatus(final boolean executed, final boolean removeFromQueue) {
 		this.executed = executed;
-		this.removeFromQueue = finished;
+		this.removeFromQueue = removeFromQueue;
 	}
 
 	public boolean isExecuted() {

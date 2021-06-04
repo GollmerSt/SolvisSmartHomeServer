@@ -127,4 +127,8 @@ public abstract class Command {
 	public Type getType() {
 		return Type.OTHER;
 	}
+
+	public ResultStatus preExecute(Solvis solvis, QueueStatus queueStatus) throws IOException, TerminationException {
+		return null;
+	}
 }

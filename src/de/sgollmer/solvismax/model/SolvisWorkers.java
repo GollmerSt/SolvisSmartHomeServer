@@ -147,7 +147,7 @@ public class SolvisWorkers {
 					try {
 						if (command != null
 								&& command.getScreen(SolvisWorkers.this.solvis) == SolvisScreen
-										.get(SolvisWorkers.this.solvis.getCurrentScreen())
+										.get(SolvisWorkers.this.solvis.getCurrentScreen(false))
 								&& !SolvisWorkers.this.solvis.getSolvisState().isError() | stateChanged) {
 							executeWatchDog = true;
 						}
@@ -425,6 +425,13 @@ public class SolvisWorkers {
 
 	private ResultStatus execute(final Command command) throws IOException, TerminationException, PowerOnException,
 			NumberFormatException, TypeException, XmlException {
+		
+		ResultStatus resultStatus = command.preExecute(this.solvis, this.controlsThread.queueStatus);
+		
+		if ( resultStatus != null ) {
+			return resultStatus;
+		}
+		
 		AbstractScreen commandScreen = command.getScreen(this.solvis);
 		if (commandScreen != null) {
 			long now = System.currentTimeMillis();

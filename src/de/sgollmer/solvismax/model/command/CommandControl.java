@@ -26,6 +26,7 @@ import de.sgollmer.solvismax.helper.Helper.Reference;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.command.Handling.QueueStatus;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
@@ -200,10 +201,9 @@ public class CommandControl extends Command {
 			}
 		}
 	}
-
+	
 	@Override
-	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException, XmlException {
+	public ResultStatus preExecute(Solvis solvis, QueueStatus queueStatus) throws IOException, TerminationException {
 
 		if (queueStatus.getCurrentPriority() != null && this.priority != null
 				&& queueStatus.getCurrentPriority() > this.priority) {
@@ -220,6 +220,15 @@ public class CommandControl extends Command {
 				return setResult.getStatus();
 			}
 		}
+
+		return null;
+	}
+
+
+
+	@Override
+	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus)
+			throws IOException, PowerOnException, TerminationException, NumberFormatException, XmlException {
 
 		boolean finished = false;
 		while (!finished && !this.inhibit) {

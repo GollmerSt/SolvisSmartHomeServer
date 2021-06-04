@@ -447,8 +447,8 @@ public class Solvis {
 	}
 
 	public SolvisStatePackage getSettingsPackage() {
-		 return new SolvisStatePackage(this.worker.getSettingStatus(), this);
-		}
+		return new SolvisStatePackage(this.worker.getSettingStatus(), this);
+	}
 
 	public void registerSolvisErrorObserver(final IObserver<SolvisErrorInfo> observer) {
 		this.solvisErrorObservable.register(observer);
@@ -486,8 +486,10 @@ public class Solvis {
 			if (screen.isNoRestore()) {
 				screen = this.defaultScreen == null ? this.getHomeScreen() : this.defaultScreen;
 			}
-			if (screen.goTo(this) == GotoStatus.CHANGED) {
-				logger.info("Screen <" + screen.getId() + "> restored.");
+			if (screen != SolvisScreen.get(this.getCurrentScreen(false))) {
+				if (screen.goTo(this) == GotoStatus.CHANGED) {
+					logger.info("Screen <" + screen.getId() + "> restored.");
+				}
 			}
 		}
 	}
