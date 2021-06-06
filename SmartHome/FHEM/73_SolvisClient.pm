@@ -814,15 +814,19 @@ sub InterpreteSolvisState {
         },
         'CONTROL_WRITE_ONGOING' => sub {
             readingsSingleUpdate($self,'Control','wr_ongoing',1);
-             Log($self, 3, 'Solvis connected');
+             Log($self, 3, 'Server queue write ongoing');
        },
         'CONTROL_READ_ONGOING' => sub {
             readingsSingleUpdate($self,'Control','rd_ongoing',1);
-             Log($self, 3, 'Solvis disconnected');
+             Log($self, 3, 'Server queue read ongoing');
+        },
+        'CONTROL_MONITORING' => sub {
+            readingsSingleUpdate($self,'Control','monitoring',1);
+             Log($self, 3, 'Server queue monitoring');
         },
         'CONTROL_FINISHED' => sub {
             readingsSingleUpdate($self,'Control','finished',1);
-             Log($self, 3, 'Solvis disconnected');
+             Log($self, 3, 'Server queue finished');
         },
         'USER_ACCESS_DETECTED' => sub {
             readingsSingleUpdate($self,'HumanAccess','user',1);
@@ -830,7 +834,7 @@ sub InterpreteSolvisState {
         },
         'SERVICE_ACCESS_DETECTED' => sub {
             readingsSingleUpdate($self,'HumanAccess','service',1);
-            Log($self, 3, 'User access detected');
+            Log($self, 3, 'Service access detected');
         },
         'HUMAN_ACCESS_FINISHED' => sub {
             readingsSingleUpdate($self,'HumanAccess','none',1);
