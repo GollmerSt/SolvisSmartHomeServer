@@ -40,6 +40,7 @@ import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.command.Command;
 import de.sgollmer.solvismax.model.command.CommandControl;
+import de.sgollmer.solvismax.model.command.CommandObserver;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
@@ -946,5 +947,11 @@ public class Solvis {
 		this.standby.reset();
 		;
 	}
+	
+	public void updateByMonitoringTask(final CommandObserver.Status status, final Object source) {
+		this.worker.updateByMonitoringTask(status, source);
+	}
+
+
 
 }

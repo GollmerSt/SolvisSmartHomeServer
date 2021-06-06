@@ -26,6 +26,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.command.CommandControl;
+import de.sgollmer.solvismax.model.command.CommandObserver;
 import de.sgollmer.solvismax.model.command.CommandScreenRestore;
 import de.sgollmer.solvismax.model.command.CommandSetQueuePriority;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
@@ -345,6 +346,7 @@ public class StrategyReheat implements IStrategy {
 				SolvisData data = Execute.this.solvis.getAllSolvisData()
 						.get(StrategyReheat.this.control.getDescription());
 
+				Execute.this.solvis.updateByMonitoringTask(CommandObserver.Status.MONITORING_STARTED, this);
 				Execute.this.solvis.execute(new CommandScreenRestore(false, this));
 				Execute.this.solvis.execute(new CommandSetQueuePriority(Constants.Commands.REHEATING_PRIORITY, this));
 
@@ -362,6 +364,7 @@ public class StrategyReheat implements IStrategy {
 					}
 				}
 
+				Execute.this.solvis.updateByMonitoringTask(CommandObserver.Status.MONITORING_FINISHED, this);
 				Execute.this.solvis.execute(new CommandSetQueuePriority(null, this));
 				Execute.this.solvis.execute(new CommandScreenRestore(true, this));
 				data.unregisterContinuousObserver(this);

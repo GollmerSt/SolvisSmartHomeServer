@@ -18,6 +18,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.command.CommandControl;
+import de.sgollmer.solvismax.model.command.CommandObserver;
 import de.sgollmer.solvismax.model.command.CommandScreenRestore;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
@@ -123,7 +124,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 		private boolean lastEquipmentState = false;
 		private SingleData<?> lastUpdateValue = null;
-		private boolean screenRestore = true;
+		private boolean monitor = false;
 		private boolean otherExecuting = false;
 
 		private int executionTime = 0;
@@ -350,7 +351,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			}
 
 			boolean check = false;
-			boolean screenRestore = true;
+			boolean monitor = false;
 
 			long time = data.getTimeStamp();
 
@@ -419,7 +420,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 				check = checkC || checkOneShot;
 
-				screenRestore = !checkC || !equipmentOn;
+				monitor = checkC && equipmentOn;
 
 				this.lastEquipmentState = equipmentOn;
 			}
@@ -431,9 +432,11 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				logger.debug("Update of <" + EquipmentOnOff.this.calculatedId + "> requested.");
 			}
 
-			if (this.screenRestore != screenRestore) {
-				this.screenRestore = screenRestore;
-				this.solvis.execute(new CommandScreenRestore(this.screenRestore, this));
+			if (this.monitor != monitor) {
+				this.monitor = monitor;
+				this.solvis.updateByMonitoringTask(monitor ? CommandObserver.Status.MONITORING_STARTED
+						: CommandObserver.Status.MONITORING_FINISHED, data);
+				this.solvis.execute(new CommandScreenRestore(!monitor, this));
 			}
 		}
 

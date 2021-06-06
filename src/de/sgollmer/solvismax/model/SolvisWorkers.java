@@ -25,10 +25,11 @@ import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.helper.Helper.Times;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.command.Command;
 import de.sgollmer.solvismax.model.command.CommandControl;
+import de.sgollmer.solvismax.model.command.CommandObserver;
 import de.sgollmer.solvismax.model.command.Handling;
+import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
@@ -52,7 +53,7 @@ public class SolvisWorkers {
 	private AbstractScreen commandScreen = null;
 	private long timeCommandScreen = System.currentTimeMillis();
 	private Observable<Boolean> executingControlObserver = new Observable<>();
-	private Observable<SolvisStatus> allSettingsDoneObserver = new Observable<>();
+	private CommandObserver commandObserver = new CommandObserver();
 
 	SolvisWorkers(final Solvis solvis) {
 		this.solvis = solvis;
@@ -116,7 +117,7 @@ public class SolvisWorkers {
 				SolvisStatus state = SolvisWorkers.this.solvis.getSolvisState().getState();
 				if (state == SolvisStatus.SOLVIS_CONNECTED || state == SolvisStatus.ERROR) {
 					synchronized (this) {
-						if (this.queue.isEmpty() ) {
+						if (this.queue.isEmpty()) {
 							this.handleCommandAddedRemoved(null, false);
 						}
 						if (this.queue.isEmpty() || !this.controlEnabled
@@ -332,7 +333,7 @@ public class SolvisWorkers {
 					logger.error("Programing error: Queue is empty, but readCnt/writeCnt !=0.");
 					this.writeCnt = 0;
 					this.readCnt = 0;
-					SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_FINISHED);
+					SolvisWorkers.this.commandObserver.notify(SolvisStatus.CONTROL_FINISHED);
 				}
 				return;
 			}
@@ -364,19 +365,19 @@ public class SolvisWorkers {
 			if (addedToQueue) {
 				if (write) {
 					if (this.writeCnt == 1) {
-						SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_WRITE_ONGOING);
+						updateByMonitoringTask(CommandObserver.Status.QUEUE_WRITE, this);
 					}
 				} else {
 					if (this.writeCnt == 0 && this.readCnt == 1) {
-						SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_READ_ONGOING);
+						updateByMonitoringTask(CommandObserver.Status.QUEUE_READ, this);
 					}
 				}
 
 			} else {
 				if (this.writeCnt == 0 && this.readCnt == 0) {
-					SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_FINISHED);
+					updateByMonitoringTask(CommandObserver.Status.QUEUE_FINISHED, this);
 				} else if (write && this.writeCnt == 0) {
-					SolvisWorkers.this.allSettingsDoneObserver.notify(SolvisStatus.CONTROL_READ_ONGOING);
+					updateByMonitoringTask(CommandObserver.Status.QUEUE_READ, this);
 				}
 			}
 		}
@@ -425,13 +426,13 @@ public class SolvisWorkers {
 
 	private ResultStatus execute(final Command command) throws IOException, TerminationException, PowerOnException,
 			NumberFormatException, TypeException, XmlException {
-		
+
 		ResultStatus resultStatus = command.preExecute(this.solvis, this.controlsThread.queueStatus);
-		
-		if ( resultStatus != null ) {
+
+		if (resultStatus != null) {
 			return resultStatus;
 		}
-		
+
 		AbstractScreen commandScreen = command.getScreen(this.solvis);
 		if (commandScreen != null) {
 			long now = System.currentTimeMillis();
@@ -652,18 +653,22 @@ public class SolvisWorkers {
 	}
 
 	public void registerAllSettingsDoneObserver(final IObserver<SolvisStatus> observer) {
-		this.allSettingsDoneObserver.register(observer);
+		this.commandObserver.register(observer);
 
 	}
 
 	public SolvisStatus getSettingStatus() {
 		if (this.controlsThread.writeCnt != 0) {
 			return SolvisStatus.CONTROL_WRITE_ONGOING;
-		} else if ( this.controlsThread.readCnt != 0) {
+		} else if (this.controlsThread.readCnt != 0) {
 			return SolvisStatus.CONTROL_READ_ONGOING;
 		} else {
 			return SolvisStatus.CONTROL_FINISHED;
 		}
+	}
+
+	public void updateByMonitoringTask(final CommandObserver.Status status, final Object source) {
+		this.commandObserver.update(status, source);
 	}
 
 }
