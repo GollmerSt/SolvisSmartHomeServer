@@ -72,4 +72,8 @@ public enum Command {
 	 * Client: Wählt einen bestimmten Bildschirm aus.
 	 */
 	SELECT_SCREEN,
+	/**
+	 * Bestimmte Kanäle können zum Debuggen auf einen festen Wert gesetzt werden 
+	 */
+	DEBUG_CHANNEL
 }

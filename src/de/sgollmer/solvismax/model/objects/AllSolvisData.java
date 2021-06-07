@@ -155,7 +155,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 				SolvisData data = this.get(value.getId());
 				if (data != null) {
 
-					SingleData<?> single = ((Measurement) value).getData().create(backup.getTimeOfLastBackup());
+					SingleData<?> single = ((Measurement) value).getData().clone(backup.getTimeOfLastBackup());
 					data.setSingleData(single, backup);
 				}
 			}

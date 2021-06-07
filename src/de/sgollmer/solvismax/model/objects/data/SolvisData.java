@@ -39,6 +39,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	private SingleData<?> data = null;
 	private SingleData<?> pendingData = null;
 	private SingleData<?> sentData = null;
+	private SingleData<?> debugData = null;
 	private final boolean dontSend;
 	private SmartHomeData smartHomeData;
 	private int executionTime;
@@ -96,7 +97,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof SolvisData) {
-			return ((SolvisData) obj).data.equals(this.data);
+			return ((SolvisData) obj).getSingleData().equals(this.getSingleData());
 		} else {
 			return false;
 		}
@@ -104,15 +105,20 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	@Override
 	public int hashCode() {
-		if (this.data == null) {
+		if (this.getSingleData() == null) {
 			return 103;
 		} else {
-			return this.data.hashCode();
+			return this.getSingleData().hashCode();
 		}
 	}
 
 	public String getId() {
 		return this.getDescription().getId();
+	}
+
+	public void setSingleDataDebug(final SingleData<?> debugData) {
+		this.debugData = debugData;
+		this.sendProcessing(debugData, true, false, false, null);
 	}
 
 	private void setData(final SingleData<?> data) {
@@ -121,6 +127,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	private synchronized void setData(final SingleData<?> setData, final Object source, final boolean forceTransmit,
 			long executionStartTime) {
+
+		if (this.debugData != null) {
+			this.debugData = this.debugData.clone(setData.getTimeStamp());
+			this.sendProcessing(this.debugData, false, false, forceTransmit, source);
+			return;
+		}
 
 		if (setData == null || setData.get() == null) {
 			this.data = null;
@@ -148,43 +160,59 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			fastChange = average.isFastChange();
 		}
 
+		sendData = this.glitchProcessing(sendData);
+
 		if (sendData == null) {
 			return;
 		}
 
-		boolean glitchInhibitEnabled = this.getDescription().glitchInhibitScanIntervals() > 0;
-		boolean changed = false;
+		boolean changed = !sendData.equals(this.data);
 
-		if (sendData.getTimeStamp() > 0 && this.pendingData != null) {
+		this.data = sendData;
 
-			if (sendData.equals(this.pendingData)) {
+		this.sendProcessing(sendData, changed, fastChange, forceTransmit, source);
 
-				if (sendData.getTimeStamp() > this.pendingData.getTimeStamp()
-						+ this.getDescription().glitchInhibitScanIntervals()
-								* this.getDescription().getScanInterval_ms(this.getSolvis())) {
+	}
 
-					glitchInhibitEnabled = false;
+	private SingleData<?> glitchProcessing(final SingleData<?> data) {
+
+		if (data == null || data.getTimeStamp() <= 0) {
+			return data;
+		}
+
+		int glitchInterval = this.getDescription().glitchInhibitScanIntervals();
+
+		if (glitchInterval <= 0) {
+			return data;
+		}
+
+		int glitchInterval_ms = glitchInterval * this.getDescription().getScanInterval_ms(this.getSolvis());
+
+		SingleData<?> result = null;
+
+		if (this.pendingData != null) {
+
+			if (data.equals(this.pendingData)) {
+
+				if (data.getTimeStamp() > this.pendingData.getTimeStamp() + glitchInterval_ms) {
+
 					this.pendingData = null;
-					changed = true;
+					result = data;
 				}
 			} else {
-
-				this.pendingData = sendData;
+				this.pendingData = data;
 			}
-		} else if (!sendData.equals(this.data)) {
+		} else if (!data.equals(this.getSingleData())) {
 
-			if (glitchInhibitEnabled && sendData.getTimeStamp() > 0) {
-
-				this.pendingData = sendData;
-			} else {
-
-				changed = true;
-			}
+			this.pendingData = data;
 		}
 
-		if (!glitchInhibitEnabled) {
-			this.data = sendData;
-		}
+		return result;
+
+	}
+
+	private void sendProcessing(final SingleData<?> data, final boolean changed, final boolean fastChange,
+			final boolean forceTransmit, final Object source) {
 
 		if (!this.isEmpty() && (changed || forceTransmit)) {
 
@@ -192,7 +220,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 				this.notify(this, source);
 			}
-			logger.debug("Channel: " + this.getId() + ", value: " + sendData.toString());
+			logger.debug("Channel: " + this.getId() + ", value: " + data.toString());
 		}
 
 		if (this.smartHomeData != null) {
@@ -220,7 +248,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public Integer getInteger() throws TypeException {
-		SingleData<?> data = this.data;
+		SingleData<?> data = this.getSingleData();
 		if (data == null) {
 			return null;
 		} else if (data instanceof DoubleValue) {
@@ -271,11 +299,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public Helper.Boolean getBoolean() throws TypeException {
-		SingleData<?> data = this.data;
+		SingleData<?> data = this.getSingleData();
 		if (data == null) {
 			return Helper.Boolean.UNDEFINED;
 		}
-		Helper.Boolean bool = this.data.getBoolean();
+		Helper.Boolean bool = data.getBoolean();
 		if (bool == Helper.Boolean.UNDEFINED) {
 			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
@@ -292,7 +320,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public ModeValue<?> getMode() {
-		SingleData<?> data = this.data;
+		SingleData<?> data = this.getSingleData();
 		if (data instanceof ModeValue<?>) {
 			return (ModeValue<?>) data;
 		} else {
@@ -301,7 +329,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public void setFixData(final SingleData<?> data) throws TypeException {
-		this.data = this.getDescription().toInternal(data);
+		this.data = this.getDescription().interpretSetData(data);
 		this.fix = true;
 	}
 
@@ -336,15 +364,19 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	@Override
 	public String toString() {
-		return this.data.toString();
+		return this.getSingleData().toString();
 	}
 
 	public SingleData<?> getSingleData() {
-		return this.data;
+		if (this.debugData == null) {
+			return this.data;
+		} else {
+			return this.debugData;
+		}
 	}
 
 	public SingleData<?> normalize() {
-		return this.getDescription().normalize(this.data);
+		return this.getDescription().normalize(this.getSingleData());
 	}
 
 	@Override
@@ -361,7 +393,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	 * @return
 	 */
 	public long getTimeStamp() {
-		SingleData<?> data = this.data;
+		SingleData<?> data = this.getSingleData();
 		if (data != null) {
 			return data.getTimeStamp();
 		} else {
@@ -373,12 +405,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		if (this.sentData != null) {
 			return this.sentData;
 		} else {
-			return this.data;
+			return this.getSingleData();
 		}
 	}
 
 	public boolean isFastChange() {
-		return this.data.isFastChange();
+		return this.getSingleData().isFastChange();
 	}
 
 	public Solvis getSolvis() {
@@ -394,10 +426,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 //	}
 //
 	public boolean isValid() {
-		if (this.data == null) {
+		if (this.getSingleData() == null) {
 			return false;
 		} else if (this.getDescription().isWriteable()) {
-			return this.fix || this.datas.getLastHumanAccess() < this.data.getTimeStamp();
+			return this.fix || this.datas.getLastHumanAccess() < this.getSingleData().getTimeStamp();
 		} else {
 			return true;
 		}
@@ -405,10 +437,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public Calendar getDate() {
-		if (!(this.data instanceof DateValue)) {
+		if (!(this.getSingleData() instanceof DateValue)) {
 			return null;
 		}
-		return ((DateValue) this.data).get();
+		return ((DateValue) this.getSingleData()).get();
 	}
 
 	public boolean isDontSend() {
@@ -439,7 +471,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 			synchronized (this.solvisData) {
 
-				this.current = this.solvisData.data;
+				this.current = this.solvisData.getSingleData();
 				currentTimeStamp = this.solvisData.getTimeStamp();
 			}
 

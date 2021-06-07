@@ -23,11 +23,9 @@ import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
-import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.data.StringData;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
@@ -77,20 +75,7 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 			int current = data.get();
 
-			int goal = Math.max(target, this.least);
-			goal = Math.min(goal, this.most);
-
-			int value;
-
-			if (this.incrementChange != null && goal >= this.incrementChange) {
-				goal -= this.incrementChange;
-				value = (2 * this.changedIncrement * goal + (goal > 0 ? this.changedIncrement : -this.changedIncrement))
-						/ (2 * this.changedIncrement);
-				value += this.incrementChange;
-			} else {
-				value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment))
-						/ (2 * this.increment);
-			}
+			int value = getRealValue(target);
 
 			if (current == value) {
 				return new SetResult(target == current ? ResultStatus.SUCCESS : ResultStatus.VALUE_VIOLATION, data,
@@ -143,6 +128,24 @@ public class StrategyReadWrite extends StrategyRead {
 			}
 		}
 		return null;
+	}
+
+	private int getRealValue(final int target) {
+		int goal = Math.max(target, this.least);
+		goal = Math.min(goal, this.most);
+
+		int value;
+
+		if (this.incrementChange != null && goal >= this.incrementChange) {
+			goal -= this.incrementChange;
+			value = (2 * this.changedIncrement * goal + (goal > 0 ? this.changedIncrement : -this.changedIncrement))
+					/ (2 * this.changedIncrement);
+			value += this.incrementChange;
+		} else {
+			value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment)) / (2 * this.increment);
+		}
+		return value;
+
 	}
 
 	/**
@@ -282,25 +285,6 @@ public class StrategyReadWrite extends StrategyRead {
 		);
 	}
 
-	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		if (singleData instanceof StringData) {
-			String string = (String) singleData.get();
-			try {
-				if (string.contains(".")) {
-					return new DoubleValue(Double.parseDouble(string), singleData.getTimeStamp());
-				} else {
-					return new IntegerValue(Integer.parseInt(string), singleData.getTimeStamp());
-				}
-			} catch (NumberFormatException e) {
-				throw new TypeException(e);
-			}
-		} else if (singleData instanceof StringData) {
-			return super.interpretSetData(singleData);
-		}
-		return singleData;
-	}
-
 	private static class GuiModification extends GuiRead implements IAssigner {
 		private final boolean wrapAround;
 		private final TouchPoint upper;
@@ -425,4 +409,15 @@ public class StrategyReadWrite extends StrategyRead {
 		}
 	}
 
+	@Override
+	public SetResult setDebugValue(Solvis solvis, SingleData<?> value) throws TypeException {
+
+		Integer target = value.getInt();
+
+		if (target == null) {
+			throw new TypeException("Wrong type of debug value");
+		}
+
+		return new SetResult(ResultStatus.SUCCESS, new IntegerValue(this.getRealValue(target), -1L), false);
+	}
 }

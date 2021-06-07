@@ -1206,7 +1206,7 @@ sub Set {
     my $screenCommands = ${$devicesScreenCommands{$device}};
 
     if ( $cmd eq '?' ) {
-        return "unknown argument $cmd choose one of $setParameters ServerCommand:$serverCommands SelectScreen:$screenCommands,NONE";
+        return "unknown argument $cmd choose one of $setParameters ServerCommand:$serverCommands SelectScreen:NONE,$screenCommands DebugChannel";
     }
 
     ### If not enough arguments have been provided
@@ -1225,6 +1225,13 @@ sub Set {
         my $screenCommand = $args[0];
 
         SendScreenCommand($self, $screenCommand);
+		
+	} elsif ( $cmd eq 'DebugChannel') {
+		
+		my $debugCommand = join(' ', @args);
+		
+		SendDebugCommand($self, $debugCommand);
+
 
     } else {
 
@@ -1276,6 +1283,21 @@ sub SendServerCommand {
     my $command = shift;
 
     SendData($self, 'SERVER_COMMAND', 'Command', $command);
+
+    return;
+} # end SendServerCommand
+
+
+
+#####################################
+#
+#       Send debug command
+#
+sub SendDebugCommand {
+    my $self = shift;
+    my $debugCommand = shift;
+
+    SendData($self, 'DEBUG_CHANNEL', 'ChannelEquation', $debugCommand);
 
     return;
 } # end SendServerCommand

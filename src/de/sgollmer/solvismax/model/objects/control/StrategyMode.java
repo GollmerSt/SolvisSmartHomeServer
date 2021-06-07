@@ -9,6 +9,7 @@ package de.sgollmer.solvismax.model.objects.control;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -20,6 +21,7 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.helper.SolvisDataHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
@@ -327,17 +329,7 @@ public class StrategyMode implements IStrategy {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private SingleData<?> interpretSetData(final String value, final long timeStamp) throws TypeException {
-		IMode<?> setMode = null;
-		for (IMode<?> mode : this.getModes()) {
-			if (mode.getName().equals(value)) {
-				setMode = mode;
-				break;
-			}
-		}
-		if (setMode == null) {
-			throw new TypeException("Mode <" + value + "> is unknown");
-		}
-		return new ModeValue(setMode, timeStamp);
+		return SolvisDataHelper.toMode(value, timeStamp, (Collection) this.getModes());
 	}
 
 	@Override
@@ -384,6 +376,11 @@ public class StrategyMode implements IStrategy {
 				mode.getGuiSet().getGrafic().setRectangle(control.getGuiAccess().getValueRectangle());
 		}
 
+	}
+
+	@Override
+	public SetResult setDebugValue(Solvis solvis, SingleData<?> value) {
+		return new SetResult(ResultStatus.SUCCESS, value, false);
 	}
 
 }

@@ -107,6 +107,10 @@ public class Dependency implements IAssigner {
 		for (ChannelDescription cd : this.channel) {
 			if (this.value != null) {
 				try {
+					if (!cd.isWriteable()) {
+						throw new XmlException("Error in control.xml, invalid dependency channel <" + cd.getId()
+								+ ">. Channel isn' writable.");
+					}
 					cd.interpretSetData(new StringData(this.value, -1L));
 				} catch (TypeException e) {
 					throw new XmlException("Error in control.xml, invalid dependency value <" + this.value

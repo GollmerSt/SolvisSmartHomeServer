@@ -57,4 +57,6 @@ public interface IStrategy extends IAssigner {
 
 	void setControl(final Control control);
 
+	SetResult setDebugValue(final Solvis solvis, final SingleData<?> value) throws TypeException;
+
 }

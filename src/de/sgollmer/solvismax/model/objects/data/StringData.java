@@ -96,7 +96,7 @@ public class StringData extends SingleData<String> {
 	}
 
 	@Override
-	public SingleData<String> create(final long timeStamp) {
+	public SingleData<String> clone(final long timeStamp) {
 		return new StringData(this.data, timeStamp);
 	}
 

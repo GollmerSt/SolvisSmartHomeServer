@@ -56,6 +56,11 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
+	public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value) {
+		return this.strategy.setDebugValue(solvis, value);
+	}
+
+	@Override
 	public SetResult setValueFast(final Solvis solvis, final SolvisData value) {
 		return null;
 	}
@@ -179,7 +184,7 @@ public class Calculation extends ChannelSource {
 
 	@Override
 	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		return null;
+		return this.strategy.interpretSetData(singleData);
 	}
 
 	@Override

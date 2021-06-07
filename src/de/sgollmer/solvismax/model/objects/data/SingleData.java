@@ -47,7 +47,7 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 
 	abstract SingleData<T> create(final int value, final long timeStamp);
 
-	public abstract SingleData<T> create(final long timeStamp);
+	public abstract SingleData<T> clone(final long timeStamp);
 
 	public abstract String getXmlId();
 

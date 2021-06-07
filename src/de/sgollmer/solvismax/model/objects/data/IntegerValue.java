@@ -118,7 +118,7 @@ public class IntegerValue extends SingleData<Integer> {
 	}
 
 	@Override
-	public SingleData<Integer> create(final long timeStamp) {
+	public SingleData<Integer> clone(final long timeStamp) {
 		return new IntegerValue(this.data, timeStamp);
 	}
 

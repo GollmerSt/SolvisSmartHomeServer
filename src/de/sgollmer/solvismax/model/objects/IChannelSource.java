@@ -60,9 +60,18 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public SetResult setValue(final Solvis solvis, final SolvisData value) throws IOException, TerminationException;
 
+	public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value)
+			throws IOException, TerminationException, TypeException;
+
 	public SetResult setValueFast(final Solvis solvis, final SolvisData value) throws IOException, TerminationException;
 
-	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException;
+	/**
+	 * 
+	 * @param realData	Datum, wie es auf der Smarthome-Seite dargestellt wird
+	 * @return
+	 * @throws TypeException
+	 */
+	public SingleData<?> interpretSetData(final SingleData<?> realData) throws TypeException;
 
 	public boolean isWriteable();
 

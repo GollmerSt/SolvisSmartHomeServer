@@ -26,6 +26,7 @@ import de.sgollmer.solvismax.error.ClientAssignmentException;
 import de.sgollmer.solvismax.error.CommandError;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
@@ -34,8 +35,10 @@ import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.command.CommandSetScreen;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
+import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.StringData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 
@@ -56,7 +59,7 @@ public class CommandHandler {
 	}
 
 	public boolean commandFromClient(final IReceivedData receivedData, final IClient client)
-			throws IOException, ClientAssignmentException, JsonException, TypeException {
+			throws IOException, ClientAssignmentException, JsonException, TypeException, TerminationException {
 		Command command = receivedData.getCommand();
 		if (command == null) {
 			return false;
@@ -93,6 +96,9 @@ public class CommandHandler {
 					break;
 				case CLIENT_ONLINE:
 					this.clientOnline(receivedData, client);
+					break;
+				case DEBUG_CHANNEL:
+					this.debugChannel(receivedData, client);
 					break;
 				default:
 					logger.warn("Command <" + command.name() + ">unknown, old version of SolvisSmartHomeServer?");
@@ -344,6 +350,54 @@ public class CommandHandler {
 		}
 	}
 
+	private void debugChannel(IReceivedData receivedData, IClient client)
+			throws CommandError, TypeException, IOException, TerminationException {
+
+		String channelData = (String) receivedData.getSingleData().get();
+
+		if (channelData == null) {
+			client.sendCommandError("Debug channel command, unexpected JSON format received. Ignored.");
+			return;
+		}
+
+		String[] parts = channelData.split("=");
+
+		boolean enable = parts.length == 2;
+
+		if (parts.length < 1 || parts.length > 2) {
+			client.sendCommandError("Format error of deug channel command. Arguments: " + channelData);
+			return;
+
+		}
+
+		String name = parts[0].trim();
+
+		Solvis solvis = receivedData.getSolvis();
+		SolvisData data = solvis.getAllSolvisData().getByName(name);
+		if (data == null) {
+			client.sendCommandError("Debug channel command, channel <" + name + "> not found. Ignored.");
+			return;
+		}
+
+		ChannelDescription description = data.getDescription();
+
+		if (enable) {
+
+			SingleData<?> singleData = description.interpretSetData(new StringData(parts[1].trim(), -1L));
+			SetResult setResult = description.setDebugValue(solvis, singleData);
+			if (setResult == null || !setResult.getStatus().isExecuted()) {
+				logger.error("Set of channel <" + description.getId() + "> not successfull. Aborted.");
+			} else {
+				data.setSingleDataDebug(setResult.getData());
+				logger.info("Channel <" + name + "> is set to <" + singleData + "> via a debug channel command");
+			}
+		} else {
+			data.setSingleDataDebug(null);
+			logger.info("The debug value of channel <" + name + "> is reset");
+		}
+
+	}
+
 	private void set(final IReceivedData receivedDat) throws JsonException, TypeException, CommandError {
 		Solvis solvis = receivedDat.getSolvis();
 		String name = receivedDat.getChannelId();
@@ -353,7 +407,12 @@ public class CommandHandler {
 		if (data == null) {
 			throw new CommandError("Channel <" + name + "> is unknown. Command ignored.");
 		}
+
 		ChannelDescription description = data.getDescription();
+
+		if (!description.isWriteable()) {
+			throw new CommandError("Channel <" + name + "> is not writeable. Command ignored.");
+		}
 
 		SingleData<?> singleData = receivedDat.getSingleData();
 		boolean ignored;

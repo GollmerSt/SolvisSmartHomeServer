@@ -10,11 +10,14 @@ package de.sgollmer.solvismax.model.objects.calculation;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.error.AssignmentException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IAssigner;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.data.IMode;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public enum Strategies {
@@ -54,6 +57,10 @@ public enum Strategies {
 			return null; // i.g. is directly set via solvis data
 		}
 
+		protected SetResult setDebugValue(final Solvis solvis, final SingleData<?> value) {
+			return new SetResult(ResultStatus.SUCCESS, value, false);
+		}
+
 		boolean getValue(final SolvisData dest, final Solvis solvis) {
 			return true; // i.g. solvis data contains the current value
 		}
@@ -71,6 +78,9 @@ public enum Strategies {
 		String getCsvMeta(final String column, final boolean semicolon) {
 			return null;
 		}
+
+		protected abstract SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
+
 
 	}
 

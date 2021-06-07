@@ -98,6 +98,12 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
+	public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value)
+			throws IOException, TerminationException, TypeException {
+		return this.channelSource.setDebugValue(solvis, value);
+	}
+
+	@Override
 	public SetResult setValueFast(final Solvis solvis, final SolvisData value)
 			throws IOException, TerminationException {
 		return this.channelSource.setValueFast(solvis, value);
@@ -299,19 +305,20 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.mustBackuped();
 	}
 
-	public SingleData<?> toInternal(final SingleData<?> data) throws TypeException {
-		SingleData<?> interpretedData = this.interpretSetData(data);
-
-		Integer divisor = this.getDivisor();
-
-		if (divisor == null) {
-			return interpretedData;
-		}
-
-		return new IntegerValue((int) Math.round(interpretedData.getDouble() * divisor),
-				interpretedData.getTimeStamp());
-	}
-
+//	public SingleData<?> toInternal(final SingleData<?> data) throws TypeException {
+//
+//		SingleData<?> interpretedData = this.interpretSetData(data);
+//
+//		Integer divisor = this.getDivisor();
+//
+//		if (divisor == null) {
+//			return interpretedData;
+//		}
+//
+//		return new IntegerValue((int) Math.round(interpretedData.getDouble() * divisor),
+//				interpretedData.getTimeStamp());
+//	}
+//
 	public SingleData<?> normalize(final SingleData<?> data) {
 		if (data.get() == null) {
 			return null;

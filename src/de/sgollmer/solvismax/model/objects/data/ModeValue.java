@@ -100,7 +100,7 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	}
 
 	@Override
-	public SingleData<M> create(final long timeStamp) {
+	public SingleData<M> clone(final long timeStamp) {
 		return new ModeValue<M>(this.mode, timeStamp);
 	}
 

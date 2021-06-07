@@ -17,6 +17,7 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
+import de.sgollmer.solvismax.helper.SolvisDataHelper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
@@ -28,7 +29,6 @@ import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
-import de.sgollmer.solvismax.model.objects.data.StringData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.xmllibrary.BaseCreator;
@@ -121,15 +121,7 @@ public class StrategyButton implements IStrategy {
 
 	@Override
 	public BooleanValue interpretSetData(final SingleData<?> singleData) throws TypeException {
-		if (singleData instanceof BooleanValue) {
-			return (BooleanValue) singleData;
-		} else if (singleData instanceof StringData) {
-			String data = ((StringData) singleData).get();
-			if (data.equalsIgnoreCase("true") || data.equalsIgnoreCase("false")) {
-				return new BooleanValue(data.equalsIgnoreCase("true"), singleData.getTimeStamp());
-			}
-		}
-		return null;
+		return SolvisDataHelper.toBoolean(singleData);
 	}
 
 	@Override
@@ -212,6 +204,11 @@ public class StrategyButton implements IStrategy {
 	@Override
 	public SetResult setValueFast(final Solvis solvis, final SolvisData value) {
 		return null;
+	}
+
+	@Override
+	public SetResult setDebugValue(Solvis solvis, SingleData<?> value) {
+		return new SetResult(ResultStatus.SUCCESS, value, false);
 	}
 
 }

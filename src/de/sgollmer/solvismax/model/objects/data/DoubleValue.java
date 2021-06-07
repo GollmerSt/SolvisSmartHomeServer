@@ -103,7 +103,7 @@ public class DoubleValue extends SingleData<Double> {
 	}
 
 	@Override
-	public SingleData<Double> create(final long timeStamp) {
+	public SingleData<Double> clone(final long timeStamp) {
 		return new DoubleValue(this.value, timeStamp);
 	}
 

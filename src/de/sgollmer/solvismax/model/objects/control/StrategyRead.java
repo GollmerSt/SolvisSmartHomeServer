@@ -17,13 +17,14 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper.Format;
+import de.sgollmer.solvismax.helper.SolvisDataHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
-import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -165,9 +166,11 @@ public class StrategyRead implements IStrategy {
 
 	@Override
 	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		if (singleData instanceof DoubleValue) {
-			DoubleValue doubleValue = (DoubleValue) singleData;
-			return new IntegerValue((int) Math.round(doubleValue.getDouble() * this.divisor), -1l);
+		
+		SingleData<?> value = SolvisDataHelper.toValue(singleData);
+		
+		if (value != null ) {
+			return new IntegerValue((int) Math.round(value.getDouble() * this.divisor), -1l);
 		} else {
 			return null;
 		}
@@ -246,6 +249,11 @@ public class StrategyRead implements IStrategy {
 	@Override
 	public void setControl(final Control control) {
 
+	}
+
+	@Override
+	public SetResult setDebugValue(Solvis solvis, SingleData<?> value) throws TypeException {
+		return new SetResult(ResultStatus.SUCCESS, value, false);
 	}
 
 }

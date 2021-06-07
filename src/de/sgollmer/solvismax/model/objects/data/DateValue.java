@@ -20,7 +20,7 @@ public class DateValue extends SingleData<Calendar> {
 
 	private final Calendar calendar;
 
-	DateValue(final Calendar calendar, final long timeStamp) {
+	public DateValue(final Calendar calendar, final long timeStamp) {
 		super(timeStamp);
 		this.calendar = calendar;
 	}
@@ -96,7 +96,7 @@ public class DateValue extends SingleData<Calendar> {
 	}
 
 	@Override
-	public SingleData<Calendar> create(final long timeStamp) {
+	public SingleData<Calendar> clone(final long timeStamp) {
 		return new DateValue(this.calendar, timeStamp);
 	}
 }

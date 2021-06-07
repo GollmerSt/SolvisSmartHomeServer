@@ -119,7 +119,7 @@ public class LongValue extends SingleData<Long> {
 	}
 
 	@Override
-	public SingleData<Long> create(final long timeStamp) {
+	public SingleData<Long> clone(final long timeStamp) {
 		return new LongValue(this.data, timeStamp);
 	}
 

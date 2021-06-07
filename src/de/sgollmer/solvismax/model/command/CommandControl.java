@@ -65,10 +65,17 @@ public class CommandControl extends Command {
 	private DependencyGroup currentDependencyGroup = null;
 	private final DependencyCache dependencyCache;
 
-	public CommandControl(final ChannelDescription description, final SingleData<?> setValue, final Solvis solvis)
+	/**
+	 * 
+	 * @param description
+	 * @param setRealValue	Wert vom SmartHome-System (kein interner Wert)
+	 * @param solvis
+	 * @throws TypeException
+	 */
+	public CommandControl(final ChannelDescription description, final SingleData<?> setRealValue, final Solvis solvis)
 			throws TypeException {
 		this(description, solvis, null);
-		this.setValue = description.toInternal(setValue);
+		this.setValue = description.interpretSetData(setRealValue);
 		this.write = true;
 	}
 

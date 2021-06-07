@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.model.objects.calculation;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.helper.SolvisDataHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
@@ -18,6 +19,7 @@ import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.backup.SystemBackup;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.update.EquipmentOnOff.UpdateType;
 
@@ -209,6 +211,11 @@ public class RunTime extends Strategy<RunTime> {
 	@Override
 	boolean isBoolean() {
 		return false;
+	}
+
+	@Override
+	protected SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
+		return SolvisDataHelper.toValue(singleData);
 	}
 
 }

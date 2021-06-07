@@ -550,4 +550,9 @@ public class StrategyReheat implements IStrategy {
 		return this.getExecute(solvis).setValueFast(value);
 	}
 
+	@Override
+	public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value) throws TypeException {
+		return new SetResult(ResultStatus.SUCCESS, value, false);
+	}
+
 }

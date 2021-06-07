@@ -14,6 +14,7 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.helper.SolvisDataHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
@@ -23,6 +24,7 @@ import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
 public class BurnerStatus extends Strategy<BurnerStatus> {
@@ -180,5 +182,10 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 				return builder.toString();
 		}
 		return null;
+	}
+
+	@Override
+	protected SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException {
+		return SolvisDataHelper.toMode(singleData.toString(), singleData.getTimeStamp(), Status.values());
 	}
 }

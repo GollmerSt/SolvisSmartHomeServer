@@ -134,6 +134,12 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
+	public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value)
+			throws IOException, TerminationException, TypeException {
+		return this.strategy.setDebugValue(solvis, value);
+	}
+
+	@Override
 	public SetResult setValueFast(final Solvis solvis, final SolvisData value)
 			throws IOException, TerminationException {
 		return this.strategy.setValueFast(solvis, value);

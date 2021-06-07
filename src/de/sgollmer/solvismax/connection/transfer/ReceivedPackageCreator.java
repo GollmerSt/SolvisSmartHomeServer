@@ -57,6 +57,9 @@ public class ReceivedPackageCreator {
 			case SELECT_SCREEN:
 				result = new SelectScreenPackage();
 				break;
+			case DEBUG_CHANNEL:
+				result = new DebugChannelPackage();
+				break;
 			default:
 				logger.error("Command <" + command.name() + "> not known");
 				return null;

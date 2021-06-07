@@ -89,7 +89,7 @@ public class BooleanValue extends SingleData<Boolean> {
 	}
 
 	@Override
-	public SingleData<Boolean> create(final long timeStamp) {
+	public SingleData<Boolean> clone(final long timeStamp) {
 		return new BooleanValue(this.value, timeStamp);
 	}
 

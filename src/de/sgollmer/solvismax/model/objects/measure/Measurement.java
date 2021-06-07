@@ -269,7 +269,7 @@ public class Measurement extends ChannelSource {
 
 	@Override
 	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		return null;
+		return this.type.interpretSetData(singleData, this.divisor);
 	}
 
 	@Override
@@ -289,11 +289,16 @@ public class Measurement extends ChannelSource {
 		public boolean get(final SolvisData dest, final Collection<Field> fields, final SolvisMeasurements measureData,
 				final Solvis solvis) throws PowerOnException, IOException, NumberFormatException;
 
+		public SingleData<?> interpretSetData(final SingleData<?> singleData, final int divisor) throws TypeException;
+
 		public boolean isNumeric();
 
 		public boolean isBoolean();
 
-		public boolean validate(Collection<Field> fields);
+		public boolean validate(final Collection<Field> fields);
+		
+		public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value) ;
+
 	}
 
 	@Override
@@ -333,6 +338,11 @@ public class Measurement extends ChannelSource {
 				return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 		}
 		return null;
+	}
+
+	@Override
+	public SetResult setDebugValue(Solvis solvis, SingleData<?> value) throws IOException, TerminationException {
+		return this.type.setDebugValue(solvis, value);
 	}
 
 }

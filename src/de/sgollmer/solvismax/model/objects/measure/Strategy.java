@@ -8,6 +8,8 @@
 package de.sgollmer.solvismax.model.objects.measure;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,8 +17,16 @@ import java.util.Iterator;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.TypeException;
+import de.sgollmer.solvismax.helper.SolvisDataHelper;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
+import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
+import de.sgollmer.solvismax.model.objects.data.DateValue;
+import de.sgollmer.solvismax.model.objects.data.IntegerValue;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
+import de.sgollmer.solvismax.model.objects.data.StringData;
 import de.sgollmer.solvismax.model.objects.measure.Measurement.IType;
 import de.sgollmer.solvismax.objects.Field;
 
@@ -36,6 +46,15 @@ public enum Strategy implements IType {
 	public boolean get(final SolvisData destin, final Collection<Field> fields, final SolvisMeasurements data,
 			final Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
 		return this.type.get(destin, fields, data, solvis);
+	}
+
+	@Override
+	public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value) {
+		SetResult setResult = this.type.setDebugValue(solvis, value);
+		if ( setResult == null ) {
+			setResult = new SetResult(ResultStatus.SUCCESS, value, false);
+		}
+		return setResult;
 	}
 
 	@Override
@@ -90,6 +109,11 @@ public enum Strategy implements IType {
 		return this.type.isNumeric();
 	}
 
+	@Override
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final int divisor) throws TypeException {
+		return this.type.interpretSetData(singleData, divisor);
+	}
+
 	private static class Integer implements IType {
 		private final boolean signed;
 
@@ -128,6 +152,22 @@ public enum Strategy implements IType {
 			return true;
 		}
 
+		@Override
+		public SingleData<?> interpretSetData(final SingleData<?> singleData, final int divisor) throws TypeException {
+			SingleData<?> value = SolvisDataHelper.toValue(singleData);
+			
+			if (value != null ) {
+				return new IntegerValue((int) Math.round(value.getDouble() * divisor), -1l);
+			} else {
+				return null;
+			}
+		}
+		
+		@Override
+		public SetResult setDebugValue(Solvis solvis, SingleData<?> value) {
+			return null;
+		}
+
 	}
 
 	private static class Boolean implements IType {
@@ -157,9 +197,22 @@ public enum Strategy implements IType {
 			return false;
 		}
 
+		@Override
+		public SingleData<?> interpretSetData(final SingleData<?> singleData, final int divisor) throws TypeException {
+			return SolvisDataHelper.toBoolean(singleData);
+		}
+
+		@Override
+		public SetResult setDebugValue(Solvis solvis, SingleData<?> value) {
+			return null;
+		}
+
 	}
 
 	private static class Date implements IType {
+
+		private static final String DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss";
+		private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_STRING);
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data,
@@ -218,6 +271,31 @@ public enum Strategy implements IType {
 		@Override
 		public boolean isNumeric() {
 			return false;
+		}
+
+		@Override
+		public SingleData<?> interpretSetData(final SingleData<?> singleData, final int divisor) throws TypeException {
+			if (singleData instanceof StringData) {
+				java.util.Date date = null;
+				try {
+					date = DATE_FORMAT.parse(singleData.toString());
+				} catch (ParseException e) {
+
+				}
+				if (date == null) {
+					throw new TypeException("Format error, the Date format must be \"" + DATE_FORMAT_STRING + "\".");
+				}
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(date);
+
+				return new DateValue( calendar, singleData.getTimeStamp());
+			}
+			return null;
+		}
+
+		@Override
+		public SetResult setDebugValue(Solvis solvis, SingleData<?> value) {
+			return null;
 		}
 	}
 

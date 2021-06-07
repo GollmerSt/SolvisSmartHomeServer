@@ -126,6 +126,9 @@ public class Standby {
 			for (Map.Entry<String, String> entry : Standby.this.standbyChannels.entrySet()) {
 				ChannelDescription description = solvis.getChannelDescription(entry.getKey());
 				if (description != null) {
+					if ( !description.isWriteable() ) {
+						throw new TypeException("Channel <" + description + "> isn't writable.");
+					}
 					SingleData<?> data = description.interpretSetData(new StringData(entry.getValue(), -1L));
 					SolvisData solvisData = solvis.getAllSolvisData().get(description);
 					StandbyChannel channel = new StandbyChannel(solvis, solvisData, data);
