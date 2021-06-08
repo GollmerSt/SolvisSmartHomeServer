@@ -68,6 +68,19 @@ Version 01.04.00
                 Smarthome-System, auch dann, wenn sie nicht verändert wurden. Bisher erfolgte das
                 nur bei Änderungen.
                 
+    05.06.2021  Bugfix: Auch wenn das Nachheizen nicht erforderlich war und einen Gui-Ansteuerung
+                nicht erforderlich war, erfolgte ein Gui-Zugriff.
+                
+    06.06.2021  SolvisState CONTROL_MONITORING ergänzt. Dieser Status wird dann gemeldet, wenn ein
+                Gui-Monitoring beginnt.
+                
+    07.06.2021  DebugChannel-Command hinzugefügt. Auf diese Weise kann man zum Deuggen der
+                SmartHome-System-Anwendung gezielt Analgen-Zustände simulieren, ohne dass man die
+                Anlage selber in den Zustand bringen muss.
+                
+    08.06.2021  Reheating-Strategy mittels vereinfacht. DebugChannel wirkt nin auch auf diese
+                Strategy.  
+                
 
 
 Version 01.03.00
