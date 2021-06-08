@@ -68,14 +68,14 @@ public class CommandControl extends Command {
 	/**
 	 * 
 	 * @param description
-	 * @param setRealValue	Wert vom SmartHome-System (kein interner Wert)
+	 * @param setRealValue Wert vom SmartHome-System (kein interner Wert)
 	 * @param solvis
 	 * @throws TypeException
 	 */
 	public CommandControl(final ChannelDescription description, final SingleData<?> setRealValue, final Solvis solvis)
 			throws TypeException {
 		this(description, solvis, null);
-		this.setValue = description.interpretSetData(setRealValue);
+		this.setValue = description.interpretSetData(setRealValue, false);
 		this.write = true;
 	}
 
@@ -208,7 +208,7 @@ public class CommandControl extends Command {
 			}
 		}
 	}
-	
+
 	@Override
 	public ResultStatus preExecute(Solvis solvis, QueueStatus queueStatus) throws IOException, TerminationException {
 
@@ -230,8 +230,6 @@ public class CommandControl extends Command {
 
 		return null;
 	}
-
-
 
 	@Override
 	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus)

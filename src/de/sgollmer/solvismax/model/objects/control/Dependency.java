@@ -90,7 +90,7 @@ public class Dependency implements IAssigner {
 	public SingleData<?> getData(final Solvis solvis) {
 		ChannelDescription description = this.getChannelDescription(solvis);
 		try {
-			return description.interpretSetData(new StringData(this.value, -1L));
+			return description.interpretSetData(new StringData(this.value, -1L), false);
 		} catch (TypeException e) {
 		}
 		return null;
@@ -111,7 +111,7 @@ public class Dependency implements IAssigner {
 						throw new XmlException("Error in control.xml, invalid dependency channel <" + cd.getId()
 								+ ">. Channel isn' writable.");
 					}
-					cd.interpretSetData(new StringData(this.value, -1L));
+					cd.interpretSetData(new StringData(this.value, -1L), false);
 				} catch (TypeException e) {
 					throw new XmlException("Error in control.xml, invalid dependency value <" + this.value
 							+ "> defined for channel <" + cd.getId() + ">.");

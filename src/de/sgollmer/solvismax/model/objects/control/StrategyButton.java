@@ -120,7 +120,7 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public BooleanValue interpretSetData(final SingleData<?> singleData) throws TypeException {
+	public BooleanValue interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
 		return SolvisDataHelper.toBoolean(singleData);
 	}
 
@@ -178,11 +178,6 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(final String value, final long timeStamp) {
-		return new BooleanValue(Boolean.parseBoolean(value), timeStamp);
-	}
-
-	@Override
 	public List<? extends IMode<?>> getModes() {
 		return null;
 	}
@@ -209,6 +204,12 @@ public class StrategyButton implements IStrategy {
 	@Override
 	public SetResult setDebugValue(Solvis solvis, SingleData<?> value) {
 		return new SetResult(ResultStatus.SUCCESS, value, false);
+	}
+
+	@Override
+	public void instantiate(Solvis solvis) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

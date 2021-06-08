@@ -67,11 +67,11 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	/**
 	 * 
-	 * @param realData	Datum, wie es auf der Smarthome-Seite dargestellt wird
+	 * @param realData Datum, wie es auf der Smarthome-Seite dargestellt wird
 	 * @return
 	 * @throws TypeException
 	 */
-	public SingleData<?> interpretSetData(final SingleData<?> realData) throws TypeException;
+	public SingleData<?> interpretSetData(final SingleData<?> realData, final boolean debug) throws TypeException;
 
 	public boolean isWriteable();
 

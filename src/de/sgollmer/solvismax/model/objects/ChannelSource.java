@@ -7,9 +7,6 @@
 
 package de.sgollmer.solvismax.model.objects;
 
-import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.model.objects.data.SingleData;
-
 public abstract class ChannelSource implements IChannelSource {
 
 	protected ChannelDescription description;
@@ -32,8 +29,6 @@ public abstract class ChannelSource implements IChannelSource {
 	public boolean isHumanAccessDependend() {
 		return false;
 	}
-
-	protected abstract SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException;
 
 	public boolean isGlitchDetectionAllowed() {
 		return true;

@@ -16,17 +16,23 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 import de.sgollmer.solvismax.model.objects.backup.SystemBackup;
+import de.sgollmer.solvismax.model.objects.data.IMode;
+import de.sgollmer.solvismax.model.objects.data.ModeValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 
 public class AllSolvisData extends Observable<SmartHomeData> {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(AllSolvisData.class);
 
 	private final Solvis solvis;
 
@@ -155,8 +161,25 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 				SolvisData data = this.get(value.getId());
 				if (data != null) {
 
-					SingleData<?> single = ((Measurement) value).getData().clone(backup.getTimeOfLastBackup());
-					data.setSingleData(single, backup);
+					Measurement measurement = (Measurement) value;
+
+					SingleData<?> singleData = measurement.getData();
+
+					if (singleData instanceof ModeValue) {
+						String name = ((ModeValue<?>) singleData).get().getName();
+						IMode<?> mode = data.getDescription().getMode(name);
+						if (mode == null) {
+							logger.error("Mode name <" + name + "> not defined. Setting by backup ignored.");
+							singleData = null;
+						} else {
+							singleData = mode.create(backup.getTimeOfLastBackup());
+						}
+					}
+
+					if (singleData != null) {
+						SingleData<?> single = singleData.clone(backup.getTimeOfLastBackup());
+						data.setSingleData(single, backup);
+					}
 				}
 			}
 		}

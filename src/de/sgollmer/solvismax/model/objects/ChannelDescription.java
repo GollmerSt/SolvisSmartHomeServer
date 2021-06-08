@@ -248,6 +248,17 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.getModes();
 	}
 
+	public IMode<?> getMode(String name) {
+		if (this.getModes() != null) {
+			for (IMode<?> mode : this.getModes()) {
+				if (mode.getName().equals(name)) {
+					return mode;
+				}
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public UpperLowerStep getUpperLowerStep() {
 		return this.channelSource.getUpperLowerStep();
@@ -272,8 +283,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		return this.channelSource.interpretSetData(singleData);
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
+		return this.channelSource.interpretSetData(singleData, debug);
 	}
 
 	@Override

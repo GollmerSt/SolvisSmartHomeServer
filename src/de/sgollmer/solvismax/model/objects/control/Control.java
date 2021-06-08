@@ -197,6 +197,8 @@ public class Control extends ChannelSource {
 		if (this.updateStrategies != null) {
 			this.updateStrategies.instantiate(solvis);
 		}
+
+		this.strategy.instantiate(solvis);
 		return null;
 	}
 
@@ -372,8 +374,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		return this.strategy.interpretSetData(singleData);
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
+		return this.strategy.interpretSetData(singleData, debug);
 	}
 
 	static class GuiAccess implements IAssigner, IControlAccess {
@@ -514,11 +516,6 @@ public class Control extends ChannelSource {
 			return this.guiAccess.restoreChannel.get(solvis);
 		}
 		return null;
-	}
-
-	@Override
-	protected SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException {
-		return this.strategy.createSingleData(value, timeStamp);
 	}
 
 	@Override

@@ -122,7 +122,7 @@ final class Callback implements MqttCallbackExtended {
 									"Error: Channel <" + subscribeData.getChannelId() + "> not writable.", unit);
 							return;
 						}
-						data = solvisData.getDescription().interpretSetData(new StringData(string, timeStamp));
+						data = solvisData.getDescription().interpretSetData(new StringData(string, timeStamp), false);
 					} catch (TypeException e) {
 						this.mqtt.publishError(subscribeData.getClientId(), "Error: Value error, value: " + string,
 								unit);

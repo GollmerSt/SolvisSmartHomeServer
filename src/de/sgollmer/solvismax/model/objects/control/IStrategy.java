@@ -47,16 +47,16 @@ public interface IStrategy extends IAssigner {
 
 	boolean learn(final Solvis solvis, final IControlAccess controlAccess) throws IOException, TerminationException;
 
-	SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException;
+	SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException;
 
 	boolean isBoolean();
-
-	SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException;
 
 	String getCsvMeta(final String column, final boolean semicolon);
 
 	void setControl(final Control control);
 
 	SetResult setDebugValue(final Solvis solvis, final SingleData<?> value) throws TypeException;
+
+	void instantiate(Solvis solvis);
 
 }

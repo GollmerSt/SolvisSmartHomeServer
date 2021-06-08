@@ -32,5 +32,13 @@ public class CommandSetQueuePriority extends Command {
 	protected void notExecuted() {
 
 	}
+	
+	@Override
+	public String toString() {
+		return "QueuePriority " + (this.priority==null ? "cleared" : " will be set to " + this.priority);
+
+	}
+
+
 
 }

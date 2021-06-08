@@ -268,17 +268,16 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		return this.type.interpretSetData(singleData, this.divisor);
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
+		if (debug) {
+			return this.type.interpretSetData(singleData, this.divisor);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public ChannelDescription getRestoreChannel(final Solvis solvis) {
-		return null;
-	}
-
-	@Override
-	protected SingleData<?> createSingleData(final String value, final long timeStamp) {
 		return null;
 	}
 
@@ -296,8 +295,8 @@ public class Measurement extends ChannelSource {
 		public boolean isBoolean();
 
 		public boolean validate(final Collection<Field> fields);
-		
-		public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value) ;
+
+		public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value);
 
 	}
 

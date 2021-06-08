@@ -383,7 +383,7 @@ public class CommandHandler {
 
 		if (enable) {
 
-			SingleData<?> singleData = description.interpretSetData(new StringData(parts[1].trim(), -1L));
+			SingleData<?> singleData = description.interpretSetData(new StringData(parts[1].trim(), -1L), true);
 			SetResult setResult = description.setDebugValue(solvis, singleData);
 			if (setResult == null || !setResult.getStatus().isExecuted()) {
 				logger.error("Set of channel <" + description.getId() + "> not successfull. Aborted.");

@@ -367,15 +367,6 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException {
-		try {
-			return new IntegerValue(Integer.parseInt(value), timeStamp);
-		} catch (NumberFormatException e) {
-			throw new TypeException(e);
-		}
-	}
-
-	@Override
 	public String getCsvMeta(final String column, final boolean semicolon) {
 
 		String csv = null;

@@ -169,7 +169,7 @@ public class Calculation extends ChannelSource {
 
 	@Override
 	public Collection<? extends IMode<?>> getModes() {
-		return null;
+		return this.strategy.getModes();
 	}
 
 	@Override
@@ -183,17 +183,16 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		return this.strategy.interpretSetData(singleData);
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
+		if (debug) {
+			return this.strategy.interpretSetData(singleData);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public ChannelDescription getRestoreChannel(final Solvis solvis) {
-		return null;
-	}
-
-	@Override
-	protected SingleData<?> createSingleData(final String value, final long timeStamp) {
 		return null;
 	}
 

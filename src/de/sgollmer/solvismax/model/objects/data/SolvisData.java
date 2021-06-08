@@ -329,7 +329,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public void setFixData(final SingleData<?> data) throws TypeException {
-		this.data = this.getDescription().interpretSetData(data);
+		this.data = this.getDescription().interpretSetData(data, false);
 		this.fix = true;
 	}
 

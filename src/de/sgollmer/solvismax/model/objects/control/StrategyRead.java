@@ -165,11 +165,11 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
+
 		SingleData<?> value = SolvisDataHelper.toValue(singleData);
-		
-		if (value != null ) {
+
+		if (value != null) {
 			return new IntegerValue((int) Math.round(value.getDouble() * this.divisor), -1l);
 		} else {
 			return null;
@@ -233,11 +233,6 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException {
-		return null;
-	}
-
-	@Override
 	public String getCsvMeta(final String column, final boolean semicolon) {
 		switch (column) {
 			case Csv.DIVISOR:
@@ -254,6 +249,12 @@ public class StrategyRead implements IStrategy {
 	@Override
 	public SetResult setDebugValue(Solvis solvis, SingleData<?> value) throws TypeException {
 		return new SetResult(ResultStatus.SUCCESS, value, false);
+	}
+
+	@Override
+	public void instantiate(Solvis solvis) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

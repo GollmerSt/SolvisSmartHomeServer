@@ -323,12 +323,13 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData) throws TypeException {
-		return this.interpretSetData(singleData.toString(), singleData.getTimeStamp());
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
+		return this.interpretSetData(singleData.toString(), singleData.getTimeStamp(), debug);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private SingleData<?> interpretSetData(final String value, final long timeStamp) throws TypeException {
+	private SingleData<?> interpretSetData(final String value, final long timeStamp, final boolean debug)
+			throws TypeException {
 		return SolvisDataHelper.toMode(value, timeStamp, (Collection) this.getModes());
 	}
 
@@ -344,11 +345,6 @@ public class StrategyMode implements IStrategy {
 	@Override
 	public boolean isBoolean() {
 		return false;
-	}
-
-	@Override
-	public SingleData<?> createSingleData(final String value, final long timeStamp) throws TypeException {
-		return this.interpretSetData(value, timeStamp);
 	}
 
 	@Override
@@ -381,6 +377,12 @@ public class StrategyMode implements IStrategy {
 	@Override
 	public SetResult setDebugValue(Solvis solvis, SingleData<?> value) {
 		return new SetResult(ResultStatus.SUCCESS, value, false);
+	}
+
+	@Override
+	public void instantiate(Solvis solvis) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
