@@ -282,7 +282,7 @@ public enum TopicType {
 				SmartHomeData smartHomeData = data.getSmartHomeData();
 				if (smartHomeData != null && !data.isDontSend()) {
 					String name = smartHomeData.getMqttName();
-					String comment = this.getComment().replace("{}", "\"" + name + "\"");
+					String comment = this.getComment().replace("{}", "<" + name + ">");
 					String[] parts = this.getTopicParts(instances, solvis, name);
 					String[] baseParts = this.getTopicParts(instances, solvis, name, true);
 					topicData = new TopicData(getTopic(parts), parts, baseParts, this.suffix, this.isPublish(),

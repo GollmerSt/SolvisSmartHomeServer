@@ -372,5 +372,9 @@ public class Helper {
 
 		return new Times(now, calendar.getTimeInMillis());
 	}
+	
+	public static String escaping(String text) {
+		return text.replace("\"", "\\\"");
+	}
 
 }

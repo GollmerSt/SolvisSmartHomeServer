@@ -15,6 +15,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.mqtt.TopicType;
 import de.sgollmer.solvismax.connection.mqtt.TopicType.TopicData;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
@@ -116,7 +117,7 @@ public class IoBroker {
 		String writeString = Boolean.toString(!topic.isPublish());
 		String readString = Boolean.toString(topic.isPublish());
 		String ioBrokerPathWInterface = this.catWithSeparator(true, topic.getBaseParts(), topic.getSuffix(), '.');
-		String serverTopic = this.catWithSeparator(false, topic.getParts(),null, '/');
+		String serverTopic = this.catWithSeparator(false, topic.getParts(), null, '/');
 
 		if (!this.first) {
 			writer.append(",\n");
@@ -139,7 +140,9 @@ public class IoBroker {
 		writer.append("      \"write\": ");
 		writer.append(writeString);
 		writer.append(",\n");
-		writer.append("      \"desc\": \"created from SolvisSmartHomeServer\",\n");
+		writer.append("      \"desc\": \"");
+		writer.append(Helper.escaping(topic.getComment()));
+		writer.append("\",\n");
 		writer.append("      \"custom\": {\n");
 		writer.append("        \"");
 		writer.append(this.mqttInterface);
