@@ -351,7 +351,7 @@ public class ErrorDetection {
 					try {
 						error = data.getBool() == condition.getErrorValue();
 					} catch (TypeException e) {
-						logger.error("Type error, update ignored", e);
+						logger.error("TopicType error, update ignored", e);
 						return;
 					}
 					data.getSolvis().getSolvisState().setError(error, data.getDescription());

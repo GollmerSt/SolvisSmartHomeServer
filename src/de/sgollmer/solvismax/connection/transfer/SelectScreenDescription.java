@@ -19,7 +19,7 @@ public class SelectScreenDescription extends Element {
 		Element writeableElement = new Element("Writeable", new SingleValue(new BooleanValue(false, -1L)));
 		frame.add(writeableElement);
 
-		Element typeElement = new Element("Type", new SingleValue("SelectScreen"));
+		Element typeElement = new Element("TopicType", new SingleValue("SelectScreen"));
 		frame.add(typeElement);
 
 	}

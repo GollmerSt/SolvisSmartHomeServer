@@ -1,4 +1,4 @@
-package de.sgollmer.solvismax.model.objects.csv;
+package de.sgollmer.solvismax.smarthome;
 
 import java.util.Collection;
 import java.util.Iterator;

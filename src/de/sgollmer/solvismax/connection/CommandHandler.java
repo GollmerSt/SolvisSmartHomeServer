@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.regex.Matcher;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -126,7 +127,7 @@ public class CommandHandler {
 		Solvis solvis = null;
 
 		if (!command.isGeneral()) {
-			assignments = this.get(client);
+			assignments = this.get(client, true);
 			if (assignments == null) {
 				client.sendCommandError("Client id unknown");
 				client.closeDelayed();
@@ -181,11 +182,8 @@ public class CommandHandler {
 			case TERMINATE:
 				this.terminate(false);
 				break;
-			case DEBUG_ENABLE:
-				Constants.Debug.DEBUG = true;
-				break;
-			case DEBUG_DISABLE:
-				Constants.Debug.DEBUG = false;
+			case DEBUG_CLEAR:
+				assignments.debugClear(solvis);
 				break;
 			case LOG_STANDARD:
 				LogManager.getInstance().setBufferedMessages(false);
@@ -207,7 +205,7 @@ public class CommandHandler {
 		ClientAssignments assignments = null;
 		Solvis solvis = null;
 
-		assignments = this.get(client);
+		assignments = this.get(client, true);
 		if (assignments == null) {
 			client.sendCommandError("Client id unknown");
 			client.closeDelayed();
@@ -250,7 +248,7 @@ public class CommandHandler {
 	private void clientOnline(final IReceivedData receivedData, IClient client) {
 		boolean online = (Boolean) receivedData.getSingleData().get();
 		synchronized (this) {
-			ClientAssignments assignments = this.get(client);
+			ClientAssignments assignments = this.get(client, false);
 			if (online) {
 				if (assignments != null) {
 					assignments.reconnected(client);
@@ -301,7 +299,7 @@ public class CommandHandler {
 		String clientId = (String) receivedData.getSingleData().get();
 		((Client) client).setClientId(clientId);
 		synchronized (this) {
-			ClientAssignments assignments = this.get(client);
+			ClientAssignments assignments = this.get(client, false);
 			if (assignments != null) {
 				Solvis solvis = assignments.getSolvis();
 				((Client) client).setSolvis(solvis);
@@ -339,7 +337,7 @@ public class CommandHandler {
 			return;
 		}
 
-		ClientAssignments assignments = this.get(client);
+		ClientAssignments assignments = this.get(client, false);
 		Solvis solvis = client.getSolvis();
 		this.unregister(assignments);
 		((Client) client).close();
@@ -373,6 +371,13 @@ public class CommandHandler {
 		String name = parts[0].trim();
 
 		Solvis solvis = receivedData.getSolvis();
+
+		Matcher matcher = Constants.Mqtt.CHANNEL_NAME_FROM.matcher(name);
+
+		if (matcher.matches() && matcher.groupCount() == 2) {
+			name = matcher.group(1) + '.' + matcher.group(2);
+		}
+
 		SolvisData data = solvis.getAllSolvisData().getByName(name);
 		if (data == null) {
 			client.sendCommandError("Debug channel command, channel <" + name + "> not found. Ignored.");
@@ -452,16 +457,21 @@ public class CommandHandler {
 		}
 	}
 
-	private synchronized ClientAssignments get(final IClient client) {
+	private synchronized ClientAssignments get(final IClient client, boolean enableNew) {
+		ClientAssignments result = null;
 		for (ClientAssignments assignments : this.clients) {
 			IClient cmp = assignments.getClient();
 			if (cmp == null) {
 				logger.error("Error in client list. Client not defined");
 			} else if (assignments.getClient().equals(client)) {
-				return assignments;
+				result = assignments;
+				break;
 			}
 		}
-		return null;
+		if (enableNew && result == null && !client.identificationNecessary()) {
+			result = new ClientAssignments(this, client);
+		}
+		return result;
 	}
 
 	private synchronized ClientAssignments unregister(final ClientAssignments assignments)
@@ -503,7 +513,7 @@ public class CommandHandler {
 	}
 
 	synchronized void clientClosed(final Client client) {
-		ClientAssignments assignments = this.get(client);
+		ClientAssignments assignments = this.get(client, false);
 		if (assignments != null) {
 			this.clientClosed(assignments);
 		}

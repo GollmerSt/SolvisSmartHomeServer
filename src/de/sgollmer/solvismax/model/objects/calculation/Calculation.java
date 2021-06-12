@@ -225,4 +225,9 @@ public class Calculation extends ChannelSource {
 		return this.strategy.getCsvMeta(column, semicolon);
 	}
 
+	@Override
+	public boolean mustPolling() {
+		return false;
+	}
+
 }

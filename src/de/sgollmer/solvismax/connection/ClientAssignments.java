@@ -95,12 +95,17 @@ public class ClientAssignments {
 			this.controlEnable = controlEnable;
 		}
 	}
-
-	void enableControlCommands(final Solvis solvis, final boolean enable) throws ClientAssignmentException {
+	
+	private State getStateAndCheck( Solvis solvis) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
 		}
+		return state;
+	}
+
+	void enableControlCommands(final Solvis solvis, final boolean enable) throws ClientAssignmentException {
+		State state = this.getStateAndCheck(solvis);
 		if (enable != state.isControlEnable()) {
 			state.setControlEnable(enable);
 			this.commandHandler.handleControlEnable(solvis);
@@ -109,18 +114,12 @@ public class ClientAssignments {
 	}
 
 	void screenRestoreEnable(final Solvis solvis, final boolean enable) throws ClientAssignmentException {
-		State state = this.getState(solvis);
-		if (state == null) {
-			throw new ClientAssignmentException("Error: Client assignment error");
-		}
+		State state = this.getStateAndCheck(solvis);
 		solvis.execute(new CommandScreenRestore(enable, state));
 	}
 
 	void optimizationEnable(final Solvis solvis, final boolean enable) throws ClientAssignmentException {
-		State state = this.getState(solvis);
-		if (state == null) {
-			throw new ClientAssignmentException("Error: Client assignment error");
-		}
+		State state = this.getStateAndCheck(solvis);
 		if (enable != state.isOptimizationEnable()) {
 			this.getState().setOptimizationEnable(enable);
 			solvis.commandOptimization(enable);
@@ -136,18 +135,12 @@ public class ClientAssignments {
 	}
 
 	void serviceReset(final Solvis solvis) throws ClientAssignmentException {
-		State state = this.getState(solvis);
-		if (state == null) {
-			throw new ClientAssignmentException("Error: Client assignment error");
-		}
+		this.getStateAndCheck(solvis);
 		solvis.serviceReset();
 	}
 
 	void updateControlChannels(final Solvis solvis) throws ClientAssignmentException {
-		State state = this.getState(solvis);
-		if (state == null) {
-			throw new ClientAssignmentException("Error: Client assignment error");
-		}
+		this.getStateAndCheck(solvis);
 		solvis.updateReadOnlyControlChannels();
 
 	}
@@ -165,5 +158,11 @@ public class ClientAssignments {
 			return this.getState(solvis).controlEnable;
 		}
 		return null;
+	}
+
+	public void debugClear(Solvis solvis) throws ClientAssignmentException {
+		this.getStateAndCheck(solvis);
+		solvis.getAllSolvisData().debugClear();
+		solvis.updateControlChannels();
 	}
 }

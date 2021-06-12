@@ -15,12 +15,12 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 class SubscribeData implements IReceivedData {
 	private final String clientId;
 	private final String unitId;
-	final SubscribeType type;
+	final TopicType type;
 	private final String channelId;
 	private Solvis solvis;
 	private SingleData<?> value;
 
-	SubscribeData(final String clientId, final String unitId, final String channelId, final SubscribeType type) {
+	SubscribeData(final String clientId, final String unitId, final String channelId, final TopicType type) {
 		this.clientId = clientId;
 		this.unitId = unitId;
 		this.type = type;

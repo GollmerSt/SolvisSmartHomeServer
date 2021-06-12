@@ -263,6 +263,11 @@ public class Server {
 			this.solvis = solvis;
 		}
 
+		@Override
+		public boolean identificationNecessary() {
+			return true;
+		}
+
 	}
 
 	public void start() {

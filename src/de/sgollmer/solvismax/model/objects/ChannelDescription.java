@@ -113,6 +113,11 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	public boolean isWriteable() {
 		return this.channelSource.isWriteable();
 	}
+	
+	@Override
+	public boolean mustPolling() {
+		return this.channelSource.mustPolling();
+	}
 
 	@Override
 	public boolean isAverage() {

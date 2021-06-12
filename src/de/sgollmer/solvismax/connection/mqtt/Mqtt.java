@@ -56,11 +56,15 @@ public class Mqtt {
 
 	private final boolean enable;
 	private final String brokerUrl;
+	/**
+	 * Only to generate the mqtt documentation
+	 */
 	private final int port;
 	final String userName;
 	final CryptAes passwordCrypt;
 	final String topicPrefix;
 	private final String idPrefix;
+	private final String smartHomeId;
 	final int publishQoS;
 	final int subscribeQoS;
 	final Ssl ssl;
@@ -71,8 +75,8 @@ public class Mqtt {
 	private final MqttQueue mqttQueue;
 
 	private Mqtt(final boolean enable, final String brokerUrl, final int port, final String userName,
-			final CryptAes passwordCrypt, final String topicPrefix, final String idPrefix, final int publishQoS,
-			final int subscribeQoS, final Ssl ssl) {
+			final CryptAes passwordCrypt, final String topicPrefix, final String idPrefix, final String smartHomeId,
+			final int publishQoS, final int subscribeQoS, final Ssl ssl) {
 		this.enable = enable;
 		this.brokerUrl = brokerUrl;
 		this.port = port;
@@ -80,6 +84,7 @@ public class Mqtt {
 		this.passwordCrypt = passwordCrypt;
 		this.topicPrefix = topicPrefix;
 		this.idPrefix = idPrefix;
+		this.smartHomeId = smartHomeId;
 		this.publishQoS = publishQoS;
 		this.subscribeQoS = subscribeQoS;
 		this.ssl = ssl;
@@ -97,6 +102,7 @@ public class Mqtt {
 		private final CryptAes passwordCrypt = new CryptAes();
 		private String topicPrefix;
 		private String idPrefix;
+		private String smartHomeId = null;
 		private int publishQoS;
 		private int subscribeQoS;
 		private Ssl ssl;
@@ -130,6 +136,9 @@ public class Mqtt {
 					case "idPrefix":
 						this.idPrefix = value;
 						break;
+					case "smartHomeId":
+						this.smartHomeId = value;
+						break;
 					case "publishQoS":
 						this.publishQoS = Integer.parseInt(value);
 						break;
@@ -152,7 +161,7 @@ public class Mqtt {
 		@Override
 		public Mqtt create() throws XmlException, IOException {
 			return new Mqtt(this.enable, this.brokerUrl, this.port, this.userName, this.passwordCrypt, this.topicPrefix,
-					this.idPrefix, this.publishQoS, this.subscribeQoS, this.ssl);
+					this.idPrefix, this.smartHomeId, this.publishQoS, this.subscribeQoS, this.ssl);
 		}
 
 		@Override
@@ -301,7 +310,7 @@ public class Mqtt {
 		}
 		String clientId = partsWoPrefix[0];
 
-		SubscribeType type = SubscribeType.get(partsWoPrefix);
+		TopicType type = TopicType.get(partsWoPrefix);
 		if (type == null) {
 			throw new MqttInterfaceException("Error: MQTT topic unknown <" + topic + ">.");
 		}
@@ -338,7 +347,7 @@ public class Mqtt {
 		}
 	}
 
-	private static String formatChannelIn(final String mqttChannelId) {
+	public static String formatChannelIn(final String mqttChannelId) {
 		String channelId = mqttChannelId.replace(':', '.');
 		return channelId;
 	}
@@ -356,7 +365,7 @@ public class Mqtt {
 	}
 
 	public static String formatServerMetaTopic() {
-		return Constants.Mqtt.SERVER_PREFIX + '/' + Constants.Mqtt.META_SUFFIX;
+		return Constants.Mqtt.SERVER + '/' + Constants.Mqtt.META_SUFFIX;
 	}
 
 	public static String formatScreenMetaTopic() {
@@ -379,12 +388,11 @@ public class Mqtt {
 
 		@Override
 		public void send(final ISendData sendData) {
-			logger.error("Unexpected using of iClient");
+			logger.error("Unexpected using of IClient");
 		}
 
 		@Override
 		public void closeDelayed() {
-			logger.error("Unexpected using of iClient");
 		}
 
 		@Override
@@ -418,7 +426,12 @@ public class Mqtt {
 
 		@Override
 		public void close() {
-			logger.error("Unexpected using of iClient");
+			logger.error("Unexpected using of IClient");
+		}
+
+		@Override
+		public boolean identificationNecessary() {
+			return false;
 		}
 
 	}
@@ -441,5 +454,13 @@ public class Mqtt {
 
 	public String getTopicPrefix() {
 		return this.topicPrefix;
+	}
+
+	public String getSmartHomeId() {
+		return this.smartHomeId;
+	}
+
+	public boolean isEnable() {
+		return this.enable;
 	}
 }

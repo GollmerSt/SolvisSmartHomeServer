@@ -17,6 +17,7 @@ import javax.xml.stream.XMLStreamException;
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.SolvisConnection;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.FileException;
@@ -25,17 +26,17 @@ import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.FileHelper;
-import de.sgollmer.solvismax.iobroker.IoBroker;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
 import de.sgollmer.solvismax.model.objects.ErrorDetection.WriteErrorScreens;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.backup.BackupHandler;
-import de.sgollmer.solvismax.model.objects.csv.Csv;
-import de.sgollmer.solvismax.model.objects.csv.MaskIterator;
-import de.sgollmer.solvismax.model.objects.csv.MaskIterator.OneConfiguration;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
+import de.sgollmer.solvismax.smarthome.Csv;
+import de.sgollmer.solvismax.smarthome.IoBroker;
+import de.sgollmer.solvismax.smarthome.MaskIterator;
+import de.sgollmer.solvismax.smarthome.MaskIterator.OneConfiguration;
 import de.sgollmer.solvismax.xml.ControlFileReader;
 import de.sgollmer.solvismax.xml.ControlFileReader.Hashes;
 import de.sgollmer.solvismax.xml.GraficFileHandler;
@@ -156,6 +157,8 @@ public class Instances {
 			csv.outCommentHeader(unit, solvis.getConfigurationMask(), unit.getComment());
 			csv.out(solvis, Constants.Csv.HEADER);
 			csv.screensOut(solvis);
+			if ( this.baseData.getMqtt() != null && this.baseData.getMqtt().isEnable()) {
+			csv.mqttTopicsOut(this);}
 		}
 
 		csv.close();
@@ -185,8 +188,8 @@ public class Instances {
 				misc.getPowerOffDetectedAfterTimeout_ms(), unit.isFwLth2_21_02A());
 		String timeZone = this.baseData.getTimeZone();
 		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId(), this.xmlHash),
-				connection, this.backupHandler, timeZone, this.baseData.getEchoInhibitTime_ms(), this.writeablePath,
-				mustLearn);
+				connection, this.baseData.getMqtt(), this.backupHandler, timeZone,
+				this.baseData.getEchoInhibitTime_ms(), this.writeablePath, mustLearn);
 		if (this.baseData.getExceptionMail() != null && solvis.getFeatures().isSendMailOnError()) {
 			solvis.registerSolvisErrorObserver(this.baseData.getExceptionMail());
 		}
@@ -240,5 +243,9 @@ public class Instances {
 
 	public IoBroker getIobroker() {
 		return this.baseData.getIoBroker();
+	}
+
+	public Mqtt getMqtt() {
+		return this.baseData.getMqtt();
 	}
 }

@@ -14,14 +14,13 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.SolvisDataHelper;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.data.DateValue;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -233,12 +232,6 @@ public enum Strategy implements IType {
 			calendar.set(year, month, date, hour, minute, second);
 
 			Calendar old = destin.getDate();
-
-			boolean debug = Constants.Debug.isSolvisTimeFixed();
-
-			if (old != null && debug) {
-				calendar = old;
-			}
 
 			int measurementsInterval = destin.getScanInterval_ms();
 

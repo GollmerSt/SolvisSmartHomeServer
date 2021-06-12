@@ -150,4 +150,6 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	}
 
 	public String getCsvMeta(final String column, final boolean semicolon);
+
+	boolean mustPolling();
 }

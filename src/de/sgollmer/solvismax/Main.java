@@ -37,12 +37,12 @@ import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
-import de.sgollmer.solvismax.iobroker.IoBroker;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.log.LogManager.LogErrors;
 import de.sgollmer.solvismax.model.Instances;
+import de.sgollmer.solvismax.smarthome.IoBroker;
 import de.sgollmer.solvismax.windows.Task;
 import de.sgollmer.solvismax.xml.BaseControlFileReader;
 import de.sgollmer.xmllibrary.XmlException;
@@ -70,8 +70,11 @@ public class Main {
 	private Mqtt mqtt = null;
 
 	private enum ExecutionMode {
-		STANDARD(true, true, false), LEARN(false, true, false), DOCUMENTATION_OF_UNIT(false, false, true),
-		CHANNELS_OF_ALL_CONFIGURATIONS(false, false, false), IOBROKER(false, false, true);
+		STANDARD(true, true, false),//
+		LEARN(false, true, false),//
+		DOCUMENTATION_OF_UNIT(false, false, true),//
+		CHANNELS_OF_ALL_CONFIGURATIONS(false, false, false),//
+		IOBROKER(false, false, true);
 
 		private final boolean start;
 		private final boolean ipChannelLock;
@@ -98,18 +101,7 @@ public class Main {
 		String baseXml = null;
 		boolean onBoot = false;
 
-		Collection<String> argCollection = new ArrayList<>();
-
-		for (String argO : args) {
-			String[] comp = argO.split("--");
-
-			for (String argI : comp) {
-				argI = argI.trim();
-				if (!argI.isEmpty()) {
-					argCollection.add("--" + argI);
-				}
-			}
-		}
+		Collection<String> argCollection = splitWindowsArgs(args);
 
 		for (Iterator<String> it = argCollection.iterator(); it.hasNext();) {
 			String arg = it.next();
@@ -127,7 +119,7 @@ public class Main {
 				boolean found = true;
 
 				switch (command) {
-					case "string-to-crypt":
+					case "string-to-crypt":		// Einen String verschlüsseln
 						if (value == null) {
 							System.err.println("To less arguments!");
 							System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
@@ -141,17 +133,17 @@ public class Main {
 							System.exit(Constants.ExitCodes.CRYPTION_FAIL);
 						}
 						break;
-					case "create-task-xml":
+					case "create-task-xml":		// Eine Steuerfile für den Windows-Task-Manager erstellen
 						if (value == null) {
 							System.err.println("To less arguments!");
 							System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
 						}
 						createTaskName = value;
 						break;
-					case "onBoot":
+					case "onBoot":				// TaskManager: Start on boot
 						onBoot = true;
 						break;
-					case "base-xml":
+					case "base-xml":			// Base-xml-Path
 						baseXml = value;
 						break;
 					default:
@@ -399,6 +391,21 @@ public class Main {
 		// runnable.run();
 
 	}
+	
+	private Collection<String> splitWindowsArgs(final String[] args) {
+		Collection<String> argCollection = new ArrayList<>();
+		for (String argO : args) {
+			String[] comp = argO.split("--");
+
+			for (String argI : comp) {
+				argI = argI.trim();
+				if (!argI.isEmpty()) {
+					argCollection.add("--" + argI);
+				}
+			}
+		}
+		return argCollection;
+	}
 
 	private void serverRestartAndExit(final BaseData baseData, final String agentlibOption) {
 		try {
@@ -466,7 +473,7 @@ public class Main {
 		if (this.commandHandler != null) {
 			this.commandHandler.abort();
 		}
-		if (this.mqtt != null) {
+		if (this.mqtt != null && this.mqtt.isEnable()) {
 			try {
 				this.mqtt.deleteRetainedTopics();
 			} catch (MqttException | MqttConnectionLost e) {

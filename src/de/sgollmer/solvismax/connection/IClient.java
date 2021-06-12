@@ -17,6 +17,8 @@ public interface IClient {
 	public void closeDelayed();
 
 	public void close();
+	
+	public boolean identificationNecessary();
 
 	public String getClientId();
 

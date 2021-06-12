@@ -87,7 +87,7 @@ final class Callback implements MqttCallbackExtended {
 				Mqtt.logger.error(e.getMessage());
 				return;
 			}
-			Mqtt.logger.info("Topic <" + topic + "> with received message: " + message.toString());
+			Mqtt.logger.info("TopicData <" + topic + "> with received message: " + message.toString());
 			Solvis solvis = null;
 			if (subscribeData.getUnitId() != null) {
 				solvis = this.mqtt.instances.getUnit(subscribeData.getUnitId());

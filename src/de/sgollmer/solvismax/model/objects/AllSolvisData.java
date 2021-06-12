@@ -100,7 +100,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 				throw new UnknownError("Unknown error: Alias <" + alias + "> is not unique!!");
 			}
 		}
-		String name = data.getChannelInstance().getName();
+		String name = data.getName();
 		if (this.solvisDatasByName.put(name, data) != null) {
 			throw new UnknownError("Unknown error: Name <" + name + "> is not unique!!");
 		}
@@ -230,6 +230,12 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 
 	public SolvisData getByName(final String name) {
 		return this.solvisDatasByName.get(name);
+	}
+
+	public void debugClear() {
+		for (SolvisData data : this.solvisDatas.values()) {
+			data.setSingleDataDebug(null);
+		}
 	}
 
 }

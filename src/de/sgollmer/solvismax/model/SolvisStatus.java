@@ -1,5 +1,9 @@
 package de.sgollmer.solvismax.model;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import de.sgollmer.solvismax.Constants;
 
 public enum SolvisStatus {
@@ -16,7 +20,7 @@ public enum SolvisStatus {
 	CONTROL_MONITORING(Constants.Mqtt.CONTROL),//
 	CONTROL_FINISHED(Constants.Mqtt.CONTROL),//
 	UNDEFINED(Constants.Mqtt.STATUS);
-
+	
 	private final String mqttPrefix;
 
 	private SolvisStatus(final String mqttPrefix) {
@@ -26,5 +30,13 @@ public enum SolvisStatus {
 
 	public String getMqttPrefix() {
 		return this.mqttPrefix;
+	}
+	
+	public static Collection< String > getMqttPrefixes() {
+		Set<String> set = new HashSet<>();
+		for ( SolvisStatus status: values()) {
+			set.add(status.mqttPrefix);
+		}
+		return set;
 	}
 }

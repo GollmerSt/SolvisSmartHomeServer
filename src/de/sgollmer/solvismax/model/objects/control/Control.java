@@ -558,4 +558,9 @@ public class Control extends ChannelSource {
 		return this.guiAccess;
 	}
 
+	@Override
+	public boolean mustPolling() {
+		return true;
+	}
+
 }

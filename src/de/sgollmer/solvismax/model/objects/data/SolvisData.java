@@ -116,9 +116,19 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return this.getDescription().getId();
 	}
 
+	public String getName() {
+		return this.getChannelInstance().getName();
+	}
+
 	public void setSingleDataDebug(final SingleData<?> debugData) {
 		this.debugData = debugData;
-		this.sendProcessing(debugData, true, false, false, null);
+		SingleData<?> data;
+		if (debugData == null) {
+			data = this.data;
+		} else {
+			data = debugData;
+		}
+		this.sendProcessing(data, true, false, false, null);
 	}
 
 	private void setData(final SingleData<?> data) {
@@ -258,12 +268,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		} else if ((data instanceof IntegerValue)) {
 			return ((IntegerValue) data).get();
 		}
-		throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
+		throw new TypeException("TypeException: TopicType actual: <" + data.getClass() + ">, target: <IntegerValue>");
 	}
 
 // TODO
 //	public Double getDouble() throws TypeException {
-//		SingleData<?> data = this.data;
+//		SingleData<?> data = this.getSingleData();
 //		if (data == null) {
 //			return null;
 //		} else if (data instanceof DoubleValue) {
@@ -276,7 +286,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 //			} else
 //				return (double) i;
 //		} else {
-//			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
+//			throw new TypeException("TypeException: TopicType actual: <" + data.getClass() + ">, target: <IntegerValue>");
 //		}
 //	}
 //
@@ -305,7 +315,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 		Helper.Boolean bool = data.getBoolean();
 		if (bool == Helper.Boolean.UNDEFINED) {
-			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
+			throw new TypeException("TypeException: TopicType actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
 		return bool;
 	}
@@ -531,7 +541,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 
 		public String getName() {
-			return this.solvisData.channelInstance.getName();
+			return this.solvisData.getName();
+		}
+
+		public String getMqttName() {
+			return Mqtt.formatChannelOut(this.solvisData.getName());
 		}
 
 		public long getTransmittedTimeStamp() {
@@ -550,8 +564,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				return null;
 			}
 			String value = this.getDescription().normalize(this.getData()).toString();
-			String name = this.solvisData.channelInstance.getName();
-			return new MqttData(this.getSolvis(), Mqtt.formatChannelOutTopic(name), value, 0, true);
+			return new MqttData(this.getSolvis(), this.getMqttName(), value, 0, true);
 		}
 
 		public SingleValue toSingleValue(final SingleData<?> data) {

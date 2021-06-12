@@ -517,12 +517,43 @@
 	</simpleType>
 
 	<complexType name="Mqtt">
-		<attribute name="enable" type="boolean" use="required"></attribute>
-		<attribute name="brokerUrl" type="tns:Url" use="required"></attribute>
-		<attribute name="port" type="int" use="required"></attribute>
-		<attribute name="userName" type="string"></attribute>
-		<attribute name="passwordCrypt" type="string"></attribute>
+		<attribute name="enable" type="boolean" use="required">
+			<annotation>
+				<documentation>
+					Aktiviert das Mqtt-Interface
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="brokerUrl" type="tns:Url" use="required">
+			<annotation>
+				<documentation>Url des Broker/Server</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="port" type="int" use="required">
+			<annotation>
+				<documentation>Port des Broker/Server</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="userName" type="string" use="optional">
+			<annotation>
+				<documentation>
+					User-Name des Broker/Server
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="passwordCrypt" type="string" use="optional">
+			<annotation>
+				<documentation>
+					Password des Broker/Server
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="topicPrefix" use="required">
+			<annotation>
+				<documentation>
+					Mqtt-Präfix des SmartHomeServer
+				</documentation>
+			</annotation>
 			<simpleType>
 				<restriction base="string">
 					<pattern value="\w+(/\w+)*"></pattern>
@@ -530,11 +561,27 @@
 			</simpleType>
 		</attribute>
 		<attribute name="idPrefix" type="string" use="required"></attribute>
+		<attribute name="smartHomeId" type="string" use="optional">
+			<annotation>
+				<documentation>smartHomeId nur zu Dokumentationszwecken. Wird bei der Generierung der MQTT-Doku benötigt.</documentation>
+			</annotation></attribute>
 		<attribute name="publishQoS" use="required"
 			type="tns:MqttQoS">
+			<annotation>
+				<documentation>
+					"Quality of service" für publish (SmartHomeServer ->
+					broker)
+				</documentation>
+			</annotation>
 		</attribute>
 		<attribute name="subscribeQoS" type="tns:MqttQoS"
 			use="required">
+			<annotation>
+				<documentation>
+					"Quality of service" für subscribe( broker ->
+					SmartHomeServer)
+				</documentation>
+			</annotation>
 		</attribute>
 	</complexType>
 
@@ -739,8 +786,7 @@
 	<complexType name="Iobroker">
 
 		<attribute name="mqttInterface" type="string" use="required"></attribute>
-		<attribute name="javascriptInterface" type="string" use="required"></attribute>
-		<attribute name="iobrokerName" type="string" use="required"></attribute>
+		<attribute name="javascriptInterface" type="string" use="required"></attribute>
 	</complexType>
 
 

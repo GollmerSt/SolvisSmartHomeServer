@@ -344,4 +344,9 @@ public class Measurement extends ChannelSource {
 		return this.type.setDebugValue(solvis, value);
 	}
 
+	@Override
+	public boolean mustPolling() {
+		return false;
+	}
+
 }

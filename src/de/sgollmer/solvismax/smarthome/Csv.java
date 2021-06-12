@@ -1,4 +1,4 @@
-package de.sgollmer.solvismax.model.objects.csv;
+package de.sgollmer.solvismax.smarthome;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,11 +9,15 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.connection.mqtt.TopicType;
+import de.sgollmer.solvismax.connection.mqtt.TopicType.TopicData;
 import de.sgollmer.solvismax.helper.FileHelper;
+import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
@@ -192,6 +196,33 @@ public class Csv {
 		this.writer.write(Constants.CRLF);
 		this.writer.write(Constants.CRLF);
 
+	}
+	
+	public void mqttTopicsOut(final Instances instances) throws IOException {
+		this.writer.append(HEADER1);
+		this.writer.append(HEADER2);
+		this.writer.write(insertInTheMiddle("Mqtt-Topics"));
+		this.writer.append(HEADER2);
+		this.writer.append(HEADER1);
+		this.writer.write(Constants.CRLF);
+		this.writer.append("topic;");
+		this.writer.write(Constants.CRLF);
+		this.writer.write(Constants.CRLF);
+		
+		Collection< TopicData> topics = TopicType.getTopicDatas(instances);
+		
+		for (TopicData topic : topics) {
+			this.writer.append(topic.getTopic());
+			this.writer.append(';');
+			this.writer.append(topic.getComment());
+			this.writer.append(';');
+			this.writer.append(Constants.CRLF);
+
+		}
+
+		this.writer.write(Constants.CRLF);
+		this.writer.write(Constants.CRLF);
+		
 	}
 
 }

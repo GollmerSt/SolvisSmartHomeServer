@@ -132,7 +132,7 @@ public class RunTime extends Strategy<RunTime> {
 					this.correctionByValue(data, source);
 					this.update(this.equipmentOn.getBool(), data.getTimeStamp());
 				} catch (TypeException e) {
-					logger.error("Type error, update ignored", e);
+					logger.error("TopicType error, update ignored", e);
 					return;
 				}
 			}
@@ -142,7 +142,7 @@ public class RunTime extends Strategy<RunTime> {
 			try {
 				this.update(data.getBool(), data.getTimeStamp());
 			} catch (TypeException e) {
-				logger.error("Type error, update ignored", e);
+				logger.error("TopicType error, update ignored", e);
 				return;
 			}
 		}
@@ -191,7 +191,7 @@ public class RunTime extends Strategy<RunTime> {
 			} catch (
 
 			TypeException e) {
-				logger.error("Type error, update ignored", e);
+				logger.error("TopicType error, update ignored", e);
 				return;
 			}
 

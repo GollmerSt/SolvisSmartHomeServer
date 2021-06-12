@@ -167,8 +167,9 @@ public class Constants {
 		public static final String DATA_SUFFIX = "data";
 		public static final String META_SUFFIX = "meta";
 		public static final String CMND_SUFFIX = "cmnd";
-		public static final String SERVER_PREFIX = "server";
+		public static final String SERVER = "server";
 		public static final String SCREEN_PREFIX = "screen";
+		public static final String DEBUG_CHANNEL_PREFIX = "debugChannel";
 		public static final String ONLINE_STATUS = "online";
 		public static final String UPDATE_SUFFIX = "update";
 		public static final String STATUS = "status";
@@ -177,33 +178,20 @@ public class Constants {
 		public static final int MAX_INFLIGHT = 200;
 		public static final int MIN_CONNECTION_REPEAT_TIME = 1000;
 		public static final int MAX_CONNECTION_REPEAT_TIME = 120000;
-		public static final String CONTROL = "settings";
-
+		public static final String CONTROL = "gui_access";
+		public static final Pattern CHANNEL_NAME_FROM = Pattern.compile("([A-Z]\\d+):(.*)");
 	}
 
 	public static class Debug {
-
-		public static boolean DEBUG = false;
 
 		public static final int USER_ACCESS_TIME = 60000;
 		public static final boolean NO_MAIL = false; // kein Mailversand
 		public static final boolean SCREEN_SAVER_DETECTION = false; // more debugging info
 		public static final boolean DEBUG_TWO_STATIONS = false;
 
-		public static final boolean SOLVIS_TIME_FIXED = false;
 		public static final boolean SOLVIS_RESULT_NULL = false;
 
-		public static final boolean CORRECTION = true;
-
 		public static final boolean BURST = false;
-
-		public static boolean isSolvisTimeFixed() {
-			return DEBUG && SOLVIS_TIME_FIXED;
-		}
-
-		public static boolean isSolvisResultNull() {
-			return DEBUG && SOLVIS_RESULT_NULL;
-		}
 
 		public static final boolean OVERWRITE_ONLY_ON_LEARN = false;
 

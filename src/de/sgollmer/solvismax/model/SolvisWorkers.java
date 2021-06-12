@@ -658,7 +658,9 @@ public class SolvisWorkers {
 	}
 
 	public SolvisStatus getSettingStatus() {
-		if (this.controlsThread.writeCnt != 0) {
+		if (this.controlsThread == null) {
+			return SolvisStatus.CONTROL_FINISHED;
+		} else if (this.controlsThread.writeCnt != 0) {
 			return SolvisStatus.CONTROL_WRITE_ONGOING;
 		} else if (this.controlsThread.readCnt != 0) {
 			return SolvisStatus.CONTROL_READ_ONGOING;

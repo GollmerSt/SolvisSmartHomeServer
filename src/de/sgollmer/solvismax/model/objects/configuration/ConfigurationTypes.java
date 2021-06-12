@@ -19,7 +19,7 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public class ConfigurationTypes {
 
-	private static final String XML_TYPE = "Type";
+	private static final String XML_TYPE = "TopicType";
 	private final Collection<Type> types;
 
 	private ConfigurationTypes(final Collection<Type> types) {

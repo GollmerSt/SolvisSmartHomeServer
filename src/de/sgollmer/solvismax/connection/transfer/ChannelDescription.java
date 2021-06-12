@@ -27,7 +27,7 @@ public class ChannelDescription extends Element {
 		frame.add(writeableElement);
 
 		String type = instance.getType().name();
-		Element typeElement = new Element("Type", new SingleValue(type));
+		Element typeElement = new Element("TopicType", new SingleValue(type));
 		frame.add(typeElement);
 
 		String unitString = instance.getUnit();

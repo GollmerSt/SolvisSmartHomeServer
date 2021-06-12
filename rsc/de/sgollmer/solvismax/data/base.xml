@@ -132,7 +132,7 @@
 	</tns:Units>
 	<tns:Mqtt enable="false" brokerUrl="192.168.0.71" port="1883"
 		subscribeQoS="1" publishQoS="1" idPrefix="SolvisSmartHomeServer"
-		topicPrefix="SolvisSmartHomeServer" />
+		topicPrefix="SolvisSmartHomeServer" smartHomeId="IoBroker"/>
 	<!-- ExceptionMail securityType: TLS, SSL oder NONE -->
 	<tns:ExceptionMail port="5870"
 		passwordCrypt="AES-coded" name="Vorname Nachname" securityType="TLS"
@@ -145,6 +145,6 @@
 		</tns:Recipients>
 		<!-- <tns:Proxy host="HttpProxy" port="80" user="user" passwordCrypt="EhDnGP6WICnLIIA2q9ZTew=="/> -->
 	</tns:ExceptionMail>
-	<tns:Iobroker iobrokerName="IoBroker"
-		mqttInterface="mqtt-client.0" javascriptInterface="javascript.0" />
+	<tns:Iobroker mqttInterface="mqtt-client.0"
+		javascriptInterface="javascript.0" />
 </tns:BaseData>

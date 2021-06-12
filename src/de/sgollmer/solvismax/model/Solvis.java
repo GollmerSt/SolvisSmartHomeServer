@@ -23,6 +23,7 @@ import de.sgollmer.solvismax.connection.Distributor;
 import de.sgollmer.solvismax.connection.SolvisConnection;
 import de.sgollmer.solvismax.connection.SolvisConnection.Button;
 import de.sgollmer.solvismax.connection.SolvisConnection.SolvisMeasurements;
+import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
@@ -70,6 +71,8 @@ import de.sgollmer.solvismax.objects.Coordinate;
 
 public class Solvis {
 
+	private static final boolean DEBUG_POWER_ON = Constants.Debug.SOLVIS_RESULT_NULL;
+
 	// private static final org.slf4j.Logger logger =
 	// LoggerFactory.getLogger(Solvis.class);
 	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
@@ -93,6 +96,7 @@ public class Solvis {
 	private boolean screenSaverActive = false;
 	private final TouchPoint resetSceenSaver;
 	private final SolvisConnection connection;
+	private final Mqtt mqtt;
 	private final BackupHandler backupHandler;
 	private final Distributor distributor;
 	private final MeasurementUpdateThread measurementUpdateThread;
@@ -113,8 +117,8 @@ public class Solvis {
 	private Standby.Executable standby;
 
 	Solvis(final Unit unit, final SolvisDescription solvisDescription, final SystemGrafics grafics,
-			final SolvisConnection connection, final BackupHandler measurementsBackupHandler, final String timeZone,
-			final int echoInhibitTime_ms, final File writePath, final boolean mustLearn) {
+			final SolvisConnection connection, final Mqtt mqtt, final BackupHandler measurementsBackupHandler,
+			final String timeZone, final int echoInhibitTime_ms, final File writePath, final boolean mustLearn) {
 		this.allSolvisData = new AllSolvisData(this);
 		this.unit = unit;
 		this.echoInhibitTime_ms = echoInhibitTime_ms;
@@ -123,6 +127,7 @@ public class Solvis {
 		this.grafics = grafics;
 		this.connection = connection;
 		this.connection.setSolvisState(this.solvisState);
+		this.mqtt = mqtt;
 		this.allSolvisData.setAverageCount(unit.getDefaultAverageCount());
 		this.allSolvisData.setMeasurementHysteresisFactor(unit.getMeasurementHysteresisFactor());
 		this.worker = new SolvisWorkers(this);
@@ -176,8 +181,7 @@ public class Solvis {
 				SolvisMeasurements measurements = this.connection.getMeasurements();
 				String hexString = measurements.getHexString();
 				this.measureData = new SolvisMeasurements(measurements.getTimeStamp(), hexString.substring(12));
-				boolean debug = Constants.Debug.isSolvisResultNull();
-				if (hexString.substring(0, 6).equals("000000") || debug) {
+				if (hexString.substring(0, 6).equals("000000") || DEBUG_POWER_ON) {
 					this.getSolvisState().setSolvisDataValid(false);
 					throw new PowerOnException("Power on detected");
 				} else {
@@ -947,11 +951,13 @@ public class Solvis {
 		this.standby.reset();
 		;
 	}
-	
+
 	public void updateByMonitoringTask(final CommandObserver.Status status, final Object source) {
 		this.worker.updateByMonitoringTask(status, source);
 	}
 
-
+	public Mqtt getMqtt() {
+		return this.mqtt;
+	}
 
 }

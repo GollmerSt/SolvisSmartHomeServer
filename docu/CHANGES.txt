@@ -79,7 +79,17 @@ Version 01.04.00
                 Anlage selber in den Zustand bringen muss.
                 
     08.06.2021  Reheating-Strategy mittels vereinfacht. DebugChannel wirkt nin auch auf diese
-                Strategy.  
+                Strategy.
+
+    12.06.2021  Bei abgeschalteter Mqtt-Schnittstelle (enable="false") gab es bei dem Beenden des
+                Programmes eine Null-Pointer-Exception, welche dazu führte, dass das Programm nicht
+                wirklich beendet wurde, da einige Threads noch weiterhin liefen. Gefixt.
+                
+                MqttTopic-Definitionen zentralisiert.
+                
+                Automatische Dokumenation um die definierten Mqtt-Topics einschl. eines
+                Kurzkommetars erweitert.
+                
                 
 
 

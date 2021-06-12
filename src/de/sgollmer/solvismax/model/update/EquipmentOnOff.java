@@ -276,7 +276,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				try {
 					result = this.checkSynchronisation(data, equipmentOn, changed);
 				} catch (TypeException e) {
-					logger.error("Type exception, update ignored", e);
+					logger.error("TopicType exception, update ignored", e);
 					return;
 				}
 
@@ -372,7 +372,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
 					currentCalcValue = this.calculatedValue.getInt();
 				} catch (TypeException e) {
-					logger.error("Type exception, update ignored", e);
+					logger.error("TopicType exception, update ignored", e);
 					return;
 				}
 
@@ -392,7 +392,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				try {
 					currentControlValue = this.updateSource.getInt();
 				} catch (TypeException e) {
-					logger.error("Type exception, update ignored", e);
+					logger.error("TopicType exception, update ignored", e);
 					return;
 				}
 
