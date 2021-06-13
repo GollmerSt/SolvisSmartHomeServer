@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.TopicType;
 import de.sgollmer.solvismax.connection.transfer.ArrayValue;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.error.PowerOnException;
@@ -38,7 +38,7 @@ public class CommandSetScreen extends Command {
 	}
 
 	public static MqttData getMqttMeta(final Solvis solvis) {
-		String topic = Mqtt.formatScreenMetaTopic();
+		String topic = TopicType.UNIT_SCREEN_META.formatSuffix();
 		List<SingleValue> values = new ArrayList<>();
 		for (Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
 			if (!screen.isNoRestore()) {

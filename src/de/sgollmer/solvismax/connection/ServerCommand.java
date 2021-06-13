@@ -7,8 +7,8 @@
 
 package de.sgollmer.solvismax.connection;
 
-import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.TopicType;
 import de.sgollmer.solvismax.connection.transfer.ArrayValue;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.model.Solvis;
@@ -46,7 +46,6 @@ public enum ServerCommand {
 	}
 
 	public static MqttData getMqttMeta(final Solvis solvis) {
-		String topic = Mqtt.formatServerMetaTopic();
 		ArrayValue array = new ArrayValue();
 		for (ServerCommand command : values()) {
 			if (command.isGeneral() == (solvis == null) && command.shouldCreateMeta()) {
@@ -54,8 +53,10 @@ public enum ServerCommand {
 			}
 		}
 		if (solvis == null) {
+			String topic = TopicType.SERVER_META.formatSuffix();
 			return new MqttData(topic, array.toString(), 0, true, null);
 		} else {
+			String topic = TopicType.UNIT_SERVER_META.formatSuffix();
 			return new MqttData(solvis, topic, array.toString(), 0, true);
 		}
 	}

@@ -15,6 +15,169 @@ Offene Aufgaben:
      Reading-Update auch für die Kanäle, welche noch nicht aktualisiert wurden. Dadurch ein unrealistischer
      Temperaturverlauf dargestellt.
      
+28. Sporadischer Tiny-Log-Fehler:
+
+-------------------------------------------------------------
+[2021-06-13 00:03:34,651] INFO de.sgollmer.solvismax.Main - Server started, Version 01.04.00, 3 heating circuits beta, compiled at 2021-06-13 00:02:33
+[2021-06-13 00:03:34,867] INFO de.sgollmer.solvismax.model.objects.unit.AllFixChannelValues - The channel <C47.Puffer_dT_Start> was set to the fix value "5".
+[2021-06-13 00:03:35,338] INFO de.sgollmer.solvismax.connection.Server - Client connected from /127.0.0.1
+[2021-06-13 00:03:35,339] INFO de.sgollmer.solvismax.connection.Server - Client connected from /192.168.0.71
+[2021-06-13 00:03:35,487] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <RECONNECT> received
+[2021-06-13 00:03:35,494] INFO de.sgollmer.solvismax.connection.CommandHandler - Command <RECONNECT> received
+[2021-06-13 00:03:35,500] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Mqtt broker not available, will be retried in 1 s.
+[2021-06-13 00:03:36,513] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Mqtt broker not available, will be retried in 2 s.
+[2021-06-13 00:03:36,537] INFO de.sgollmer.solvismax.connection.Server - Client disconnected
+[2021-06-13 00:03:36,544] INFO de.sgollmer.solvismax.connection.Server - Client disconnected
+[2021-06-13 00:03:37,544] INFO de.sgollmer.solvismax.connection.Server - Client connected from /127.0.0.1
+[2021-06-13 00:03:37,553] INFO de.sgollmer.solvismax.connection.Server - Client connected from /192.168.0.71
+[2021-06-13 00:03:37,561] INFO de.sgollmer.solvismax.connection.CommandHandler - ComCommand <CONNECT> received
+[2021-06-13 00:03:37,561] INFO de.sgollmer.solvismax.connection.CommandHandler - ComCommand <CONNECT> received
+[2021-06-13 00:03:37,692] ERROR de.sgollmer.solvismax.connection.Server - Client connection closed. cause:: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last source index 210 out of bounds for byte[192]
+        at java.base/java.lang.System.arraycopy(Native Method)
+        at java.base/java.lang.AbstractStringBuilder.shift(AbstractStringBuilder.java:1025)
+        at java.base/java.lang.AbstractStringBuilder.delete(AbstractStringBuilder.java:866)
+        at java.base/java.lang.StringBuilder.delete(StringBuilder.java:284)
+        at de.sgollmer.solvismax.log.TinyLog$LoggerTiny.log(TinyLog.java:128)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:415)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:428)
+        at de.sgollmer.solvismax.log.LogManager.access$1000(LogManager.java:20)
+        at de.sgollmer.solvismax.log.LogManager$Logger.info(LogManager.java:321)
+        at de.sgollmer.solvismax.connection.CommandHandler.executeServerCommand(CommandHandler.java:144)
+        at de.sgollmer.solvismax.connection.CommandHandler.commandFromClient(CommandHandler.java:93)
+        at de.sgollmer.solvismax.connection.Server$Client.run(Server.java:141)
+        at de.sgollmer.solvismax.helper.Helper$Runnable$1.run(Helper.java:147)
+        at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+[2021-06-13 00:03:37,691] ERROR de.sgollmer.solvismax.connection.Server - Client connection closed. cause:: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last source index 210 out of bounds for byte[192]
+        at java.base/java.lang.System.arraycopy(Native Method)
+        at java.base/java.lang.AbstractStringBuilder.shift(AbstractStringBuilder.java:1025)
+        at java.base/java.lang.AbstractStringBuilder.delete(AbstractStringBuilder.java:866)
+        at java.base/java.lang.StringBuilder.delete(StringBuilder.java:284)
+        at de.sgollmer.solvismax.log.TinyLog$LoggerTiny.log(TinyLog.java:128)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:415)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:428)
+        at de.sgollmer.solvismax.log.LogManager.access$1000(LogManager.java:20)
+        at de.sgollmer.solvismax.log.LogManager$Logger.info(LogManager.java:321)
+        at de.sgollmer.solvismax.connection.CommandHandler.executeServerCommand(CommandHandler.java:144)
+        at de.sgollmer.solvismax.connection.CommandHandler.commandFromClient(CommandHandler.java:93)
+        at de.sgollmer.solvismax.connection.Server$Client.run(Server.java:141)
+        at de.sgollmer.solvismax.helper.Helper$Runnable$1.run(Helper.java:147)
+        at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+[2021-06-13 00:03:37,724] INFO de.sgollmer.solvismax.connection.Server - Client disconnected
+[2021-06-13 00:03:37,727] INFO de.sgollmer.solvismax.connection.Server - Client disconnected
+[2021-06-13 00:03:38,565] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Mqtt broker not available, will be retried in 4 s.
+[2021-06-13 00:03:40,606] INFO de.sgollmer.solvismax.model.SolvisState - Solvis state changed to <SOLVIS_CONNECTED>.
+[2021-06-13 00:03:41,017] INFO de.sgollmer.solvismax.model.Solvis - Screen <Home> saved
+[2021-06-13 00:03:42,580] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Mqtt broker not available, will be retried in 8 s.
+[2021-06-13 00:03:48,561] INFO de.sgollmer.solvismax.connection.Server - Client connected from /127.0.0.1
+[2021-06-13 00:03:48,570] ERROR de.sgollmer.solvismax.connection.Server - Client connection closed. cause:: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last source index 210 out of bounds for byte[192]
+        at java.base/java.lang.System.arraycopy(Native Method)
+        at java.base/java.lang.AbstractStringBuilder.shift(AbstractStringBuilder.java:1025)
+        at java.base/java.lang.AbstractStringBuilder.delete(AbstractStringBuilder.java:866)
+        at java.base/java.lang.StringBuilder.delete(StringBuilder.java:284)
+        at de.sgollmer.solvismax.log.TinyLog$LoggerTiny.log(TinyLog.java:128)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:415)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:428)
+        at de.sgollmer.solvismax.log.LogManager.access$1000(LogManager.java:20)
+        at de.sgollmer.solvismax.log.LogManager$Logger.info(LogManager.java:321)
+        at de.sgollmer.solvismax.connection.CommandHandler.commandFromClient(CommandHandler.java:69)
+        at de.sgollmer.solvismax.connection.Server$Client.run(Server.java:141)
+        at de.sgollmer.solvismax.helper.Helper$Runnable$1.run(Helper.java:147)
+        at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+[2021-06-13 00:03:48,585] INFO de.sgollmer.solvismax.connection.Server - Client disconnected
+[2021-06-13 00:03:50,015] INFO de.sgollmer.solvismax.connection.Server - Client connected from /192.168.0.71
+[2021-06-13 00:03:50,019] ERROR de.sgollmer.solvismax.connection.Server - Client connection closed. cause:: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last source index 210 out of bounds for byte[192]
+        at java.base/java.lang.System.arraycopy(Native Method)
+        at java.base/java.lang.AbstractStringBuilder.shift(AbstractStringBuilder.java:1025)
+        at java.base/java.lang.AbstractStringBuilder.delete(AbstractStringBuilder.java:866)
+        at java.base/java.lang.StringBuilder.delete(StringBuilder.java:284)
+        at de.sgollmer.solvismax.log.TinyLog$LoggerTiny.log(TinyLog.java:128)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:415)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:428)
+        at de.sgollmer.solvismax.log.LogManager.access$1000(LogManager.java:20)
+        at de.sgollmer.solvismax.log.LogManager$Logger.info(LogManager.java:321)
+        at de.sgollmer.solvismax.connection.CommandHandler.commandFromClient(CommandHandler.java:69)
+        at de.sgollmer.solvismax.connection.Server$Client.run(Server.java:141)
+        at de.sgollmer.solvismax.helper.Helper$Runnable$1.run(Helper.java:147)
+        at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+[2021-06-13 00:03:50,033] INFO de.sgollmer.solvismax.connection.Server - Client disconnected
+[2021-06-13 00:03:50,595] INFO de.sgollmer.solvismax.connection.mqtt.Mqtt - Mqtt broker not available, will be retried in 16 s.
+[2021-06-13 00:03:59,585] INFO de.sgollmer.solvismax.connection.Server - Client connected from /127.0.0.1
+[2021-06-13 00:03:59,589] ERROR de.sgollmer.solvismax.connection.Server - Client connection closed. cause:: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last source index 210 out of bounds for byte[192]
+        at java.base/java.lang.System.arraycopy(Native Method)
+        at java.base/java.lang.AbstractStringBuilder.shift(AbstractStringBuilder.java:1025)
+        at java.base/java.lang.AbstractStringBuilder.delete(AbstractStringBuilder.java:866)
+        at java.base/java.lang.StringBuilder.delete(StringBuilder.java:284)
+        at de.sgollmer.solvismax.log.TinyLog$LoggerTiny.log(TinyLog.java:128)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:415)
+        at de.sgollmer.solvismax.log.LogManager.log(LogManager.java:428)
+        at de.sgollmer.solvismax.log.LogManager.access$1000(LogManager.java:20)
+        at de.sgollmer.solvismax.log.LogManager$Logger.info(LogManager.java:321)
+        at de.sgollmer.solvismax.connection.CommandHandler.commandFromClient(CommandHandler.java:69)
+        at de.sgollmer.solvismax.connection.Server$Client.run(Server.java:141)
+        at de.sgollmer.solvismax.helper.Helper$Runnable$1.run(Helper.java:147)
+        at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+[2021-06-13 00:03:59,600] INFO de.sgollmer.solvismax.connection.Server - Client disconnected
+[2021-06-13 00:04:03,623] INFO de.sgollmer.solvismax.model.objects.control.Control - Channel <C06> is set to Standby>.
+[2021-06-13 00:04:04,482] INFO de.sgollmer.solvismax.connection.Server - Client connected from /192.168.0.71
+[2021-06-13 00:04:04,487] ERROR de.sgollmer.solvismax.connection.Server - Client connection closed. cause:: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last source index 210 ou
+-------------------------------------------------------------
+FHEM-Log:
+2021.06.13 00:06:53 3: Opening mySolvis device localhost:10735
+2021.06.13 00:06:53 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:06:53 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:07:18 3: Opening mySolvis device localhost:10735
+2021.06.13 00:07:18 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:07:18 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:07:48 3: Opening mySolvis device localhost:10735
+2021.06.13 00:07:48 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:07:48 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:08:23 3: Opening mySolvis device localhost:10735
+2021.06.13 00:08:23 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:08:23 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:09:03 3: Opening mySolvis device localhost:10735
+2021.06.13 00:09:03 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:09:03 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:09:48 3: Opening mySolvis device localhost:10735
+2021.06.13 00:09:48 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:09:48 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:10:38 3: Opening mySolvis device localhost:10735
+2021.06.13 00:10:38 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:10:38 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:11:20 3: Opening mySolvis device localhost:10735
+2021.06.13 00:11:20 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:11:20 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:11:33 3: Opening mySolvis device localhost:10735
+2021.06.13 00:11:33 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:11:33 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:12:20 3: Opening mySolvis device localhost:10735
+2021.06.13 00:12:20 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:12:20 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:12:38 3: Opening mySolvis device localhost:10735
+2021.06.13 00:12:38 1: mySolvis: Can't connect to localhost:10735: Operation now in progress
+2021.06.13 00:12:38 1: mySolvis: Can't connect to localhost:10735: localhost: Verbindungsaufbau abgelehnt (111)
+2021.06.13 00:13:30 3: Opening mySolvis device localhost:10735
+------------------------------------------------------------------------------------------------
+
 
 
 Erledigt:

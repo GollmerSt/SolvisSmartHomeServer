@@ -2,8 +2,8 @@ package de.sgollmer.solvismax.model.objects;
 
 import java.util.Collection;
 
-import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.TopicType;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.IChannelSource.Type;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
@@ -100,8 +100,8 @@ public class ChannelInstance implements IInstance {
 	MqttData getMqttMeta() {
 		de.sgollmer.solvismax.connection.transfer.ChannelDescription meta = new de.sgollmer.solvismax.connection.transfer.ChannelDescription(
 				this);
-		return new MqttData(this.solvis, Mqtt.formatChannelMetaTopic(this.getName()), meta.getValue().toString(), 0,
-				true);
+		return new MqttData(this.solvis, TopicType.UNIT_CHANNEL_META.formatSuffix(this.getName()), meta.getValue().toString(),
+				0, true);
 	}
 
 }

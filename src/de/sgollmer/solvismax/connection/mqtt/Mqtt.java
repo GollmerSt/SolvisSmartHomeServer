@@ -324,7 +324,7 @@ public class Mqtt {
 		String channelId = null;
 
 		if (type.hasChannelId()) {
-			channelId = Mqtt.formatChannelIn(partsWoPrefix[2]);
+			channelId = TopicType.formatChannelSubscribe(partsWoPrefix[2]);
 		}
 
 		return new SubscribeData(clientId, unitId, channelId, type);
@@ -345,31 +345,6 @@ public class Mqtt {
 			} catch (MqttException e) {
 			}
 		}
-	}
-
-	public static String formatChannelIn(final String mqttChannelId) {
-		String channelId = mqttChannelId.replace(':', '.');
-		return channelId;
-	}
-
-	public static String formatChannelOutTopic(final String channelId) {
-		return formatChannelOut(channelId) + '/' + Constants.Mqtt.DATA_SUFFIX;
-	}
-
-	public static String formatChannelOut(final String channelId) {
-		return channelId.replace('.', ':');
-	}
-
-	public static String formatChannelMetaTopic(final String channelId) {
-		return formatChannelOut(channelId) + '/' + Constants.Mqtt.META_SUFFIX;
-	}
-
-	public static String formatServerMetaTopic() {
-		return Constants.Mqtt.SERVER + '/' + Constants.Mqtt.META_SUFFIX;
-	}
-
-	public static String formatScreenMetaTopic() {
-		return Constants.Mqtt.SCREEN_PREFIX + '/' + Constants.Mqtt.META_SUFFIX;
 	}
 
 	class Client implements IClient {

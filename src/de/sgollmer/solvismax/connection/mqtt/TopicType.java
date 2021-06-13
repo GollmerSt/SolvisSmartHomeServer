@@ -114,7 +114,7 @@ public enum TopicType {
 
 	private boolean hits(final String[] partsWoPrefix) {
 		int cmpLength = this.parts.length + (this.suffix == null ? 0 : 1);
-		if ( cmpLength > partsWoPrefix.length - this.position) {
+		if (cmpLength > partsWoPrefix.length - this.position) {
 			return false;
 		}
 		int i;
@@ -123,7 +123,7 @@ public enum TopicType {
 				return false;
 			}
 		}
-		if ( this.suffix != null && !this.suffix.equalsIgnoreCase(partsWoPrefix[i + this.position])) {
+		if (this.suffix != null && !this.suffix.equalsIgnoreCase(partsWoPrefix[i + this.position])) {
 			return false;
 		}
 		return true;
@@ -131,7 +131,7 @@ public enum TopicType {
 
 	static TopicType get(final String[] partsWoPrefix) {
 		for (TopicType type : TopicType.values()) {
-			if ( type.hits(partsWoPrefix)) {
+			if (type.hits(partsWoPrefix)) {
 				return type;
 			}
 		}
@@ -191,7 +191,7 @@ public enum TopicType {
 				return null;
 			}
 
-			parts[i++] = channelId;
+			parts[i++] = formatChannelPublish(channelId);
 		}
 		for (String part : this.parts) {
 			parts[i++] = part;
@@ -281,7 +281,7 @@ public enum TopicType {
 					&& !(this.isOnlyPollingChannel() && !polling)) {
 				SmartHomeData smartHomeData = data.getSmartHomeData();
 				if (smartHomeData != null && !data.isDontSend()) {
-					String name = smartHomeData.getMqttName();
+					String name = formatChannelSubscribe(smartHomeData.getName());
 					String comment = this.getComment().replace("{}", "<" + name + ">");
 					String[] parts = this.getTopicParts(instances, solvis, name);
 					String[] baseParts = this.getTopicParts(instances, solvis, name, true);
@@ -368,6 +368,48 @@ public enum TopicType {
 			return o1.getName().compareTo(o2.getName());
 		}
 
+	}
+
+	public static String formatChannelPublish(final String channelId) {
+		return channelId.replace('.', ':');
+	}
+		
+		public static String formatChannelSubscribe(final String channelId) {
+		return channelId.replace(':', '.');
+	}
+
+	public String formatSuffix() {
+		return this.formatSuffix(null);
+	}
+
+	public String formatSuffix(final String channelId) {
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		for (String part : this.parts) {
+			if (first) {
+				first = false;
+			} else {
+				builder.append('/');
+			}
+			builder.append(part);
+		}
+		if (channelId != null) {
+			if (first) {
+				first = false;
+			} else {
+				builder.append('/');
+			}
+			builder.append(formatChannelPublish(channelId));
+		}
+		if (this.suffix != null) {
+			if (first) {
+				first = false;
+			} else {
+				builder.append('/');
+			}
+			builder.append(this.suffix);
+		}
+		return builder.toString();
 	}
 
 }

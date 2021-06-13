@@ -10,8 +10,8 @@ package de.sgollmer.solvismax.model.objects.data;
 import java.util.Calendar;
 
 import de.sgollmer.solvismax.Constants.Csv;
-import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.connection.mqtt.TopicType;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.error.TypeException;
@@ -315,7 +315,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 		Helper.Boolean bool = data.getBoolean();
 		if (bool == Helper.Boolean.UNDEFINED) {
-			throw new TypeException("TypeException: TopicType actual: <" + data.getClass() + ">, target: <BooleanValue>");
+			throw new TypeException(
+					"TypeException: TopicType actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
 		return bool;
 	}
@@ -544,10 +545,6 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return this.solvisData.getName();
 		}
 
-		public String getMqttName() {
-			return Mqtt.formatChannelOut(this.solvisData.getName());
-		}
-
 		public long getTransmittedTimeStamp() {
 			return this.transmittedTimeStamp;
 		}
@@ -564,7 +561,8 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				return null;
 			}
 			String value = this.getDescription().normalize(this.getData()).toString();
-			return new MqttData(this.getSolvis(), this.getMqttName(), value, 0, true);
+			return new MqttData(this.getSolvis(), TopicType.UNIT_CHANNEL_DATA.formatSuffix(this.getName()), value,
+					0, true);
 		}
 
 		public SingleValue toSingleValue(final SingleData<?> data) {
@@ -612,7 +610,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				break;
 			case Csv.MQTT:
 				String name = this.channelInstance.getName();
-				csv = Mqtt.formatChannelOut(name);
+				csv = TopicType.formatChannelPublish(name);
 				break;
 		}
 		if (csv == null) {
