@@ -87,7 +87,7 @@ public class Starts extends Strategy<Starts> {
 				}
 				this.former = equipmentOn;
 			} catch (TypeException e) {
-				logger.error("TopicType error, update ignored", e);
+				logger.error("Type error, update ignored", e);
 				return;
 			}
 

@@ -411,7 +411,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 				}
 			} catch (TypeException e) {
-				logger.error("TopicType error, update ignored", e);
+				logger.error("Topic error, update ignored", e);
 			}
 		}
 

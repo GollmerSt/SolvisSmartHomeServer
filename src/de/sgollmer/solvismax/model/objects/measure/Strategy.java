@@ -271,7 +271,7 @@ public enum Strategy implements IType {
 			if (singleData instanceof StringData) {
 				java.util.Date date = null;
 				try {
-					date = DATE_FORMAT.parse(singleData.toString());
+					date = ((SimpleDateFormat)DATE_FORMAT.clone()).parse(singleData.toString());
 				} catch (ParseException e) {
 
 				}

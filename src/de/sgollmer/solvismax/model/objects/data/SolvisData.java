@@ -268,7 +268,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		} else if ((data instanceof IntegerValue)) {
 			return ((IntegerValue) data).get();
 		}
-		throw new TypeException("TypeException: TopicType actual: <" + data.getClass() + ">, target: <IntegerValue>");
+		throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
 	}
 
 // TODO
@@ -286,7 +286,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 //			} else
 //				return (double) i;
 //		} else {
-//			throw new TypeException("TypeException: TopicType actual: <" + data.getClass() + ">, target: <IntegerValue>");
+//			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
 //		}
 //	}
 //
@@ -316,7 +316,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		Helper.Boolean bool = data.getBoolean();
 		if (bool == Helper.Boolean.UNDEFINED) {
 			throw new TypeException(
-					"TypeException: TopicType actual: <" + data.getClass() + ">, target: <BooleanValue>");
+					"TypeException: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
 		return bool;
 	}

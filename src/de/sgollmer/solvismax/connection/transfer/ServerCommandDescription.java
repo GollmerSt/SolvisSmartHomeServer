@@ -20,7 +20,7 @@ public class ServerCommandDescription extends Element {
 		Element writeableElement = new Element("Writeable", new SingleValue(new BooleanValue(false, -1L)));
 		frame.add(writeableElement);
 
-		Element typeElement = new Element("TopicType", new SingleValue("ServerCommand"));
+		Element typeElement = new Element("Type", new SingleValue("ServerCommand"));
 		frame.add(typeElement);
 
 	}
