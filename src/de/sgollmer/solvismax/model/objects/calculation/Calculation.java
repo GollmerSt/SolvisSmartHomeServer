@@ -230,4 +230,9 @@ public class Calculation extends ChannelSource {
 		return false;
 	}
 
+	@Override
+	public boolean inhibitGuiReadAfterWrite() {
+		return false;
+	}
+
 }

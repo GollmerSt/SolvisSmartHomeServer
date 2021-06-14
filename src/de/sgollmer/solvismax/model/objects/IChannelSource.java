@@ -84,6 +84,8 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	public boolean isBoolean();
 
 	public boolean isFast();
+	
+	public boolean inhibitGuiReadAfterWrite();
 
 	/**
 	 * Get the maximum interval of the scanning

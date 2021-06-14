@@ -59,4 +59,6 @@ public interface IStrategy extends IAssigner {
 
 	void instantiate(Solvis solvis);
 
+	boolean inhibitGuiReadAfterWrite();
+
 }

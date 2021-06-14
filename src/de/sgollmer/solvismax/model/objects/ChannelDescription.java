@@ -388,4 +388,9 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 		return this.channelSource.getCsvMeta(column, semicolon);
 	}
 
+	@Override
+	public boolean inhibitGuiReadAfterWrite() {
+		return this.channelSource.inhibitGuiReadAfterWrite();
+	}
+
 }

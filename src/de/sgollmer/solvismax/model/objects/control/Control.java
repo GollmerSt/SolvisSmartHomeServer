@@ -563,4 +563,9 @@ public class Control extends ChannelSource {
 		return true;
 	}
 
+	@Override
+	public boolean inhibitGuiReadAfterWrite() {
+		return this.strategy.inhibitGuiReadAfterWrite();
+	}
+
 }

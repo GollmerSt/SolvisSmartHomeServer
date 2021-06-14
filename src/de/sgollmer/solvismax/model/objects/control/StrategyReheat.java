@@ -307,7 +307,7 @@ public class StrategyReheat implements IStrategy {
 		if (notRequired) {
 			solvis.sendBack();
 			return new SetResult(ResultStatus.SUCCESS, new ModeValue<>(Mode.NOT_REQUIRED, System.currentTimeMillis()),
-					false);
+					true);
 		} else {
 			if (reheat.isActive(solvis.getCurrentScreen())) {
 
@@ -316,6 +316,8 @@ public class StrategyReheat implements IStrategy {
 			}
 		}
 
+		
+		
 		solvis.send(StrategyReheat.this.touchPoint);
 
 		return null;
@@ -376,7 +378,7 @@ public class StrategyReheat implements IStrategy {
 	private class ReheatObserver implements IObserver<SolvisData> {
 
 		private ReheatThread reheatThread = null;
-		private SingleData<?> former = null;
+		private Mode former = null;
 		private boolean monitoring = false;
 
 		@Override
@@ -384,13 +386,13 @@ public class StrategyReheat implements IStrategy {
 
 			Solvis solvis = data.getSolvis();
 
-			SingleData<?> current = data.getSingleData();
+			Mode current = (Mode) data.getSingleData().get();
 
-			boolean changed = this.former == null || !this.former.equals(current);
-
+			boolean changed = this.former == null || !this.former.equals(current) || current == Mode.NOT_REQUIRED;
+			
 			this.former = current;
 
-			switch ((Mode) current.get()) {
+			switch (current) {
 				case OFF:
 					if (changed) {
 						synchronized (this) {
@@ -486,6 +488,11 @@ public class StrategyReheat implements IStrategy {
 			this.notifyAll();
 		}
 
+	}
+
+	@Override
+	public boolean inhibitGuiReadAfterWrite() {
+		return true;
 	}
 
 }

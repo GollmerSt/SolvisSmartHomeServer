@@ -212,4 +212,9 @@ public class StrategyButton implements IStrategy {
 
 	}
 
+	@Override
+	public boolean inhibitGuiReadAfterWrite() {
+		return false;
+	}
+
 }

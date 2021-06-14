@@ -253,8 +253,12 @@ public class StrategyRead implements IStrategy {
 
 	@Override
 	public void instantiate(Solvis solvis) {
-		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean inhibitGuiReadAfterWrite() {
+		return false;
 	}
 
 }

@@ -349,4 +349,9 @@ public class Measurement extends ChannelSource {
 		return false;
 	}
 
+	@Override
+	public boolean inhibitGuiReadAfterWrite() {
+		return false;
+	}
+
 }

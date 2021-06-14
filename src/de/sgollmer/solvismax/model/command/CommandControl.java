@@ -45,6 +45,7 @@ public class CommandControl extends Command {
 	private final ChannelDescription description;
 	private SingleData<?> setValue;
 	private boolean write;
+	private boolean inhibitRead;
 	private final AbstractScreen screen;
 	private boolean inhibit = false;
 	private Reference<Integer> writeFailCount = new Reference<Integer>(0);
@@ -76,6 +77,7 @@ public class CommandControl extends Command {
 			throws TypeException {
 		this(description, solvis, null);
 		this.setValue = description.interpretSetData(setRealValue, false);
+		this.inhibitRead = description.inhibitGuiReadAfterWrite();
 		this.write = true;
 	}
 
@@ -85,6 +87,7 @@ public class CommandControl extends Command {
 
 	public CommandControl(final ChannelDescription description, final Solvis solvis, final Integer priority) {
 		this.setValue = null;
+		this.inhibitRead = false;
 		this.description = description;
 		this.dependencyGroupsToExecute.add(description.getDependencyGroup().clone(), solvis);
 		this.screen = description.getScreen(solvis);
@@ -549,7 +552,11 @@ public class CommandControl extends Command {
 
 		@Override
 		public State next(final CommandControl command) {
-			return StateEnum.READING.getState();
+			if (command.isInhibitRead()) {
+				return StateEnum.RESTORE_DEPENDENCY.getState();
+			} else {
+				return StateEnum.READING.getState();
+			}
 		}
 
 		@Override
@@ -801,6 +808,10 @@ public class CommandControl extends Command {
 		} else {
 			return Type.CONTROL_UPDATE;
 		}
+	}
+
+	public boolean isInhibitRead() {
+		return this.inhibitRead;
 	}
 
 }
