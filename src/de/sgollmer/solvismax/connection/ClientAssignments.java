@@ -154,10 +154,11 @@ public class ClientAssignments {
 	}
 
 	Boolean getControlEnabled(final Solvis solvis) {
-		if (this.getState(solvis) != null) {
-			return this.getState(solvis).controlEnable;
+		State state = this.getState(solvis);
+		if ( state == null) {
+			return null;
 		}
-		return null;
+		return state.controlEnable;
 	}
 
 	public void debugClear(Solvis solvis) throws ClientAssignmentException {

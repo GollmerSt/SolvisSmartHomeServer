@@ -37,7 +37,7 @@ public class SolvisStatePackage implements ISendData {
 
 	@Override
 	public Collection<MqttData> createMqttData() {
-		return Arrays.asList(new MqttData(this.solvis, this.state.getMqttPrefix(), this.state.name(), 0, true));
+		return Arrays.asList(new MqttData(this.state.getTopicType(), this.solvis, null, this.state.name(), 0, true));
 	}
 
 	public SolvisStatus getState() {

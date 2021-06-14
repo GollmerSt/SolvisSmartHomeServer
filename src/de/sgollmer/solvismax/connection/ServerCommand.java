@@ -53,11 +53,9 @@ public enum ServerCommand {
 			}
 		}
 		if (solvis == null) {
-			String topic = TopicType.SERVER_META.formatSuffix();
-			return new MqttData(topic, array.toString(), 0, true, null);
+			return new MqttData(TopicType.SERVER_META, solvis, null, array.toString(), 0, true);
 		} else {
-			String topic = TopicType.UNIT_SERVER_META.formatSuffix();
-			return new MqttData(solvis, topic, array.toString(), 0, true);
+			return new MqttData(TopicType.UNIT_SERVER_META, solvis, null, array.toString(), 0, true);
 		}
 	}
 

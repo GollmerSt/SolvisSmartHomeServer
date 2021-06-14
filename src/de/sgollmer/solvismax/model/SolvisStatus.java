@@ -1,42 +1,31 @@
 package de.sgollmer.solvismax.model;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.connection.mqtt.TopicType;
 
 public enum SolvisStatus {
-	POWER_OFF(Constants.Mqtt.STATUS), //
-	REMOTE_CONNECTED(Constants.Mqtt.STATUS), //
-	SOLVIS_CONNECTED(Constants.Mqtt.STATUS), //
-	SOLVIS_DISCONNECTED(Constants.Mqtt.STATUS), //
-	ERROR(Constants.Mqtt.STATUS), //
-	USER_ACCESS_DETECTED(Constants.Mqtt.HUMAN_ACCESS), //
-	SERVICE_ACCESS_DETECTED(Constants.Mqtt.HUMAN_ACCESS), //
-	HUMAN_ACCESS_FINISHED(Constants.Mqtt.HUMAN_ACCESS), //
-	CONTROL_WRITE_ONGOING(Constants.Mqtt.CONTROL),//
-	CONTROL_READ_ONGOING(Constants.Mqtt.CONTROL),//
-	CONTROL_MONITORING(Constants.Mqtt.CONTROL),//
-	CONTROL_FINISHED(Constants.Mqtt.CONTROL),//
-	UNDEFINED(Constants.Mqtt.STATUS);
-	
-	private final String mqttPrefix;
+	POWER_OFF(TopicType.UNIT_STATUS), //
+	REMOTE_CONNECTED(TopicType.UNIT_STATUS), //
+	SOLVIS_CONNECTED(TopicType.UNIT_STATUS), //
+	SOLVIS_DISCONNECTED(TopicType.UNIT_STATUS), //
+	ERROR(TopicType.UNIT_STATUS), //
+	USER_ACCESS_DETECTED(TopicType.UNIT_HUMAN), //
+	SERVICE_ACCESS_DETECTED(TopicType.UNIT_HUMAN), //
+	HUMAN_ACCESS_FINISHED(TopicType.UNIT_HUMAN), //
+	CONTROL_WRITE_ONGOING(TopicType.UNIT_CONTROL), //
+	CONTROL_READ_ONGOING(TopicType.UNIT_CONTROL), //
+	CONTROL_MONITORING(TopicType.UNIT_CONTROL), //
+	CONTROL_FINISHED(TopicType.UNIT_CONTROL), //
+	UNDEFINED(TopicType.UNIT_STATUS);
 
-	private SolvisStatus(final String mqttPrefix) {
-		this.mqttPrefix = mqttPrefix;
+	private final TopicType topicType;
+
+	private SolvisStatus(final TopicType topicType) {
+		this.topicType = topicType;
 
 	}
 
-	public String getMqttPrefix() {
-		return this.mqttPrefix;
+	public TopicType getTopicType() {
+		return this.topicType;
 	}
-	
-	public static Collection< String > getMqttPrefixes() {
-		Set<String> set = new HashSet<>();
-		for ( SolvisStatus status: values()) {
-			set.add(status.mqttPrefix);
-		}
-		return set;
-	}
+
 }

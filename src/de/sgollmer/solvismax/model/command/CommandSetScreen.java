@@ -38,7 +38,6 @@ public class CommandSetScreen extends Command {
 	}
 
 	public static MqttData getMqttMeta(final Solvis solvis) {
-		String topic = TopicType.UNIT_SCREEN_META.formatSuffix();
 		List<SingleValue> values = new ArrayList<>();
 		for (Screen screen : solvis.getSolvisDescription().getScreens().getScreens(solvis)) {
 			if (!screen.isNoRestore()) {
@@ -59,7 +58,7 @@ public class CommandSetScreen extends Command {
 			}
 		});
 		ArrayValue array = new ArrayValue(values);
-		return new MqttData(solvis, topic, array.toString(), 0, true);
+		return new MqttData(TopicType.UNIT_SCREEN_META, solvis, null, array.toString(), 0, true);
 	}
 
 	@Override

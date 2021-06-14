@@ -29,7 +29,6 @@ import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
-import de.sgollmer.solvismax.model.objects.unit.Unit;
 
 final class Callback implements MqttCallbackExtended {
 	/**
@@ -92,13 +91,11 @@ final class Callback implements MqttCallbackExtended {
 			if (subscribeData.getUnitId() != null) {
 				solvis = this.mqtt.instances.getUnit(subscribeData.getUnitId());
 				if (solvis == null) {
-					this.mqtt.publishError(subscribeData.getClientId(), "Solvis unit unknown.", null);
+					this.mqtt.publishError(null, subscribeData.getClientId(), "Solvis unit unknown.");
 					return;
 				}
 				subscribeData.setSolvis(solvis);
 			}
-
-			Unit unit = solvis == null ? null : solvis.getUnit();
 
 			String string = new String(message.getPayload(), StandardCharsets.UTF_8);
 			SingleData<?> data = null;
@@ -112,20 +109,20 @@ final class Callback implements MqttCallbackExtended {
 				case FROM_META:
 					SolvisData solvisData = solvis.getAllSolvisData().getByName(subscribeData.getChannelId());
 					if (solvisData == null) {
-						this.mqtt.publishError(subscribeData.getClientId(),
-								"Error: Channel <" + subscribeData.getChannelId() + "> unknown.", unit);
+						this.mqtt.publishError(solvis, subscribeData.getClientId(),
+								"Error: Channel <" + subscribeData.getChannelId() + "> unknown.");
 						return;
 					}
 					try {
 						if (!solvisData.getDescription().isWriteable()) {
-							this.mqtt.publishError(subscribeData.getClientId(),
-									"Error: Channel <" + subscribeData.getChannelId() + "> not writable.", unit);
+							this.mqtt.publishError(solvis, subscribeData.getClientId(),
+									"Error: Channel <" + subscribeData.getChannelId() + "> not writable.");
 							return;
 						}
 						data = solvisData.getDescription().interpretSetData(new StringData(string, timeStamp), false);
 					} catch (TypeException e) {
-						this.mqtt.publishError(subscribeData.getClientId(), "Error: Value error, value: " + string,
-								unit);
+						this.mqtt.publishError(solvis, subscribeData.getClientId(),
+								"Error: Value error, value: " + string);
 						return;
 					}
 			}

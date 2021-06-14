@@ -21,7 +21,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.logging.LoggerFactory;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.CommandHandler;
 import de.sgollmer.solvismax.connection.IClient;
 import de.sgollmer.solvismax.connection.ISendData;
@@ -40,7 +39,6 @@ import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
-import de.sgollmer.solvismax.model.objects.unit.Unit;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
@@ -278,14 +276,12 @@ public class Mqtt {
 	}
 
 	public String getTopic(final MqttData data) {
-		StringBuilder builder = new StringBuilder(this.topicPrefix);
-		builder.append('/');
-		builder.append(data.topicSuffix);
-		return builder.toString();
+		return data.getTopic(this);
 	}
 
-	void publishError(final String clientId, final String message, final Unit unit) {
-		this.publish(new MqttData(clientId + '/' + Constants.Mqtt.ERROR, message, 0, false, unit));
+	void publishError(final Solvis solvis,  final String clientId, final String message) {
+		MqttData data = new MqttData(TopicType.CLIENT_ERROR, solvis, clientId, message, 0, false);
+		this.publish(data);
 	}
 
 	MqttData getLastWill() {
@@ -356,7 +352,7 @@ public class Mqtt {
 
 		@Override
 		public void sendCommandError(final String message) {
-			publishError(this.clientId, message, this.getSolvis() != null ? this.getSolvis().getUnit() : null);
+			publishError(this.getSolvis(), this.clientId, message);
 			logger.info(message);
 
 		}

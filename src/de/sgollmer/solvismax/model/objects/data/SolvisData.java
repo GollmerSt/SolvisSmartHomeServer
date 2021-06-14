@@ -315,8 +315,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 		Helper.Boolean bool = data.getBoolean();
 		if (bool == Helper.Boolean.UNDEFINED) {
-			throw new TypeException(
-					"TypeException: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
+			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <BooleanValue>");
 		}
 		return bool;
 	}
@@ -561,8 +560,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				return null;
 			}
 			String value = this.getDescription().normalize(this.getData()).toString();
-			return new MqttData(this.getSolvis(), TopicType.UNIT_CHANNEL_DATA.formatSuffix(this.getName()), value,
-					0, true);
+			return new MqttData(TopicType.UNIT_CHANNEL_DATA, this.solvis, this.getName(), value, 0, true);
 		}
 
 		public SingleValue toSingleValue(final SingleData<?> data) {

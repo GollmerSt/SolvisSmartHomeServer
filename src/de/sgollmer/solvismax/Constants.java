@@ -180,6 +180,7 @@ public class Constants {
 		public static final int MAX_CONNECTION_REPEAT_TIME = 120000;
 		public static final String CONTROL = "gui_access";
 		public static final Pattern CHANNEL_NAME_FROM = Pattern.compile("([A-Z]\\d+):(.*)");
+		public static final String[] EMPTY_ARRAY = new String[0];
 	}
 
 	public static class Debug {

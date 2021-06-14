@@ -49,7 +49,7 @@ public class MqttThread extends Helper.Runnable {
 				options.setSocketFactory(sslSocketFactory);
 			}
 			MqttData lastWill = this.mqtt.getLastWill();
-			String topic = this.mqtt.topicPrefix + '/' + lastWill.topicSuffix;
+			String topic = lastWill.getTopic(this.mqtt);
 			options.setWill(topic, lastWill.getPayLoad(), lastWill.getQoS(this.mqtt.publishQoS), lastWill.isRetained());
 			options.setMaxInflight(Constants.Mqtt.MAX_INFLIGHT);
 			options.setAutomaticReconnect(true);

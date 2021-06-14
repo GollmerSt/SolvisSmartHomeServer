@@ -24,14 +24,22 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 
 public enum TopicType {
+
+	// final String[] cmp, final String suffix, final boolean hasClientId, final
+	// boolean hasUnitId,
+	// final boolean hasChannelId, Command command, final Format format, final
+	// String comment)
+
 	SERVER_META(new String[] { Constants.Mqtt.SERVER }, Constants.Mqtt.META_SUFFIX, //
 			false, false, false, null, Format.NONE, "Meta description of the server commands"), //
 	SERVER_COMMAND(new String[] { Constants.Mqtt.SERVER }, Constants.Mqtt.CMND_SUFFIX, //
 			true, false, false, Command.SERVER_COMMAND, Format.STRING, "Server command"), //
-	SERVER_ONLINE(new String[] { Constants.Mqtt.SERVER, Constants.Mqtt.ONLINE_STATUS }, null, //
+	SERVER_ONLINE(new String[] { Constants.Mqtt.SERVER }, Constants.Mqtt.ONLINE_STATUS, //
 			false, false, false, null, Format.NONE, "Online status of the server"), //
-	CLIENT_ONLINE(new String[] { Constants.Mqtt.ONLINE_STATUS }, null, //
+	CLIENT_ONLINE(null, Constants.Mqtt.ONLINE_STATUS, //
 			true, false, false, Command.CLIENT_ONLINE, Format.BOOLEAN, "Online status of the Smarthome system"), //
+	CLIENT_ERROR(null, Constants.Mqtt.ERROR, //
+			true, false, false, null, Format.BOOLEAN, "Online status of the Smarthome system"), //
 	UNIT_SERVER_META(new String[] { Constants.Mqtt.SERVER }, Constants.Mqtt.META_SUFFIX, //
 			false, true, false, null, Format.NONE, "Meta description of the unit related server commands"), //
 	UNIT_SERVER_COMMAND(new String[] { Constants.Mqtt.SERVER }, Constants.Mqtt.CMND_SUFFIX, //
@@ -45,20 +53,20 @@ public enum TopicType {
 			"Meta description of the channel debug command (empty)"), //
 	UNIT_DEBUG_CHANNEL_COMMAND(new String[] { Constants.Mqtt.DEBUG_CHANNEL_PREFIX }, Constants.Mqtt.CMND_SUFFIX, //
 			true, true, false, Command.DEBUG_CHANNEL, Format.STRING, "Debug command"), //
-	UNIT_STATUS(new String[] { Constants.Mqtt.STATUS }, null, //
+	UNIT_STATUS(null, Constants.Mqtt.STATUS , //
 			false, true, false, null, Format.NONE, "Status of the unit (e.g. connection, power off)"), //
-	UNIT_HUMAN(new String[] { Constants.Mqtt.HUMAN_ACCESS }, null, //
+	UNIT_HUMAN(null, Constants.Mqtt.HUMAN_ACCESS , //
 			false, true, false, null, Format.NONE, "Human access status of the unit (e.g. user, service)"), //
-	UNIT_CONTROL(new String[] { Constants.Mqtt.CONTROL }, null, //
+	UNIT_CONTROL(null, Constants.Mqtt.CONTROL , //
 			false, true, false, null, Format.NONE, "Execution status of the Gui accesses"), //
 	// Channel must be at the end of the list, because the topics are nou unique
-	UNIT_CHANNEL_META(new String[0], Constants.Mqtt.META_SUFFIX, //
+	UNIT_CHANNEL_META(null, Constants.Mqtt.META_SUFFIX, //
 			false, true, true, null, Format.NONE, "Meta description of channel {}"), //
-	UNIT_CHANNEL_COMMAND(new String[0], Constants.Mqtt.CMND_SUFFIX, //
+	UNIT_CHANNEL_COMMAND(null, Constants.Mqtt.CMND_SUFFIX, //
 			true, true, true, true, true, Command.SET, Format.FROM_META, "Set value of channel {}"), //
-	UNIT_CHANNEL_UPDATE(new String[0], Constants.Mqtt.UPDATE_SUFFIX, //
+	UNIT_CHANNEL_UPDATE(null, Constants.Mqtt.UPDATE_SUFFIX, //
 			true, true, true, false, true, Command.GET, Format.NONE, "Update of channel {}"), //
-	UNIT_CHANNEL_DATA(new String[0], Constants.Mqtt.DATA_SUFFIX, //
+	UNIT_CHANNEL_DATA(null, Constants.Mqtt.DATA_SUFFIX, //
 			false, true, true, null, Format.NONE, "Current data of channel {}"); //
 
 	// Keinen Metas für letzten 3?
@@ -93,13 +101,13 @@ public enum TopicType {
 	private TopicType(final String[] cmp, final String suffix, final boolean hasClientId, final boolean hasUnitId,
 			final boolean hasChannelId, final boolean onlyWriteChannels, final boolean onlyPollingChannel,
 			Command command, final Format format, final String comment) {
-		this.parts = cmp;
+		this.parts = cmp==null?Constants.Mqtt.EMPTY_ARRAY:cmp;
 		this.suffix = suffix;
 		this.hasClientId = hasClientId;
 		this.hasUnitId = hasUnitId;
 		this.hasChannelId = hasChannelId;
 		this.position = (hasClientId ? 1 : 0) + (hasUnitId ? 1 : 0) + (hasChannelId ? 1 : 0);
-		this.partCnt = this.position + cmp.length + (this.suffix != null ? 1 : 0) + 1;
+		this.partCnt = this.position + this.parts.length + (this.suffix != null ? 1 : 0) + 1;
 		this.command = command;
 		this.format = format;
 		this.onlyWriteChannels = onlyWriteChannels;
@@ -162,20 +170,20 @@ public enum TopicType {
 		return this.hasUnitId;
 	}
 
-	public String[] getTopicParts(Instances instances, final Solvis solvis, final String channelId, boolean base) {
+	public String[] getTopicParts(final Mqtt mqtt, final Solvis solvis, final String channelId, boolean base) {
 		int length = this.partCnt - (base && this.suffix != null ? 1 : 0) - (base && this.hasClientId ? 1 : 0);
 		String[] parts = new String[length];
 		int i = 0;
 
-		if (instances == null) {
-			logger.error("Progarmming error: Instances object is necessary, but null");
+		if (mqtt == null) {
+			logger.error("Progarmming error: Mqtt object is necessary, but null");
 			return null;
 		}
 
-		parts[i++] = instances.getMqtt().getTopicPrefix();
+		parts[i++] = mqtt.getTopicPrefix();
 
 		if (this.hasClientId && !base) {
-			parts[i++] = instances.getMqtt().getSmartHomeId();
+			parts[i++] = mqtt.getSmartHomeId();
 		}
 		if (this.hasUnitId) {
 			if (solvis == null) {
@@ -203,10 +211,10 @@ public enum TopicType {
 		return parts;
 	}
 
-	public String[] getTopicParts(Instances instances, final Solvis solvis, final String channelId) {
-		return this.getTopicParts(instances, solvis, channelId, false);
+	public String[] getTopicParts(final Mqtt mqtt, final Solvis solvis, final String channelId) {
+		return this.getTopicParts(mqtt, solvis, channelId, false);
 	}
-
+	
 	private static String getTopic(String[] parts) {
 		StringBuilder builder = new StringBuilder(parts[0]);
 
@@ -267,7 +275,7 @@ public enum TopicType {
 		}
 	}
 
-	public TopicData getTopicData(Instances instances, Solvis solvis, SolvisData data) {
+	public TopicData getTopicData(final Mqtt mqtt, final Solvis solvis, final SolvisData data) {
 		TopicData topicData = null;
 		if (this.hasChannelId()) {
 			if (data == null) {
@@ -283,15 +291,15 @@ public enum TopicType {
 				if (smartHomeData != null && !data.isDontSend()) {
 					String name = formatChannelSubscribe(smartHomeData.getName());
 					String comment = this.getComment().replace("{}", "<" + name + ">");
-					String[] parts = this.getTopicParts(instances, solvis, name);
-					String[] baseParts = this.getTopicParts(instances, solvis, name, true);
+					String[] parts = this.getTopicParts(mqtt, solvis, name);
+					String[] baseParts = this.getTopicParts(mqtt, solvis, name, true);
 					topicData = new TopicData(getTopic(parts), parts, baseParts, this.suffix, this.isPublish(),
 							writable, comment);
 				}
 			}
 		} else {
-			String[] parts = this.getTopicParts(instances, solvis, null);
-			String[] baseParts = this.getTopicParts(instances, solvis, null, true);
+			String[] parts = this.getTopicParts(mqtt, solvis, null);
+			String[] baseParts = this.getTopicParts(mqtt, solvis, null, true);
 			topicData = new TopicData(getTopic(parts), parts, baseParts, this.suffix, this.isPublish(), false,
 					this.getComment());
 		}
@@ -310,7 +318,7 @@ public enum TopicType {
 
 		for (TopicType type : values()) {
 			if (!type.isUnitDependend()) {
-				add(out, type.getTopicData(instances, null, null));
+				add(out, type.getTopicData(instances.getMqtt(), null, null));
 			}
 		}
 		for (Solvis solvis : instances.getUnits()) {
@@ -320,10 +328,10 @@ public enum TopicType {
 				if (type.isUnitDependend()) {
 					if (type.hasChannelId()) {
 						for (SolvisData data : list) {
-							add(out, type.getTopicData(instances, solvis, data));
+							add(out, type.getTopicData(instances.getMqtt(), solvis, data));
 						}
 					} else {
-						add(out, type.getTopicData(instances, solvis, null));
+						add(out, type.getTopicData(instances.getMqtt(), solvis, null));
 					}
 				}
 			}
@@ -342,7 +350,7 @@ public enum TopicType {
 			for (SolvisData data : list) {
 				boolean writable = data.getDescription().isWriteable();
 				if (writable) {
-					add(out, type.getTopicData(instances, solvis, data));
+					add(out, type.getTopicData(instances.getMqtt(), solvis, data));
 				}
 			}
 		}
@@ -373,8 +381,8 @@ public enum TopicType {
 	public static String formatChannelPublish(final String channelId) {
 		return channelId.replace('.', ':');
 	}
-		
-		public static String formatChannelSubscribe(final String channelId) {
+
+	public static String formatChannelSubscribe(final String channelId) {
 		return channelId.replace(':', '.');
 	}
 

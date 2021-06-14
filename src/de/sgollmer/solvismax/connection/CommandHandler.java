@@ -369,6 +369,10 @@ public class CommandHandler {
 		}
 
 		String name = parts[0].trim();
+		
+		if ( name == null || name.isEmpty() ) {
+			return;
+		}
 
 		Solvis solvis = receivedData.getSolvis();
 

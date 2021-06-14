@@ -228,7 +228,7 @@ public class IoBroker {
 		writer.append("'\n]\n\n");
 
 		String connection = "'" + this.mqttInterface + ".info.connection" + "'";
-		TopicData online = TopicType.CLIENT_ONLINE.getTopicData(instances, null, null);
+		TopicData online = TopicType.CLIENT_ONLINE.getTopicData(instances.getMqtt(), null, null);
 		String onlinePathWInterface = this.catWithSeparator(true, online.getBaseParts(), online.getSuffix(), '.');
 
 		writer.append("if ( getState(" + connection + ") ) {\n");

@@ -100,8 +100,8 @@ public class ChannelInstance implements IInstance {
 	MqttData getMqttMeta() {
 		de.sgollmer.solvismax.connection.transfer.ChannelDescription meta = new de.sgollmer.solvismax.connection.transfer.ChannelDescription(
 				this);
-		return new MqttData(this.solvis, TopicType.UNIT_CHANNEL_META.formatSuffix(this.getName()), meta.getValue().toString(),
-				0, true);
+		return new MqttData(TopicType.UNIT_CHANNEL_META,
+				this.solvis, this.getName(), meta.getValue().toString(), 0, true);
 	}
 
 }

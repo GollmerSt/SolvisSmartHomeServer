@@ -372,9 +372,23 @@ public class Helper {
 
 		return new Times(now, calendar.getTimeInMillis());
 	}
-	
+
 	public static String escaping(String text) {
 		return text.replace("\"", "\\\"");
+	}
+
+	public static String cat(String[] array, String separator) {
+		StringBuilder builder = new StringBuilder();
+		boolean first = true;
+		for (String part : array) {
+			if (first || separator == null) {
+				first = false;
+			} else {
+				builder.append(separator);
+			}
+			builder.append(part);
+		}
+		return builder.toString();
 	}
 
 }
