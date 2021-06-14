@@ -412,7 +412,12 @@ public class LogManager {
 		DelayedMessage delayedMessage = null;
 
 		if (this.initialized && !this.bufferMessages) {
-			loggerExt.log(level, message, throwable);
+			try {
+				loggerExt.log(level, message, throwable);
+			} catch (Throwable t) {
+				System.err.println("The log of <" + message + "> creates a error in the log library. Ignored.");
+				t.printStackTrace();
+			}
 		} else if (!this.initialized || this.bufferMessages) {
 			delayedMessage = new DelayedMessage(level, message, loggerExt, errorCode);
 		}

@@ -436,7 +436,7 @@ public class CommandHandler {
 			logger.debug("Setting the channel <" + name + "> ignored to prevent feedback loops.");
 		} else {
 			logger.info("Command <SET> received");
-			logger.info("Channel <" + name + "> will be set to " + singleData.toString() + ">.");
+			logger.info("Channel <" + name + "> will be set to <" + singleData.toString() + ">.");
 		}
 	}
 
