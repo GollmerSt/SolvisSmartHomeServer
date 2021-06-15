@@ -281,7 +281,7 @@ public class IoBroker {
 
 		writer.append("       });\n\n");
 
-		writer.append("        // Wert wird durch ioBroker web.0 geändert\n");
+		writer.append("        // Wert wird durch ioBroker geändert\n");
 		writer.append("        on({id: combined, change: 'ne'}, function(obj) {\n");
 		writer.append("            setState(solviswrite, (obj.state ? (obj.state.val === true ?"
 				+ " 1 : (obj.state.val === false ? 0 : obj.state.val)) : ''), false);\n");

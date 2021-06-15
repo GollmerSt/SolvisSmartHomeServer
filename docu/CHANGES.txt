@@ -93,7 +93,9 @@ Version 01.04.00
     14.06.2021  Reheating: Kein Auto-Read after Write, sonst geht die Information "not required"
                 verloren.
                 
-                
+    15.06.2021  Beim Nachstellen der Uhr muss der Status CONTROL_WRITE_ONGOING gesetzt werden.
+    
+                Spalte Direction in der CSV-Dokumentation der MQTT-Topics hinzugefügt.             
 
 
 Version 01.03.00

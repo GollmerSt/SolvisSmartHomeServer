@@ -61,5 +61,12 @@ public class CommandClock extends Command {
 	public String toString() {
 		return "Setting of Clock";
 	}
+	
+	@Override
+	public Type getType() {
+		return Type.CONTROL_WRITE;
+	}
+
+
 
 }

@@ -205,13 +205,19 @@ public class Csv {
 		this.writer.append(HEADER2);
 		this.writer.append(HEADER1);
 		this.writer.write(Constants.CRLF);
-		this.writer.append("topic;");
+		this.writer.append("direction;topic;comment;");
 		this.writer.write(Constants.CRLF);
 		this.writer.write(Constants.CRLF);
 		
 		Collection< TopicData> topics = TopicType.getTopicDatas(instances);
 		
 		for (TopicData topic : topics) {
+			if ( topic.isPublish()) {
+				this.writer.append("publish");
+			} else {
+				this.writer.append("subscribe");
+			}
+			this.writer.append(';');
 			this.writer.append(topic.getTopic());
 			this.writer.append(';');
 			this.writer.append(topic.getComment());
