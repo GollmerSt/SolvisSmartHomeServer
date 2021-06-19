@@ -4,117 +4,121 @@ Version 01.04.00
 
     22.05.2021  Eine neue FHEM-Installation zeigte ein Problem des Servers bei JSON_Paketen mit
                 Floating-Point-Werten.
-                
+
     23.05.2021  Bugfix: Wiederholte man beim Fhem-Client die Define-Routine, beispielsweise bei
                 Aenderung der Server-IP-Adresse, wiederholte der Client anschliessend immer wieder
                 den Verbindungswiederaufbau.
-                
+
     24.05.2021  Bugfix: Echo-Inhibit funktionierte wegen eines Rundungsfehlers nicht immer.
-    
+
     25.05.2021  Bugfix: Das Disablen des SelectScreen-Befehls mit "NONE" ging nicht.
-    
+
                 Erste lauffaehige Version von WW-Nachheizen, aber nur Zwischenstand.
-                
+
     26.05.2021  Service-Tag im control.xml durch Screen-Attribut ersetzt und saemtliche
                 Installateur-Screens mit diesem versehen. Dadurch wird auch bei einer groesseren
                 WatchDog-Zeit der Service sicher erkannt.
-                
+
                 Service-Client-Schnittstelle geaendert (Version 3). Mode-Beschreibung geaendert.
                 Einzelne Mode-Werte sind nun entweder "nur lesbar", "nur beschreibbar" oder
                 "Beides". Diese Aenderung wurde durch das WW-Nachheizen erforderlich.
                 Dort kann nur "heating" geschrieben werden (der Start des Nachheizens kann man
-                nicht rueckgaengig machen, es sei denn man veraendert die WW-Temperatur). Gelesen kann
-                "off", "heating" oder "not_required".
-                
+                nicht rueckgaengig machen, es sei denn man veraendert die WW-Temperatur). Gelesen
+                kann "off", "heating" oder "not_required".
+
                 Mehrere Reheating bugs gefixt.
-                
+
     27.05.2021  Cvs-Doku-Generierung ergaenzt.
-                
+
                 "Not_required" bei dem WW-Nachheizen direkt aus den Anlagenwerten ermittelt (ohne
                 Umweg ueber das Gui). Die dafuer notwendigen Anlagenparameter koennen nur aus dem
                 Installateur-Bildschirmen gelesen werden. Daher ist dies nur moeglich, wenn der
                 Admin-Mode in der base.xml auf "true" gesetzt ist. Anderenfalls wird "not_required"
                 erst nach dem Versuch des Nachheizen gemeldet, was wegen der Bildschirmoperationen
                 laenger dauert.
-                
+
                 Ein Problem beim Beenden wurde gefixt, das bewirkte, dass manchmal kein Backup der
                 letzten Messwerte geschrieben wurde.
 
     28.05.2021  Der "Button", welcher den Status des Nachheizens anzeigt, muss als "ignored"
                 deklariert werden, da andernfalls beim Beenden des Nachheizens faelschlicherweise
                 ein Anwenderzugriff angenommen wird.
-                
-    29.05.2021  Bugfix: Bei der Ausfuehrung einer der FHEM-Set-Befehle GUI_COMMANDS_DISABLE und
-                GUI_COMMANDS_ENABLE gab es bei einer aktiven MQTT-Verbindung aber ohne MQTT-Client
-                ein Verbindungsabbruch zum FHEM-Client.
-                
+
+    29.05.2021  Bugfix: Bei der Ausfuehrung einer der FHEM-Set-Befehle GUI_COMMANDS_DISABLE
+                und GUI_COMMANDS_ENABLE gab es bei einer aktiven MQTT-Verbindung aber ohne
+                MQTT-Client ein Verbindungsabbruch zum FHEM-Client.
+
     31.05.2021  Logging ueberarbeitet und dabei ein Logging-Buffer implementiert, um zeitweilig
                 das Logging zu puffern.
-                
+
     01.06.2021  Learning verbessert: Wird beim Mode-learning erkannt, dass das Symbol sich nicht
                 geaendert hat, wird noch etwas laenger auf die Reaktion des Touches gewartet.
-                
+
     02.06.2021  Fix-Values in der base.xml eingefuehrt. Mit ihnen kann man bestimmte Kanaele mit
                 einem Wert vorbelegen, ohne dass er ueber das Gui der Solvis Control 2 vom Server
                 ausgelesen werden muss. Beispiel: C47.Puffer_dT_Start, was die Funktion Nachheizen
                 (C46.WarmwasserNachheizen) beschleunigen kann.
-                
-    03.06.2021  Nachheizen wird auch nach einem manuellen Anstossen erkannt (mit Einschraenkungen).
-    
-                Die SolvisStatus CONTROL_WRITE_ONGOING, CONTROL_READ_ONGOING und CONTROL_FINISHED
-                hinzugefuegt, welche Anzeigen, dass noch Gui-Befehle ausgefuehrt werden.
-                
+
+    03.06.2021  Nachheizen wird auch nach einem manuellen Anstossen erkannt (mit
+                Einschraenkungen).
+
+                Die SolvisStatus CONTROL_WRITE_ONGOING, CONTROL_READ_ONGOING und
+                CONTROL_FINISHED hinzugefuegt, welche Anzeigen, dass noch Gui-Befehle ausgefuehrt
+                werden.
+
     04.06.2021  Werden Gui-Kanaele gelesen, erfolgt immer ein Transfer der gelesenen Daten zum
                 Smarthome-System, auch dann, wenn sie nicht veraendert wurden. Bisher erfolgte das
                 nur bei Aenderungen.
-                
+
     05.06.2021  Bugfix: Auch wenn das Nachheizen nicht erforderlich war und einen Gui-Ansteuerung
                 nicht erforderlich war, erfolgte ein Gui-Zugriff.
-                
-    06.06.2021  SolvisState CONTROL_MONITORING ergaenzt. Dieser Status wird dann gemeldet, wenn ein
-                Gui-Monitoring beginnt.
-                
+
+    06.06.2021  SolvisState CONTROL_MONITORING ergaenzt. Dieser Status wird dann gemeldet,
+                wenn ein Gui-Monitoring beginnt.
+
     07.06.2021  DebugChannel-Command hinzugefuegt. Auf diese Weise kann man zum Debuggen der
                 SmartHome-System-Anwendung gezielt Anlagen-Zustaende simulieren, ohne dass man die
                 Anlage selber in den Zustand bringen muss.
-                
+
     08.06.2021  Reheating-Strategy vereinfacht. DebugChannel wirkt nun auch auf diese
                 Strategy.
 
     12.06.2021  Bei abgeschalteter Mqtt-Schnittstelle (enable="false") gab es bei dem Beenden des
                 Programmes eine Null-Pointer-Exception, welche dazu fuehrte, dass das Programm nicht
                 wirklich beendet wurde, da einige Threads noch weiterhin liefen. Gefixt.
-                
+
                 Automatische Dokumentation um die definierten Mqtt-Topics einschl. eines
                 Kurzkommentars erweitert.
-                
+
     19.06.2021  FHEM-Modul-interne Dokumentation aktualisiert.
-                
+
     13.06.2021  MqttTopic-Definitionen zentralisiert.
-    
+
     14.06.2021  Reheating: Kein Auto-Read after Write, sonst geht die Information "not required"
                 verloren.
-                
-    15.06.2021  Beim Nachstellen der Uhr muss der Status CONTROL_WRITE_ONGOING gesetzt werden.
-    
-                Spalte Direction in der CSV-Dokumentation der MQTT-Topics hinzugefuegt.             
+
+    15.06.2021  Beim Nachstellen der Uhr muss der Status CONTROL_WRITE_ONGOING gesetzt
+                werden.
+
+                Spalte Direction in der CSV-Dokumentation der MQTT-Topics hinzugefuegt.
 
 
 Version 01.03.00
 
-    17.05.2021  CSV-File noch um die Dokumentation ueber den Serverbefehl SELECT_SCREEN auswaehlbaren
-                Screens ergaenzt und dabei auch den Namen dieses Csv-Files geaendert.
-                
+    17.05.2021  CSV-File noch um die Dokumentation ueber den Serverbefehl SELECT_SCREEN
+                auswaehlbaren Screens ergaenzt und dabei auch den Namen dieses Csv-Files
+                geaendert.
+
                 Synchronisierung funktionierte nach dem Ausbau der Correction nicht mehr, gefixt.
-                
+
     18.05.2021  Weiteres Synchronisationsproblem erkannt und gefixt, das auftritt, wenn der Brenner
                 > 6min laeuft.
-                
+
                 Der Glitch-Inhibit ist nun nicht mehr auf einen feste Zeit sondern Scan-Intervall
                 bezogen.
-                
+
     20.05.2021  Konfigurationen mit den Solvis-Anlageschemas fuer SolvisMax6 und SolvisMax 7
-                verglichen und korrigiert. 
+                verglichen und korrigiert.
 
 
 
@@ -133,45 +137,47 @@ Version 01.03.00 rc1
 
     25.04.2021  Die stuendliche Synchronisation bewirkte einen fehlerhaften Zustand, wenn der Wert
                 auf der Solvis-Control schon incrementiert war (Abfragezeitpunkt verpasst).
-                
+
                 Wird die stuendliche Synchronisation verpasst, wird nun das Beobachtungsfenster von
                 mal zu mal vergroessert. Es wird verkleinert, wenn sie erfolgreich war.
 
-    26.04.2021	Es gibt doch sehr viele unterschiedliche Konfigurationen der Anlagen SolvisMax 6
+    26.04.2021  Es gibt doch sehr viele unterschiedliche Konfigurationen der Anlagen SolvisMax 6
                 und SolvisMax 7. Die waeren mit dem bisherigen Verfahren nur mit grossem Aufwand
                 zu vereinen. Es wurde nun einen weitere Beschreibungsebene eingefuehrt, in der die
                 Zuordnung der Kanaele erfolgt. Diese Beschreibung kann im base.xml auch vom User
                 noch modifiziert werden, so dass auch der User bei Bedarf noch Hand anlegen kann.
-                
+
     05.05.2021  Die Konfiguration der Anlage wurde nun vereinfacht. Der Anwender muss nicht mehr
                 eine Bitmaske definieren sondern die verschiedenen Konfigurationsmoeglichkeiten
                 erfolgen durch verschiedene Attribute mit den entsprechenden Namen und Inhalten.
-                
-                Die Ausgabe der Kanaele der eingestellten Konfiguration samt Informationen - wie 
+
+                Die Ausgabe der Kanaele der eingestellten Konfiguration samt Informationen - wie
                 Mqtt-Topic etc. im Csv-Format ist nun moeglich. Die Dokumentation in der Wiki wird
                 daher entfallen.
-    
+
     07.05.2021  Correction-Algorithmus wieder ausgebaut, da die ermittelte Abweichungen sich nicht
                 asymptotisch an einen bestimmten Wert annaehern.
-                
+
     07.05.2021  Makefile angepasst
-    
+
     11.05.2021  Kanal .isSerie7 entfernt
-    
+
     11.05.2021  IoBroker-Dateien werden nun automatisch per CLI erstellt
-    
+
     11.05.2021  Bugfix: Wird ueber die MQTT-Schnittstelle versucht ein Kanal mit einem unbekannten
                 Namen zu setzen, fuehrte das zu einer Nullpointer-Exception und einem Wiederaufbau
                 der MQTT-Schnittstelle. Eine vernuenftige Fehlermeldung erfolgte weder ueber die
                 MQTT-Schnittstelle noch den Log.
-                
-    12.05.2021  Die Daten fuer die generierten IoBroker-Dateien werden nun aus der base.xml gelesen.
-    
+
+    12.05.2021  Die Daten fuer die generierten IoBroker-Dateien werden nun aus der base.xml
+                gelesen.
+
     12.05.2021  Bugfix: Ein unbekannter Server-Befehl ueber die MQTT-Schnittstelle bewirkt eine
                 Nullpointer-Exception und damit ein Neuaufbau der MQTT-Verbindung.
-                
-    15.05.2021  Kanaele C29.WaermemengeSolar_kWh und C30.WaermemengeWW_kWh hinzugefuegt. Die sind nur
-                bei SolvisMax7 mit 2 Zaehlfunktion-Bildschirmen definiert 
+
+    15.05.2021  Kanaele C29.WaermemengeSolar_kWh und C30.WaermemengeWW_kWh
+                hinzugefuegt. Die sind nur bei SolvisMax7 mit 2 Zaehlfunktion-
+                Bildschirmen definiert
 
 
 
@@ -236,12 +242,12 @@ Version 01.02.11 rc1
 
     13.04.2021  Standby-Verhalten bei dem Auslesen/Setzen bestimmter Kanaele verbessert
                 (Kurve/Fix).
-    
-    16.04.2021	Synchronisierung nochmals geaendert. Das verpassen der Synchronisation wird nun
-                erkannt.
-                
+
+    16.04.2021  Synchronisierung nochmals geaendert. Das verpassen der Synchronisation wird
+                nun erkannt.
+
     17.04.2021  DefaultCorrection fuer Zaehlerwerte implementiert
-                
+
     18.04.2021  Die Zaehlfunktionen sind bei der SolvisMax 7 bei bestimmten Firmwareversioenen auf
                 2 Bildschirmen verteilt. Es wurde daher ein weiteres Bit in der Configuration-Mask
                 reserviert (0x0100) und die Steuerdatei "control.xml" entsprechend erweitert.
@@ -262,8 +268,8 @@ Version 01.02.10
     13.02.2021  Mittels "IgnordChannels" im base.xml kann nun die zum Client/Mqtt-Broker
                 gesendeten Kanaele schon auf der Server-Seite reduziert werden.
 
-    22.02.2021  Waehrend EquipmentOnOf-Ueberwachung erfolgt faelschlicherweise in manchen Faellen
-                ein Restore-Screen.
+    22.02.2021  Waehrend EquipmentOnOf-Ueberwachung erfolgt faelschlicherweise in manchen
+                Faellen ein Restore-Screen.
 
 
 
@@ -393,18 +399,18 @@ Version 01.02.06
 
 Version 01.02.05
 
-    08.10.2020  Es hat sich gezeigt, dass manchmal das Umschalten auf andere Screen vom Home-Screen
-                auf der SolvisControl 2 nicht richtig funktioniert. Das hat zur Folge, dass der
-                Bildschirm Home nach wie vor zu sehen ist, jedoch in der Button-Leiste links ein
-                anderer Button gedrueckt ist (weisser Hintergrund). Dadurch erkennt der Server den
-                Home-Screen nicht mehr. Durch diese fehlende Erkennung kann auch die Anzeige der
-                Uhr nicht mehr ausgeblendet werden und der Server erkennt staendige Aenderung auf
-                der Anzeige. Er nimmt an, es laegen staendig User-Eingriffe vor und der GUI-Access
-                ist entsprechend nicht mehr moeglich. Dieses "Haengen-Bleiben" der Buttons wurde
-                nicht nur in der Button-Leiste beobachtet, es ist bei allen Buttons moeglich. Man
-                kann den Frehler mit der Web-Oberflaeche provozieren, in dem man bei gedrueckter
-                Maustaste den Mauszeiger wegzieht, so dass das Loslassen nicht auf dem Button
-                erfolgt.
+    08.10.2020  Es hat sich gezeigt, dass manchmal das Umschalten auf andere Screen vom Home-
+                Screen auf der SolvisControl 2 nicht richtig funktioniert. Das hat zur Folge,
+                dass der Bildschirm Home nach wie vor zu sehen ist, jedoch in der Button-Leiste
+                links ein anderer Button gedrueckt ist (weisser Hintergrund). Dadurch erkennt
+                der Server den Home-Screen nicht mehr. Durch diese fehlende Erkennung kann auch
+                die Anzeige der Uhr nicht mehr ausgeblendet werden und der Server erkennt
+                staendige Aenderung auf der Anzeige. Er nimmt an, es laegen staendig User-
+                Eingriffe vor und der GUI-Access ist entsprechend nicht mehr moeglich. Dieses
+                "Haengen-Bleiben" der Buttons wurde nicht nur in der Button-Leiste beobachtet,
+                es ist bei allen Buttons moeglich. Man kann den Fehler mit der Web-Oberflaeche
+                provozieren, in dem man bei gedrueckter Maustaste den Mauszeiger wegzieht,
+                so dass das Loslassen nicht auf dem Button erfolgt.
                 Es kommt daher, dass die SolvisRemote manchmal den Release einer Taste verschluckt.
                 NUR eine andere Definition fuer den Home-Screen scheidet aus, da auch eine andere
                 Defintion von diesem Problem betroffen waere.
@@ -616,10 +622,10 @@ Version 01.02.03 rc1
     16.08.2020  control.xml um die Definitionen des 3. Heizkreises ergaenzt. Die
                 ioBroker-Objektliste entsprechend ergaenzt.
 
-    15.08.2020  Bei dem Server-Befehl "UPDATE_CHANNELS" ist es ausreichend, die Read-Only-Channels
-                zu lesen. Die anderen Kanaele sind immer aktuell, da sie nur durch den Anwender
-                veraendert werden koennen. Der Anwenderzugriff wird separat ueberwacht und sind
-                immer aktuell.
+    15.08.2020  Bei dem Server-Befehl "UPDATE_CHANNELS" ist es ausreichend, die Read-Only-
+                Channels zu lesen. Die anderen Kanaele sind immer aktuell, da sie nur durch
+                den Anwender veraendert werden koennen. Der Anwenderzugriff wird separat
+                ueberwacht und sind immer aktuell.
 
     16.08.2020  Bugfix: Bei einem nicht passenden SET-Wert wurde zwar der naechst moegliche Wert
                 als Sollwert gesetzt, der wirklich eingestellte Wert wurde jedoch nicht an die
@@ -680,10 +686,10 @@ Version 01.02.01
 
                 Reihenfolge beim Update der GUI-Channels optimiert.
 
-    11.08.2020  Ist nach einem Anwenderzugriff die Sollwertvorgaben fuer Nacht-/Tages-Temperaturen
-                ausgewaehlt geblieben, darf nicht - nach dem Holen der GUI-Werte - dieser
-                Bildschirm wieder restauriert werden, da es dabei moeglich ist, dass sich der
-                Heizkreismodus verstellt (siehe auch Aenderung vom 25.05.2020).
+    11.08.2020  Ist nach einem Anwenderzugriff die Sollwertvorgaben fuer Nacht-/Tages-
+                Temperaturen ausgewaehlt geblieben, darf nicht - nach dem Holen der GUI-Werte -
+                dieser Bildschirm wieder restauriert werden, da es dabei moeglich ist,
+                dass sich der Heizkreismodus verstellt (siehe auch Aenderung vom 25.05.2020).
 
                 Meldet die Solvis-Anlage einen Fehler auf der SolvisControl2 wird nun - neben der
                 Moeglichkeit des Mailversandes die Hardcopy in den Ordner "SolvisErrorImages"
@@ -788,9 +794,9 @@ Version 01.01.02
 
 Version 01.01.01
 
-    22.07.2020  Wird die MQTT-Verbindung zum SmartHomeServer hart getrennt, bewirkte der in diesem
-                Fall vom Broker gesendete "LastWill" eine Null-Pointer-Exception, so dass die
-                MQTT-Schnittstelle des Servers nicht mehr reagierte.
+    22.07.2020  Wird die MQTT-Verbindung zum SmartHomeServer hart getrennt, bewirkte der in
+                diesem Fall vom Broker gesendete "LastWill" eine Null-Pointer-Exception, so
+                dass die MQTT-Schnittstelle des Servers nicht mehr reagierte.
 
                 Die IoBroker-Objektliste enthielt noch ueberfluessige Objekte.
 
@@ -947,8 +953,8 @@ Version 01.00.09
                 entsprechende xsd-Datei realisiert. Damit ist sichergestellt, dass dem Server kein
                 fehlerhaftes oder zu altes xml-File einlesen muss.
 
-    11.05.2000  Server-Command UPDATE_CHANNELS hinzugefuegt. Er loest ein Aktualisieren saemtlicher
-                nur ueber das GUI erreichbare Kanaele aus.
+    11.05.2000  Server-Command UPDATE_CHANNELS hinzugefuegt. Er loest ein Aktualisieren
+                saemtlicher nur ueber das GUI erreichbare Kanaele aus.
 
                 control.xml bereinigt, es enthielt nicht mehr genutzte Einstellungen.
 
@@ -959,8 +965,8 @@ Version 01.00.09
 
 Version 01.00.08
 
-    08.05.2020  Wegen der Artefakte am Rand der Anzeige an manchen Anlagen wurden bisher je 3 Pixel
-                am Rand bei der Bildschirmschonererkennung nicht beruecksichtigt.
+    08.05.2020  Wegen der Artefakte am Rand der Anzeige an manchen Anlagen wurden bisher je
+                3 Pixel am Rand bei der Bildschirmschonererkennung nicht beruecksichtigt.
 
     06.05.2020  Ein Bug im Client gefixt. Die Laenge eines JSON-Pakets wurde fehlerhaft an den
                 Server uebergeben. Das fuehrte dazu, dass bei zwei direkt vom Client gesendete
@@ -992,8 +998,8 @@ Version 01.00.07
 
 Version 01.00.06
 
-    28.04.2020  Im Zusammenhang mit der Modbus-Ergaenzung ist auch die Laufzeitanforderung 2 nicht
-                mehr optional gewesen. Gefixt.
+    28.04.2020  Im Zusammenhang mit der Modbus-Ergaenzung ist auch die Laufzeitanforderung 2
+                nicht mehr optional gewesen. Gefixt.
 
                 Wird ein Control-Befehl verworfen, werden faelschlicherweise noch weitere nicht
                 abgearbeitete verworfen.
@@ -1248,9 +1254,9 @@ Version 00.10.02
                 Aenderungen am Client notwendig.
 
 
-    23.01.2020  Bug beim Setzen der Uhr behoben. Uhr wurde nicht mehr angeglichen, wenn der Server
-                in einem bestimmten Zeitintervall gestartet wurde und ein Abgleich der Uhr beim
-                Start notwendig war.
+    23.01.2020  Bug beim Setzen der Uhr behoben. Uhr wurde nicht mehr angeglichen, wenn der
+                Server in einem bestimmten Zeitintervall gestartet wurde und ein Abgleich
+                der Uhr beim Start notwendig war.
 
 
     25.01.2020  Error-Detection erweitert. Der Status der Solvis-Anlage ist auch dann in dem
@@ -1288,9 +1294,9 @@ Version 00.10.02
                 der Uhr im "base.xml"-File
 
 
-    04.02.2020  Der Watch-Dog muss auch zwischen den Kommandos ausgefuehrt werden, welche ueber
-                das GUI der SolvisControl gehen, andernfalls wird u.U. der Screen-Saver nicht
-                erkannt.
+    04.02.2020  Der Watch-Dog muss auch zwischen den Kommandos ausgefuehrt werden, welche
+                ueber das GUI der SolvisControl gehen, andernfalls wird u.U. der Screen-Saver
+                nicht erkannt.
 
                 Kleiner Bug bei der Synchronisation der Brenner-Laufzeit behoben. Screen blieb
                 im Synchronisationsfall bis zum Ende der Brenner-Laufzeit gelockt, auch wenn die
