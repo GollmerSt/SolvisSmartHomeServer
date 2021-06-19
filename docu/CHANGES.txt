@@ -38,7 +38,7 @@ Version 01.04.00
                 laenger dauert.
                 
                 Ein Problem beim Beenden wurde gefixt, das bewirkte, dass manchmal kein Backup der
-                letzten Messwerte geschrieben wurden.
+                letzten Messwerte geschrieben wurde.
 
     28.05.2021  Der "Button", welcher den Status des Nachheizens anzeigt, muss als "ignored"
                 deklariert werden, da andernfalls beim Beenden des Nachheizens faelschlicherweise
@@ -49,7 +49,7 @@ Version 01.04.00
                 ein Verbindungsabbruch zum FHEM-Client.
                 
     31.05.2021  Logging ueberarbeitet und dabei ein Logging-Buffer implementiert, um zeitweilig
-                das Logging zu puffern um.
+                das Logging zu puffern.
                 
     01.06.2021  Learning verbessert: Wird beim Mode-learning erkannt, dass das Symbol sich nicht
                 geaendert hat, wird noch etwas laenger auf die Reaktion des Touches gewartet.
@@ -75,10 +75,10 @@ Version 01.04.00
                 Gui-Monitoring beginnt.
                 
     07.06.2021  DebugChannel-Command hinzugefuegt. Auf diese Weise kann man zum Debuggen der
-                SmartHome-System-Anwendung gezielt Analgen-Zustaende simulieren, ohne dass man die
+                SmartHome-System-Anwendung gezielt Anlagen-Zustaende simulieren, ohne dass man die
                 Anlage selber in den Zustand bringen muss.
                 
-    08.06.2021  Reheating-Strategy mittels vereinfacht. DebugChannel wirkt nun auch auf diese
+    08.06.2021  Reheating-Strategy vereinfacht. DebugChannel wirkt nun auch auf diese
                 Strategy.
 
     12.06.2021  Bei abgeschalteter Mqtt-Schnittstelle (enable="false") gab es bei dem Beenden des
