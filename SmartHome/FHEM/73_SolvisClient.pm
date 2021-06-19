@@ -34,7 +34,10 @@
 #   00.02.21    26.02.2021  SCMP77              supports server format version >= 2.0
 #   00.02.22    23.05.2021  SCMP77              Eine define-Anweisung im laufenden Betrieb bewirkte eine ständige
 #                                                 Verbindungsaufbauwiederholung, da die Fehlerbehandlung unvollständig war.
-#   00.02.23    26.02.2021  SCMP77              Format 3 & SolvisStatus CONTROL_WRITE_ONGOING, CONTROL_READ_ONGOING, CONTROL_FINISHED supported
+#   00.02.23    19.06.2021  SCMP77              Format 3
+#                                               SolvisStatus CONTROL_WRITE_ONGOING, CONTROL_READ_ONGOING, CONTROL_FINISHED supported
+#                                               DebugChannel command supported
+#                                               Documentation updated
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -1423,26 +1426,26 @@ sub DbLog_splitFn {
         mittels FHEM zugreifen zu k&ouml;nnen, wird die
         <a href="https://www.solvis.de/solvisremote">SolvisRemote</a>
         ben&ouml;tigt. Sie ist ein Kommunikations-Ger&auml;t, mit einer
-        <a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/remote-mobile.png">Web-Oberfl&auml;che</a>.<BR>
-        <BR>
+        <a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/remote-mobile.png">Web-Oberfl&auml;che</a>.<BR/>
+        <BR/>
         Zur Nutzung des SolvisClient-Moduls, muss man mit dem
         <a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/Download/konfig-remote.zip">Konfigurations-Programm</a>
-        als erstes die IP-Adresse, den User und das Passwort definieren.<BR>
+        als erstes die IP-Adresse, den User und das Passwort definieren.<BR/>
         Wahlweise kann der Router die IP-Adresse vorgeben, dann sollte jedoch im Router f&uuml;r die
         <a href="https://www.solvis.de/solvisremote">SolvisRemote</a>
-        eine feste IP-Adresse festgelegt sein, damit der SolvisSmartHome-Server diese auch finden kann.<BR>
-        <BR>
+        eine feste IP-Adresse festgelegt sein, damit der SolvisSmartHome-Server diese auch finden kann.<BR/>
+        <BR/>
         Neben der <a href="https://www.solvis.de/solvisremote">SolvisRemote</a> ist noch der SolvisSmartHome-Server zu installieren und einzurichten,
         der Bestandteil des vorliegenden FHEM-Moduls ist. Gemäß der beiliegenden Anleitung ist dieser erst einzurichten und dort die Anlagenparameter
-        zu definieren.<BR>
-        <BR>
+        zu definieren.<BR/>
+        <BR/>
         Mit der Define-Anweisung des FHEM-Moduls wird dann eine Verbindung zum Server versucht.
-        Abh&auml;ngig, ob die Verbindung erfolgreich war, erfolgt eine entsprechende Meldung im Statusfeld.<BR>
-        Ist die Verbindung erfolgreich, wird der Client regelm&auml;&szlig;ig mit Daten der Heizungsanlage vom Server versorgt.<BR>
-        <BR>
+        Abh&auml;ngig, ob die Verbindung erfolgreich war, erfolgt eine entsprechende Meldung im Statusfeld.<BR/>
+        Ist die Verbindung erfolgreich, wird der Client regelm&auml;&szlig;ig mit Daten der Heizungsanlage vom Server versorgt.<BR/>
+        <BR/>
         Neben der Erfassung dieser Werte berechnet der Server noch aus diesen Werten die Brennerstarts und Brennerlaufzeit der beiden Brennerstufen.
-        Zusätzlich wird auch ein Reading des Brennerstatus berechnet sowie die Ruhestellung der Mischer.<BR>
-        <BR>
+        Zusätzlich wird auch ein Reading des Brennerstatus berechnet sowie die Ruhestellung der Mischer.<BR/>
+        <BR/>
         Folgende Readings werden zusätzlich berechnet:
       <ul>
         <ul>
@@ -1459,10 +1462,10 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>X10.LaufzeitSolarpumpe2_s</code> : </td><td align="left" valign="top">Laufzeit der Solarpumpe 2 (A07)</td></tr>
           </table>
         </ul>
-      </ul><BR><BR>
+      </ul><BR/><BR/>
         Daneben gibt es noch weitere Werte, welche aus dem GUI der SolvisControl mittels OCR ermittelt werden. Diese werden nur dann aktualisiert, wenn der Wert durch
-        einen GET/SET-Befehl ausgelesen/verändert wird. Sie sind also nicht immer auf dem aktuellen Stand.<BR>
-        <BR>
+        einen GET/SET-Befehl ausgelesen/verändert wird. Sie sind also nicht immer auf dem aktuellen Stand.<BR/>
+        <BR/>
         Folgende Readings werden aus der GUI ermittelt:
       <ul>
         <ul>
@@ -1501,9 +1504,9 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimale Vorlauftemperatur Heizkreis 2 </td></tr>
           </table>
         </ul>
-      </ul><BR><BR><BR><BR>
+      </ul><BR/><BR/><BR/><BR/>
         Auf folgende Weise kann man das Modul in FHEM einbinden und parametrisieren:
-        <BR><BR>
+        <BR/><BR/>
 
       <table>
         <tr><td><a name="SolvisClientDefine"></a><b>Define</b></td></tr>
@@ -1523,13 +1526,13 @@ sub DbLog_splitFn {
               IP-Addresse der SolvisSmartHome-Server vom DHCP-Server zugeteilt wurde. Sollte der Server auf dem Fhem-System laufen, kann auch "localhost:10735" eingetragen werden</td></tr>
           </table>
         </ul>
-      </ul><BR><BR>
+      </ul><BR/><BR/>
 
       <table>
         <tr><td><a name="SolvisClientSet"></a><b>Set</b></td></tr>
         <tr><td>
           <ul>
-            Die Set Funktion &auml;ndert eine Untermenge der Anlagen-Werte der Solvis. Aktuell sind die Ver&auml;nderungen folgender Werte m&ouml;glich:
+            Die Set Funktion &auml;ndert eine Untermenge der Anlagen-Werte der Solvis. Aktuell sind die Ver&auml;nderungen folgender Werte m&ouml;glich:<BR/><BR/
             <ul>
               <ul>
                 <table>
@@ -1560,7 +1563,7 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimale Vorlauftemperatur Heizkreis 2 </td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
@@ -1575,55 +1578,86 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> : </td><td align="left" valign="top">
                     Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
             <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
-                    Der Name des Wertes, welcher gesetzt werden soll. Z.B.: "<code>C08.Nachttemperatur_HK1</code>"<BR></td></tr>
+                    Der Name des Wertes, welcher gesetzt werden soll. Z.B.: "<code>C08.Nachttemperatur_HK1</code>"<BR/></td></tr>
             <tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
-                    Ein g&uuml;ltiger Wert.<BR></td></tr>
-          </table><BR>
-        </ul>
-            neben der SET-Befehle zur &Auml;nderung der obigen Anlagen-Werte, existieren noch zus&auml;tzlich folgende Server-Befehle (&lt;name&gt;: "ServerCommand", <value> nach folgender Tabelle):
-        <ul>
-          <table>
-            <tr><td align="right" valign="top"><code>BACKUP</code>: </td><td align="left" valign="top">
-              Sichert die berechneten Messwerte (X1 .. X8) in einen Backup-Datei<BR>
-            </td></tr>
-            <tr><td align="right" valign="top"><code>SCREEN_RESTORE_INHIBIT</code>: </td><td align="left" valign="top">
-              Normalerweise wird nach einer Parameter-Abfrage im GUI der SolvisControl wieder zum vorherigen Bildschirm zur&uuml;ckgegangen. Dieses verhalten wird durch diesen Befehl verhindert.<BR>
-            </td></tr>
-            <tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
-              Gegenstück zu dem ServerCommand SCREEN_RESTORE_INHIBIT<BR>
-            </td></tr>
-            <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_ENABLE</code>: </td><td align="left" valign="top">
-              Normalerweise werden die Control-Kommandos in einer optimierten Reihenfolge ausgef&uuml;hrt. Befehle, welche im gleichen Screen Aktionen ausl&ouml;sen, werden zusammen gefasst ausgef&uuml;hrt. Falls eine strikte Einhaltung der Befehls-Sequenz erdorderlich ist,
-              hann das durch diesen Server-Befehl verhindert werden<BR>
-            </td></tr>
-            <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_INHIBIT</code>: </td><td align="left" valign="top">
-              Gegenstück zu dem ServerCommand COMMAND_OPTIMIZATION_ENABLE<BR>
-            </td></tr>
-            <tr><td align="right" valign="top"><code>GUI_COMMANDS_ENABLE</code>: </td><td align="left" valign="top">
-              Mithlife dieses Befehls kann die GUI-Steuerung tempor&auml;r deaktiviert werden, z.B. wenn die Wartung der Anlage erfolgt. Steuert man dies &uuml;ber die FHEM-Oberfl&auml;che, so ist ein SET-Befehl g&uuml;nstiger. Aktiviert/Deaktiviert man
-              die h&auml;ndisch, sollte man das entsprechende Attribut setzen.<BR>
-            </td></tr>
-            <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
-              Gegenstück zu dem ServerCommand GUI_COMMANDS_ENABLE<BR>
-            </td></tr>
-            <tr><td align="right" valign="top"><code>SERVICE_RESET</code>: </td><td align="left" valign="top">
-              Setzt einen erkannten Service-Zugriff zur&uumlck.<BR>
-            </td></tr>
-            <tr><td align="right" valign="top"><code>UPDATE_CHANNELS</code>: </td><td align="left" valign="top">
-              Update aller Kan&auml;le, welche nur &uuml;ber das GUI zug&auml;lich sind<BR>
-            </td></tr>
-            <tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
-              Startet den Server neu<BR>
-            </td></tr>
-          </table>
-        </ul><BR>
+                    Ein g&uuml;ltiger Wert.<BR/></td></tr>
+          </table><BR/>
+        </ul><BR/>
+		Will man das Gespann FHEM/SolvisSmartHomeServer in ganz bestimmten Situationen testen, sind diese mit der Solvis-Anlage nicht immer zu erreichen bzw. k&ouml;nnte zu einer unn&ouml;tigen Energieverschwendung.
+		f&uuml;hren. Für diese Debugging-Zwecke wurde daher der Befehl <code>DebugChannel</code> eingeführt. Er besitzt 2 mögliche Formate:
+		<BR/><BR/>
+		<ol><code>
+			<li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;=&lt;value&gt;</li>
+			<li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;</li>
+		</code></ol><BR/>
+		
+		Mit dem ersten Format setzt man den Kanal <code>channelName</code> fest auf den Wert <code>value</code>.<BR/>
+		Er bleibt solange auf diesem Wert, bis man ihn durch einen DebugChannel-Set-Befehl des zweiten Formats zur&uuml;ck setzt<BR/>
+		oder s&auml;mtliche Debugging-Einstellungen dieser Art mit dem weiter unten beschriebenen Server-Befehl <code>DEBUG_CLEAR</code> l&ouml;scht.<BR/>
+		<table>
+			<tr><td><b>Zu beachten:</b></td></tr>
+			<tr><td>   </td><td>Es gibt hier keine Hilfe in der FHEM-Weboberfläche, man muss den Kanalnamen per Hand in das Eingabefeld eintragen.<BR/>
+												Sinnvoll ist es dazu, den Kanalnamen aus der Aufstellung zu kopieren.</td>
+			</tr>
+		</table>
+		<BR/><BR/>
+            Neben der Set-Befehle zur &Auml;nderung/Manipulation der obigen Anlagen-Werte, existieren noch zus&auml;tzlich Server-Befehle. Sie besitzen folgendes Format:<BR/>
+			<BR/>
+			<table>
+				<tr><td><ul><code>set &lt;name&gt; ServerCommand &lt;value&gt;</code></ul></td></tr>
+			</table><BR/>
+			
+			Die möglichen Werte (value) ergibt sich aus folgender Tabelle:
+			<ul><ul>
+			  <table>
+				<tr><td align="right" valign="top"><code>BACKUP</code>: </td><td align="left" valign="top">
+				  Sichert die berechneten Messwerte (X1 .. X8) in einen Backup-Datei<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>SCREEN_RESTORE_INHIBIT</code>: </td><td align="left" valign="top">
+				  Normalerweise wird nach einer Parameter-Abfrage im GUI der SolvisControl wieder zum vorherigen Bildschirm zur&uuml;ckgegangen. Dieses verhalten wird durch diesen Befehl verhindert.<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
+				  Gegenstück zu dem ServerCommand SCREEN_RESTORE_INHIBIT<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_ENABLE</code>: </td><td align="left" valign="top">
+				  Normalerweise werden die Control-Kommandos in einer optimierten Reihenfolge ausgef&uuml;hrt. Befehle, welche im gleichen Screen Aktionen ausl&ouml;sen, werden zusammen gefasst ausgef&uuml;hrt. Falls eine strikte Einhaltung der Befehls-Sequenz erdorderlich ist,
+				  hann das durch diesen Server-Befehl verhindert werden<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_INHIBIT</code>: </td><td align="left" valign="top">
+				  Gegenst&uuml;ck zu dem ServerCommand COMMAND_OPTIMIZATION_ENABLE<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>GUI_COMMANDS_ENABLE</code>: </td><td align="left" valign="top">
+				  Mithlife dieses Befehls kann die GUI-Steuerung tempor&auml;r deaktiviert werden, z.B. wenn die Wartung der Anlage erfolgt. Steuert man dies &uuml;ber die FHEM-Oberfl&auml;che, so ist ein set-Befehl g&uuml;nstiger. Aktiviert/Deaktiviert man
+				  die h&auml;ndisch, sollte man das entsprechende Attribut setzen.<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
+				  Gegenstück zu dem ServerCommand GUI_COMMANDS_ENABLE<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>SERVICE_RESET</code>: </td><td align="left" valign="top">
+				  Setzt einen erkannten Service-Zugriff zur&uumlck.<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>UPDATE_CHANNELS</code>: </td><td align="left" valign="top">
+				  Update aller Kan&auml;le, welche nur &uuml;ber das GUI zug&auml;lich sind<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
+				  Startet den Server neu<BR/>
+				</td></tr>
+				<tr><td align="right" valign="top"><code>DEBUG_CLEAR</code>: </td><td align="left" valign="top">
+				  S&auml;mtliche durch den DebugChannel-Befehl modifizierten Kanäle werden auf ihren urspr&uuml;nfglichen Wert gesetzt.<BR/>
+				</td></tr>
+			  </table>
+			</ul></ul><BR/>
             Diese Tabelle gibt nicht unbedingt den aktuellen Stand wieder. Es k&ouml;nnen mehr oder weniger Server-Befehle definiert sein, da die Server-Befehle vom Server selber dem Client &uuml;bergeben werden (bei jeder neuen Verbindung). Der Server selber bestimmt daher, was
-            der Client anbietet. Maßgebend ist daher immer die Ausgabe in der Web-Oberfl&auml;che.
-            <BR><BR>
-            Zus&auml;tzlich kann mittels dem SET-Befehl "ScreenSelect" ein bestimmter Solvis-Bildschirm ausgew&auml;hlt werden, der default-m&auml;&szlig;ig angefahren wird. Die m&ouml;glichen Bildschirm-Namen
-            sind der Web-Oberfl&auml;che zu entnehmen.
+            der Client anbietet. Ma&szlig;gebend ist daher immer die Ausgabe in der Web-Oberfl&auml;che.
+            <BR/><BR/></BR>
+            Zus&auml;tzlich kann mittels dem Set-Befehl <code>ScreenSelect</code> ein bestimmter Solvis-Bildschirm ausgew&auml;hlt werden, der default-m&auml;&szlig;ig angefahren wird. Der Format des Befehls ist wie folgt:
+			<BR/><BR/>
+			<table>
+				<tr><td><ul><code>set &lt;name&gt; SelectScreen &lt;Bildschirm-Name&gt;</code></ul></td></tr>
+			</table><BR/>
+			Die m&ouml;glichen Bildschirm-Namen sind der Web-Oberfl&auml;che zu entnehmen.
         </ul>
-      </ul><BR><BR><BR>
+      </ul><BR/><BR/><BR/>
       <table>
         <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>
         <tr><td>
@@ -1666,7 +1700,7 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimale Vorlauftemperatur Heizkreis 2 </td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
@@ -1679,16 +1713,16 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> : </td><td align="left" valign="top">
                 Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
             <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
-                Der Name des Wertes, welcher ausgelesen werden soll. Z.B.: "<code>C08.Nachttemperatur_HK1</code>"<BR></td></tr>
+                Der Name des Wertes, welcher ausgelesen werden soll. Z.B.: "<code>C08.Nachttemperatur_HK1</code>"<BR/></td></tr>
           </table>
         </ul>
-      </ul><BR><BR>
+      </ul><BR/><BR/>
       <table>
         <tr><td><a name="SolvisClientAttr"></a><b>Attribute</b></td></tr>
         <tr><td>
           <ul>
               Die folgenden Modul-spezifischen Attribute k&ouml;nnen neben den bekannten globalen Attributen gesetzt werden wie
-              z.B.: <a href="#room">room</a>.<BR>
+              z.B.: <a href="#room">room</a>.<BR/>
             <ul>
               <ul>
                 <table>
@@ -1696,7 +1730,7 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>GuiCommandsEnabled</code> : </td><td align="left" valign="top">TRUE/FALSE: Gui-Befehle sind enabled/disabled. Im Service-Fall empfiehlt es sich dieses Atrribut auf FALSE zu setzen, damit der Service nicht von dem SolvisSmartHomeServer irritiert wird. Default: TRUE</td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
@@ -1710,10 +1744,10 @@ sub DbLog_splitFn {
               <tr><td align="right" valign="top"><code>&lt;ger&auml;t&gt;</code> : </td><td align="left" valign="top">
                   Der Name des Ger&auml;tes. Empfehlung: "mySolvisMax".</td></tr>
               <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
-                  Der Name des Wertes, welcher gesetzt werden soll.<BR></td></tr>
+                  Der Name des Wertes, welcher gesetzt werden soll.<BR/></td></tr>
               <tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
-                  Ein g&uuml;ltiger Wert.<BR></td></tr>
-          </table><BR><BR>
+                  Ein g&uuml;ltiger Wert.<BR/></td></tr>
+          </table><BR/><BR/>
         </ul>
       </ul>
 
@@ -1721,7 +1755,7 @@ sub DbLog_splitFn {
         <tr><td><a name="SolvisClientState"></a><b>state</b></td></tr>
         <tr><td>
           <ul>
-              Das spezielle Reading "state" kann folgende Werte annehmen:<BR>
+              Das spezielle Reading "state" kann folgende Werte annehmen:<BR/>
             <ul>
               <ul>
                 <table>
@@ -1734,7 +1768,7 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>ERROR</code> : </td><td align="left" valign="top">SolvisControl zeigt eine Fehlermeldung an.</td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
@@ -1743,7 +1777,7 @@ sub DbLog_splitFn {
         <tr><td><a name="SolvisClientHumanAccess"></a><b>HumanAccess</b></td></tr>
         <tr><td>
           <ul>
-              Das spezielle Reading "HumanAccess" kann folgende Werte annehmen:<BR>
+              Das spezielle Reading "HumanAccess" kann folgende Werte annehmen:<BR/>
             <ul>
               <ul>
                 <table>
@@ -1752,11 +1786,29 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>user</code> : </td><td align="left" valign="top">Zugriff vom User</td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
-    </td></tr>
+       <table>
+        <tr><td><a name="SolvisClientControl"></a><b>Control</b></td></tr>
+        <tr><td>
+          <ul>
+              Das spezielle Reading "Control" dient dazu, dass man vom SmartHome-System aus den Zustand der Server-Que für die Gui-Befehle erkennen kann. kann folgende Werte annehmen:<BR/>
+            <ul>
+              <ul>
+                <table>
+                    <tr><td align="right" valign="top"><code>finished</code> : </td><td align="left" valign="top">Der Gui-Zugriff zur SolvisControl durchden Server ist beendet.</td></tr>
+                    <tr><td align="right" valign="top"><code>monitoring</code> : </td><td align="left" valign="top">Ein oder meherer Bildschirme der SolvisControl werden vom Serer überwacht.</td></tr>
+                    <tr><td align="right" valign="top"><code>rd_ongoing</code> : </td><td align="left" valign="top">Ein oder meherer Bildschirme der SolvisControl werden vom Serer gelesen.</td></tr>
+                    <tr><td align="right" valign="top"><code>wr_ongoing</code> : </td><td align="left" valign="top">Mindestens ein Schreiben zur SolvisControl wird ausgeführt.</td></tr>
+                 </table>
+              </ul>
+            </ul><BR/>
+          </ul>
+        </td></tr>
+      </table>
+   </td></tr>
   </table>
 </ul>
 =end html_DE
@@ -1771,21 +1823,21 @@ sub DbLog_splitFn {
         In order to be able to access the
         <a href="https://www.solvis.de/solvisben">SolvisBen</a> or <a href="https://www.solvis.de/solvismax">SolvisMax</a>
         solar heating systems using FHEM, the <a href="https://www.solvis.de/solvisremote">SolvisRemote</a> is required. It is a communication device with a
-        <a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/remote-mobile.png">web interface</a>.<BR>.
-        <BR>
+        <a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/remote-mobile.png">web interface</a>.<BR/>.
+        <BR/>
         To use the SolvisClient module, you must first define the IP address, the user and the password with the
-        <a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/Download/konfig-remote.zip">configuration program</a>.<BR>
+        <a href="https://s3.eu-central-1.amazonaws.com/solvis-files/seiten/produkte/solvisremote/Download/konfig-remote.zip">configuration program</a>.<BR/>
         The router can optionally specify the IP address, but then a fixed IP address should be defined in the router for the
         <a href="https://www.solvis.de/solvisremote">SolvisRemote</a>
-        so that the SolvisSmartHome server can also find it.<BR>
-        <BR>
-        In addition to the <a href="https://www.solvis.de/solvisremote">SolvisRemote</a>, the SolvisSmartHome server must also be installed and set up, which is part of this FHEM module. According to the enclosed instructions, this must first be set up and the system parameters defined there.<BR>
-        <BR>
-        A connection to the server is then attempted with the define instruction of the FHEM module. Depending on whether the connection was successful, a corresponding message appears in the status field.<BR>
-        If the connection is successful, the client is regularly supplied with data from the server by the heating system.<BR>
-        <BR>
-        In addition to recording these values, the server also uses these values ​​to calculate the burner starts and burner runtime for the two burner stages. In addition, a reading of the burner status and the rest position of the mixer are calculated.<BR>
-        <BR>
+        so that the SolvisSmartHome server can also find it.<BR/>
+        <BR/>
+        In addition to the <a href="https://www.solvis.de/solvisremote">SolvisRemote</a>, the SolvisSmartHome server must also be installed and set up, which is part of this FHEM module. According to the enclosed instructions, this must first be set up and the system parameters defined there.<BR/>
+        <BR/>
+        A connection to the server is then attempted with the define instruction of the FHEM module. Depending on whether the connection was successful, a corresponding message appears in the status field.<BR/>
+        If the connection is successful, the client is regularly supplied with data from the server by the heating system.<BR/>
+        <BR/>
+        In addition to recording these values, the server also uses these values ​​to calculate the burner starts and burner runtime for the two burner stages. In addition, a reading of the burner status and the rest position of the mixer are calculated.<BR/>
+        <BR/>
         The following readings are also calculated:
       <ul>
         <ul>
@@ -1802,9 +1854,9 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>X10.LaufzeitSolarpumpe2_s</code> : </td><td align="left" valign="top">Running time of the solar pump 2 (A07)</td></tr>
          </table>
         </ul>
-      </ul><BR><BR>
-        There are also other values that are determined from the SolvisControl GUI using OCR. These are only updated if the value is read / changed using a GET / SET command. So they are not always up to date.<BR>
-        <BR>
+      </ul><BR/><BR/>
+        There are also other values that are determined from the SolvisControl GUI using OCR. These are only updated if the value is read / changed using a GET / SET command. So they are not always up to date.<BR/>
+        <BR/>
         The following readings are determined from the GUI:
       <ul>
         <ul>
@@ -1843,9 +1895,9 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimum flow temperature heating circuit 2 </td></tr>
           </table>
         </ul>
-      </ul><BR><BR><BR><BR>
+      </ul><BR/><BR/><BR/><BR/>
         The module can be integrated and parameterized in FHEM as follows:
-        <BR><BR>
+        <BR/><BR/>
 
       <table>
         <tr><td><a name="SolvisClientDefine"></a><b>Define</b></td></tr>
@@ -1864,7 +1916,7 @@ sub DbLog_splitFn {
               A valid url (IP address or internet path) of the SolvisSmartHome server with channel number (usually 10735). Possibly look up in the router which IP address the SolvisSmartHome server was assigned by the DHCP server. If the server is running on the Fhem system, "localhost: 10735" can also be entered.</td></tr>
           </table>
         </ul>
-      </ul><BR><BR>
+      </ul><BR/><BR/>
 
       <table>
         <tr><td><a name="SolvisClientSet"></a><b>Set</b></td></tr>
@@ -1901,7 +1953,7 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimum flow temperature heating circuit 2 </td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
@@ -1916,50 +1968,82 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>&lt;device&gt;</code> : </td><td align="left" valign="top">
                     The name of the device. Recommendation: "mySolvisMax".</td></tr>
             <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
-                    The name of the value to be set. E.g.: <code>C08.Nachttemperatur_HK1</code>"<BR></td></tr>
+                    The name of the value to be set. E.g.: <code>C08.Nachttemperatur_HK1</code>"<BR/></td></tr>
             <tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
-                    A valid value.<BR></td></tr>
-          </table><BR>
-        </ul>
-            In addition to the SET commands for changing the above system values, there are also the following server commands (&lt;name&gt;: "ServerCommand", &lt;value&gt; , according to the following table):
+                    A valid value.<BR/></td></tr>
+          </table><BR/>
+        </ul><BR/>
+ 		If you want to test the FHEM / SolvisSmartHomeServer combination in very specific situations, these cannot always be reached with the Solvis system or could lead to unnecessary waste of energy. The <code>DebugChannel</code> command was therefore introduced for these debugging purposes. It has 2 possible formats: 
+		f&uuml;hren. Für diese Debugging-Zwecke wurde daher der Befehl <code>DebugChannel</code> eingeführt. Er besitzt 2 mögliche Formate:
+		<BR/><BR/>
+		<ol><code>
+			<li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;=&lt;value&gt;</li>
+			<li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;</li>
+		</code></ol><BR/>
+		
+		With the first format, the channel channelName is set to the value <code>value</code>.<BR/>
+		It remains at this value until it is reset using a DebugChannel Set command of the second format
+		or delete all debugging settings of this type with the server command <code>DEBUG_CLEAR</code> described below.<BR/>
+		<table>
+			<tr><td><b>Note:</b></td></tr>
+			<tr><td>   </td><td>There is no help here in the FHEM web interface, you have to enter the channel name by hand in the input field.<BR/>
+			It makes sense to copy the channel name from the list.</td>
+			</tr>
+		</table>
+		<BR/><BR/>
+             In addition to the set commands for changing/manipulating the above system values, there are also server commands. They have the following format:<BR/>
+			<BR/>
+			<table>
+				<tr><td><ul><code>set &lt;name&gt; ServerCommand &lt;value&gt;</code></ul></td></tr>
+			</table><BR/>
+			
+			The possible values result from the following table:
         <ul>
           <table>
             <tr><td align="right" valign="top"><code>BACKUP</code>: </td><td align="left" valign="top">
-              Saves the calculated measured values ​​(X1 .. X8) in a backup file.<BR>
+              Saves the calculated measured values ​​(X1 .. X8) in a backup file.<BR/>
             </td></tr>
             <tr><td align="right" valign="top"><code>SCREEN_RESTORE_INHIBIT</code>: </td><td align="left" valign="top">
-              Normally, after a parameter query in the GUI, the SolvisControl returns to the previous screen. This behavior is prevented by this command.<BR>
+              Normally, after a parameter query in the GUI, the SolvisControl returns to the previous screen. This behavior is prevented by this command.<BR/>
             </td></tr>
             <tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
-              Counterpart to the server command SCREEN_RESTORE_INHIBIT<BR>
+              Counterpart to the server command SCREEN_RESTORE_INHIBIT<BR/>
             </td></tr>
             <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_ENABLE</code>: </td><td align="left" valign="top">
-              Normally the control commands are executed in an optimized order. Commands that trigger actions on the same screen are carried out together. If strict compliance with the command sequence is required, this can be prevented by this server command.<BR>
+              Normally the control commands are executed in an optimized order. Commands that trigger actions on the same screen are carried out together. If strict compliance with the command sequence is required, this can be prevented by this server command.<BR/>
             </td></tr>
             <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_INHIBIT</code>: </td><td align="left" valign="top">
-              counterpart to the ServerCommand COMMAND_OPTIMIZATION_ENABLE<BR>
+              counterpart to the ServerCommand COMMAND_OPTIMIZATION_ENABLE<BR/>
             </td></tr>
             <tr><td align="right" valign="top"><code>GUI_COMMANDS_ENABLE</code>: </td><td align="left" valign="top">
-              Using this command, the GUI control can be temporarily deactivated, e.g. when the system is serviced. If you control this via the FHEM interface, a SET command is recommended. If you activate / deactivate them manually, you should set the corresponding attribute.<BR>
+              Using this command, the GUI control can be temporarily deactivated, e.g. when the system is serviced. If you control this via the FHEM interface, a SET command is recommended. If you activate / deactivate them manually, you should set the corresponding attribute.<BR/>
             </td></tr>
             <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
-              Counterpart to the ServerCommand GUI_COMMANDS_ENABLE<BR>
+              Counterpart to the ServerCommand GUI_COMMANDS_ENABLE<BR/>
             </td></tr>
             <tr><td align="right" valign="top"><code>SERVICE_RESET</code>: </td><td align="left" valign="top">
-              Resets a detected service access<BR>
+              Resets a detected service access<BR/>
             </td></tr>
             <tr><td align="right" valign="top"><code>UPDATE_CHANNELS</code>: </td><td align="left" valign="top">
-              Update all channels that are only accessible via the GUI.<BR>
+              Update all channels that are only accessible via the GUI.<BR/>
             </td></tr>
             <tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
-              Restarts the server<BR>
+              Restarts the server<BR/>
             </td></tr>
-          </table>
-        </ul><BR>
+ 				<tr><td align="right" valign="top"><code>DEBUG_CLEAR</code>: </td><td align="left" valign="top">
+				  All channels modified by the DebugChannel command are set to their original value. <BR/>
+				</td></tr>
+			</table>
+        </ul><BR/>
             This table does not necessarily reflect the current status. More or fewer server commands can be defined, since the server commands are handed over to the client by the server itself (with each new connection). The server itself determines what the client offers. The decisive factor is therefore always the output in the web interface.
-            <BR><BR>
-            In addition, with the SET command "ScreenSelect", a specific Solvis screen can be selected, which is accessed by default. The possible screen names can be found on the web interface.
-      </ul><BR><BR><BR>
+            <BR/><BR/></BR>
+            In addition, the Set command <code>ScreenSelect</code> can be used to select a specific Solvis screen that is accessed by default. The format of the command is as follows:
+			<BR/><BR/>
+			<table>
+				<tr><td><ul><code>set &lt;name&gt; SelectScreen &lt;screen name&gt;</code></ul></td></tr>
+			</table><BR/>
+			The possible screen names can be found on the web interface.
+        </ul><BR/><BR/><BR/>
       <table>
         <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>
         <tr><td>
@@ -2002,7 +2086,7 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>C38.Min_Vorlauf_Temp_HK2</code> : </td><td align="left" valign="top">Minimum flow temperature heating circuit 2 </td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
@@ -2015,15 +2099,15 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>&lt;device&gt;</code> : </td><td align="left" valign="top">
                 The name of the device. Recommendation: "mySolvisMax".</td></tr>
             <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
-                 The name of the value to be read out. E.g .: "<code>C08.Nachttemperatur_HK1</code>"<BR></td></tr>
+                 The name of the value to be read out. E.g .: "<code>C08.Nachttemperatur_HK1</code>"<BR/></td></tr>
           </table>
         </ul>
-      </ul><BR><BR>
+      </ul><BR/><BR/>
       <table>
         <tr><td><a name="SolvisClientAttr"></a><b>Attribute</b></td></tr>
         <tr><td>
           <ul>
-              The following module-specific attributes can be set in addition to the known global attributes such as: <a href="#room">room</a>.<BR>
+              The following module-specific attributes can be set in addition to the known global attributes such as: <a href="#room">room</a>.<BR/>
             <ul>
               <ul>
                 <table>
@@ -2031,7 +2115,7 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>GuiCommandsEnabled</code> : </td><td align="left" valign="top">TRUE / FALSE: Gui commands are enabled / disabled. In the case of service, it is recommended to set this attribute to FALSE so that the service is not irritated by the SolvisSmartHomeServer. Default: TRUE</td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
@@ -2045,10 +2129,10 @@ sub DbLog_splitFn {
               <tr><td align="right" valign="top"><code>&lt;device&gt;</code> : </td><td align="left" valign="top">
                   The name of the device. Recommendation: "mySolvisMax".</td></tr>
               <tr><td align="right" valign="top"><code>&lt;name&gt;</code> : </td><td align="left" valign="top">
-                  The name of the value to be set.<BR></td></tr>
+                  The name of the value to be set.<BR/></td></tr>
               <tr><td align="right" valign="top"><code>&lt;value&gt;</code> : </td><td align="left" valign="top">
-                  A valid value.<BR></td></tr>
-          </table><BR><BR>
+                  A valid value.<BR/></td></tr>
+          </table><BR/><BR/>
         </ul>
       </ul>
 
@@ -2056,7 +2140,7 @@ sub DbLog_splitFn {
         <tr><td><a name="SolvisClientState"></a><b>state</b></td></tr>
         <tr><td>
           <ul>
-              The special reading "state" can have the following values:<BR>
+              The special reading "state" can have the following values:<BR/>
             <ul>
               <ul>
                 <table>
@@ -2069,7 +2153,7 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>ERROR</code> : </td><td align="left" valign="top">SolvisControl displays an error message.</td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
@@ -2077,7 +2161,7 @@ sub DbLog_splitFn {
         <tr><td><a name="SolvisClientHumanAccess"></a><b>HumanAccess</b></td></tr>
         <tr><td>
           <ul>
-              The special reading "HumanAccess" can have the following values:<BR>
+              The special reading "HumanAccess" can have the following values:<BR/>
             <ul>
               <ul>
                 <table>
@@ -2086,7 +2170,25 @@ sub DbLog_splitFn {
                     <tr><td align="right" valign="top"><code>user</code> : </td><td align="left" valign="top">Access from the user</td></tr>
                 </table>
               </ul>
-            </ul><BR>
+            </ul><BR/>
+          </ul>
+        </td></tr>
+      </table>
+      <table>
+        <tr><td><a name="SolvisClientControl"></a><b>Control</b></td></tr>
+        <tr><td>
+          <ul>
+              The special reading "Control" is used to ensure that the status of the server queue for the GUI commands can be recognized from the SmartHome system. It can have the following values:<BR/>
+            <ul>
+              <ul>
+                <table>
+                    <tr><td align="right" valign="top"><code>finished</code> : </td><td align="left" valign="top">Gui access to SolvisControl by server finished.</td></tr>
+                    <tr><td align="right" valign="top"><code>monitoring</code> : </td><td align="left" valign="top">On or more screens of the SolvisControl were monitored by the server.</td></tr>
+                    <tr><td align="right" valign="top"><code>rd_ongoing</code> : </td><td align="left" valign="top">At least one read from the SolvisControl screens is executed.</td></tr>
+                    <tr><td align="right" valign="top"><code>wr_ongoing</code> : </td><td align="left" valign="top">At least one write to the SolvisControl screens is executed.</td></tr>
+                 </table>
+              </ul>
+            </ul><BR/>
           </ul>
         </td></tr>
       </table>
