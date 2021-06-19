@@ -46,7 +46,8 @@ bringt ein Smart-Home-System einen solchen Broker das selber mit.
   * Daten zwischen Server-Client werden im JSON-Format ausgetauscht
   * Es können sich max. 50 Clients mit dem Server verbinden
 * Leichte Anpassungsmöglichkeit an vorhandene Anlage über XML-Files. Die XML Schema sind mit enthalten, so dass Anpassung
-mittels XML-Editor (z.B. integriert in Eclipse) stark vereinfacht wird
+mittels XML-Editor (z.B. integriert in Eclipse) stark vereinfacht wird. Ab Version 1.03.00 sind für SolvisMax 6 und 7 die
+laut der Anlagenschema-Dokumentation von Solvis möglichen Konfigurationen berücksichtigt.
 
 Eine Liste der Kanäle findet sich u.a. im Kapitel [MQTT-Schnittstelle](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/MQTT-Schnittstelle#aktuell-definierte-channels) bzw. kann ab Version 1.03.00 vom Programm selber passend zur Anlagenkonfiguartion generiert werden. Dies ist [hier](https://github.com/GollmerSt/SolvisSmartHomeServer/wiki/Dokumentation-der-Kanalbelegung) beschrieben.
 
