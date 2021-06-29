@@ -274,16 +274,16 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
     }
 
     my @args = split('[ \t][ \t]*', $def);
-    my $url  = $args[2];
+    my $url = $args[2];
     my $name = $self->{NAME};
-	
-	if ($init_done) {
-		ActivateConnection($self, !IsDisabled($name), $url);
-	} else {
-		$self->{NOTIFYDEV} = 'global';
-		 ActivateConnection($self, _FALSE_, $url);
-	}
-    
+
+    if ($init_done) {
+        ActivateConnection($self, !IsDisabled($name), $url);
+    } else {
+        $self->{NOTIFYDEV} = 'global';
+         ActivateConnection($self, _FALSE_, $url);
+    }
+
     use version 0.77;
     our $CLIENT_VERSION = FHEM::Meta::Get($self, 'version');
     $self->{VERSION_CLIENT} = version->parse($CLIENT_VERSION)->normal;
@@ -300,35 +300,35 @@ sub Define {  #define heizung SolvisClient 192.168.1.40 SGollmer e$am1kro
 sub ActivateConnection {
     my $self = shift;
     my $activate = shift;
-	my $url = shift;	# optional
+    my $url = shift;    # optional
 
     my $name = $self->{NAME};
-		
+
     if (defined($self->{DeviceName}) && DevIo_IsOpen($self)) {
         DevIo_CloseDev($self);
     }
-	
-	if (defined($url)) {
-		$self->{DeviceName}  = $url;    #Für DevIO, Name fest vorgegeben
-	}
-	
-	RemoveInternalTimer($self, \&WatchDogTimeout );
+
+    if (defined($url)) {
+        $self->{DeviceName} = $url; #Für DevIO, Name fest vorgegeben
+    }
+
+    RemoveInternalTimer($self, \&WatchDogTimeout);
     RemoveInternalTimer($self, \&Reconnect);
 
-	if ($activate) {
+    if ($activate) {
 
-		DevIoConnected($self);
+        DevIoConnected($self);
 
-		if ($init_done) {
-			my $result = Connect($self, 0);
-		} else {
-			$self->{NOTIFYDEV} = 'global';
-		}
-	}
-	
-	$self->{helper}{GuiEnabled} = undef;
+        if ($init_done) {
+            my $result = Connect($self, 0);
+        } else {
+            $self->{NOTIFYDEV} = 'global';
+        }
+    }
+
+    $self->{helper}{GuiEnabled} = undef;
     readingsSingleUpdate($self,'HumanAccess','none',1);
-	
+
 
 }
 
@@ -343,13 +343,13 @@ sub Attr {
     my $cmd = shift;
     my $name = shift;
     my $attrName = shift;
-    my $attrValue   = shift;
+    my $attrValue = shift;
 
     my $self = $defs{$name};
 
     my %switch = (
         'GuiCommandsEnabled' => sub {
-            if (defined $attrValue  && $attrValue ne 'TRUE' && $attrValue   ne 'FALSE') {
+            if (defined $attrValue && $attrValue ne 'TRUE' && $attrValue ne 'FALSE') {
                 return "Unknown value $attrValue for $attrName, choose one of TRUE FALSE";
             }
        },
@@ -357,8 +357,8 @@ sub Attr {
        }
     );
 
-    if ( defined($switch{ $attrName })) {
-        $switch{ $attrName }->();
+    if (defined($switch{$attrName })) {
+        $switch{$attrName }->();
     }
 } # end Attr
 
@@ -377,7 +377,7 @@ sub Notify {
     my $devName = $eventObject->{NAME}; # Device that created the events
     my $events = deviceEvents($eventObject, 1);
 
-    if($devName eq 'global' && grep( { m/^INITIALIZED|REREADCFG$/x } @{$events})) {
+    if($devName eq 'global' && grep({m/^INITIALIZED|REREADCFG$/x } @{$events})) {
 
         ActivateConnection($self, !IsDisabled($ownName));
 
@@ -400,17 +400,17 @@ sub Connect {
     my $connectedSub = $reopen?\&SendReconnectionData:\&SendConnectionData;
 
     if (DevIo_IsOpen($self)) {
-        Log( $self, 3, "Connection wasn't closed");
+        Log($self, 3, "Connection wasn't closed");
         ReconnectAfterDismiss($self, GetNextConnectionInterval($self));
         return;
     }
 
     $self->{helper}{BUFFER} = '';
 
-    $self->{helper}{ConnectionOngoing}  = 1;    #Verbindungsaufbau in Arbeit
+    $self->{helper}{ConnectionOngoing} = 1;    #Verbindungsaufbau in Arbeit
 
-    DevIo_OpenDev($self, $reopen, $connectedSub, \&ConnectionCallback );
-    
+    DevIo_OpenDev($self, $reopen, $connectedSub, \&ConnectionCallback);
+
 } # end Connect
 
 
@@ -422,10 +422,10 @@ sub ConnectionCallback {
     my $self = shift;
     my $error = shift;
 
-    $self->{helper}{ConnectionOngoing}  = 0;    #Verbindungsaufbau nicht in Arbeit
-    
-    if ( defined($error)) {
-        Log( $self, 4, "Connection not successfull, error := $error ");
+    $self->{helper}{ConnectionOngoing} = 0;    #Verbindungsaufbau nicht in Arbeit
+
+    if (defined($error)) {
+        Log($self, 4, "Connection not successfull, error := $error ");
         ReconnectAfterDismiss($self, GetNextConnectionInterval($self));
     }
 
@@ -442,8 +442,8 @@ sub ConnectionCallback {
 sub DevIoConnected {
     my $self = shift;
 
-    $self->{helper}{ConnectionOngoing}  = 0;    #Verbindungsaufbau nicht in Arbeit
-    $self->{helper}{ConnectionInterval}  = MIN_CONNECTION_INTERVAL ;
+    $self->{helper}{ConnectionOngoing} = 0;    #Verbindungsaufbau nicht in Arbeit
+    $self->{helper}{ConnectionInterval} = MIN_CONNECTION_INTERVAL ;
     $self->{helper}{NEXT_OPEN} = undef;
 }
 
@@ -476,7 +476,7 @@ sub SendReconnectionData {
     my $self = shift;
 
     DevIoConnected($self);
-    
+
     if (defined($self->{CLIENT_ID})) {
 
         SendData($self, 'RECONNECT', 'Id', $self->{CLIENT_ID});
@@ -494,9 +494,9 @@ sub SendReconnectionData {
 #       Get new connection interval after error or unsuccessfull onnection
 
 sub GetNextConnectionInterval {
-    
+
     my $self = shift;
-    
+
     if ($self->{helper}{ConnectionInterval} < MAX_CONNECTION_INTERVAL) {
         $self->{helper}{ConnectionInterval} += MIN_CONNECTION_INTERVAL;
     }
@@ -515,14 +515,14 @@ sub Ready {
 
     my $now = time;
 
-    if ($self->{helper}{ConnectionOngoing} == 1 || defined( $self->{helper}{NEXT_OPEN}) && $self->{helper}{NEXT_OPEN} > $now) {
-        #Log( $self, 4, "ConnectionOngoing = $self->{helper}{ConnectionOngoing}");
+    if ($self->{helper}{ConnectionOngoing} == 1 || defined($self->{helper}{NEXT_OPEN}) && $self->{helper}{NEXT_OPEN} > $now) {
+        #Log($self, 4, "ConnectionOngoing = $self->{helper}{ConnectionOngoing}");
         return;
     }
-    
+
     $self->{helper}{NEXT_OPEN} = $now + GetNextConnectionInterval($self);
 
-    Log( $self, 4, 'Reconnection try');
+    Log($self, 4, 'Reconnection try');
     return Connect($self, 1) ; # reopen
 
 } # end Ready
@@ -538,16 +538,16 @@ sub Read {
 
     my $name = $self->{NAME};
 
-    RemoveInternalTimer($self, \&WatchDogTimeout );
+    RemoveInternalTimer($self, \&WatchDogTimeout);
     my $timeStamp = gettimeofday() + WATCH_DOG_INTERVAL;
-    InternalTimer($timeStamp, \&WatchDogTimeout, $self );
+    InternalTimer($timeStamp, \&WatchDogTimeout, $self);
 
     Log($self, 5, 'Read entered');
 
     # einlesen der bereitstehenden Daten
     my $buf = DevIo_SimpleRead($self);
 
-    if (! defined($buf)) {
+    if (!defined($buf)) {
         return;
     }
 
@@ -559,7 +559,7 @@ sub Read {
 
         my $bufferLength = length($self->{helper}{BUFFER});
 
-        my @parts = unpack('CCC', $self->{helper}{BUFFER} );
+        my @parts = unpack('CCC', $self->{helper}{BUFFER});
         my $length = $parts[2] | $parts[1] << 8 | $parts[0] << 16;
 
         Log($self, 5, "Length of package: $length");
@@ -568,7 +568,7 @@ sub Read {
             return;
         }
 
-        @parts = unpack('CCCa'.$length.'a*', $self->{helper}{BUFFER} );
+        @parts = unpack('CCCa'.$length.'a*', $self->{helper}{BUFFER});
         $self->{helper}{BUFFER} = $parts[4];
 
         Log($self, 5, "Package encoded: $parts[3]");
@@ -628,8 +628,8 @@ sub ExecuteCommand {
         }
     );
 
-    if ( defined($switch{ $command  })) {
-        $switch{ $command  }->();
+    if (defined($switch{$command})) {
+        $switch{$command}->();
     } else {
         Log($self, 3, "Warning: Unknown command $command");
     }
@@ -656,9 +656,9 @@ sub Connected {
         $self->{VERSION_SERVER} = $connected->{ServerVersion};
 
         my $formatVersion = $connected->{FormatVersion}*1.0;
-		
-		$self->{DATA_FORMAT} = $formatVersion;
-		
+
+        $self->{DATA_FORMAT} = $formatVersion;
+
         if ($formatVersion < MIN_SUPPORTED_FORMAT) {
             Log($self, 3, "Format version $formatVersion of server is not supported, use a newer server, if available.");
             $self->{INFO} = 'Format version is too old';
@@ -673,7 +673,7 @@ sub Connected {
         }
 
         my $buildDate = '';
-        if ( defined($connected->{BuildDate})) {
+        if (defined($connected->{BuildDate})) {
             $buildDate = ", build date: $connected->{BuildDate}";
         }
 
@@ -696,7 +696,7 @@ sub EnableGui {
     my $attrVal = AttrVal($self->{NAME}, 'GuiCommandsEnabled', 'TRUE');
     my $enabled = $attrVal eq 'TRUE';
 
-    if (!defined($self->{helper}{GuiEnabled}) || $self->{helper}{GuiEnabled} != $enabled ) {
+    if (!defined($self->{helper}{GuiEnabled}) || $self->{helper}{GuiEnabled} != $enabled) {
 
         my $command = $enabled?'GUI_COMMANDS_ENABLE':'GUI_COMMANDS_DISABLE';
 
@@ -723,12 +723,12 @@ sub InterpreteConnectionState {
     my $stateString;
     my $message;
 
-    foreach my $key( keys(%$state)) {
+    foreach my $key(keys(%$state)) {
 
-        if ( $key eq 'State') {
-            $stateString = $state->{$key };
-        } elsif ( $key eq 'Message') {
-            $message = $state->{$key };
+        if ($key eq 'State') {
+            $stateString = $state->{$key};
+        } elsif ($key eq 'Message') {
+            $message = $state->{$key};
         }
     }
 
@@ -769,8 +769,8 @@ sub InterpreteConnectionState {
         }
     );
 
-    if ( defined($switch{ $stateString  })) {
-        $switch{ $stateString  }->();
+    if (defined($switch{$stateString})) {
+        $switch{$stateString}->();
     } else {
         Log($self, 3, "Connection status unknown: $stateString");
     }
@@ -791,7 +791,7 @@ sub ReconnectAfterDismiss {
     DevIo_CloseDev($self);
 
     my $timeStamp = gettimeofday() + $reconnectionDelay;
-    InternalTimer($timeStamp, \&Reconnect, $self );
+    InternalTimer($timeStamp, \&Reconnect, $self);
 
     return;
 } # end ReconnectAfterDismiss
@@ -815,9 +815,9 @@ sub InterpreteSolvisState {
     my $stateString;
     my $message;
 
-    foreach my $key( keys(%$state)) {
-        if ( $key eq 'SolvisState') {
-            $stateString = $state->{$key };
+    foreach my $key(keys(%$state)) {
+        if ($key eq 'SolvisState') {
+            $stateString = $state->{$key};
         }
     }
 
@@ -843,23 +843,23 @@ sub InterpreteSolvisState {
         },
         'CONTROL_WRITE_ONGOING' => sub {
             readingsSingleUpdate($self,'Control','wr_ongoing',1);
-             Log($self, 3, 'Server queue write ongoing');
+             Log($self, 4, 'Server queue write ongoing');
        },
         'CONTROL_READ_ONGOING' => sub {
             readingsSingleUpdate($self,'Control','rd_ongoing',1);
-             Log($self, 3, 'Server queue read ongoing');
+             Log($self, 4, 'Server queue read ongoing');
         },
         'CONTROL_MONITORING' => sub {
             readingsSingleUpdate($self,'Control','monitoring',1);
-             Log($self, 3, 'Server queue monitoring');
+             Log($self, 4, 'Server queue monitoring');
         },
         'CONTROL_FINISHED' => sub {
             readingsSingleUpdate($self,'Control','finished',1);
-             Log($self, 3, 'Server queue finished');
+             Log($self, 4, 'Server queue finished');
         },
         'USER_ACCESS_DETECTED' => sub {
             readingsSingleUpdate($self,'HumanAccess','user',1);
-            Log($self, 3, 'User access detected');
+            Log($self, 4, 'User access detected');
         },
         'SERVICE_ACCESS_DETECTED' => sub {
             readingsSingleUpdate($self,'HumanAccess','service',1);
@@ -867,12 +867,12 @@ sub InterpreteSolvisState {
         },
         'HUMAN_ACCESS_FINISHED' => sub {
             readingsSingleUpdate($self,'HumanAccess','none',1);
-            Log($self, 3, 'User access finished');
+            Log($self, 4, 'User access finished');
         },
     );
 
-    if ( defined($switch{ $stateString  })) {
-        $switch{ $stateString  }->();
+    if (defined($switch{$stateString})) {
+        $switch{$stateString}->();
     } else {
         Log($self, 3, "Solvis status unknown: $stateString");
     }
@@ -935,17 +935,17 @@ sub CreateGetSetServerCommands {
     $devicesScreenCommands{$device} = \$screenCommands;
     my @screenCommand_Array = ();
 
-    foreach my $description( keys(%{$descriptions})) {
+    foreach my $description(keys(%{$descriptions})) {
         my %descriptionHash = %$descriptions{$description};
         my @keys = keys %descriptionHash;
         my $name = $keys[0];
         Log($self, 5, "Processing of description: $name");
         my %channelHash = %{$descriptionHash{$name}};
-        if ( $channelHash{Type} eq 'ServerCommand') {
+        if ($channelHash{Type} eq 'ServerCommand') {
             #if ($name ne 'GUI_COMMANDS_DISABLE' && $name ne 'GUI_COMMANDS_ENABLE') {
                 push(@serverCommand_Array, $name);
             #}
-        } elsif ( $channelHash{Type} eq 'SelectScreen') {
+        } elsif ($channelHash{Type} eq 'SelectScreen') {
             push(@screenCommand_Array, $name);
         } else {
             $ChannelDescriptions{$name} = {};
@@ -960,18 +960,18 @@ sub CreateGetSetServerCommands {
                 },
                 'Modes' => sub {
                     $ChannelDescriptions{$name}{Modes} = {};
-					foreach my $mode (@{$channelHash{Modes}}) {
-						if ( $self->{DATA_FORMAT} < 3) {
-							$ChannelDescriptions{$name}{Modes}{$mode} = 'RW';
-						} else {
-							my %modeHash = %$mode;
-							my $modeName = $modeHash{Name};
-							my $handling = $modeHash{Handling};
-							#Log($self, 3, "ModeName: $modeName, Handling: $handling");
-							$ChannelDescriptions{$name}{Modes}{$modeName} = $handling;
-						}
-					}
-				},
+                    foreach my $mode (@{$channelHash{Modes}}) {
+                        if ($self->{DATA_FORMAT} < 3) {
+                            $ChannelDescriptions{$name}{Modes}{$mode} = 'RW';
+                        } else {
+                            my %modeHash = %$mode;
+                            my $modeName = $modeHash{Name};
+                            my $handling = $modeHash{Handling};
+                            #Log($self, 3, "ModeName: $modeName, Handling: $handling");
+                            $ChannelDescriptions{$name}{Modes}{$modeName} = $handling;
+                        }
+                    }
+                },
                 'Upper' => sub {
                     $ChannelDescriptions{$name}{Upper} = $channelHash{Upper};
                 },
@@ -995,8 +995,8 @@ sub CreateGetSetServerCommands {
                 }
             );
             foreach my $keyName (keys %channelHash) {
-                if ( defined($switch{ $keyName  })) {
-                    $switch{ $keyName  }->();
+                if (defined($switch{$keyName})) {
+                    $switch{$keyName}->();
                 }
             }
         }
@@ -1034,7 +1034,7 @@ sub CreateSetParams {
         if ($ChannelDescriptions{$channel}{SET} == _FALSE_) {
             next;
         }
-        if (! $firstO) {
+        if (!$firstO) {
             $setParameters .= ' ';
         } else {
             $firstO = _FALSE_;
@@ -1042,19 +1042,19 @@ sub CreateSetParams {
         $setParameters .= $channel;
         my $firstI = _TRUE_;
         if (defined ($ChannelDescriptions{$channel}{Modes})) {
-			my %modeHash = %{$ChannelDescriptions{$channel}{Modes}};
+            my %modeHash = %{$ChannelDescriptions{$channel}{Modes}};
             foreach my $mode (keys(%modeHash)) {
-				my $handling = $modeHash{$mode};
-				#Log($self, 3, "Handling: $handling");
-				if ( $handling =~ m/(RW)|(WO)/) {
-					if($firstI) {
-						$setParameters .= ':';
-						$firstI = _FALSE_;
-					} else {
-						$setParameters .= ','
-					}
-					$setParameters .=$mode;
-				}
+                my $handling = $modeHash{$mode};
+                #Log($self, 3, "Handling: $handling");
+                if ($handling =~ m/(RW)|(WO)/) {
+                    if($firstI) {
+                        $setParameters .= ':';
+                        $firstI = _FALSE_;
+                    } else {
+                        $setParameters .= ','
+                    }
+                    $setParameters .=$mode;
+                }
             }
         } elsif (defined ($ChannelDescriptions{$channel}{Upper})) {
             my $upper = $ChannelDescriptions{$channel}{Upper};
@@ -1062,7 +1062,7 @@ sub CreateSetParams {
             my $incrementChange ;
             my $changedStep ;
 
-            if ( defined ($ChannelDescriptions{$channel}{IncrementChange})) {
+            if (defined ($ChannelDescriptions{$channel}{IncrementChange})) {
                 $incrementChange = $ChannelDescriptions{$channel}{IncrementChange};
                 $changedStep = $ChannelDescriptions{$channel}{ChangedIncrement};
             } else {
@@ -1071,7 +1071,7 @@ sub CreateSetParams {
             }
 
 
-            for ( my $count = $ChannelDescriptions{$channel}{Lower} ; $count <= $upper ; $count += $count>=$incrementChange? $changedStep: $step) {
+            for (my $count = $ChannelDescriptions{$channel}{Lower} ; $count <= $upper ; $count += $count>=$incrementChange? $changedStep: $step) {
                 if($firstI) {
                     $setParameters .= ':';
                     $firstI = _FALSE_;
@@ -1104,8 +1104,8 @@ sub UpdateReadings {
 
     readingsBeginUpdate($self);
 
-    foreach my $readingName( keys(%$readings)) {
-        if (defined( $readings->{$readingName})) {
+    foreach my $readingName(keys(%$readings)) {
+        if (defined($readings->{$readingName})) {
             my $value = $readings->{$readingName};
             if ($ChannelDescriptions{$readingName}{IsBoolean} != _FALSE_) {
                 $value = $value?'on':'off';
@@ -1156,8 +1156,8 @@ sub Delete {
 sub SendData {
     my $self = shift;
     my $command = shift;
-    my $key  = shift;
-    my $val  = shift;
+    my $key = shift;
+    my $val = shift;
 
     my %sendPackage = (
         $command => {
@@ -1168,8 +1168,8 @@ sub SendData {
     my $byteString = encode_json (\%sendPackage);
 
     my $length = length $byteString;
-#    $byteString = pack('CCCa*', $length&0xff, $length>>8&0xff, $length>>16&0xff, $byteString );
-    $byteString = pack('CCCa*', $length>>16&0xff, $length>>8&0xff, $length&0xff, $byteString );
+#    $byteString = pack('CCCa*', $length&0xff, $length>>8&0xff, $length>>16&0xff, $byteString);
+    $byteString = pack('CCCa*', $length>>16&0xff, $length>>8&0xff, $length&0xff, $byteString);
 
     Log($self, 5, "ByteString: $byteString");
 
@@ -1224,66 +1224,66 @@ sub Set {
 #    Log($self, 3, "Hash Skalar: %devicesChannelDescriptions");
 #    Log($self, 3, "Skalar: $devicesChannelDescriptions{$device}");
 
-	my $parasKnown = defined($devicesChannelDescriptions{$device});
+    my $parasKnown = defined($devicesChannelDescriptions{$device});
 
     if ($cmd eq '?') {
-		if ( $parasKnown ) {
-			my $setParameters = ${$devicesSetParameters{$device}};
-			my $serverCommands = ${$devicesServerCommands{$device}};
-			my $screenCommands = ${$devicesScreenCommands{$device}};
-			return "unknown argument $cmd choose one of $setParameters ServerCommand:$serverCommands SelectScreen:NONE,$screenCommands DebugChannel active inactive";
-		} else {
-			return "unknown argument $cmd choose one of active inactive";
-		}
+        if ($parasKnown) {
+            my $setParameters = ${$devicesSetParameters{$device}};
+            my $serverCommands = ${$devicesServerCommands{$device}};
+            my $screenCommands = ${$devicesScreenCommands{$device}};
+            return "unknown argument $cmd choose one of $setParameters ServerCommand:$serverCommands SelectScreen:NONE,$screenCommands DebugChannel active inactive";
+        } else {
+            return "unknown argument $cmd choose one of active inactive";
+        }
     }
 
     my %switch = (
 
         'ServerCommand' => sub {
-			if (@args < 1) {return "\"set $self->{NAME}\" needs at least two arguments"};
-			if (!$parasKnown) {return 'Not possible, parameters not known'};
-			my $serverCommand = $args[0];
-			SendServerCommand($self, $serverCommand);
-		},
+            if (@args < 1) {return "\"set $self->{NAME}\" needs at least two arguments"};
+            if (!$parasKnown) {return 'Not possible, parameters not known'};
+            my $serverCommand = $args[0];
+            SendServerCommand($self, $serverCommand);
+        },
         'SelectScreen' => sub {
-			if (@args < 1) {return "\"set $self->{NAME}\" needs at least two arguments"};
-			if (!$parasKnown) {return 'Not possible, parameters not known'};
-			my $screenCommand = $args[0];
-			SendScreenCommand($self, $screenCommand);
+            if (@args < 1) {return "\"set $self->{NAME}\" needs at least two arguments"};
+            if (!$parasKnown) {return 'Not possible, parameters not known'};
+            my $screenCommand = $args[0];
+            SendScreenCommand($self, $screenCommand);
         },
         'DebugChannel' => sub {
-			if (@args < 1) {return "\"set $self->{NAME}\" needs at least two arguments"};
-			if (!$parasKnown) {return 'Not possible, parameters not known'};
-			my $debugCommand = join(' ', @args);
-		    SendDebugCommand($self, $debugCommand);
+            if (@args < 1) {return "\"set $self->{NAME}\" needs at least two arguments"};
+            if (!$parasKnown) {return 'Not possible, parameters not known'};
+            my $debugCommand = join(' ', @args);
+            SendDebugCommand($self, $debugCommand);
         },
         'active' => sub {
-			readingsSingleUpdate($self,'state','active',1);
-			ActivateConnection($self, _TRUE_);
+            readingsSingleUpdate($self,'state','active',1);
+            ActivateConnection($self, _TRUE_);
         },
         'inactive' => sub {
-			readingsSingleUpdate($self,'state','inactive',1);
-			ActivateConnection($self, _FALSE_);
+            readingsSingleUpdate($self,'state','inactive',1);
+            ActivateConnection($self, _FALSE_);
         },
     );
 
-    if ( defined($switch{ $cmd  })) {
-        $switch{ $cmd  }->();
+    if (defined($switch{$cmd})) {
+        $switch{$cmd}->();
 
     } else {
 
-		if (!$parasKnown) {return 'Not possible, parameters not known'};
+        if (!$parasKnown) {return 'Not possible, parameters not known'};
 
-		my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
+        my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
 
-		my $channel = $cmd;
+        my $channel = $cmd;
         my $value = $args[0];
 
         Log($self, 4, "Set entered, device := $name, Cannel := $channel, Value := $value");
 
         if (defined($ChannelDescriptions{$channel})) {
             if (defined ($ChannelDescriptions{$channel}{Modes})) {
-                if ( ! defined ($ChannelDescriptions{$channel}{Modes}{$value})) {
+                if (!defined ($ChannelDescriptions{$channel}{Modes}{$value})) {
                     my @modes = keys(%{$ChannelDescriptions{$channel}{Modes}});
                     Log($self, 5, 'Mode 1: '.join(' ', $modes[0]));
                     return "unknown value $value choose one of " . join(' ', @modes);
@@ -1372,8 +1372,8 @@ sub Get {
 
     my $device = $self->{NAME};
 
-    if ( ! defined($devicesChannelDescriptions{$device})) {
-        return "Device  $device currently not connected.";
+    if (!defined($devicesChannelDescriptions{$device})) {
+        return "Device $device currently not connected.";
     }
 
     my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
@@ -1385,7 +1385,7 @@ sub Get {
 
     my $channel = $opt;
 
-    if ($channel eq '?' || ! defined($ChannelDescriptions{$channel}) ) {
+    if ($channel eq '?' || !defined($ChannelDescriptions{$channel})) {
         my @channels = keys(%ChannelDescriptions);
         my $params = '';
         my $firstO = _TRUE_;
@@ -1393,7 +1393,7 @@ sub Get {
             if ($ChannelDescriptions{$channel}{GET} == _FALSE_) {
                 next;
             }
-            if (! $firstO) {
+            if (!$firstO) {
                 $params .= ' ';
             } else {
                 $firstO = _FALSE_;
@@ -1620,79 +1620,79 @@ sub DbLog_splitFn {
                     Ein g&uuml;ltiger Wert.<BR/></td></tr>
           </table><BR/>
         </ul><BR/>
-		Will man das Gespann FHEM/SolvisSmartHomeServer in ganz bestimmten Situationen testen, sind diese mit der Solvis-Anlage nicht immer zu erreichen bzw. k&ouml;nnte zu einer unn&ouml;tigen Energieverschwendung.
-		f&uuml;hren. Für diese Debugging-Zwecke wurde daher der Befehl <code>DebugChannel</code> eingeführt. Er besitzt 2 mögliche Formate:
-		<BR/><BR/>
-		<ol><code>
-			<li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;=&lt;value&gt;</li>
-			<li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;</li>
-		</code></ol><BR/>
-		
-		Mit dem ersten Format setzt man den Kanal <code>channelName</code> fest auf den Wert <code>value</code>.<BR/>
-		Er bleibt solange auf diesem Wert, bis man ihn durch einen DebugChannel-Set-Befehl des zweiten Formats zur&uuml;ck setzt<BR/>
-		oder s&auml;mtliche Debugging-Einstellungen dieser Art mit dem weiter unten beschriebenen Server-Befehl <code>DEBUG_CLEAR</code> l&ouml;scht.<BR/>
-		<table>
-			<tr><td><b>Zu beachten:</b></td></tr>
-			<tr><td>   </td><td>Es gibt hier keine Hilfe in der FHEM-Weboberfläche, man muss den Kanalnamen per Hand in das Eingabefeld eintragen.<BR/>
-												Sinnvoll ist es dazu, den Kanalnamen aus der Aufstellung zu kopieren.</td>
-			</tr>
-		</table>
-		<BR/><BR/>
+        Will man das Gespann FHEM/SolvisSmartHomeServer in ganz bestimmten Situationen testen, sind diese mit der Solvis-Anlage nicht immer zu erreichen bzw. k&ouml;nnte zu einer unn&ouml;tigen Energieverschwendung.
+        f&uuml;hren. Für diese Debugging-Zwecke wurde daher der Befehl <code>DebugChannel</code> eingeführt. Er besitzt 2 mögliche Formate:
+        <BR/><BR/>
+        <ol><code>
+            <li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;=&lt;value&gt;</li>
+            <li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;</li>
+        </code></ol><BR/>
+
+        Mit dem ersten Format setzt man den Kanal <code>channelName</code> fest auf den Wert <code>value</code>.<BR/>
+        Er bleibt solange auf diesem Wert, bis man ihn durch einen DebugChannel-Set-Befehl des zweiten Formats zur&uuml;ck setzt<BR/>
+        oder s&auml;mtliche Debugging-Einstellungen dieser Art mit dem weiter unten beschriebenen Server-Befehl <code>DEBUG_CLEAR</code> l&ouml;scht.<BR/>
+        <table>
+            <tr><td><b>Zu beachten:</b></td></tr>
+            <tr><td>   </td><td>Es gibt hier keine Hilfe in der FHEM-Weboberfläche, man muss den Kanalnamen per Hand in das Eingabefeld eintragen.<BR/>
+                                                Sinnvoll ist es dazu, den Kanalnamen aus der Aufstellung zu kopieren.</td>
+            </tr>
+        </table>
+        <BR/><BR/>
             Neben der Set-Befehle zur &Auml;nderung/Manipulation der obigen Anlagen-Werte, existieren noch zus&auml;tzlich Server-Befehle. Sie besitzen folgendes Format:<BR/>
-			<BR/>
-			<table>
-				<tr><td><ul><code>set &lt;name&gt; ServerCommand &lt;value&gt;</code></ul></td></tr>
-			</table><BR/>
-			
-			Die möglichen Werte (value) ergibt sich aus folgender Tabelle:
-			<ul><ul>
-			  <table>
-				<tr><td align="right" valign="top"><code>BACKUP</code>: </td><td align="left" valign="top">
-				  Sichert die berechneten Messwerte (X1 .. X8) in einen Backup-Datei<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>SCREEN_RESTORE_INHIBIT</code>: </td><td align="left" valign="top">
-				  Normalerweise wird nach einer Parameter-Abfrage im GUI der SolvisControl wieder zum vorherigen Bildschirm zur&uuml;ckgegangen. Dieses verhalten wird durch diesen Befehl verhindert.<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
-				  Gegenstück zu dem ServerCommand SCREEN_RESTORE_INHIBIT<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_ENABLE</code>: </td><td align="left" valign="top">
-				  Normalerweise werden die Control-Kommandos in einer optimierten Reihenfolge ausgef&uuml;hrt. Befehle, welche im gleichen Screen Aktionen ausl&ouml;sen, werden zusammen gefasst ausgef&uuml;hrt. Falls eine strikte Einhaltung der Befehls-Sequenz erdorderlich ist,
-				  hann das durch diesen Server-Befehl verhindert werden<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_INHIBIT</code>: </td><td align="left" valign="top">
-				  Gegenst&uuml;ck zu dem ServerCommand COMMAND_OPTIMIZATION_ENABLE<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>GUI_COMMANDS_ENABLE</code>: </td><td align="left" valign="top">
-				  Mithlife dieses Befehls kann die GUI-Steuerung tempor&auml;r deaktiviert werden, z.B. wenn die Wartung der Anlage erfolgt. Steuert man dies &uuml;ber die FHEM-Oberfl&auml;che, so ist ein set-Befehl g&uuml;nstiger. Aktiviert/Deaktiviert man
-				  die h&auml;ndisch, sollte man das entsprechende Attribut setzen.<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
-				  Gegenstück zu dem ServerCommand GUI_COMMANDS_ENABLE<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>SERVICE_RESET</code>: </td><td align="left" valign="top">
-				  Setzt einen erkannten Service-Zugriff zur&uumlck.<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>UPDATE_CHANNELS</code>: </td><td align="left" valign="top">
-				  Update aller Kan&auml;le, welche nur &uuml;ber das GUI zug&auml;lich sind<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
-				  Startet den Server neu<BR/>
-				</td></tr>
-				<tr><td align="right" valign="top"><code>DEBUG_CLEAR</code>: </td><td align="left" valign="top">
-				  S&auml;mtliche durch den DebugChannel-Befehl modifizierten Kanäle werden auf ihren urspr&uuml;nfglichen Wert gesetzt.<BR/>
-				</td></tr>
-			  </table>
-			</ul></ul><BR/>
+            <BR/>
+            <table>
+                <tr><td><ul><code>set &lt;name&gt; ServerCommand &lt;value&gt;</code></ul></td></tr>
+            </table><BR/>
+
+            Die möglichen Werte (value) ergibt sich aus folgender Tabelle:
+            <ul><ul>
+              <table>
+                <tr><td align="right" valign="top"><code>BACKUP</code>: </td><td align="left" valign="top">
+                  Sichert die berechneten Messwerte (X1 .. X8) in einen Backup-Datei<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>SCREEN_RESTORE_INHIBIT</code>: </td><td align="left" valign="top">
+                  Normalerweise wird nach einer Parameter-Abfrage im GUI der SolvisControl wieder zum vorherigen Bildschirm zur&uuml;ckgegangen. Dieses verhalten wird durch diesen Befehl verhindert.<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>SCREEN_RESTORE_ENABLE</code>: </td><td align="left" valign="top">
+                  Gegenstück zu dem ServerCommand SCREEN_RESTORE_INHIBIT<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_ENABLE</code>: </td><td align="left" valign="top">
+                  Normalerweise werden die Control-Kommandos in einer optimierten Reihenfolge ausgef&uuml;hrt. Befehle, welche im gleichen Screen Aktionen ausl&ouml;sen, werden zusammen gefasst ausgef&uuml;hrt. Falls eine strikte Einhaltung der Befehls-Sequenz erdorderlich ist,
+                  hann das durch diesen Server-Befehl verhindert werden<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>COMMAND_OPTIMIZATION_INHIBIT</code>: </td><td align="left" valign="top">
+                  Gegenst&uuml;ck zu dem ServerCommand COMMAND_OPTIMIZATION_ENABLE<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>GUI_COMMANDS_ENABLE</code>: </td><td align="left" valign="top">
+                  Mithlife dieses Befehls kann die GUI-Steuerung tempor&auml;r deaktiviert werden, z.B. wenn die Wartung der Anlage erfolgt. Steuert man dies &uuml;ber die FHEM-Oberfl&auml;che, so ist ein set-Befehl g&uuml;nstiger. Aktiviert/Deaktiviert man
+                  die h&auml;ndisch, sollte man das entsprechende Attribut setzen.<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
+                  Gegenstück zu dem ServerCommand GUI_COMMANDS_ENABLE<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>SERVICE_RESET</code>: </td><td align="left" valign="top">
+                  Setzt einen erkannten Service-Zugriff zur&uumlck.<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>UPDATE_CHANNELS</code>: </td><td align="left" valign="top">
+                  Update aller Kan&auml;le, welche nur &uuml;ber das GUI zug&auml;lich sind<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
+                  Startet den Server neu<BR/>
+                </td></tr>
+                <tr><td align="right" valign="top"><code>DEBUG_CLEAR</code>: </td><td align="left" valign="top">
+                  S&auml;mtliche durch den DebugChannel-Befehl modifizierten Kanäle werden auf ihren urspr&uuml;nfglichen Wert gesetzt.<BR/>
+                </td></tr>
+              </table>
+            </ul></ul><BR/>
             Diese Tabelle gibt nicht unbedingt den aktuellen Stand wieder. Es k&ouml;nnen mehr oder weniger Server-Befehle definiert sein, da die Server-Befehle vom Server selber dem Client &uuml;bergeben werden (bei jeder neuen Verbindung). Der Server selber bestimmt daher, was
             der Client anbietet. Ma&szlig;gebend ist daher immer die Ausgabe in der Web-Oberfl&auml;che.
             <BR/><BR/></BR>
             Zus&auml;tzlich kann mittels dem Set-Befehl <code>ScreenSelect</code> ein bestimmter Solvis-Bildschirm ausgew&auml;hlt werden, der default-m&auml;&szlig;ig angefahren wird. Der Format des Befehls ist wie folgt:
-			<BR/><BR/>
-			<table>
-				<tr><td><ul><code>set &lt;name&gt; SelectScreen &lt;Bildschirm-Name&gt;</code></ul></td></tr>
-			</table><BR/>
-			Die m&ouml;glichen Bildschirm-Namen sind der Web-Oberfl&auml;che zu entnehmen.
+            <BR/><BR/>
+            <table>
+                <tr><td><ul><code>set &lt;name&gt; SelectScreen &lt;Bildschirm-Name&gt;</code></ul></td></tr>
+            </table><BR/>
+            Die m&ouml;glichen Bildschirm-Namen sind der Web-Oberfl&auml;che zu entnehmen.
         </ul>
       </ul><BR/><BR/><BR/>
       <table>
@@ -2010,31 +2010,31 @@ sub DbLog_splitFn {
                     A valid value.<BR/></td></tr>
           </table><BR/>
         </ul><BR/>
- 		If you want to test the FHEM / SolvisSmartHomeServer combination in very specific situations, these cannot always be reached with the Solvis system or could lead to unnecessary waste of energy. The <code>DebugChannel</code> command was therefore introduced for these debugging purposes. It has 2 possible formats: 
-		f&uuml;hren. Für diese Debugging-Zwecke wurde daher der Befehl <code>DebugChannel</code> eingeführt. Er besitzt 2 mögliche Formate:
-		<BR/><BR/>
-		<ol><code>
-			<li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;=&lt;value&gt;</li>
-			<li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;</li>
-		</code></ol><BR/>
-		
-		With the first format, the channel channelName is set to the value <code>value</code>.<BR/>
-		It remains at this value until it is reset using a DebugChannel Set command of the second format
-		or delete all debugging settings of this type with the server command <code>DEBUG_CLEAR</code> described below.<BR/>
-		<table>
-			<tr><td><b>Note:</b></td></tr>
-			<tr><td>   </td><td>There is no help here in the FHEM web interface, you have to enter the channel name by hand in the input field.<BR/>
-			It makes sense to copy the channel name from the list.</td>
-			</tr>
-		</table>
-		<BR/><BR/>
+        If you want to test the FHEM / SolvisSmartHomeServer combination in very specific situations, these cannot always be reached with the Solvis system or could lead to unnecessary waste of energy. The <code>DebugChannel</code> command was therefore introduced for these debugging purposes. It has 2 possible formats:
+        f&uuml;hren. Für diese Debugging-Zwecke wurde daher der Befehl <code>DebugChannel</code> eingeführt. Er besitzt 2 mögliche Formate:
+        <BR/><BR/>
+        <ol><code>
+            <li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;=&lt;value&gt;</li>
+            <li>set &lt;name&gt; DebugChannel &lt;cannelName&gt;</li>
+        </code></ol><BR/>
+
+        With the first format, the channel channelName is set to the value <code>value</code>.<BR/>
+        It remains at this value until it is reset using a DebugChannel Set command of the second format
+        or delete all debugging settings of this type with the server command <code>DEBUG_CLEAR</code> described below.<BR/>
+        <table>
+            <tr><td><b>Note:</b></td></tr>
+            <tr><td>   </td><td>There is no help here in the FHEM web interface, you have to enter the channel name by hand in the input field.<BR/>
+            It makes sense to copy the channel name from the list.</td>
+            </tr>
+        </table>
+        <BR/><BR/>
              In addition to the set commands for changing/manipulating the above system values, there are also server commands. They have the following format:<BR/>
-			<BR/>
-			<table>
-				<tr><td><ul><code>set &lt;name&gt; ServerCommand &lt;value&gt;</code></ul></td></tr>
-			</table><BR/>
-			
-			The possible values result from the following table:
+            <BR/>
+            <table>
+                <tr><td><ul><code>set &lt;name&gt; ServerCommand &lt;value&gt;</code></ul></td></tr>
+            </table><BR/>
+
+            The possible values result from the following table:
         <ul>
           <table>
             <tr><td align="right" valign="top"><code>BACKUP</code>: </td><td align="left" valign="top">
@@ -2067,19 +2067,19 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>RESTART</code>: </td><td align="left" valign="top">
               Restarts the server<BR/>
             </td></tr>
- 				<tr><td align="right" valign="top"><code>DEBUG_CLEAR</code>: </td><td align="left" valign="top">
-				  All channels modified by the DebugChannel command are set to their original value. <BR/>
-				</td></tr>
-			</table>
+                <tr><td align="right" valign="top"><code>DEBUG_CLEAR</code>: </td><td align="left" valign="top">
+                  All channels modified by the DebugChannel command are set to their original value. <BR/>
+                </td></tr>
+            </table>
         </ul><BR/>
             This table does not necessarily reflect the current status. More or fewer server commands can be defined, since the server commands are handed over to the client by the server itself (with each new connection). The server itself determines what the client offers. The decisive factor is therefore always the output in the web interface.
             <BR/><BR/></BR>
             In addition, the Set command <code>ScreenSelect</code> can be used to select a specific Solvis screen that is accessed by default. The format of the command is as follows:
-			<BR/><BR/>
-			<table>
-				<tr><td><ul><code>set &lt;name&gt; SelectScreen &lt;screen name&gt;</code></ul></td></tr>
-			</table><BR/>
-			The possible screen names can be found on the web interface.
+            <BR/><BR/>
+            <table>
+                <tr><td><ul><code>set &lt;name&gt; SelectScreen &lt;screen name&gt;</code></ul></td></tr>
+            </table><BR/>
+            The possible screen names can be found on the web interface.
         </ul><BR/><BR/><BR/>
       <table>
         <tr><td><a name="SolvisClientGet"></a><b>Get</b></td></tr>
