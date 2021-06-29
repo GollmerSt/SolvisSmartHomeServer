@@ -1670,6 +1670,9 @@ sub DbLog_splitFn {
                 <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
                   Gegenstück zu dem ServerCommand GUI_COMMANDS_ENABLE<BR/>
                 </td></tr>
+                <tr><td align="right" valign="top"><code>SERVICE_TRIGGER</code>: </td><td align="left" valign="top">
+                  Triggert (simuliert) einen Service-Zugriff.<BR/>
+                </td></tr>
                 <tr><td align="right" valign="top"><code>SERVICE_RESET</code>: </td><td align="left" valign="top">
                   Setzt einen erkannten Service-Zugriff zur&uumlck.<BR/>
                 </td></tr>
@@ -2058,6 +2061,9 @@ sub DbLog_splitFn {
             <tr><td align="right" valign="top"><code>GUI_COMMANDS_DISABLE</code>: </td><td align="left" valign="top">
               Counterpart to the ServerCommand GUI_COMMANDS_ENABLE<BR/>
             </td></tr>
+                <tr><td align="right" valign="top"><code>SERVICE_TRIGGER</code>: </td><td align="left" valign="top">
+                  Triggers (simulates) a service access.<BR/>
+                </td></tr>
             <tr><td align="right" valign="top"><code>SERVICE_RESET</code>: </td><td align="left" valign="top">
               Resets a detected service access<BR/>
             </td></tr>
