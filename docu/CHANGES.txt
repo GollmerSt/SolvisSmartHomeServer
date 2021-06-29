@@ -1,5 +1,13 @@
 A E N D E R U N G E N
 
+Version 01.04.01
+
+    29.06.2021  Ein Bug in der 1.04.00 verhinderte, dass die Server-Commands Terminate und Restart
+                nicht mehr moeglich waren. Fixed.
+
+                Command SERVICE_TRIGGER hinzugefuegt.
+
+
 Version 01.04.00
 
     22.05.2021  Eine neue FHEM-Installation zeigte ein Problem des Servers bei JSON_Paketen mit
