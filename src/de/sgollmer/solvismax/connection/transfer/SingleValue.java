@@ -26,7 +26,6 @@ public class SingleValue implements IValue {
 	private static final Pattern BOOLEAN = Pattern.compile("^(true|false)$");
 	private static final Pattern INTEGER = Pattern.compile("^(-{0,1}\\d+)$");
 	private static final Pattern FLOAT = Pattern.compile("^(-{0,1}\\d+(\\.\\d+){0,1}([Ee][+-]{0,1}\\d+){0,1})$");
-	private static final Pattern STRING = Pattern.compile("^\"(((\\\\\")|[^\"])*)\".*$");
 
 	private SingleData<?> data;
 
