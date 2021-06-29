@@ -7,12 +7,15 @@
 
 package de.sgollmer.solvismax.connection;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import de.sgollmer.solvismax.connection.CommandHandler.ClosingThread;
 import de.sgollmer.solvismax.error.ClientAssignmentException;
+import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.WatchDog.Event;
 import de.sgollmer.solvismax.model.command.CommandScreenRestore;
 
 public class ClientAssignments {
@@ -134,9 +137,9 @@ public class ClientAssignments {
 		}
 	}
 
-	void serviceReset(final Solvis solvis) throws ClientAssignmentException {
+	void serviceAccess(final Solvis solvis, Event event) throws ClientAssignmentException, IOException, TerminationException {
 		this.getStateAndCheck(solvis);
-		solvis.serviceReset();
+		solvis.serviceAccess(event);
 	}
 
 	void updateControlChannels(final Solvis solvis) throws ClientAssignmentException {

@@ -38,6 +38,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
+import de.sgollmer.solvismax.model.WatchDog.Event;
 import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.command.Command;
 import de.sgollmer.solvismax.model.command.CommandControl;
@@ -776,8 +777,8 @@ public class Solvis {
 		return this.home;
 	}
 
-	public void serviceReset() {
-		this.worker.serviceReset();
+	public void serviceAccess(Event event) throws IOException, TerminationException {
+		this.worker.serviceAccess(event);
 	}
 
 	public History getHistory() {

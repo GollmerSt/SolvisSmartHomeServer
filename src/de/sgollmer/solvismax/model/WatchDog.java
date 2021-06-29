@@ -140,8 +140,9 @@ public class WatchDog {
 
 	}
 
-	enum Event {
-		SCREENSAVER, SET_ERROR_BY_BUTTON, SET_ERROR_BY_MESSAGE, RESET_ERROR, NONE, CHANGED, INIT, POWER_OFF, POWER_ON;
+	public enum Event {
+		SCREENSAVER, SET_ERROR_BY_BUTTON, SET_ERROR_BY_MESSAGE, RESET_ERROR, NONE, CHANGED, INIT, POWER_OFF, POWER_ON,
+		TRIGGER_SERVICE_BY_COMMAND, RESET_SERVICE_BY_COMMAND;
 
 		boolean isError() {
 			switch (this) {
@@ -376,18 +377,30 @@ public class WatchDog {
 				}
 				this.solvis.setScreenSaverActive(false);
 				break;
+			case TRIGGER_SERVICE_BY_COMMAND:
+				this.serviceAccessFinishedTime = currentTime;
+				current = HumanAccess.SERVICE;
+				break;
+			case RESET_SERVICE_BY_COMMAND:
+				if (!this.serviceScreenDetected && !this.powerOff && this.humanAccess == HumanAccess.SERVICE) {
+					this.serviceAccessFinishedTime = 0;
+					current = HumanAccess.NONE;
+				}
+				break;
 		}
 		processHumanAccess(current);
 	}
 
-	private void processHumanAccess(final HumanAccess currentP) throws IOException, TerminationException {
-		HumanAccess current = currentP;
+	private void processHumanAccess(final HumanAccess access) throws IOException, TerminationException {
+
 		if (this.humanAccess != HumanAccess.UNKNOWN) {
-			if (this.humanAccess == current) {
+			if (this.humanAccess == access) {
 				return;
 			}
-			this.solvis.notifyScreenChangedByHumanObserver(current);
+			this.solvis.notifyScreenChangedByHumanObserver(access);
 		}
+
+		HumanAccess current = access;
 
 		switch (current) {
 			case SERVICE:
@@ -417,10 +430,14 @@ public class WatchDog {
 		}
 	}
 
-	synchronized void serviceReset() {
-		if (!this.serviceScreenDetected && !this.powerOff && this.humanAccess == HumanAccess.SERVICE) {
-			this.serviceAccessFinishedTime = 0;
+	synchronized void serviceAccess(Event event) throws IOException, TerminationException {
+		switch (event) {
+			case TRIGGER_SERVICE_BY_COMMAND:
+			case RESET_SERVICE_BY_COMMAND:
+				this.processEvent(event, null);
+				break;
+			default:
+				logger.error("Unexpected call of \"serviceAccess\". Ignored");
 		}
-
 	}
 }

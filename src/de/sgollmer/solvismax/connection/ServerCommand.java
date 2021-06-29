@@ -25,6 +25,7 @@ public enum ServerCommand {
 	GUI_COMMANDS_ENABLE(false), //
 	GUI_COMMANDS_DISABLE(false), //
 	SERVICE_RESET(false), //
+	SERVICE_TRIGGER(false), //
 	UPDATE_CHANNELS(false), //
 	LOG_STANDARD(true, true), //
 	LOG_BUFFERED(true, true);

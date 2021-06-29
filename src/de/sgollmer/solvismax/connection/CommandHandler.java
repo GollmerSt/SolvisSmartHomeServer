@@ -34,6 +34,7 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Instances;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.model.WatchDog.Event;
 import de.sgollmer.solvismax.model.command.CommandSetScreen;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
@@ -113,7 +114,7 @@ public class CommandHandler {
 	}
 
 	private void executeServerCommand(final IReceivedData receivedData, final IClient client)
-			throws IOException, ClientAssignmentException {
+			throws IOException, ClientAssignmentException, TerminationException {
 		ServerCommand command;
 		String commandString = (String) receivedData.getSingleData().get();
 		try {
@@ -174,7 +175,10 @@ public class CommandHandler {
 				assignments.enableControlCommands(solvis, true);
 				break;
 			case SERVICE_RESET:
-				assignments.serviceReset(solvis);
+				assignments.serviceAccess(solvis, Event.RESET_SERVICE_BY_COMMAND);
+				break;
+			case SERVICE_TRIGGER:
+				assignments.serviceAccess(solvis, Event.TRIGGER_SERVICE_BY_COMMAND);
 				break;
 			case UPDATE_CHANNELS:
 				assignments.updateControlChannels(solvis);
