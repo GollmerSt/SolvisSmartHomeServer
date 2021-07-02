@@ -57,7 +57,7 @@ public class CommandControl extends Command {
 	private boolean mustBeFinished = false;
 	private ResultStatus finalStatus = ResultStatus.SUCCESS;
 	private long executionStartTime = -1;
-	private final Integer priority;
+	private final Integer monitoringPriority;
 
 	private Map<ChannelDescription, Dependency> toRestore = new HashMap<>(3);
 
@@ -85,7 +85,7 @@ public class CommandControl extends Command {
 		this(description, solvis, null);
 	}
 
-	public CommandControl(final ChannelDescription description, final Solvis solvis, final Integer priority) {
+	public CommandControl(final ChannelDescription description, final Solvis solvis, final Integer monitoringPriority) {
 		this.setValue = null;
 		this.inhibitRead = false;
 		this.description = description;
@@ -93,7 +93,7 @@ public class CommandControl extends Command {
 		this.screen = description.getScreen(solvis);
 		this.solvis = solvis;
 		this.dependencyCache = new DependencyCache(solvis);
-		this.priority = priority;
+		this.monitoringPriority = monitoringPriority;
 	}
 
 	@Override
@@ -215,8 +215,8 @@ public class CommandControl extends Command {
 	@Override
 	public ResultStatus preExecute(Solvis solvis, QueueStatus queueStatus) throws IOException, TerminationException {
 
-		if (queueStatus.getCurrentPriority() != null && this.priority != null
-				&& queueStatus.getCurrentPriority() > this.priority) {
+		if (queueStatus.getCurrentPriority() != null && this.isMonitoring()
+				&& queueStatus.getCurrentPriority() > this.monitoringPriority) {
 			return ResultStatus.INHIBITED;
 		}
 
@@ -598,7 +598,7 @@ public class CommandControl extends Command {
 				command.readChannels = new ArrayList<>();
 
 				for (ChannelDescription description : readChannels) {
-					if (command.priority == null || !description.isWriteable()
+					if (command.isMonitoring() || !description.isWriteable()
 							|| description == command.getDescription()) {
 						for (Iterator<DependencyGroup> it = command.dependencyGroupsToExecute.iterator(); it
 								.hasNext();) {
@@ -717,6 +717,10 @@ public class CommandControl extends Command {
 		return this.mustBeFinished;
 	}
 
+	public boolean isMonitoring() {
+		return this.monitoringPriority != null;
+	}
+
 	private static class DependencyCache {
 
 		private final Solvis solvis;
@@ -807,7 +811,7 @@ public class CommandControl extends Command {
 	public Type getType() {
 		if (this.write) {
 			return Type.CONTROL_WRITE;
-		} else if (this.priority == null) {
+		} else if (!this.isMonitoring()) {
 			return Type.CONTROL_READ;
 		} else {
 			return Type.CONTROL_UPDATE;
