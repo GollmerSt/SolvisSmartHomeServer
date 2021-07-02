@@ -598,10 +598,14 @@ public class CommandControl extends Command {
 				command.readChannels = new ArrayList<>();
 
 				for (ChannelDescription description : readChannels) {
-					for (Iterator<DependencyGroup> it = command.dependencyGroupsToExecute.iterator(); it.hasNext();) {
-						DependencyGroup group = it.next();
-						if (DependencyGroup.equals(description.getDependencyGroup(), group, solvis)) {
-							command.readChannels.add(description);
+					if (command.priority == null || !description.isWriteable()
+							|| description == command.getDescription()) {
+						for (Iterator<DependencyGroup> it = command.dependencyGroupsToExecute.iterator(); it
+								.hasNext();) {
+							DependencyGroup group = it.next();
+							if (DependencyGroup.equals(description.getDependencyGroup(), group, solvis)) {
+								command.readChannels.add(description);
+							}
 						}
 					}
 				}

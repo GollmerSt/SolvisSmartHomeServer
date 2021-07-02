@@ -100,7 +100,8 @@ public abstract class Command {
 	/**
 	 * 
 	 * @param command
-	 * @return true both commands write to the same channel
+	 * @return true if both commands write to the same channel or the command read a
+	 *         channel, which will be written
 	 */
 	public boolean canBeIgnored(final Command queueCommand) {
 		return false;
