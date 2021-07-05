@@ -2,7 +2,7 @@ A E N D E R U N G E N
 
 Version 01.04.02
 
-    02.07.2021  Beim Monitoring von SolvisControl-Screens duerfen beschreibbare Kanäle nicht mit
+    02.07.2021  Beim Monitoring von SolvisControl-Screens duerfen beschreibbare Kanaele nicht mit
                 ausgelesen werden, da eine Veraenderung waehrend des Monitorings bei bestimmten
                 Smarthome-Systemen dann kaum mehr moeglich ist.
 
