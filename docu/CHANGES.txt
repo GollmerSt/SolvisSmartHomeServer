@@ -1,5 +1,14 @@
 A E N D E R U N G E N
 
+Version 01.04.03
+
+    27.07.2021  Wenn während des Monitoren des Nachheizens die WW-Temperatur verstellt wurde,
+                funktioniert das Monitoren nicht mehr und das Ende des Nachheizens wird nicht mehr
+                erkannt. Gefixt.
+                
+                Die Änderung vom 2.07.2021 war fehlerhaft realisiert. Gefixt.
+
+
 Version 01.04.02
 
     02.07.2021  Beim Monitoring von SolvisControl-Screens duerfen beschreibbare Kanaele nicht mit

@@ -134,7 +134,7 @@ public class CommandControl extends Command {
 						if (this.description == queueCommand.description && this.isWriting()) {
 							inQueueInhibited = true;
 						}
-						inhibitAdd = !this.isWriting();
+						inhibitAdd = !this.isWriting() && this.monitoringPriority == null;
 						insert = true;
 
 					} else if (queueCommand.getRestoreChannel(solvis) != null) {
@@ -598,8 +598,8 @@ public class CommandControl extends Command {
 				command.readChannels = new ArrayList<>();
 
 				for (ChannelDescription description : readChannels) {
-					if (command.isMonitoring() || !description.isWriteable()
-							|| description == command.getDescription()) {
+					if (!(command.isMonitoring() && description.isWriteable()
+							&& description != command.getDescription())) {
 						for (Iterator<DependencyGroup> it = command.dependencyGroupsToExecute.iterator(); it
 								.hasNext();) {
 							DependencyGroup group = it.next();
