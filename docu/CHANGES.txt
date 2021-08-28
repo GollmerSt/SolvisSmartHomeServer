@@ -1,5 +1,13 @@
 A E N D E R U N G E N
 
+Version 01.04.04
+
+    28.08.2021  Kann das Image der SolvisRemote nicht decodiert werden, wird die Verbindung
+                und nach 10s wieder aufgebaut. Dieser Fehler trat bei einer Solvis-Anlage auf,
+                welche einen Blitzschaden besaß und das Bild auf der Web-Page ein
+                Synchronisationsfehler zeigte. Dadurch trat einen Null-Pointer-Exception auf.
+
+
 Version 01.04.03
 
     27.07.2021  Wenn während des Monitoren des Nachheizens die WW-Temperatur verstellt wurde,

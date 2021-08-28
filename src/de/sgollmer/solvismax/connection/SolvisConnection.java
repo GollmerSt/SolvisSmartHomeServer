@@ -138,6 +138,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 				InputStream in = this.connect(Constants.Solvis.DISPLAY);
 				image = ImageIO.read(in);
 				in.close();
+				if (image == null) {
+					throw new IOException("Unknown image format. Transmitting error?");
+				}
 			}
 		} catch (IOException e) {
 			this.handleExceptionAndThrow(e);
@@ -291,10 +294,9 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 			this.solvisState.setPowerOff();
 		} else {
 			this.solvisState.setDisconnected();
-			;
 		}
 		AbortHelper.getInstance().sleep(Constants.WAIT_TIME_AFTER_IO_ERROR);
-		throw new IOException(e.getMessage());
+		throw e;
 	}
 
 	private void calculateMaxResponseTime() {
