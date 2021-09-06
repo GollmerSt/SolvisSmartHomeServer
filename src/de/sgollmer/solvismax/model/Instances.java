@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -90,7 +92,18 @@ public class Instances {
 		boolean learned = true;
 		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
 		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);
-		FileHelper.rmDir(learnDesination);
+		
+		this.deleteLearnedImageFiles();
+		learnDesination.mkdirs();
+		
+		Pattern pattern = Pattern.compile("^\\d\\d\\d_.*$");
+		for (File file : learnDesination.listFiles()) {
+			Matcher matcher = pattern.matcher(file.getName());
+			if (matcher.matches()) {
+				file.delete();
+			}
+		}
+		// FileHelper.rmDir(learnDesination);
 		FileHelper.mkdir(learnDesination);
 
 		for (Solvis solvis : this.units) {
@@ -100,6 +113,23 @@ public class Instances {
 		if (learned) {
 			new GraficFileHandler(this.writeablePath).write(this.graficDatas);
 		}
+		
+		this.deleteLearnedImageFiles();
+	}
+
+	private void deleteLearnedImageFiles() {
+		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
+		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);
+		Pattern pattern = Pattern.compile("^\\d\\d\\d_.*$");
+		if (learnDesination.isDirectory()) {
+			for (File file : learnDesination.listFiles()) {
+				Matcher matcher = pattern.matcher(file.getName());
+				if (matcher.matches()) {
+					file.delete();
+				}
+			}
+		}
+
 	}
 
 	public boolean init() throws IOException, XMLStreamException, LearningException, AssignmentException,
@@ -157,8 +187,9 @@ public class Instances {
 			csv.outCommentHeader(unit, solvis.getConfigurationMask(), unit.getComment());
 			csv.out(solvis, Constants.Csv.HEADER);
 			csv.screensOut(solvis);
-			if ( this.baseData.getMqtt() != null && this.baseData.getMqtt().isEnable()) {
-			csv.mqttTopicsOut(this);}
+			if (this.baseData.getMqtt() != null && this.baseData.getMqtt().isEnable()) {
+				csv.mqttTopicsOut(this);
+			}
 		}
 
 		csv.close();

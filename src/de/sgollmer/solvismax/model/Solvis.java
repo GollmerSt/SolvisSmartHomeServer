@@ -8,12 +8,18 @@
 package de.sgollmer.solvismax.model;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -116,6 +122,7 @@ public class Solvis {
 	private HumanAccess humanAccess = HumanAccess.NONE;
 	private Map<String, Collection<UpdateStrategies.IExecutable>> updateStrategies = new HashMap<>();
 	private Standby.Executable standby;
+	private ZipOutputStream zipOutputStream = null;
 
 	Solvis(final Unit unit, final SolvisDescription solvisDescription, final SystemGrafics grafics,
 			final SolvisConnection connection, final Mqtt mqtt, final BackupHandler measurementsBackupHandler,
@@ -559,6 +566,8 @@ public class Solvis {
 			}
 			logger.log(LEARN, "Learning finished.");
 			this.learning = false;
+
+			this.closeZip();
 		}
 	}
 
@@ -708,6 +717,10 @@ public class Solvis {
 	}
 
 	public void abort() {
+		try {
+			this.closeZip();
+		} catch (IOException e) {
+		}
 		this.abortObservable.notify(true);
 		this.measurementUpdateThread.abort();
 	}
@@ -873,8 +886,31 @@ public class Solvis {
 		}
 		try {
 			image.write(file);
+			this.appendToZip(image, file);
 		} catch (IOException e) {
 			logger.error("Error on writing the image of the learned screen <" + id + ">.");
+		}
+	}
+
+	private void appendToZip(MyImage image, File file) throws IOException {
+		if (this.zipOutputStream == null) {
+			File parent = new File(this.getWritePath(), Constants.Files.RESOURCE_DESTINATION);
+			parent = new File(parent, Constants.Files.LEARN_DESTINATION);
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HHmmssSSS");
+			String zipName = Constants.Files.ZIP_PREFIX + '_' + format.format(new Date(System.currentTimeMillis()))
+					+ '_' + this.getUnit().getId() + ".zip";
+			OutputStream out = new FileOutputStream(new File(parent, zipName));
+			this.zipOutputStream = new ZipOutputStream(out);
+		}
+		ZipEntry zipEntry = new ZipEntry(file.getName());
+		this.zipOutputStream.putNextEntry(zipEntry);
+		image.write(this.zipOutputStream);
+	}
+
+	private void closeZip() throws IOException {
+		if (this.zipOutputStream != null) {
+			this.zipOutputStream.close();
+			this.zipOutputStream = null;
 		}
 	}
 

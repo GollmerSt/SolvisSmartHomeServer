@@ -16,7 +16,9 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -417,14 +419,26 @@ public class MyImage {
 	}
 
 	public void writeWhole(final File file) throws IOException {
-		ImageIO.write(this.image, Constants.Files.GRAFIC_SUFFIX, file);
+		FileOutputStream out = new FileOutputStream(file);
+		this.writeWhole(out);
+		out.close();
 	}
 
 	public void write(final File file) throws IOException {
-		ImageIO.write(this.image.getSubimage(this.origin.getX(), this.origin.getY(), this.getWidth(), this.getHeight()),
-				Constants.Files.GRAFIC_SUFFIX, file);
+		FileOutputStream out = new FileOutputStream(file);
+		this.write(out);
+		out.close();
+	}
+	
+	public void writeWhole( final OutputStream out) throws IOException {
+		ImageIO.write(this.image, Constants.Files.GRAFIC_SUFFIX, out);
 	}
 
+	public void write(final OutputStream out) throws IOException {
+		ImageIO.write(this.image.getSubimage(this.origin.getX(), this.origin.getY(), this.getWidth(), this.getHeight()),
+				Constants.Files.GRAFIC_SUFFIX, out);
+	}
+	
 	public List<MyImage> split() {
 		this.createHistograms(true);
 
