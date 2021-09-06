@@ -902,8 +902,8 @@
 					</tns:Rectangle>
 				</tns:Grafic>
 				<tns:MustBeWhite>
-					<tns:TopLeft X="85" Y="35" />
-					<tns:BottomRight X="100" Y="65" />
+					<tns:TopLeft X="84" Y="35" />
+					<tns:BottomRight X="125" Y="80" />
 				</tns:MustBeWhite>
 			</tns:Identification>
 		</tns:Screen>
