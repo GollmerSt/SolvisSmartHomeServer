@@ -1,19 +1,16 @@
 A E N D E R U N G E N
 
-Version 01.04.05-rc1
-
-    06.09.2021  Die Angabe der Must-Be-Write-Felder beim Anlagenstatus Solar war nicht eindeutig.
-    			Bei der neuesten SolvisMax7 FW traf die auch für den Analgenstatus WW zu.
-    			
-                Die angelernten Images werden nun mittels Zip gepackt abgelegt.
-
-
-Version 01.04.04
+Version 01.04.04-rc1
 
     28.08.2021  Kann das Image der SolvisRemote nicht decodiert werden, wird die Verbindung
                 und nach 10s wieder aufgebaut. Dieser Fehler trat bei einer Solvis-Anlage auf,
                 welche einen Blitzschaden besaß und das Bild auf der Web-Page ein
                 Synchronisationsfehler zeigte. Dadurch trat einen Null-Pointer-Exception auf.
+
+    06.09.2021  Die Angabe der Must-Be-Write-Felder beim Anlagenstatus Solar war nicht eindeutig.
+    			Bei der neuesten SolvisMax7 FW traf die auch für den Analgenstatus WW zu.
+    			
+                Die angelernten Images werden nun mittels Zip gepackt abgelegt.
 
 
 Version 01.04.03
