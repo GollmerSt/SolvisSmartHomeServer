@@ -229,6 +229,7 @@ public enum Strategy implements IType {
 			int date = (int) toInt(str.substring(10, 12));
 
 			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.MILLISECOND, 0);
 			calendar.set(year, month, date, hour, minute, second);
 
 			Calendar old = destin.getDate();

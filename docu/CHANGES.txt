@@ -1,5 +1,12 @@
 A E N D E R U N G E N
 
+Version 01.04.04
+
+    16.09.2021  Die Detektion, dass die SolvisMax ausgeschaltet ist und die SolvisRemote
+                eingeschaltet ist, funktionierte nicht, da die in diesem Fall stehende Uhr nicht
+                erkannt wurde.
+
+
 Version 01.04.04-rc1
 
     28.08.2021  Kann das Image der SolvisRemote nicht decodiert werden, wird die Verbindung
