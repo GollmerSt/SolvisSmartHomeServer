@@ -89,7 +89,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 	}
 
 	private enum Synchronisation {
-		UPDATE_ONLY, SYNC_FINISHED, SYNC_MISSED, ENABLE_SYNC_BY_VALUE, SYNC_PREFFERED, NO_ACTION
+		UPDATE_ONLY, SYNC_FINISHED, SYNC_MISSED, ENABLE_SYNC_BY_VALUE, SYNC_PREFFERED, NO_ACTION,
+		SYNC_FINISHED_WO_UPDATE
 	};
 
 	private static class SynchronisationResult {
@@ -127,6 +128,9 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		private boolean monitor = false;
 		private boolean otherExecuting = false;
 
+		/**
+		 * Time of the last synchronization
+		 */
 		private int executionTime = 0;
 		private int hourlyWindow_s = 0;
 
@@ -194,41 +198,56 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			int factor = this.factor < 0 ? 1 : this.factor;
 			int data = controlData.getInt() * factor;
 			int currentData = this.calculatedValue.getInt();
+			boolean isSynchronizing = this.isSynchronizing();
 
 			if (this.factor < 0) {
-				if (!equipmentOn && currentData != data) {
-					return new SynchronisationResult(Synchronisation.UPDATE_ONLY, data, currentData);
+				if (!equipmentOn) {
+					if (currentData == data) {
+						return new SynchronisationResult(
+								isSynchronizing ? Synchronisation.SYNC_FINISHED_WO_UPDATE : Synchronisation.NO_ACTION,
+								data, currentData);
+					} else {
+						return new SynchronisationResult(
+								isSynchronizing ? Synchronisation.SYNC_FINISHED : Synchronisation.UPDATE_ONLY, data,
+								currentData);
+					}
 				} else if (data > currentData || data < currentData - 1) {
-					return new SynchronisationResult(Synchronisation.UPDATE_ONLY, data, currentData);
+					return new SynchronisationResult(
+							isSynchronizing ? Synchronisation.SYNC_FINISHED : Synchronisation.UPDATE_ONLY, data,
+							currentData);
 				} else {
-					return new SynchronisationResult(Synchronisation.NO_ACTION, currentData, currentData);
+					return new SynchronisationResult(
+							isSynchronizing ? Synchronisation.SYNC_FINISHED_WO_UPDATE : Synchronisation.NO_ACTION,
+							currentData, currentData);
 				}
 			}
 
 			int tolerance = Constants.SYNC_TOLERANCE_PERCENT * this.factor / 100;
 
-			Synchronisation range = null;
+			Synchronisation synchronisation = null;
 			int setValue = data;
 
 			if (currentData - tolerance > data + this.factor) {
-				range = Synchronisation.ENABLE_SYNC_BY_VALUE;
+				synchronisation = Synchronisation.ENABLE_SYNC_BY_VALUE;
 				setValue = data + this.factor;
 			} else if (currentData + tolerance < data) {
-				range = Synchronisation.ENABLE_SYNC_BY_VALUE;
+				synchronisation = Synchronisation.ENABLE_SYNC_BY_VALUE;
 			} else if (currentData < data) {
-				range = Synchronisation.UPDATE_ONLY;
+				synchronisation = Synchronisation.UPDATE_ONLY;
 			}
 
 			if (changed && (this.syncActiveForced || this.syncEnableHourly)) {
 				if (equipmentOn && this.syncPossible) {
-					range = Synchronisation.SYNC_FINISHED;
-				} else if (range == null) {
-					range = Synchronisation.SYNC_MISSED;
+					synchronisation = Synchronisation.SYNC_FINISHED;
+				} else if (synchronisation == null) {
+					synchronisation = Synchronisation.SYNC_MISSED;
 				}
 			}
 
-			if (range != null) {
-				return new SynchronisationResult(this.equipmentTimeSyncEnabled ? range : Synchronisation.UPDATE_ONLY, //
+			if (synchronisation != null) {
+				return new SynchronisationResult(
+						this.equipmentTimeSyncEnabled && isSynchronizing ? synchronisation
+								: Synchronisation.UPDATE_ONLY, //
 						setValue, currentData);
 
 			} else {
@@ -280,14 +299,17 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 					return;
 				}
 
-				switch (result.synchronisation) {
+				Synchronisation synchronisation = result.synchronisation;
+
+				switch (synchronisation) {
 					case UPDATE_ONLY:
 						update = true;
 						this.syncPossible = false;
 						break;
 
 					case SYNC_FINISHED:
-						update = true;
+					case SYNC_FINISHED_WO_UPDATE:
+						update = synchronisation == Synchronisation.SYNC_FINISHED;
 						type = new UpdateType(true);
 						this.syncActiveForced = false;
 						this.syncPossible = false;
@@ -396,23 +418,23 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 					return;
 				}
 
-				int delta_s = this.hourlyWindow_s + this.executionTime;
-				int nextHour = (currentControlValue + 1) * this.factor;
+				if (this.factor > 0) {
 
-				boolean formerSyncActiveHourly = this.syncEnableHourly;
-				this.syncEnableHourly = this.hourly && nextHour - delta_s < currentCalcValue;
+					int delta_s = this.hourlyWindow_s; // + this.executionTime;
+					int nextHour = (currentControlValue + 1) * this.factor;
 
-				if (formerSyncActiveHourly != this.syncEnableHourly) {
-					if (this.syncEnableHourly) {
-						logger.info("Hourly synchronisation of <" + EquipmentOnOff.this.calculatedId + "> activated.");
-					} else {
-						logger.info(
-								"Hourly synchronisation interval of <" + EquipmentOnOff.this.calculatedId + "> over.");
+					boolean formerSyncActiveHourly = this.syncEnableHourly;
+					this.syncEnableHourly = this.hourly && nextHour - delta_s < currentCalcValue;
 
+					if (formerSyncActiveHourly != this.syncEnableHourly) {
+						if (this.syncEnableHourly) {
+							logger.info(
+									"Hourly synchronisation of <" + EquipmentOnOff.this.calculatedId + "> activated.");
+						}
 					}
 				}
 
-				boolean checkC = this.syncActiveForced || this.syncEnableHourly;
+				boolean checkC = this.isSynchronizing();
 
 				if (!equipmentOn && !this.lastEquipmentState) {
 					checkC = false;
@@ -456,6 +478,10 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		@Override
 		public String getTriggerId() {
 			return this.calculatedValue.getId();
+		}
+
+		private boolean isSynchronizing() {
+			return this.syncActiveForced || this.syncEnableHourly;
 		}
 
 	}
