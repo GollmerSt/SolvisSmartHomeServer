@@ -5,7 +5,7 @@ Version 01.04.06
     27.09.2021  Konfiguration kotrrigiert, so dass auch andere Sprachen ausßer Deutsch angelernt
                 werden können.
                 Folgende Sprachen wurdem mit der SolvisMax 6 getestet:
-                Deutch, Englisch, Französisch, Italienisch, Portugiesisch, Holländisch, Spamisch, Rumänisch
+                Deutsch, Englisch, Französisch, Italienisch, Portugiesisch, Holländisch, Spamisch, Rumänisch
                 
 
 
