@@ -429,8 +429,8 @@ public class MyImage {
 		this.write(out);
 		out.close();
 	}
-	
-	public void writeWhole( final OutputStream out) throws IOException {
+
+	public void writeWhole(final OutputStream out) throws IOException {
 		ImageIO.write(this.image, Constants.Files.GRAFIC_SUFFIX, out);
 	}
 
@@ -438,7 +438,7 @@ public class MyImage {
 		ImageIO.write(this.image.getSubimage(this.origin.getX(), this.origin.getY(), this.getWidth(), this.getHeight()),
 				Constants.Files.GRAFIC_SUFFIX, out);
 	}
-	
+
 	public List<MyImage> split() {
 		this.createHistograms(true);
 
@@ -551,6 +551,57 @@ public class MyImage {
 			this.histogramY.set(i, this.histogramY.get(i) - thicknessX);
 		}
 
+	}
+
+	/**
+	 * 
+	 * @param start      Left corner of the search area (out of the frame)
+	 * @param rightLimit Right limitation. Search area includes this point
+	 * @param light      True: Search for a light pixel
+	 * @param upToDown   True: Search from up to down
+	 * @return y coordinate of the frame
+	 */
+	public int searchFramefromOuter(final Coordinate start, final int rightLimit, boolean light, boolean upToDown) {
+
+		for (int y = start.getY(); upToDown ? (y < this.getHeight()) : (y >= 0); y += upToDown ? 1 : -1) {
+			for (int x = start.getX(); x <= rightLimit && x < this.getWidth(); ++x) {
+				if (this.isLight(x, y) == light) {
+					return y;
+				}
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * 
+	 * @param start      Left corner of the search area (inner of the frame)
+	 * @param rightLimit Right limitation. Search area includes this point
+	 * @param light      True: Search for a light pixel
+	 * @param upToDown   True: Search from up to down
+	 * @return y coordinate of the frame
+	 */
+	public int searchFramefromInner(final Coordinate start, final int rightLimit, boolean light, boolean upToDown) {
+
+		boolean found = false;
+
+		int y = -1;
+
+		for (y = start.getY(); !found && (upToDown ? (y < this.getHeight()) : (y >= 0)); y += upToDown ? 1 : -1) {
+			for (int x = start.getX(); x <= rightLimit && x < this.getWidth(); ++x) {
+				found = true;
+				if (this.isLight(x, y) == light) {
+					found = false;
+					break;
+				}
+			}
+		}
+		if (found) {
+			return y - 1;
+		} else {
+			return upToDown ? this.getHeight() - 1 : 0;
+		}
 	}
 
 }

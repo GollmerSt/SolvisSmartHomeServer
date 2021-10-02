@@ -5,7 +5,12 @@ Version 01.04.06
     27.09.2021  Konfiguration kotrrigiert, so dass auch andere Sprachen ausßer Deutsch angelernt
                 werden können.
                 Folgende Sprachen wurdem mit der SolvisMax 6 getestet:
-                Deutsch, Englisch, Französisch, Italienisch, Portugiesisch, Holländisch, Spamisch, Rumänisch
+                Deutsch, Englisch, Französisch, Italienisch, Portugiesisch, Holländisch, Spamisch,
+                Rumänisch
+
+    01.10.2021  Mit der neuesten Firmware der SolvisMax 7 ahat sich das Aussehen des Screen-Savers
+                geändert. Dadurch wurde der Screen-Saver nicht erkannt. Die Erkennung der linken
+                Begrenzung der Zeit und des Datums erfolgt nun dynamisch
                 
 
 

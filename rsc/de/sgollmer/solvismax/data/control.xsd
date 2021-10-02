@@ -576,17 +576,15 @@
 				Daten für die Screen-Saver-Erkennung
 			</documentation>
 		</annotation>
-		<sequence>
-			<element name="TimeDateRectangle" type="tns:Rectangle"
+		<sequence>
+			<element name="MaxGraficSize" type="tns:Coordinate"
 				maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="MaxGraficSize" type="tns:Coordinate"
-				maxOccurs="1" minOccurs="1"></element>
 			<element name="ResetScreenSaver" type="tns:TouchPoint"
 				maxOccurs="1" minOccurs="1">
 			</element>
 		</sequence>
-		<attribute name="timeHeight" type="int" use="required"></attribute>
+		<attribute name="xCoordinateWithinTimedate" type="int" use="required"></attribute>
 	</complexType>
 
 

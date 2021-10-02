@@ -194,11 +194,7 @@
 	</tns:Standby>
 
 
-	<tns:ScreenSaver timeHeight="18">
-		<tns:TimeDateRectangle>
-			<tns:TopLeft X="75" Y="0" />
-			<tns:BottomRight X="135" Y="32" />
-		</tns:TimeDateRectangle>
+	<tns:ScreenSaver xCoordinateWithinTimedate="80">
 		<tns:MaxGraficSize X="150" Y="80" />
 		<tns:ResetScreenSaver pushTimeRefId="Standard"
 			releaseTimeRefId="WindowChange">

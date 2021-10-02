@@ -10,8 +10,10 @@ package de.sgollmer.solvismax.model.objects.screen;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 
@@ -43,20 +45,17 @@ public class ScreenSaver implements IAssigner {
 			.compile("\\d+?\\.\\d+?\\.\\d\\d\\d\\d");
 
 	private static final String XML_RESET_SCREEN_SAVER = "ResetScreenSaver";
-	private static final String XML_TIME_DATA_RECTANGLE = "TimeDateRectangle";
 	private static final String XML_MAX_GRAFIC_SIZE = "MaxGraficSize";
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(ScreenSaver.class);
 
-	private final int timeHeight;
-	private final Rectangle timeDateRectangle;
+	private final int xCoordinateWithinTimedate;
+
 	private final Coordinate maxGraficSize;
 	private final TouchPoint resetScreenSaver;
 
-	private ScreenSaver(int timeHeight, Rectangle timeDateRectangle, Coordinate maxGraficSize,
-			TouchPoint resetScreenSaver) {
-		this.timeHeight = timeHeight;
-		this.timeDateRectangle = timeDateRectangle;
+	private ScreenSaver(final int xCoordinateWithinTimedate, Coordinate maxGraficSize, TouchPoint resetScreenSaver) {
+		this.xCoordinateWithinTimedate = xCoordinateWithinTimedate;
 		this.resetScreenSaver = resetScreenSaver;
 		this.maxGraficSize = maxGraficSize;
 	}
@@ -81,8 +80,7 @@ public class ScreenSaver implements IAssigner {
 
 	public static class Creator extends CreatorByXML<ScreenSaver> {
 
-		private int timeHeight;
-		private Rectangle timeDateRectangle;
+		private int xCoordinateWithinTimedate;
 		private TouchPoint resetScreenSaver = null;
 		private Coordinate maxGraficSize;
 
@@ -93,8 +91,8 @@ public class ScreenSaver implements IAssigner {
 		@Override
 		public void setAttribute(QName name, String value) {
 			switch (name.getLocalPart()) {
-				case "timeHeight":
-					this.timeHeight = Integer.parseInt(value);
+				case "xCoordinateWithinTimedate":
+					this.xCoordinateWithinTimedate = Integer.parseInt(value);
 					break;
 			}
 		}
@@ -102,15 +100,12 @@ public class ScreenSaver implements IAssigner {
 		@Override
 
 		public ScreenSaver create() throws XmlException {
-			return new ScreenSaver(this.timeHeight, this.timeDateRectangle, this.maxGraficSize, this.resetScreenSaver);
+			return new ScreenSaver(this.xCoordinateWithinTimedate, this.maxGraficSize, this.resetScreenSaver);
 		}
 
 		@Override
 		public void created(CreatorByXML<?> creator, Object created) {
 			switch (creator.getId()) {
-				case XML_TIME_DATA_RECTANGLE:
-					this.timeDateRectangle = (Rectangle) created;
-					break;
 				case XML_RESET_SCREEN_SAVER:
 					this.resetScreenSaver = (TouchPoint) created;
 					break;
@@ -125,8 +120,6 @@ public class ScreenSaver implements IAssigner {
 		public CreatorByXML<?> getCreator(QName name) {
 			String id = name.getLocalPart();
 			switch (id) {
-				case XML_TIME_DATA_RECTANGLE:
-					return new Rectangle.Creator(XML_TIME_DATA_RECTANGLE, id, this.getBaseCreator());
 				case XML_RESET_SCREEN_SAVER:
 					return new TouchPoint.Creator(id, this.getBaseCreator());
 				case XML_MAX_GRAFIC_SIZE:
@@ -197,37 +190,24 @@ public class ScreenSaver implements IAssigner {
 					return this.lastState == PositionState.NONE ? State.POSSIBLE : State.SCREENSAVER;
 			}
 
-			Coordinate timeTopLeft = ScreenSaver.this.timeDateRectangle.getTopLeft();
-			Coordinate dateBottomRight = ScreenSaver.this.timeDateRectangle.getBottomRight();
-			Coordinate check = new Coordinate(timeTopLeft.getX(), dateBottomRight.getY());
+			Coordinate search = new Coordinate(ScreenSaver.this.xCoordinateWithinTimedate, 0);
+			int timeTop = pattern.searchFramefromOuter(search, pattern.getWidth() - 1, false, true);
+			search = new Coordinate(ScreenSaver.this.xCoordinateWithinTimedate, timeTop);
+			int timeBottom = pattern.searchFramefromInner(search, pattern.getWidth() - 1, false, true);
 
-			this.lastState = PositionState.NONE;
+			String time = this.getContents(pattern, timeTop, timeBottom, TIME_PATTERN, 5);
 
-			if (!pattern.isIn(check)) {
-				if (Debug.SCREEN_SAVER_DETECTION) {
-					this.debugInfo = "Not in <timeDateRectangle>. " + pattern.getDebugInfo();
-				}
-				return State.NONE;
-			}
-
-			dateBottomRight = new Coordinate(pattern.getWidth() - 1, dateBottomRight.getY());
-
-			Rectangle timeDateRectangle = new Rectangle(timeTopLeft, dateBottomRight);
-
-			Pattern timeDatePattern = new Pattern(pattern, timeDateRectangle);
-
-			Rectangle timeRectangle = new Rectangle(new Coordinate(0, 0),
-					new Coordinate(timeDatePattern.getWidth() - 1, ScreenSaver.this.timeHeight));
-
-			String time = getContentsOfRectangle(timeDatePattern, timeRectangle, TIME_PATTERN);
 			if (time == null) {
 				return State.NONE;
 			}
 
-			Rectangle dateRectangle = new Rectangle(new Coordinate(0, ScreenSaver.this.timeHeight),
-					new Coordinate(timeDatePattern.getWidth() - 1, timeDatePattern.getHeight() - 1));
+			search = new Coordinate(ScreenSaver.this.xCoordinateWithinTimedate, timeBottom + 1);
+			int dateTop = pattern.searchFramefromOuter(search, pattern.getWidth() - 1, false, true);
+			search = new Coordinate(ScreenSaver.this.xCoordinateWithinTimedate, dateTop);
+			int dateBottom = pattern.searchFramefromInner(search, pattern.getWidth() - 1, false, true);
 
-			String date = getContentsOfRectangle(timeDatePattern, dateRectangle, DATE_PATTERN);
+			String date = this.getContents(pattern, dateTop, dateBottom, DATE_PATTERN, 10);
+
 			if (date == null) {
 				return State.NONE;
 			}
@@ -239,27 +219,30 @@ public class ScreenSaver implements IAssigner {
 			return State.SCREENSAVER;
 		}
 
-		private String getContentsOfRectangle(Pattern timeDatePattern, Rectangle rectangle,
-				java.util.regex.Pattern regex) {
+		private String getContents(Pattern pattern, int topY, int bottomY, java.util.regex.Pattern regex, int charCnt) {
+			Pattern p = new Pattern(pattern,
+					new Rectangle(new Coordinate(0, topY), new Coordinate(pattern.getWidth() - 1, bottomY)));
 
-			if (!timeDatePattern.isIn(rectangle.getBottomRight())) {
-				if (Debug.SCREEN_SAVER_DETECTION) {
-					this.debugInfo = "Not in <" + rectangle.getName() + ">. " + timeDatePattern.getDebugInfo();
-				}
+			List<MyImage> list = p.split();
+			if (list.size() < charCnt) {
 				return null;
 			}
 
-			OcrRectangle ocrRectangle = new OcrRectangle(timeDatePattern, rectangle);
-			String time = ocrRectangle.getString();
-			Matcher m = regex.matcher(time);
+			Collection<MyImage> ocrImages = new ArrayList<>(charCnt);
+			for (int i = 0; i < charCnt; ++i) {
+				ocrImages.add(list.get(i + list.size() - charCnt));
+			}
+			String value = new OcrRectangle(pattern, ocrImages).getString();
+
+			Matcher m = regex.matcher(value);
 			if (!m.matches()) {
 				if (Debug.SCREEN_SAVER_DETECTION) {
-					this.debugInfo = timeDatePattern.getDebugInfo() + ", " + rectangle.getName() + " contents = "
-							+ time;
+					this.debugInfo = pattern.getDebugInfo() + " contents = " + value;
 				}
 				return null;
 			}
-			return time;
+
+			return value;
 		}
 
 		@SuppressWarnings("unused")
@@ -328,8 +311,7 @@ public class ScreenSaver implements IAssigner {
 	}
 
 	public static void main(String[] args) {
-		Rectangle timeDateRectangle = new Rectangle(new Coordinate(75, 0), new Coordinate(135, 32));
-		ScreenSaver saver = new ScreenSaver(18, timeDateRectangle, new Coordinate(150, 80), null);
+		ScreenSaver saver = new ScreenSaver(80, new Coordinate(150, 80), null);
 
 		File parent = new File("testFiles\\images");
 
@@ -346,6 +328,7 @@ public class ScreenSaver implements IAssigner {
 		}
 
 		Collection<Test> names = Arrays.asList( //
+				new Test(State.SCREENSAVER, true, "bildschirmschoner Max7.bmp"), //
 				new Test(State.SCREENSAVER, true, "Bildschirmschoner V1 Artefakte.bmp"), //
 				new Test(State.SCREENSAVER, false, "Bildschirmschoner 2 V1 Artefakte.bmp"), //
 				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1.bmp"), //
