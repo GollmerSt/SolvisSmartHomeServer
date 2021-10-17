@@ -13,7 +13,7 @@ systemD = /etc/systemd/system
 serviceDebug = DebugSolvisSmartHomeServer
 service = SolvisSmartHomeServer
 java = /usr/bin/java
-javaDebugPort = 0.0.0.0:10736
+javaDebugPort = 0.0.0.0:10737
 javaAgentlib = jdwp=transport=dt_socket,suspend=n,server=y,address=$(javaDebugPort)
 perl = /usr/bin/perl
 account = fhem
@@ -141,7 +141,7 @@ crypt:
 
 
 learnDebug: stopServices installSolvis
-	$(start) --server-learn
+	$(startDebug) --server-learn
 	systemctl start $(serviceDebug)
 
 
