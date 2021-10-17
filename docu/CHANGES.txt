@@ -11,6 +11,12 @@ Version 01.04.06
     01.10.2021  Mit der neuesten Firmware der SolvisMax 7 ahat sich das Aussehen des Screen-Savers
                 geändert. Dadurch wurde der Screen-Saver nicht erkannt. Die Erkennung der linken
                 Begrenzung der Zeit und des Datums erfolgt nun dynamisch
+
+    17.10.2021  Bei der SolvisMax7 funktioniert immer noch nicht das Anlernen des Mode ausreichend
+                sicher. Es wird nun beim Anlernen gründsätzlich dann mkit einer längeren Wartezeit
+                gearbeitet, wenn erkannt wird, dass die Mode-Umschaltung nicht funktioniert hat.
+                Bisher wurde in diesem Fall bei jedem Mode-Wechsel wieder es erstmal mit der zu
+                kurzen Zeit probiert. 
                 
 
 

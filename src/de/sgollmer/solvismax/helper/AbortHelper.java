@@ -26,7 +26,7 @@ public class AbortHelper {
 	private Collection<Object> syncObjects = new ArrayList<>();
 
 	public synchronized void sleep(final Integer time) throws TerminationException {
-		if ( time == null || time == 0 ) {
+		if ( time == null || time <= 0 ) {
 			return;
 		}
 		if (this.abort) {

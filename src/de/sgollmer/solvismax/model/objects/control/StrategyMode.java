@@ -54,6 +54,7 @@ public class StrategyMode implements IStrategy {
 
 	private final List<ModeEntry> modes;
 	private final boolean sequence;
+	private int learnWaitFactor = 1;
 
 	private StrategyMode(final List<ModeEntry> modes, final boolean sequence) {
 		this.modes = modes;
@@ -214,17 +215,24 @@ public class StrategyMode implements IStrategy {
 
 	private boolean learnByButton(final Solvis solvis, final IControlAccess controlAccess) throws TerminationException {
 		boolean successfull = true;
-		for (ModeEntry mode : this.getModes()) {
-			try {
+		ModeEntry mode = this.getModes().get(this.getModes().size() - 1);
+		TouchPoint preTouch = mode.getGuiSet().getTouch();
+		try {
+			solvis.send(preTouch);
+
+			for (Iterator<ModeEntry> it = this.getModes().iterator(); it.hasNext();) {
+				mode = it.next();
 				SolvisScreen currentScreen = solvis.getCurrentScreen();
 				ScreenGraficDescription grafic = mode.getGuiSet().getGrafic();
 				MyImage former = grafic.getImage(solvis);
 				TouchPoint touch = mode.getGuiSet().getTouch();
 				solvis.send(touch);
+				AbortHelper.getInstance().sleep(touch.getReleaseTime(solvis) * (this.learnWaitFactor - 1));
 				boolean changed = !former.equals(grafic.getImage(solvis));
 				if (!changed) {
 					logger.learn("Mode symbol not changed after touch, it will be waited a little longer.");
 					AbortHelper.getInstance().sleep(touch.getReleaseTime(solvis));
+					++this.learnWaitFactor;
 					solvis.clearCurrentScreen();
 				}
 				currentScreen = solvis.getCurrentScreen();
@@ -237,10 +245,10 @@ public class StrategyMode implements IStrategy {
 					successfull = false;
 					break;
 				}
-			} catch (IOException e) {
-				successfull = false;
-				logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull (IOError), will be retried");
 			}
+		} catch (IOException e) {
+			successfull = false;
+			logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull (IOError), will be retried");
 		}
 		return successfull;
 	}
