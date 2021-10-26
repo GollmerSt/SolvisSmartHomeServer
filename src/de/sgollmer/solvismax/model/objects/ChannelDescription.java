@@ -76,19 +76,19 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	public boolean getValue(final Solvis solvis)
-			throws NumberFormatException, IOException, PowerOnException, TerminationException {
+			throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
 		return this.getValue(solvis, -1L);
 	}
 
 	public boolean getValue(final Solvis solvis, final long executionStartTime)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException {
+			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
 		return this.getValue(data, solvis, executionStartTime);
 	}
 
 	@Override
 	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException {
+			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException {
 		return this.channelSource.getValue(dest, solvis, executionStartTime);
 	}
 
@@ -113,7 +113,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	public boolean isWriteable() {
 		return this.channelSource.isWriteable();
 	}
-	
+
 	@Override
 	public boolean mustPolling() {
 		return this.channelSource.mustPolling();
@@ -153,7 +153,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public ChannelInstance instantiate(final Solvis solvis) throws AssignmentException, AliasException {
+	public ChannelInstance instantiate(final Solvis solvis) throws AssignmentException, AliasException, TypeException {
 		this.channelSource.instantiate(solvis);
 		return null;
 
@@ -288,8 +288,8 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
-		return this.channelSource.interpretSetData(singleData, debug);
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean internal) throws TypeException {
+		return this.channelSource.interpretSetData(singleData, internal);
 	}
 
 	@Override
@@ -335,7 +335,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 //				interpretedData.getTimeStamp());
 //	}
 //
-	public SingleData<?> normalize(final SingleData<?> data) {
+	public SingleData<?> normalize(final SingleData<?> data) throws TypeException {
 		if (data.get() == null) {
 			return null;
 		}

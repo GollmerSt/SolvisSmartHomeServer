@@ -12,6 +12,7 @@ import java.util.Collection;
 import de.sgollmer.solvismax.Version;
 import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.objects.data.LongValue;
 
 public class ConnectedPackage extends JsonPackage implements ISendData {
@@ -43,7 +44,7 @@ public class ConnectedPackage extends JsonPackage implements ISendData {
 	}
 
 	@Override
-	void finish() {
+	void finish() throws TypeException {
 		Frame frame = this.data;
 		for (Element e : frame.elements) {
 			String id = e.name;

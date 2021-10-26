@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.model.objects.data;
 import java.util.Locale;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 
 public class DoubleValue extends SingleData<Double> {
@@ -23,7 +24,7 @@ public class DoubleValue extends SingleData<Double> {
 
 	@Override
 	public Helper.Boolean getBoolean() {
-		return Helper.Boolean.UNDEFINED;
+			return this.value == 0 ? Helper.Boolean.FALSE : Helper.Boolean.TRUE;
 	}
 
 	@Override
@@ -76,7 +77,12 @@ public class DoubleValue extends SingleData<Double> {
 		if (!(obj instanceof SingleData)) {
 			return false;
 		}
-		Double cmp = ((SingleData<?>) obj).getDouble();
+		Double cmp;
+		try {
+			cmp = ((SingleData<?>) obj).getDouble();
+		} catch (TypeException e) {
+			return false;
+		}
 		if (cmp == null) {
 			return false;
 		}
@@ -105,6 +111,18 @@ public class DoubleValue extends SingleData<Double> {
 	@Override
 	public SingleData<Double> clone(final long timeStamp) {
 		return new DoubleValue(this.value, timeStamp);
+	}
+
+	@Override
+	public DoubleValue add(SingleData<?> data) throws TypeException {
+		Double d2 = data.getDouble();
+		return new DoubleValue(d2 == null ? this.value : this.value + d2, this.getTimeStamp());
+	}
+
+	@Override
+	public DoubleValue mult(SingleData<?> data) throws TypeException {
+		Double d2 = data.getDouble();
+		return new DoubleValue(d2 == null ? this.value : this.value * d2, this.getTimeStamp());
 	}
 
 }

@@ -14,6 +14,7 @@ import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.mqtt.TopicType;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
+import de.sgollmer.solvismax.error.FatalError;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
@@ -27,6 +28,8 @@ import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
+import de.sgollmer.solvismax.model.objects.unit.AllModifiedChannelValues.ChannelValue;
+import de.sgollmer.solvismax.model.objects.unit.AllModifiedChannelValues.ModifyType;
 
 public class SolvisData extends Observer.Observable<SolvisData> implements IObserver<SolvisStatePackage> {
 
@@ -44,6 +47,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	private SmartHomeData smartHomeData;
 	private int executionTime;
 	private boolean fix = false;
+	private ChannelValue channelValue = null;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
@@ -120,7 +124,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return this.getChannelInstance().getName();
 	}
 
-	public void setSingleDataDebug(final SingleData<?> debugData) {
+	public void setSingleDataDebug(final SingleData<?> debugData) throws TypeException {
 		this.debugData = debugData;
 		SingleData<?> data;
 		if (debugData == null) {
@@ -131,12 +135,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		this.sendProcessing(data, true, false, false, null);
 	}
 
-	private void setData(final SingleData<?> data) {
+	private void setData(final SingleData<?> data) throws TypeException {
 		this.setData(data, this, false, -1L);
 	}
 
 	private synchronized void setData(final SingleData<?> setData, final Object source, final boolean forceTransmit,
-			long executionStartTime) {
+			long executionStartTime) throws TypeException {
 
 		if (this.debugData != null) {
 			this.debugData = this.debugData.clone(setData.getTimeStamp());
@@ -222,7 +226,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	private void sendProcessing(final SingleData<?> data, final boolean changed, final boolean fastChange,
-			final boolean forceTransmit, final Object source) {
+			final boolean forceTransmit, final Object source) throws TypeException {
 
 		if (!this.isEmpty() && (changed || forceTransmit)) {
 
@@ -249,11 +253,11 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return this.channelInstance.getDescription();
 	}
 
-	public void setInteger(final Integer integer, final long timeStamp, final Object source) {
+	public void setInteger(final Integer integer, final long timeStamp, final Object source) throws TypeException {
 		this.setData(new IntegerValue(integer, timeStamp), source, false, -1L);
 	}
 
-	public void setInteger(final Integer integer, final long timeStamp) {
+	public void setInteger(final Integer integer, final long timeStamp) throws TypeException {
 		this.setData(new IntegerValue(integer, timeStamp));
 	}
 
@@ -261,35 +265,30 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		SingleData<?> data = this.getSingleData();
 		if (data == null) {
 			return null;
-		} else if (data instanceof DoubleValue) {
-			double f = ((DoubleValue) data).get();
-			return (int) Math.round(f);
-
-		} else if ((data instanceof IntegerValue)) {
-			return ((IntegerValue) data).get();
+		} else {
+			Integer i = data.getInt();
+			if (i == null) {
+				throw new TypeException(
+						"TypeException: Must be convertable to Integer, current type: <" + data.getClass() + ">.");
+			}
+			return i;
 		}
-		throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
 	}
 
-// TODO
-//	public Double getDouble() throws TypeException {
-//		SingleData<?> data = this.getSingleData();
-//		if (data == null) {
-//			return null;
-//		} else if (data instanceof DoubleValue) {
-//			return ((DoubleValue) data).get();
-//
-//		} else if ((data instanceof IntegerValue)) {
-//			Integer i = ((IntegerValue) data).get();
-//			if (i == null) {
-//				return null;
-//			} else
-//				return (double) i;
-//		} else {
-//			throw new TypeException("TypeException: Type actual: <" + data.getClass() + ">, target: <IntegerValue>");
-//		}
-//	}
-//
+	public Double getDouble() throws TypeException {
+		SingleData<?> data = this.getSingleData();
+		if (data == null) {
+			return null;
+		} else {
+			Double d = data.getDouble();
+			if (d == null) {
+				throw new TypeException(
+						"TypeException: Must be convertable to Double, current type: <" + data.getClass() + ">.");
+			}
+			return d;
+		}
+	}
+
 	public int getInt() throws TypeException {
 		Integer value = this.getInteger();
 		if (value == null) {
@@ -298,12 +297,12 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return value;
 	}
 
-	public void setDate(final Calendar calendar, final long timeStamp) {
+	public void setDate(final Calendar calendar, final long timeStamp) throws TypeException {
 		this.setData(new DateValue(calendar, timeStamp));
 
 	}
 
-	public void setBoolean(final Boolean bool, final long timeStamp) {
+	public void setBoolean(final Boolean bool, final long timeStamp) throws TypeException {
 		this.setData(new BooleanValue(bool, timeStamp));
 
 	}
@@ -325,7 +324,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		return bool.result();
 	}
 
-	public void setMode(final IMode<?> mode, final long timeStamp) {
+	public void setMode(final IMode<?> mode, final long timeStamp) throws TypeException {
 		this.setData(mode.create(timeStamp));
 	}
 
@@ -338,24 +337,52 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 	}
 
-	public void setFixData(final SingleData<?> data) throws TypeException {
-		this.data = this.getDescription().interpretSetData(data, false);
-		this.fix = true;
+	public void setMofifiedChannelValue(final ChannelValue channelValue) throws TypeException {
+		this.channelValue = channelValue;
+		if (channelValue.getType() == ModifyType.FIX) {
+			DoubleValue doubleValue = new DoubleValue(this.channelValue.getValue(), -1L);
+			this.data = this.getDescription().interpretSetData(doubleValue, false);
+			this.fix = true;
+			logger.info("The channel <" + this.getId() + "> was set to the fix value \""
+					+ this.getSingleData().toString() + "\".");
+		}
 	}
 
-	public void setSingleData(final SetResult data) {
+	public SingleData<?> getCorrectedData() throws TypeException {
+		if (this.data == null) {
+			return null;
+		}
+		if ( this.channelValue == null ) {
+			return this.getSingleData();
+		}
+		DoubleValue doubleValue = new DoubleValue(this.channelValue.getValue(), -1L);
+		SingleData<?> data = this.getDescription().interpretSetData(doubleValue, true);
+		switch (this.channelValue.getType()) {
+			case ADD:
+				return this.getSingleData().add(data);
+			case MULT:
+				return this.getSingleData().mult(data);
+			case FIX:
+				return this.getSingleData();
+			default:
+				throw new FatalError("Channel value type <" + this.channelValue.getType().name() + "> not supported");
+		}
+	}
+
+	public void setSingleData(final SetResult data) throws TypeException {
 		this.setData(data.getData(), this, data.isForceTransmit(), -1L);
 	}
 
-	public void setSingleDataWithTransmit(final SingleData<?> data, final long executionStartTime) {
+	public void setSingleDataWithTransmit(final SingleData<?> data, final long executionStartTime)
+			throws TypeException {
 		this.setData(data, this, true, executionStartTime);
 	}
 
-	public void setSingleData(final SingleData<?> data, final Object source) {
+	public void setSingleData(final SingleData<?> data, final Object source) throws TypeException {
 		this.setData(data, source, false, -1L);
 	}
 
-	public void setSingleData(final SingleData<?> data) {
+	public void setSingleData(final SingleData<?> data) throws TypeException {
 		this.setSingleData(data, this);
 	}
 
@@ -385,7 +412,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 	}
 
-	public SingleData<?> normalize() {
+	public SingleData<?> normalize() throws TypeException {
 		return this.getDescription().normalize(this.getSingleData());
 	}
 
@@ -471,7 +498,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 
 		private void notify(final boolean changed, final boolean fastChange, final Object source,
-				final boolean forceTransmit) {
+				final boolean forceTransmit) throws TypeException {
 
 			if (this.solvisData.dontSend) {
 				return;
@@ -481,7 +508,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 			synchronized (this.solvisData) {
 
-				this.current = this.solvisData.getSingleData();
+				this.current = this.solvisData.getCorrectedData();
 				currentTimeStamp = this.solvisData.getTimeStamp();
 			}
 
@@ -555,7 +582,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			}
 		}
 
-		public MqttData getMqttData() {
+		public MqttData getMqttData() throws TypeException {
 			if (this.getData() == null) {
 				return null;
 			}
@@ -563,7 +590,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			return new MqttData(TopicType.UNIT_CHANNEL_DATA, this.solvis, this.getName(), value, 0, true);
 		}
 
-		public SingleValue toSingleValue(final SingleData<?> data) {
+		public SingleValue toSingleValue(final SingleData<?> data) throws TypeException {
 			return new SingleValue(this.getDescription().normalize(data));
 		}
 

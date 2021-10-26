@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 
 public class IntegerValue extends SingleData<Integer> {
@@ -41,7 +42,11 @@ public class IntegerValue extends SingleData<Integer> {
 		if (cmp == null || this.data == null) {
 			return false;
 		}
-		return this.data.equals(cmp.getInt());
+		try {
+			return this.data.equals(cmp.getInt());
+		} catch (TypeException e) {
+			return false;
+		}
 	}
 
 	@Override
@@ -120,6 +125,20 @@ public class IntegerValue extends SingleData<Integer> {
 	@Override
 	public SingleData<Integer> clone(final long timeStamp) {
 		return new IntegerValue(this.data, timeStamp);
+	}
+
+	@Override
+	public IntegerValue add(SingleData<?> data) throws TypeException {
+		Integer i1 = this.getInt();
+		Integer i2 = data.getInt();
+		return new IntegerValue((i1 == null || i2 == null) ? null : i1 + i2, this.getTimeStamp());
+	}
+
+	@Override
+	public IntegerValue mult(SingleData<?> data) throws TypeException {
+		Integer i1 = this.getInt();
+		Integer i2 = data.getInt();
+		return new IntegerValue((i1 == null || i2 == null) ? null : i1 * i2, this.getTimeStamp());
 	}
 
 }

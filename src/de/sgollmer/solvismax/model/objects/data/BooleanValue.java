@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 
 public class BooleanValue extends SingleData<Boolean> {
@@ -91,6 +92,22 @@ public class BooleanValue extends SingleData<Boolean> {
 	@Override
 	public SingleData<Boolean> clone(final long timeStamp) {
 		return new BooleanValue(this.value, timeStamp);
+	}
+
+	@Override
+	public BooleanValue add(SingleData<?> data) throws TypeException{
+		if ( !(data instanceof BooleanValue )) {
+			throw new TypeException();
+		}
+		return new BooleanValue(this.get() != data.get(), this.getTimeStamp());
+	}
+
+	@Override
+	public BooleanValue mult(SingleData<?> data) throws TypeException{
+		if ( !(data instanceof BooleanValue )) {
+			throw new TypeException();
+		}
+		return new BooleanValue((boolean)this.get() && (boolean)((BooleanValue)data).get(), this.getTimeStamp());
 	}
 
 }

@@ -24,6 +24,7 @@ import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.command.CommandControl;
@@ -138,7 +139,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 	}
 
 	public void measure(final Solvis solvis, final AllSolvisData datas, final MeasureMode mode)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException {
+			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException {
 		solvis.clearMeasuredData();
 		solvis.getMeasureData();
 		solvis.getDistributor().setBurstUpdate(true);
@@ -163,7 +164,7 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 		}
 	}
 
-	public void init(final Solvis solvis) throws IOException, AssignmentException, AliasException {
+	public void init(final Solvis solvis) throws IOException, AssignmentException, AliasException, TypeException {
 		AllSolvisData datas = solvis.getAllSolvisData();
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis, true);

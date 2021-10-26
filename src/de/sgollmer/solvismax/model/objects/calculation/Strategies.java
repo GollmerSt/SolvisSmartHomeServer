@@ -65,7 +65,7 @@ public enum Strategies {
 			return true; // i.g. solvis data contains the current value
 		}
 
-		abstract void instantiate(final Solvis solvis) throws AssignmentException, AliasException;
+		abstract void instantiate(final Solvis solvis) throws AssignmentException, AliasException, TypeException;
 
 		Collection<IMode<?>> getModes() {
 			return null;

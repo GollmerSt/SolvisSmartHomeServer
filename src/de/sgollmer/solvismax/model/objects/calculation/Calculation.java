@@ -87,7 +87,7 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public IInstance instantiate(final Solvis solvis) throws AssignmentException, AliasException {
+	public IInstance instantiate(final Solvis solvis) throws AssignmentException, AliasException, TypeException {
 		this.strategy.instantiate(solvis);
 		return null;
 	}
@@ -183,8 +183,8 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
-		if (debug) {
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean internal) throws TypeException {
+		if (internal) {
 			return this.strategy.interpretSetData(singleData);
 		} else {
 			return null;

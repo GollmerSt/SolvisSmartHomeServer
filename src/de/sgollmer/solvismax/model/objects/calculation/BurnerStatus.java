@@ -80,7 +80,7 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 	}
 
 	@Override
-	void instantiate(final Solvis solvis) throws AssignmentException, AliasException {
+	void instantiate(final Solvis solvis) throws AssignmentException, AliasException, TypeException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		AliasGroup aliasGroup = this.calculation.getAliasGroup();
 
@@ -143,7 +143,11 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 			} else {
 				result = Status.OFF;
 			}
-			this.result.setMode(result, data.getTimeStamp());
+			try {
+				this.result.setMode(result, data.getTimeStamp());
+			} catch (TypeException e) {
+				logger.error("Type exception of " + data.getName() + ", ignored");
+			}
 
 		}
 	}

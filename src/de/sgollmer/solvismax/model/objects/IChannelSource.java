@@ -32,7 +32,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	public boolean mustBackuped();
 
 	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime)
-			throws IOException, PowerOnException, TerminationException;
+			throws IOException, PowerOnException, TerminationException, TypeException;
 
 	public static class SetResult {
 		private final ResultStatus status;
@@ -84,7 +84,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	public boolean isBoolean();
 
 	public boolean isFast();
-	
+
 	public boolean inhibitGuiReadAfterWrite();
 
 	/**
@@ -95,7 +95,7 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 	 */
 	public Integer getScanInterval_ms(final Solvis solvis);
 
-	public IInstance instantiate(final Solvis solvis) throws AssignmentException, AliasException;
+	public IInstance instantiate(final Solvis solvis) throws AssignmentException, AliasException, TypeException;
 
 	public Type getType();
 

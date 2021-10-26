@@ -120,7 +120,7 @@ public class Measurement extends ChannelSource {
 
 	@Override
 	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime)
-			throws PowerOnException, IOException, TerminationException, NumberFormatException {
+			throws PowerOnException, IOException, TerminationException, NumberFormatException, TypeException {
 
 		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
 			dest.setSingleData((SingleData<?>) null);
@@ -268,8 +268,8 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
-		if (debug) {
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean internal) throws TypeException {
+		if (internal) {
 			return this.type.interpretSetData(singleData, this.divisor);
 		} else {
 			return null;
@@ -286,7 +286,7 @@ public class Measurement extends ChannelSource {
 		// SolvisMeasurements data)
 
 		public boolean get(final SolvisData dest, final Collection<Field> fields, final SolvisMeasurements measureData,
-				final Solvis solvis) throws PowerOnException, IOException, NumberFormatException;
+				final Solvis solvis) throws PowerOnException, IOException, NumberFormatException, TypeException;
 
 		public SingleData<?> interpretSetData(final SingleData<?> singleData, final int divisor) throws TypeException;
 

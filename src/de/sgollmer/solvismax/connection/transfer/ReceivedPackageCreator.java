@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 
@@ -72,7 +73,11 @@ public class ReceivedPackageCreator {
 		JsonPackage receivedPackage = new JsonPackage();
 		receivedPackage.receive(stream, timeout);
 		JsonPackage result = this.toSpecificPackage(receivedPackage);
-		result.finish();
+		try {
+			result.finish();
+		} catch (TypeException e) {
+			throw new JsonException(e);
+		}
 
 		return result;
 	}

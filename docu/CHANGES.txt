@@ -1,19 +1,32 @@
 A E N D E R U N G E N
 
+Version 01.04.07
+
+    26.10.2021  Die SolvisMax6 realisiert offenbar den Startzaehler fuer den Brenner intern nur als
+                vorzeichenlosen 16-Bit-Zaehler. Dadurch springt der Zaehler nach 65535 auf 0. Um
+                trotzdem den echten Wert im Smarthome-System zu erhalten, wurde die base.xml noch
+                um den eine Additions- und Multiplikations-Moeglichkeit der ermittelten Werte
+                erweitert. Die Defintion der Korrekturwerte erfolgt nun in der
+                "ModifiedChannelValues"-Sektion. Die alte "FixChannelValues"-Sektion wurde dadurch
+                ueberfluessig.
+                Wenn ein Überlauf beobachtet wird, muss entsprechend die base.xml angepasst werden.
+
+
+
 Version 01.04.06
 
-    27.09.2021  Konfiguration korrigiert, so dass auch andere Sprachen außer Deutsch angelernt
-                werden können.
+    27.09.2021  Konfiguration korrigiert, so dass auch andere Sprachen ausser Deutsch angelernt
+                werden koennen.
                 Folgende Sprachen wurdem mit der SolvisMax 6 getestet:
-                Deutsch, Englisch, Französisch, Italienisch, Portugiesisch, Holländisch, Spamisch,
-                Rumänisch
+                Deutsch, Englisch, Franzoesisch, Italienisch, Portugiesisch, Hollaendisch, Spamisch,
+                Rumaenisch
 
     01.10.2021  Mit der neuesten Firmware der SolvisMax 7 hat sich das Aussehen des Screen-Savers
-                geändert. Dadurch wurde der Screen-Saver nicht erkannt. Die Erkennung der linken
+                geaendert. Dadurch wurde der Screen-Saver nicht erkannt. Die Erkennung der linken
                 Begrenzung der Zeit und des Datums erfolgt nun dynamisch
 
     17.10.2021  Bei der SolvisMax7 funktioniert immer noch nicht das Anlernen des Mode ausreichend
-                sicher. Es wird nun beim Anlernen gründsätzlich dann mkit einer längeren Wartezeit
+                sicher. Es wird nun beim Anlernen gruendsaetzlich dann mkit einer laengeren Wartezeit
                 gearbeitet, wenn erkannt wird, dass die Mode-Umschaltung nicht funktioniert hat.
                 Bisher wurde in diesem Fall bei jedem Mode-Wechsel wieder es erstmal mit der zu
                 kurzen Zeit probiert. 
@@ -22,11 +35,11 @@ Version 01.04.06
 
 Version 01.04.05
 
-    20.09.2021  Das Synchronsationszeit-Intervall wurde fehlerhaft berechnet. Dadurch wurde ständig
+    20.09.2021  Das Synchronsationszeit-Intervall wurde fehlerhaft berechnet. Dadurch wurde staendig
                 einen Synchronisation der berechneten mit den GUI-Werten versucht
 
-    21.09.2021  Das Synchronisation für reinen Zähler (Brennerstarts o.ä.) war fehlerhaft, da
-                diese nicht von den Zeitzählern unterschieden wurden. 
+    21.09.2021  Das Synchronisation fuer reinen Zaehler (Brennerstarts o.ae.) war fehlerhaft, da
+                diese nicht von den Zeitzaehlern unterschieden wurden. 
 
 
 Version 01.04.04
@@ -40,22 +53,22 @@ Version 01.04.04-rc1
 
     28.08.2021  Kann das Image der SolvisRemote nicht decodiert werden, wird die Verbindung
                 und nach 10s wieder aufgebaut. Dieser Fehler trat bei einer Solvis-Anlage auf,
-                welche einen Blitzschaden besaß und das Bild auf der Web-Page ein
+                welche einen Blitzschaden besass und das Bild auf der Web-Page ein
                 Synchronisationsfehler zeigte. Dadurch trat einen Null-Pointer-Exception auf.
 
     06.09.2021  Die Angabe der Must-Be-Write-Felder beim Anlagenstatus Solar war nicht eindeutig.
-    			Bei der neuesten SolvisMax7 FW traf die auch für den Analgenstatus WW zu.
+    			Bei der neuesten SolvisMax7 FW traf die auch fuer den Analgenstatus WW zu.
     			
                 Die angelernten Images werden nun mittels Zip gepackt abgelegt.
 
 
 Version 01.04.03
 
-    27.07.2021  Wenn während des Monitoren des Nachheizens die WW-Temperatur verstellt wurde,
+    27.07.2021  Wenn waehrend des Monitoren des Nachheizens die WW-Temperatur verstellt wurde,
                 funktioniert das Monitoren nicht mehr und das Ende des Nachheizens wird nicht mehr
                 erkannt. Gefixt.
                 
-                Die Änderung vom 2.07.2021 war fehlerhaft realisiert. Gefixt.
+                Die Aenderung vom 2.07.2021 war fehlerhaft realisiert. Gefixt.
 
 
 Version 01.04.02

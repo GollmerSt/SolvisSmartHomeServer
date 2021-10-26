@@ -43,14 +43,14 @@ public enum Strategy implements IType {
 
 	@Override
 	public boolean get(final SolvisData destin, final Collection<Field> fields, final SolvisMeasurements data,
-			final Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
+			final Solvis solvis) throws PowerOnException, IOException, NumberFormatException, TypeException {
 		return this.type.get(destin, fields, data, solvis);
 	}
 
 	@Override
 	public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value) {
 		SetResult setResult = this.type.setDebugValue(solvis, value);
-		if ( setResult == null ) {
+		if (setResult == null) {
 			setResult = new SetResult(ResultStatus.SUCCESS, value, false);
 		}
 		return setResult;
@@ -122,7 +122,7 @@ public enum Strategy implements IType {
 
 		@Override
 		public boolean get(final SolvisData destin, final Collection<Field> fields, final SolvisMeasurements data,
-				final Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
+				final Solvis solvis) throws PowerOnException, IOException, NumberFormatException, TypeException {
 			Field field = getFirst(fields);
 			String sub = field.subString(data.getHexString());
 			long result = toInt(sub);
@@ -154,14 +154,14 @@ public enum Strategy implements IType {
 		@Override
 		public SingleData<?> interpretSetData(final SingleData<?> singleData, final int divisor) throws TypeException {
 			SingleData<?> value = SolvisDataHelper.toValue(singleData);
-			
-			if (value != null ) {
+
+			if (value != null) {
 				return new IntegerValue((int) Math.round(value.getDouble() * divisor), -1l);
 			} else {
 				return null;
 			}
 		}
-		
+
 		@Override
 		public SetResult setDebugValue(Solvis solvis, SingleData<?> value) {
 			return null;
@@ -173,7 +173,8 @@ public enum Strategy implements IType {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data,
-				de.sgollmer.solvismax.model.Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
+				de.sgollmer.solvismax.model.Solvis solvis)
+				throws PowerOnException, IOException, NumberFormatException, TypeException {
 			Field field = getFirst(fields);
 			String sub = field.subString(data.getHexString());
 			boolean result = toInt(sub) > 0;
@@ -215,7 +216,8 @@ public enum Strategy implements IType {
 
 		@Override
 		public boolean get(SolvisData destin, Collection<Field> fields, SolvisMeasurements data,
-				de.sgollmer.solvismax.model.Solvis solvis) throws PowerOnException, IOException, NumberFormatException {
+				de.sgollmer.solvismax.model.Solvis solvis)
+				throws PowerOnException, IOException, NumberFormatException, TypeException {
 			String str = "";
 			for (Iterator<Field> it = fields.iterator(); it.hasNext();) {
 				str += it.next().subString(data.getHexString());
@@ -272,7 +274,7 @@ public enum Strategy implements IType {
 			if (singleData instanceof StringData) {
 				java.util.Date date = null;
 				try {
-					date = ((SimpleDateFormat)DATE_FORMAT.clone()).parse(singleData.toString());
+					date = ((SimpleDateFormat) DATE_FORMAT.clone()).parse(singleData.toString());
 				} catch (ParseException e) {
 
 				}
@@ -282,7 +284,7 @@ public enum Strategy implements IType {
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(date);
 
-				return new DateValue( calendar, singleData.getTimeStamp());
+				return new DateValue(calendar, singleData.getTimeStamp());
 			}
 			return null;
 		}

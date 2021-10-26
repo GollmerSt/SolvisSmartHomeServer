@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper.AverageInt;
 
 public class Average implements Cloneable {
@@ -39,7 +40,7 @@ public class Average implements Cloneable {
 		this.absCount = average.absCount;
 	}
 
-	synchronized void add(final SingleData<?> data) {
+	synchronized void add(final SingleData<?> data) throws TypeException {
 		Integer value = data.getInt();
 		if (value == null) {
 			return;

@@ -10,20 +10,19 @@ import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class AllFixChannelValues {
+public class AllModifiedChannelValues {
 
-	private static final ILogger logger = LogManager.getInstance().getLogger(AllFixChannelValues.class);
+	private static final ILogger logger = LogManager.getInstance().getLogger(AllModifiedChannelValues.class);
 	private static final String XML_CHANNEL_VALUE = "ChannelValue";
 
 	private final Collection<ChannelValue> values;
 
-	private AllFixChannelValues(final Collection<ChannelValue> values) {
+	private AllModifiedChannelValues(final Collection<ChannelValue> values) {
 		this.values = values;
 	}
 
@@ -33,13 +32,19 @@ public class AllFixChannelValues {
 		}
 	}
 
+	public enum ModifyType {
+		FIX, ADD, MULT;
+	}
+
 	public static class ChannelValue {
 
 		private final String id;
+		private final ModifyType type;
 		private final double value;
 
-		public ChannelValue(final String id, final double value) {
+		public ChannelValue(final String id, final ModifyType type, final double value) {
 			this.id = id;
+			this.type = type;
 			this.value = value;
 		}
 
@@ -49,13 +54,21 @@ public class AllFixChannelValues {
 				logger.error("base.xml error: Fix channel <" + this.id + "> no defined.");
 				return;
 			}
-			DoubleValue doubleValue = new DoubleValue(this.value, -1L);
 			try {
-				data.setFixData(doubleValue);
-				logger.info("The channel <" + this.id + "> was set to the fix value \"" + data.getSingleData().toString()
-						+ "\".");
+				data.setMofifiedChannelValue(this);
 			} catch (TypeException e) {
 				logger.error("base.xml error: Fix channel <" + this.id + "> can't be set by the given format.");
+			}
+
+		}
+
+		public void modify(SolvisData data) {
+			if (this.type == ModifyType.FIX) {
+				return; // Modified while init phase
+			}
+			if (data == null) {
+				logger.error("Program or base.xml error, data of <" + this.id + "> not defined");
+				return;
 			}
 
 		}
@@ -63,6 +76,7 @@ public class AllFixChannelValues {
 		private static class Creator extends CreatorByXML<ChannelValue> {
 
 			private String id;
+			private ModifyType type;
 			private double value;
 
 			public Creator(final String id, final BaseCreator<?> creator) {
@@ -75,6 +89,9 @@ public class AllFixChannelValues {
 					case "id":
 						this.id = value;
 						break;
+					case "type":
+						this.type = ModifyType.valueOf(value.toUpperCase());
+						break;
 					case "value":
 						this.value = Double.parseDouble(value);
 						break;
@@ -84,7 +101,7 @@ public class AllFixChannelValues {
 
 			@Override
 			public ChannelValue create() throws XmlException, IOException {
-				return new ChannelValue(this.id, this.value);
+				return new ChannelValue(this.id, this.type, this.value);
 			}
 
 			@Override
@@ -98,9 +115,17 @@ public class AllFixChannelValues {
 
 		}
 
+		public double getValue() {
+			return this.value;
+		}
+
+		public ModifyType getType() {
+			return this.type;
+		}
+
 	}
 
-	public static class Creator extends CreatorByXML<AllFixChannelValues> {
+	public static class Creator extends CreatorByXML<AllModifiedChannelValues> {
 
 		private final Collection<ChannelValue> values = new ArrayList<>();
 
@@ -113,8 +138,8 @@ public class AllFixChannelValues {
 		}
 
 		@Override
-		public AllFixChannelValues create() throws XmlException, IOException {
-			return new AllFixChannelValues(this.values);
+		public AllModifiedChannelValues create() throws XmlException, IOException {
+			return new AllModifiedChannelValues(this.values);
 		}
 
 		@Override

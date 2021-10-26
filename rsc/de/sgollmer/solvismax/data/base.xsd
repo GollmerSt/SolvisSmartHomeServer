@@ -93,7 +93,7 @@
 					</sequence>
 				</complexType>
 			</element>
-			<element name="FixChannelValues" type="tns:FixChannelValues" maxOccurs="1" minOccurs="0"></element>
+			<element name="ModifiedChannelValues" type="tns:ModifiedChannelValues" maxOccurs="1" minOccurs="0"></element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -814,7 +814,7 @@
 		<attribute name="time_ms" type="int" use="required"></attribute>
 	</complexType>
 
-	<complexType name="FixChannelValues">
+	<complexType name="ModifiedChannelValues">
 		<sequence>
 			<element name="ChannelValue" type="tns:ChannelValue" maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
@@ -822,6 +822,15 @@
 
 	<complexType name="ChannelValue">
 		<attribute name="id" type="string" use="required"></attribute>
+		<attribute name="type" use="required">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="fix"></enumeration>
+					<enumeration value="add"></enumeration>
+					<enumeration value="mult"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
 		<attribute name="value" type="float" use="required"></attribute>
 	</complexType>
 </schema>

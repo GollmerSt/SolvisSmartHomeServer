@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 
 public class LongValue extends SingleData<Long> {
@@ -42,7 +43,11 @@ public class LongValue extends SingleData<Long> {
 			return false;
 		}
 
-		return this.data.equals(cmp.getLong());
+		try {
+			return this.data.equals(cmp.getLong());
+		} catch (TypeException e) {
+			return false;
+		}
 	}
 
 	@Override
@@ -105,7 +110,12 @@ public class LongValue extends SingleData<Long> {
 	@Override
 	public int compareTo(final SingleData<?> o) {
 		if (o instanceof LongValue || o instanceof IntegerValue) {
-			Long cmp = ((SingleData<?>) o).getLong();
+			Long cmp;
+			try {
+				cmp = ((SingleData<?>) o).getLong();
+			} catch (TypeException e) {
+				return -1;
+			}
 			if (this.data == null) {
 				return cmp == null ? 0 : -1;
 			} else {
@@ -121,6 +131,20 @@ public class LongValue extends SingleData<Long> {
 	@Override
 	public SingleData<Long> clone(final long timeStamp) {
 		return new LongValue(this.data, timeStamp);
+	}
+
+	@Override
+	public SingleData<Long> add(SingleData<?> data) throws TypeException {
+		Long l1 = this.getLong();
+		Long l2 = data.getLong();
+		return new LongValue((l1 == null || l2 == null) ? null : l1 + l2, this.getTimeStamp());
+	}
+
+	@Override
+	public SingleData<Long> mult(SingleData<?> data) throws TypeException {
+		Long l1 = this.getLong();
+		Long l2 = data.getLong();
+		return new LongValue((l1 == null || l2 == null) ? null : l1 * l2, this.getTimeStamp());
 	}
 
 }

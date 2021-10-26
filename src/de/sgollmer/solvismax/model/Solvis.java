@@ -345,7 +345,7 @@ public class Solvis {
 	}
 
 	void measure(final MeasureMode mode)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException {
+			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException {
 		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData(), mode);
 		}
@@ -975,7 +975,7 @@ public class Solvis {
 	}
 
 	public boolean setStandby(final String standbyId)
-			throws NumberFormatException, IOException, PowerOnException, TerminationException {
+			throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
 		SolvisData data = this.getAllSolvisData().get(standbyId);
 		if (data == null) {
 			logger.error("Standby channel <" + standbyId + "> not definded. Setting ignored.");
@@ -984,7 +984,8 @@ public class Solvis {
 		return this.standby.set(data);
 	}
 
-	public void resetStandby() throws NumberFormatException, IOException, PowerOnException, TerminationException {
+	public void resetStandby()
+			throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
 		this.standby.reset();
 		;
 	}

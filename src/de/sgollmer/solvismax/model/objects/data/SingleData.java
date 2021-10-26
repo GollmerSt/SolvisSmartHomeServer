@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax.model.objects.data;
 
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 
 public abstract class SingleData<T> implements Comparable<SingleData<?>> {
@@ -25,25 +26,25 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 	 * 
 	 * @return integer value if supported. Otherwise null.
 	 */
-	public abstract Integer getInt();
+	public abstract Integer getInt() throws TypeException;
 
 	/**
 	 * 
 	 * @return integer value if supported. Otherwise null.
 	 */
-	public abstract Long getLong();
+	public abstract Long getLong() throws TypeException;
 
 	/**
 	 * 
 	 * @return double value if supported. Otherwise null.
 	 */
-	public abstract Double getDouble();
+	public abstract Double getDouble() throws TypeException;
 
 	/**
 	 * 
 	 * @return boolean value if supported. Otherwise null.
 	 */
-	public abstract Helper.Boolean getBoolean();
+	public abstract Helper.Boolean getBoolean() throws TypeException;
 
 	abstract SingleData<T> create(final int value, final long timeStamp);
 
@@ -58,4 +59,9 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 	boolean isFastChange() {
 		return false;
 	}
+
+	public abstract SingleData<T> add(final SingleData<?> data) throws TypeException;
+
+	public abstract SingleData<T> mult(final SingleData<?> data) throws TypeException;
+
 }

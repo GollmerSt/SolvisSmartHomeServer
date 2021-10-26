@@ -32,6 +32,7 @@ import de.sgollmer.solvismax.error.CryptDefaultValueException;
 import de.sgollmer.solvismax.error.CryptExeception;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
@@ -229,8 +230,16 @@ public class Mqtt {
 	}
 
 	public void unpublish(final ISendData sendData) throws MqttException, MqttConnectionLost {
-		Collection<MqttData> collection = sendData.createMqttData();
-		if (collection != null) {
+		Collection<MqttData> collection;
+		try {
+			collection = sendData.createMqttData();
+		} catch (TypeException e) {
+			logger.error("Type exception, ignored");
+			return;
+		}
+		if (collection != null)
+
+		{
 			for (MqttData data : collection) {
 				if (data != null) {
 					this.unpublish(data);
@@ -244,7 +253,13 @@ public class Mqtt {
 	}
 
 	public void publish(final ISendData sendData) {
-		Collection<MqttData> collection = sendData.createMqttData();
+		Collection<MqttData> collection;
+		try {
+			collection = sendData.createMqttData();
+		} catch (TypeException e) {
+			logger.error("Type exception, ignored");
+			return;
+		}
 		if (collection != null) {
 			for (MqttData data : collection) {
 				if (data != null) {
@@ -279,7 +294,7 @@ public class Mqtt {
 		return data.getTopic(this);
 	}
 
-	void publishError(final Solvis solvis,  final String clientId, final String message) {
+	void publishError(final Solvis solvis, final String clientId, final String message) {
 		MqttData data = new MqttData(TopicType.CLIENT_ERROR, solvis, clientId, message, 0, false);
 		this.publish(data);
 	}
@@ -414,7 +429,11 @@ public class Mqtt {
 			Collection<SmartHomeData> dates = solvis.getAllSolvisData().getMeasurements().cloneAndClear();
 			for (SmartHomeData smartHomeData : dates) {
 				if (smartHomeData != null) {
-					this.unpublish(smartHomeData.getMqttData());
+					try {
+						this.unpublish(smartHomeData.getMqttData());
+					} catch (TypeException e) {
+						logger.error("Type exception on " + smartHomeData.getName());
+					}
 				}
 			}
 			this.unpublish(solvis.getSolvisState().getSolvisStatePackage());

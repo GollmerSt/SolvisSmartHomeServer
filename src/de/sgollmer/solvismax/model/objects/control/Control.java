@@ -85,7 +85,7 @@ public class Control extends ChannelSource {
 
 	@Override
 	public boolean getValue(final SolvisData destin, final Solvis solvis, final long executionStartTime)
-			throws IOException, TerminationException {
+			throws IOException, TerminationException, TypeException {
 		IControlAccess controlAccess = this.getControlAccess(solvis);
 		if (!this.guiPrepare(solvis, controlAccess)) {
 			return false;
@@ -374,8 +374,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean debug) throws TypeException {
-		return this.strategy.interpretSetData(singleData, debug);
+	public SingleData<?> interpretSetData(final SingleData<?> singleData, final boolean internal) throws TypeException {
+		return this.strategy.interpretSetData(singleData, internal);
 	}
 
 	static class GuiAccess implements IAssigner, IControlAccess {

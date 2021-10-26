@@ -478,7 +478,11 @@ public class StrategyReheat implements IStrategy {
 					this.solvis.execute(new CommandControl(StrategyReheat.this.control.getDescription(), this.solvis,
 							Constants.Commands.REHEATING_PRIORITY));
 				} else {
-					this.data.setMode(Mode.OFF, System.currentTimeMillis());
+					try {
+						this.data.setMode(Mode.OFF, System.currentTimeMillis());
+					} catch (TypeException e) {
+						logger.error("Type exception of " + this.data.getName() + ", ignored");
+					}
 				}
 			}
 		}

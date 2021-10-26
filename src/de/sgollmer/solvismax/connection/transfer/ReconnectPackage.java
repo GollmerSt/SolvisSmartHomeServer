@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.connection.transfer;
 
 import de.sgollmer.solvismax.connection.IReceivedData;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 
@@ -20,7 +21,7 @@ public class ReconnectPackage extends JsonPackage implements IReceivedData {
 	}
 
 	@Override
-	void finish() {
+	void finish() throws TypeException {
 		Frame f = this.data;
 		if (f.elements.size() > 0) {
 			Element e = f.elements.get(0);

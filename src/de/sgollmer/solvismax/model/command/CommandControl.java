@@ -187,7 +187,8 @@ public class CommandControl extends Command {
 	 */
 
 	private ResultStatus write(final Solvis solvis, final ChannelDescription description, final SingleData<?> setValue,
-			final Reference<Integer> failCountRef, final boolean overwrite) throws IOException, TerminationException {
+			final Reference<Integer> failCountRef, final boolean overwrite)
+			throws IOException, TerminationException, TypeException {
 		SolvisData data = solvis.getAllSolvisData().get(description);
 		SolvisData clone = data.duplicate();
 		clone.setSingleData(setValue);
@@ -213,7 +214,8 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public ResultStatus preExecute(Solvis solvis, QueueStatus queueStatus) throws IOException, TerminationException {
+	public ResultStatus preExecute(Solvis solvis, QueueStatus queueStatus)
+			throws IOException, TerminationException, TypeException {
 
 		if (queueStatus.getCurrentPriority() != null && this.isMonitoring()
 				&& queueStatus.getCurrentPriority() > this.monitoringPriority) {
@@ -235,8 +237,8 @@ public class CommandControl extends Command {
 	}
 
 	@Override
-	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException, XmlException {
+	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus) throws IOException,
+			PowerOnException, TerminationException, NumberFormatException, XmlException, TypeException {
 
 		boolean finished = false;
 		while (!finished && !this.inhibit) {
@@ -285,7 +287,12 @@ public class CommandControl extends Command {
 			builder.append(", channel: ");
 			builder.append(this.description.getId());
 			builder.append(", set value: ");
-			builder.append(this.description.normalize(this.setValue).toString());
+			try {
+				builder.append(this.description.normalize(this.setValue).toString());
+			} catch (TypeException e) {
+				builder.append("Type exception <" + this.setValue + ">");
+				e.printStackTrace();
+			}
 		}
 		if (this.inhibit) {
 			builder.append(", inhibited");
@@ -368,8 +375,8 @@ public class CommandControl extends Command {
 
 		public abstract State next(final CommandControl command);
 
-		public abstract ResultStatus execute(final CommandControl command)
-				throws IOException, TerminationException, NumberFormatException, PowerOnException, XmlException;
+		public abstract ResultStatus execute(final CommandControl command) throws IOException, TerminationException,
+				NumberFormatException, PowerOnException, XmlException, TypeException;
 
 		@Override
 		public String toString() {
@@ -425,8 +432,8 @@ public class CommandControl extends Command {
 		}
 
 		@Override
-		public ResultStatus execute(final CommandControl command)
-				throws IOException, TerminationException, NumberFormatException, PowerOnException, XmlException {
+		public ResultStatus execute(final CommandControl command) throws IOException, TerminationException,
+				NumberFormatException, PowerOnException, XmlException, TypeException {
 
 			Map<String, SingleData<?>> map = new HashMap<>(3);
 
@@ -470,7 +477,7 @@ public class CommandControl extends Command {
 
 		@Override
 		public ResultStatus execute(final CommandControl command)
-				throws IOException, TerminationException, NumberFormatException, PowerOnException {
+				throws IOException, TerminationException, NumberFormatException, PowerOnException, TypeException {
 
 			if (command.dependenciesToExecute == null) {
 				command.currentDependencyGroup = command.dependencyGroupsToExecute.iterator().next();
@@ -560,7 +567,8 @@ public class CommandControl extends Command {
 		}
 
 		@Override
-		public ResultStatus execute(final CommandControl command) throws IOException, TerminationException {
+		public ResultStatus execute(final CommandControl command)
+				throws IOException, TerminationException, TypeException {
 			if (command.setValue == null) {
 				return ResultStatus.CONTINUE;
 			}
@@ -586,7 +594,7 @@ public class CommandControl extends Command {
 
 		@Override
 		public ResultStatus execute(final CommandControl command)
-				throws NumberFormatException, IOException, PowerOnException, TerminationException {
+				throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
 
 			Solvis solvis = command.solvis;
 
@@ -654,7 +662,7 @@ public class CommandControl extends Command {
 
 		@Override
 		public ResultStatus execute(final CommandControl command)
-				throws IOException, TerminationException, NumberFormatException, PowerOnException {
+				throws IOException, TerminationException, NumberFormatException, PowerOnException, TypeException {
 
 			if (command.currentDependencyGroup != null) {
 				command.dependencyGroupsToExecute.remove(command.currentDependencyGroup);
@@ -706,7 +714,7 @@ public class CommandControl extends Command {
 
 		@Override
 		public ResultStatus execute(final CommandControl command)
-				throws NumberFormatException, IOException, PowerOnException, TerminationException {
+				throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
 			command.solvis.resetStandby();
 			return ResultStatus.SUCCESS;
 		}

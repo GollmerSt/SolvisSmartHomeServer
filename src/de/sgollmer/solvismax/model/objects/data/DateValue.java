@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 
 public class DateValue extends SingleData<Calendar> {
@@ -26,23 +27,27 @@ public class DateValue extends SingleData<Calendar> {
 	}
 
 	@Override
-	public Helper.Boolean getBoolean() {
-		return Helper.Boolean.UNDEFINED;
+	public Helper.Boolean getBoolean()  throws TypeException {
+		throw new TypeException(
+				this.getClass().toString() + " can't be converted to Boolean");
 	}
 
 	@Override
-	public Integer getInt() {
-		return null;
+	public Integer getInt() throws TypeException {
+		throw new TypeException(
+				this.getClass().toString() + " can't be converted to Integer");
 	}
 
 	@Override
-	public Long getLong() {
-		return null;
+	public Long getLong() throws TypeException {
+		throw new TypeException(
+				this.getClass().toString() + " can't be converted to Long");
 	}
 
 	@Override
-	public Double getDouble() {
-		return null;
+	public Double getDouble() throws TypeException {
+		throw new TypeException(
+				this.getClass().toString() + " can't be converted to Double");
 	}
 
 	@Override
@@ -98,5 +103,15 @@ public class DateValue extends SingleData<Calendar> {
 	@Override
 	public SingleData<Calendar> clone(final long timeStamp) {
 		return new DateValue(this.calendar, timeStamp);
+	}
+
+	@Override
+	public SingleData<Calendar> add(SingleData<?> data) throws TypeException {
+		throw new TypeException("not supported");
+	}
+
+	@Override
+	public SingleData<Calendar> mult(SingleData<?> data) throws TypeException {
+		throw new TypeException("not supported");
 	}
 }

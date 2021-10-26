@@ -345,7 +345,11 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				logger.info(
 						"Update of <" + EquipmentOnOff.this.calculatedId + "> by SolvisConrol data take place, former: "
 								+ result.currentValue + ", new: " + result.setValue);
-				this.calculatedValue.setInteger(result.setValue, data.getTimeStamp(), type);
+				try {
+					this.calculatedValue.setInteger(result.setValue, data.getTimeStamp(), type);
+				} catch (TypeException e) {
+					logger.error("Type exception of " + data.getName() + ", ignored");
+				}
 				notifyTriggerIds();
 			}
 		}

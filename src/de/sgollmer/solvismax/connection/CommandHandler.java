@@ -114,7 +114,7 @@ public class CommandHandler {
 	}
 
 	private void executeServerCommand(final IReceivedData receivedData, final IClient client)
-			throws IOException, ClientAssignmentException, TerminationException {
+			throws IOException, ClientAssignmentException, TerminationException, TypeException {
 		ServerCommand command;
 		String commandString = (String) receivedData.getSingleData().get();
 		try {
@@ -373,8 +373,8 @@ public class CommandHandler {
 		}
 
 		String name = parts[0].trim();
-		
-		if ( name == null || name.isEmpty() ) {
+
+		if (name == null || name.isEmpty()) {
 			return;
 		}
 

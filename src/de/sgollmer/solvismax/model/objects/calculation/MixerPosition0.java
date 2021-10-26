@@ -44,7 +44,7 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 	}
 
 	@Override
-	void instantiate(final Solvis solvis) throws AssignmentException, AliasException {
+	void instantiate(final Solvis solvis) throws AssignmentException, AliasException, TypeException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 
@@ -96,7 +96,11 @@ public class MixerPosition0 extends Strategy<MixerPosition0> {
 
 			boolean result = !pump && !mixer;
 
-			this.result.setBoolean(result, data.getTimeStamp());
+			try {
+				this.result.setBoolean(result, data.getTimeStamp());
+			} catch (TypeException e) {
+				logger.error("Type exception of " + data.getName() + ", ignored");
+			}
 
 		}
 

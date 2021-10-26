@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 
 import de.sgollmer.solvismax.connection.IReceivedData;
 import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
@@ -88,7 +89,7 @@ public class JsonPackage implements IReceivedData {
 		}
 	}
 
-	void finish() {
+	void finish() throws TypeException {
 
 	}
 

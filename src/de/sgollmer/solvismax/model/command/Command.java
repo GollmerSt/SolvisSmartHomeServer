@@ -129,7 +129,8 @@ public abstract class Command {
 		return Type.OTHER;
 	}
 
-	public ResultStatus preExecute(Solvis solvis, QueueStatus queueStatus) throws IOException, TerminationException {
+	public ResultStatus preExecute(Solvis solvis, QueueStatus queueStatus)
+			throws IOException, TerminationException, TypeException {
 		return null;
 	}
 }

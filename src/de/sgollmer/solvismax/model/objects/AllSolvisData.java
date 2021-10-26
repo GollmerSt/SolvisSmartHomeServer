@@ -16,6 +16,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
@@ -178,7 +179,11 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 
 					if (singleData != null) {
 						SingleData<?> single = singleData.clone(backup.getTimeOfLastBackup());
-						data.setSingleData(single, backup);
+						try {
+							data.setSingleData(single, backup);
+						} catch (TypeException e) {
+							logger.error("Type exception of " + data.getName() + ", ignored");
+						}
 					}
 				}
 			}
@@ -232,7 +237,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		return this.solvisDatasByName.get(name);
 	}
 
-	public void debugClear() {
+	public void debugClear() throws TypeException {
 		for (SolvisData data : this.solvisDatas.values()) {
 			data.setSingleDataDebug(null);
 		}

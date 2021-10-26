@@ -16,4 +16,8 @@ public class JsonException extends Exception {
 	public JsonException(final String message) {
 		super(message);
 	}
+
+	public JsonException(Exception e) {
+		super(e);
+	}
 }

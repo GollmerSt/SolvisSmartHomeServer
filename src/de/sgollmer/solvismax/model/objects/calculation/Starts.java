@@ -43,7 +43,7 @@ public class Starts extends Strategy<Starts> {
 	}
 
 	@Override
-	void instantiate(final Solvis solvis) throws AssignmentException, AliasException {
+	void instantiate(final Solvis solvis) throws AssignmentException, AliasException, TypeException {
 		AllSolvisData allData = solvis.getAllSolvisData();
 		SolvisData result = allData.get(this.calculation.getDescription().getId());
 

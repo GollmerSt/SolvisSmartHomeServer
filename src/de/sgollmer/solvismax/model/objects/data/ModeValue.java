@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.model.objects.data;
 
 import de.sgollmer.solvismax.Constants;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 
 public class ModeValue<M extends IMode<M>> extends SingleData<M> {
@@ -25,23 +26,27 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	}
 
 	@Override
-	public Helper.Boolean getBoolean() {
-		return Helper.Boolean.UNDEFINED;
+	public Helper.Boolean getBoolean() throws TypeException {
+		throw new TypeException(
+				this.getClass().toString() + " can't be converted to Boolean");
 	}
 
 	@Override
-	public Integer getInt() {
-		return null;
+	public Integer getInt() throws TypeException {
+		throw new TypeException(
+				this.getClass().toString() + " can't be converted to Integer");
 	}
 
 	@Override
-	public Long getLong() {
-		return null;
+	public Long getLong() throws TypeException {
+		throw new TypeException(
+				this.getClass().toString() + " can't be converted to Long");
 	}
 
 	@Override
-	public Double getDouble() {
-		return null;
+	public Double getDouble() throws TypeException {
+		throw new TypeException(
+				this.getClass().toString() + " can't be converted to Double");
 	}
 
 	@Override
@@ -102,6 +107,16 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	@Override
 	public SingleData<M> clone(final long timeStamp) {
 		return new ModeValue<M>(this.mode, timeStamp);
+	}
+
+	@Override
+	public SingleData<M> add(SingleData<?> data) throws TypeException {
+		throw new TypeException("not supported");
+	}
+
+	@Override
+	public SingleData<M> mult(SingleData<?> data) throws TypeException {
+		throw new TypeException("not supported");
 	}
 
 }
