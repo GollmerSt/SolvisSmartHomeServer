@@ -32,6 +32,12 @@ public class AllModifiedChannelValues {
 		}
 	}
 
+	public void setFixValues(Solvis solvis) {
+		for (ChannelValue channelValue : this.values) {
+			channelValue.setFixValues(solvis);
+		}
+	}
+
 	public enum ModifyType {
 		FIX, ADD, MULT;
 	}
@@ -55,12 +61,28 @@ public class AllModifiedChannelValues {
 				return;
 			}
 			try {
-				data.setMofifiedChannelValue(this);
+				data.initModifiedChannelValue(this);
 			} catch (TypeException e) {
 				logger.error("base.xml error: Fix channel <" + this.id + "> can't be set by the given format.");
 			}
 
 		}
+		
+		
+		public void setFixValues(Solvis solvis) {
+			SolvisData data = solvis.getAllSolvisData().getByName(this.id);
+			if (data == null) {
+				logger.error("base.xml error: Fix channel <" + this.id + "> no defined.");
+				return;
+			}
+			try {
+				data.setFixedChannelValue(this);
+			} catch (TypeException e) {
+				logger.error("base.xml error: Fix channel <" + this.id + "> can't be set by the given format.");
+			}
+
+		}
+		
 
 		public void modify(SolvisData data) {
 			if (this.type == ModifyType.FIX) {

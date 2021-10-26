@@ -337,8 +337,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 	}
 
-	public void setMofifiedChannelValue(final ChannelValue channelValue) throws TypeException {
-		this.channelValue = channelValue;
+	public void setFixedChannelValue(final ChannelValue channelValue) throws TypeException {
 		if (channelValue.getType() == ModifyType.FIX) {
 			DoubleValue doubleValue = new DoubleValue(this.channelValue.getValue(), -1L);
 			this.data = this.getDescription().interpretSetData(doubleValue, false);
@@ -346,6 +345,10 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 			logger.info("The channel <" + this.getId() + "> was set to the fix value \""
 					+ this.getSingleData().toString() + "\".");
 		}
+	}
+
+	public void initModifiedChannelValue(final ChannelValue channelValue) throws TypeException {
+		this.channelValue = channelValue;
 	}
 
 	public SingleData<?> getCorrectedData() throws TypeException {

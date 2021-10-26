@@ -311,8 +311,9 @@ public class Solvis {
 		this.standby = this.getSolvisDescription().getStandby().instantiate(this);
 		SystemBackup oldMeasurements = this.backupHandler.getSystemBackup(this.unit.getId());
 		this.worker.init();
+		this.getUnit().getModifiedChannelValues().initialize(this);
 		this.getAllSolvisData().restoreFromBackup(oldMeasurements);
-		this.getUnit().getFixChannelValues().initialize(this);
+		this.getUnit().getModifiedChannelValues().setFixValues(this);
 		this.getSolvisDescription().instantiate(this);
 		this.initialized = true;
 	}
