@@ -11,6 +11,7 @@ Version 01.04.07
                 ueberfluessig.
                 Wenn ein Überlauf beobachtet wird, muss entsprechend die base.xml angepasst werden.
 
+    02.11.2021  Der Befehl SERVICE_RESET setzt nun auch einen normalen User-Access zurück.
 
 
 Version 01.04.06

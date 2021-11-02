@@ -111,23 +111,23 @@ public class WatchDog {
 	}
 
 	public enum HumanAccess {
-		USER(true, "User", SolvisStatus.USER_ACCESS_DETECTED),
-		SERVICE(true, "Service", SolvisStatus.SERVICE_ACCESS_DETECTED),
-		NONE(false, "None", SolvisStatus.HUMAN_ACCESS_FINISHED),
-		UNKNOWN(false, "None", SolvisStatus.HUMAN_ACCESS_FINISHED);
+		USER(false, "User", SolvisStatus.USER_ACCESS_DETECTED),
+		SERVICE(false, "Service", SolvisStatus.SERVICE_ACCESS_DETECTED),
+		NONE(true, "None", SolvisStatus.HUMAN_ACCESS_FINISHED),
+		UNKNOWN(true, "None", SolvisStatus.HUMAN_ACCESS_FINISHED);
 
-		private final boolean wait;
+		private final boolean serverAccessEnabled;
 		private final String accessType;
 		private final SolvisStatus status;
 
-		private HumanAccess(boolean wait, String accessType, SolvisStatus connectionStatus) {
-			this.wait = wait;
+		private HumanAccess(boolean serverAccessEnabled, String accessType, SolvisStatus connectionStatus) {
+			this.serverAccessEnabled = serverAccessEnabled;
 			this.accessType = accessType;
 			this.status = connectionStatus;
 		}
 
-		private boolean mustWait() {
-			return this.wait;
+		private boolean isServerAccessEnabled() {
+			return this.serverAccessEnabled;
 		}
 
 		private String getAccessType() {
@@ -215,7 +215,7 @@ public class WatchDog {
 					}
 				}
 
-				this.abort = !this.humanAccess.mustWait() && (clearErrorMessage || event != Event.SET_ERROR_BY_MESSAGE);
+				this.abort = this.humanAccess.isServerAccessEnabled() && (clearErrorMessage || event != Event.SET_ERROR_BY_MESSAGE);
 
 				synchronized (this) {
 					if (!this.abort) {
@@ -382,7 +382,7 @@ public class WatchDog {
 				current = HumanAccess.SERVICE;
 				break;
 			case RESET_SERVICE_BY_COMMAND:
-				if (!this.serviceScreenDetected && !this.powerOff && this.humanAccess == HumanAccess.SERVICE) {
+				if (!this.serviceScreenDetected && !this.powerOff && !this.humanAccess.isServerAccessEnabled()) {
 					this.serviceAccessFinishedTime = 0;
 					current = HumanAccess.NONE;
 				}
