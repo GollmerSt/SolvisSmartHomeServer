@@ -23,7 +23,7 @@ public class AbortHelper {
 	}
 
 	private boolean abort = false;
-	private Collection<Object> syncObjects = new ArrayList<>();
+	private Collection<Abortable> abortables = new ArrayList<>();
 
 	public synchronized void sleep(final Integer time) throws TerminationException {
 		if ( time == null || time <= 0 ) {
@@ -40,24 +40,28 @@ public class AbortHelper {
 			throw new TerminationException();
 		}
 	}
+	
+	public interface Abortable {
+		public void abort() ;
+	}
 
-	public void sleepAndLock(final int time, final Object syncObject) throws TerminationException {
+	public void sleepAndLock(final int time, final Abortable abortable) throws TerminationException {
 		if (this.abort) {
 			throw new TerminationException();
 		}
 		try {
-			synchronized (syncObject) {
+			synchronized (abortable) {
 
 				synchronized (this) {
-					this.syncObjects.add(syncObject);
+					this.abortables.add(abortable);
 				}
 
 				if (!this.abort) {
-					syncObject.wait(time);
+					abortable.wait(time);
 				}
 
 				synchronized (this) {
-					this.syncObjects.remove(syncObject);
+					this.abortables.remove(abortable);
 				}
 			}
 		} catch (InterruptedException e) {
@@ -69,16 +73,16 @@ public class AbortHelper {
 
 	public void abort() {
 		this.abort = true;
-		Collection<Object> syncObjects;
+		Collection<Abortable> abortables;
 		synchronized (this) {
 
-			syncObjects = new ArrayList<>(this.syncObjects);
+			abortables = new ArrayList<>(this.abortables);
 			this.notifyAll();
 		}
 
-		for (Object obj : syncObjects) {
-			synchronized (obj) {
-				obj.notifyAll();
+		for (Abortable abortable : abortables) {
+			synchronized (abortable) {
+				abortable.abort();
 			}
 		}
 	}

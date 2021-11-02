@@ -35,8 +35,6 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 
-	private final boolean DEBUG = false;
-
 	private static final String XML_TRIGGER = "Trigger";
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(EquipmentOnOff.class);
@@ -387,16 +385,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 				int currentCalcValue;
 				try {
 					equipmentOn = data.getBool();
-
-					if (EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A12.Brenner")) {
-						equipmentOn = true;
-					}
-
-					if (EquipmentOnOff.this.DEBUG && data.getDescription().getId().equals("A13.Brenner_S2")) {
-						equipmentOn = true;
-					}
-
 					currentCalcValue = this.calculatedValue.getInt();
+
 				} catch (TypeException e) {
 					logger.error("Type exception, update ignored", e);
 					return;
@@ -430,11 +420,8 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 					boolean formerSyncActiveHourly = this.syncEnableHourly;
 					this.syncEnableHourly = this.hourly && nextHour - delta_s < currentCalcValue;
 
-					if (formerSyncActiveHourly != this.syncEnableHourly) {
-						if (this.syncEnableHourly) {
-							logger.info(
-									"Hourly synchronisation of <" + EquipmentOnOff.this.calculatedId + "> activated.");
-						}
+					if (formerSyncActiveHourly != this.syncEnableHourly && this.syncEnableHourly) {
+						logger.info("Hourly synchronisation of <" + EquipmentOnOff.this.calculatedId + "> activated.");
 					}
 				}
 

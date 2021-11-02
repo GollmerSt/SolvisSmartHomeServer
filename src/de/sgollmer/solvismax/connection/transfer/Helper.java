@@ -14,6 +14,7 @@ import de.sgollmer.solvismax.error.ConnectionClosedException;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.helper.AbortHelper.Abortable;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.SolvisWorkers;
@@ -64,7 +65,7 @@ public class Helper {
 		}
 	}
 
-	private static class TimeoutThread extends de.sgollmer.solvismax.helper.Helper.Runnable {
+	private static class TimeoutThread extends de.sgollmer.solvismax.helper.Helper.Runnable implements Abortable {
 
 		private final int timeout;
 		private final InputStream inputStream;
@@ -93,7 +94,8 @@ public class Helper {
 			}
 		}
 
-		private synchronized void abort() {
+		@Override
+		public synchronized void abort() {
 			this.abort = true;
 			this.notifyAll();
 		}

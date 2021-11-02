@@ -193,7 +193,7 @@ public final class Distributor extends Observable<ISendData> {
 							this.wait(Constants.ALIVE_TIME);
 						} catch (InterruptedException e) {
 						}
-						if (!this.triggered) {
+						if (!this.triggered && !this.abort) {
 							sendAlive = true;
 						} else {
 							this.triggered = false;
@@ -215,7 +215,6 @@ public final class Distributor extends Observable<ISendData> {
 
 		private synchronized void abort() {
 			this.abort = true;
-			this.triggered = true; // disable send alive
 			this.notifyAll();
 		}
 

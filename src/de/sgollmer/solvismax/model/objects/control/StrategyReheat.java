@@ -19,6 +19,7 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.helper.AbortHelper.Abortable;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -445,7 +446,7 @@ public class StrategyReheat implements IStrategy {
 
 	}
 
-	private class ReheatThread extends Helper.Runnable {
+	private class ReheatThread extends Helper.Runnable implements Abortable{
 
 		private final SolvisData data;
 		private final Solvis solvis;
@@ -487,6 +488,7 @@ public class StrategyReheat implements IStrategy {
 			}
 		}
 
+		@Override
 		public synchronized void abort() {
 			this.abort = true;
 			this.notifyAll();
