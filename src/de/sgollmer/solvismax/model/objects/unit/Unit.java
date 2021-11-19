@@ -37,7 +37,7 @@ public class Unit implements IAccountInfo {
 	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
 	private static final String XML_CHANNEL_ASSIGNMENT = "Assignment";
 	private static final String XML_DURATIONS = "Durations";
-	private static final String XML_MODIFIED_CHANNEL_VALUES = "ModifiedChannelValues";
+	private static final String XML_CHANNEL_OPTIONS = "ChannelOptions";
 
 	private final String id;
 	private final Configuration configuration;
@@ -65,7 +65,7 @@ public class Unit implements IAccountInfo {
 	private Long forcedConfigMask = null;
 	private final boolean csvUnit;
 	private final AllDurations durations;
-	private final AllModifiedChannelValues modifiedChannelValues;
+	private final AllChannelOptions channelOptions;
 
 	private Unit(final String id, final Configuration configuration, final String url, final String account,
 			final CryptAes password, final int defaultAverageCount, final int measurementHysteresisFactor,
@@ -76,7 +76,7 @@ public class Unit implements IAccountInfo {
 			final int clearNotRequiredTime_ms, final boolean delayAfterSwitchingOn, final boolean fwLth2_21_02A,
 			final Features features, final int ignoredFrameThicknesScreenSaver,
 			final Collection<Pattern> ignoredChannels, final Map<String, ChannelAssignment> assignments,
-			final boolean csvUnit, final AllDurations durations, final AllModifiedChannelValues modifiedChannelValues) {
+			final boolean csvUnit, final AllDurations durations, final AllChannelOptions channelOptions) {
 		this.id = id;
 		this.configuration = configuration;
 		this.url = url;
@@ -102,7 +102,7 @@ public class Unit implements IAccountInfo {
 		this.assignments = assignments;
 		this.csvUnit = csvUnit;
 		this.durations = durations;
-		this.modifiedChannelValues = modifiedChannelValues;
+		this.channelOptions = channelOptions;
 	}
 
 	public String getId() {
@@ -158,7 +158,7 @@ public class Unit implements IAccountInfo {
 		private Map<String, ChannelAssignment> assignments = null;
 		private boolean csvUnit = false;
 		private AllDurations durations = null;
-		private AllModifiedChannelValues modifiedChannelValues = null;
+		private AllChannelOptions channelOptions = null;
 
 		Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
@@ -265,7 +265,7 @@ public class Unit implements IAccountInfo {
 					this.releaseBlockingAfterServiceAccess_ms, this.clearNotRequiredTime_ms,
 					this.delayAfterSwitchingOnEnable, this.fwLth2_21_02A, this.features,
 					this.ignoredFrameThicknesScreenSaver, this.ignoredChannels, this.assignments, this.csvUnit,
-					this.durations, this.modifiedChannelValues);
+					this.durations, this.channelOptions);
 
 		}
 
@@ -282,8 +282,8 @@ public class Unit implements IAccountInfo {
 					return new AssignmentsCreator(id, this.getBaseCreator());
 				case XML_DURATIONS:
 					return new AllDurations.Creator(id, this.getBaseCreator());
-				case XML_MODIFIED_CHANNEL_VALUES:
-					return new AllModifiedChannelValues.Creator(id, this.getBaseCreator());
+				case XML_CHANNEL_OPTIONS:
+					return new AllChannelOptions.Creator(id, this.getBaseCreator());
 			}
 			return this.configurationCreator.getCreator(name);
 		}
@@ -315,8 +315,8 @@ public class Unit implements IAccountInfo {
 				case XML_DURATIONS:
 					this.durations = (AllDurations) created;
 					break;
-				case XML_MODIFIED_CHANNEL_VALUES:
-					this.modifiedChannelValues = (AllModifiedChannelValues) created;
+				case XML_CHANNEL_OPTIONS:
+					this.channelOptions = (AllChannelOptions) created;
 					break;
 
 			}
@@ -480,8 +480,8 @@ public class Unit implements IAccountInfo {
 		}
 	}
 
-	public AllModifiedChannelValues getModifiedChannelValues() {
-		return this.modifiedChannelValues;
+	public AllChannelOptions getChannelOptions() {
+		return this.channelOptions;
 	}
 
 }

@@ -109,8 +109,6 @@ public interface IChannelSource extends IAssigner, IGraficsLearnable {
 
 	public UpperLowerStep getUpperLowerStep();
 
-	public boolean isDelayed(final Solvis solvis);
-
 	public boolean isHumanAccessDependend();
 
 	public static class UpperLowerStep {

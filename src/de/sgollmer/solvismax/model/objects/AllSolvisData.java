@@ -209,7 +209,7 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 		Measurements measurements = new Measurements();
 		for (SolvisData data : this.solvisDatas.values()) {
 			SmartHomeData smartHomeData = data.getSmartHomeData();
-			if (smartHomeData != null && !smartHomeData.getDescription().isDelayed(this.solvis)) {
+			if (smartHomeData != null && !data.isDelayed()) {
 				measurements.add(smartHomeData);
 			}
 		}

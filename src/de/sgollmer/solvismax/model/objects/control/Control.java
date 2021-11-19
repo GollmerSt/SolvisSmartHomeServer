@@ -534,11 +534,6 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public boolean isDelayed(final Solvis solvis) {
-		return false;
-	}
-
-	@Override
 	public Integer getScanInterval_ms(final Solvis solvis) {
 		return null;
 	}

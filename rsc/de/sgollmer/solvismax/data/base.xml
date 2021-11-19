@@ -120,19 +120,31 @@
 					Sonst kann der Wert auskommentiert bleiben. Default ist dann 3000 (ms) -->
 				<!-- <tns:Duration id="ModeChange" time_ms="3500" /> -->
 			</tns:Durations>
-			<tns:ModifiedChannelValues>
+			<tns:ChannelOptions>
 				<!-- Kanäle können fest auf einen Wert voreingestellt werden oder auch 
-					durch einen Increment/Faktor modifiziert werden. Sinnvoll ist das bei Werten 
+					durch einen Summand/Faktor modifiziert werden. Sinnvoll ist das bei Werten 
 					aus den Installateur-Menüs, wenn der Server nicht im Admin-Mode arbeiten 
 					soll. Aktuell ist hier nur der Kanal "C47.Puffer_dT_Start" sinnvoll, dessen 
 					Wert im Admin-Mode aus dem Installateur-Menü "Sonstig.\weiter\Nutzerauswahl\Installateur\Wasser\Anforderung\2/2" 
 					ermittelt wird. -->
-				<!-- <tns:ChannelValue id="C47.Puffer_dT_Start" type="fix" value="12" 
-					/> -->
-				<!-- <tns:ChannelValue id="X01.BrennerStarts" type="add" value="65536" 
-					/> 
-					-->
-			</tns:ModifiedChannelValues>
+				<!-- Außerdem kann auch noch die Auswertungszeit von Sensoren nach einem 
+					Power Off verzögert werden, da manche Sensoren der Anlage direkt nach dem 
+					Einschalten noch recht ungenau. -->
+				<tns:Channel id="C47.Puffer_dT_Start" type="fix"
+					value="12" />
+				<tns:Channel id="X01.BrennerStarts" type="add"
+					value="65536" />
+				<tns:Channel id="S03.Speicherreferenztemperatur"
+					powerOnDelay_s="600" />
+				<tns:Channel id="S04.Heizungspuffertemperatur_oben"
+					powerOnDelay_s="600" />
+				<tns:Channel id="S09.Heizungspuffertemperatur_unten"
+					powerOnDelay_s="600" />
+				<tns:Channel id="S10.Aussentemperatur"
+					powerOnDelay_s="900" />
+				<tns:Channel id="RF1.Raumfuehler_HK1"
+					powerOnDelay_s="1500" />
+			</tns:ChannelOptions>
 		</tns:Unit>
 	</tns:Units>
 	<tns:Mqtt enable="false" brokerUrl="192.168.0.71" port="1883"

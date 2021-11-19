@@ -14,7 +14,6 @@ import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.connection.mqtt.TopicType;
 import de.sgollmer.solvismax.connection.transfer.SingleValue;
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
-import de.sgollmer.solvismax.error.FatalError;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
@@ -28,8 +27,8 @@ import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
-import de.sgollmer.solvismax.model.objects.unit.AllModifiedChannelValues.ChannelValue;
-import de.sgollmer.solvismax.model.objects.unit.AllModifiedChannelValues.ModifyType;
+import de.sgollmer.solvismax.model.objects.unit.AllChannelOptions.ChannelOption;
+import de.sgollmer.solvismax.model.objects.unit.AllChannelOptions.ModifyType;
 
 public class SolvisData extends Observer.Observable<SolvisData> implements IObserver<SolvisStatePackage> {
 
@@ -47,7 +46,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	private SmartHomeData smartHomeData;
 	private int executionTime;
 	private boolean fix = false;
-	private ChannelValue channelValue = null;
+	private ChannelOption channelOption = null;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
@@ -337,9 +336,9 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 	}
 
-	public void setFixedChannelValue(final ChannelValue channelValue) throws TypeException {
+	public void setFixedChannelValue(final ChannelOption channelValue) throws TypeException {
 		if (channelValue.getType() == ModifyType.FIX) {
-			DoubleValue doubleValue = new DoubleValue(this.channelValue.getValue(), -1L);
+			DoubleValue doubleValue = new DoubleValue(this.channelOption.getValue(), -1L);
 			this.data = this.getDescription().interpretSetData(doubleValue, false);
 			this.fix = true;
 			logger.info("The channel <" + this.getId() + "> was set to the fix value \""
@@ -347,29 +346,20 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		}
 	}
 
-	public void initModifiedChannelValue(final ChannelValue channelValue) throws TypeException {
-		this.channelValue = channelValue;
+	public void setChannelOption(final ChannelOption channelOption) throws TypeException {
+		this.channelOption = channelOption;
 	}
 
 	public SingleData<?> getCorrectedData() throws TypeException {
 		if (this.data == null) {
 			return null;
 		}
-		if ( this.channelValue == null ) {
+		if (this.channelOption == null) {
 			return this.getSingleData();
 		}
-		DoubleValue doubleValue = new DoubleValue(this.channelValue.getValue(), -1L);
-		SingleData<?> data = this.getDescription().interpretSetData(doubleValue, true);
-		switch (this.channelValue.getType()) {
-			case ADD:
-				return this.getSingleData().add(data);
-			case MULT:
-				return this.getSingleData().mult(data);
-			case FIX:
-				return this.getSingleData();
-			default:
-				throw new FatalError("Channel value type <" + this.channelValue.getType().name() + "> not supported");
-		}
+
+		return this.channelOption.modify(this);
+
 	}
 
 	public void setSingleData(final SetResult data) throws TypeException {
@@ -531,11 +521,17 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				long forceUpdateAfterFastChangingIntervals = this.solvis.getUnit()
 						.getForceUpdateAfterFastChangingIntervals();
 
-				if (forceUpdateAfterFastChangingIntervals != 0 && currentTimeStamp
-						- this.transmittedTimeStamp > intervall * forceUpdateAfterFastChangingIntervals) {
-					this.forceCnt = 2;
-					logger.debug("Quick change after a long constant period of channel <"
-							+ this.solvisData.getDescription() + "> detected.");
+				if (forceUpdateAfterFastChangingIntervals != 0) {
+
+					long delta = currentTimeStamp - this.transmittedTimeStamp;
+
+					if (delta < this.solvis.getTimeAfterLastSwitchingOn() //
+							&& delta > intervall * forceUpdateAfterFastChangingIntervals) {
+
+						this.forceCnt = 2;
+						logger.debug("Quick change after a long constant period of channel <"
+								+ this.solvisData.getDescription() + "> detected.");
+					}
 				}
 				notify = true;
 			} else if (this.forceCnt > 0) {
@@ -640,6 +636,9 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 				String name = this.channelInstance.getName();
 				csv = TopicType.formatChannelPublish(name);
 				break;
+			case Csv.DELAY_AFTER_ON:
+				int delay = this.channelOption != null ? this.channelOption.getPowerOnDelay() : -1;
+				return delay > 0 ? Integer.toString(delay) : "";
 		}
 		if (csv == null) {
 			csv = this.getDescription().getCsvMeta(column, semicolon);
@@ -649,6 +648,15 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 
 	public boolean isFix() {
 		return this.fix;
+	}
+
+	public ChannelOption getChannelOption() {
+		return this.channelOption;
+	}
+
+	public boolean isDelayed() {
+		return this.channelOption != null
+				&& this.channelOption.getPowerOnDelay() > this.getSolvis().getTimeAfterLastSwitchingOn();
 	}
 
 }

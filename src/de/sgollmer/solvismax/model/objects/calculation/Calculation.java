@@ -207,11 +207,6 @@ public class Calculation extends ChannelSource {
 	}
 
 	@Override
-	public boolean isDelayed(final Solvis solvis) {
-		return this.getAliasGroup().isDelayed(solvis);
-	}
-
-	@Override
 	public Integer getScanInterval_ms(final Solvis solvis) {
 		return this.aliasGroup.getScanInterval_ms(solvis);
 	}

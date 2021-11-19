@@ -311,9 +311,9 @@ public class Solvis {
 		this.standby = this.getSolvisDescription().getStandby().instantiate(this);
 		SystemBackup oldMeasurements = this.backupHandler.getSystemBackup(this.unit.getId());
 		this.worker.init();
-		this.getUnit().getModifiedChannelValues().initialize(this);
+		this.getUnit().getChannelOptions().initialize(this);
 		this.getAllSolvisData().restoreFromBackup(oldMeasurements);
-		this.getUnit().getModifiedChannelValues().setFixValues(this);
+		this.getUnit().getChannelOptions().setFixValues(this);
 		this.getSolvisDescription().instantiate(this);
 		this.initialized = true;
 	}
@@ -677,7 +677,7 @@ public class Solvis {
 									this.wait(waitTime);
 								} catch (InterruptedException e) {
 								}
-								update = !this.abort && this.power || this.singleUpdate;
+								update = !this.abort && (this.power || this.singleUpdate);
 								single = this.singleUpdate;
 								this.singleUpdate = false;
 							}

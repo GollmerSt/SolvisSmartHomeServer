@@ -41,7 +41,6 @@ public class Measurement extends ChannelSource {
 	private final IType type;
 	private final int divisor;
 	private final boolean average;
-	private final int delayAfterSwitchingOn;
 	private final boolean fast;
 	private final Collection<Field> fields;
 
@@ -101,11 +100,10 @@ public class Measurement extends ChannelSource {
 	// 49AB00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
 	private Measurement(final String channelId, final Strategy type, final int divisor, final boolean average,
-			final int delayAfterSwitchingOn, final boolean fast, final Collection<Field> fields) throws XmlException {
+			final boolean fast, final Collection<Field> fields) throws XmlException {
 		this.type = type;
 		this.divisor = divisor;
 		this.average = average;
-		this.delayAfterSwitchingOn = delayAfterSwitchingOn;
 		this.fast = fast;
 		this.fields = fields;
 		if (!this.type.validate(fields)) {
@@ -114,15 +112,10 @@ public class Measurement extends ChannelSource {
 	}
 
 	@Override
-	public boolean isDelayed(final Solvis solvis) {
-		return solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn;
-	}
-
-	@Override
 	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime)
 			throws PowerOnException, IOException, TerminationException, NumberFormatException, TypeException {
 
-		if (solvis.getTimeAfterLastSwitchingOn() < this.delayAfterSwitchingOn) {
+		if (dest.isDelayed()) {
 			dest.setSingleData((SingleData<?>) null);
 			return true;
 		} else {
@@ -166,7 +159,6 @@ public class Measurement extends ChannelSource {
 		private Strategy type;
 		private int divisor = 1;
 		private boolean average = false;
-		private int delayAfterSwitchingOn = -1;
 		private boolean fast = false;
 		private final Collection<Field> fields = new ArrayList<>(2);
 
@@ -188,9 +180,6 @@ public class Measurement extends ChannelSource {
 				case "average":
 					this.average = Boolean.parseBoolean(value);
 					break;
-				case "delayAfterSwitchingOn_ms":
-					this.delayAfterSwitchingOn = Integer.parseInt(value);
-					break;
 				case "fast":
 					this.fast = Boolean.parseBoolean(value);
 					break;
@@ -200,8 +189,7 @@ public class Measurement extends ChannelSource {
 
 		@Override
 		public Measurement create() throws XmlException {
-			return new Measurement(this.channelId, this.type, this.divisor, this.average, this.delayAfterSwitchingOn,
-					this.fast, this.fields);
+			return new Measurement(this.channelId, this.type, this.divisor, this.average, this.fast, this.fields);
 		}
 
 		@Override
@@ -328,8 +316,6 @@ public class Measurement extends ChannelSource {
 				return Integer.toString(this.divisor);
 			case Csv.AVERAGE:
 				return Boolean.toString(this.average);
-			case Csv.DELAY_AFTER_ON:
-				return this.delayAfterSwitchingOn >= 0 ? Integer.toString(this.delayAfterSwitchingOn) : "";
 			case Csv.FAST:
 				return Boolean.toString(this.fast);
 			case Csv.STRATEGY:

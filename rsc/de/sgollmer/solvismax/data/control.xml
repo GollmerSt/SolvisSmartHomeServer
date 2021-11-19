@@ -1889,7 +1889,7 @@
 		<tns:ChannelDescription id="S01"
 			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" delayAfterSwitchingOn_ms="600000">
+				divisor="10">
 				<tns:Field position="14" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1905,7 +1905,7 @@
 		<tns:ChannelDescription id="S03"
 			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" delayAfterSwitchingOn_ms="600000">
+				divisor="10">
 				<tns:Field position="22" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1913,7 +1913,7 @@
 		<tns:ChannelDescription id="S04"
 			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" delayAfterSwitchingOn_ms="600000">
+				divisor="10">
 				<tns:Field position="26" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1950,7 +1950,7 @@
 		<tns:ChannelDescription id="S09"
 			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" delayAfterSwitchingOn_ms="600000">
+				divisor="10">
 				<tns:Field position="46" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -1958,7 +1958,7 @@
 		<tns:ChannelDescription id="S10"
 			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" delayAfterSwitchingOn_ms="900000">
+				divisor="10">
 				<tns:Field position="50" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>
@@ -2076,7 +2076,7 @@
 		<tns:ChannelDescription id="RF1"
 			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
-				divisor="10" delayAfterSwitchingOn_ms="1500000">
+				divisor="10">
 				<tns:Field position="106" length="4" />
 			</tns:Measurement>
 		</tns:ChannelDescription>

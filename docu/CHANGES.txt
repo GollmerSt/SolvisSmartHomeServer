@@ -12,6 +12,10 @@ Version 01.04.07
                 Wenn ein Überlauf beobachtet wird, muss entsprechend die base.xml angepasst werden.
 
     02.11.2021  Der Befehl SERVICE_RESET setzt nun auch einen normalen User-Access zurück.
+    
+    19.11.2021  Die Definition der Freigabezeit der Messungen nach einem PowerOn erfolgt nun in der
+                base.xml. Dazu wurde das Element "ModifiedChannelValues" in ChannelOptions
+                umbenannt und die Delay-Zeit hinzugefügt, um sie so allgemeiner zu halten.
 
 
 Version 01.04.06

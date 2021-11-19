@@ -3,7 +3,7 @@
 	targetNamespace="http://www.example.org/control"
 	xmlns:tns="http://www.example.org/control"
 	elementFormDefault="qualified">
-    <complexType name="BaseData">
+	<complexType name="BaseData">
 		<annotation>
 			<documentation>
 				Root mit der Home-Screen-Definition
@@ -39,9 +39,10 @@
 						Exception
 					</documentation>
 				</annotation>
-			</element>
-            <element name="Iobroker" type="tns:Iobroker" maxOccurs="1" minOccurs="0"></element>
-        </sequence>
+			</element>
+			<element name="Iobroker" type="tns:Iobroker" maxOccurs="1"
+				minOccurs="0"></element>
+		</sequence>
 		<attribute name="DEBUG" type="boolean" use="optional">
 			<annotation>
 				<documentation>Debug-Mode. Nur zur Entwicklung</documentation>
@@ -93,7 +94,8 @@
 					</sequence>
 				</complexType>
 			</element>
-			<element name="ModifiedChannelValues" type="tns:ModifiedChannelValues" maxOccurs="1" minOccurs="0"></element>
+			<element name="ChannelOptions"
+				type="tns:ChannelOptions" maxOccurs="1" minOccurs="0"></element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -117,8 +119,9 @@
 		<attribute name="heatingCircuits" use="required"
 			type="tns:HeaterCircuit">
 
-		</attribute>
-		<attribute name="fwLth2_21_02A" type="boolean" use="optional">
+		</attribute>
+		<attribute name="fwLth2_21_02A" type="boolean"
+			use="optional">
 			<annotation>
 				<documentation>
 					Zu setzen, wenn Remote-Firmware älter als
@@ -156,7 +159,8 @@
 			<annotation>
 				<documentation>
 					Anzahl der Werte über den analoge Messwerte
-					gemittelt werden (Kesseölthemperaturen, Außen, Innen
+					gemittelt
+					werden (Kesseölthemperaturen, Außen, Innen
 					etc.)
 				</documentation>
 			</annotation>
@@ -167,21 +171,28 @@
 				<documentation>
 					Hysteriess-Faktor für Messungen, über die ein
 					Mittelwert gebildet wird. Bei 0 führt jede Änderung
-					zu einer Messwertausgabe, bei != null wird abhängig
-					vom Sensorrauschen der Hysteresisfaktor eingestellt.
-					Der Hysteresiswert berechnet sich dann nach:
+					zu einer
+					Messwertausgabe, bei != null wird abhängig
+					vom Sensorrauschen der
+					Hysteresisfaktor eingestellt.
+					Der Hysteresiswert berechnet sich dann
+					nach:
 					Sensorrauschen * Hysteresisfaktor / Anzahl der
-					Messwerte, über die der Mittelwert gebildet wird.
-					Das Rauschen wird über die Differenzen zwischen zwei
-					Messwerten ermittelt. Wenn Messungen jede 10s
+					Messwerte, über
+					die der Mittelwert gebildet wird.
+					Das Rauschen wird über die
+					Differenzen zwischen zwei
+					Messwerten ermittelt. Wenn Messungen jede
+					10s
 					erfolgen, hat sich der zu messende Wert nur sehr
-					wenig geändert, so dass der Unterschied ein Maß für
+					wenig geändert,
+					so dass der Unterschied ein Maß für
 					das Rauschen darstellt.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="defaultReadMeasurementsInterval_ms" type="int"
-			use="optional">
+		<attribute name="defaultReadMeasurementsInterval_ms"
+			type="int" use="optional">
 			<annotation>
 				<documentation>
 					Messintervall nach dem die Kanäle immer wieder
@@ -222,8 +233,10 @@
 				<documentation>
 					Zyklus, nach dem die Messdaten (nur veränderte) zum
 					Client gesendet werden. Nur wenn über eine längere
-					Zeit vorher keinen Änderung erfolgte und ein
-					stärkerer Anstieg/Abfall erkannt wird, wird der
+					Zeit vorher
+					keinen Änderung erfolgte und ein
+					stärkerer Anstieg/Abfall erkannt
+					wird, wird der
 					Messwert früher geschickt. Dadurch folgen trotz
 					seltener Stützpunkte recht gut den wirklichen
 					Werten.
@@ -235,18 +248,21 @@
 				<documentation>
 					Periode, in der immer der Bildschirm auf Änderungen
 					geprüft wird. Bildschirmschoner, Fehlerbildschirme,
-					Anwender- und Server Zugriffe werden dabei erkannt.
+					Anwender- und
+					Server Zugriffe werden dabei erkannt.
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="releaseBlockingAfterUserAccess_ms" type="int"
-			use="required">
+		<attribute name="releaseBlockingAfterUserAccess_ms"
+			type="int" use="required">
 			<annotation>
 				<documentation>
 					Zeitintervall, das nach einem User-Eingriff vergehen
 					muss, bis die Werte upgedated werden. In dieser Zeit
-					werden keine Werte vom GUI abgerufen, damit die
-					Eingabe des Users nicht gestört wird.
+					werden keine
+					Werte vom GUI abgerufen, damit die
+					Eingabe des Users nicht gestört
+					wird.
 				</documentation>
 			</annotation>
 		</attribute>
@@ -256,8 +272,10 @@
 				<documentation>
 					Zeitintervall, das nach einem Service-Eingriff
 					vergehen muss, bis die Werte upgedated werden. In
-					dieser Zeit werden keine Werte vom GUI abgerufen,
-					damit die Eingabe des Service nicht gestört wird.
+					dieser Zeit werden
+					keine Werte vom GUI abgerufen,
+					damit die Eingabe des Service nicht
+					gestört wird.
 				</documentation>
 			</annotation>
 		</attribute>
@@ -267,9 +285,12 @@
 				<documentation>
 					Einige Sensoren benötigen nach einem Power-On der
 					Anlage relatic viel Zeit, bis sie die richtigen
-					Werte anzeigen. Um Diagramme nicht zu verfälschen,
-					liefern bei delayAfterSwitchingOnEnable = true die
-					Sensoren verzögert die Daten (bestimmbar durch
+					Werte anzeigen. Um
+					Diagramme nicht zu verfälschen,
+					liefern bei
+					delayAfterSwitchingOnEnable = true die
+					Sensoren verzögert die Daten
+					(bestimmbar durch
 					control.xml) an den Client.
 				</documentation>
 			</annotation>
@@ -563,8 +584,11 @@
 		<attribute name="idPrefix" type="string" use="required"></attribute>
 		<attribute name="smartHomeId" type="string" use="optional">
 			<annotation>
-				<documentation>smartHomeId nur zu Dokumentationszwecken. Wird bei der Generierung der MQTT-Doku benötigt.</documentation>
-			</annotation></attribute>
+				<documentation>smartHomeId nur zu Dokumentationszwecken. Wird bei
+					der Generierung der MQTT-Doku benötigt.
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="publishQoS" use="required"
 			type="tns:MqttQoS">
 			<annotation>
@@ -616,7 +640,7 @@
 					<enumeration
 						value="EndOfUserInterventionDetectionThroughScreenSaver">
 					</enumeration>
-					<enumeration value="InteractiveGUIAccess"></enumeration>
+					<enumeration value="InteractiveGUIAccess"></enumeration>
 				</restriction>
 			</simpleType>
 		</attribute>
@@ -683,7 +707,8 @@
 		<attribute name="value_us" type="int" use="required">
 			<annotation>
 				<documentation>Correction value. The unit of teh value is specified
-					to us.</documentation>
+					to us.
+				</documentation>
 			</annotation>
 		</attribute>
 	</complexType>
@@ -725,12 +750,15 @@
 
 	<complexType name="Configuration">
 		<sequence>
-			<element name="Extensions" type="tns:Extensions" maxOccurs="1" minOccurs="0"></element>
+			<element name="Extensions" type="tns:Extensions"
+				maxOccurs="1" minOccurs="0"></element>
 		</sequence>
 		<attribute name="admin" type="boolean" use="optional"></attribute>
 		<attribute name="type" type="tns:SolvisType" use="optional"></attribute>
-		<attribute name="mainHeating" type="tns:MainHeating" use="optional"></attribute>
-		<attribute name="heatingCircuits" type="tns:HeaterCircuit" use="optional"></attribute>
+		<attribute name="mainHeating" type="tns:MainHeating"
+			use="optional"></attribute>
+		<attribute name="heatingCircuits" type="tns:HeaterCircuit"
+			use="optional"></attribute>
 		<attribute name="configOrMask" type="tns:UnNBytesHexInt"
 			use="optional">
 		</attribute>
@@ -758,20 +786,20 @@
 
 	<simpleType name="SolvisType">
 		<restriction base="string">
-					<enumeration value="SolvisMax6"></enumeration>
-					<enumeration value="SolvisMax6PurSolo"></enumeration>
-					<enumeration value="SolvisMax7"></enumeration>
+			<enumeration value="SolvisMax6"></enumeration>
+			<enumeration value="SolvisMax6PurSolo"></enumeration>
+			<enumeration value="SolvisMax7"></enumeration>
 		</restriction>
 	</simpleType>
 
 	<simpleType name="MainHeating">
 		<restriction base="string">
-					<enumeration value="OelBW"></enumeration>
-					<enumeration value="OelNT"></enumeration>
-					<enumeration value="Gas"></enumeration>
-					<enumeration value="Fern"></enumeration>
-					<enumeration value="WaermeP"></enumeration>
-					<enumeration value="Extern"></enumeration>
+			<enumeration value="OelBW"></enumeration>
+			<enumeration value="OelNT"></enumeration>
+			<enumeration value="Gas"></enumeration>
+			<enumeration value="Fern"></enumeration>
+			<enumeration value="WaermeP"></enumeration>
+			<enumeration value="Extern"></enumeration>
 		</restriction>
 	</simpleType>
 
@@ -786,7 +814,8 @@
 	<complexType name="Iobroker">
 
 		<attribute name="mqttInterface" type="string" use="required"></attribute>
-		<attribute name="javascriptInterface" type="string" use="required"></attribute>
+		<attribute name="javascriptInterface" type="string"
+			use="required"></attribute>
 	</complexType>
 
 
@@ -814,15 +843,43 @@
 		<attribute name="time_ms" type="int" use="required"></attribute>
 	</complexType>
 
-	<complexType name="ModifiedChannelValues">
-		<sequence>
-			<element name="ChannelValue" type="tns:ChannelValue" maxOccurs="unbounded" minOccurs="0"></element>
+	<complexType name="ChannelOptions">
+        <annotation>
+        	<documentation>Über die ChannelOptions können die Werte der Kanäle modifitziert werden oder auch bestimmt werden, dass sie nach einem PowerOn der Solvis-Anlage verzögert erfasst werden.</documentation>
+        </annotation>
+        <sequence>
+			<element name="Channel" type="tns:Channel"
+				maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
-	<complexType name="ChannelValue">
-		<attribute name="id" type="string" use="required"></attribute>
-		<attribute name="type" use="required">
+	<complexType name="Channel">
+		<annotation>
+			<documentation>
+				Über dieses Element kann die Werte des Kanals
+				modifitziert werden oder auch bestimmt werden, dass er
+				nach einem PowerOn der Solvis-Anlage verzögert erfasst
+				wird
+			</documentation>
+		</annotation>
+		<attribute name="id" type="string" use="required">
+			<annotation>
+				<documentation>
+					Name des Kanals z.B. 'C47.Puffer_dT_Start'
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="type" use="optional">
+			<annotation>
+				<documentation>
+					Hierüber wird die Art der Modifikation des
+					Kanalwertes bestimmt. Er kann auf einen festen Wert
+					gestellt werden oder mit einem Faktor/Summand
+					modifiziert werden. ist das Attribut 'type'
+					angegeben, so muss auch ein Attribut 'value'
+					definiert sein.
+				</documentation>
+			</annotation>
 			<simpleType>
 				<restriction base="string">
 					<enumeration value="fix"></enumeration>
@@ -831,6 +888,19 @@
 				</restriction>
 			</simpleType>
 		</attribute>
-		<attribute name="value" type="float" use="required"></attribute>
+		<attribute name="value" type="float" use="optional">
+			<annotation>
+				<documentation>
+					Hierüber wird der Wert der Modifikation des
+					Kanalwertes bestimmt. Ist das Attribut 'value'
+					angegeben, so muss auch ein Attribut 'type'
+					definiert sein.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="powerOnDelay_s" type="int" use="optional">
+			<annotation>
+				<documentation>Ist dieses Attribut definiert, wird der angegeben Kanal nach einem PowerOn verzögert erfasst. Manche Sensoren der Solvis-Anlage </documentation>
+			</annotation></attribute>
 	</complexType>
 </schema>

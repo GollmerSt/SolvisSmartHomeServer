@@ -80,14 +80,6 @@ public class AliasGroup implements IAssigner, Cloneable {
 		return null;
 	}
 
-	public boolean isDelayed(final Solvis solvis) {
-		boolean delayed = false;
-		for (ChannelDescription description : this.getChannelDescriptions(solvis)) {
-			delayed |= description.isDelayed(solvis);
-		}
-		return delayed;
-	}
-
 	public Integer getScanInterval_ms(final Solvis solvis) {
 		Integer scanInterval = null;
 		for (ChannelDescription description : this.getChannelDescriptions(solvis)) {
