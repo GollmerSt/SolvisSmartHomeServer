@@ -28,7 +28,6 @@ import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.unit.AllChannelOptions.ChannelOption;
-import de.sgollmer.solvismax.model.objects.unit.AllChannelOptions.ModifyType;
 
 public class SolvisData extends Observer.Observable<SolvisData> implements IObserver<SolvisStatePackage> {
 
@@ -337,9 +336,9 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public void setFixedChannelValue(final ChannelOption channelValue) throws TypeException {
-		if (channelValue.getType() == ModifyType.FIX) {
-			DoubleValue doubleValue = new DoubleValue(this.channelOption.getValue(), -1L);
-			this.data = this.getDescription().interpretSetData(doubleValue, false);
+		SingleData<?> fixValue = channelValue.getFixValue(this);
+		if (fixValue != null) {
+			this.data = fixValue;
 			this.fix = true;
 			logger.info("The channel <" + this.getId() + "> was set to the fix value \""
 					+ this.getSingleData().toString() + "\".");

@@ -869,38 +869,40 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="type" use="optional">
+		<attribute name="fix" type="float" use="optional">
+			<annotation>
+				<documentation>Der Messwert/ausgelesene Wert wird unabhängig vom wirklichen Wert auf diesen festen Wert gestellt.</documentation>
+			</annotation></attribute>
+		<attribute name="offset" use="optional" type="float">
 			<annotation>
 				<documentation>
-					Hierüber wird die Art der Modifikation des
-					Kanalwertes bestimmt. Er kann auf einen festen Wert
-					gestellt werden oder mit einem Faktor/Summand
-					modifiziert werden. ist das Attribut 'type'
-					angegeben, so muss auch ein Attribut 'value'
-					definiert sein.
+					Der Offset wird bei der Übertragung zum
+					SmarthomeSystem aufaddier. Ist das Attribut "factor"
+					zusätzlich definiert, wird der Wert erst mit dem
+					Faktor multipliziert und dann der Offset addiert.
 				</documentation>
 			</annotation>
-			<simpleType>
-				<restriction base="string">
-					<enumeration value="fix"></enumeration>
-					<enumeration value="add"></enumeration>
-					<enumeration value="mult"></enumeration>
-				</restriction>
-			</simpleType>
+
 		</attribute>
-		<attribute name="value" type="float" use="optional">
+		<attribute name="factor" type="float" use="optional">
 			<annotation>
 				<documentation>
-					Hierüber wird der Wert der Modifikation des
-					Kanalwertes bestimmt. Ist das Attribut 'value'
-					angegeben, so muss auch ein Attribut 'type'
-					definiert sein.
+					Der Faktor wird bei der Übertragung zum
+					SmarthomeSystem mit dem Wert multipliziert. Ist das
+					Attribut "offset" zusätzlich definiert, wird der
+					Wert erst mit dem Faktor multipliziert und dann der
+					Offset addiert.
 				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="powerOnDelay_s" type="int" use="optional">
 			<annotation>
-				<documentation>Ist dieses Attribut definiert, wird der angegeben Kanal nach einem PowerOn verzögert erfasst. Manche Sensoren der Solvis-Anlage </documentation>
-			</annotation></attribute>
+				<documentation>
+					Ist dieses Attribut definiert, wird der angegeben
+					Kanal nach einem PowerOn verzögert erfasst. Manche
+					Sensoren der Solvis-Anlage
+				</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
 </schema>

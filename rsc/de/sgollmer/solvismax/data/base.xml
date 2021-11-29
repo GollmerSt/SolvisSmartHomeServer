@@ -130,10 +130,8 @@
 				<!-- Außerdem kann auch noch die Auswertungszeit von Sensoren nach einem 
 					Power Off verzögert werden, da manche Sensoren der Anlage direkt nach dem 
 					Einschalten noch recht ungenau. -->
-				<tns:Channel id="C47.Puffer_dT_Start" type="fix"
-					value="12" />
-				<tns:Channel id="X01.BrennerStarts" type="add"
-					value="65536" />
+				<tns:Channel id="C47.Puffer_dT_Start" fix="12" />
+				<tns:Channel id="X01.BrennerStarts" offset="65536" />
 				<tns:Channel id="S03.Speicherreferenztemperatur"
 					powerOnDelay_s="600" />
 				<tns:Channel id="S04.Heizungspuffertemperatur_oben"

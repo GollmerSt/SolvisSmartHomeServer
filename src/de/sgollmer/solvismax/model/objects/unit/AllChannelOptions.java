@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.FatalError;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -41,21 +40,20 @@ public class AllChannelOptions {
 		}
 	}
 
-	public enum ModifyType {
-		FIX, ADD, MULT;
-	}
-
 	public static class ChannelOption {
 
 		private final String id;
-		private final ModifyType type;
-		private final Double value;
+		private final Double fix;
+		private final Double factor;
+		private final Double offset;
 		private final int powerOnDelay;
 
-		public ChannelOption(final String id, final ModifyType type, final Double value, final int powerOnDelay) {
+		public ChannelOption(final String id, final Double fix, final Double factor, final Double offset,
+				final Double value, final int powerOnDelay) {
 			this.id = id;
-			this.type = type;
-			this.value = value;
+			this.fix = fix;
+			this.factor = factor;
+			this.offset = offset;
 			this.powerOnDelay = powerOnDelay;
 		}
 
@@ -87,31 +85,38 @@ public class AllChannelOptions {
 
 		}
 
-		public SingleData<?> modify(SolvisData data) throws TypeException {
-			if (this.value == null || this.type == null) {
+		public SingleData<?> modify(final SolvisData data) throws TypeException {
+			if (this.offset == null && this.factor == null) {
 				return data.getSingleData();
 			}
 
-			DoubleValue doubleValue = new DoubleValue(this.getValue(), -1L);
-			SingleData<?> modify = data.getDescription().interpretSetData(doubleValue, true);
-			switch (this.type) {
-				case ADD:
-					return data.getSingleData().add(modify);
-				case MULT:
-					return data.getSingleData().mult(modify);
-				case FIX:
-					return data.getSingleData();
-				default:
-					throw new FatalError("Channel value type <" + this.type.name() + "> not supported");
+			SingleData<?> modified = data.getSingleData();
+
+			if (this.factor != null) {
+				modified = modified.mult(getModifyValue(this.factor, data));
 			}
 
+			if (this.offset != null) {
+				modified = modified.add(getModifyValue(this.offset, data));
+			}
+
+			return modified;
+		}
+
+		private SingleData<?> getModifyValue(final Double value, final SolvisData data) throws TypeException {
+			if (value == null ) {
+				return null;
+			}
+			DoubleValue doubleValue = new DoubleValue(value, -1L);
+			return data.getDescription().interpretSetData(doubleValue, true);
 		}
 
 		private static class Creator extends CreatorByXML<ChannelOption> {
 
 			private String id;
-			private ModifyType type = null;
-			private Double value = null;
+			private Double fix = null;
+			private Double factor = null;
+			private Double offset = null;
 			private int powerOnDelay = -1;
 
 			public Creator(final String id, final BaseCreator<?> creator) {
@@ -124,11 +129,14 @@ public class AllChannelOptions {
 					case "id":
 						this.id = value;
 						break;
-					case "type":
-						this.type = ModifyType.valueOf(value.toUpperCase());
+					case "fix":
+						this.fix = Double.parseDouble(value);
 						break;
-					case "value":
-						this.value = Double.parseDouble(value);
+					case "factor":
+						this.factor = Double.parseDouble(value);
+						break;
+					case "offset":
+						this.offset = Double.parseDouble(value);
 						break;
 					case "powerOnDelay_s":
 						this.powerOnDelay = Integer.parseInt(value) * 1000;
@@ -139,11 +147,7 @@ public class AllChannelOptions {
 
 			@Override
 			public ChannelOption create() throws XmlException, IOException {
-				if ((this.type != null) != (this.value != null)) {
-					throw new XmlException(
-							"Channel option of channel <" + this.id + "> not complete. Type or value missing.");
-				}
-				return new ChannelOption(this.id, this.type, this.value, this.powerOnDelay);
+				return new ChannelOption(this.id, this.fix, this.factor, this.offset, this.factor, this.powerOnDelay);
 			}
 
 			@Override
@@ -157,12 +161,8 @@ public class AllChannelOptions {
 
 		}
 
-		public double getValue() {
-			return this.value;
-		}
-
-		public ModifyType getType() {
-			return this.type;
+		public SingleData<?> getFixValue(final SolvisData data) throws TypeException {
+			return this.getModifyValue(this.fix, data);
 		}
 
 		public int getPowerOnDelay() {
