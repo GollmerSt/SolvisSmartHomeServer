@@ -1,6 +1,6 @@
 A E N D E R U N G E N
 
-Version 01.04.07
+Version 01.05.00
 
     26.10.2021  Die SolvisMax6 realisiert offenbar den Startzaehler fuer den Brenner intern nur als
                 vorzeichenlosen 16-Bit-Zaehler. Dadurch springt der Zaehler nach 65535 auf 0. Um
