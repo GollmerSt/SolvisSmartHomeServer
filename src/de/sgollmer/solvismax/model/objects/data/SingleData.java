@@ -55,6 +55,10 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 	public abstract String toJson();
 
 	public abstract T get();
+	
+	public String getModeString() {
+		return null;
+	}
 
 	boolean isFastChange() {
 		return false;

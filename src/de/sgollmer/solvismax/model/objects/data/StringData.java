@@ -113,4 +113,9 @@ public class StringData extends SingleData<String> {
 		throw new TypeException("not supported");
 	}
 
+
+	@Override
+	public String getModeString() {
+		return this.data;
+	}
 }

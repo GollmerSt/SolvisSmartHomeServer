@@ -81,12 +81,14 @@ public class MqttQueue extends Runnable {
 
 	public void abort() {
 		synchronized (this) {
-			this.abort = true;
-			if (!this.finished) {
-				this.notifyAll();
-				try {
-					this.wait();
-				} catch (InterruptedException e) {
+			while (!this.abort) {	//not necessary, workaround for FindBugs
+				this.abort = true;
+				if (!this.finished) {
+					this.notifyAll();
+					try {
+						this.wait();
+					} catch (InterruptedException e) {
+					}
 				}
 			}
 		}

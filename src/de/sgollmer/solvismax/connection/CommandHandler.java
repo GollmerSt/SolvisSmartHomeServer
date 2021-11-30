@@ -18,6 +18,7 @@ import javax.xml.stream.XMLStreamException;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.ExitCodes;
 import de.sgollmer.solvismax.Main;
+import de.sgollmer.solvismax.connection.ClientAssignments.ControlEnableStatus;
 import de.sgollmer.solvismax.connection.Server.Client;
 import de.sgollmer.solvismax.connection.transfer.Command;
 import de.sgollmer.solvismax.connection.transfer.ConnectedPackage;
@@ -574,10 +575,8 @@ public class CommandHandler {
 	public void handleControlEnable(final Solvis solvis) {
 		boolean enable = true;
 		for (ClientAssignments client : this.clients) {
-			Boolean clientEnable = client.getControlEnabled(solvis);
-			if (clientEnable != null) {
-				enable &= client.getControlEnabled(solvis);
-			}
+			
+			enable &= client.getControlEnableStatus(solvis) != ControlEnableStatus.FALSE;
 		}
 		solvis.controlEnable(enable);
 	}

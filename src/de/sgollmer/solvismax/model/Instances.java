@@ -92,15 +92,18 @@ public class Instances {
 		boolean learned = true;
 		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
 		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);
-		
+
 		this.deleteLearnedImageFiles();
 		learnDesination.mkdirs();
-		
+
 		Pattern pattern = Pattern.compile("^\\d\\d\\d_.*$");
-		for (File file : learnDesination.listFiles()) {
-			Matcher matcher = pattern.matcher(file.getName());
-			if (matcher.matches()) {
-				file.delete();
+		File[] files = learnDesination.listFiles();
+		if (files != null) {
+			for (File file : files) {
+				Matcher matcher = pattern.matcher(file.getName());
+				if (matcher.matches()) {
+					file.delete();
+				}
 			}
 		}
 		// FileHelper.rmDir(learnDesination);
@@ -113,7 +116,7 @@ public class Instances {
 		if (learned) {
 			new GraficFileHandler(this.writeablePath).write(this.graficDatas);
 		}
-		
+
 		this.deleteLearnedImageFiles();
 	}
 
@@ -121,8 +124,9 @@ public class Instances {
 		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
 		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);
 		Pattern pattern = Pattern.compile("^\\d\\d\\d_.*$");
-		if (learnDesination.isDirectory()) {
-			for (File file : learnDesination.listFiles()) {
+		File[] files = learnDesination.listFiles();
+		if (files != null) {
+			for (File file : files) {
 				Matcher matcher = pattern.matcher(file.getName());
 				if (matcher.matches()) {
 					file.delete();

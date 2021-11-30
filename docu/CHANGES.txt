@@ -15,7 +15,12 @@ Version 01.05.00
     
     19.11.2021  Die Definition der Freigabezeit der Messungen nach einem PowerOn erfolgt nun in der
                 base.xml. Dazu wurde das Element "ModifiedChannelValues" in ChannelOptions
-                umbenannt und die Delay-Zeit hinzugefügt, um sie so allgemeiner zu halten.
+                umbenannt und die Delay-Zeit hinzugefuegt, um sie so allgemeiner zu halten.
+                
+    29.11.1992  ChannelOptions nochmal etwas umdefiniert, nun Korrekturfaktor und Offset gleichzeit
+                moeglich.
+                
+    30.11.2021  Noch die FindBug-Fehlermeldungen gefixt.
 
 
 Version 01.04.06

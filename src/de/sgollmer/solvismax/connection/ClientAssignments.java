@@ -99,8 +99,8 @@ public class ClientAssignments {
 			this.controlEnable = controlEnable;
 		}
 	}
-	
-	private State getStateAndCheck( Solvis solvis) throws ClientAssignmentException {
+
+	private State getStateAndCheck(Solvis solvis) throws ClientAssignmentException {
 		State state = this.getState(solvis);
 		if (state == null) {
 			throw new ClientAssignmentException("Error: Client assignment error");
@@ -138,7 +138,8 @@ public class ClientAssignments {
 		}
 	}
 
-	void serviceAccess(final Solvis solvis, Event event) throws ClientAssignmentException, IOException, TerminationException {
+	void serviceAccess(final Solvis solvis, Event event)
+			throws ClientAssignmentException, IOException, TerminationException {
 		this.getStateAndCheck(solvis);
 		solvis.serviceAccess(event);
 	}
@@ -157,12 +158,16 @@ public class ClientAssignments {
 		}
 	}
 
-	Boolean getControlEnabled(final Solvis solvis) {
+	enum ControlEnableStatus {
+		TRUE, FALSE, INVALID
+	}
+
+	ControlEnableStatus getControlEnableStatus(final Solvis solvis) {
 		State state = this.getState(solvis);
-		if ( state == null) {
-			return null;
+		if (state == null) {
+			return ControlEnableStatus.INVALID;
 		}
-		return state.controlEnable;
+		return state.controlEnable?ControlEnableStatus.TRUE:ControlEnableStatus.FALSE;
 	}
 
 	public void debugClear(Solvis solvis) throws ClientAssignmentException, TypeException {

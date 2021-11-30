@@ -27,26 +27,22 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 
 	@Override
 	public Helper.Boolean getBoolean() throws TypeException {
-		throw new TypeException(
-				this.getClass().toString() + " can't be converted to Boolean");
+		throw new TypeException(this.getClass().toString() + " can't be converted to Boolean");
 	}
 
 	@Override
 	public Integer getInt() throws TypeException {
-		throw new TypeException(
-				this.getClass().toString() + " can't be converted to Integer");
+		throw new TypeException(this.getClass().toString() + " can't be converted to Integer");
 	}
 
 	@Override
 	public Long getLong() throws TypeException {
-		throw new TypeException(
-				this.getClass().toString() + " can't be converted to Long");
+		throw new TypeException(this.getClass().toString() + " can't be converted to Long");
 	}
 
 	@Override
 	public Double getDouble() throws TypeException {
-		throw new TypeException(
-				this.getClass().toString() + " can't be converted to Double");
+		throw new TypeException(this.getClass().toString() + " can't be converted to Double");
 	}
 
 	@Override
@@ -58,13 +54,15 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	public boolean equals(final Object obj) {
 		if (!(obj instanceof SingleData)) {
 			return false;
-		} else if (obj instanceof ModeValue<?>) {
-			return this.mode.getName().equals(((ModeValue<?>) obj).mode.getName());
-		} else if (obj instanceof StringData) {
-			return (this.mode.getName().equals(((StringData) obj).get()));
-		} else {
-			return false;
 		}
+		String comp = ((SingleData<?>) obj).getModeString();
+
+		if (comp == null) {
+			return false;
+		} else {
+			return comp.equals(this.getModeString());
+		}
+
 	}
 
 	@Override
@@ -117,6 +115,11 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 	@Override
 	public SingleData<M> mult(SingleData<?> data) throws TypeException {
 		throw new TypeException("not supported");
+	}
+
+	@Override
+	public String getModeString() {
+		return this.mode.getName();
 	}
 
 }
