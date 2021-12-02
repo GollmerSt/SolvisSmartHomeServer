@@ -8,9 +8,14 @@
 package de.sgollmer.solvismax.connection.transfer;
 
 import de.sgollmer.solvismax.connection.IReceivedData;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class SetPackage extends JsonPackage implements IReceivedData {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(SetPackage.class);
+
 	SetPackage() {
 		this.command = Command.SET;
 	}
@@ -26,7 +31,11 @@ public class SetPackage extends JsonPackage implements IReceivedData {
 			this.id = e.name;
 			if (e.value instanceof SingleValue) {
 				this.singleData = ((SingleValue) e.value).getData();
+			} else {
+				logger.warn("Data parameter can't be interpreted. Package: " + this.getReceivedString());
 			}
+		} else {
+			logger.warn("Data parameter is empty. Package: " + this.getReceivedString());
 		}
 		this.data = null;
 	}

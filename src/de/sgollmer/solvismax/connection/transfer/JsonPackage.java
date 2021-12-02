@@ -25,6 +25,7 @@ public class JsonPackage implements IReceivedData {
 	protected Command command;
 	protected Frame data;
 	private Solvis solvis = null;
+	private String receivedString = null;
 
 	public JsonPackage() {
 	}
@@ -75,9 +76,9 @@ public class JsonPackage implements IReceivedData {
 		Helper.read(stream, receivedData, timeout);
 
 		Frame receivedFrame = new Frame();
-		String receivedString = new String(receivedData, CHARSET);
+		this.receivedString = new String(receivedData, CHARSET);
 		long timeStamp = System.currentTimeMillis();
-		receivedFrame.from(receivedString, 0, timeStamp);
+		receivedFrame.from(this.receivedString, 0, timeStamp);
 		if (receivedFrame.size() > 0) {
 			Element e = receivedFrame.get(0);
 			this.command = Command.valueOf(e.name);
@@ -121,5 +122,9 @@ public class JsonPackage implements IReceivedData {
 	@Override
 	public String getClientId() {
 		return null;
+	}
+
+	protected String getReceivedString() {
+		return this.receivedString;
 	}
 }

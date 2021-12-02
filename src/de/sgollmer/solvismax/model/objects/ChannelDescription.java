@@ -336,7 +336,7 @@ public class ChannelDescription implements IChannelSource, IAssigner, OfConfigs.
 //	}
 //
 	public SingleData<?> normalize(final SingleData<?> data) throws TypeException {
-		if (data.get() == null) {
+		if (data == null || data.get() == null) {
 			return null;
 		}
 		if (data instanceof IntegerValue && this.getDivisor() != 1) {

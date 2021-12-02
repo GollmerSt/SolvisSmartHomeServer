@@ -429,6 +429,13 @@ public class CommandHandler {
 		}
 
 		SingleData<?> singleData = receivedDat.getSingleData();
+
+		if (singleData == null) {
+			logger.warn("Command set channel <" + description.getId()
+					+ "> without setting parameters received! Command ignored.");
+			return;
+		}
+
 		boolean ignored;
 		try {
 			ignored = solvis.setFromExternal(description, singleData);
@@ -575,7 +582,7 @@ public class CommandHandler {
 	public void handleControlEnable(final Solvis solvis) {
 		boolean enable = true;
 		for (ClientAssignments client : this.clients) {
-			
+
 			enable &= client.getControlEnableStatus(solvis) != ControlEnableStatus.FALSE;
 		}
 		solvis.controlEnable(enable);
