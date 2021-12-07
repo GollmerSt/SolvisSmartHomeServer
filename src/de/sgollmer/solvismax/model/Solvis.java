@@ -366,7 +366,6 @@ public class Solvis {
 
 	public void screenRestore(final boolean enable, final Object service) {
 		this.worker.screenRestore(enable, service);
-		;
 	}
 
 	public void execute(final Command command) {

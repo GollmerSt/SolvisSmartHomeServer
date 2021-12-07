@@ -448,7 +448,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			if (this.monitor != monitor) {
 				this.monitor = monitor;
 				this.solvis.updateByMonitoringTask(monitor ? CommandObserver.Status.MONITORING_STARTED
-						: CommandObserver.Status.MONITORING_FINISHED, data);
+						: CommandObserver.Status.MONITORING_FINISHED, this);
 				this.solvis.execute(new CommandScreenRestore(!monitor, this));
 			}
 		}

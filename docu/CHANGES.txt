@@ -1,5 +1,19 @@
 A E N D E R U N G E N
 
+Version 01.05.01-rc2
+
+    07.12.2021  Im Fall einer Brenner-Laufzeit-Synchronisation bleibt Control auf Monitoring, auch
+                die Synchronisation abgeschlossen war. Gefixt.
+
+
+Version 01.05.01-rc1
+
+    02.12.2021  Wird über die JSON-Schnittstelle ein SET-Befehl empfangen, dei dem der Daten-
+                Parameter leer ist oder nicht zu interpretieren ist, erfolgt fälschlicherweise eine
+                Null-Ponter-Exception. Nun wird dieser Befehl ignoriert und es wird in den Log
+                ausführliche Fehlermeldungen gechrieben.
+
+
 Version 01.05.00
 
     26.10.2021  Die SolvisMax6 realisiert offenbar den Startzaehler fuer den Brenner intern nur als
