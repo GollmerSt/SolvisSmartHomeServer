@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.PackageException;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class Frame implements IValue {
 	protected final List<Element> elements = new ArrayList<>();
@@ -90,6 +92,34 @@ public class Frame implements IValue {
 
 	int size() {
 		return this.elements.size();
+	}
+
+	@Override
+	public SingleData<?> getSingleData() throws PackageException {
+		throw new PackageException("Frame can't converted to SingleData");
+	}
+
+	Element get(String id) throws PackageException {
+		Element result = null;
+		for (Element e : this.elements) {
+			if (id.equals(e.name)) {
+				if (result == null) {
+					result = e;
+				} else {
+					throw new PackageException("Double definition of <" + id + ">.");
+				}
+			}
+		}
+		if ( result == null ) {
+			throw new PackageException("<" + id + " not found.");
+
+		}
+		return result;
+	}
+
+	@Override
+	public Frame getFrame() {
+		return this;
 	}
 
 }

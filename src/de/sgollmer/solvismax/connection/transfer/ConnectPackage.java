@@ -8,6 +8,7 @@
 package de.sgollmer.solvismax.connection.transfer;
 
 import de.sgollmer.solvismax.connection.IReceivedData;
+import de.sgollmer.solvismax.error.PackageException;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 
@@ -28,24 +29,14 @@ public class ConnectPackage extends JsonPackage implements IReceivedData {
 	}
 
 	@Override
-	void finish() {
+	void finish() throws PackageException {
 		Frame frame = this.data;
-		for (Element e : frame.elements) {
-			String id = e.name;
-			if (e.value instanceof SingleValue) {
-				SingleValue sv = (SingleValue) e.value;
-				String value;
-				if (sv.getData() == null) {
-					value = null;
-				} else {
-					value = sv.getData().toString();
-				}
-				switch (id) {
-					case "Id":
-						this.id = value;
-						break;
-				}
-			}
+		Element e = frame.get("Id");
+		SingleData<?> data = e.getValue().getSingleData();
+		if (data == null) {
+			this.id = null;
+		} else {
+			this.id = data.toString();
 		}
 		this.data = null;
 	}

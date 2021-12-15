@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.List;
 
 import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.PackageException;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class ArrayValue implements IValue {
 
@@ -84,6 +86,16 @@ public class ArrayValue implements IValue {
 		StringBuilder builder = new StringBuilder();
 		this.addTo(builder);
 		return builder.toString();
+	}
+
+	@Override
+	public SingleData<?> getSingleData() throws PackageException {
+		throw new PackageException("JSON Array can't converted to SingleData");
+	}
+
+	@Override
+	public Frame getFrame() {
+		return null;
 	}
 
 }

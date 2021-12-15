@@ -20,7 +20,7 @@ public class ChannelDescription extends Element {
 		super(instance.getName());
 
 		Frame frame = new Frame();
-		this.value = frame;
+		this.setValue(frame);
 
 		boolean writeable = instance.isWriteable();
 		Element writeableElement = new Element("Writeable", new SingleValue(new BooleanValue(writeable, -1L)));

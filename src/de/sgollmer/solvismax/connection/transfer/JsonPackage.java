@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 
 import de.sgollmer.solvismax.connection.IReceivedData;
 import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.PackageException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -82,15 +83,11 @@ public class JsonPackage implements IReceivedData {
 		if (receivedFrame.size() > 0) {
 			Element e = receivedFrame.get(0);
 			this.command = Command.valueOf(e.name);
-			if (e.value instanceof SingleValue) {
-				this.data = null;
-			} else {
-				this.data = (Frame) e.value;
-			}
+			this.data = e.getValue().getFrame();
 		}
 	}
 
-	void finish() throws TypeException {
+	void finish() throws TypeException, PackageException {
 
 	}
 

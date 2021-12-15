@@ -11,7 +11,7 @@ import de.sgollmer.solvismax.error.JsonException;
 
 public class Element {
 	protected String name = null;
-	protected IValue value = null;
+	private IValue value = null;
 
 	public Element(final String name, final IValue value) {
 		this.name = name;
@@ -110,7 +110,7 @@ public class Element {
 		return this.value;
 	}
 
-	void setValue(IValue value) {
+	protected void setValue(IValue value) {
 		this.value = value;
 	}
 

@@ -9,6 +9,7 @@ package de.sgollmer.solvismax.connection.transfer;
 
 import de.sgollmer.solvismax.connection.IReceivedData;
 import de.sgollmer.solvismax.connection.ServerCommand;
+import de.sgollmer.solvismax.error.PackageException;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 
@@ -28,17 +29,11 @@ public class DebugChannelPackage extends JsonPackage implements IReceivedData {
 	}
 
 	@Override
-	void finish() {
+	void finish() throws PackageException {
 		Frame f = this.data;
-		if (f.size() > 0) {
-			Element e = f.get(0);
-			if (e.getName().equals("ChannelEquation")) {
-				if (e.value instanceof SingleValue) {
-					this.channelEquation = ((SingleValue) e.getValue()).getData().toString();
-				}
-			}
-			this.data = null;
-		}
+		Element e = f.get("ChannelEquation");
+		this.channelEquation = e.getValue().getSingleData().toString();
+		this.data = null;
 
 	}
 

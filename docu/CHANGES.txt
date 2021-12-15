@@ -4,6 +4,8 @@ Version 01.05.01-rc2
 
     07.12.2021  Im Fall einer Brenner-Laufzeit-Synchronisation bleibt Control auf Monitoring, auch
                 die Synchronisation abgeschlossen war. Gefixt.
+                
+    15.12.2021  JSON-Package-Exception-Handling verbessert 
 
 
 Version 01.05.01-rc1

@@ -33,6 +33,7 @@ import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
+import de.sgollmer.solvismax.error.PackageException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
@@ -443,7 +444,7 @@ public class Main {
 		TerminateClient client = new TerminateClient(port);
 		try {
 			client.connectAndTerminateOtherServer();
-		} catch (IOException | JsonException e) {
+		} catch (IOException | JsonException | PackageException e) {
 			e.printStackTrace();
 			System.err.println("Terminate not successfull.");
 			LogManager.exit(ExitCodes.SERVER_TERMINATION_FAIL);

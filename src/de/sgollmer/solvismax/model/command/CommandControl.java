@@ -288,7 +288,17 @@ public class CommandControl extends Command {
 			builder.append(this.description.getId());
 			builder.append(", set value: ");
 			try {
-				builder.append(this.description.normalize(this.setValue).toString());
+				String out;
+				SingleData<?> data = this.description.normalize(this.setValue);
+				if (data == null) {
+					out="<normalize_null>";
+				} else {
+					out =data.toString();
+					if ( out== null ) {
+						out = "<data_null>";
+					}
+				}
+				builder.append(out);
 			} catch (TypeException e) {
 				builder.append("Type exception <" + this.setValue + ">");
 				e.printStackTrace();

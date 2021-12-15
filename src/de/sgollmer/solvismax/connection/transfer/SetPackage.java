@@ -8,13 +8,10 @@
 package de.sgollmer.solvismax.connection.transfer;
 
 import de.sgollmer.solvismax.connection.IReceivedData;
-import de.sgollmer.solvismax.log.LogManager;
-import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.error.PackageException;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class SetPackage extends JsonPackage implements IReceivedData {
-
-	private static final ILogger logger = LogManager.getInstance().getLogger(SetPackage.class);
 
 	SetPackage() {
 		this.command = Command.SET;
@@ -24,18 +21,23 @@ public class SetPackage extends JsonPackage implements IReceivedData {
 	private SingleData<?> singleData = null;
 
 	@Override
-	void finish() {
+	void finish() throws PackageException {
 		Frame f = this.data;
-		if (f.size() > 0) {
+		if (f.size() == 1) {
 			Element e = f.get(0);
 			this.id = e.name;
-			if (e.value instanceof SingleValue) {
-				this.singleData = ((SingleValue) e.value).getData();
-			} else {
-				logger.warn("Data parameter can't be interpreted. Package: " + this.getReceivedString());
+			IValue value = e.getValue();
+			if (value == null) {
+				throw new PackageException("Set value is empty.");
 			}
+			this.singleData = value.getSingleData();
+			if (this.singleData == null || this.singleData.get() == null) {
+				throw new PackageException("Set value is <null>.");
+			}
+		} else if (f.size() == 0) {
+			throw new PackageException("Data parameter is empty.");
 		} else {
-			logger.warn("Data parameter is empty. Package: " + this.getReceivedString());
+			throw new PackageException("More than one data parameter is given.");
 		}
 		this.data = null;
 	}

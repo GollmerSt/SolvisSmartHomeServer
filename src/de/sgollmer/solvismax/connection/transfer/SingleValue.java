@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.sgollmer.solvismax.error.JsonException;
+import de.sgollmer.solvismax.error.PackageException;
 import de.sgollmer.solvismax.model.objects.data.BooleanValue;
 import de.sgollmer.solvismax.model.objects.data.DoubleValue;
 import de.sgollmer.solvismax.model.objects.data.LongValue;
@@ -96,15 +97,18 @@ public class SingleValue implements IValue {
 		}
 	}
 
-	/**
-	 * @return the data
-	 */
-	public SingleData<?> getData() {
+	@Override
+	public String toString() {
+		return this.data.toString();
+	}
+
+	@Override
+	public SingleData<?> getSingleData() throws PackageException {
 		return this.data;
 	}
 
 	@Override
-	public String toString() {
-		return this.data.toString();
+	public Frame getFrame() {
+		return null;
 	}
 }
