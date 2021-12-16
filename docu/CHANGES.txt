@@ -7,6 +7,8 @@ Version 01.05.01-rc2
                 
     15.12.2021  JSON-Package-Exception-Handling verbessert 
 
+    16.12.2021  TinyLog aktualisiert auf 2.4.1 
+
 
 Version 01.05.01-rc1
 
