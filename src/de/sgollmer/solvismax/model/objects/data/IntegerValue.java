@@ -141,4 +141,9 @@ public class IntegerValue extends SingleData<Integer> {
 		return new IntegerValue((i1 == null || i2 == null) ? null : i1 * i2, this.getTimeStamp());
 	}
 
+	@Override
+	public boolean isNumeric() {
+		return true;
+	}
+
 }

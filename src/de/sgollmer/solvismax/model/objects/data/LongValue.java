@@ -147,4 +147,9 @@ public class LongValue extends SingleData<Long> {
 		return new LongValue((l1 == null || l2 == null) ? null : l1 * l2, this.getTimeStamp());
 	}
 
+	@Override
+	public boolean isNumeric() {
+		return true;
+	}
+
 }

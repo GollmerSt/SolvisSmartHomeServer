@@ -67,5 +67,7 @@ public abstract class SingleData<T> implements Comparable<SingleData<?>> {
 	public abstract SingleData<T> add(final SingleData<?> data) throws TypeException;
 
 	public abstract SingleData<T> mult(final SingleData<?> data) throws TypeException;
+	
+	public abstract boolean isNumeric();
 
 }

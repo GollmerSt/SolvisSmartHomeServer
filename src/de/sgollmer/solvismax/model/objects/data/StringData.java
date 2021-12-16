@@ -118,4 +118,9 @@ public class StringData extends SingleData<String> {
 	public String getModeString() {
 		return this.data;
 	}
+
+	@Override
+	public boolean isNumeric() {
+		return false;
+	}
 }

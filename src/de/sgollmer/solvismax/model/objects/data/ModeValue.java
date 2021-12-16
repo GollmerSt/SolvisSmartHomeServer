@@ -122,4 +122,9 @@ public class ModeValue<M extends IMode<M>> extends SingleData<M> {
 		return this.mode.getName();
 	}
 
+	@Override
+	public boolean isNumeric() {
+		return false;
+	}
+
 }

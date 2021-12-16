@@ -125,4 +125,9 @@ public class DoubleValue extends SingleData<Double> {
 		return new DoubleValue(d2 == null ? this.value : this.value * d2, this.getTimeStamp());
 	}
 
+	@Override
+	public boolean isNumeric() {
+		return true;
+	}
+
 }

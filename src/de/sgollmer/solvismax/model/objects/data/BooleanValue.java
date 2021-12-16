@@ -110,4 +110,9 @@ public class BooleanValue extends SingleData<Boolean> {
 		return new BooleanValue((boolean)this.get() && (boolean)((BooleanValue)data).get(), this.getTimeStamp());
 	}
 
+	@Override
+	public boolean isNumeric() {
+		return false;
+	}
+
 }

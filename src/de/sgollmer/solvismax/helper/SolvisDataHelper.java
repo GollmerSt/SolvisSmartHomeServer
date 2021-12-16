@@ -73,27 +73,12 @@ public class SolvisDataHelper {
 			} catch (NumberFormatException e) {
 				throw new TypeException(e);
 			}
-		} else if (singleData instanceof DoubleValue || singleData instanceof IntegerValue) {
+		} else if (singleData.isNumeric()) {
 			return singleData;
 		} else {
 			return null;
 		}
 
-	}
-
-	public static SingleData<?> toInt(SingleData<?> singleData) throws TypeException {
-		if (singleData instanceof StringData) {
-			String string = (String) singleData.get();
-			try {
-				return new IntegerValue(Integer.parseInt(string), singleData.getTimeStamp());
-			} catch (NumberFormatException e) {
-				throw new TypeException(e);
-			}
-		} else if (singleData instanceof IntegerValue) {
-			return singleData;
-		} else {
-			return null;
-		}
 	}
 
 }

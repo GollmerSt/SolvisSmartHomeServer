@@ -114,4 +114,9 @@ public class DateValue extends SingleData<Calendar> {
 	public SingleData<Calendar> mult(SingleData<?> data) throws TypeException {
 		throw new TypeException("not supported");
 	}
+
+	@Override
+	public boolean isNumeric() {
+		return false;
+	}
 }
