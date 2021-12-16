@@ -2,7 +2,7 @@ A E N D E R U N G E N
 
 Version 01.05.01-rc2
 
-    16.12.2021  Bei Control Read wurde nicht berücksichtigt, dass der Setz-Wert auch ein Long sein
+    16.12.2021  Bei Control Read wurde nicht berücksichtigt, dass der Set-Wert auch ein Long sein
                 kann 
 
 
