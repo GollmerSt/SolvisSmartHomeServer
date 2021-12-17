@@ -138,11 +138,12 @@ public class StrategyReadWrite extends StrategyRead {
 
 		if (this.incrementChange != null && goal >= this.incrementChange) {
 			goal -= this.incrementChange;
-			value = (2 * this.changedIncrement * goal + (goal > 0 ? this.changedIncrement : -this.changedIncrement))
-					/ (2 * this.changedIncrement);
+			value = (2 * goal + this.changedIncrement) / (2 * this.changedIncrement) * this.changedIncrement;
 			value += this.incrementChange;
 		} else {
-			value = (2 * this.increment * goal + (goal > 0 ? this.increment : -this.increment)) / (2 * this.increment);
+			goal -= this.least;
+			value = (2 * goal + this.increment) / (2 * this.increment) * this.increment;
+			value += this.least;
 		}
 		return value;
 

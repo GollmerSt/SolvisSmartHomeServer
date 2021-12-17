@@ -77,6 +77,9 @@ public class CommandControl extends Command {
 			throws TypeException {
 		this(description, solvis, null);
 		this.setValue = description.interpretSetData(setRealValue, false);
+		if (this.setValue == null) {
+			logger.warn("Write value is null, writing ignored");
+		}
 		this.inhibitRead = description.inhibitGuiReadAfterWrite();
 		this.write = true;
 	}
@@ -291,10 +294,10 @@ public class CommandControl extends Command {
 				String out;
 				SingleData<?> data = this.description.normalize(this.setValue);
 				if (data == null) {
-					out="<normalize_null>";
+					out = "<normalize_null>";
 				} else {
-					out =data.toString();
-					if ( out== null ) {
+					out = data.toString();
+					if (out == null) {
 						out = "<data_null>";
 					}
 				}

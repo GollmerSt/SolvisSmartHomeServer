@@ -1,9 +1,17 @@
 A E N D E R U N G E N
 
-Version 01.05.01-rc2
+Version 01.05.01-rc4
+
+    17.12.2021  Bei einem Schreiben erfolgt nun eine Warnung, wenn der Schreibwert null ist.
+                Das erleichtert die Fehlersuche bei soche Fehler wie vom 16.12.2021. 
+                
+                Rundungsfehler bei negativen Set-Werten behoben.
+
+
+Version 01.05.01-rc3
 
     16.12.2021  Bei Control Read wurde nicht berücksichtigt, dass der Set-Wert auch ein Long sein
-                kann 
+                kann.
 
 
 Version 01.05.01-rc2

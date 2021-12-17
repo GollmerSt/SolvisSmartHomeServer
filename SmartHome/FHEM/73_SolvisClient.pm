@@ -65,6 +65,7 @@ use strict;
 #use v5.10;
 use warnings;
 use FHEM::Meta;
+use POSIX qw(floor);
 use GPUtils qw(GP_Import GP_Export);
 
 use constant MIN_SUPPORTED_FORMAT => 1.00 ;          #Violates 'ProhibitConstantPragma'
@@ -1297,8 +1298,8 @@ sub Set {
                     return "unknown value $value choose one of on off";
                 }
             } else {
-                my $factor = int(1.0 / $ChannelDescriptions{$channel}{Accuracy} + 0.5);
-                $value = int($value * $factor + 0.5);
+                my $factor = floor(1.0 / $ChannelDescriptions{$channel}{Accuracy});
+                $value = floor($value * $factor);
                 $value /= $factor;
             }
             SendSetData($self, $channel, $value);
@@ -2258,7 +2259,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "stable",
   "license": "GPL_2",
-  "version": "v00.02.23",
+  "version": "v00.02.24",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
@@ -2271,7 +2272,8 @@ sub DbLog_splitFn {
         "FHEM": 5.00918799,
         "perl": 5.016,
         "Meta": 0,
-        "JSON": 0
+        "JSON": 0,
+        "POSIX": 0
       },
       "recommends": {
       },
