@@ -1,5 +1,15 @@
 A E N D E R U N G E N
 
+Version 01.05.01-rc5
+
+    20.12.2021  Mit dem Support für verschiedene Sprachen mussten die Scanbereiche nach rechts
+                erweitert werden. Bei einem groeßeren Verschiebung durch die Solvis-Bildschirm-
+                kalibrierung geriet dabei jedoch der obere Rand eines Buttons in den Scan-Bereich.
+                Um dieses Problem zu umgehen, wurde eine Erkennung der vertikalen Lage der Bild-
+                schirmtitel implementiert. Dadurch werden vertikale Offsets der Bildschirm-
+                kalibrierung kompensiert.
+
+
 Version 01.05.01-rc4
 
     17.12.2021  Bei einem Schreiben erfolgt nun eine Warnung, wenn der Schreibwert null ist.
@@ -582,7 +592,7 @@ Version 01.02.04
 
                 ioBroker object list mit den neuen Control-Kanaelen erweitert.
 
-    02.10.2020  Neuer Einstellmoeglichkeiten noch fuer den zweiten Heizkreis hinzugefuegt. Da beim
+    02.10.2020  Neue Einstellmoeglichkeiten noch fuer den zweiten Heizkreis hinzugefuegt. Da beim
                 dritten Heizkreis die Vorlauftemperatur fest eingestellt, wird es diese
                 Einstellungen dort vermutlich nicht geben.
 

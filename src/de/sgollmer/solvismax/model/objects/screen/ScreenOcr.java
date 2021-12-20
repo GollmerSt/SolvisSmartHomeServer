@@ -138,15 +138,57 @@ public class ScreenOcr implements IScreenPartCompare, IAssigner {
 
 	private SplitResult split(MyImage image, Solvis solvis) {
 
+		Coordinate topLeft = this.rectangle.getTopLeft();
+		Coordinate bottomRight = this.rectangle.getBottomRight();
+
+//		int middle = (topLeft.getX() + bottomRight.getX()) / 2;
+//
+//		int cutOutLeft = this.right ? middle : topLeft.getX();
+//		int cutOutRight = this.right ? bottomRight.getX() : middle;
+//
+//		MyImage cutOut = new MyImage(image,
+//				new Rectangle(new Coordinate(cutOutLeft, this.rectangle.getTopLeft().getY()),
+//						new Coordinate(cutOutRight, this.rectangle.getBottomRight().getY())),
+//				true);
+//
+		MyImage cutOut = new MyImage(image, this.rectangle, true);
+
+		cutOut.createHistograms(true);
+
+		Integer start = null;
+		Integer end = null;
+
+		for (int y = 0; y < cutOut.getHistogramY().size(); ++y) {
+
+			int cnt = cutOut.getHistogramY().get(y);
+			if (cnt > 2) {
+				if (start == null) {
+					start = y;
+				}
+			} else {
+				if (start != null) {
+					end = y - 1;
+					break;
+				}
+			}
+		}
+		
+		if ( start == null || end == null ) {
+			return new SplitResult(null, false);
+		}
+
+		Rectangle scanRectangle = new Rectangle(new Coordinate(topLeft.getX(), start + topLeft.getY()),
+				new Coordinate(bottomRight.getX(), end + topLeft.getY()));
+
 		if (this.graficDescription == null) {
-			String cmp = new OcrRectangle(image, this.rectangle).getString();
+			String cmp = new OcrRectangle(image, scanRectangle).getString();
 			return new SplitResult(null, this.value.equals(cmp));
 		}
 
 		if (this.graficDescription.isExact()) {
-			image = new MyImage(image, this.rectangle, true);
+			image = new MyImage(image, scanRectangle, true);
 		} else {
-			image = new Pattern(image, this.rectangle);
+			image = new Pattern(image, scanRectangle);
 		}
 
 		List<MyImage> images = image.split();

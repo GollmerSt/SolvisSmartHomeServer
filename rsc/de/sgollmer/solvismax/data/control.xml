@@ -404,7 +404,7 @@
 				<tns:Ocr value="11/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -421,7 +421,7 @@
 				<tns:Ocr value="12/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -438,7 +438,7 @@
 				<tns:Ocr value="13/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -455,7 +455,7 @@
 				<tns:Ocr value="14/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -476,7 +476,7 @@
 				<tns:Ocr value="15/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -501,7 +501,7 @@
 				<tns:Ocr value="21/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -522,7 +522,7 @@
 				<tns:Ocr value="22/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -543,7 +543,7 @@
 				<tns:Ocr value="23/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -564,7 +564,7 @@
 				<tns:Ocr value="24/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -589,7 +589,7 @@
 				<tns:Ocr value="25/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -614,7 +614,7 @@
 				<tns:Ocr value="31/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -635,7 +635,7 @@
 				<tns:Ocr value="32/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -656,7 +656,7 @@
 				<tns:Ocr value="33/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -677,7 +677,7 @@
 				<tns:Ocr value="34/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -702,7 +702,7 @@
 				<tns:Ocr value="35/5" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1357,7 +1357,7 @@
 				<tns:Ocr value="11/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1376,7 +1376,7 @@
 				<tns:Ocr value="12/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1395,7 +1395,7 @@
 				<tns:Ocr value="13/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1414,7 +1414,7 @@
 				<tns:Ocr value="14/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1440,7 +1440,7 @@
 				<tns:Ocr value="21/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1462,7 +1462,7 @@
 				<tns:Ocr value="22/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1484,7 +1484,7 @@
 				<tns:Ocr value="23/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1506,7 +1506,7 @@
 				<tns:Ocr value="24/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1532,7 +1532,7 @@
 				<tns:Ocr value="31/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1554,7 +1554,7 @@
 				<tns:Ocr value="32/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1576,7 +1576,7 @@
 				<tns:Ocr value="33/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1598,7 +1598,7 @@
 				<tns:Ocr value="34/11" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
-						<tns:BottomRight X="235" Y="13" />
+						<tns:BottomRight X="235" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Heizkreis" />
 				</tns:Ocr>
@@ -1639,7 +1639,7 @@
 				<tns:Ocr value="1/2" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="3" />
-						<tns:BottomRight X="220" Y="13" />
+						<tns:BottomRight X="220" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Wasser Anforderung" />
 				</tns:Ocr>
@@ -1658,7 +1658,7 @@
 				<tns:Ocr value="2/2" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="3" />
-						<tns:BottomRight X="220" Y="13" />
+						<tns:BottomRight X="220" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="Wasser Anforderung" />
 				</tns:Ocr>
@@ -1721,7 +1721,7 @@
 				<tns:Ocr value="1/2" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="20" Y="2" />
-						<tns:BottomRight X="220" Y="13" />
+						<tns:BottomRight X="220" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="ZaehlfunktionRef" />
 				</tns:Ocr>
@@ -1746,7 +1746,7 @@
 				<tns:Ocr value="2/2" right="true">
 					<tns:Rectangle>
 						<tns:TopLeft X="20" Y="2" />
-						<tns:BottomRight X="220" Y="13" />
+						<tns:BottomRight X="220" Y="16" />
 					</tns:Rectangle>
 					<tns:ScreenGraficRef refId="ZaehlfunktionRef" />
 				</tns:Ocr>

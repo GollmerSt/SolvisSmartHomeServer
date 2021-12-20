@@ -371,12 +371,12 @@ public class Ocr extends MyImage {
 			return ']';
 		}
 
-		if (this.getHistogramX().get(0) < this.getHeight() / 3 && this.maximaY[0].getValue() < this.getWidth() / 2) {
-			if (this.detectSlash(false, 0, this.getHeight() - 1)) {
-				return '/';
-			}
-		}
-
+//		if (this.getHistogramX().get(0) < this.getHeight() / 2 && this.maximaY[0].getValue() < this.getWidth() / 2) {
+//			if (this.detectSlash(false, 0, this.getHeight() - 1)) {
+//				return '/';
+//			}
+//		}
+//
 		if (this.maximaX[0].getValue() == this.getHeight() && this.maximaX[0].getCoord() < this.getWidth() / 3) {
 			return 'h';
 		}
@@ -416,6 +416,8 @@ public class Ocr extends MyImage {
 
 			if (x < this.getWidth() / 2) {
 				return '%';
+			} else {
+				return '/';
 			}
 		}
 
