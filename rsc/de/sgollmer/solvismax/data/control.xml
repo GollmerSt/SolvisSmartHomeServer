@@ -401,7 +401,7 @@
 				<tns:Coordinate X="20" Y="15" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="11/5" right="true">
+				<tns:Ocr value="11/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -418,7 +418,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="12/5" right="true">
+				<tns:Ocr value="12/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -435,7 +435,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="13/5" right="true">
+				<tns:Ocr value="13/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -452,7 +452,7 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="14/5" right="true">
+				<tns:Ocr value="14/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -473,7 +473,7 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="15/5" right="true">
+				<tns:Ocr value="15/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -498,7 +498,7 @@
 				<tns:Coordinate X="20" Y="45" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="21/5" right="true">
+				<tns:Ocr value="21/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -519,7 +519,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="22/5" right="true">
+				<tns:Ocr value="22/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -540,7 +540,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="23/5" right="true">
+				<tns:Ocr value="23/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -561,7 +561,7 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="24/5" right="true">
+				<tns:Ocr value="24/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -586,7 +586,7 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="25/5" right="true">
+				<tns:Ocr value="25/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -611,7 +611,7 @@
 				<tns:Coordinate X="20" Y="65" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="31/5" right="true">
+				<tns:Ocr value="31/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -632,7 +632,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="32/5" right="true">
+				<tns:Ocr value="32/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -653,7 +653,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="33/5" right="true">
+				<tns:Ocr value="33/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -674,7 +674,7 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="34/5" right="true">
+				<tns:Ocr value="34/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -699,7 +699,7 @@
 				<tns:Coordinate X="225" Y="25" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="35/5" right="true">
+				<tns:Ocr value="35/5" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1354,7 +1354,7 @@
 				<tns:Coordinate X="20" Y="15" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="11/11" right="true">
+				<tns:Ocr value="11/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1373,7 +1373,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="12/11" right="true">
+				<tns:Ocr value="12/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1392,7 +1392,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="13/11" right="true">
+				<tns:Ocr value="13/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1411,7 +1411,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="14/11" right="true">
+				<tns:Ocr value="14/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1437,7 +1437,7 @@
 				<tns:Coordinate X="20" Y="40" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="21/11" right="true">
+				<tns:Ocr value="21/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1459,7 +1459,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="22/11" right="true">
+				<tns:Ocr value="22/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1481,7 +1481,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="23/11" right="true">
+				<tns:Ocr value="23/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1503,7 +1503,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="24/11" right="true">
+				<tns:Ocr value="24/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1529,7 +1529,7 @@
 				<tns:Coordinate X="20" Y="65" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="31/11" right="true">
+				<tns:Ocr value="31/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1551,7 +1551,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="32/11" right="true">
+				<tns:Ocr value="32/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1573,7 +1573,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="33/11" right="true">
+				<tns:Ocr value="33/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1595,7 +1595,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="34/11" right="true">
+				<tns:Ocr value="34/11" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="2" />
 						<tns:BottomRight X="235" Y="16" />
@@ -1636,7 +1636,7 @@
 				<tns:Coordinate X="20" Y="25" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="1/2" right="true">
+				<tns:Ocr value="1/2" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="3" />
 						<tns:BottomRight X="220" Y="16" />
@@ -1655,7 +1655,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="2/2" right="true">
+				<tns:Ocr value="2/2" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="5" Y="3" />
 						<tns:BottomRight X="220" Y="16" />
@@ -1718,7 +1718,7 @@
 				<tns:Coordinate X="220" Y="85" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="1/2" right="true">
+				<tns:Ocr value="1/2" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="20" Y="2" />
 						<tns:BottomRight X="220" Y="16" />
@@ -1743,7 +1743,7 @@
 				<tns:Coordinate X="225" Y="110" />
 			</tns:TouchPoint>
 			<tns:Identification>
-				<tns:Ocr value="2/2" right="true">
+				<tns:Ocr value="2/2" right="true" maxPixelsOfEmptyLine="2">
 					<tns:Rectangle>
 						<tns:TopLeft X="20" Y="2" />
 						<tns:BottomRight X="220" Y="16" />

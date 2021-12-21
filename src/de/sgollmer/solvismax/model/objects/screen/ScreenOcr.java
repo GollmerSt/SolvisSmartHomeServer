@@ -43,14 +43,17 @@ public class ScreenOcr implements IScreenPartCompare, IAssigner {
 	private final String value;
 	private final ScreenGraficRef graficRef;
 	private final boolean right;
+	private final int maxPixelsOfEmptyLine;
 
 	private ScreenGraficDescription graficDescription = null;
 
-	private ScreenOcr(Rectangle rectangle, String value, ScreenGraficRef graficRef, boolean right) {
+	private ScreenOcr(final Rectangle rectangle, final String value, final ScreenGraficRef graficRef, boolean right,
+			final int maxPixelsOfEmptyLine) {
 		this.rectangle = rectangle;
 		this.value = value;
 		this.graficRef = graficRef;
 		this.right = right;
+		this.maxPixelsOfEmptyLine = maxPixelsOfEmptyLine;
 	}
 
 	@Override
@@ -77,6 +80,7 @@ public class ScreenOcr implements IScreenPartCompare, IAssigner {
 		private String value;
 		private ScreenGraficRef graficRef = null;
 		private boolean right = false;
+		private int maxPixelsOfEmptyLine = 0;
 
 		Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -91,13 +95,17 @@ public class ScreenOcr implements IScreenPartCompare, IAssigner {
 				case "right":
 					this.right = Boolean.parseBoolean(value);
 					break;
+				case "maxPixelsOfEmptyLine":
+					this.maxPixelsOfEmptyLine = Integer.parseInt(value);
+					break;
+
 			}
 
 		}
 
 		@Override
 		public ScreenOcr create() throws XmlException, IOException {
-			return new ScreenOcr(this.rectangle, this.value, this.graficRef, this.right);
+			return new ScreenOcr(this.rectangle, this.value, this.graficRef, this.right, this.maxPixelsOfEmptyLine);
 		}
 
 		@Override
@@ -161,7 +169,7 @@ public class ScreenOcr implements IScreenPartCompare, IAssigner {
 		for (int y = 0; y < cutOut.getHistogramY().size(); ++y) {
 
 			int cnt = cutOut.getHistogramY().get(y);
-			if (cnt > 2) {
+			if (cnt > this.maxPixelsOfEmptyLine) {
 				if (start == null) {
 					start = y;
 				}
@@ -172,8 +180,8 @@ public class ScreenOcr implements IScreenPartCompare, IAssigner {
 				}
 			}
 		}
-		
-		if ( start == null || end == null ) {
+
+		if (start == null || end == null) {
 			return new SplitResult(null, false);
 		}
 

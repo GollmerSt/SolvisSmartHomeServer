@@ -58,16 +58,18 @@
 						<documentation>
 							Bildschirmpunkt des Vorgänger-Bildschirms
 							(previousId), der gedrückt werden muss, um
-							auf den vorliegenden zu gelangen. Können
+							auf den vorliegenden zu
+							gelangen. Können
 							auch mehrere sein (z.B. Main-Bildschirm
-							Auswahl des Heizkreises). Ist der Screen
-							Teil einer Sequenz darf dieser TouchPoint
+							Auswahl
+							des Heizkreises). Ist der Screen
+							Teil einer Sequenz darf dieser
+							TouchPoint
 							nicht definiert sein.
 						</documentation>
 					</annotation>
 				</element>
-				<element name="UserSelection"
-					type="tns:UserSelection">
+				<element name="UserSelection" type="tns:UserSelection">
 				</element>
 				<sequence>
 					<element name="SequenceUp" type="tns:TouchPoint"
@@ -75,7 +77,8 @@
 						<annotation>
 							<documentation>
 								Ist der Screen Teil einer Sequenz wird
-								mit diesem Element der TouchPoint für
+								mit diesem
+								Element der TouchPoint für
 								das vorherige Element definiert.
 							</documentation>
 						</annotation>
@@ -85,7 +88,8 @@
 						<annotation>
 							<documentation>
 								Ist der Screen Teil einer Sequenz wird
-								mit diesem Element der TouchPoint für
+								mit diesem
+								Element der TouchPoint für
 								das nachfolgende Element definiert.
 							</documentation>
 						</annotation>
@@ -93,8 +97,7 @@
 				</sequence>
 			</choice>
 			<element name="Identification"
-				type="tns:ScreenIdentification" maxOccurs="unbounded"
-				minOccurs="1">
+				type="tns:ScreenIdentification" maxOccurs="unbounded" minOccurs="1">
 			</element>
 			<element name="IgnoreRectangle" type="tns:Rectangle"
 				maxOccurs="unbounded" minOccurs="0">
@@ -102,19 +105,28 @@
 					<documentation>
 						Zur Erkennung von Useraktivitäten, Änderungen
 						innerhalb dieser Rechtecke werden nicht als
-						Useraktivität registriert Dient der Untersuchung
-						von Usereingriffen. Im Ruhezustand wird jede
-						Minute untersucht, ob der Bildschirminhalt sich
+						Useraktivität
+						registriert Dient der Untersuchung
+						von Usereingriffen. Im
+						Ruhezustand wird jede
+						Minute untersucht, ob der Bildschirminhalt
+						sich
 						geändert hat. Da auf einigen Bildschirmen
-						ständig sich ändernde Werte angezeigt werden
-						(Uhrzeit, Istwerte oder Anlegenstatus) können
+						ständig sich ändernde
+						Werte angezeigt werden
+						(Uhrzeit, Istwerte oder Anlegenstatus)
+						können
 						bestimmte Teile des Bildschirms mit Hilfe der
 						"IgnoreRectangle" beim Vergleich ausgeblendt
-						werden. Achtung: Im rectangle-Element gibt es
-						auch noch das "invertFunction"-Attribut, damit
+						werden. Achtung: Im
+						rectangle-Element gibt es
+						auch noch das "invertFunction"-Attribut,
+						damit
 						kann ein bestimmter Bereich doch wieder zum
-						Vergleich herangezogen werden, auch wenn er
-						durch die anderen Ingnorerectangles maskiert
+						Vergleich
+						herangezogen werden, auch wenn er
+						durch die anderen
+						Ingnorerectangles maskiert
 						ist. Ist etwas unsauber gelöst.
 					</documentation>
 				</annotation>
@@ -127,8 +139,10 @@
 				<annotation>
 					<documentation>
 						Sollte der Screeninhalt nicht eindeutig sein
-						(nur bei Heizkreis-Solltemperaturen möglich),
-						wird noch zusätzlich bei der Identifizierung die
+						(nur bei
+						Heizkreis-Solltemperaturen möglich),
+						wird noch zusätzlich bei der
+						Identifizierung die
 						letzte Preparation (evtl. auch eines
 						Vorgängerbildschirms zum Vergleich
 						hinzugenommen.
@@ -154,12 +168,14 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="ignoreChanges" type="boolean" use="optional">
+		<attribute name="ignoreChanges" type="boolean"
+			use="optional">
 			<annotation>
 				<documentation>
 					Zur Erkennung von Useraktivitäten, Änderungen auf
 					diesem Screen werden nicht als Useraktivität
-					registriert. Default: false
+					registriert. Default:
+					false
 				</documentation>
 			</annotation>
 		</attribute>
@@ -169,7 +185,8 @@
 				<documentation>
 					Zur Analyse von unterschiedlichen
 					Anlagenkonfigurationene kann man den
-					Bildschirminhalt während des Learnings abspeichern
+					Bildschirminhalt während des
+					Learnings abspeichern
 					lassen.
 				</documentation>
 			</annotation>
@@ -235,6 +252,20 @@
 			</annotation>
 		</attribute>
 		<attribute name="right" type="boolean" use="optional"></attribute>
+		<attribute name="maxPixelsOfEmptyLine" type="int"
+			use="optional">
+			<annotation>
+				<documentation>
+					Bei der OCR-Erkennung muss das vertikale Ende der
+					Zeile ermittelt werden. Da es Bildschirme gibt, wo die Anzahl der
+					aktiven Pixel zwischen den Zeilen nie 0 ist, kann hier ein Maximum
+					für die aktiven Pixel definiert werden. Ist das erfüllt, wurde das
+					vertikale Ende der Zeile erkannt. Ein Beispiel ist hier die Screens
+					für den Heizkreis. Der Schrägstrich geht soweit runter, dass es
+					keine horizontale Zeile gibt, die leer ist.
+				</documentation>
+			</annotation>
+		</attribute>
 	</complexType>
 
 	<complexType name="Coordinate">
@@ -320,7 +351,8 @@
 					<annotation>
 						<documentation>
 							Definitionen, wenn
-							derSolvis-Anlagenparameter nur ein
+							derSolvis-Anlagenparameter nur
+							ein
 							auszulesender Wert (z. B. Brennerstarts) ist
 						</documentation>
 					</annotation>
@@ -330,22 +362,26 @@
 					<annotation>
 						<documentation>
 							Definitionen, wenn Solvis-Anlagenparameter
-							ein einzustellender Modus (z.B. Betriebsart)
+							ein
+							einzustellender Modus (z.B. Betriebsart)
 							ist
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeButton" type="tns:Button"
-					maxOccurs="1" minOccurs="1">
+				<element name="TypeButton" type="tns:Button" maxOccurs="1"
+					minOccurs="1">
 					<annotation>
 						<documentation>
 							Der Kanal-Wert wird durch den Zustand eines
-							Buttons bestimmt. Ist er selektiert (weiße
-							Schrift auf dunklem Hintergrund)
+							Buttons
+							bestimmt. Ist er selektiert (weiße
+							Schrift auf dunklem
+							Hintergrund)
 						</documentation>
 					</annotation>
 				</element>
-				<element name="TypeReheat" type="tns:Reheat" maxOccurs="1" minOccurs="1"></element>
+				<element name="TypeReheat" type="tns:Reheat" maxOccurs="1"
+					minOccurs="1"></element>
 			</choice>
 
 			<element name="UpdateBy" type="tns:UpdateBy" maxOccurs="1"
@@ -387,21 +423,23 @@
 			<element name="GuiSet" maxOccurs="1" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="Touch" type="tns:TouchPoint"
-							maxOccurs="1" minOccurs="1">
+						<element name="Touch" type="tns:TouchPoint" maxOccurs="1"
+							minOccurs="1">
 							<annotation>
 								<documentation>
 									Zu drückender Punkt auf dem
-									Bildschirm um den Modus zu wählen
+									Bildschirm um den
+									Modus zu wählen
 								</documentation>
 							</annotation>
 						</element>
-						<element name="ScreenGrafic"
-							type="tns:ScreenGrafic" maxOccurs="1" minOccurs="1">
+						<element name="ScreenGrafic" type="tns:ScreenGrafic"
+							maxOccurs="1" minOccurs="1">
 							<annotation>
 								<documentation>
 									Bildschirmgrafik, welche den Modus
-									bestimmt. Hier müssen nicht die
+									bestimmt. Hier
+									müssen nicht die
 									Koordinaten der Grafik eingegeben
 									werden.
 								</documentation>
@@ -450,7 +488,7 @@
 			</element>
 			<element name="ErrorDetection" type="tns:ErrorDetection"
 				maxOccurs="1" minOccurs="1">
-			</element>
+			</element>
 			<element name="Screens" type="tns:Screens" maxOccurs="1"
 				minOccurs="1">
 			</element>
@@ -576,7 +614,7 @@
 				Daten für die Screen-Saver-Erkennung
 			</documentation>
 		</annotation>
-		<sequence>
+		<sequence>
 			<element name="MaxGraficSize" type="tns:Coordinate"
 				maxOccurs="1" minOccurs="1">
 			</element>
@@ -584,7 +622,8 @@
 				maxOccurs="1" minOccurs="1">
 			</element>
 		</sequence>
-		<attribute name="xCoordinateWithinTimedate" type="int" use="required"></attribute>
+		<attribute name="xCoordinateWithinTimedate" type="int"
+			use="required"></attribute>
 	</complexType>
 
 
@@ -627,7 +666,7 @@
 			<annotation>
 				<documentation>Mittelwertbildung</documentation>
 			</annotation>
-		</attribute>
+		</attribute>
 		<attribute name="fast" type="boolean" use="optional"></attribute>
 	</complexType>
 
@@ -669,7 +708,7 @@
 					<enumeration value="mixerPosition0"></enumeration>
 				</restriction>
 			</simpleType>
-		</attribute>
+		</attribute>
 	</complexType>
 
 
@@ -1487,9 +1526,12 @@
 			<documentation>
 				Definiert eine Sequenz von Screens, welche vom
 				Vorgängerscreen nicht eindeutig ausgewählt werden können
-				(z.B. Anlagenstatus). Der vom Vorgängerscreen
-				ausgewählte Screen ist ein beliebiger dieser Sequenz. Es
-				handelt sich dabei um einen Art virtuellerScreen, der
+				(z.B.
+				Anlagenstatus). Der vom Vorgängerscreen
+				ausgewählte Screen ist ein
+				beliebiger dieser Sequenz. Es
+				handelt sich dabei um einen Art
+				virtuellerScreen, der
 				einen Vorgänger besitzt.
 			</documentation>
 		</annotation>
@@ -1535,7 +1577,7 @@
 					letzten Element zum ersten geht
 				</documentation>
 			</annotation>
-		</attribute>
+		</attribute>
 	</complexType>
 	<complexType name="Configuration">
 		<sequence>
@@ -1552,12 +1594,15 @@
 			</element>
 		</sequence>
 		<attribute name="admin" use="optional">
-            <annotation>
-            	<documentation>ADMIN:	Only used and defined in admin mode.
-VALUE:		Only used in admin mode but is always defined.
-NONE:		Always defined and used (default)</documentation>
-            </annotation>
-            <simpleType>
+			<annotation>
+				<documentation>ADMIN: Only used and defined in admin mode.
+					VALUE:
+					Only used in admin mode but is always defined.
+					NONE: Always defined
+					and used (default)
+				</documentation>
+			</annotation>
+			<simpleType>
 				<restriction base="string">
 					<enumeration value="ADMIN"></enumeration>
 					<enumeration value="NONE"></enumeration>
@@ -1749,7 +1794,7 @@ NONE:		Always defined and used (default)</documentation>
 			<element name="Type" maxOccurs="unbounded" minOccurs="1">
 				<complexType>
 					<attribute name="id" use="required"
-						type="tns:MainHeating">
+						type="tns:MainHeating">
 					</attribute>
 					<attribute name="configuration" type="tns:UnNBytesHexInt"
 						use="required"></attribute>
@@ -1762,7 +1807,7 @@ NONE:		Always defined and used (default)</documentation>
 		<sequence>
 			<element minOccurs="1" maxOccurs="unbounded" name="Type">
 				<complexType>
-					<attribute use="required" name="id" type="tns:SolvisType">
+					<attribute use="required" name="id" type="tns:SolvisType">
 					</attribute>
 					<attribute use="required" name="configuration"
 						type="tns:UnNBytesHexInt">
@@ -1823,7 +1868,7 @@ NONE:		Always defined and used (default)</documentation>
 		<sequence>
 			<element name="Type" maxOccurs="unbounded" minOccurs="1">
 				<complexType>
-					<attribute name="id" use="required" type="tns:SolarType">
+					<attribute name="id" use="required" type="tns:SolarType">
 					</attribute>
 					<attribute name="configuration" type="tns:UnNBytesHexInt"
 						use="required"></attribute>
@@ -1840,8 +1885,8 @@ NONE:		Always defined and used (default)</documentation>
 				<complexType>
 
 					<sequence>
-						<element name="Extension"
-							type="tns:ExtensionType" maxOccurs="unbounded" minOccurs="0">
+						<element name="Extension" type="tns:ExtensionType"
+							maxOccurs="unbounded" minOccurs="0">
 						</element>
 					</sequence>
 				</complexType>
