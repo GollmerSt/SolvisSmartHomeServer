@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/control base.xsd ">
 	<tns:ExecutionData timeZone="Europe/Berlin"
-		port="10735" writablePathLinux="/opt/fhem"
+		port="10735" writablePathLinux="/opt/solvis"
 		writeablePathWindows="C:\JavaPgms\SolvisSmartHomeServer\log"
 		echoInhibitTime_ms="2000" />
 	<!-- Es werden immer 2 Ports belegt, der angegebene und der nächst höhere. 

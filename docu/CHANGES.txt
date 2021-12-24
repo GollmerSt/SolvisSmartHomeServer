@@ -2,6 +2,10 @@ A E N D E R U N G E N
 
 Version 01.05.01
 
+    23.12.2021  Das Makefile ueberarbeitet um die FHEM-Abhaengigkeit zu beseitigen. So wird ein
+                eigener User "solvis" erzeugt, unter dem der Server läuft. Auch das Default-
+                Verzeichnis in der base.xml wurde entsprechend auf "/opt/solvis" abgeaendert.
+
     21.12.2021  Die Aenderung des rc5 war noch etwas Quick & Dirty. Der Wert "maxPixelsOfEmptyLine"
                 wurde daher in der control.xml eingeführt.
 

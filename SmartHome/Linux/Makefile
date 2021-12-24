@@ -1,12 +1,16 @@
 SHELL = /bin/sh
-fhemDir = /opt/fhem
 fhemModul = 73_SolvisClient.pm
 packageFhemDir = FHEM
 fhemCommand = ./contrib/commandref_join.pl -noWarnings
 fhemCommandRef = $(fhemDir)/docs/commandref.html
 serviceFhem = fhem.service
 fhemRestart = 0
-solvisDir = /opt/SolvisSmartHomeServer
+baseDir = /opt
+accountFhem = fhem
+fhemDir = $(baseDir)/$(accountFhem)
+account = solvis
+solvisDir = $(baseDir)/$(account)
+serverDir = $(solvisDir)/SolvisSmartHomeServer
 solvisJar = SolvisSmartHomeServer.jar
 baseXml = base
 systemD = /etc/systemd/system
@@ -16,10 +20,9 @@ java = /usr/bin/java
 javaDebugPort = 0.0.0.0:10737
 javaAgentlib = jdwp=transport=dt_socket,suspend=n,server=y,address=$(javaDebugPort)
 perl = /usr/bin/perl
-account = fhem
 group = dialout
-start = sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar)
-startDebug = sudo -u $(account) $(java) -agentlib:$(javaAgentlib) -jar $(solvisDir)/$(solvisJar)
+start = sudo -u $(account) $(java) -jar $(serverDir)/$(solvisJar)
+startDebug = sudo -u $(account) $(java) -agentlib:$(javaAgentlib) -jar $(serverDir)/$(solvisJar)
 startLocal = sudo -u $(account) $(java) -jar $(solvisJar)
 writablePath = `sed -n 's/.*\?writablePathLinux="\([^"]*\)".*/\1/gp' base.xml`
 generatedBaseDir = SolvisServerData
@@ -42,6 +45,13 @@ eraseGenerated:
 	fi
 
 install: installSolvis installFHEM
+
+
+createUser:
+	grep $(account) /etc/passwd >/dev/null ; \
+	if [ $$? -ne 0 ] ; then \
+		useradd  -r -b $(baseDir) -s /bin/false $(account) ; \
+	fi
 
 
 
@@ -99,13 +109,13 @@ rmFHEMModul:
 
 
 uninstallSolvis: uninstallService uninstallDebugService
-	rm $(solvisDir)/$(solvisJar)
+	rm $(serverDir)/$(solvisJar)
 	rm $(systemD)/$(service).service
 	rm $(systemD)/$(serviceDebug).service
 
 
 
-installSolvis: $(solvisDir)/$(solvisJar) $(solvisDir)/$(baseXml).xml  $(solvisDir)/$(baseXml).xsd copyService
+installSolvis: $(serverDir)/$(solvisJar) $(serverDir)/$(baseXml).xml  $(serverDir)/$(baseXml).xsd copyService
 
 
 
@@ -167,13 +177,20 @@ terminate: stopServices installSolvis
 
 
 foreground: stopServices installSolvis
-	sudo -u $(account) $(java) -jar $(solvisDir)/$(solvisJar)
+	sudo -u $(account) $(java) -jar $(serverDir)/$(solvisJar)
 
 
 
-$(solvisDir):
-	mkdir $@
-
+$(serverDir): $(solvisDir)
+	mkdir -p $@
+	chown -c $(account) $@
+	
+	
+	
+$(solvisDir): createUser
+	mkdir -p $@
+	chown -c $(account) $@
+	
 
 
 $(fhemCommandRef):$(fhemDir)/FHEM/$(fhemModul)
@@ -183,12 +200,12 @@ $(fhemCommandRef):$(fhemDir)/FHEM/$(fhemModul)
 
 $(fhemDir)/FHEM/$(fhemModul): $(packageFhemDir)/$(fhemModul)
 	cp $< $@
-	chown -c $(account):$(group) $@
+	chown -c $(accountFhem):$(group) $@
 
 
 
 createCommandRef:
-	cd $(fhemDir); sudo -u $(account) $(perl) $(fhemCommand)
+	cd $(fhemDir); sudo -u $(accountFhem) $(perl) $(fhemCommand)
 	@echo
 	@echo "************************************"
 	@echo "**                                **"
@@ -201,26 +218,26 @@ createCommandRef:
 
 
 
-$(solvisDir)/$(solvisJar): $(solvisJar) $(solvisDir)
+$(serverDir)/$(solvisJar): $(solvisJar) $(serverDir)
 	cp $< $@
-	chown -c $(account):$(group) $@
+	chown -c $(account) $@
 
 
 
-$(solvisDir)/$(baseXml).xml : $(baseXml).xml
+$(serverDir)/$(baseXml).xml : $(baseXml).xml
 	if [ -f "$@" ] ; then \
 		mv $@ $<.old ; \
 		chown -c `ls -l $< | awk '{ print $$3":"$$4 }'` $<.old ; \
 	fi 
 	cp $< $@
-	chown -c $(account):$(group) $@
+	chown -c $(account) $@
 	chmod 600 $@
 
 
 
-$(solvisDir)/$(baseXml).xsd : $(baseXml).xsd
+$(serverDir)/$(baseXml).xsd : $(baseXml).xsd
 	cp $< $@
-	chown -c $(account):$(group) $@
+	chown -c $(account) $@
 
 
 
