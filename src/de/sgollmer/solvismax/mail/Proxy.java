@@ -5,8 +5,8 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.crypt.CryptAes;
-import de.sgollmer.solvismax.error.CryptDefaultValueException;
-import de.sgollmer.solvismax.error.CryptExeception;
+import de.sgollmer.solvismax.error.CryptException;
+import de.sgollmer.solvismax.error.CryptException.Type;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
@@ -73,11 +73,11 @@ public class Proxy {
 					this.password = new CryptAes();
 					try {
 						this.password.decrypt(value);
-					} catch (CryptDefaultValueException | CryptExeception e) {
+					} catch (CryptException e) {
 						this.password = null;
 						String m = "base.xml error of passwordCrypt in proxy tag, mail password not used";
 						Level level = Level.ERROR;
-						if (e instanceof CryptDefaultValueException) {
+						if (e.getType() == Type.DEFAULT) {
 							level = Level.WARN;
 						}
 						logger.log(level, m);

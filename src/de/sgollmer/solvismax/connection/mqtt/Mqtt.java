@@ -28,8 +28,8 @@ import de.sgollmer.solvismax.connection.ServerCommand;
 import de.sgollmer.solvismax.connection.ServerStatus;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.crypt.Ssl;
-import de.sgollmer.solvismax.error.CryptDefaultValueException;
-import de.sgollmer.solvismax.error.CryptExeception;
+import de.sgollmer.solvismax.error.CryptException;
+import de.sgollmer.solvismax.error.CryptException.Type;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.MqttInterfaceException;
 import de.sgollmer.solvismax.error.TypeException;
@@ -145,11 +145,11 @@ public class Mqtt {
 						this.subscribeQoS = Integer.parseInt(value);
 						break;
 				}
-			} catch (CryptDefaultValueException | CryptExeception e) {
+			} catch (CryptException e) {
 				this.enable = false;
 				String m = "base.xml error of passwordCrypt in Mqtt tag, MQTT disabled: " + e.getMessage();
 				Level level = Level.ERROR;
-				if (e instanceof CryptDefaultValueException) {
+				if (e.getType() == Type.DEFAULT) {
 					level = Level.WARN;
 				}
 				logger.log(level, m);

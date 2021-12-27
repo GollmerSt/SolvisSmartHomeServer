@@ -22,13 +22,21 @@ public class Units {
 	private static final String XML_UNITS_UNIT = "Unit";
 
 	private final Collection<Unit> units;
+	private boolean mailEnabled = false;
 
 	private Units(final Collection<Unit> units) {
 		this.units = units;
+		for (Unit unit : units) {
+			this.mailEnabled |= unit.isMailEnabled();
+		}
 	}
 
 	public Collection<Unit> getUnits() {
 		return this.units;
+	}
+
+	public boolean isMailEnabled() {
+		return this.mailEnabled;
 	}
 
 	public static class Creator extends CreatorByXML<Units> {

@@ -12,6 +12,11 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.connection.mqtt.Mqtt;
+import de.sgollmer.solvismax.error.CryptException;
+import de.sgollmer.solvismax.error.CryptException.Type;
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.mail.ExceptionMail;
 import de.sgollmer.solvismax.model.objects.unit.Units;
 import de.sgollmer.solvismax.smarthome.IoBroker;
@@ -20,6 +25,8 @@ import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class BaseData {
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(BaseData.class);;
 
 	private static final String XML_UNITS = "Units";
 	private static final String XML_EXECUTION_DATA = "ExecutionData";
@@ -67,6 +74,25 @@ public class BaseData {
 		this.mqtt = mqtt;
 		this.ioBroker = ioBroker;
 
+		String message = null;
+		Level level = Level.ERROR;
+
+		if (this.units.isMailEnabled()) {
+			if (this.exceptionMail == null) {
+				message = "base.xml error, SendMailOnError is activated, but ExceptionMail tag is missed. Mail disabled.";
+			} else {
+				CryptException e = this.exceptionMail.getException();
+				if (e != null) {
+					message = "base.xml error of passwordCrypt in ExceptionMail tag. Mail disabled: " + e.getMessage();
+					if (e.getType() == Type.DEFAULT) {
+						level = Level.WARN;
+					}
+				}
+			}
+			if (message != null) {
+				logger.log(level, message);
+			}
+		}
 	}
 
 	public Units getUnits() {

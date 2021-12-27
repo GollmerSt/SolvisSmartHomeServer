@@ -13,8 +13,7 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.connection.IAccountInfo;
 import de.sgollmer.solvismax.crypt.CryptAes;
-import de.sgollmer.solvismax.error.CryptDefaultValueException;
-import de.sgollmer.solvismax.error.CryptExeception;
+import de.sgollmer.solvismax.error.CryptException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
@@ -236,7 +235,7 @@ public class Unit implements IAccountInfo {
 						this.csvUnit = Boolean.parseBoolean(value);
 						break;
 				}
-			} catch (CryptDefaultValueException | CryptExeception e) {
+			} catch (CryptException e) {
 				String m = "base.xml error of passwordCrypt in Unit tag: " + e.getMessage();
 				logger.log(Level.ERROR, m, null, Constants.ExitCodes.CRYPTION_FAIL);
 			}
@@ -482,6 +481,10 @@ public class Unit implements IAccountInfo {
 
 	public AllChannelOptions getChannelOptions() {
 		return this.channelOptions;
+	}
+
+	public boolean isMailEnabled() {
+		return this.features.isSendMailOnError();
 	}
 
 }

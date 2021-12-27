@@ -23,11 +23,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.CryptDefaultValueException;
-import de.sgollmer.solvismax.error.CryptExeception;
+import de.sgollmer.solvismax.error.CryptException;
 
 public class CryptAes {
 
 	private byte[] v = null;
+
+	private CryptException exception = null;
 
 	private static int[] primes = new int[] { 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
 			73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
@@ -57,7 +59,7 @@ public class CryptAes {
 		return base64Encoder.encodeToString(encrypted);
 	}
 
-	public void decrypt(final String cryptedString) throws CryptDefaultValueException, CryptExeception {
+	public void decrypt(final String cryptedString) throws CryptDefaultValueException, CryptException {
 		try {
 			Decoder base64Decoder = Base64.getDecoder();
 			byte[] crypted = base64Decoder.decode(cryptedString);
@@ -69,13 +71,16 @@ public class CryptAes {
 				| BadPaddingException | IllegalArgumentException e) {
 			for (String defaultValue : Constants.CRYPT_NOT_CONFIGURED_VALUES) {
 				if (defaultValue.equalsIgnoreCase(cryptedString)) {
-					throw new CryptDefaultValueException();
+					this.exception = new CryptDefaultValueException();
+					throw this.exception;
 				}
 			}
-			throw new CryptExeception();
+			this.exception = new CryptException();
+			throw this.exception;
 		}
 
 	}
+
 
 	private void cI(final String word) {
 		byte[] bb = word.getBytes();
@@ -121,7 +126,7 @@ public class CryptAes {
 	}
 
 	public static void main(final String[] args)
-			throws CryptDefaultValueException, CryptExeception, InvalidKeyException, NoSuchAlgorithmException,
+			throws CryptDefaultValueException, CryptException, InvalidKeyException, NoSuchAlgorithmException,
 			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		CryptAes aes = new CryptAes();
 		for (int i = 0; i < 100; ++i) {
@@ -138,6 +143,10 @@ public class CryptAes {
 				System.err.println("Failing on " + uncrypted);
 			}
 		}
+	}
+
+	public CryptException getException() {
+		return this.exception;
 	}
 
 }

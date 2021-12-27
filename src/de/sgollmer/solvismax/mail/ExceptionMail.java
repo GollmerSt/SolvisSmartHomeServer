@@ -14,13 +14,11 @@ import javax.mail.MessagingException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.crypt.CryptAes;
-import de.sgollmer.solvismax.error.CryptDefaultValueException;
-import de.sgollmer.solvismax.error.CryptExeception;
+import de.sgollmer.solvismax.error.CryptException;
 import de.sgollmer.solvismax.error.ObserverException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
@@ -68,7 +66,6 @@ public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 		private int port;
 		private Collection<Recipient> recipients;
 		private Proxy proxy = null;
-		private boolean valid = true;
 
 		public Creator(final String id, final BaseCreator<?> creator) {
 			super(id, creator);
@@ -101,25 +98,14 @@ public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 						this.port = Integer.parseInt(value);
 						break;
 				}
-			} catch (CryptDefaultValueException | CryptExeception e) {
-				this.valid = false;
-				String m = "base.xml error of passwordCrypt in Mail tag, mail disabled: " + e.getMessage();
-				Level level = Level.ERROR;
-				if (e instanceof CryptDefaultValueException) {
-					level = Level.WARN;
-				}
-				logger.log(level, m);
+			} catch (CryptException e) {
 			}
 		}
 
 		@Override
 		public ExceptionMail create() throws IOException {
-			if (this.valid) {
-				return new ExceptionMail(this.name, this.from, this.password, this.securityType, this.provider,
-						this.port, this.recipients, this.proxy);
-			} else {
-				return null;
-			}
+			return new ExceptionMail(this.name, this.from, this.password, this.securityType, this.provider, this.port,
+					this.recipients, this.proxy);
 		}
 
 		@Override
@@ -167,5 +153,9 @@ public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 			throw new ObserverException();
 		}
 
+	}
+
+	public CryptException getException() {
+		return this.password.getException();
 	}
 }

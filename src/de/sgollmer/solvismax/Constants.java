@@ -85,7 +85,7 @@ public class Constants {
 
 	public static final int MODBUS_SLAVE_ID = 1;
 
-	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-codes" };
+	public static final String[] CRYPT_NOT_CONFIGURED_VALUES = new String[] { "none", "aes-coded" };
 	public static final double CIRCLE_AREA_PRECISION = 0.2;
 
 	public static class Commands {
