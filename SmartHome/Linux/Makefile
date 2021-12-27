@@ -1,37 +1,58 @@
 SHELL = /bin/sh
+
+baseDir = /opt
+
+
+# SolvisSmartHomeServer settings
+
+accountSolvis = solvis
+solvisDir = $(baseDir)/$(accountSolvis)
+serverDir = $(solvisDir)/SolvisSmartHomeServer
+solvisJar = SolvisSmartHomeServer.jar
+baseXml = base
+writablePath = `sed -n 's/.*\?writablePathLinux="\([^"]*\)".*/\1/gp' base.xml`
+
+systemD = /etc/systemd/system
+service = SolvisSmartHomeServer
+serviceDebug = DebugSolvisSmartHomeServer
+serviceSources = $(service).service $(serviceDebug).service
+serviceFiles = $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
+
+javaPath = /usr/bin/java
+javaDebugPort = 0.0.0.0:10737
+javaAgentlib = jdwp=transport=dt_socket,suspend=n,server=y,address=$(javaDebugPort)
+
+solvisJarPath = $(serverDir)/$(solvisJar)
+start = sudo -u $(accountSolvis) $(javaPath) -jar $(solvisJarPath)
+startDebug = sudo -u $(accountSolvis) $(javaPath) -agentlib:$(javaAgentlib) -jar  $(solvisJarPath)
+startLocal = sudo -u $(accountSolvis) $(javaPath) -jar  $(solvisJar)
+
+generatedBaseDir = SolvisServerData
+generatedFiles = control.xml* control.xsd graficData.xml graficData.xsd  measurements.xml   measurements.xsd solvis-error.log* solvis.log* solvis-tiny.log* tinylog.properties log4j2.xml
+generatedDirs = SolvisErrorImages LearnedImages
+
+
+# FHEM settings
+
+accountFhem = fhem
+groupFhem = dialout
+perl = /usr/bin/perl
+
 fhemModul = 73_SolvisClient.pm
+fhemDir = $(baseDir)/$(accountFhem)
+fhemModulesDir = $(fhemDir)/FHEM
 packageFhemDir = FHEM
 fhemCommand = ./contrib/commandref_join.pl -noWarnings
 fhemCommandRef = $(fhemDir)/docs/commandref.html
 serviceFhem = fhem.service
 fhemRestart = 0
-baseDir = /opt
-accountFhem = fhem
-fhemDir = $(baseDir)/$(accountFhem)
-account = solvis
-solvisDir = $(baseDir)/$(account)
-serverDir = $(solvisDir)/SolvisSmartHomeServer
-solvisJar = SolvisSmartHomeServer.jar
-baseXml = base
-systemD = /etc/systemd/system
-serviceDebug = DebugSolvisSmartHomeServer
-service = SolvisSmartHomeServer
-java = /usr/bin/java
-javaDebugPort = 0.0.0.0:10737
-javaAgentlib = jdwp=transport=dt_socket,suspend=n,server=y,address=$(javaDebugPort)
-perl = /usr/bin/perl
-group = dialout
-start = sudo -u $(account) $(java) -jar $(serverDir)/$(solvisJar)
-startDebug = sudo -u $(account) $(java) -agentlib:$(javaAgentlib) -jar $(serverDir)/$(solvisJar)
-startLocal = sudo -u $(account) $(java) -jar $(solvisJar)
-writablePath = `sed -n 's/.*\?writablePathLinux="\([^"]*\)".*/\1/gp' base.xml`
-generatedBaseDir = SolvisServerData
-generatedFiles = control.xml* control.xsd graficData.xml graficData.xsd  measurements.xml   measurements.xsd solvis-error.log* solvis.log* solvis-tiny.log* tinylog.properties log4j2.xml
-generatedDirs = SolvisErrorImages LearnedImages
+
+
 
 .SUFFIXES:
 
 eraseGenerated:
+	set -x ; \
 	cd "$(writablePath)/$(generatedBaseDir)" ; \
 	for file in $(generatedFiles) ; do \
 		rm $$file ; \
@@ -42,16 +63,26 @@ eraseGenerated:
 	if [ -z "$$(ls -A .)" ]; then \
 		cd - ; \
 		rm -r "$(writablePath)/$(generatedBaseDir)" ; \
+	fi ; \
+	cnt=`find $(solvisDir) -type f | wc -l` ; \
+	if [ $$cnt -eq 0 ]; then \
+		userdel -r $(accountSolvis) ; \
 	fi
+
+
 
 install: installSolvis installFHEM
 
 
-createUser:
-	grep $(account) /etc/passwd >/dev/null ; \
+
+$(solvisDir): Makefile
+	grep $(accountSolvis) /etc/passwd >/dev/null ; \
 	if [ $$? -ne 0 ] ; then \
-		useradd  -r -b $(baseDir) -s /bin/false $(account) ; \
+		set -x ; \
+		useradd  -r -b $(baseDir) -s /bin/false $(accountSolvis) ; \
 	fi
+	mkdir -p $@ ; \
+	chown -c $(accountSolvis) $@ ; \
 
 
 
@@ -59,11 +90,12 @@ uninstall: uninstallSolvis uninstallFHEM
 
 
 
+
 uninstallAll: uninstallSolvis eraseGenerated uninstallFHEM
 
 
 
-copyService: $(systemD)/$(service).service $(systemD)/$(serviceDebug).service
+copyService: $(serviceFiles) $(EnvironmentFilePath)
 
 
 
@@ -104,7 +136,9 @@ uninstallFHEM: rmFHEMModul createCommandRef
 
 
 rmFHEMModul:
-	rm $(fhemDir)/FHEM/$(fhemModul)
+	if [ -d $(fhemModulesDir) ] ; then \
+		rm -f $(fhemModulesDir)/$(fhemModul) ; \
+	fi
 
 
 
@@ -112,7 +146,9 @@ uninstallSolvis: uninstallService uninstallDebugService
 	rm $(serverDir)/$(solvisJar)
 	rm $(systemD)/$(service).service
 	rm $(systemD)/$(serviceDebug).service
-
+	rm $(serverDir)/$(baseXml).xml
+	rm $(serverDir)/$(baseXml).xsd
+	
 
 
 installSolvis: $(serverDir)/$(solvisJar) $(serverDir)/$(baseXml).xml  $(serverDir)/$(baseXml).xsd copyService
@@ -177,50 +213,50 @@ terminate: stopServices installSolvis
 
 
 foreground: stopServices installSolvis
-	sudo -u $(account) $(java) -jar $(serverDir)/$(solvisJar)
+	sudo -u $(accountSolvis) $(javaPath) -jar $(serverDir)/$(solvisJar)
 
 
 
 $(serverDir): $(solvisDir)
 	mkdir -p $@
-	chown -c $(account) $@
-	
-	
-	
-$(solvisDir): createUser
-	mkdir -p $@
-	chown -c $(account) $@
-	
+	chown -c $(accountSolvis) $@
+		
 
 
-$(fhemCommandRef):$(fhemDir)/FHEM/$(fhemModul)
+$(fhemCommandRef):$(fhemModulesDir)/$(fhemModul)
 	make createCommandRef
 
 
 
-$(fhemDir)/FHEM/$(fhemModul): $(packageFhemDir)/$(fhemModul)
-	cp $< $@
-	chown -c $(accountFhem):$(group) $@
+$(fhemModulesDir)/$(fhemModul): $(packageFhemDir)/$(fhemModul)
+	@set -x ; \
+	if [ -d $(fhemModulesDir) ] ; then \
+		cp $< $@ ; \
+		chown -c $(accountFhem):$(groupFhem) $@ ; \
+	fi
 
 
 
 createCommandRef:
-	cd $(fhemDir); sudo -u $(accountFhem) $(perl) $(fhemCommand)
-	@echo
-	@echo "************************************"
-	@echo "**                                **"
-	@echo "**     Bitte FHEM neu starten     **"
-	@echo "**                                **"
-	@echo "** z.B. mittels                   **"
-	@echo "**   sudo systemctl restart fhem  **"
-	@echo "**                                **"
-	@echo "************************************"
+	@set -x ; \
+	if [ -d $(fhemDir) ] ; then \
+		cd $(fhemDir); sudo -u $(accountFhem) $(perl) $(fhemCommand) ; \
+		echo ; \
+		echo "************************************" ; \
+		echo "**                                **" ; \
+		echo "**     Bitte FHEM neu starten     **" ; \
+		echo "**                                **" ; \
+		echo "** z.B. mittels                   **" ; \
+		echo "**   sudo systemctl restart fhem  **" ; \
+		echo "**                                **" ; \
+		echo "************************************" ; \
+	fi
 
 
 
 $(serverDir)/$(solvisJar): $(solvisJar) $(serverDir)
 	cp $< $@
-	chown -c $(account) $@
+	chown -c $(accountSolvis) $@
 
 
 
@@ -230,23 +266,22 @@ $(serverDir)/$(baseXml).xml : $(baseXml).xml
 		chown -c `ls -l $< | awk '{ print $$3":"$$4 }'` $<.old ; \
 	fi 
 	cp $< $@
-	chown -c $(account) $@
+	chown -c $(accountSolvis) $@
 	chmod 600 $@
 
 
 
 $(serverDir)/$(baseXml).xsd : $(baseXml).xsd
 	cp $< $@
-	chown -c $(account) $@
+	chown -c $(accountSolvis) $@
 
 
 
-$(systemD)/$(service).service: $(service).service
-	cp $< $@
-	systemctl daemon-reload
-
-
-
-$(systemD)/$(serviceDebug).service: $(serviceDebug).service
-	cp $< $@
+$(serviceFiles) : $(serviceSources) Makefile
+	sed \
+		-e 's/\$$(accountSolvis)/$(accountSolvis)/' \
+		-e 's/\$$(solvisJarPath)/$(subst /,\/,$(solvisJarPath))/' \
+		-e 's/\$$(javaPath)/$(subst /,\/,$(javaPath))/' \
+		-e 's/\$$(javaAgentlib)/$(javaAgentlib)/' \
+	$(@F) > $@
 	systemctl daemon-reload
