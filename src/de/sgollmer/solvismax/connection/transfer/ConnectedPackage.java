@@ -13,7 +13,9 @@ import de.sgollmer.solvismax.Version;
 import de.sgollmer.solvismax.connection.ISendData;
 import de.sgollmer.solvismax.connection.mqtt.MqttData;
 import de.sgollmer.solvismax.error.PackageException;
+import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.objects.data.LongValue;
+import de.sgollmer.solvismax.model.objects.data.SingleData;
 
 public class ConnectedPackage extends JsonPackage implements ISendData {
 
@@ -44,8 +46,21 @@ public class ConnectedPackage extends JsonPackage implements ISendData {
 	}
 
 	@Override
-	void finish() throws PackageException  {
-		throw new PackageException("ConnectedPackage can't be received");
+	void finish() throws PackageException, TypeException {
+		Frame frame = this.data;
+		Element e = frame.get("ClientId");
+		SingleData<?> data = e.getValue().getSingleData();
+		if (data == null) {
+			throw new PackageException("Illegal format of ConnectedPackage");
+		}
+		Integer clientId = data.getInt();
+
+		if (clientId == null) {
+			throw new PackageException("Illegal format ClientId in ConnectedPackage");
+		}
+
+		this.clientId = clientId;
+		this.data = null;
 	}
 
 	@Override
