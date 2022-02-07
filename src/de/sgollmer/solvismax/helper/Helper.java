@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
@@ -37,12 +39,19 @@ public class Helper {
 
 	private static Collection<InterfaceAddress> getLocalInterfaceAddresses() {
 		if (LOCAL_INTERFACE_ADDRESSES == null) {
-			InetAddress localHost;
 			try {
-				localHost = Inet4Address.getLocalHost();
-				NetworkInterface networkInterface = NetworkInterface.getByInetAddress(localHost);
-				LOCAL_INTERFACE_ADDRESSES = networkInterface.getInterfaceAddresses();
-			} catch (UnknownHostException | SocketException e) {
+				LOCAL_INTERFACE_ADDRESSES = new ArrayList<>();
+				Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+				while (nis.hasMoreElements()) {
+					NetworkInterface networkInterface = nis.nextElement();
+					if (networkInterface.isLoopback()) {
+						continue;
+					}
+					for (InterfaceAddress address : networkInterface.getInterfaceAddresses()) {
+						LOCAL_INTERFACE_ADDRESSES.add(address);
+					}
+				}
+			} catch (SocketException e) {
 				return null;
 			}
 		}
@@ -192,6 +201,10 @@ public class Helper {
 			Thread thread = Thread.currentThread();
 			String threadName = thread.getName();
 			thread.setName(threadName + "-finished");
+		}
+
+		public static void shutdown() {
+			EXECUTOR.shutdown();
 		}
 
 	}
@@ -461,8 +474,8 @@ public class Helper {
 		byte[] bIp = address.getAddress();
 
 		byte[] bNIp = local.getAddress().getAddress();
-		
-		if ( bIp.length != bNIp.length ) {
+
+		if (bIp.length != bNIp.length) {
 			return null;
 		}
 

@@ -38,6 +38,7 @@ import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
@@ -71,10 +72,10 @@ public class Main {
 	private Mqtt mqtt = null;
 
 	private enum ExecutionMode {
-		STANDARD(true, true, false),//
-		LEARN(false, true, false),//
-		DOCUMENTATION_OF_UNIT(false, false, true),//
-		CHANNELS_OF_ALL_CONFIGURATIONS(false, false, false),//
+		STANDARD(true, true, false), //
+		LEARN(false, true, false), //
+		DOCUMENTATION_OF_UNIT(false, false, true), //
+		CHANNELS_OF_ALL_CONFIGURATIONS(false, false, false), //
 		IOBROKER(false, false, true);
 
 		private final boolean start;
@@ -120,7 +121,7 @@ public class Main {
 				boolean found = true;
 
 				switch (command) {
-					case "string-to-crypt":		// Einen String verschlüsseln
+					case "string-to-crypt": // Einen String verschlüsseln
 						if (value == null) {
 							System.err.println("To less arguments!");
 							System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
@@ -134,17 +135,17 @@ public class Main {
 							System.exit(Constants.ExitCodes.CRYPTION_FAIL);
 						}
 						break;
-					case "create-task-xml":		// Eine Steuerfile für den Windows-Task-Manager erstellen
+					case "create-task-xml": // Eine Steuerfile für den Windows-Task-Manager erstellen
 						if (value == null) {
 							System.err.println("To less arguments!");
 							System.exit(Constants.ExitCodes.ARGUMENT_FAIL);
 						}
 						createTaskName = value;
 						break;
-					case "onBoot":				// TaskManager: Start on boot
+					case "onBoot": // TaskManager: Start on boot
 						onBoot = true;
 						break;
-					case "base-xml":			// Base-xml-Path
+					case "base-xml": // Base-xml-Path
 						baseXml = value;
 						break;
 					default:
@@ -268,6 +269,16 @@ public class Main {
 			serverSocket = this.openSocket(baseData.getPort());
 		}
 
+		Runnable runnable = new Runnable() {
+
+			@Override
+			public void run() {
+				Main.this.shutDownHandling(true);
+			}
+		};
+
+		Runtime.getRuntime().addShutdownHook(new Thread(runnable));
+
 		try {
 			this.instances = new Instances(baseData, executionMode == ExecutionMode.LEARN);
 		} catch (IOException | XmlException | XMLStreamException | AssignmentException | FileException
@@ -374,15 +385,6 @@ public class Main {
 			logger.error("Error: Mqtt connection error", e);
 			System.exit(Constants.ExitCodes.MQTT_ERROR);
 		}
-		Runnable runnable = new Runnable() {
-
-			@Override
-			public void run() {
-				Main.this.shutDownHandling(true);
-			}
-		};
-
-		Runtime.getRuntime().addShutdownHook(new Thread(runnable));
 
 		this.instances.initialized();
 		this.server.start();
@@ -392,7 +394,7 @@ public class Main {
 		// runnable.run();
 
 	}
-	
+
 	private Collection<String> splitWindowsArgs(final String[] args) {
 		Collection<String> argCollection = new ArrayList<>();
 		for (String argO : args) {
@@ -485,13 +487,26 @@ public class Main {
 		if (this.server != null) {
 			this.server.abort();
 		}
+
+		Helper.Runnable.shutdown();
+
 		if (out) {
 			logger.info("Server terminated (started at " + Main.this.startTime + ")");
 		}
 	}
 
 	public static void main(final String[] args) {
-		Main.getInstance().execute(args);
+//		try {
+//			Thread.sleep(20000);
+//		} catch (InterruptedException e) {
+//		}
+		Main main = Main.getInstance();
+		try {
+
+			main.execute(args);
+		} catch (Throwable e) {
+			main.shutDownHandling(true);
+		}
 	}
 
 	private void waitForValidTime() throws TerminationException {

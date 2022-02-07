@@ -200,6 +200,7 @@ public class Mqtt {
 		}
 
 		this.mqttThread.submit();
+		this.mqttQueue.submit();
 	}
 
 	class PublishObserver implements IObserver<ISendData> {

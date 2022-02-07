@@ -22,7 +22,6 @@ public class MqttQueue extends Runnable {
 	public MqttQueue(final Mqtt mqtt) {
 		super("MqttQueue");
 		this.mqtt = mqtt;
-		this.submit();
 	}
 
 	public synchronized void publish(final MqttData data) {
