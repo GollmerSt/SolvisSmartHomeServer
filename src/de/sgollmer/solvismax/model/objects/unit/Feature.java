@@ -11,7 +11,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class Feature implements ArrayXml.IElement<Feature> {
+public class Feature implements ArrayXml.IElement<Feature, Feature> {
 	final String id;
 	final boolean value;
 
@@ -78,5 +78,10 @@ public class Feature implements ArrayXml.IElement<Feature> {
 	public void writeXml(XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeAttribute("id", this.id);
 		writer.writeAttribute("value", Boolean.toString(this.value));
+	}
+
+	@Override
+	public Feature getBase() {
+		return this;
 	}
 }

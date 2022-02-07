@@ -7,7 +7,14 @@
 
 package de.sgollmer.solvismax.helper;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
@@ -24,6 +31,23 @@ public class Helper {
 
 	@SuppressWarnings("unused")
 	private static final ILogger logger = LogManager.getInstance().getLogger(Helper.class);
+
+	private static Collection<InterfaceAddress> LOCAL_INTERFACE_ADDRESSES = null;
+	private static Pattern IP_V4_ADDRESS_PATTERN = Pattern.compile("((\\d+\\.){3}\\d+)(:\\d+)?");
+
+	private static Collection<InterfaceAddress> getLocalInterfaceAddresses() {
+		if (LOCAL_INTERFACE_ADDRESSES == null) {
+			InetAddress localHost;
+			try {
+				localHost = Inet4Address.getLocalHost();
+				NetworkInterface networkInterface = NetworkInterface.getByInetAddress(localHost);
+				LOCAL_INTERFACE_ADDRESSES = networkInterface.getInterfaceAddresses();
+			} catch (UnknownHostException | SocketException e) {
+				return null;
+			}
+		}
+		return LOCAL_INTERFACE_ADDRESSES;
+	}
 
 	public static class Format {
 		private final Pattern pattern;
@@ -210,15 +234,15 @@ public class Helper {
 		@SuppressWarnings("unchecked")
 		private void add(final int value) {
 			if (this.value instanceof Integer) {
-				this.value = (R) new Integer((int) (((Integer) this.value).intValue() + value));
+				this.value = (R) Integer.valueOf(((Integer) this.value).intValue() + value);
 			} else if (this.value instanceof Byte) {
-				this.value = (R) new Byte((byte) (((Byte) this.value).intValue() + value));
+				this.value = (R) Byte.valueOf((byte) (((Byte) this.value).intValue() + value));
 			} else if (this.value instanceof Long) {
-				this.value = (R) new Long((long) (((Long) this.value).longValue() + value));
+				this.value = (R) Long.valueOf((long) (((Long) this.value).longValue() + value));
 			} else if (this.value instanceof Float) {
-				this.value = (R) new Float((float) (((Float) this.value).floatValue() + value));
+				this.value = (R) Float.valueOf((float) (((Float) this.value).floatValue() + value));
 			} else if (this.value instanceof Double) {
-				this.value = (R) new Double((double) (((Double) this.value).doubleValue() + value));
+				this.value = (R) Double.valueOf((double) (((Double) this.value).doubleValue() + value));
 			} else if (this.value != null) {
 				throw new UnsupportedOperationException(
 						"add cannot be used fot element of class " + this.value.getClass().getName());
@@ -391,4 +415,83 @@ public class Helper {
 		return builder.toString();
 	}
 
+	public static Collection<String> getNetworkUrls(String url) {
+		Collection<String> result = new ArrayList<>();
+		Matcher matcher = IP_V4_ADDRESS_PATTERN.matcher(url);
+		if (!matcher.matches()) {
+			result.add(url);
+		} else {
+			Integer port = null;
+			String portString = matcher.group(3);
+			if (portString != null) {
+				port = Integer.parseInt(portString.substring(1));
+			}
+			String hexString = matcher.group(1);
+			InetAddress[] addresses;
+			try {
+				addresses = Inet4Address.getAllByName(hexString);
+			} catch (UnknownHostException e) {
+				logger.error("Unexpected error on interpretation of IP address <" + hexString + ">. ignored!");
+				return null;
+			}
+			if (addresses.length != 1) {
+				logger.error("Unexpected error on interpretation of IP address <" + hexString + ">. ignored!");
+				return null;
+			}
+			result.add(url);
+			for (InterfaceAddress local : Helper.getLocalInterfaceAddresses()) {
+				InetAddress address;
+				try {
+					address = Inet4Address.getByName(url);
+					String netAddress = getNetworkAddress(local, address);
+					if (netAddress != null) {
+						if (port != null) {
+							netAddress += ':' + Integer.toString(port);
+						}
+						result.add(netAddress);
+					}
+				} catch (UnknownHostException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	private static String getNetworkAddress(final InterfaceAddress local, final InetAddress address) {
+		byte[] bIp = address.getAddress();
+
+		byte[] bNIp = local.getAddress().getAddress();
+		
+		if ( bIp.length != bNIp.length ) {
+			return null;
+		}
+
+		byte[] bSub = new byte[bNIp.length];
+		Arrays.fill(bSub, (byte) 0);
+		int prefixLength = local.getNetworkPrefixLength();
+		int cnt0xff = prefixLength / 8;
+		prefixLength %= 8;
+		Arrays.fill(bSub, 0, cnt0xff, (byte) 0xff);
+		bSub[cnt0xff] = (byte) (0xff << (8 - prefixLength));
+
+		byte[] bRslt = new byte[bNIp.length];
+
+		boolean same = true;
+
+		for (int i = 0; i < bIp.length; ++i) {
+			bRslt[i] = (byte) (bIp[i] & ~bSub[i] | (bNIp[i] & bSub[i]));
+			same &= bRslt[i] != bIp[i];
+		}
+
+		if (same) {
+			return null;
+		} else {
+			try {
+				return InetAddress.getByAddress(bRslt).getHostAddress();
+			} catch (UnknownHostException e) {
+				return null;
+			}
+		}
+
+	}
 }

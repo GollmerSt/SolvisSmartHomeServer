@@ -1,5 +1,14 @@
 A E N D E R U N G E N
 
+Version 01.05.02
+
+    07.02.2022  In Zukunft muss ich aus der Ferne mit unterschiedlichen IPs die Solvis-Anlage
+                ansprechen können. Aus diesem Grund habe ich ein auf Git undokumentiertes XML-Tag
+                Urls in den Unit-Tag der base.xml eingeführt. In dem entsprechenden xsd-File ist
+                der Tag dokumentiert. Auf diese Weise können unterschioedliche Urls für die Anlage
+                definiert werden.
+
+
 Version 01.05.01
 
     27.12.2021  Die CLI-Option "--server-terminate" funktionierte nicht mehr (seit V01.05.01-rc1).

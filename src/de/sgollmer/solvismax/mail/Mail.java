@@ -56,7 +56,7 @@ public class Mail {
 		recipientTypeMap.put("BCC", RecipientType.BCC);
 	}
 
-	static class Recipient implements ArrayXml.IElement<Recipient> {
+	static class Recipient implements ArrayXml.IElement<Recipient,Recipient> {
 		private final String name;
 		private final String address;
 		private final RecipientType type;
@@ -114,6 +114,11 @@ public class Mail {
 		@Override
 		public CreatorByXML<Recipient> getCreator(final String name, final BaseCreator<?> creator) {
 			return new Creator(name, creator);
+		}
+
+		@Override
+		public Recipient getBase() {
+			return this;
 		}
 	}
 

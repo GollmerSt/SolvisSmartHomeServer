@@ -66,6 +66,29 @@
 	<complexType name="Unit">
 
 		<sequence>
+			<element name="Urls" maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>Es gibt Fälle, wo es mehrer Urls geben kann, um die
+						gleiche Anlage zu erreichen. Dies benötige ich z.B zum Testen. Da
+						die Anlage weit entfernt ist, gibt es für den Zugriff aus der
+						Ferne andere Urls als direkt. In diesem Fall kann man mehrere Urls
+						in diesen Tag eintragen.
+						Der Server geht alle durch und merkt sich
+						den ersten, der mit der
+						passenden Antwort wieder kommt. Der
+						Response auf den XML-String
+						ist hier das entschende Kriterium.
+						Wenn der Tag Urls angegeben wird, werden das url-Attribut vom
+						Unit-Eintrag ignoriert. Es erscheint dann im Log eine Warnung.
+					</documentation>
+				</annotation>
+				<complexType>
+					<sequence>
+						<element name="Url" type="tns:Url" maxOccurs="unbounded"
+							minOccurs="0"></element>
+					</sequence>
+				</complexType>
+			</element>
 			<element name="Extensions" type="tns:Extensions"
 				maxOccurs="1" minOccurs="0">
 			</element>
@@ -94,8 +117,9 @@
 					</sequence>
 				</complexType>
 			</element>
-			<element name="ChannelOptions"
-				type="tns:ChannelOptions" maxOccurs="1" minOccurs="0"></element>
+			<element name="ChannelOptions" type="tns:ChannelOptions"
+				maxOccurs="1" minOccurs="0">
+			</element>
 		</sequence>
 		<attribute name="id" type="string" use="required">
 			<annotation>
@@ -617,7 +641,7 @@
 
 	<simpleType name="Url">
 		<restriction base="anyURI">
-			<pattern value="[^:/]*"></pattern>
+			<pattern value="[^:/]*(:\d+)?"></pattern>
 		</restriction>
 	</simpleType>
 
@@ -844,10 +868,13 @@
 	</complexType>
 
 	<complexType name="ChannelOptions">
-        <annotation>
-        	<documentation>Über die ChannelOptions können die Werte der Kanäle modifitziert werden oder auch bestimmt werden, dass sie nach einem PowerOn der Solvis-Anlage verzögert erfasst werden.</documentation>
-        </annotation>
-        <sequence>
+		<annotation>
+			<documentation>Über die ChannelOptions können die Werte der Kanäle
+				modifitziert werden oder auch bestimmt werden, dass sie nach einem
+				PowerOn der Solvis-Anlage verzögert erfasst werden.
+			</documentation>
+		</annotation>
+		<sequence>
 			<element name="Channel" type="tns:Channel"
 				maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
@@ -858,7 +885,8 @@
 			<documentation>
 				Über dieses Element kann die Werte des Kanals
 				modifitziert werden oder auch bestimmt werden, dass er
-				nach einem PowerOn der Solvis-Anlage verzögert erfasst
+				nach einem
+				PowerOn der Solvis-Anlage verzögert erfasst
 				wird
 			</documentation>
 		</annotation>
@@ -871,15 +899,20 @@
 		</attribute>
 		<attribute name="fix" type="float" use="optional">
 			<annotation>
-				<documentation>Der Messwert/ausgelesene Wert wird unabhängig vom wirklichen Wert auf diesen festen Wert gestellt.</documentation>
-			</annotation></attribute>
+				<documentation>Der Messwert/ausgelesene Wert wird unabhängig vom
+					wirklichen Wert auf diesen festen Wert gestellt.
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="offset" use="optional" type="float">
 			<annotation>
 				<documentation>
 					Der Offset wird bei der Übertragung zum
 					SmarthomeSystem aufaddier. Ist das Attribut "factor"
-					zusätzlich definiert, wird der Wert erst mit dem
-					Faktor multipliziert und dann der Offset addiert.
+					zusätzlich
+					definiert, wird der Wert erst mit dem
+					Faktor multipliziert und dann
+					der Offset addiert.
 				</documentation>
 			</annotation>
 
@@ -889,8 +922,10 @@
 				<documentation>
 					Der Faktor wird bei der Übertragung zum
 					SmarthomeSystem mit dem Wert multipliziert. Ist das
-					Attribut "offset" zusätzlich definiert, wird der
-					Wert erst mit dem Faktor multipliziert und dann der
+					Attribut
+					"offset" zusätzlich definiert, wird der
+					Wert erst mit dem Faktor
+					multipliziert und dann der
 					Offset addiert.
 				</documentation>
 			</annotation>
@@ -900,7 +935,8 @@
 				<documentation>
 					Ist dieses Attribut definiert, wird der angegeben
 					Kanal nach einem PowerOn verzögert erfasst. Manche
-					Sensoren der Solvis-Anlage
+					Sensoren der
+					Solvis-Anlage
 				</documentation>
 			</annotation>
 		</attribute>

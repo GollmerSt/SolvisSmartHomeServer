@@ -113,7 +113,8 @@ public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 			String id = name.getLocalPart();
 			switch (id) {
 				case XML_RECIPIENTS:
-					return new ArrayXml.Creator<Recipient>(id, this.getBaseCreator(), new Recipient(), XML_RECIPIENT);
+					return new ArrayXml.Creator<Recipient, Recipient>(id, this.getBaseCreator(), new Recipient(),
+							XML_RECIPIENT);
 				case XMl_PROXY:
 					return new Proxy.Creator(id, this.getBaseCreator());
 			}
@@ -125,7 +126,7 @@ public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 		public void created(final CreatorByXML<?> creator, final Object created) {
 			switch (creator.getId()) {
 				case XML_RECIPIENTS:
-					this.recipients = ((ArrayXml<Recipient>) created).getArray();
+					this.recipients = ((ArrayXml<Recipient, Recipient>) created).getArray();
 					break;
 				case XMl_PROXY:
 					this.proxy = (Proxy) created;

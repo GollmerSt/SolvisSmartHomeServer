@@ -21,6 +21,8 @@ import java.net.NoRouteToHostException;
 import java.net.PasswordAuthentication;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.imageio.ImageIO;
 
@@ -29,6 +31,7 @@ import de.sgollmer.solvismax.Constants.Solvis;
 import de.sgollmer.solvismax.connection.transfer.ConnectionState;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
+import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.SolvisState;
@@ -38,7 +41,11 @@ import de.sgollmer.solvismax.objects.Coordinate;
 public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(SolvisConnection.class);
-	private final String urlBase;
+
+	private final Collection<UrlBase> urlBases;
+	private UrlBase urlBase = null;
+	private int urlBaseFailedCnt = 0;
+
 	private final IAccountInfo accountInfo;
 	private final int connectionTimeout;
 	private final int readTimeout;
@@ -53,10 +60,24 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 	private long connectTime = -1;
 	private HttpURLConnection urlConnection = null;
 
-	public SolvisConnection(final String urlBase, final IAccountInfo accountInfo, final int connectionTimeout,
-			final int readTimeout, final int powerOffDetectedAfterIoErrors, final int powerOffDetectedAfterTimeout_ms,
-			final boolean fwLth2_21_02A) {
-		this.urlBase = urlBase;
+	public SolvisConnection(final Collection<String> urlBases, final String urlBase, final IAccountInfo accountInfo,
+			final int connectionTimeout, final int readTimeout, final int powerOffDetectedAfterIoErrors,
+			final int powerOffDetectedAfterTimeout_ms, final boolean fwLth2_21_02A) {
+
+		this.urlBases = new ArrayList<>();
+		if (urlBases != null) {
+			for (String urlO : urlBases) {
+				for (String urlI : Helper.getNetworkUrls(urlO)) {
+					this.urlBases.add(new UrlBase(urlI));
+				}
+			}
+			if (urlBase != null) {
+				logger.warn("base.xml error, only one of urlBases or urlbase should be defined! urlbase ignored.");
+			}
+		} else {
+			this.urlBases.add(new UrlBase(urlBase));
+		}
+
 		this.accountInfo = accountInfo;
 		this.connectionTimeout = connectionTimeout;
 		this.readTimeout = readTimeout;
@@ -107,27 +128,99 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 
 	}
 
+	private class UrlBase {
+		private final String urlBase;
+		private boolean xmlValid = false;
+		private int failedCnt = -1;
+
+		public UrlBase(final String urlBase) {
+			this.urlBase = urlBase;
+		}
+
+		public void setXmlValid() {
+			this.xmlValid = true;
+		}
+
+		public void setXmlFailed() {
+			if (!this.xmlValid) {
+				this.failedCnt = SolvisConnection.this.urlBaseFailedCnt;
+			}
+		}
+
+		public void setFailed() {
+			this.failedCnt = SolvisConnection.this.urlBaseFailedCnt;
+		}
+
+		public boolean isFailed() {
+			return this.failedCnt == SolvisConnection.this.urlBaseFailedCnt;
+		}
+
+		@Override
+		public String toString() {
+			return this.urlBase;
+		}
+
+	}
+
 	private InputStream connect(final String suffix) throws IOException, TerminationException {
 		try {
 			this.connectTime = System.currentTimeMillis();
 			MyAuthenticator authenticator = new MyAuthenticator();
 			Authenticator.setDefault(authenticator);
-			URL url = new URL("http://" + this.urlBase + suffix);
-			synchronized (this) {
-				this.urlConnection = (HttpURLConnection) url.openConnection();
-				this.urlConnection.setConnectTimeout(this.connectionTimeout);
-				this.urlConnection.setReadTimeout(this.readTimeout);
-//				System.out.println(
-//						"Connect-Timeout: " + uc.getConnectTimeout() + ", Read-Timeout: " + uc.getReadTimeout());
-				this.urlConnection.setUseCaches(false);
-				InputStream in = this.urlConnection.getInputStream();
-				authenticator.connected();
-				this.setConnected();
-				return in;
+
+			InputStream in = null;
+
+			if (this.urlBase != null && !this.urlBase.isFailed()) {
+				URL url = new URL("http://" + this.urlBase + suffix);
+				in = this.connectToOne(url, authenticator);
+			} else {
+				IOException exception = null;
+				this.urlBase = null;
+				for (UrlBase urlBase : this.urlBases) {
+					if (!urlBase.isFailed()) {
+						try {
+							exception = null;
+							URL url = new URL("http://" + urlBase + suffix);
+							in = this.connectToOne(url, authenticator);
+							this.urlBase = urlBase;
+							logger.info("Unit found at url <" + urlBase + ">.");
+						} catch (ConnectException | SocketTimeoutException | NoRouteToHostException e) {
+							urlBase.setFailed();
+							exception = e;
+						}
+					}
+				}
+				if (this.urlBase == null) {
+
+					++this.urlBaseFailedCnt;
+
+					if (exception != null) {
+						throw exception;
+					} else {
+						throw new ConnectException("No valid url found (result format  failed).");
+					}
+				}
 			}
+			this.setConnected();
+			return in;
+
 		} catch (ConnectException | SocketTimeoutException | NoRouteToHostException e) {
 			this.handleExceptionAndThrow(e);
 			return null; // dummy
+		}
+	}
+
+	private InputStream connectToOne(final URL url, final MyAuthenticator authenticator) throws IOException {
+		synchronized (this) {
+			this.urlConnection = (HttpURLConnection) url.openConnection();
+			this.urlConnection.setConnectTimeout(this.connectionTimeout);
+			this.urlConnection.setReadTimeout(this.readTimeout);
+//				System.out.println(
+//						"Connect-Timeout: " + uc.getConnectTimeout() + ", Read-Timeout: " + uc.getReadTimeout());
+			this.urlConnection.setUseCaches(false);
+			InputStream in = this.urlConnection.getInputStream();
+			authenticator.connected();
+			return in;
 		}
 	}
 
@@ -188,18 +281,20 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 						finished = true;
 					} else {
 						builder.append(array, 0, n);
-						if (builder.substring(builder.length() - 6).equals("</xml>")) {
+						if (builder.length() >= 6 && builder.substring(builder.length() - 6).equals("</xml>")) {
 							finished = true;
 						}
 					}
 				}
 				in.close();
 			}
-			if (!builder.substring(builder.length() - 6).equals("</xml>")) {
+			if (builder.length() < 6 || !builder.substring(builder.length() - 6).equals("</xml>")) {
+				this.urlBase.setXmlFailed();
 				IOException ex = new IOException("Solvis XML string not complete.");
 				logger.error(ex.getMessage());
 				throw ex;
 			}
+			this.urlBase.setXmlValid();
 			builder.delete(0, 11);
 			builder.delete(builder.length() - 15, builder.length());
 
@@ -274,7 +369,7 @@ public class SolvisConnection extends Observer.Observable<ConnectionState> {
 		this.errorCount = 0;
 		this.firstTimeout = 0;
 
-		this.solvisState.connectionSuccessfull(this.urlBase);
+		this.solvisState.connectionSuccessfull(this.urlBase.toString());
 
 	}
 

@@ -136,7 +136,8 @@ public class SystemGrafics implements IXmlWriteable {
 				case XML_SCREEN_GRAFIC:
 					return new ScreenGraficData.Creator(id, this.getBaseCreator());
 				case XML_FEATURES:
-					return new ArrayXml.Creator<Feature>(id, this.getBaseCreator(), new Feature(), XML_FEATURE);
+					return new ArrayXml.Creator<Feature, Feature>(id, this.getBaseCreator(), new Feature(),
+							XML_FEATURE);
 			}
 			return null;
 		}
@@ -150,7 +151,7 @@ public class SystemGrafics implements IXmlWriteable {
 					break;
 				case XML_FEATURES:
 					@SuppressWarnings("unchecked")
-					Collection<Feature> features = ((ArrayXml<Feature>) created).getArray();
+					Collection<Feature> features = ((ArrayXml<Feature, Feature>) created).getArray();
 					for (Feature feature : features) {
 						this.features.put(feature.getId(), feature.isSet());
 					}

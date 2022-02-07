@@ -31,6 +31,8 @@ public class Unit implements IAccountInfo {
 	private static final ILogger logger = LogManager.getInstance().getLogger(Unit.class);
 
 	private static final String XML_FEATURES = "Features";
+	private static final String XML_URLS = "Urls";
+	private static final String XML_URL = "Url";
 	private static final String XML_IGNORED_CHANNELS = "IgnoredChannels";
 	private static final String XML_REG_EX = "RegEx";
 	private static final String XML_CHANNEL_ASSIGNMENTS = "ChannelAssignments";
@@ -40,6 +42,7 @@ public class Unit implements IAccountInfo {
 
 	private final String id;
 	private final Configuration configuration;
+	private final Collection<String> urls;
 	private final String url;
 	private final String account;
 	private final CryptAes password;
@@ -66,19 +69,21 @@ public class Unit implements IAccountInfo {
 	private final AllDurations durations;
 	private final AllChannelOptions channelOptions;
 
-	private Unit(final String id, final Configuration configuration, final String url, final String account,
-			final CryptAes password, final int defaultAverageCount, final int measurementHysteresisFactor,
-			final int defaultMeasurementsInterval_ms, final int defaultMeasurementsIntervalFast_ms,
-			final int forceUpdateAfterFastChangingIntervals, final int forcedUpdateInterval_ms,
-			final int doubleUpdateInterval_ms, final int bufferedInterval_ms, final int watchDogTime_ms,
-			final int releaseBlockingAfterUserAccess_ms, final int releaseBlockingAfterServiceAccess_ms,
-			final int clearNotRequiredTime_ms, final boolean delayAfterSwitchingOn, final boolean fwLth2_21_02A,
-			final Features features, final int ignoredFrameThicknesScreenSaver,
-			final Collection<Pattern> ignoredChannels, final Map<String, ChannelAssignment> assignments,
-			final boolean csvUnit, final AllDurations durations, final AllChannelOptions channelOptions) {
+	private Unit(final String id, final Configuration configuration, final Collection<String> urls, final String url,
+			final String account, final CryptAes password, final int defaultAverageCount,
+			final int measurementHysteresisFactor, final int defaultMeasurementsInterval_ms,
+			final int defaultMeasurementsIntervalFast_ms, final int forceUpdateAfterFastChangingIntervals,
+			final int forcedUpdateInterval_ms, final int doubleUpdateInterval_ms, final int bufferedInterval_ms,
+			final int watchDogTime_ms, final int releaseBlockingAfterUserAccess_ms,
+			final int releaseBlockingAfterServiceAccess_ms, final int clearNotRequiredTime_ms,
+			final boolean delayAfterSwitchingOn, final boolean fwLth2_21_02A, final Features features,
+			final int ignoredFrameThicknesScreenSaver, final Collection<Pattern> ignoredChannels,
+			final Map<String, ChannelAssignment> assignments, final boolean csvUnit, final AllDurations durations,
+			final AllChannelOptions channelOptions) {
 		this.id = id;
 		this.configuration = configuration;
 		this.url = url;
+		this.urls = urls;
 		this.account = account;
 		this.password = password;
 		this.defaultAverageCount = defaultAverageCount;
@@ -112,6 +117,10 @@ public class Unit implements IAccountInfo {
 		return this.configuration;
 	}
 
+	public Collection<String> getUrls() {
+		return this.urls;
+	}
+
 	public String getUrl() {
 		return this.url;
 	}
@@ -135,6 +144,7 @@ public class Unit implements IAccountInfo {
 		private Configuration configuration;
 		private final Configuration.Creator configurationCreator;
 		private String url;
+		private Collection<String> urls;
 		private String account;
 		private CryptAes password = new CryptAes();
 		private int defaultAverageCount;
@@ -256,7 +266,7 @@ public class Unit implements IAccountInfo {
 
 			this.configuration = this.configurationCreator.create();
 
-			return new Unit(this.id, this.configuration, this.url, this.account, this.password,
+			return new Unit(this.id, this.configuration, this.urls, this.url, this.account, this.password,
 					this.defaultAverageCount, this.measurementHysteresisFactor, this.defaultMeasurementsInterval_ms,
 					this.defaultMeasurementsIntervalFast_ms, this.forceUpdateAfterFastChangingIntervals,
 					this.forcedUpdateInterval_ms, this.doubleUpdateInterval_ms, this.bufferedInterval_ms,
@@ -275,14 +285,17 @@ public class Unit implements IAccountInfo {
 				case XML_FEATURES:
 					return new Features.Creator(id, getBaseCreator());
 				case XML_IGNORED_CHANNELS:
-					return new ArrayXml.Creator<StringElement>(id, getBaseCreator(), StringElement.getBaseElement(),
-							XML_REG_EX);
+					return new ArrayXml.Creator<String, StringElement>(id, getBaseCreator(),
+							StringElement.getBaseElement(), XML_REG_EX);
 				case XML_CHANNEL_ASSIGNMENTS:
 					return new AssignmentsCreator(id, this.getBaseCreator());
 				case XML_DURATIONS:
 					return new AllDurations.Creator(id, this.getBaseCreator());
 				case XML_CHANNEL_OPTIONS:
 					return new AllChannelOptions.Creator(id, this.getBaseCreator());
+				case XML_URLS:
+					return new ArrayXml.Creator<String, StringElement>(id, this.getBaseCreator(),
+							StringElement.getBaseElement(), XML_URL);
 			}
 			return this.configurationCreator.getCreator(name);
 		}
@@ -295,10 +308,10 @@ public class Unit implements IAccountInfo {
 					break;
 				case XML_IGNORED_CHANNELS:
 					@SuppressWarnings("unchecked")
-					ArrayXml<StringElement> arrayXml = (ArrayXml<StringElement>) created;
-					for (StringElement ignoreChannel : arrayXml.getArray()) {
+					ArrayXml<String, StringElement> arrayXml = (ArrayXml<String, StringElement>) created;
+					for (String ignoreChannel : arrayXml.getArray()) {
 						try {
-							Pattern exp = Pattern.compile(ignoreChannel.toString());
+							Pattern exp = Pattern.compile(ignoreChannel);
 							this.ignoredChannels.add(exp);
 						} catch (PatternSyntaxException e) {
 							throw new XmlException("Regular expression error on expression: " + ignoreChannel);
@@ -317,7 +330,11 @@ public class Unit implements IAccountInfo {
 				case XML_CHANNEL_OPTIONS:
 					this.channelOptions = (AllChannelOptions) created;
 					break;
-
+				case XML_URLS:
+					@SuppressWarnings("unchecked")
+					ArrayXml<String, StringElement> arrayXml1 = (ArrayXml<String, StringElement>) created;
+					this.urls = arrayXml1.getArray();
+					break;
 			}
 			this.configurationCreator.created(creator, created);
 		}
