@@ -67,7 +67,7 @@
 		<pathelement location="lib/smtp-1.6.2.jar" />
 		<pathelement location="lib/javax.activation-1.2.0.jar" />
 		<pathelement location="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" />
-		<pathelement location="lib/XMLLibrary_1.0.1.jar" />
+		<pathelement location="lib/XMLLibrary_1.0.2.jar" />
 	</path>
 	<target name="init">
 		<mkdir dir="${build.dir}" />
@@ -108,7 +108,7 @@
 			<zipfileset src="lib/javax.activation-1.2.0.jar" />
 			<zipfileset src="lib/org.eclipse.paho.client.mqttv3-1.2.5.jar" />
 			<zipfileset src="${private.dir}/temp/logger.jar" />
-			<zipfileset src="lib/XMLLibrary_1.0.1.jar" />
+			<zipfileset src="lib/XMLLibrary_1.0.2.jar" />
 			<manifest>
 				<attribute name="Main-Class" value="de.sgollmer.solvismax.Main" />
 				<attribute name="Built-Date" value="${TODAY}" />
