@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
@@ -31,7 +30,6 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 
 public class Helper {
 
-	@SuppressWarnings("unused")
 	private static final ILogger logger = LogManager.getInstance().getLogger(Helper.class);
 
 	private static Collection<InterfaceAddress> LOCAL_INTERFACE_ADDRESSES = null;
