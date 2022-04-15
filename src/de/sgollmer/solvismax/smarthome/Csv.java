@@ -69,8 +69,8 @@ public class Csv {
 
 		int textLength = insert.length();
 		int maxLength = HEADER2.length() - 4;
-		
-		String text ;
+
+		String text;
 
 		if (textLength > maxLength) {
 			text = insert.substring(0, maxLength);
@@ -197,7 +197,7 @@ public class Csv {
 		this.writer.write(Constants.CRLF);
 
 	}
-	
+
 	public void mqttTopicsOut(final Instances instances) throws IOException {
 		this.writer.append(HEADER1);
 		this.writer.append(HEADER2);
@@ -208,11 +208,11 @@ public class Csv {
 		this.writer.append("direction;topic;comment;");
 		this.writer.write(Constants.CRLF);
 		this.writer.write(Constants.CRLF);
-		
-		Collection< TopicData> topics = TopicType.getTopicDatas(instances);
-		
+
+		Collection<TopicData> topics = TopicType.getTopicDatas(instances);
+
 		for (TopicData topic : topics) {
-			if ( topic.isPublish()) {
+			if (topic.isPublish()) {
 				this.writer.append("publish");
 			} else {
 				this.writer.append("subscribe");
@@ -228,7 +228,7 @@ public class Csv {
 
 		this.writer.write(Constants.CRLF);
 		this.writer.write(Constants.CRLF);
-		
+
 	}
 
 }

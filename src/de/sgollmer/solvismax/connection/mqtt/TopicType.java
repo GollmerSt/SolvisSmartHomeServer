@@ -53,11 +53,11 @@ public enum TopicType {
 			"Meta description of the channel debug command (empty)"), //
 	UNIT_DEBUG_CHANNEL_COMMAND(new String[] { Constants.Mqtt.DEBUG_CHANNEL_PREFIX }, Constants.Mqtt.CMND_SUFFIX, //
 			true, true, false, Command.DEBUG_CHANNEL, Format.STRING, "Debug command"), //
-	UNIT_STATUS(null, Constants.Mqtt.STATUS , //
+	UNIT_STATUS(null, Constants.Mqtt.STATUS, //
 			false, true, false, null, Format.NONE, "Status of the unit (e.g. connection, power off)"), //
-	UNIT_HUMAN(null, Constants.Mqtt.HUMAN_ACCESS , //
+	UNIT_HUMAN(null, Constants.Mqtt.HUMAN_ACCESS, //
 			false, true, false, null, Format.NONE, "Human access status of the unit (e.g. user, service)"), //
-	UNIT_CONTROL(null, Constants.Mqtt.CONTROL , //
+	UNIT_CONTROL(null, Constants.Mqtt.CONTROL, //
 			false, true, false, null, Format.NONE, "Execution status of the Gui accesses"), //
 	// Channel must be at the end of the list, because the topics are nou unique
 	UNIT_CHANNEL_META(null, Constants.Mqtt.META_SUFFIX, //
@@ -101,7 +101,7 @@ public enum TopicType {
 	private TopicType(final String[] cmp, final String suffix, final boolean hasClientId, final boolean hasUnitId,
 			final boolean hasChannelId, final boolean onlyWriteChannels, final boolean onlyPollingChannel,
 			Command command, final Format format, final String comment) {
-		this.parts = cmp==null?Constants.Mqtt.EMPTY_ARRAY:cmp;
+		this.parts = cmp == null ? Constants.Mqtt.EMPTY_ARRAY : cmp;
 		this.suffix = suffix;
 		this.hasClientId = hasClientId;
 		this.hasUnitId = hasUnitId;
@@ -214,7 +214,7 @@ public enum TopicType {
 	public String[] getTopicParts(final Mqtt mqtt, final Solvis solvis, final String channelId) {
 		return this.getTopicParts(mqtt, solvis, channelId, false);
 	}
-	
+
 	private static String getTopic(String[] parts) {
 		StringBuilder builder = new StringBuilder(parts[0]);
 

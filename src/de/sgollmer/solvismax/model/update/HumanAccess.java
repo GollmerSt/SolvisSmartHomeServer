@@ -10,7 +10,6 @@ package de.sgollmer.solvismax.model.update;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.Strategy;
 import de.sgollmer.solvismax.model.update.UpdateStrategies.UpdateCreator;
 import de.sgollmer.xmllibrary.BaseCreator;
@@ -70,11 +69,6 @@ public class HumanAccess extends Strategy<HumanAccess> {
 		public UpdateCreator<HumanAccess> createCreator(final String id, final BaseCreator<?> creator) {
 			return new Creator(id, creator);
 		}
-
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) {
 
 	}
 

@@ -12,11 +12,11 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
 /**
@@ -27,9 +27,10 @@ import de.sgollmer.xmllibrary.XmlException;
  *
  */
 
-public class ScreenRef implements IAssigner {
+public class ScreenRef implements IXmlElement<SolvisDescription> {
 	private final String id;
 	private OfConfigs<AbstractScreen> screen = null;
+	private boolean initialized = false;
 
 	protected ScreenRef(String id) {
 		this.id = id;
@@ -78,18 +79,23 @@ public class ScreenRef implements IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws XmlException {
+	public void postProcess(SolvisDescription description) throws XmlException {
 		this.screen = description.getScreens().getScreen(this.id);
+		this.initialized = true;
+	}
 
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	public OfConfigs<AbstractScreen> getScreen() {
 		return this.screen;
 	}
 
-	public AbstractScreen getScreen( Solvis solvis) {
-		if ( this.screen == null ) {
-			return null ;
+	public AbstractScreen getScreen(Solvis solvis) {
+		if (this.screen == null) {
+			return null;
 		}
 		return this.screen.get(solvis);
 	}

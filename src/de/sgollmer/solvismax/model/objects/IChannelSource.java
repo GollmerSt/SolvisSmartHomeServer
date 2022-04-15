@@ -23,7 +23,7 @@ import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.model.objects.screen.IGraficsLearnable;
 
-public interface IChannelSource extends IAssigner, IGraficsLearnable {
+public interface IChannelSource extends IGraficsLearnable {
 
 	public ChannelDescription getRestoreChannel(final Solvis solvis);
 

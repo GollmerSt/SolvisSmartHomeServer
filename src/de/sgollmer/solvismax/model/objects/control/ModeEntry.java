@@ -13,11 +13,8 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.IAssigner;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.WhiteGraficRectangle;
 import de.sgollmer.solvismax.model.objects.data.IMode;
@@ -28,7 +25,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class ModeEntry implements IAssigner, IMode<ModeEntry> {
+public class ModeEntry implements IMode<ModeEntry> {
 
 	private static final String XML_GUI_SET = "GuiSet";
 	private static final String XML_TOUCH = "Touch";
@@ -57,14 +54,6 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 
 	GuiSet getGuiSet() {
 		return this.guiSet;
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) throws AssignmentException {
-		if (this.guiSet != null) {
-			this.guiSet.assign(description);
-		}
-
 	}
 
 	static class Creator extends CreatorByXML<ModeEntry> {
@@ -140,20 +129,13 @@ public class ModeEntry implements IAssigner, IMode<ModeEntry> {
 		return this.id.hashCode();
 	}
 
-	static class GuiSet implements IAssigner {
+	static class GuiSet {
 		private final TouchPoint touch;
 		private final ScreenGraficDescription grafic;
 
 		private GuiSet(final TouchPoint touch, final ScreenGraficDescription grafic) {
 			this.touch = touch;
 			this.grafic = grafic;
-		}
-
-		@Override
-		public void assign(final SolvisDescription description) throws AssignmentException {
-			if (this.touch != null) {
-				this.touch.assign(description);
-			}
 		}
 
 		TouchPoint getTouch() {

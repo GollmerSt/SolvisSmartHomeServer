@@ -12,15 +12,12 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants.Csv;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
@@ -261,13 +258,6 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public void assign(final SolvisDescription description) throws AssignmentException {
-		if (this.guiModification != null) {
-			this.guiModification.assign(description);
-		}
-	}
-
-	@Override
 	public UpperLowerStep getUpperLowerStep() {
 		Double incrementChange = null;
 		Double changedIncrement = null;
@@ -286,7 +276,7 @@ public class StrategyReadWrite extends StrategyRead {
 		);
 	}
 
-	private static class GuiModification extends GuiRead implements IAssigner {
+	private static class GuiModification extends GuiRead {
 		private final boolean wrapAround;
 		private final TouchPoint upper;
 		private final TouchPoint lower;
@@ -297,16 +287,6 @@ public class StrategyReadWrite extends StrategyRead {
 			this.wrapAround = wrapAround;
 			this.upper = upper;
 			this.lower = lower;
-		}
-
-		@Override
-		public void assign(final SolvisDescription description) throws AssignmentException {
-			if (this.upper != null) {
-				this.upper.assign(description);
-			}
-			if (this.lower != null) {
-				this.lower.assign(description);
-			}
 		}
 
 		private static class Creator extends CreatorByXML<GuiModification> {

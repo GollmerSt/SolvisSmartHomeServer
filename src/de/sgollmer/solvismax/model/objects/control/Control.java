@@ -14,7 +14,6 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.Csv;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -27,7 +26,6 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
-import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
 import de.sgollmer.solvismax.model.objects.IInstance;
 import de.sgollmer.solvismax.model.objects.Preparation;
@@ -44,6 +42,7 @@ import de.sgollmer.solvismax.model.update.UpdateStrategies;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class Control extends ChannelSource {
@@ -172,24 +171,6 @@ public class Control extends ChannelSource {
 	@Override
 	public Double getAccuracy() {
 		return this.strategy.getAccuracy();
-	}
-
-	@Override
-	public void assign(final SolvisDescription description)
-			throws ReferenceException, XmlException, AssignmentException {
-
-		if (this.updateStrategies != null) {
-			this.updateStrategies.assign(description);
-		}
-
-		if (this.strategy != null) {
-			this.strategy.assign(description);
-		}
-
-		if (this.guiAccess != null) {
-			this.guiAccess.assign(description);
-		}
-
 	}
 
 	@Override
@@ -378,7 +359,7 @@ public class Control extends ChannelSource {
 		return this.strategy.interpretSetData(singleData, internal);
 	}
 
-	static class GuiAccess implements IAssigner, IControlAccess {
+	static class GuiAccess implements IXmlElement<SolvisDescription>, IControlAccess {
 		private final String screenId;
 		private final Rectangle valueRectangle;
 		private final String preparationId;
@@ -388,6 +369,7 @@ public class Control extends ChannelSource {
 		private OfConfigs<AbstractScreen> screen = null;
 		private Preparation preparation = null;
 		private OfConfigs<ChannelDescription> restoreChannel = null;
+		private boolean initialized = false;
 
 		private GuiAccess(final String screenId, final Rectangle valueRectangle, final String preparationId,
 				final String restoreChannelId, DependencyGroup dependencies) {
@@ -476,8 +458,7 @@ public class Control extends ChannelSource {
 		}
 
 		@Override
-		public void assign(final SolvisDescription description)
-				throws ReferenceException, XmlException, AssignmentException {
+		public void postProcess(final SolvisDescription description) throws XmlException {
 			this.screen = description.getScreens().getScreen(this.screenId);
 			if (this.screen == null) {
 				throw new ReferenceException("Screen of reference < " + this.screenId + " > not found");
@@ -497,7 +478,12 @@ public class Control extends ChannelSource {
 				}
 			}
 
-			this.dependencies.assign(description);
+			this.initialized = true;
+		}
+
+		@Override
+		public boolean isInitialisationFinished() {
+			return this.initialized;
 		}
 
 		boolean prepare(final Solvis solvis) throws IOException, TerminationException {

@@ -4,28 +4,28 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
-import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.StringData;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class Dependency implements IAssigner {
+public class Dependency implements IXmlElement<SolvisDescription> {
 	private final String id;
 	private final String value;
 	private final Integer priority;
 	private final String standbyId;
 
 	private OfConfigs<ChannelDescription> channel = null;
+	private boolean initialized = false;
 
 	protected ChannelDescription description;
 
@@ -97,8 +97,7 @@ public class Dependency implements IAssigner {
 	}
 
 	@Override
-	public void assign(final SolvisDescription description)
-			throws XmlException, AssignmentException, ReferenceException {
+	public void postProcess(final SolvisDescription description) throws XmlException {
 		this.channel = description.getChannelDescriptions().get(this.id);
 		if (this.channel == null) {
 			throw new ReferenceException("Channel < " + this.id + " > not found");
@@ -119,6 +118,13 @@ public class Dependency implements IAssigner {
 			}
 		}
 
+		this.initialized = true;
+
+	}
+
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	public static boolean equals(final Dependency d1, final Dependency d2, final Solvis solvis) {

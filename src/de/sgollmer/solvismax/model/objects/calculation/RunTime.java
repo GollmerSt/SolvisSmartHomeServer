@@ -16,7 +16,6 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.backup.SystemBackup;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -197,10 +196,6 @@ public class RunTime extends Strategy<RunTime> {
 
 		}
 
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) {
 	}
 
 	@Override

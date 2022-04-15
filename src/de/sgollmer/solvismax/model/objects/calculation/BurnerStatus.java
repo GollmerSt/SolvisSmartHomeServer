@@ -10,9 +10,9 @@ package de.sgollmer.solvismax.model.objects.calculation;
 import java.util.Arrays;
 import java.util.Collection;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AliasException;
+import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.SolvisDataHelper;
 import de.sgollmer.solvismax.log.LogManager;
@@ -20,7 +20,6 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.ModeValue;
@@ -150,11 +149,6 @@ public class BurnerStatus extends Strategy<BurnerStatus> {
 			}
 
 		}
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) {
-
 	}
 
 	@Override

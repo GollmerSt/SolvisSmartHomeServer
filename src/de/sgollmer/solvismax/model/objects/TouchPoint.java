@@ -18,15 +18,17 @@ import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class TouchPoint implements IAssigner {
+public class TouchPoint implements IXmlElement<SolvisDescription> {
 
 	private static final String XML_COORDINATE = "Coordinate";
 
 	private final Coordinate coordinate;
 	private final String pushTimeId;
 	private final String releaseTimeId;
+	private boolean initialized = false;
 
 	private TouchPoint(final Coordinate coordinate, final String pushTimeId, final String releaseTimeId) {
 		this.coordinate = coordinate;
@@ -83,13 +85,19 @@ public class TouchPoint implements IAssigner {
 	}
 
 	@Override
-	public void assign(final SolvisDescription description) throws AssignmentException {
+	public void postProcess(final SolvisDescription description) throws AssignmentException {
 		Duration pushTimeDuration = description.getDuration(this.pushTimeId);
 		Duration releaseTimeDuration = description.getDuration(this.releaseTimeId);
 
 		if (pushTimeDuration == null || releaseTimeDuration == null) {
 			throw new AssignmentException("Duration time not found");
 		}
+		this.initialized = true;
+	}
+
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	public Coordinate getCoordinate() {
@@ -108,8 +116,8 @@ public class TouchPoint implements IAssigner {
 	}
 
 	public Integer getPushTime(Solvis solvis) {
-		Duration duration =  solvis.getDuration(this.pushTimeId);
-		if ( duration == null ) {
+		Duration duration = solvis.getDuration(this.pushTimeId);
+		if (duration == null) {
 			return null;
 		} else {
 			return duration.getTime_ms();
@@ -117,8 +125,8 @@ public class TouchPoint implements IAssigner {
 	}
 
 	public Integer getReleaseTime(Solvis solvis) {
-		Duration duration =  solvis.getDuration(this.releaseTimeId);
-		if ( duration == null ) {
+		Duration duration = solvis.getDuration(this.releaseTimeId);
+		if (duration == null) {
 			return null;
 		} else {
 			return duration.getTime_ms();

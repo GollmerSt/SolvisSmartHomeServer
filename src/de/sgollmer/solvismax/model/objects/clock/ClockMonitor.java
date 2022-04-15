@@ -17,7 +17,6 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.HelperException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -32,7 +31,6 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
-import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
@@ -47,9 +45,10 @@ import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class ClockMonitor implements IAssigner, IGraficsLearnable {
+public class ClockMonitor implements IGraficsLearnable, IXmlElement<SolvisDescription> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(ClockMonitor.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
@@ -78,6 +77,7 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 	private OfConfigs<AbstractScreen> screen = null;
 	private OfConfigs<AbstractScreen> okScreen = null;
+	private boolean initialized = false;
 
 	static {
 		CALENDAR_2018 = Calendar.getInstance();
@@ -99,21 +99,15 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 	}
 
 	@Override
-	public void assign(final SolvisDescription description) throws XmlException, AssignmentException {
+	public void postProcess(final SolvisDescription description) throws XmlException {
 		this.screen = description.getScreens().getScreen(this.screenId);
 		this.okScreen = description.getScreens().getScreen(this.okScreenId);
-		if (this.upper != null) {
-			this.upper.assign(description);
-		}
-		if (this.lower != null) {
-			this.lower.assign(description);
-		}
-		if (this.ok != null) {
-			this.ok.assign(description);
-		}
-		for (DatePart part : this.dateParts) {
-			part.assign(description);
-		}
+		this.initialized = true;
+	}
+
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	static class NextAdjust {
@@ -651,16 +645,6 @@ public class ClockMonitor implements IAssigner, IGraficsLearnable {
 
 		private int getCalendarInt() {
 			return this.calendarInt;
-		}
-
-		private void assign(final SolvisDescription description) throws AssignmentException {
-			if (this.touch != null) {
-				this.touch.assign(description);
-			}
-			if (this.screenGrafic != null) {
-				this.screenGrafic.assign(description);
-			}
-
 		}
 
 		private final int calendarOrigin;

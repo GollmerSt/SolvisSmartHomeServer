@@ -68,7 +68,7 @@ public class BackupHandler {
 
 		try {
 			this.read();
-		} catch (IOException | XmlException | XMLStreamException | AssignmentException e) {
+		} catch (IOException | XmlException | XMLStreamException e) {
 			logger.warn("Error on reading the BackupFile detected", e);
 		}
 	}

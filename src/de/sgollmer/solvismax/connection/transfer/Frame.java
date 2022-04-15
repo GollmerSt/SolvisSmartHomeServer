@@ -110,7 +110,7 @@ public class Frame implements IValue {
 				}
 			}
 		}
-		if ( result == null ) {
+		if (result == null) {
 			throw new PackageException("<" + id + " not found.");
 
 		}

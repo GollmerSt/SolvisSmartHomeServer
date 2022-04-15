@@ -1,10 +1,3 @@
-/************************************************************************
- * 
- * $Id$
- *
- * 
- ************************************************************************/
-
 package de.sgollmer.solvismax.helper;
 
 import java.net.Inet4Address;
@@ -35,7 +28,7 @@ public class Helper {
 	private static Collection<InterfaceAddress> LOCAL_INTERFACE_ADDRESSES = null;
 	private static Pattern IP_V4_ADDRESS_PATTERN = Pattern.compile("((\\d+\\.){3}\\d+)(:\\d+)?");
 
-	private static Collection<InterfaceAddress> getLocalInterfaceAddresses() {
+	private static synchronized Collection<InterfaceAddress> getLocalInterfaceAddresses() {
 		if (LOCAL_INTERFACE_ADDRESSES == null) {
 			try {
 				LOCAL_INTERFACE_ADDRESSES = new ArrayList<>();

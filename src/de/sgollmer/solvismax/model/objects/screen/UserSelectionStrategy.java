@@ -8,7 +8,6 @@ import java.util.Iterator;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.HelperException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -22,9 +21,10 @@ import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class UserSelectionStrategy implements ISelectScreenStrategy {
+public class UserSelectionStrategy implements ISelectScreenStrategy, IXmlElement<SolvisDescription> {
 
 	private static final String XML_RECTANGLES = "Rectangle";
 	private static final String XML_UPPER = "Upper";
@@ -32,6 +32,8 @@ public class UserSelectionStrategy implements ISelectScreenStrategy {
 
 	private final Collection<Digit> digits;
 	private final String waitTimeAfterLastDigitRefId;
+
+	private boolean initialized = false;
 
 	private UserSelectionStrategy(final Collection<Digit> digits, final String waitTimeAfterLastDigitRefId) {
 		this.digits = digits;
@@ -261,28 +263,22 @@ public class UserSelectionStrategy implements ISelectScreenStrategy {
 
 		}
 
-		public void assign(final SolvisDescription description) throws AssignmentException {
-			if (this.upper != null) {
-				this.upper.assign(description);
-			}
-			if (this.lower != null) {
-				this.lower.assign(description);
-			}
-		}
-
 	}
 
 	@Override
-	public void assign(final SolvisDescription description) throws AssignmentException, ReferenceException {
+	public void postProcess(final SolvisDescription description) throws ReferenceException {
 		if (this.waitTimeAfterLastDigitRefId != null) {
 			Duration duration = description.getDuration(this.waitTimeAfterLastDigitRefId);
 			if (duration == null) {
 				throw new ReferenceException("Reference <" + this.waitTimeAfterLastDigitRefId + "> unknown.");
 			}
 		}
-		for (Digit digit : this.digits) {
-			digit.assign(description);
-		}
+		this.initialized = true;
+	}
+
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	@Override
@@ -294,4 +290,5 @@ public class UserSelectionStrategy implements ISelectScreenStrategy {
 		}
 		return settingTime;
 	}
+
 }

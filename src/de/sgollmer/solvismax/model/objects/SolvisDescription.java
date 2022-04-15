@@ -13,9 +13,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
@@ -82,27 +80,6 @@ public class SolvisDescription {
 		this.errorDetection = errorDetection;
 		this.channelAssignments = channelAssignments;
 
-	}
-
-	public void assign() throws XmlException, AssignmentException, ReferenceException {
-		if (this.saver != null) {
-			this.saver.assign(this);
-		}
-		if (this.screens != null) {
-			this.screens.assign(this);
-		}
-		if (this.screenGrafics != null) {
-			this.screenGrafics.assign(this);
-		}
-		if (this.dataDescriptions != null) {
-			this.dataDescriptions.assign(this);
-		}
-		if (this.clock != null) {
-			this.clock.assign(this);
-		}
-		if (this.fallBack != null) {
-			this.fallBack.assign(this);
-		}
 	}
 
 	public Collection<IScreenPartCompare> getLearnGrafics(final Solvis solvis) {

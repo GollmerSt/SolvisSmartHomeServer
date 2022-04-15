@@ -18,14 +18,12 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.IAssigner;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
+public class ScreenGraficDescription implements IScreenPartCompare {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(ScreenGraficDescription.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
@@ -147,10 +145,6 @@ public class ScreenGraficDescription implements IScreenPartCompare, IAssigner {
 			}
 		}
 
-	}
-
-	@Override
-	public void assign(SolvisDescription description) {
 	}
 
 	public MyImage getImage(Solvis solvis) throws IOException, TerminationException {

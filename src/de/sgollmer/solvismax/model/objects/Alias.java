@@ -13,7 +13,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class Alias implements IAssigner {
+public class Alias {
 	private final String id;
 	private final String dataId;
 
@@ -65,11 +65,6 @@ public class Alias implements IAssigner {
 		@Override
 		public void created(final CreatorByXML<?> creator, final Object created) {
 		}
-
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) {
 
 	}
 

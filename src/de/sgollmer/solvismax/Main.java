@@ -34,7 +34,6 @@ import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.PackageException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -174,7 +173,7 @@ public class Main {
 			if (baseData == null) {
 				throw new XmlException("");
 			}
-		} catch (IOException | XmlException | XMLStreamException | AssignmentException | ReferenceException e) {
+		} catch (IOException | XmlException | XMLStreamException e) {
 			e.printStackTrace();
 			logger.log(Level.FATAL, "base.xml couldn't be read.", null, ExitCodes.READING_CONFIGURATION_FAIL);
 			LogManager.exit(ExitCodes.READING_CONFIGURATION_FAIL);
@@ -281,8 +280,7 @@ public class Main {
 
 		try {
 			this.instances = new Instances(baseData, executionMode == ExecutionMode.LEARN);
-		} catch (IOException | XmlException | XMLStreamException | AssignmentException | FileException
-				| ReferenceException e) {
+		} catch (IOException | XmlException | XMLStreamException | FileException e) {
 			logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
@@ -312,8 +310,8 @@ public class Main {
 					System.exit(ExitCodes.OK);
 					break;
 			}
-		} catch (IOException | XMLStreamException | LearningException | AssignmentException | AliasException
-				| TypeException | XmlException e) {
+		} catch (IOException | XMLStreamException | LearningException | AliasException | TypeException
+				| XmlException e) {
 			System.out.flush();
 			try {
 				Thread.sleep(100);

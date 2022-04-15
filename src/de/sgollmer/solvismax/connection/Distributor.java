@@ -130,10 +130,10 @@ public final class Distributor extends Observable<ISendData> {
 	}
 
 	private class AllSettingsDoneObserver implements Observer.IObserver<SolvisStatus> {
-		
+
 		@Override
 		public void update(final SolvisStatus status, final Object source) {
-			
+
 			try {
 				Distributor.this.notify(new SolvisStatePackage(status, Distributor.this.solvis));
 			} catch (Throwable e) {

@@ -44,17 +44,17 @@ public class MaskIterator implements Iterator<MaskIterator.OneConfiguration> {
 			OneConfiguration configuration = this.upperIterator.next();
 			this.upperMask = configuration.getMask();
 			this.upperComment = configuration.getComment();
-			
+
 			this.current = this.types.iterator();
 		}
 		long mask = this.upperMask;
 		Type type = this.current.next();
-		
+
 		String comment;
-		
-		if ( type.getId() == null ) {
+
+		if (type.getId() == null) {
 			comment = this.upperComment;
-		} else if ( this.upperComment == null ) {
+		} else if (this.upperComment == null) {
 			comment = type.getId();
 		} else {
 			comment = this.upperComment + " - " + type.getId();

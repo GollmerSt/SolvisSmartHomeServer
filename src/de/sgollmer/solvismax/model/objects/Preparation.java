@@ -14,7 +14,6 @@ import javax.xml.namespace.QName;
 import org.tinylog.Logger;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
@@ -23,7 +22,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class Preparation implements IAssigner {
+public class Preparation {
 
 	private static final String XML_TOUCH_POINT = "TouchPoint";
 	private static final String XML_SCREEN_GRAFIC = "ScreenGrafic";
@@ -142,14 +141,6 @@ public class Preparation implements IAssigner {
 
 	public boolean isLearned(final Solvis solvis) {
 		return this.screenGrafic.isLearned(solvis);
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) throws AssignmentException {
-		if (this.touchPoint != null) {
-			this.touchPoint.assign(description);
-		}
-
 	}
 
 	public static boolean prepare(final Preparation preparation, final Solvis solvis)

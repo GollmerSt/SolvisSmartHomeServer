@@ -52,7 +52,7 @@ public class SingleValue implements IValue {
 		String sub = json.substring(position);
 
 		Matcher m = VALUE_STRING.matcher(sub);
-		boolean isString = m.matches() ;
+		boolean isString = m.matches();
 		if (!isString) {
 			m = VALUE.matcher(sub);
 			if (!m.matches()) {
@@ -61,7 +61,7 @@ public class SingleValue implements IValue {
 		}
 
 		sub = m.group(1);
-		sub = sub.trim();  //never leading white spaces. Only trailing
+		sub = sub.trim(); // never leading white spaces. Only trailing
 
 		String group = null;
 		if (isString) {

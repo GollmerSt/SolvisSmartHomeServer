@@ -63,7 +63,6 @@ public class Instances {
 		ControlFileReader reader = new ControlFileReader(this.writeablePath);
 		ControlFileReader.Result result = reader.read(this.graficDatas.getControlHashCodes(), learn);
 		this.solvisDescription = result.getSolvisDescription();
-		this.solvisDescription.assign();
 		this.mustLearn = result.mustLearn();
 		this.xmlHash = result.getHashes();
 		this.backupHandler = new BackupHandler(this.writeablePath,
@@ -218,9 +217,10 @@ public class Instances {
 	private Solvis createSolvisInstance(final Unit unit, final boolean mustLearn)
 			throws IOException, XmlException, XMLStreamException {
 		Miscellaneous misc = this.solvisDescription.getMiscellaneous();
-		SolvisConnection connection = new SolvisConnection(unit.getUrls(), unit.getUrl(), unit, misc.getSolvisConnectionTimeout_ms(),
-				misc.getSolvisReadTimeout_ms(), misc.getPowerOffDetectedAfterIoErrors(),
-				misc.getPowerOffDetectedAfterTimeout_ms(), unit.isFwLth2_21_02A());
+		SolvisConnection connection = new SolvisConnection(unit.getUrls(), unit.getUrl(), unit,
+				misc.getSolvisConnectionTimeout_ms(), misc.getSolvisReadTimeout_ms(),
+				misc.getPowerOffDetectedAfterIoErrors(), misc.getPowerOffDetectedAfterTimeout_ms(),
+				unit.isFwLth2_21_02A());
 		String timeZone = this.baseData.getTimeZone();
 		Solvis solvis = new Solvis(unit, this.solvisDescription, this.graficDatas.get(unit.getId(), this.xmlHash),
 				connection, this.baseData.getMqtt(), this.backupHandler, timeZone,

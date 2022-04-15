@@ -24,7 +24,7 @@ public class DoubleValue extends SingleData<Double> {
 
 	@Override
 	public Helper.Boolean getBoolean() {
-			return this.value == 0 ? Helper.Boolean.FALSE : Helper.Boolean.TRUE;
+		return this.value == 0 ? Helper.Boolean.FALSE : Helper.Boolean.TRUE;
 	}
 
 	@Override

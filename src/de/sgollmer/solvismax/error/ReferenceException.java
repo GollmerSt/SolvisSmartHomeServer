@@ -7,7 +7,9 @@
 
 package de.sgollmer.solvismax.error;
 
-public class ReferenceException extends Exception {
+import de.sgollmer.xmllibrary.XmlException;
+
+public class ReferenceException extends XmlException {
 	/**
 	 * 
 	 */

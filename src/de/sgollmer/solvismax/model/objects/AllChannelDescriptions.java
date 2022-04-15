@@ -22,7 +22,6 @@ import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.PowerOnException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
@@ -38,7 +37,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
+public class AllChannelDescriptions implements IGraficsLearnable {
 
 	private static final String XML_CHANNEL_DESCRIPTION = "ChannelDescription";
 
@@ -71,14 +70,6 @@ public class AllChannelDescriptions implements IAssigner, IGraficsLearnable {
 			return null;
 		} else {
 			return descriptions.get(solvis);
-		}
-	}
-
-	@Override
-	public void assign(final SolvisDescription description)
-			throws XmlException, AssignmentException, ReferenceException {
-		for (OfConfigs<ChannelDescription> channelConf : this.descriptions.values()) {
-			channelConf.assign(description);
 		}
 	}
 

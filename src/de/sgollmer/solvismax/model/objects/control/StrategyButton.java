@@ -33,13 +33,16 @@ import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class StrategyButton implements IStrategy {
+public class StrategyButton implements IStrategy, IXmlElement<SolvisDescription> {
 
 	private final boolean invert;
 	private final String pushTimeId;
 	private final String releaseTimeId;
+
+	private boolean initialized = false;
 
 	private StrategyButton(final boolean invert, final String pushTimeId, final String releaseTimeId) {
 		this.invert = invert;
@@ -48,13 +51,20 @@ public class StrategyButton implements IStrategy {
 	}
 
 	@Override
-	public void assign(final SolvisDescription description) throws AssignmentException {
+	public void postProcess(final SolvisDescription description) throws AssignmentException {
 		Duration pushTimeDuration = description.getDuration(this.pushTimeId);
 		Duration releaseTimeDuration = description.getDuration(this.releaseTimeId);
 
 		if (pushTimeDuration == null || releaseTimeDuration == null) {
 			throw new AssignmentException("Duration time not found");
 		}
+
+		this.initialized = true;
+	}
+
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	@Override

@@ -15,11 +15,9 @@ import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Alias;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
-import de.sgollmer.solvismax.model.objects.IAssigner;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 
-public class AliasGroup implements IAssigner, Cloneable {
+public class AliasGroup implements Cloneable {
 	private final Collection<Alias> aliases = new ArrayList<>(2);
 
 	public void add(final Alias alias) {
@@ -62,13 +60,6 @@ public class AliasGroup implements IAssigner, Cloneable {
 			}
 		}
 		return descriptions;
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) {
-		for (Alias alias : this.aliases) {
-			alias.assign(description);
-		}
 	}
 
 	@Override

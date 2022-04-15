@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
@@ -18,9 +17,11 @@ import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
 import de.sgollmer.solvismax.objects.Rectangle;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IElement<AbstractScreen> {
+public abstract class AbstractScreen
+		implements IScreenLearnable, OfConfigs.IElement<AbstractScreen>, IXmlElement<SolvisDescription> {
 
 	protected final String id;
 	protected final String previousId;
@@ -33,9 +34,10 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	private final boolean service;
 
 	private OfConfigs<AbstractScreen> previousScreen = null;
+	private boolean initialized = false;
 
 	protected AbstractScreen(String id, String previousId, final String preparationId, Configuration configurationMasks,
-			final ISelectScreenStrategy selectScreenStrategy,final boolean service) {
+			final ISelectScreenStrategy selectScreenStrategy, final boolean service) {
 		this.id = id;
 		this.previousId = previousId;
 		this.preparationId = preparationId;
@@ -328,8 +330,7 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 	}
 
 	@Override
-	public void assign(final SolvisDescription description)
-			throws ReferenceException, XmlException, AssignmentException {
+	public void postProcess(final SolvisDescription description) throws XmlException {
 		if (this.previousId != null) {
 			OfConfigs<AbstractScreen> screen = description.getScreens().get(this.previousId);
 			if (screen == null) {
@@ -353,13 +354,13 @@ public abstract class AbstractScreen implements IScreenLearnable, OfConfigs.IEle
 			if (this.preparation == null) {
 				throw new ReferenceException("Preparation of reference < " + this.preparationId + " > not found");
 			}
-			this.preparation.assign(description);
 		}
+		this.initialized=true;
+	}
 
-		if (this.selectScreenStrategy != null) {
-			this.selectScreenStrategy.assign(description);
-		}
-
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	public boolean isService() {

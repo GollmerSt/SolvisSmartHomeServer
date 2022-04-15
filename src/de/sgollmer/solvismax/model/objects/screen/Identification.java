@@ -6,8 +6,6 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
@@ -15,9 +13,10 @@ import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.WhiteGraficRectangle;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class Identification {
+public class Identification implements IXmlElement<SolvisDescription> {
 
 	private static final String XML_GRAFICS = "Grafic";
 	private static final String XML_GRAFICS_REF = "GraficRef";
@@ -26,6 +25,7 @@ public class Identification {
 
 	private final Collection<IScreenPartCompare> screenCompares;
 	private final Collection<String> screenGraficRefs;
+	private boolean initialized = false;
 
 	private Identification(Collection<IScreenPartCompare> screenCompares, Collection<String> screenGraficRefs) {
 		this.screenCompares = screenCompares;
@@ -92,18 +92,20 @@ public class Identification {
 
 	}
 
-	public void assign(SolvisDescription description, Screen parent)
-			throws XmlException, AssignmentException, ReferenceException {
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
+	}
+
+	@Override
+	public void postProcess(SolvisDescription description) throws XmlException {
 		for (String id : this.screenGraficRefs) {
 			this.screenCompares.add(description.getScreenGrafics().get(id));
 		}
 		if (this.screenCompares.isEmpty()) {
-			throw new XmlException(
-					"Error in XML definition: Grafic information of screen <" + parent.getId() + "> is missing.");
+			throw new XmlException("Error in XML definition: Grafic information is missing.");
 		}
-		for (IScreenPartCompare screenPartCompare : this.screenCompares) {
-			screenPartCompare.assign(description);
-		}
+		this.initialized = true;
 	}
 
 	public boolean isMatchingScreen(MyImage image, Solvis solvis) {
@@ -152,6 +154,5 @@ public class Identification {
 		}
 		return learned;
 	}
-
 
 }

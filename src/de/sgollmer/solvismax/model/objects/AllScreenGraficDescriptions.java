@@ -16,7 +16,7 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class AllScreenGraficDescriptions implements IAssigner {
+public class AllScreenGraficDescriptions {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(AllScreenGraficDescriptions.class);
 
@@ -43,7 +43,4 @@ public class AllScreenGraficDescriptions implements IAssigner {
 		return description;
 	}
 
-	@Override
-	public void assign(final SolvisDescription description) {
-	}
 }

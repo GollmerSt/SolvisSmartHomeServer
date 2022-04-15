@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import javax.imageio.ImageIO;
@@ -22,15 +22,12 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.Debug;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.IAssigner;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
@@ -38,7 +35,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class ScreenSaver implements IAssigner {
+public class ScreenSaver {
 
 	private static final java.util.regex.Pattern TIME_PATTERN = java.util.regex.Pattern.compile("\\d+?:\\d+?");
 	private static final java.util.regex.Pattern DATE_PATTERN = java.util.regex.Pattern
@@ -58,13 +55,6 @@ public class ScreenSaver implements IAssigner {
 		this.xCoordinateWithinTimedate = xCoordinateWithinTimedate;
 		this.resetScreenSaver = resetScreenSaver;
 		this.maxGraficSize = maxGraficSize;
-	}
-
-	@Override
-	public void assign(SolvisDescription description) throws AssignmentException {
-		if (this.resetScreenSaver != null) {
-			this.resetScreenSaver.assign(description);
-		}
 	}
 
 	/**

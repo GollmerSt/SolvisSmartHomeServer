@@ -13,17 +13,13 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
-import de.sgollmer.solvismax.model.objects.IAssigner;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class UpdateStrategies implements IAssigner {
+public class UpdateStrategies {
 
 	private final Collection<Strategy<?>> strategies;
 
@@ -64,7 +60,7 @@ public class UpdateStrategies implements IAssigner {
 		}
 	}
 
-	public static abstract class Strategy<S extends Strategy<?>> implements IAssigner {
+	public static abstract class Strategy<S extends Strategy<?>> {
 
 		protected ChannelSource source;
 
@@ -134,15 +130,6 @@ public class UpdateStrategies implements IAssigner {
 		}
 
 		public abstract UpdateCreator<T> createCreator(final String id, final BaseCreator<?> creator);
-	}
-
-	@Override
-	public void assign(final SolvisDescription description)
-			throws XmlException, AssignmentException, ReferenceException {
-		for (Strategy<?> strategy : this.strategies) {
-			strategy.assign(description);
-		}
-
 	}
 
 	public void instantiate(final Solvis solvis) {

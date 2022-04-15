@@ -177,7 +177,7 @@ public class Reheat {
 
 			boolean pass1 = notRequired == test.sollReheatNotRequired;
 			boolean pass2 = active == test.sollActive;
-			
+
 			if (!pass1 || !pass2) {
 				failed = true;
 			}

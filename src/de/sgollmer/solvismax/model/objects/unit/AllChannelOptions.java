@@ -104,7 +104,7 @@ public class AllChannelOptions {
 		}
 
 		private SingleData<?> getModifyValue(final Double value, final SolvisData data) throws TypeException {
-			if (value == null ) {
+			if (value == null) {
 				return null;
 			}
 			DoubleValue doubleValue = new DoubleValue(value, -1L);

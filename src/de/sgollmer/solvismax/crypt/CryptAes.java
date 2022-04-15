@@ -81,7 +81,6 @@ public class CryptAes {
 
 	}
 
-
 	private void cI(final String word) {
 		byte[] bb = word.getBytes();
 		this.v = new byte[(bb.length + 2 + 16) / 16 * 16 - 1];
@@ -125,9 +124,8 @@ public class CryptAes {
 		}
 	}
 
-	public static void main(final String[] args)
-			throws CryptDefaultValueException, CryptException, InvalidKeyException, NoSuchAlgorithmException,
-			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+	public static void main(final String[] args) throws CryptDefaultValueException, CryptException, InvalidKeyException,
+			NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		CryptAes aes = new CryptAes();
 		for (int i = 0; i < 100; ++i) {
 			StringBuilder builder = new StringBuilder();

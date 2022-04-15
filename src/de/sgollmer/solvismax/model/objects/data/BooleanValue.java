@@ -95,19 +95,19 @@ public class BooleanValue extends SingleData<Boolean> {
 	}
 
 	@Override
-	public BooleanValue add(SingleData<?> data) throws TypeException{
-		if ( !(data instanceof BooleanValue )) {
+	public BooleanValue add(SingleData<?> data) throws TypeException {
+		if (!(data instanceof BooleanValue)) {
 			throw new TypeException();
 		}
 		return new BooleanValue(this.get() != data.get(), this.getTimeStamp());
 	}
 
 	@Override
-	public BooleanValue mult(SingleData<?> data) throws TypeException{
-		if ( !(data instanceof BooleanValue )) {
+	public BooleanValue mult(SingleData<?> data) throws TypeException {
+		if (!(data instanceof BooleanValue)) {
 			throw new TypeException();
 		}
-		return new BooleanValue((boolean)this.get() && (boolean)((BooleanValue)data).get(), this.getTimeStamp());
+		return new BooleanValue((boolean) this.get() && (boolean) ((BooleanValue) data).get(), this.getTimeStamp());
 	}
 
 	@Override

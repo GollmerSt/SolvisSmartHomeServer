@@ -18,7 +18,6 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.LearningTerminationException;
 import de.sgollmer.solvismax.error.ReferenceException;
@@ -72,6 +71,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	private final boolean noRestore;
 
 	private OfConfigs<AbstractScreen> backScreen = null;
+	private boolean initialized = false;
 
 	private Screen(final String id, final String sortId, final String previousId, final String backId,
 			final boolean ignoreChanges, final boolean mustSave, final Configuration configurationMasks,
@@ -114,14 +114,9 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public void assign(final SolvisDescription description)
-			throws ReferenceException, XmlException, AssignmentException {
+	public void postProcess(final SolvisDescription description) throws XmlException {
 
-		super.assign(description);
-
-		for (Identification identification : this.identifications) {
-			identification.assign(description, this);
-		}
+		super.postProcess(description);
 
 		if (this.backId != null) {
 			this.backScreen = description.getScreens().get(this.backId);
@@ -130,22 +125,19 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			}
 		}
 
-		if (this.sequenceDown != null) {
-			this.sequenceDown.assign(description);
-		}
-
-		if (this.sequenceUp != null) {
-			this.sequenceUp.assign(description);
-		}
-
 		if (this.lastPreparationId != null) {
 			this.lastPreparation = description.getPreparations().get(this.lastPreparationId);
 			if (this.lastPreparation == null) {
 				throw new ReferenceException("Preparation of reference < " + this.lastPreparationId + " > not found");
 			}
-			this.lastPreparation.assign(description);
 		}
 
+		this.initialized = true;
+	}
+
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	@Override

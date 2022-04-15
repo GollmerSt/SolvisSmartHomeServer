@@ -38,7 +38,7 @@ public class CommandObserver extends Observable<SolvisStatus> implements IObserv
 				break;
 			case QUEUE_FINISHED:
 				this.queue = false;
-				if ( this.monitoringTasks.isEmpty() ) {
+				if (this.monitoringTasks.isEmpty()) {
 					this.notify(SolvisStatus.CONTROL_FINISHED);
 				} else {
 					this.notify(SolvisStatus.CONTROL_MONITORING);
@@ -46,19 +46,17 @@ public class CommandObserver extends Observable<SolvisStatus> implements IObserv
 				break;
 			case MONITORING_STARTED:
 				this.monitoringTasks.add(source);
-				if ( !this.queue ) {
+				if (!this.queue) {
 					this.notify(SolvisStatus.CONTROL_MONITORING);
 				}
 				break;
 			case MONITORING_FINISHED:
 				this.monitoringTasks.remove(source);
-				if ( !this.queue && this.monitoringTasks.isEmpty()) {
+				if (!this.queue && this.monitoringTasks.isEmpty()) {
 					this.notify(SolvisStatus.CONTROL_FINISHED);
 				}
-					
-			
 
 		}
 	}
-	
+
 }

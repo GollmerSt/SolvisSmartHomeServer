@@ -167,7 +167,7 @@ public class ClientAssignments {
 		if (state == null) {
 			return ControlEnableStatus.INVALID;
 		}
-		return state.controlEnable?ControlEnableStatus.TRUE:ControlEnableStatus.FALSE;
+		return state.controlEnable ? ControlEnableStatus.TRUE : ControlEnableStatus.FALSE;
 	}
 
 	public void debugClear(Solvis solvis) throws ClientAssignmentException, TypeException {

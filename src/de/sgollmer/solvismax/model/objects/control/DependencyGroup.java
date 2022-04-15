@@ -5,14 +5,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.IAssigner;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
-import de.sgollmer.xmllibrary.XmlException;
 
-public class DependencyGroup implements IAssigner, Cloneable {
+public class DependencyGroup implements Cloneable {
 	private ArrayList<Dependency> dependencies = new ArrayList<>(3);
 
 	public void add(final Dependency dependency) {
@@ -53,15 +48,6 @@ public class DependencyGroup implements IAssigner, Cloneable {
 	@Override
 	public int hashCode() {
 		return this.dependencies.hashCode();
-	}
-
-	@Override
-	public void assign(final SolvisDescription description)
-			throws XmlException, AssignmentException, ReferenceException {
-		for (Dependency dependency : this.dependencies) {
-			dependency.assign(description);
-		}
-
 	}
 
 	@Override

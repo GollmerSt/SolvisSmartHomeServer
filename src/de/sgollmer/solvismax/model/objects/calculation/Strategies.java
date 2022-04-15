@@ -9,13 +9,12 @@ package de.sgollmer.solvismax.model.objects.calculation;
 
 import java.util.Collection;
 
+import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TypeException;
-import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.IAssigner;
-import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
+import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -41,7 +40,7 @@ public enum Strategies {
 		return null;
 	}
 
-	static abstract class Strategy<T extends Strategy<?>> implements IAssigner {
+	static abstract class Strategy<T extends Strategy<?>> {
 
 		protected final Calculation calculation;
 
@@ -80,7 +79,6 @@ public enum Strategies {
 		}
 
 		protected abstract SingleData<?> interpretSetData(SingleData<?> singleData) throws TypeException;
-
 
 	}
 

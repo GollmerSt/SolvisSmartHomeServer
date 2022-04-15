@@ -26,7 +26,7 @@ public class AbortHelper {
 	private Collection<Abortable> abortables = new ArrayList<>();
 
 	public synchronized void sleep(final Integer time) throws TerminationException {
-		if ( time == null || time <= 0 ) {
+		if (time == null || time <= 0) {
 			return;
 		}
 		if (this.abort) {
@@ -40,9 +40,9 @@ public class AbortHelper {
 			throw new TerminationException();
 		}
 	}
-	
+
 	public interface Abortable {
-		public void abort() ;
+		public void abort();
 	}
 
 	public void sleepAndLock(final int time, final Abortable abortable) throws TerminationException {

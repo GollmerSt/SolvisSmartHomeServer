@@ -14,9 +14,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
@@ -24,7 +22,6 @@ import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.AllPreparations.PreparationRef;
 import de.sgollmer.solvismax.model.objects.Preparation;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.TouchPointStrategy;
 import de.sgollmer.solvismax.model.objects.configuration.Configuration;
@@ -67,18 +64,6 @@ public class ScreenSequence extends AbstractScreen {
 		this.wrapArround = wrapArround;
 
 		this.screenRefs = screenRefs;
-
-	}
-
-	@Override
-	public void assign(final SolvisDescription description)
-			throws XmlException, AssignmentException, ReferenceException {
-
-		super.assign(description);
-
-		for (ScreenRef screenRef : this.screenRefs) {
-			screenRef.assign(description);
-		}
 
 	}
 

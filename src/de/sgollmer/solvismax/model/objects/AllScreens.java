@@ -14,8 +14,6 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.configuration.OfConfigs;
@@ -26,15 +24,17 @@ import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSequence;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class AllScreens implements IScreenLearnable {
+public class AllScreens implements IScreenLearnable, IXmlElement<SolvisDescription> {
 
 	private static final String XML_SCREEN = "Screen";
 	private static final String XML_SCREEN_SEQUENCE = "ScreenSequence";
 
 	private final String homeId;
 	private final Map<String, OfConfigs<AbstractScreen>> screens;
+	private boolean initialized = false;
 
 	private AllScreens(final String homeId, final Map<String, OfConfigs<AbstractScreen>> screens) {
 		this.homeId = homeId;
@@ -95,17 +95,23 @@ public class AllScreens implements IScreenLearnable {
 		return screens;
 	}
 
-	void assign(final SolvisDescription description) throws XmlException, AssignmentException, ReferenceException {
-		for (OfConfigs<AbstractScreen> screenConf : this.screens.values()) {
-			screenConf.assign(description);
-		}
-
+	@Override
+	public void postProcess(final SolvisDescription description) throws XmlException {
 		OfConfigs<AbstractScreen> homeScreenConfig = this.screens.get(this.homeId);
+		this.initialized = true;
 		for (AbstractScreen screen : homeScreenConfig.getElements()) {
-			if (!screen.isScreen()) {
+			if (!screen.isInitialisationFinished()) {
+				this.initialized = false;
+			} else if (!screen.isScreen()) {
 				throw new XmlException("Home screen <" + this.homeId + "must be a Screen element");
 			}
 		}
+		this.initialized = true;
+	}
+
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	static class Creator extends CreatorByXML<AllScreens> {

@@ -124,7 +124,7 @@ public class TinyLog implements ILoggerBase {
 				case LEARN:
 					tag = "LEARN";
 			}
-			
+
 			this.builder.delete(0, this.builder.length());
 			this.builder.append(this.className);
 			this.builder.append(" - ");

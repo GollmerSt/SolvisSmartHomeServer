@@ -23,7 +23,6 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
 import de.sgollmer.solvismax.model.objects.IInstance;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.DependencyGroup;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -212,10 +211,6 @@ public class Measurement extends ChannelSource {
 
 		}
 
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) {
 	}
 
 	@Override

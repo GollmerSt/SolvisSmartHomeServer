@@ -73,7 +73,7 @@ public enum Command {
 	 */
 	SELECT_SCREEN,
 	/**
-	 * Bestimmte Kanäle können zum Debuggen auf einen festen Wert gesetzt werden 
+	 * Bestimmte Kanäle können zum Debuggen auf einen festen Wert gesetzt werden
 	 */
 	DEBUG_CHANNEL
 }

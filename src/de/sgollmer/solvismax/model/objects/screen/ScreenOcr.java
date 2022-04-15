@@ -14,7 +14,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.ocr.OcrRectangle;
@@ -23,15 +22,15 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.objects.Coordinate;
 import de.sgollmer.solvismax.objects.Rectangle;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
+import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class ScreenOcr implements IScreenPartCompare, IAssigner {
+public class ScreenOcr implements IScreenPartCompare, IXmlElement<SolvisDescription> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(ScreenOcr.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
@@ -46,6 +45,7 @@ public class ScreenOcr implements IScreenPartCompare, IAssigner {
 	private final int maxPixelsOfEmptyLine;
 
 	private ScreenGraficDescription graficDescription = null;
+	private boolean initialized = false;
 
 	private ScreenOcr(final Rectangle rectangle, final String value, final ScreenGraficRef graficRef, boolean right,
 			final int maxPixelsOfEmptyLine) {
@@ -276,10 +276,16 @@ public class ScreenOcr implements IScreenPartCompare, IAssigner {
 	}
 
 	@Override
-	public void assign(SolvisDescription description) throws AssignmentException, XmlException {
+	public void postProcess(SolvisDescription description) throws XmlException {
 		if (this.graficRef != null) {
 			this.graficDescription = description.getScreenGrafics().get(this.graficRef.getRefId());
 		}
+		this.initialized=true;
+	}
+
+	@Override
+	public boolean isInitialisationFinished() {
+		return this.initialized;
 	}
 
 	@Override

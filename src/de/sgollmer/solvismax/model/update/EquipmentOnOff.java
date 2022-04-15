@@ -22,7 +22,6 @@ import de.sgollmer.solvismax.model.command.CommandObserver;
 import de.sgollmer.solvismax.model.command.CommandScreenRestore;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.control.Control;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -79,11 +78,6 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 		IExecutable executable = new Executable(solvis, toUpdate, equipment, calculatedValue, this.factor,
 				checkInterval, readInterval, this.hourly);
 		solvis.add(executable);
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) {
-
 	}
 
 	private enum Synchronisation {

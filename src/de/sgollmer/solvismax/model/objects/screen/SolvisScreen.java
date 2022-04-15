@@ -84,10 +84,10 @@ public class SolvisScreen {
 	public boolean imagesEquals(SolvisScreen screen) {
 		return this.image.equals(SolvisScreen.getImage(screen));
 	}
-	
+
 	public boolean isService() {
 		AbstractScreen screen = this.get();
-		if ( screen == null ) {
+		if (screen == null) {
 			return false;
 		} else {
 			return screen.isService();

@@ -15,7 +15,6 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.Csv;
-import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -25,14 +24,13 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.command.CommandControl;
+import de.sgollmer.solvismax.model.command.CommandObserver;
 import de.sgollmer.solvismax.model.command.CommandScreenRestore;
 import de.sgollmer.solvismax.model.command.CommandSetQueuePriority;
-import de.sgollmer.solvismax.model.command.CommandObserver;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
 import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.IMode;
@@ -98,12 +96,6 @@ public class StrategyReheat implements IStrategy {
 		public String getCvsMeta() {
 			return this.name + this.handling.getCvsMeta();
 		}
-
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) throws AssignmentException {
-		this.touchPoint.assign(description);
 
 	}
 
@@ -317,8 +309,6 @@ public class StrategyReheat implements IStrategy {
 			}
 		}
 
-		
-		
 		solvis.send(StrategyReheat.this.touchPoint);
 
 		return null;
@@ -334,8 +324,8 @@ public class StrategyReheat implements IStrategy {
 		SolvisData puffer = this.getPuffer(solvis);
 		SolvisData delta = this.getDelta(solvis);
 
-		if (desired != null && desired.isValid() && puffer != null && puffer.isValid()
-				&& delta != null && delta.isValid()) {
+		if (desired != null && desired.isValid() && puffer != null && puffer.isValid() && delta != null
+				&& delta.isValid()) {
 			int desiredDivisor = desired.getDescription().getDivisor();
 			int pufferDivisor = puffer.getDescription().getDivisor();
 			int deltaDivisor = delta.getDescription().getDivisor();
@@ -390,7 +380,7 @@ public class StrategyReheat implements IStrategy {
 			Mode current = (Mode) data.getSingleData().get();
 
 			boolean changed = this.former == null || !this.former.equals(current) || current == Mode.NOT_REQUIRED;
-			
+
 			this.former = current;
 
 			switch (current) {
@@ -446,7 +436,7 @@ public class StrategyReheat implements IStrategy {
 
 	}
 
-	private class ReheatThread extends Helper.Runnable implements Abortable{
+	private class ReheatThread extends Helper.Runnable implements Abortable {
 
 		private final SolvisData data;
 		private final Solvis solvis;

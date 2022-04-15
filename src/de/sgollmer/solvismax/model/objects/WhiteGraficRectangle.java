@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
@@ -70,10 +68,6 @@ public class WhiteGraficRectangle implements IScreenPartCompare {
 	@Override
 	public void learn(final Solvis solvis) throws IOException, TerminationException {
 
-	}
-
-	@Override
-	public void assign(final SolvisDescription description) throws AssignmentException, ReferenceException {
 	}
 
 }

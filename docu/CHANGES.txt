@@ -2,11 +2,18 @@ A E N D E R U N G E N
 
 Version 01.05.02
 
+    15.04.2022  Vereinfachung der Nachbearbeitung der XML-Daten durch Ausnutzen des
+                Nachprozessierens der XML-Library.
+
+    14.04.2022  Ist in den Features der Admin-Mode gesetzt, so werden nun die Werte
+                C47.Puffer_dT_Start und C48.Puffer_dT_Stopp ausgelesen. Sie koennen auch veraendert
+                werden.
+
     07.02.2022  In Zukunft muss ich aus der Ferne mit unterschiedlichen IPs die Solvis-Anlage
-                ansprechen können. Aus diesem Grund habe ich ein auf Git undokumentiertes XML-Tag
-                Urls in den Unit-Tag der base.xml eingeführt. In dem entsprechenden xsd-File ist
-                der Tag dokumentiert. Auf diese Weise können unterschioedliche Urls für die Anlage
-                definiert werden.
+                ansprechen koennen. Aus diesem Grund habe ich ein auf Git undokumentiertes XML-Tag
+                Urls in den Unit-Tag der base.xml eingefuehrt. In dem entsprechenden xsd-File ist
+                der Tag dokumentiert. Auf diese Weise koennen unterschioedliche Urls fuer die
+                Anlage definiert werden.
 
 
 Version 01.05.01
@@ -25,8 +32,8 @@ Version 01.05.01
 
 Version 01.05.01-rc5
 
-    20.12.2021  Mit dem Support für verschiedene Sprachen mussten die Scanbereiche nach rechts
-                erweitert werden. Bei einem groeßeren Verschiebung durch die Solvis-Bildschirm-
+    20.12.2021  Mit dem Support fuer verschiedene Sprachen mussten die Scanbereiche nach rechts
+                erweitert werden. Bei einem groesseren Verschiebung durch die Solvis-Bildschirm-
                 kalibrierung geriet dabei jedoch der obere Rand eines Buttons in den Scan-Bereich.
                 Um dieses Problem zu umgehen, wurde eine Erkennung der vertikalen Lage der Bild-
                 schirmtitel implementiert. Dadurch werden vertikale Offsets der Bildschirm-
@@ -43,7 +50,7 @@ Version 01.05.01-rc4
 
 Version 01.05.01-rc3
 
-    16.12.2021  Bei Control Read wurde nicht berücksichtigt, dass der Set-Wert auch ein Long sein
+    16.12.2021  Bei Control Read wurde nicht beruecksichtigt, dass der Set-Wert auch ein Long sein
                 kann.
 
 
@@ -74,9 +81,10 @@ Version 01.05.00
                 erweitert. Die Defintion der Korrekturwerte erfolgt nun in der
                 "ModifiedChannelValues"-Sektion. Die alte "FixChannelValues"-Sektion wurde dadurch
                 ueberfluessig.
-                Wenn ein Überlauf beobachtet wird, muss entsprechend die base.xml angepasst werden.
+                Wenn ein Ueberlauf beobachtet wird, muss entsprechend die base.xml angepasst
+                werden.
 
-    02.11.2021  Der Befehl SERVICE_RESET setzt nun auch einen normalen User-Access zurück.
+    02.11.2021  Der Befehl SERVICE_RESET setzt nun auch einen normalen User-Access zurueck.
     
     19.11.2021  Die Definition der Freigabezeit der Messungen nach einem PowerOn erfolgt nun in der
                 base.xml. Dazu wurde das Element "ModifiedChannelValues" in ChannelOptions

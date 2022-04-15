@@ -7,7 +7,9 @@
 
 package de.sgollmer.solvismax.error;
 
-public class AssignmentException extends Exception {
+import de.sgollmer.xmllibrary.XmlException;
+
+public class AssignmentException extends XmlException {
 	/**
 	 * 
 	 */

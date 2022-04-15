@@ -15,7 +15,6 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
-import de.sgollmer.solvismax.error.ReferenceException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.Alias;
@@ -23,7 +22,6 @@ import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.ChannelSource;
 import de.sgollmer.solvismax.model.objects.IChannelSource;
 import de.sgollmer.solvismax.model.objects.IInstance;
-import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.calculation.Strategies.Strategy;
 import de.sgollmer.solvismax.model.objects.data.IMode;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
@@ -139,16 +137,6 @@ public class Calculation extends ChannelSource {
 				case XML_ALIAS:
 					this.aliasGroup.add((Alias) created);
 			}
-		}
-
-	}
-
-	@Override
-	public void assign(final SolvisDescription description)
-			throws XmlException, AssignmentException, ReferenceException {
-		this.aliasGroup.assign(description);
-		if (this.strategy != null) {
-			this.strategy.assign(description);
 		}
 
 	}

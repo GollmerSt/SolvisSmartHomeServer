@@ -27,27 +27,23 @@ public class DateValue extends SingleData<Calendar> {
 	}
 
 	@Override
-	public Helper.Boolean getBoolean()  throws TypeException {
-		throw new TypeException(
-				this.getClass().toString() + " can't be converted to Boolean");
+	public Helper.Boolean getBoolean() throws TypeException {
+		throw new TypeException(this.getClass().toString() + " can't be converted to Boolean");
 	}
 
 	@Override
 	public Integer getInt() throws TypeException {
-		throw new TypeException(
-				this.getClass().toString() + " can't be converted to Integer");
+		throw new TypeException(this.getClass().toString() + " can't be converted to Integer");
 	}
 
 	@Override
 	public Long getLong() throws TypeException {
-		throw new TypeException(
-				this.getClass().toString() + " can't be converted to Long");
+		throw new TypeException(this.getClass().toString() + " can't be converted to Long");
 	}
 
 	@Override
 	public Double getDouble() throws TypeException {
-		throw new TypeException(
-				this.getClass().toString() + " can't be converted to Double");
+		throw new TypeException(this.getClass().toString() + " can't be converted to Double");
 	}
 
 	@Override

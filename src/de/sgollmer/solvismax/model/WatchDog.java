@@ -215,7 +215,8 @@ public class WatchDog {
 					}
 				}
 
-				this.abort = this.humanAccess.isServerAccessEnabled() && (clearErrorMessage || event != Event.SET_ERROR_BY_MESSAGE);
+				this.abort = this.humanAccess.isServerAccessEnabled()
+						&& (clearErrorMessage || event != Event.SET_ERROR_BY_MESSAGE);
 
 				synchronized (this) {
 					if (!this.abort) {

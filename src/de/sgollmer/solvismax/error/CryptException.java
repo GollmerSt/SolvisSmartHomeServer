@@ -1,10 +1,11 @@
 package de.sgollmer.solvismax.error;
 
 public class CryptException extends Exception {
-	
+
 	public enum Type {
-		ERROR, DEFAULT,NONE
+		ERROR, DEFAULT, NONE
 	}
+
 	private final Type type;
 
 	/**
@@ -16,7 +17,7 @@ public class CryptException extends Exception {
 		super("Decryption error");
 		this.type = type;
 	}
-	
+
 	public CryptException() {
 		this(Type.ERROR);
 	}

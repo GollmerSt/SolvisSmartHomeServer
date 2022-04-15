@@ -13,7 +13,6 @@ import java.util.List;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.objects.IAssigner;
 import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.data.IMode;
@@ -21,7 +20,7 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 
-public interface IStrategy extends IAssigner {
+public interface IStrategy {
 
 	SingleData<?> getValue(final SolvisScreen solvisScreen, final Solvis solvis, final IControlAccess controlAccess,
 			final boolean optional) throws TerminationException, IOException;
