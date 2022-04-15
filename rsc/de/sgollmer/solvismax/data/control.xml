@@ -4043,9 +4043,50 @@
 						<tns:BottomRight X="195" Y="32" />
 					</tns:CurrentValue>
 				</tns:GuiAccess>
-				<tns:TypeRead>
-					<tns:GuiRead format="(-{0,1}\d+).$" />
-				</tns:TypeRead>
+				<tns:TypeReadWrite increment="1" most="60"
+					least="-20">
+					<tns:GuiModification format="(-{0,1}\d+).$"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="200" Y="25" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="25" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
+		<!-- Puffer_dT_Stoop -->
+		<tns:ChannelDescription id="C48" unit="K">
+			<tns:Configuration admin="VALUE" />
+			<tns:Control>
+				<tns:GuiAccess screenId="Wasser-Anforderung-2/2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="47" />
+						<tns:BottomRight X="195" Y="59" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="60"
+					least="-20">
+					<tns:GuiModification format="(-{0,1}\d+).$"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="200" Y="55" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="55" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
 				<tns:UpdateBy>
 					<tns:HumanAccess />
 				</tns:UpdateBy>
@@ -5024,6 +5065,8 @@
 
 		<tns:Assignment id="C47" name="C47.Puffer_dT_Start"
 			alias="alias.PufferdTStart"></tns:Assignment>
+
+		<tns:Assignment id="C48" name="C48.Puffer_dT_Stopp" />
 
 
 	</tns:ChannelAssignments>
