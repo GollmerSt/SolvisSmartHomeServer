@@ -2,6 +2,8 @@ A E N D E R U N G E N
 
 Version 01.05.02
 
+    19.04.2022  C49.Puffer_Tmin hinzugefügt.
+
     15.04.2022  Vereinfachung der Nachbearbeitung der XML-Daten durch Ausnutzen des
                 Nachprozessierens der XML-Library.
 

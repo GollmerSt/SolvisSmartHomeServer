@@ -4093,6 +4093,35 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
+		<tns:ChannelDescription id="C49" unit="K">
+			<tns:Configuration admin="VALUE" />
+			<tns:Control>
+				<tns:GuiAccess screenId="Wasser-Anforderung-1/2">
+					<tns:CurrentValue>
+						<tns:TopLeft X="155" Y="75" />
+						<tns:BottomRight X="195" Y="87" />
+					</tns:CurrentValue>
+				</tns:GuiAccess>
+				<tns:TypeReadWrite increment="1" most="99"
+					least="0">
+					<tns:GuiModification format="(-{0,1}\d+)..$"
+						wrapAround="true">
+						<tns:Upper pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="200" Y="80" />
+						</tns:Upper>
+						<tns:Lower pushTimeRefId="Standard"
+							releaseTimeRefId="ValueChange">
+							<tns:Coordinate X="145" Y="80" />
+						</tns:Lower>
+					</tns:GuiModification>
+				</tns:TypeReadWrite>
+				<tns:UpdateBy>
+					<tns:HumanAccess />
+				</tns:UpdateBy>
+			</tns:Control>
+		</tns:ChannelDescription>
+
 	</tns:ChannelDescriptions>
 
 
@@ -5067,6 +5096,8 @@
 			alias="alias.PufferdTStart"></tns:Assignment>
 
 		<tns:Assignment id="C48" name="C48.Puffer_dT_Stopp" />
+
+		<tns:Assignment id="C49" name="C49.Puffer_Tmin" />
 
 
 	</tns:ChannelAssignments>
