@@ -13,6 +13,8 @@ import java.util.Collection;
 import javax.mail.MessagingException;
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.BaseData;
+import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.crypt.CryptAes;
 import de.sgollmer.solvismax.error.CryptException;
 import de.sgollmer.solvismax.error.ObserverException;
@@ -23,6 +25,7 @@ import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
+import de.sgollmer.solvismax.model.objects.unit.Unit;
 import de.sgollmer.xmllibrary.ArrayXml;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
@@ -158,5 +161,21 @@ public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 
 	public CryptException getException() {
 		return this.password.getException();
+	}
+
+	public int sendTestMail(final BaseData baseData) {
+		try {
+			this.send("Test mail", "This is a test mail", null);
+
+			for (Unit unit : baseData.getUnits().getUnits()) {
+				unit.getFeatures().checkMail(unit.getId());
+			}
+
+			return Constants.ExitCodes.OK;
+		} catch (Throwable e) {
+			logger.error("Mailing error", e);
+			return Constants.ExitCodes.MAILING_ERROR;
+		}
+
 	}
 }

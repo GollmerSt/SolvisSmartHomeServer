@@ -26,7 +26,9 @@ public class Configuration {
 	private static final String XML_FEATURE = "Feature";
 
 	public enum Admin {
-		ADMIN, VALUE, NONE;
+		ADMIN, // Executed in admin mode
+		VALUE, // Fix value can be defined in features, admin mode not necessary
+		NONE;
 
 		public boolean isAdmin(boolean init) {
 			return this == ADMIN || !init && this == VALUE;

@@ -4035,7 +4035,6 @@
 
 		<!-- Puffer_dT_Start -->
 		<tns:ChannelDescription id="C47" unit="K">
-			<tns:Configuration admin="VALUE" />
 			<tns:Control>
 				<tns:GuiAccess screenId="Wasser-Anforderung-2/2">
 					<tns:CurrentValue>
@@ -4065,7 +4064,6 @@
 
 		<!-- Puffer_dT_Stoop -->
 		<tns:ChannelDescription id="C48" unit="K">
-			<tns:Configuration admin="VALUE" />
 			<tns:Control>
 				<tns:GuiAccess screenId="Wasser-Anforderung-2/2">
 					<tns:CurrentValue>
@@ -4093,6 +4091,7 @@
 			</tns:Control>
 		</tns:ChannelDescription>
 
+<!-- C49.Puffer_Tmin -->
 		<tns:ChannelDescription id="C49" unit="K">
 			<tns:Configuration admin="VALUE" />
 			<tns:Control>

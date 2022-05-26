@@ -649,15 +649,16 @@
 		<attribute name="id" use="required">
 			<simpleType>
 				<restriction base="string">
-					<enumeration value="OnlyMeasurements"></enumeration>
+					<enumeration value="Admin"></enumeration>
 					<enumeration value="ClockTuning"></enumeration>
+					<enumeration value="OnlyMeasurements"></enumeration>
 					<enumeration value="EquipmentTimeSynchronisation"></enumeration>
 					<enumeration value="UpdateAfterUserAccess"></enumeration>
 					<enumeration value="DetectServiceAccess"></enumeration>
 					<enumeration value="PowerOffIsServiceAccess"></enumeration>
 					<enumeration value="SendMailOnError"></enumeration>
+					<enumeration value="SendMailOnErrorsCleared"></enumeration>
 					<enumeration value="ClearErrorMessageAfterMail"></enumeration>
-					<enumeration value="Admin"></enumeration>
 					<enumeration value="Min_Vorlauf_Temp"></enumeration>
 					<enumeration value="BetriebsartVT_HK"></enumeration>
 					<enumeration value="WW_Pumpe_Min_Laufzeit"></enumeration>

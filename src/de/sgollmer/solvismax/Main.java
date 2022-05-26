@@ -227,17 +227,11 @@ public class Main {
 						this.serverRestartAndExit(baseData, value);
 						break;
 					case "test-mail":
-						try {
-							if (baseData.getExceptionMail() == null) {
-								throw new Error(
-										"Sending mail not possible in case of mssing or invalid data in <base.xml>");
-							}
-							baseData.getExceptionMail().send("Test mail", "This is a test mail", null);
-							System.exit(Constants.ExitCodes.OK);
-						} catch (Throwable e) {
-							logger.error("Mailing error", e);
-							System.exit(Constants.ExitCodes.MAILING_ERROR);
+						if (baseData.getExceptionMail() == null) {
+							throw new Error(
+									"Sending mail not possible in case of mssing or invalid data in <base.xml>");
 						}
+						System.exit(baseData.getExceptionMail().sendTestMail(baseData));
 						break;
 					case "documentation":
 						executionMode = ExecutionMode.DOCUMENTATION_OF_UNIT;

@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.log.LogManager;
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.StringElement;
@@ -13,12 +15,15 @@ import de.sgollmer.xmllibrary.XmlException;
 
 public class Features {
 
+	private static final ILogger logger = LogManager.getInstance().getLogger(Features.class);
+
 	private static final String XML_CLOCK_TUNING = "ClockTuning";
 	private static final String XML_EQUIPMENT_TIME_SYNC = "EquipmentTimeSynchronisation";
 	private static final String XML_UPDATE_AFTER_USER_ACCESS = "UpdateAfterUserAccess";
 	private static final String XML_DETECT_SERVICE_ACCESS = "DetectServiceAccess";
 	private static final String XMl_POWEROFF_IS_SERVICE_ACCESS = "PowerOffIsServiceAccess";
 	private static final String XMl_SEND_MAIL_ON_ERROR = "SendMailOnError";
+	private static final String XMl_SEND_MAIL_ON_ERRORS_CLEARED = "SendMailOnErrorsCleared";
 	private static final String XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL = "ClearErrorMessageAfterMail";
 	private static final String XML_ONLY_MEASUREMENT = "OnlyMeasurements";
 	private static final String XML_INTERACTIVE_GUI_ACCESS = "InteractiveGUIAccess";
@@ -33,13 +38,17 @@ public class Features {
 		this.checkInteractiveGUIAccess();
 	}
 
-	private boolean get(final String feature) {
+	private boolean get(final String feature, final boolean missingValue) {
 		Boolean result = this.features.get(feature);
 		if (result == null) {
-			return false;
+			return missingValue;
 		} else {
 			return result;
 		}
+	}
+
+	private boolean get(final String feature) {
+		return this.get(feature, false);
 	}
 
 	public boolean isClockTuning() {
@@ -92,6 +101,10 @@ public class Features {
 
 	public boolean isSendMailOnError() {
 		return this.get(XMl_SEND_MAIL_ON_ERROR);
+	}
+
+	public boolean isSendMailOnErrorsCleared() {
+		return this.get(XMl_SEND_MAIL_ON_ERROR) && this.get(XMl_SEND_MAIL_ON_ERRORS_CLEARED, true);
 	}
 
 	public boolean isAdmin() {
@@ -174,4 +187,16 @@ public class Features {
 	public Map<String, Boolean> getMap() {
 		return this.features;
 	}
+
+	public void checkMail(final String unitId) {
+		if (!this.isSendMailOnError()) {
+			logger.error("Mail was sent, but the mail is not activated for the unit \"" + unitId
+					+ "\". Attributes involved:");
+			logger.error(Features.XMl_SEND_MAIL_ON_ERROR + ": " + Boolean.toString(this.isSendMailOnError()));
+			logger.error(Features.XMl_SEND_MAIL_ON_ERRORS_CLEARED + ": "
+					+ Boolean.toString(this.isSendMailOnErrorsCleared()));
+		}
+
+	}
+
 }

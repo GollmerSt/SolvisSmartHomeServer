@@ -2,6 +2,14 @@ A E N D E R U N G E N
 
 Version 01.05.02
 
+    26.05.2022  Wird ein Mail-Test ausgefuehrt, werden fuer die Units eine Fehlermeldung
+                ausgegeben, bei denen das Feature "SendMailOnError" nicht gesetzt ist. Der Test
+                findet davon unabhaengig statt.
+                
+                Feature "SendMailOnErrorsCleared" hinzugefuegt. Ist dieses Feature auf true oder
+                nicht definiert, so wird nach einer FehlerMail auch eine Mail versendet, wenn der
+                Fehler behoben ist. Andernfalls wird nur der Fehler selber gesendet.
+
     19.04.2022  C49.Puffer_Tmin hinzugefuegt.
 
     15.04.2022  Vereinfachung der Nachbearbeitung der XML-Daten durch Ausnutzen des
