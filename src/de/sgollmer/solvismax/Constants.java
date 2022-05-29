@@ -7,8 +7,12 @@
 
 package de.sgollmer.solvismax;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.regex.Pattern;
 
+import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.objects.Coordinate;
 
 public class Constants {
@@ -196,6 +200,48 @@ public class Constants {
 		public static final boolean BURST = false;
 
 		public static final boolean OVERWRITE_ONLY_ON_LEARN = false;
+
+		private static NoDebug[] NO_DEBUGS = new NoDebug[] { new NoDebug(BaseData.class, "DEBUG", false),
+				new NoDebug("NO_MAIL", false), new NoDebug("SCREEN_SAVER_DETECTION", false),
+				new NoDebug("DEBUG_TWO_STATIONS", false), new NoDebug("SOLVIS_RESULT_NULL", false),
+				new NoDebug("BURST", false), new NoDebug("OVERWRITE_ONLY_ON_LEARN", false) };
+
+		private static class NoDebug {
+			private final Class<?> klass;
+			private final String varName;
+			private final boolean value;
+
+			public NoDebug(final Class<?> klass, final String varName, final boolean value) {
+				this.klass = klass;
+				this.varName = varName;
+				this.value = value;
+			}
+
+			public NoDebug(final String varName, final boolean value) {
+				this(Debug.class, varName, value);
+			}
+		}
+
+		public static void logDebugging(final ILogger logger) {
+			boolean debugging = false;
+			;
+			for (NoDebug noDebug : NO_DEBUGS) {
+				try {
+					Field field = noDebug.klass.getField(noDebug.varName);
+					boolean value = field.getBoolean(null);
+					if (value != noDebug.value) {
+						if (!debugging) {
+							logger.warn("Debugging is activated, enabled debugging:");
+						}
+						logger.warn("    " + noDebug.varName);
+					}
+				} catch (NoSuchFieldException | SecurityException | IllegalArgumentException
+						| IllegalAccessException e) {
+					logger.error("Reflection error on DEBUG class", e);
+				}
+			}
+
+		}
 
 	}
 

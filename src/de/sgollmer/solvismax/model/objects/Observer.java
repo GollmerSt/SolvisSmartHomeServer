@@ -38,8 +38,8 @@ public class Observer<D> {
 		 * @param source
 		 * @return true, if successfull
 		 */
-		public boolean notify(final D data, final Object source) {
-			boolean status = true;
+		public Collection<ObserverException> notify(final D data, final Object source) {
+			Collection<ObserverException> exceptions = null;
 			if (this.observers != null) {
 				Collection<IObserver<D>> copy;
 				synchronized (this) {
@@ -49,11 +49,14 @@ public class Observer<D> {
 					try {
 						observer.update(data, source);
 					} catch (ObserverException e) {
-						status = false;
+						if (exceptions == null) {
+							exceptions = new ArrayList<>();
+						}
+						exceptions.add(e);
 					}
 				}
 			}
-			return status;
+			return exceptions;
 		}
 
 		public synchronized boolean isEmpty() {

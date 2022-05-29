@@ -32,7 +32,7 @@ import de.sgollmer.xmllibrary.CreatorByXML;
 
 public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 
-	private static final ILogger logger = LogManager.getInstance().getLogger(ExceptionMail.class);;
+	private static final ILogger logger = LogManager.getInstance().getLogger(ExceptionMail.class);
 
 	private static final String XML_RECIPIENT = "Recipient";
 	private static final String XML_RECIPIENTS = "Recipients";

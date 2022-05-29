@@ -7,10 +7,12 @@
 
 package de.sgollmer.solvismax.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
+import de.sgollmer.solvismax.error.ObserverException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -65,7 +67,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	 * 
 	 * @param errorVisible if error button or error message box is visible
 	 * @param errorScreen
-	 * @return
+	 * @return true if setting of the error states are successful.
 	 */
 
 	boolean setError(final Event errorEvent, final SolvisScreen errorScreen) {
@@ -88,10 +90,17 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 			}
 		}
 
-		return processError(changed, null);
+		return processError(changed, null) == null;
 	}
 
-	private boolean processError(final ErrorChanged errorChangeState, final ChannelDescription description) {
+	/**
+	 * 
+	 * @param errorChangeState NONE: error not changed, SET: Error was set, RESET: Error could be reseted
+	 * @param description  null, if error was displayed by the screen, otherwise the channel description 
+	 * @return
+	 */
+	private Collection<ObserverException> processError(final ErrorChanged errorChangeState,
+			final ChannelDescription description) {
 		String errorName = description == null ? "Message box" : description.getId();
 
 		boolean channelError;
@@ -130,7 +139,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 			this.notify(new SolvisStatePackage(this.state, this.solvis));
 			return this.solvis.notifySolvisErrorObserver(solvisErrorInfo, this);
 		}
-		return true;
+		return null;
 	}
 
 	public void setPowerOff() {
@@ -193,11 +202,11 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	}
 
 	@Override
-	public boolean notify(final SolvisStatePackage solvisStatePackage, final Object source) {
+	public Collection<ObserverException> notify(final SolvisStatePackage solvisStatePackage, final Object source) {
 		if (solvisStatePackage != null) {
 			return super.notify(solvisStatePackage, source);
 		}
-		return true;
+		return null;
 	}
 
 	public SolvisStatePackage getSolvisStatePackage() {

@@ -34,6 +34,7 @@ import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.ObserverException;
 import de.sgollmer.solvismax.error.PowerOnException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
@@ -471,7 +472,7 @@ public class Solvis {
 		this.worker.registerControlExecutingObserver(observer);
 	}
 
-	public boolean notifySolvisErrorObserver(final SolvisErrorInfo info, final Object source) {
+	public Collection< ObserverException> notifySolvisErrorObserver(final SolvisErrorInfo info, final Object source) {
 		return this.solvisErrorObservable.notify(info, source);
 	}
 

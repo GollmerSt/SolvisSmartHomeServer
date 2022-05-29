@@ -68,8 +68,11 @@
 				<!-- Wird ein Power-Off der Anlage erkannt, wird der wie ein Zugriff 
 					auf die Service-Screens behandelt (siehe vorheriges Element) -->
 				<tns:Feature id="SendMailOnError" value="false" />
-				<!-- Im Fall eines Anlagenfehlers wird einen Mail gesendet. Definitionen 
+				<!-- Im Fall eines Anlagenfehlers wird eine Mail gesendet. Definitionen 
 					im Abschnitt "ExceptionMail" -->
+				<tns:Feature id="SendMailOnErrorsCleared" value="true" />
+				<!-- Im Fall von Anlagenfehler wird eine Mail versendet, wenn die Fehler 
+					behoben sind. Definitionen im Abschnitt "ExceptionMail" -->
 				<tns:Feature id="ClearErrorMessageAfterMail"
 					value="false" />
 				<!-- Ist dieses Feature deaktiviert (false), wird bei einem Anlagenfehler 

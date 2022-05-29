@@ -367,6 +367,8 @@ public class Main {
 			System.exit(ExitCodes.LEARNING_NECESSARY);
 		}
 
+		Constants.Debug.logDebugging(logger);
+
 		this.commandHandler = new CommandHandler(this.instances);
 		this.server = new Server(serverSocket, this.commandHandler,
 				this.instances.getSolvisDescription().getMiscellaneous());
