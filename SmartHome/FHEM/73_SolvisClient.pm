@@ -1427,20 +1427,28 @@ sub DbLog_splitFn {
 
     my %ChannelDescriptions = %{$devicesChannelDescriptions{$device}};
 
-    my ($reading, $value, $unit);
+    my @split = split(/ /,$event);
 
-    my @splited = split(/ /,$event);
-
-    $reading = $splited[0];;
+    my $reading = shift(@split);
     $reading =~ tr/://d;
-
-    $unit = '';
-
-    if (defined($ChannelDescriptions{$reading}{Unit})) {
-        $unit = $ChannelDescriptions{$reading}{Unit};
-        $value = $splited[1];
+    
+    if (exists($ChannelDescriptions{$reading})) {
+ 
+        my $unit = '';
+        my $value = shift(@split);
+        
+        if (exists($ChannelDescriptions{$reading}{Unit})) {
+            $unit = $ChannelDescriptions{$reading}{Unit};
+        }
+ 
+        return ($reading, $value, $unit);
+        
+    } else {
+ 
+        return;		# split the event into reading, value and unit should be done by DbLog 
+ 
     }
-    return ($reading, $value, $unit);
+
 } # end DbLog_splitFn
 
 1;
