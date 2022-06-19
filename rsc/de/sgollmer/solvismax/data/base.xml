@@ -37,7 +37,9 @@
 			bufferedInterval_ms="60000" watchDogTime_ms="30000"
 			releaseBlockingAfterUserAccess_ms="300000"
 			releaseBlockingAfterServiceAccess_ms="3600000"
-			delayAfterSwitchingOnEnable="true"
+			reheatingNotRequiredActiveTime_ms="30000"
+			delayAfterSwitchingOnEnable="true" 
+			resetErrorDelayTime_ms="0"
 			ignoredFrameThicknesScreenSaver="3">
 			<tns:Extensions>
 				<!-- <tns:Extension id="Festbrennstoff" /> -->

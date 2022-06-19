@@ -36,7 +36,7 @@ import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.IXmlElement;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class StrategyButton implements IStrategy, IXmlElement<SolvisDescription> {
+public class StrategyButton extends AbstractStrategy implements IXmlElement<SolvisDescription> {
 
 	private final boolean invert;
 	private final String pushTimeId;
@@ -68,18 +68,16 @@ public class StrategyButton implements IStrategy, IXmlElement<SolvisDescription>
 	}
 
 	@Override
-	public SingleData<?> getValue(final SolvisScreen solvisScreen, final Solvis solvis,
-			final IControlAccess controlAccess, final boolean optional) throws TerminationException, IOException {
-		if (controlAccess instanceof GuiAccess) {
-			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
-			Button button = new Button(solvisScreen.getImage(), rectangle, this.pushTimeId, this.releaseTimeId);
-			return new BooleanValue(button.isSelected() ^ this.invert, System.currentTimeMillis());
-		}
-		return null;
+	public SingleData<?> getValue(final SolvisScreen solvisScreen, final Solvis solvis, final boolean optional)
+			throws TerminationException, IOException {
+		GuiAccess access = this.getControl().getGuiAccess();
+		Rectangle rectangle = access.getValueRectangle();
+		Button button = new Button(solvisScreen.getImage(), rectangle, this.pushTimeId, this.releaseTimeId);
+		return new BooleanValue(button.isSelected() ^ this.invert, System.currentTimeMillis());
 	}
 
 	@Override
-	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
+	public SetResult setValue(final Solvis solvis, final SolvisData value)
 			throws IOException, TerminationException, TypeException {
 		Helper.Boolean helperBool = value.getBoolean();
 		if (helperBool == Helper.Boolean.UNDEFINED) {
@@ -88,8 +86,9 @@ public class StrategyButton implements IStrategy, IXmlElement<SolvisDescription>
 
 		boolean bool = helperBool.result();
 
-		Button button = new Button(solvis.getCurrentScreen().getImage(),
-				((GuiAccess) controlAccess).getValueRectangle(), this.pushTimeId, this.releaseTimeId);
+		GuiAccess access = this.getControl().getGuiAccess();
+		Button button = new Button(solvis.getCurrentScreen().getImage(), access.getValueRectangle(), this.pushTimeId,
+				this.releaseTimeId);
 		boolean cmp = button.isSelected() ^ this.invert;
 		if (cmp == bool) {
 			return new SetResult(ResultStatus.SUCCESS, new BooleanValue(cmp, System.currentTimeMillis()), true);
@@ -125,7 +124,7 @@ public class StrategyButton implements IStrategy, IXmlElement<SolvisDescription>
 	}
 
 	@Override
-	public boolean learn(final Solvis solvis, final IControlAccess controlAccess) throws IOException {
+	public boolean learn(final Solvis solvis) throws IOException {
 		return true;
 	}
 
@@ -199,11 +198,6 @@ public class StrategyButton implements IStrategy, IXmlElement<SolvisDescription>
 				return "true";
 		}
 		return null;
-	}
-
-	@Override
-	public void setControl(final Control control) {
-
 	}
 
 	@Override

@@ -33,7 +33,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class StrategyRead implements IStrategy {
+public class StrategyRead extends AbstractStrategy {
 
 	private static final String XML_GUI_READ = "GuiRead";
 
@@ -51,29 +51,28 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public IntegerValue getValue(final SolvisScreen screen, final Solvis solvis, final IControlAccess controlAccess,
-			final boolean optional) throws IOException {
+	public IntegerValue getValue(final SolvisScreen screen, final Solvis solvis, final boolean optional)
+			throws IOException {
 		Integer i = null;
-		if (controlAccess instanceof GuiAccess) {
-			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
-			OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
-			String s = ocr.getString();
-			String formated = this.guiRead.getFormat().getString(s);
-			if (formated == null) {
-				if (optional) {
-					i = null;
-				} else {
-					return null;
-				}
+		GuiAccess access = this.getControl().getGuiAccess();
+		Rectangle rectangle = access.getValueRectangle();
+		OcrRectangle ocr = new OcrRectangle(screen.getImage(), rectangle);
+		String s = ocr.getString();
+		String formated = this.guiRead.getFormat().getString(s);
+		if (formated == null) {
+			if (optional) {
+				i = null;
 			} else {
-				i = (int) Math.round(Double.parseDouble(formated) * this.getDivisor());
+				return null;
 			}
+		} else {
+			i = (int) Math.round(Double.parseDouble(formated) * this.getDivisor());
 		}
 		return new IntegerValue(i, System.currentTimeMillis());
 	}
 
 	@Override
-	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
+	public SetResult setValue(final Solvis solvis, final SolvisData value)
 			throws IOException, TerminationException, TypeException {
 		return null;
 	}
@@ -154,7 +153,7 @@ public class StrategyRead implements IStrategy {
 	}
 
 	@Override
-	public boolean learn(final Solvis solvis, final IControlAccess controlAccess) {
+	public boolean learn(final Solvis solvis) {
 		return true;
 	}
 
@@ -233,11 +232,6 @@ public class StrategyRead implements IStrategy {
 				return Integer.toString(this.divisor);
 		}
 		return null;
-	}
-
-	@Override
-	public void setControl(final Control control) {
-
 	}
 
 	@Override

@@ -65,10 +65,10 @@ public class Control extends ChannelSource {
 	private final boolean optional;
 	private final GuiAccess guiAccess;
 
-	private final IStrategy strategy;
+	private final AbstractStrategy strategy;
 	private final UpdateStrategies updateStrategies;
 
-	private Control(final boolean optional, final GuiAccess guiAccess, final IStrategy strategy,
+	private Control(final boolean optional, final GuiAccess guiAccess, final AbstractStrategy strategy,
 			final UpdateStrategies updateStrategies) {
 		this.optional = optional;
 		this.guiAccess = guiAccess;
@@ -85,12 +85,10 @@ public class Control extends ChannelSource {
 	@Override
 	public boolean getValue(final SolvisData destin, final Solvis solvis, final long executionStartTime)
 			throws IOException, TerminationException, TypeException {
-		IControlAccess controlAccess = this.getControlAccess(solvis);
-		if (!this.guiPrepare(solvis, controlAccess)) {
+		if (!this.guiPrepare(solvis)) {
 			return false;
 		}
-		SingleData<?> data = this.strategy.getValue(solvis.getCurrentScreen(), solvis, this.getControlAccess(solvis),
-				this.optional);
+		SingleData<?> data = this.strategy.getValue(solvis.getCurrentScreen(), solvis, this.optional);
 		if (data == null) {
 			return false;
 		} else {
@@ -102,15 +100,14 @@ public class Control extends ChannelSource {
 	@Override
 	public SetResult setValue(final Solvis solvis, final SolvisData value) throws IOException, TerminationException {
 
-		IControlAccess controlAccess = this.getControlAccess(solvis);
-		if (!this.guiPrepare(solvis, controlAccess)) {
+		if (!this.guiPrepare(solvis)) {
 			return null;
 		}
 		SetResult setResult = null;
 		try {
 			for (int c = 0; c < Constants.SET_REPEATS + 1 && setResult == null; ++c) {
 				try {
-					setResult = this.strategy.setValue(solvis, this.getControlAccess(solvis), value);
+					setResult = this.strategy.setValue(solvis, value);
 				} catch (IOException e) {
 				}
 				if (setResult == null && c == 1) {
@@ -144,8 +141,7 @@ public class Control extends ChannelSource {
 		return this.strategy.setValueFast(solvis, value);
 	}
 
-	private boolean guiPrepare(final Solvis solvis, final IControlAccess controlAccess)
-			throws IOException, TerminationException {
+	private boolean guiPrepare(final Solvis solvis) throws IOException, TerminationException {
 		((Screen) this.guiAccess.getScreen().get(solvis)).goTo(solvis);
 		if (!this.guiAccess.prepare(solvis)) {
 			return false;
@@ -192,7 +188,7 @@ public class Control extends ChannelSource {
 
 		private boolean optional;
 		private GuiAccess guiAccess;
-		private IStrategy strategy;
+		private AbstractStrategy strategy;
 		private UpdateStrategies updateStrategies = null;
 
 		public Creator(final String id, final BaseCreator<?> creator) {
@@ -251,7 +247,7 @@ public class Control extends ChannelSource {
 				case XML_CONTROL_TYPE_MODE:
 				case XML_CONTROL_TYPE_BUTTON:
 				case XML_CONTROL_TYPE_REHEAT:
-					this.strategy = (IStrategy) created;
+					this.strategy = (AbstractStrategy) created;
 					break;
 				case XML_UPDATE_BY:
 					this.updateStrategies = (UpdateStrategies) created;
@@ -297,10 +293,10 @@ public class Control extends ChannelSource {
 					finished = true;
 				}
 				if (finished) {
-					finished = this.strategy.learn(solvis, this.getControlAccess(solvis));
+					finished = this.strategy.learn(solvis);
 				}
 				if (finished) {
-					data = this.strategy.getValue(saved, solvis, this.getControlAccess(solvis), false);
+					data = this.strategy.getValue(saved, solvis, false);
 					if (data == null) {
 						finished = false;
 					}
@@ -359,7 +355,7 @@ public class Control extends ChannelSource {
 		return this.strategy.interpretSetData(singleData, internal);
 	}
 
-	static class GuiAccess implements IXmlElement<SolvisDescription>, IControlAccess {
+	static class GuiAccess implements IXmlElement<SolvisDescription> {
 		private final String screenId;
 		private final Rectangle valueRectangle;
 		private final String preparationId;
@@ -490,10 +486,6 @@ public class Control extends ChannelSource {
 			return Preparation.prepare(this.preparation, solvis);
 		}
 
-	}
-
-	private IControlAccess getControlAccess(final Solvis solvis) {
-		return this.guiAccess;
 	}
 
 	@Override

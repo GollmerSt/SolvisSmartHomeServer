@@ -43,7 +43,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class StrategyMode implements IStrategy {
+public class StrategyMode extends AbstractStrategy {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(StrategyMode.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
@@ -65,36 +65,36 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public ModeValue<ModeEntry> getValue(final SolvisScreen source, final Solvis solvis,
-			final IControlAccess controlAccess, boolean optional) throws IOException {
-		if (controlAccess instanceof GuiAccess) {
-			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
-			MyImage image = new MyImage(source.getImage(), rectangle, true);
-			Pattern pattern = null;
-			for (ModeEntry mode : this.modes) {
-				ScreenGraficDescription cmp = mode.getGuiSet().getGrafic();
-				MyImage current = image;
-				if (!cmp.isExact()) {
-					if (pattern == null) {
-						pattern = new Pattern(source.getImage(), rectangle);
-					}
-					current = pattern;
+	public ModeValue<ModeEntry> getValue(final SolvisScreen source, final Solvis solvis, boolean optional)
+			throws IOException {
+		GuiAccess access = this.getControl().getGuiAccess();
+		Rectangle rectangle = access.getValueRectangle();
+		MyImage image = new MyImage(source.getImage(), rectangle, true);
+		Pattern pattern = null;
+		for (ModeEntry mode : this.modes) {
+			ScreenGraficDescription cmp = mode.getGuiSet().getGrafic();
+			MyImage current = image;
+			if (!cmp.isExact()) {
+				if (pattern == null) {
+					pattern = new Pattern(source.getImage(), rectangle);
 				}
-				if (cmp.isElementOf(current, source.getSolvis(), true)) {
-					return new ModeValue<ModeEntry>(mode, System.currentTimeMillis());
-				}
+				current = pattern;
+			}
+			if (cmp.isElementOf(current, source.getSolvis(), true)) {
+				return new ModeValue<ModeEntry>(mode, System.currentTimeMillis());
 			}
 		}
 		return null;
+
 	}
 
 	@Override
-	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
+	public SetResult setValue(final Solvis solvis, final SolvisData value)
 			throws IOException, TerminationException, TypeException {
 		if (value.getMode() == null) {
 			throw new TypeException("Wrong value type");
 		}
-		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
+		ModeValue<ModeEntry> cmp = this.getValue(solvis.getCurrentScreen(), solvis, false);
 		if (cmp != null && value.getMode().equals(cmp)) {
 			return new SetResult(ResultStatus.SUCCESS, cmp, true);
 		}
@@ -114,7 +114,7 @@ public class StrategyMode implements IStrategy {
 
 		for (int i = 0; i < touches; ++i) {
 			solvis.send(mode.getGuiSet().getTouch());
-			cmp = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
+			cmp = this.getValue(solvis.getCurrentScreen(), solvis, false);
 			if (cmp != null && value.getMode().equals(cmp)) {
 				return new SetResult(ResultStatus.SUCCESS, cmp, true);
 			}
@@ -204,7 +204,7 @@ public class StrategyMode implements IStrategy {
 		return true;
 	}
 
-	private boolean learnByButton(final Solvis solvis, final IControlAccess controlAccess) throws TerminationException {
+	private boolean learnByButton(final Solvis solvis) throws TerminationException {
 		boolean successfull = true;
 		ModeEntry mode = this.getModes().get(this.getModes().size() - 1);
 		TouchPoint preTouch = mode.getGuiSet().getTouch();
@@ -230,7 +230,7 @@ public class StrategyMode implements IStrategy {
 				solvis.writeLearningImage(currentScreen, currentScreen.get().getId() + "__" + grafic.getId());
 				grafic.learn(solvis);
 				solvis.clearCurrentScreen();
-				SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
+				SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, false);
 				if (data == null || !mode.equals(data.get())) {
 					logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
 					successfull = false;
@@ -244,8 +244,7 @@ public class StrategyMode implements IStrategy {
 		return successfull;
 	}
 
-	private boolean learnByWhiteRectangles(final Solvis solvis, final IControlAccess controlAccess)
-			throws TerminationException {
+	private boolean learnByWhiteRectangles(final Solvis solvis) throws TerminationException {
 		boolean successfull = true;
 		List<ModeEntry> toLearn = new ArrayList<>(this.getModes());
 		try {
@@ -261,8 +260,7 @@ public class StrategyMode implements IStrategy {
 						solvis.writeLearningImage(currentScreen, currentScreen.get().getId() + "__" + grafic.getId());
 						grafic.learn(solvis);
 						solvis.clearCurrentScreen();
-						SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess,
-								false);
+						SingleData<ModeEntry> data = this.getValue(solvis.getCurrentScreen(), solvis, false);
 						if (data == null || !mode.equals(data.get())) {
 							logger.log(LEARN, "Learning of <" + mode.getId() + "> not successfull, will be retried");
 							successfull = false;
@@ -290,12 +288,12 @@ public class StrategyMode implements IStrategy {
 	}
 
 	@Override
-	public boolean learn(final Solvis solvis, final IControlAccess controlAccess) throws TerminationException {
+	public boolean learn(final Solvis solvis) throws TerminationException {
 		boolean successfull = true;
 		if (this.sequence) {
-			successfull = learnByWhiteRectangles(solvis, controlAccess);
+			successfull = learnByWhiteRectangles(solvis);
 		} else {
-			successfull = learnByButton(solvis, controlAccess);
+			successfull = learnByButton(solvis);
 		}
 
 		if (successfull) {
@@ -366,9 +364,11 @@ public class StrategyMode implements IStrategy {
 
 	@Override
 	public void setControl(final Control control) {
+		super.setControl(control);
+		Rectangle rectangle = control.getGuiAccess().getValueRectangle();
 		for (ModeEntry mode : this.modes) {
 			if (mode.getGuiSet().getGrafic() != null)
-				mode.getGuiSet().getGrafic().setRectangle(control.getGuiAccess().getValueRectangle());
+				mode.getGuiSet().getGrafic().setRectangle(rectangle);
 		}
 
 	}

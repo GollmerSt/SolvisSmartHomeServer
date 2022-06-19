@@ -44,7 +44,7 @@ import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
-public class StrategyReheat implements IStrategy {
+public class StrategyReheat extends AbstractStrategy {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(StrategyReheat.class);
 
@@ -54,8 +54,6 @@ public class StrategyReheat implements IStrategy {
 	private final String desiredId;
 	private final String pufferId;
 	private final String deltaId;
-
-	private Control control;
 
 	private StrategyReheat(final TouchPoint touchPoint, final String desiredId, final String pufferId, String deltaId) {
 		this.touchPoint = touchPoint;
@@ -145,7 +143,7 @@ public class StrategyReheat implements IStrategy {
 	}
 
 	@Override
-	public boolean learn(final Solvis solvis, final IControlAccess controlAccess) throws IOException {
+	public boolean learn(final Solvis solvis) throws IOException {
 		return true;
 	}
 
@@ -160,7 +158,7 @@ public class StrategyReheat implements IStrategy {
 		if (value.equals(Mode.HEATING.getName())) {
 			mode = Mode.HEATING;
 		} else if (debug) {
-			mode = (Mode) this.control.getDescription().getMode(value);
+			mode = (Mode) this.getControl().getDescription().getMode(value);
 		}
 		if (mode != null) {
 			return new ModeValue<>(mode, timeStamp);
@@ -256,32 +254,25 @@ public class StrategyReheat implements IStrategy {
 	}
 
 	@Override
-	public void setControl(final Control control) {
-		this.control = control;
-	}
+	public SingleData<?> getValue(final SolvisScreen solvisScreen, final Solvis solvis, final boolean optional)
+			throws TerminationException, IOException {
 
-	@Override
-	public SingleData<?> getValue(final SolvisScreen solvisScreen, final Solvis solvis,
-			final IControlAccess controlAccess, final boolean optional) throws TerminationException, IOException {
+		GuiAccess access = this.getControl().getGuiAccess();
+		Rectangle rectangle = access.getValueRectangle();
 
-		if (controlAccess instanceof GuiAccess) {
-			Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
+		Reheat reheat = new Reheat(rectangle);
 
-			Reheat reheat = new Reheat(rectangle);
+		boolean active = reheat.isActive(solvisScreen);
 
-			boolean active = reheat.isActive(solvisScreen);
-
-			if (!active) {
-				return Mode.OFF.create(System.currentTimeMillis());
-			} else {
-				return Mode.HEATING.create(System.currentTimeMillis());
-			}
+		if (!active) {
+			return Mode.OFF.create(System.currentTimeMillis());
+		} else {
+			return Mode.HEATING.create(System.currentTimeMillis());
 		}
-		return null;
 	}
 
 	@Override
-	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData value)
+	public SetResult setValue(final Solvis solvis, final SolvisData value)
 			throws IOException, TerminationException, TypeException {
 
 		StrategyReheat.this.interpretSetData(value.getSingleData(), false);
@@ -292,7 +283,8 @@ public class StrategyReheat implements IStrategy {
 			return setResult;
 		}
 
-		Rectangle rectangle = ((GuiAccess) controlAccess).getValueRectangle();
+		GuiAccess access = this.getControl().getGuiAccess();
+		Rectangle rectangle = access.getValueRectangle();
 		Reheat reheat = new Reheat(rectangle);
 
 		boolean notRequired = Reheat.isNotRequired(solvis.getCurrentScreen());
@@ -360,7 +352,7 @@ public class StrategyReheat implements IStrategy {
 	@Override
 	public void instantiate(Solvis solvis) {
 
-		SolvisData data = solvis.getAllSolvisData().get(this.control.getDescription());
+		SolvisData data = solvis.getAllSolvisData().get(this.getControl().getDescription());
 
 		data.registerContinuousObserver(new ReheatObserver());
 
@@ -466,8 +458,8 @@ public class StrategyReheat implements IStrategy {
 			}
 			if (!this.abort) {
 				if (this.data == null) {
-					this.solvis.execute(new CommandControl(StrategyReheat.this.control.getDescription(), this.solvis,
-							Constants.Commands.REHEATING_PRIORITY));
+					this.solvis.execute(new CommandControl(StrategyReheat.this.getControl().getDescription(),
+							this.solvis, Constants.Commands.REHEATING_PRIORITY));
 				} else {
 					try {
 						this.data.setMode(Mode.OFF, System.currentTimeMillis());

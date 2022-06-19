@@ -68,18 +68,26 @@
 		<sequence>
 			<element name="Urls" maxOccurs="1" minOccurs="0">
 				<annotation>
-					<documentation>Es gibt Fälle, wo es mehrer Urls geben kann, um die
-						gleiche Anlage zu erreichen. Dies benötige ich z.B zum Testen. Da
-						die Anlage weit entfernt ist, gibt es für den Zugriff aus der
-						Ferne andere Urls als direkt. In diesem Fall kann man mehrere Urls
-						in diesen Tag eintragen.
-						Der Server geht alle durch und merkt sich
-						den ersten, der mit der
-						passenden Antwort wieder kommt. Der
-						Response auf den XML-String
-						ist hier das entschende Kriterium.
-						Wenn der Tag Urls angegeben wird, werden das url-Attribut vom
-						Unit-Eintrag ignoriert. Es erscheint dann im Log eine Warnung.
+					<documentation>
+						Es gibt Fälle, wo es mehrer Urls geben kann, um
+						die
+						gleiche Anlage zu erreichen. Dies benötige
+						ich z.B zum Testen. Da
+						die Anlage weit entfernt
+						ist, gibt es für den Zugriff aus der Ferne
+						andere Urls als direkt. In diesem Fall kann man
+						mehrere Urls in
+						diesen Tag eintragen. Der Server
+						geht alle durch und merkt sich den
+						ersten, der
+						mit der passenden Antwort wieder kommt. Der
+						Response auf
+						den XML-String ist hier das
+						entschende Kriterium. Wenn der Tag Urls
+						angegeben wird, werden das url-Attribut vom
+						Unit-Eintrag ignoriert.
+						Es erscheint dann im Log
+						eine Warnung.
 					</documentation>
 				</annotation>
 				<complexType>
@@ -303,6 +311,24 @@
 				</documentation>
 			</annotation>
 		</attribute>
+		<attribute name="reheatingNotRequiredActiveTime_ms"
+			type="int" use="optional">
+			<annotation>
+				<documentation>
+					Wird ein Nachheizen angefordert, das jedoch nicht
+					notwendig ist, geht der Reheating-Status in den
+					Zustand
+					"not_required". Die Länge dieses Zustandes
+					wird über
+					"reheatingNotRequiredActiveTime_ms"
+					bestimmt. Ist dieses Attribut
+					nicht definiert, wird
+					er auf 30000 gesetzt (30s). Danach wechselt er
+					in
+					den Zustand "off".
+				</documentation>
+			</annotation>
+		</attribute>
 		<attribute name="delayAfterSwitchingOnEnable" type="boolean"
 			use="required">
 			<annotation>
@@ -316,6 +342,16 @@
 					Sensoren verzögert die Daten
 					(bestimmbar durch
 					control.xml) an den Client.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="resetErrorDelayTime_ms" type="int"
+			use="optional">
+			<annotation>
+				<documentation>Default: 5min. Die SolvisMax5 scheint bestimmte
+					Fehler regelmäßig zu prüfen. Dazu setzt sie den Fehler erst zurück
+					um dann nach ca. 1 Minute später den Test auszuführen. Das führt zu
+					unnötigen Fehler-behoben-Mails
 				</documentation>
 			</annotation>
 		</attribute>
@@ -650,21 +686,22 @@
 			<simpleType>
 				<restriction base="string">
 					<enumeration value="Admin"></enumeration>
-					<enumeration value="ClockTuning"></enumeration>
 					<enumeration value="OnlyMeasurements"></enumeration>
+					<enumeration value="ClockTuning"></enumeration>
 					<enumeration value="EquipmentTimeSynchronisation"></enumeration>
-					<enumeration value="UpdateAfterUserAccess"></enumeration>
+					<enumeration value="InhibitScreensaver"></enumeration>
 					<enumeration value="DetectServiceAccess"></enumeration>
 					<enumeration value="PowerOffIsServiceAccess"></enumeration>
+					<enumeration
+						value="EndOfUserInterventionDetectionThroughScreenSaver">
+					</enumeration>
+					<enumeration value="UpdateAfterUserAccess"></enumeration>
 					<enumeration value="SendMailOnError"></enumeration>
 					<enumeration value="SendMailOnErrorsCleared"></enumeration>
 					<enumeration value="ClearErrorMessageAfterMail"></enumeration>
 					<enumeration value="Min_Vorlauf_Temp"></enumeration>
 					<enumeration value="BetriebsartVT_HK"></enumeration>
 					<enumeration value="WW_Pumpe_Min_Laufzeit"></enumeration>
-					<enumeration
-						value="EndOfUserInterventionDetectionThroughScreenSaver">
-					</enumeration>
 					<enumeration value="InteractiveGUIAccess"></enumeration>
 				</restriction>
 			</simpleType>

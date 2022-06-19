@@ -19,7 +19,6 @@ import de.sgollmer.solvismax.model.objects.IChannelSource.SetResult;
 import de.sgollmer.solvismax.model.objects.IChannelSource.UpperLowerStep;
 import de.sgollmer.solvismax.model.objects.ResultStatus;
 import de.sgollmer.solvismax.model.objects.TouchPoint;
-import de.sgollmer.solvismax.model.objects.control.Control.GuiAccess;
 import de.sgollmer.solvismax.model.objects.data.IntegerValue;
 import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
@@ -60,69 +59,67 @@ public class StrategyReadWrite extends StrategyRead {
 	}
 
 	@Override
-	public SetResult setValue(final Solvis solvis, final IControlAccess controlAccess, final SolvisData setValue)
+	public SetResult setValue(final Solvis solvis, final SolvisData setValue)
 			throws IOException, TerminationException, TypeException {
-		if (controlAccess instanceof GuiAccess) {
-			Integer target = setValue.getInteger();
-			IntegerValue data = this.getValue(solvis.getCurrentScreen(), solvis, controlAccess, false);
-			if (data == null) {
-				return null;
-			} else if (data.get() == null) {
-				return new SetResult(ResultStatus.NO_SUCCESS, data, true);
-			}
-			int current = data.get();
 
-			int value = getRealValue(target);
+		Integer target = setValue.getInteger();
+		IntegerValue data = this.getValue(solvis.getCurrentScreen(), solvis, false);
+		if (data == null) {
+			return null;
+		} else if (data.get() == null) {
+			return new SetResult(ResultStatus.NO_SUCCESS, data, true);
+		}
+		int current = data.get();
 
-			if (current == value) {
-				return new SetResult(target == current ? ResultStatus.SUCCESS : ResultStatus.VALUE_VIOLATION, data,
-						true);
-			}
+		int value = getRealValue(target);
 
-			int[] dist = new int[3];
+		if (current == value) {
+			return new SetResult(target == current ? ResultStatus.SUCCESS : ResultStatus.VALUE_VIOLATION, data, true);
+		}
 
-			dist[0] = this.steps(value, false) - this.steps(current, false); // no wrap around
+		int[] dist = new int[3];
 
-			dist[1] = -this.steps(current, false) + this.steps(value, true); // wrap lower
-			dist[2] = this.steps(value, false) - this.steps(current, true); // wrap upper
+		dist[0] = this.steps(value, false) - this.steps(current, false); // no wrap around
 
-			int minDist = dist[0];
+		dist[1] = -this.steps(current, false) + this.steps(value, true); // wrap lower
+		dist[2] = this.steps(value, false) - this.steps(current, true); // wrap upper
 
-			if (this.guiModification.wrapAround && //
-					(this.maxExceeding == null //
-							|| this.most - current <= this.maxExceeding //
-							|| this.most - value <= this.maxExceeding //
-					)) {
-				for (int i = 1; i < dist.length; ++i) {
-					if (Math.abs(minDist) > Math.abs(dist[i])) {
-						minDist = dist[i];
-					}
+		int minDist = dist[0];
+
+		if (this.guiModification.wrapAround && //
+				(this.maxExceeding == null //
+						|| this.most - current <= this.maxExceeding //
+						|| this.most - value <= this.maxExceeding //
+				)) {
+			for (int i = 1; i < dist.length; ++i) {
+				if (Math.abs(minDist) > Math.abs(dist[i])) {
+					minDist = dist[i];
 				}
 			}
+		}
 
-			TouchPoint point;
-			int touches;
-			if (minDist < 0) {
-				point = this.guiModification.lower;
-				touches = -minDist;
-			} else {
-				point = this.guiModification.upper;
-				touches = minDist;
-			}
+		TouchPoint point;
+		int touches;
+		if (minDist < 0) {
+			point = this.guiModification.lower;
+			touches = -minDist;
+		} else {
+			point = this.guiModification.upper;
+			touches = minDist;
+		}
 
-			boolean interrupt = false;
+		boolean interrupt = false;
 
-			if (touches > de.sgollmer.solvismax.Constants.Solvis.INTERRUPT_AFTER_N_TOUCHES) {
-				touches = de.sgollmer.solvismax.Constants.Solvis.INTERRUPT_AFTER_N_TOUCHES;
-				interrupt = true;
-			}
+		if (touches > de.sgollmer.solvismax.Constants.Solvis.INTERRUPT_AFTER_N_TOUCHES) {
+			touches = de.sgollmer.solvismax.Constants.Solvis.INTERRUPT_AFTER_N_TOUCHES;
+			interrupt = true;
+		}
 
-			for (int c = 0; c < touches; ++c) {
-				solvis.send(point);
-			}
-			if (interrupt) {
-				return new SetResult(ResultStatus.INTERRUPTED, data, false);
-			}
+		for (int c = 0; c < touches; ++c) {
+			solvis.send(point);
+		}
+		if (interrupt) {
+			return new SetResult(ResultStatus.INTERRUPTED, data, false);
 		}
 		return null;
 	}

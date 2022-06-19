@@ -2,6 +2,12 @@ A E N D E R U N G E N
 
 Version 01.05.02
 
+IControlAccess
+
+    19.06.2022  Das Interface "IControlAccess" wurde ausgebaut, da der Server die Modus-
+                Schnittstelle nicht bedient, da der Server bei Anlagen mit Modbus keinen
+                Sinn macht.
+
     26.05.2022  Wird ein Mail-Test ausgefuehrt, werden fuer die Units eine Fehlermeldung
                 ausgegeben, bei denen das Feature "SendMailOnError" nicht gesetzt ist. Der Test
                 findet davon unabhaengig statt.
