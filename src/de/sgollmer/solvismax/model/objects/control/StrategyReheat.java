@@ -449,7 +449,7 @@ public class StrategyReheat extends AbstractStrategy {
 		@Override
 		public void run() {
 			int waitTime = this.data == null ? this.solvis.getUnit().getMeasurementsIntervalFast_ms()
-					: this.solvis.getUnit().getClearNotRequiredTime_ms();
+					: this.solvis.getUnit().getReheatingNotRequiredActiveTime_ms();
 
 			try {
 				AbortHelper.getInstance().sleepAndLock(waitTime, this);

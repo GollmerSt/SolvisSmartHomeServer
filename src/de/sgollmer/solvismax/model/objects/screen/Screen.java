@@ -10,10 +10,10 @@ package de.sgollmer.solvismax.model.objects.screen;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -65,7 +65,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	private final Collection<Identification> identifications;
 
-	private final Collection<Rectangle> ignoreRectangles;
+	private final Set<Rectangle> ignoreRectangles;
 	private final String lastPreparationId;
 	private Preparation lastPreparation = null;
 	private final boolean noRestore;
@@ -77,7 +77,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			final boolean ignoreChanges, final boolean mustSave, final Configuration configurationMasks,
 			final ISelectScreenStrategy selectScreenStrategy, final TouchPointStrategy sequenceUp,
 			final TouchPointStrategy sequenceDown, final Collection<Identification> identifications,
-			final Collection<Rectangle> ignoreRectangles, final String preparationId, final String lastPreparationId,
+			final Set<Rectangle> ignoreRectangles, final String preparationId, final String lastPreparationId,
 			final boolean noRestore, final boolean service) {
 		super(id, previousId, preparationId, configurationMasks, selectScreenStrategy, service);
 		this.sortId = sortId;
@@ -213,7 +213,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 		private TouchPointStrategy sequenceUp = null;
 		private TouchPointStrategy sequenceDown = null;
 		private Collection<Identification> identifications = new ArrayList<>();
-		private List<Rectangle> ignoreRectangles = null;
+		private Set<Rectangle> ignoreRectangles = null;
 		private String preparationId = null;
 		private String lastPreparationId;
 		private boolean noRestore = false;
@@ -260,19 +260,6 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 		@Override
 		public Screen create() throws XmlException {
-			if (this.ignoreRectangles != null)
-				Collections.sort(this.ignoreRectangles, new Comparator<Rectangle>() {
-
-					@Override
-					public int compare(Rectangle o1, Rectangle o2) {
-						if (o1.isInvertFunction() == o2.isInvertFunction()) {
-							return 0;
-						} else if (o1.isInvertFunction()) {
-							return -1;
-						} else
-							return 1;
-					}
-				});
 			return new Screen(this.id, this.sortId, this.previousId, this.backId, this.ignoreChanges, this.mustSave,
 					this.configurationMasks, this.selectScreenStrategy, this.sequenceUp, this.sequenceDown,
 					this.identifications, this.ignoreRectangles, this.preparationId, this.lastPreparationId,
@@ -326,7 +313,11 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					break;
 				case XML_IGNORE_RECTANGLE:
 					if (this.ignoreRectangles == null) {
-						this.ignoreRectangles = new ArrayList<>();
+						this.ignoreRectangles = new HashSet<>();
+					}
+					Rectangle rectangle = (Rectangle) created;
+					if (rectangle.isInvertFunction()) {
+						logger.info("Warning: invertFunction can't be used as an " + XML_IGNORE_RECTANGLE + ".");
 					}
 					this.ignoreRectangles.add((Rectangle) created);
 					break;
@@ -572,7 +563,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public Collection<Rectangle> getIgnoreRectangles() {
+	public Set<Rectangle> getIgnoreRectangles() {
 		return this.ignoreRectangles;
 	}
 

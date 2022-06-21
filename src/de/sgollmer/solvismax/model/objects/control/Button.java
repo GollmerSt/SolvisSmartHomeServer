@@ -10,7 +10,6 @@ package de.sgollmer.solvismax.model.objects.control;
 import java.io.IOException;
 
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.helper.ImageHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.imagepatternrecognition.pattern.Pattern;
 import de.sgollmer.solvismax.model.Solvis;
@@ -38,10 +37,10 @@ public class Button extends Pattern {
 			int changeCnt = 0;
 
 			boolean frame = false;
-			int former = ImageHelper.getBrightness(this.getRGB(0, 0));
+			int former = this.getBrightness(0, 0);
 
 			for (int x = 0; x < this.getWidth() / 2 && this.selected == null; ++x) {
-				int brightness = ImageHelper.getBrightness(this.getRGB(x, y));
+				int brightness = this.getBrightness(x, y);
 				if (brightness != former) {
 					++changeCnt;
 					if (changeCnt == 2) {

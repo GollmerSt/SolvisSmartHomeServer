@@ -129,4 +129,28 @@ public class Rectangle {
 		return this.name;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Rectangle)) {
+			return false;
+		}
+
+		Rectangle cmp = (Rectangle) obj;
+
+		if (this.invertFunction != cmp.invertFunction) {
+			return false;
+		}
+
+		if (!this.topLeft.equals(cmp.topLeft)) {
+			return false;
+		}
+
+		return this.bottomRight.equals(cmp.bottomRight);
+	}
+
+	@Override
+	public int hashCode() {
+		return (18521 + this.topLeft.hashCode() * 4567) * 37951 + this.bottomRight.hashCode() * 4567;
+	}
+
 }

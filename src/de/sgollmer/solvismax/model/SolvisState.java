@@ -33,10 +33,12 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 	private long timeOfLastSwitchingOn = -1;
 	private boolean solvisClockValid = false;
 	private boolean solvisDataValid = false;
+	private Long resetErrorTime = null;
+	private final int resetErrorDelayTime;
 
 	SolvisState(final Solvis solvis) {
 		this.solvis = solvis;
-	}
+		this.resetErrorDelayTime = solvis.getUnit().getResetErrorDelayTime();	}
 
 	private enum ErrorChanged {
 		SET, NONE, RESET
@@ -79,9 +81,17 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 
 			if (errorVisible || this.errorScreen != null) {
 				if (!errorVisible && isHomeScreen) { // Nur der Homescreen kann Fehler zuücksetzen
-					this.errorScreen = null;
-					changed = ErrorChanged.RESET;
+					long time = System.currentTimeMillis();
+					boolean resetErrorDelayed = this.resetErrorDelayTime > 0;
+					if (this.resetErrorTime == null && resetErrorDelayed) {
+						this.resetErrorTime = time;
+						logger.debug("Error cleared detected.");
+					} else if (time > this.resetErrorTime + this.resetErrorDelayTime | !resetErrorDelayed) {
+						this.errorScreen = null;
+						changed = ErrorChanged.RESET;
+					}
 				} else if (errorEvent == Event.SET_ERROR_BY_MESSAGE || this.errorScreen == null) {
+					this.resetErrorTime = null;
 					this.errorScreen = errorScreen;
 					changed = ErrorChanged.SET;
 				} else {

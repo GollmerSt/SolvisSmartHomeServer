@@ -8,23 +8,20 @@
 package de.sgollmer.solvismax.model;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.Debug;
 import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.error.TerminationException;
-import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis.SynchronizedScreenResult;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
-import de.sgollmer.solvismax.model.objects.screen.ScreenSaver.State;
+import de.sgollmer.solvismax.model.objects.screen.ScreenSaver.SaverEvent;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
-import de.sgollmer.solvismax.objects.Rectangle;
 
 public class WatchDog {
 
@@ -141,16 +138,38 @@ public class WatchDog {
 	}
 
 	public enum Event {
-		SCREENSAVER, SET_ERROR_BY_BUTTON, SET_ERROR_BY_MESSAGE, RESET_ERROR, NONE, CHANGED, INIT, POWER_OFF, POWER_ON,
-		TRIGGER_SERVICE_BY_COMMAND, RESET_SERVICE_BY_COMMAND;
+		SCREENSAVER, //
+		SET_ERROR_BY_BUTTON(true), //
+		SET_ERROR_BY_MESSAGE(true), //
+		RESET_ERROR(false), //
+		NONE, //
+		HUMAN_ACCESS_USER, //
+		HUMAN_ACCESS_SERVICE, //
+		INIT, //
+		POWER_OFF, //
+		POWER_ON, //
+		TRIGGER_SERVICE_BY_COMMAND, //
+		RESET_SERVICE_BY_COMMAND;
 
-		boolean isError() {
-			switch (this) {
-				case SET_ERROR_BY_BUTTON:
-				case SET_ERROR_BY_MESSAGE:
-					return true;
-			}
-			return false;
+		private final boolean error;
+		private final boolean errorEvent;
+
+		private Event(final boolean error) {
+			this.error = error;
+			this.errorEvent = true;
+		}
+
+		private Event() {
+			this.error = false;
+			this.errorEvent = false;
+		}
+
+		public boolean isError() {
+			return this.error;
+		}
+
+		public boolean isErrorEvent() {
+			return this.errorEvent;
 		}
 
 	}
@@ -181,24 +200,27 @@ public class WatchDog {
 
 				if (realScreen != null && synchronizedScreenResult.isChanged()) {
 
-					State saverState = this.saver.getSaverState(realScreen);
-					if (saverState == State.SCREENSAVER) {
+					SaverEvent saverState = this.saver.getSaverState(realScreen);
+					if (saverState == SaverEvent.SCREENSAVER) {
 						event = Event.SCREENSAVER;
 						possibleErrorScreen = null;
-					} else if (saverState != State.POSSIBLE) {
+					} else if (saverState != SaverEvent.POSSIBLE) {
 						event = this.checkError(realScreen); // RESET_ERROR or SET_ERROR
 
 						if (event == null) {
-							event = this.isHumanAccess(realScreen) ? Event.CHANGED : Event.NONE;
+							event = this.isHumanAccess(realScreen) ? Event.HUMAN_ACCESS_USER : Event.NONE;
 						}
 					}
 				}
 
-				if (event == Event.CHANGED) {
+				if (event == Event.HUMAN_ACCESS_USER) {
 					this.solvis.setCurrentScreen(realScreen);
+					if (realScreen.isService() && this.solvis.getFeatures().isDetectServiceAccess()) {
+						event = Event.HUMAN_ACCESS_SERVICE;
+					}
 				}
 
-				if (event == Event.RESET_ERROR || event.isError()) {
+				if (event.isErrorEvent()) {
 					handleErrorSuccessfull = this.solvis.getSolvisState().setError(event, possibleErrorScreen);
 				}
 
@@ -270,28 +292,8 @@ public class WatchDog {
 		return event;
 	}
 
-	private boolean isHumanAccess(final SolvisScreen screen) throws IOException, TerminationException {
-		boolean humanAccess = false;
-		if (!screen.imagesEquals(WatchDog.this.solvis.getCurrentScreen(false))) {
-
-			if (SolvisScreen.get(screen) != null
-					&& SolvisScreen.get(screen) == SolvisScreen.get(WatchDog.this.solvis.getCurrentScreen(false))) {
-				if (!screen.get().isIgnoreChanges()) {
-					Collection<Rectangle> ignoreRectangles = screen.get().getIgnoreRectangles();
-					if (ignoreRectangles == null) {
-						humanAccess = true;
-					} else {
-						MyImage ignoreRectScreen = new MyImage(screen.getImage(), false, ignoreRectangles);
-						if (!ignoreRectScreen.equals(WatchDog.this.solvis.getCurrentScreen(false).getImage(), true)) {
-							humanAccess = true;
-						}
-					}
-				}
-			} else {
-				humanAccess = true;
-			}
-		}
-		return humanAccess;
+	private boolean isHumanAccess(final SolvisScreen solvisScreen) throws IOException, TerminationException {
+		return !solvisScreen.equalsWoIgnore(WatchDog.this.solvis.getCurrentScreen(false));
 	}
 
 	private void processEvent(final Event event, final SolvisScreen realScreen)
@@ -304,6 +306,7 @@ public class WatchDog {
 				current = HumanAccess.SERVICE;
 				this.solvis.setScreenSaverActive(false);
 				break;
+
 			case NONE:
 			case SCREENSAVER:
 				switch (this.humanAccess) {
@@ -332,6 +335,7 @@ public class WatchDog {
 					this.solvis.setScreenSaverActive(true);
 				}
 				break;
+
 			case POWER_ON:
 				this.powerOff = false;
 				if (this.humanAccess == HumanAccess.SERVICE) {
@@ -342,15 +346,22 @@ public class WatchDog {
 				}
 				this.solvis.setScreenSaverActive(false);
 				break;
-			case CHANGED:
+
+			case HUMAN_ACCESS_SERVICE:
 				if (this.powerOff) {
 					current = HumanAccess.SERVICE;
-				} else if (realScreen != null && realScreen.isService()
-						&& this.solvis.getFeatures().isDetectServiceAccess()) {
+				} else {
 					synchronized (this) {
 						this.serviceScreenDetected = true;
 						current = HumanAccess.SERVICE;
 					}
+				}
+				this.solvis.setScreenSaverActive(false);
+				break;
+
+			case HUMAN_ACCESS_USER:
+				if (this.powerOff) {
+					current = HumanAccess.SERVICE;
 				} else if (this.humanAccess == HumanAccess.SERVICE) {
 					synchronized (this) {
 						this.serviceAccessFinishedTime = currentTime;
@@ -364,11 +375,13 @@ public class WatchDog {
 				}
 				this.solvis.setScreenSaverActive(false);
 				break;
+
 			case SET_ERROR_BY_BUTTON:
 			case SET_ERROR_BY_MESSAGE:
 			case RESET_ERROR:
 				this.solvis.setScreenSaverActive(false);
 				break;
+
 			case INIT:
 				if (realScreen != null && realScreen.isService()) {
 					synchronized (this) {
@@ -378,17 +391,21 @@ public class WatchDog {
 				}
 				this.solvis.setScreenSaverActive(false);
 				break;
+
 			case TRIGGER_SERVICE_BY_COMMAND:
 				this.serviceAccessFinishedTime = currentTime;
 				current = HumanAccess.SERVICE;
 				break;
+
 			case RESET_SERVICE_BY_COMMAND:
 				if (!this.serviceScreenDetected && !this.powerOff && !this.humanAccess.isServerAccessEnabled()) {
 					this.serviceAccessFinishedTime = 0;
 					current = HumanAccess.NONE;
 				}
 				break;
+
 		}
+
 		processHumanAccess(current);
 	}
 

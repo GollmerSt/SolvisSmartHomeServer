@@ -22,12 +22,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.mail.util.ByteArrayDataSource;
 
 import de.sgollmer.solvismax.Constants;
-import de.sgollmer.solvismax.helper.ImageHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -37,11 +37,16 @@ public class MyImage {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(MyImage.class);
 
+	private static final int HASH_START = 269;
+	private static final int HASH_HASH_MULT = 643;
+	private static final int HASH_VALUE_MULT = 193;
+
 	private final BufferedImage image;
 	protected Coordinate origin;
 	protected Coordinate size; // Zeigt auf 1. Pixel auﬂerhalb, relativ
 								// zu min
-	private final Collection<Rectangle> ignoreRectangles;
+	private final Collection<Rectangle> ignoreRectanglesWork;
+	private final Set<Rectangle> ignoreRectangles;
 
 	private final ImageMeta meta;
 	private Integer hashCode;
@@ -57,6 +62,7 @@ public class MyImage {
 		this.size = this.getImageSize();
 		this.autoInvert = false;
 		this.meta = new ImageMeta(this);
+		this.ignoreRectanglesWork = null;
 		this.ignoreRectangles = null;
 	}
 
@@ -72,6 +78,7 @@ public class MyImage {
 		}
 		this.autoInvert = image.autoInvert;
 		this.meta = image.meta;
+		this.ignoreRectanglesWork = null;
 		this.ignoreRectangles = null;
 
 	}
@@ -85,12 +92,12 @@ public class MyImage {
 		this(image, topLeft, bottomRight, createImageMeta, null);
 	}
 
-	public MyImage(final MyImage image, final boolean createImageMeta, final Collection<Rectangle> ignoreRectangles) {
+	public MyImage(final MyImage image, final boolean createImageMeta, final Set<Rectangle> ignoreRectangles) {
 		this(image, null, null, false, ignoreRectangles);
 	}
 
 	private MyImage(final MyImage image, final Coordinate topLeftP, final Coordinate bottomRightP,
-			final boolean createImageMeta, Collection<Rectangle> ignoreRectangles) {
+			final boolean createImageMeta, Set<Rectangle> ignoreRectangles) {
 		this.image = image.image;
 		Coordinate topLeft, bottomRight;
 		if (topLeftP == null) {
@@ -106,17 +113,18 @@ public class MyImage {
 		if (!image.isIn(topLeft) || !image.isIn(bottomRight)) {
 			throw new ErrorNotInRange("UpperLeft or lowerRight not within the image");
 		}
+		this.ignoreRectangles = ignoreRectangles;
 		if (ignoreRectangles != null) {
-			this.ignoreRectangles = new ArrayList<>();
+			this.ignoreRectanglesWork = new ArrayList<>();
 			for (Rectangle rectangle : ignoreRectangles) {
 				if (!image.isIn(rectangle.getTopLeft()) || !image.isIn(rectangle.getBottomRight())) {
 					throw new ErrorNotInRange("UpperLeft or lowerRigh not within the image");
 				}
 				Rectangle r = rectangle.add(image.origin);
-				this.ignoreRectangles.add(r);
+				this.ignoreRectanglesWork.add(r);
 			}
 		} else {
-			this.ignoreRectangles = null;
+			this.ignoreRectanglesWork = null;
 		}
 		this.size = bottomRight.diff(topLeft).increment();
 		this.origin = image.origin.add(topLeft);
@@ -159,7 +167,12 @@ public class MyImage {
 	}
 
 	protected int getRGB(final int x, final int y) {
-		return this.image.getRGB(x + this.origin.getX(), y + this.origin.getY());
+		return this.image.getRGB(x + this.origin.getX(), y + this.origin.getY()) & 0x00ffffff;
+	}
+
+	protected int getBrightness(final int x, final int y) {
+		int rgb = this.image.getRGB(x + this.origin.getX(), y + this.origin.getY()) & 0x00ffffff;
+		return (rgb & 0xff) + (rgb >> 8 & 0xff) + (rgb >> 16 & 0xff);
 	}
 
 	public boolean isActive(final Coordinate coord) {
@@ -323,11 +336,10 @@ public class MyImage {
 	@Override
 	public int hashCode() {
 		if (this.hashCode == null) {
-			this.hashCode = 269;
+			this.hashCode = HASH_START;
 			for (int x = 0; x < this.getWidth(); ++x) {
 				for (int y = 0; y < this.getHeight(); ++y) {
-					int brighness = ImageHelper.getBrightness(this.getRGB(x, y));
-					this.hashCode = this.hashCode * 643 + brighness * 193;
+					this.hashCode = this.hashCode * HASH_HASH_MULT + this.getRGB(x, y) * HASH_VALUE_MULT;
 				}
 			}
 		}
@@ -336,28 +348,139 @@ public class MyImage {
 
 	@Override
 	public boolean equals(final Object obj) {
-		return this.equals(obj, false);
+
+		if (!(obj instanceof MyImage)) {
+			return false;
+		}
+
+		MyImage cmp = (MyImage) obj;
+
+		if (this.getWidth() != cmp.getWidth() || this.getHeight() != cmp.getHeight()) {
+			return false;
+		}
+
+		boolean result = true;
+
+		if (this.hashCode == null && cmp.hashCode == null) {
+
+			this.hashCode = HASH_START;
+			cmp.hashCode = HASH_START;
+
+			for (int x = 0; x < this.getWidth(); ++x) {
+				for (int y = 0; y < this.getHeight(); ++y) {
+
+					int rgbT = this.getRGB(x, y);
+					int rgbC = cmp.getRGB(x, y);
+
+					result &= rgbT == rgbC;
+
+					this.hashCode = this.hashCode * HASH_HASH_MULT + rgbT * HASH_VALUE_MULT;
+					cmp.hashCode = cmp.hashCode * HASH_HASH_MULT + rgbC * HASH_VALUE_MULT;
+				}
+			}
+
+			return result;
+
+		} else if (this.hashCode == null || cmp.hashCode == null) {
+
+			MyImage hash;
+			MyImage other;
+
+			if (this.hashCode == null) {
+				hash = this;
+				other = cmp;
+			} else {
+				hash = cmp;
+				other = this;
+			}
+
+			hash.hashCode = HASH_START;
+
+			int x;
+			int y = 0;
+
+			for (x = 0; x < this.getWidth(); ++x) {
+				for (y = 0; y < this.getHeight(); ++y) {
+
+					int rgbH = hash.getRGB(x, y);
+					int rgbO = other.getRGB(x, y);
+
+					result &= rgbH == rgbO;
+
+					if (!result) {
+						break;
+					}
+
+					hash.hashCode = hash.hashCode * HASH_HASH_MULT + rgbH * HASH_VALUE_MULT;
+				}
+
+				if (!result) {
+					break;
+				}
+			}
+
+			if (result) {
+				return true;
+			}
+
+			for (; x < this.getWidth(); ++x) {
+				for (; y < this.getHeight(); ++y) {
+					int rgbH = hash.getRGB(x, y);
+					hash.hashCode = hash.hashCode * HASH_HASH_MULT + rgbH * HASH_VALUE_MULT;
+				}
+				y = 0;
+			}
+
+			return false;
+
+		}
+
+		if (this.hashCode() != cmp.hashCode()) {
+			return false;
+		}
+
+		for (int x = 0; x < this.getWidth(); ++x) {
+			for (int y = 0; y < this.getHeight(); ++y) {
+				if (this.getRGB(x, y) != cmp.getRGB(x, y)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	public boolean equals(final Object obj, final boolean ignoreEnable) {
 		if (!(obj instanceof MyImage)) {
 			return false;
 		}
-		MyImage i = (MyImage) obj;
+		MyImage cmp = (MyImage) obj;
 
-		if (this.getWidth() != i.getWidth() || this.getHeight() != i.getHeight()) {
+		if (this.getWidth() != cmp.getWidth() || this.getHeight() != cmp.getHeight()) {
 			return false;
 		}
-		if (this.hashCode() != i.hashCode()
-				&& (!ignoreEnable || this.ignoreRectangles == null && i.ignoreRectangles == null)) {
-			return false;
+
+		if (!ignoreEnable || this.ignoreRectangles == null && cmp.ignoreRectangles == null) {
+			return this.equals(obj);
 		}
+
+		MyImage ignoreObject;
+
+		if (this.ignoreRectangles == null) {
+			ignoreObject = cmp;
+		} else if (cmp.ignoreRectangles == null) {
+			ignoreObject = this;
+		} else if (!this.ignoreRectangles.equals(cmp.ignoreRectangles)) {
+			logger.debug("Warning: ignoreRectanglesWork are different of compared objects");
+			return false;
+		} else {
+			ignoreObject = this;
+		}
+
 		for (int x = 0; x < this.getWidth(); ++x) {
 			for (int y = 0; y < this.getHeight(); ++y) {
-				if (!ignoreEnable || !this.toIgnore(x, y)) {
-					int brighness1 = ImageHelper.getBrightness(this.getRGB(x, y));
-					int brighness2 = ImageHelper.getBrightness(i.getRGB(x, y));
-					if (brighness1 != brighness2) {
+				if (!ignoreObject.toIgnore(x, y)) {
+					if (this.getRGB(x, y) != cmp.getRGB(x, y)) {
 						return false;
 					}
 				}
@@ -367,10 +490,10 @@ public class MyImage {
 	}
 
 	private boolean toIgnore(final int x, final int y) {
-		if (this.ignoreRectangles == null) {
+		if (this.ignoreRectanglesWork == null) {
 			return false;
 		}
-		for (Rectangle rectangle : this.ignoreRectangles) {
+		for (Rectangle rectangle : this.ignoreRectanglesWork) {
 			if (rectangle.isIn(x, y)) {
 				return !rectangle.isInvertFunction();
 			}

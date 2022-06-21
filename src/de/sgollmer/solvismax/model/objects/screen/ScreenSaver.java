@@ -119,8 +119,10 @@ public class ScreenSaver {
 		}
 	}
 
-	public enum State {
-		NONE, SCREENSAVER, POSSIBLE
+	public enum SaverEvent {
+		NONE, //
+		SCREENSAVER, //
+		POSSIBLE
 	}
 
 	public class Exec {
@@ -140,15 +142,15 @@ public class ScreenSaver {
 
 		}
 
-		public State getSaverState(SolvisScreen screen) {
+		public SaverEvent getSaverState(SolvisScreen screen) {
 			MyImage original = SolvisScreen.getImage(screen);
 			return this.getSaverState(original);
 		}
 
-		private State getSaverState(MyImage image) {
+		private SaverEvent getSaverState(MyImage image) {
 
 			if (image == null) {
-				return State.NONE;
+				return SaverEvent.NONE;
 			}
 			Rectangle scanArea;
 
@@ -168,16 +170,16 @@ public class ScreenSaver {
 				case NONE:
 					this.lastState = PositionState.NONE;
 					this.firstOutsideTime = -1;
-					return State.NONE;
+					return SaverEvent.NONE;
 				case OUTSIDE:
 					long now = System.currentTimeMillis();
 					if (this.firstOutsideTime < 0) {
 						this.firstOutsideTime = now;
 					} else if (now - this.firstOutsideTime > Constants.MAX_OUTSIDE_TIME) {
 						this.lastState = PositionState.NONE;
-						return State.NONE;
+						return SaverEvent.NONE;
 					}
-					return this.lastState == PositionState.NONE ? State.POSSIBLE : State.SCREENSAVER;
+					return this.lastState == PositionState.NONE ? SaverEvent.POSSIBLE : SaverEvent.SCREENSAVER;
 			}
 
 			Coordinate search = new Coordinate(ScreenSaver.this.xCoordinateWithinTimedate, 0);
@@ -188,7 +190,7 @@ public class ScreenSaver {
 			String time = this.getContents(pattern, timeTop, timeBottom, TIME_PATTERN, 5);
 
 			if (time == null) {
-				return State.NONE;
+				return SaverEvent.NONE;
 			}
 
 			search = new Coordinate(ScreenSaver.this.xCoordinateWithinTimedate, timeBottom + 1);
@@ -199,14 +201,14 @@ public class ScreenSaver {
 			String date = this.getContents(pattern, dateTop, dateBottom, DATE_PATTERN, 10);
 
 			if (date == null) {
-				return State.NONE;
+				return SaverEvent.NONE;
 			}
 
 			logger.debug("Screen saver time: " + time + "  " + date);
 
 			this.createMargins(pattern);
 			this.lastState = PositionState.INSIDE;
-			return State.SCREENSAVER;
+			return SaverEvent.SCREENSAVER;
 		}
 
 		private String getContents(Pattern pattern, int topY, int bottomY, java.util.regex.Pattern regex, int charCnt) {
@@ -306,11 +308,11 @@ public class ScreenSaver {
 		File parent = new File("testFiles\\images");
 
 		final class Test {
-			private final State soll;
+			private final SaverEvent soll;
 			private final boolean newSaver;
 			private final String name;
 
-			private Test(State soll, boolean newSaver, String name) {
+			private Test(SaverEvent soll, boolean newSaver, String name) {
 				this.soll = soll;
 				this.newSaver = newSaver;
 				this.name = name;
@@ -318,22 +320,22 @@ public class ScreenSaver {
 		}
 
 		Collection<Test> names = Arrays.asList( //
-				new Test(State.SCREENSAVER, true, "bildschirmschoner Max7.bmp"), //
-				new Test(State.SCREENSAVER, true, "Bildschirmschoner V1 Artefakte.bmp"), //
-				new Test(State.SCREENSAVER, false, "Bildschirmschoner 2 V1 Artefakte.bmp"), //
-				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1.bmp"), //
-				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 2.bmp"), //
-				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 2 auﬂerhalb.bmp"), //
-				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 auﬂerhalb.bmp"), //
-				new Test(State.NONE, false, "raumeinfluss.png"), //
-				new Test(State.POSSIBLE, false, "Bildschirmschoner V1 1 none.bmp"), //
-				new Test(State.POSSIBLE, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
-				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 Artefakte.bmp"), //
-				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 3.bmp"), //
-				new Test(State.SCREENSAVER, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
-				new Test(State.SCREENSAVER, true, "bildschirmschoner.png"), //
-				new Test(State.SCREENSAVER, false, "bildschirmschoner1.png"), //
-				new Test(State.SCREENSAVER, false, "bildschirmschoner2.png"));
+				new Test(SaverEvent.SCREENSAVER, true, "bildschirmschoner Max7.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, true, "Bildschirmschoner V1 Artefakte.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, false, "Bildschirmschoner 2 V1 Artefakte.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, false, "Bildschirmschoner V1.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, false, "Bildschirmschoner V1 2.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, false, "Bildschirmschoner V1 2 auﬂerhalb.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, false, "Bildschirmschoner V1 auﬂerhalb.bmp"), //
+				new Test(SaverEvent.NONE, false, "raumeinfluss.png"), //
+				new Test(SaverEvent.POSSIBLE, false, "Bildschirmschoner V1 1 none.bmp"), //
+				new Test(SaverEvent.POSSIBLE, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, false, "Bildschirmschoner V1 Artefakte.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, false, "Bildschirmschoner V1 3.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, false, "Bildschirmschoner V1 3 auﬂerhalb.bmp"), //
+				new Test(SaverEvent.SCREENSAVER, true, "bildschirmschoner.png"), //
+				new Test(SaverEvent.SCREENSAVER, false, "bildschirmschoner1.png"), //
+				new Test(SaverEvent.SCREENSAVER, false, "bildschirmschoner2.png"));
 
 		BufferedImage image = null;
 
@@ -357,7 +359,7 @@ public class ScreenSaver {
 
 			MyImage myImage = new MyImage(image);
 
-			State state = executable.getSaverState(myImage);
+			SaverEvent state = executable.getSaverState(myImage);
 
 			boolean pass = state == test.soll;
 			if (!pass) {

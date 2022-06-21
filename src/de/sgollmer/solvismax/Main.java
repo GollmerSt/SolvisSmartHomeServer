@@ -274,7 +274,7 @@ public class Main {
 
 		try {
 			this.instances = new Instances(baseData, executionMode == ExecutionMode.LEARN);
-		} catch (IOException | XmlException | XMLStreamException | FileException e) {
+		} catch (Throwable e) {
 			logger.error("Exception on reading configuration occured, cause:", e);
 			e.printStackTrace();
 			System.exit(ExitCodes.READING_CONFIGURATION_FAIL);

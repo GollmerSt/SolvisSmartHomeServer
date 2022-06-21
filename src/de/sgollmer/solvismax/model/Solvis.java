@@ -85,7 +85,7 @@ public class Solvis {
 	// LoggerFactory.getLogger(Solvis.class);
 	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
-	private final SolvisState solvisState = new SolvisState(this);
+	private final SolvisState solvisState;
 	private final SolvisDescription solvisDescription;
 	private final AllSolvisData allSolvisData;
 	private final SystemGrafics grafics;
@@ -130,6 +130,7 @@ public class Solvis {
 			final String timeZone, final int echoInhibitTime_ms, final File writePath, final boolean mustLearn) {
 		this.allSolvisData = new AllSolvisData(this);
 		this.unit = unit;
+		this.solvisState = new SolvisState(this);
 		this.echoInhibitTime_ms = echoInhibitTime_ms;
 		this.solvisDescription = solvisDescription;
 		this.resetSceenSaver = solvisDescription.getSaver().getResetScreenSaver();

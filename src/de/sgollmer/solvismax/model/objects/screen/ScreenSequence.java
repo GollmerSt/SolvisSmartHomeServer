@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -217,7 +218,7 @@ public class ScreenSequence extends AbstractScreen {
 	}
 
 	@Override
-	public Collection<Rectangle> getIgnoreRectangles() {
+	public Set<Rectangle> getIgnoreRectangles() {
 		return null;
 	}
 

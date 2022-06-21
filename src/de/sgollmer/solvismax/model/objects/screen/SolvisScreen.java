@@ -7,13 +7,24 @@
 
 package de.sgollmer.solvismax.model.objects.screen;
 
+import java.util.Set;
+
 import org.tinylog.Logger;
 
 import de.sgollmer.solvismax.BaseData;
 import de.sgollmer.solvismax.error.FatalError;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
+import de.sgollmer.solvismax.objects.Rectangle;
 
+/**
+ * 
+ * @author stefa
+ * 
+ *         This class contains the (current) image of the SolvisControl with the
+ *         assigned screen instance, if this has already been scanned.
+ *
+ */
 public class SolvisScreen {
 	// private static final ILogger logger =
 	// LogManager.getInstance().getLogger(SolvisScreen.class);
@@ -24,8 +35,8 @@ public class SolvisScreen {
 	private AbstractScreen screen = null;
 
 	public SolvisScreen(MyImage image, Solvis solvis) {
-		this.image = image;
 		this.solvis = solvis;
+		this.image = image;
 	}
 
 	public AbstractScreen get() {
@@ -92,6 +103,42 @@ public class SolvisScreen {
 		} else {
 			return screen.isService();
 		}
+	}
+
+	public boolean equalsWoIgnore(final SolvisScreen cmp) {
+
+		if (this.imagesEquals(cmp)) {
+			return true;
+		}
+
+		AbstractScreen screen = this.get();
+
+		if (screen == null) {
+			return false;
+		}
+
+		if (screen != SolvisScreen.get(cmp)) {
+			return false;
+		}
+
+		if (screen.isIgnoreChanges()) {
+			return true;
+		}
+
+		Set<Rectangle> ignoreRectangles = screen.getIgnoreRectangles();
+		if (ignoreRectangles == null) {
+			return false;
+		}
+
+		MyImage ignoreRectScreen = new MyImage(this.getImage(), false, ignoreRectangles);
+
+		if (ignoreRectScreen.equals(cmp.getImage(), true)) {
+			return true;
+		} else {
+
+			return false;
+		}
+
 	}
 
 }

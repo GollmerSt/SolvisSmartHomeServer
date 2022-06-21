@@ -8,8 +8,6 @@
 package de.sgollmer.solvismax;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.regex.Pattern;
 
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -112,7 +110,7 @@ public class Constants {
 	}
 
 	public static class Defaults {
-		public static final int CLEAR_NOT_REQUIRED_TIME = 30000;
+		public static final int REHEATING_NOT_REQUIRED_ACTIVE_TIME = 30000;
 
 	}
 

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
@@ -103,7 +104,7 @@ public abstract class AbstractScreen
 
 	public abstract boolean isIgnoreChanges();
 
-	public abstract Collection<Rectangle> getIgnoreRectangles();
+	public abstract Set<Rectangle> getIgnoreRectangles();
 
 	public abstract boolean isToBeLearning(Solvis solvis);
 
