@@ -20,8 +20,6 @@ import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.model.Solvis;
-import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
-import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
 import de.sgollmer.solvismax.model.objects.backup.Measurement;
 import de.sgollmer.solvismax.model.objects.backup.SystemBackup;
@@ -42,27 +40,10 @@ public class AllSolvisData extends Observable<SmartHomeData> {
 	private final Map<String, SolvisData> solvisDatasByName = new HashMap<>();
 	private int averageCount;
 	private int measurementHysteresisFactor;
-	private long lastHumanAcess = System.currentTimeMillis();
-	private HumanAccess humanAccess = HumanAccess.NONE;
 
 	public AllSolvisData(final Solvis solvis) {
 		this.solvis = solvis;
 
-		solvis.registerScreenChangedByHumanObserver(new IObserver<HumanAccess>() {
-
-			@Override
-			public void update(HumanAccess data, Object source) {
-				if (data == HumanAccess.NONE && AllSolvisData.this.humanAccess != HumanAccess.NONE) {
-					AllSolvisData.this.lastHumanAcess = System.currentTimeMillis();
-				}
-				AllSolvisData.this.humanAccess = data;
-			}
-
-		});
-	}
-
-	public long getLastHumanAccess() {
-		return this.lastHumanAcess;
 	}
 
 	public SolvisData get(final ChannelDescription description) {

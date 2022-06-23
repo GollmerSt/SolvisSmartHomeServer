@@ -18,9 +18,9 @@ import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.model.HumanAccess;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.SolvisStatus;
-import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.objects.Measurements;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
@@ -117,10 +117,10 @@ public final class Distributor extends Observable<ISendData> {
 
 	}
 
-	private class HumanAccessObserver implements Observer.IObserver<HumanAccess> {
+	private class HumanAccessObserver implements Observer.IObserver<HumanAccess.Status> {
 
 		@Override
-		public void update(final HumanAccess data, final Object source) {
+		public void update(final HumanAccess.Status data, final Object source) {
 			try {
 				Distributor.this.notify(new SolvisStatePackage(data.getStatus(), Distributor.this.solvis));
 			} catch (Throwable e) {

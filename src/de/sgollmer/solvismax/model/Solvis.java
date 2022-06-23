@@ -44,9 +44,9 @@ import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
+import de.sgollmer.solvismax.model.HumanAccess.Status;
 import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.WatchDog.Event;
-import de.sgollmer.solvismax.model.WatchDog.HumanAccess;
 import de.sgollmer.solvismax.model.command.Command;
 import de.sgollmer.solvismax.model.command.CommandControl;
 import de.sgollmer.solvismax.model.command.CommandObserver;
@@ -86,6 +86,7 @@ public class Solvis {
 	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
 	private final SolvisState solvisState;
+	private final HumanAccess humanAccess;
 	private final SolvisDescription solvisDescription;
 	private final AllSolvisData allSolvisData;
 	private final SystemGrafics grafics;
@@ -118,9 +119,8 @@ public class Solvis {
 	private final boolean mustLearn;
 	private boolean learning = false;
 	private boolean initialized = false;
-	private Observer.Observable<HumanAccess> screenChangedByHumanObserable = new Observable<>();
 	private Object solvisMeasureObject = new Object();
-	private HumanAccess humanAccess = HumanAccess.NONE;
+	// private HumanAccess.Status humanAccess = HumanAccess.Status.NONE;
 	private Map<String, Collection<UpdateStrategies.IExecutable>> updateStrategies = new HashMap<>();
 	private Standby.Executable standby;
 	private ZipOutputStream zipOutputStream = null;
@@ -128,8 +128,9 @@ public class Solvis {
 	Solvis(final Unit unit, final SolvisDescription solvisDescription, final SystemGrafics grafics,
 			final SolvisConnection connection, final Mqtt mqtt, final BackupHandler measurementsBackupHandler,
 			final String timeZone, final int echoInhibitTime_ms, final File writePath, final boolean mustLearn) {
-		this.allSolvisData = new AllSolvisData(this);
 		this.unit = unit;
+		this.humanAccess = new HumanAccess(this);
+		this.allSolvisData = new AllSolvisData(this);
 		this.solvisState = new SolvisState(this);
 		this.echoInhibitTime_ms = echoInhibitTime_ms;
 		this.solvisDescription = solvisDescription;
@@ -149,6 +150,21 @@ public class Solvis {
 		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
 		this.writePath = writePath;
 		this.mustLearn = mustLearn;
+
+		this.humanAccess.register(new IObserver<HumanAccess.Status>() {
+
+			@Override
+			public void update(Status data, Object source) {
+				// this.humanAccess = humanAccess;
+				switch (data) {
+					case SERVICE:
+					case USER:
+						Solvis.this.previousScreen = null;
+						break;
+				}
+			}
+
+		});
 	}
 
 	void setCurrentScreen(final SolvisScreen screen) {
@@ -326,11 +342,11 @@ public class Solvis {
 		UpdateControlAfterPowerOn updateControlAfterPowerOn = new UpdateControlAfterPowerOn();
 		this.solvisState.register(updateControlAfterPowerOn);
 		updateControlAfterPowerOn.update(this.solvisState.getSolvisStatePackage(), null);
-		this.registerScreenChangedByHumanObserver(new IObserver<WatchDog.HumanAccess>() {
+		this.registerScreenChangedByHumanObserver(new IObserver<HumanAccess.Status>() {
 
 			@Override
-			public void update(HumanAccess data, Object source) {
-				if (data == HumanAccess.NONE && Solvis.this.getUnit().getFeatures().isUpdateAfterUserAccess()) {
+			public void update(HumanAccess.Status data, Object source) {
+				if (data == HumanAccess.Status.NONE && Solvis.this.getUnit().getFeatures().isUpdateAfterUserAccess()) {
 					Solvis.this.getSolvisDescription().getChannelDescriptions()
 							.updateByHumanAccessFinished(Solvis.this);
 				}
@@ -434,23 +450,12 @@ public class Solvis {
 		return duration;
 	}
 
-	public void registerScreenChangedByHumanObserver(final IObserver<HumanAccess> observer) {
-		this.screenChangedByHumanObserable.register(observer);
+	public void registerScreenChangedByHumanObserver(final IObserver<HumanAccess.Status> observer) {
+		this.humanAccess.register(observer);
 	}
 
 	public void registerAllSettingsDoneObserver(final IObserver<SolvisStatus> observer) {
 		this.worker.registerAllSettingsDoneObserver(observer);
-	}
-
-	void notifyScreenChangedByHumanObserver(final HumanAccess humanAccess) {
-		this.humanAccess = humanAccess;
-		this.screenChangedByHumanObserable.notify(humanAccess);
-		switch (humanAccess) {
-			case SERVICE:
-			case USER:
-				this.previousScreen = null;
-				break;
-		}
 	}
 
 	public HumanAccess getHumanAccess() {
@@ -458,7 +463,7 @@ public class Solvis {
 	}
 
 	public SolvisStatePackage getHumanAccessPackage() {
-		return new SolvisStatePackage(this.humanAccess.getStatus(), this);
+		return new SolvisStatePackage(this.humanAccess.getStatus().getStatus(), this);
 	}
 
 	public SolvisStatePackage getSettingsPackage() {
@@ -473,7 +478,7 @@ public class Solvis {
 		this.worker.registerControlExecutingObserver(observer);
 	}
 
-	public Collection< ObserverException> notifySolvisErrorObserver(final SolvisErrorInfo info, final Object source) {
+	public Collection<ObserverException> notifySolvisErrorObserver(final SolvisErrorInfo info, final Object source) {
 		return this.solvisErrorObservable.notify(info, source);
 	}
 
@@ -793,7 +798,7 @@ public class Solvis {
 	}
 
 	public void serviceAccess(Event event) throws IOException, TerminationException {
-		this.worker.serviceAccess(event);
+		this.humanAccess.serviceAccess(event);
 	}
 
 	public History getHistory() {
@@ -953,7 +958,7 @@ public class Solvis {
 	}
 
 	public void setPreviousScreen(final AbstractScreen previousScreen) {
-		switch (this.humanAccess) {
+		switch (this.humanAccess.getStatus()) {
 			case UNKNOWN:
 			case NONE:
 				this.previousScreen = previousScreen;

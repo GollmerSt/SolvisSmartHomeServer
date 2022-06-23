@@ -25,7 +25,6 @@ import de.sgollmer.solvismax.helper.Helper;
 import de.sgollmer.solvismax.helper.Helper.Times;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
-import de.sgollmer.solvismax.model.WatchDog.Event;
 import de.sgollmer.solvismax.model.command.Command;
 import de.sgollmer.solvismax.model.command.CommandControl;
 import de.sgollmer.solvismax.model.command.CommandObserver;
@@ -642,11 +641,6 @@ public class SolvisWorkers {
 			this.abort = true;
 			this.notifyAll();
 		}
-	}
-
-	void serviceAccess(Event event) throws IOException, TerminationException {
-		this.watchDog.serviceAccess(event);
-
 	}
 
 	public boolean willBeModified(final SolvisData data) {

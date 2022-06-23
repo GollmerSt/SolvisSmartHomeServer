@@ -458,7 +458,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 		if (this.getSingleData() == null) {
 			return false;
 		} else if (this.getDescription().isWriteable()) {
-			return this.fix || this.datas.getLastHumanAccess() < this.getSingleData().getTimeStamp();
+			return this.fix || this.getSolvis().getHumanAccess().getLastAccess() < this.getSingleData().getTimeStamp();
 		} else {
 			return true;
 		}

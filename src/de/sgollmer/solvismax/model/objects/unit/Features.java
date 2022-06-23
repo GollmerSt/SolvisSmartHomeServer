@@ -21,6 +21,7 @@ public class Features {
 	private static final String XML_EQUIPMENT_TIME_SYNC = "EquipmentTimeSynchronisation";
 	private static final String XML_UPDATE_AFTER_USER_ACCESS = "UpdateAfterUserAccess";
 	private static final String XML_DETECT_SERVICE_ACCESS = "DetectServiceAccess";
+	private static final String XML_END_OF_USER_BY_SCREEN_SAVER = "EndOfUserInterventionDetectionThroughScreenSaver";
 	private static final String XMl_POWEROFF_IS_SERVICE_ACCESS = "PowerOffIsServiceAccess";
 	private static final String XMl_SEND_MAIL_ON_ERROR = "SendMailOnError";
 	private static final String XMl_SEND_MAIL_ON_ERRORS_CLEARED = "SendMailOnErrorsCleared";
@@ -105,6 +106,10 @@ public class Features {
 
 	public boolean isSendMailOnErrorsCleared() {
 		return this.get(XMl_SEND_MAIL_ON_ERROR) && this.get(XMl_SEND_MAIL_ON_ERRORS_CLEARED, true);
+	}
+	
+	public boolean isEndOfUserByScreenSaver() {
+		return this.get(XML_END_OF_USER_BY_SCREEN_SAVER);
 	}
 
 	public boolean isAdmin() {
