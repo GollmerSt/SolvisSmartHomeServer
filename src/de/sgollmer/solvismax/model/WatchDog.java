@@ -14,6 +14,7 @@ import de.sgollmer.solvismax.connection.transfer.SolvisStatePackage;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
+import de.sgollmer.solvismax.model.HumanAccess.Status;
 import de.sgollmer.solvismax.model.Solvis.SynchronizedScreenResult;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
@@ -98,8 +99,8 @@ public class WatchDog {
 		SET_ERROR_BY_MESSAGE(true), //
 		RESET_ERROR(false), //
 		NONE, //
-		HUMAN_ACCESS_USER, //
-		HUMAN_ACCESS_SERVICE, //
+		HUMAN_ACCESS_USER(HumanAccess.Status.USER), //
+		HUMAN_ACCESS_SERVICE(HumanAccess.Status.SERVICE), //
 		INIT, //
 		POWER_OFF, //
 		POWER_ON, //
@@ -108,15 +109,24 @@ public class WatchDog {
 
 		private final boolean error;
 		private final boolean errorEvent;
+		private final HumanAccess.Status humanAccess;
 
 		private Event(final boolean error) {
 			this.error = error;
 			this.errorEvent = true;
+			this.humanAccess = Status.NONE;
+		}
+
+		private Event(final HumanAccess.Status status) {
+			this.error = false;
+			this.errorEvent = false;
+			this.humanAccess = status;
 		}
 
 		private Event() {
 			this.error = false;
 			this.errorEvent = false;
+			this.humanAccess = Status.NONE;
 		}
 
 		public boolean isError() {
@@ -125,6 +135,10 @@ public class WatchDog {
 
 		public boolean isErrorEvent() {
 			return this.errorEvent;
+		}
+
+		public boolean isHumanAccess() {
+			return this.humanAccess != Status.NONE;
 		}
 
 	}
@@ -157,25 +171,27 @@ public class WatchDog {
 
 					SaverEvent saverState = this.saver.getSaverState(realScreen);
 					if (saverState == SaverEvent.SCREENSAVER) {
+
 						event = Event.SCREENSAVER;
 						possibleErrorScreen = null;
-					} else if (saverState != SaverEvent.POSSIBLE) {
+
+					} else {
+
 						event = this.checkError(realScreen); // RESET_ERROR or SET_ERROR
 
-						if (event == null) {
-							event = this.isHumanAccess(realScreen) ? Event.HUMAN_ACCESS_USER : Event.NONE;
+						if (event == null && saverState != SaverEvent.POSSIBLE) {
+
+							event = this.humanAccess.getEvent(realScreen);
 						}
 					}
 				}
 
-				if (event == Event.HUMAN_ACCESS_USER) {
-					this.solvis.setCurrentScreen(realScreen);
-					if (realScreen.isService() && this.solvis.getFeatures().isDetectServiceAccess()) {
-						event = Event.HUMAN_ACCESS_SERVICE;
-					}
-				}
+				if (event.isHumanAccess()) {
 
-				if (event.isErrorEvent()) {
+					this.solvis.setCurrentScreen(realScreen);
+
+				} else if (event.isErrorEvent()) {
+
 					handleErrorSuccessfull = this.solvis.getSolvisState().setError(event, possibleErrorScreen);
 				}
 
@@ -245,10 +261,6 @@ public class WatchDog {
 				break;
 		}
 		return event;
-	}
-
-	private boolean isHumanAccess(final SolvisScreen solvisScreen) throws IOException, TerminationException {
-		return !solvisScreen.equalsWoIgnore(WatchDog.this.solvis.getCurrentScreen(false));
 	}
 
 	private synchronized void abort() {

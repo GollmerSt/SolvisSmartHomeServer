@@ -245,4 +245,15 @@ public class HumanAccess extends Observer.Observable<HumanAccess.Status> {
 		return this.lastAccess;
 	}
 
+	public Event getEvent(SolvisScreen realScreen) throws IOException, TerminationException {
+		
+		if ( realScreen.equalsWoIgnore(this.solvis.getCurrentScreen(false))) {
+			return Event.NONE;
+		} else if (realScreen.isService() && this.solvis.getFeatures().isDetectServiceAccess()) {
+			return Event.HUMAN_ACCESS_SERVICE;
+		} else {
+			return Event.HUMAN_ACCESS_USER;
+		}
+	}
+
 }
