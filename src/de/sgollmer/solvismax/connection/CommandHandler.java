@@ -585,6 +585,6 @@ public class CommandHandler {
 
 			enable &= client.getControlEnableStatus(solvis) != ControlEnableStatus.FALSE;
 		}
-		solvis.controlEnable(enable);
+		solvis.setControlEnabled(enable);
 	}
 }

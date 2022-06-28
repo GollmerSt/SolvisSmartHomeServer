@@ -10,11 +10,9 @@ package de.sgollmer.solvismax.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Set;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.PowerOnException;
@@ -70,10 +68,6 @@ public class SolvisWorkers {
 
 	}
 
-	public void controlEnable(final boolean enable) {
-		SolvisWorkers.this.controlsThread.controlEnable(enable);
-	}
-
 	public void registerControlExecutingObserver(final IObserver<Boolean> executingObserver) {
 		this.executingControlObserver.register(executingObserver);
 	}
@@ -83,13 +77,12 @@ public class SolvisWorkers {
 		private final LinkedList<Command> queue = new LinkedList<>();
 		private final Collection<ChannelDescription> channelsOfQueueRead = new ArrayList<>();
 		private boolean abort = false;
-		private Set<Object> inhibitScreenResoreServices = new HashSet<>();
 		private int optimizationInhibitCnt = 0;
-		private boolean controlEnabled = true;
 		private boolean running = false;
 		private Handling.QueueStatus queueStatus = new Handling.QueueStatus();
 		private int writeCnt = 0;
 		private int readCnt = 0;
+		private long nextWatchDogTime = 0L;
 
 		private ControlWorkerThread() {
 			super("ControlWorkerThread");
@@ -98,9 +91,12 @@ public class SolvisWorkers {
 		@Override
 		public void run() {
 			boolean queueWasEmpty = true;
-			int restoreScreenCnt = 0;
-			boolean executeWatchDog = true;
+
+			boolean firstDelayedCircle = false;
 			boolean stateChanged = false;
+
+			boolean executeRestoreScreen = false;
+			this.nextWatchDogTime = 0L;
 
 			Miscellaneous misc = SolvisWorkers.this.solvis.getSolvisDescription().getMiscellaneous();
 			int unsuccessfullWaitTime = misc.getUnsuccessfullWaitTime_ms();
@@ -114,29 +110,32 @@ public class SolvisWorkers {
 			while (!this.abort) {
 				ResultStatus status;
 				Command command = null;
+				int waitTime = 0;
+
 				SolvisStatus state = SolvisWorkers.this.solvis.getSolvisState().getState();
 				if (state == SolvisStatus.SOLVIS_CONNECTED || state == SolvisStatus.ERROR) {
 					synchronized (this) {
 						if (this.queue.isEmpty()) {
 							this.handleCommandAddedRemoved(null, false);
 						}
-						if (this.queue.isEmpty() || !this.controlEnabled
-								|| !SolvisWorkers.this.solvis.getFeatures().isInteractiveGUIAccess()) {
+
+						if (this.queue.isEmpty() && SolvisWorkers.this.solvis.isControlEnabled()) {
 							this.channelsOfQueueRead.clear();
-							if (!queueWasEmpty && isScreenRestoreEnabled()) {
-								restoreScreenCnt = 2;
-							} else if (restoreScreenCnt == 0) {
-								try {
-									this.wait(watchDogTime);
-								} catch (InterruptedException e) {
-								}
-								executeWatchDog = true;
+							if (!queueWasEmpty) {
+								firstDelayedCircle = true;
+								waitTime = Constants.CYCLE_TIME_WHERE_QUEUE_EMPTY;
+							} else if (firstDelayedCircle) {
+								firstDelayedCircle = false;
+								executeRestoreScreen = true;
+								waitTime = 0;
+							} else {
+								waitTime = Constants.CYCLE_TIME_WHERE_QUEUE_EMPTY;
 							}
 							queueWasEmpty = true;
 
 						} else {
 							queueWasEmpty = false;
-							restoreScreenCnt = 0;
+							firstDelayedCircle = false;
 							command = this.queue.peek();
 						}
 					}
@@ -150,29 +149,19 @@ public class SolvisWorkers {
 								&& command.getScreen(SolvisWorkers.this.solvis) == SolvisScreen
 										.get(SolvisWorkers.this.solvis.getCurrentScreen(false))
 								&& !SolvisWorkers.this.solvis.getSolvisState().isError() | stateChanged) {
-							executeWatchDog = true;
+							setExecuteWatchDog();
 						}
 						stateChanged = false;
-						if (restoreScreenCnt > 0) {
-							if (restoreScreenCnt == 2) {
-								synchronized (this) {
-									try {
-										this.wait(Constants.WAIT_TIME_AFTER_QUEUE_EMPTY);
-									} catch (InterruptedException e) {
-									}
-								}
-							} else {
-								SolvisWorkers.this.solvis.restoreScreen();
-							}
-							--restoreScreenCnt;
+						if (executeRestoreScreen) {
+							SolvisWorkers.this.solvis.restoreScreen();
 						}
-						if (executeWatchDog) {
+
+						long time = System.currentTimeMillis();
+						if (time > this.nextWatchDogTime) {
 							SolvisWorkers.this.watchDog.execute();
-							executeWatchDog = false;
+							this.nextWatchDogTime = time + watchDogTime;
 						}
-						if (command == null && SolvisWorkers.this.solvis.getSolvisState().isError()) {
-							SolvisWorkers.this.solvis.getHomeScreen().goTo(SolvisWorkers.this.solvis);
-						}
+
 						if (command != null && !command.isInhibit()) {
 							SolvisWorkers.this.executingControlObserver.notify(true);
 							status = this.processCommand(command);
@@ -184,6 +173,8 @@ public class SolvisWorkers {
 						return;
 					} catch (Throwable e4) {
 						logger.error("Unknown error detected", e4);
+						waitTime = unsuccessfullWaitTime;
+						this.setExecuteWatchDog();
 						status = ResultStatus.SUCCESS;
 					}
 				} else {
@@ -204,18 +195,22 @@ public class SolvisWorkers {
 					}
 				}
 				if (status == ResultStatus.NO_SUCCESS) {
+					waitTime = unsuccessfullWaitTime;
+					this.setExecuteWatchDog();
+				}
+				if (waitTime > 0) {
 					try {
 						synchronized (this) {
-							this.wait(unsuccessfullWaitTime);
-						}
-						if (SolvisWorkers.this.solvis.getSolvisState().isConnected()) {
-							SolvisWorkers.this.watchDog.execute();
-							executeWatchDog = false;
+							this.wait(waitTime);
 						}
 					} catch (InterruptedException e) {
 					}
 				}
 			}
+		}
+
+		private void setExecuteWatchDog() {
+			this.nextWatchDogTime = 0L;
 		}
 
 		private final ResultStatus processCommand(final Command command) throws IOException, TerminationException,
@@ -392,22 +387,6 @@ public class SolvisWorkers {
 			}
 		}
 
-		private synchronized void screenRestore(final boolean enable, final Object service) {
-			if (!enable) {
-				this.inhibitScreenResoreServices.add(service);
-			} else {
-				this.inhibitScreenResoreServices.remove(service);
-			}
-		}
-
-		private boolean isScreenRestoreEnabled() {
-			return this.inhibitScreenResoreServices.size() == 0;
-		}
-
-		private synchronized void controlEnable(final boolean enable) {
-			this.controlEnabled = enable;
-		}
-
 		public synchronized boolean willBeModified(final SolvisData data) {
 			for (ListIterator<Command> it = this.queue.listIterator(this.queue.size()); it.hasPrevious();) {
 				Command command = it.previous();
@@ -493,11 +472,6 @@ public class SolvisWorkers {
 		} else {
 			this.controlsThread.commandOptimization(false);
 		}
-	}
-
-	void screenRestore(final boolean enable, final Object service) {
-		this.controlsThread.screenRestore(enable, service);
-
 	}
 
 	void push(final Command command) {

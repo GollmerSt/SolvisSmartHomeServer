@@ -50,7 +50,7 @@ public class Constants {
 
 	public static final int MAX_CONNECTIONS = 50;
 	public static final int RETRY_STARTING_SERVER_TIME = 60000;
-	public static final int WAIT_TIME_AFTER_QUEUE_EMPTY = 500;
+	public static final int CYCLE_TIME_WHERE_QUEUE_EMPTY = 500;
 	public static final int WAIT_TIME_AFTER_IO_ERROR = 10000;
 	public static final int WAIT_TIME_AFTER_MQTT_ERROR = 100;
 	public static final int ALIVE_TIME = 120000;
@@ -189,7 +189,7 @@ public class Constants {
 	public static class Debug {
 
 		public static final int USER_ACCESS_TIME = 60000;
-		public static final boolean NO_MAIL = false; // kein Mailversand
+		public static final boolean NO_MAIL = true; // kein Mailversand
 		public static final boolean SCREEN_SAVER_DETECTION = false; // more debugging info
 		public static final boolean DEBUG_TWO_STATIONS = false;
 

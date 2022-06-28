@@ -57,6 +57,7 @@ import de.sgollmer.solvismax.model.objects.Duration;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
+import de.sgollmer.solvismax.model.objects.ScreenRestore;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.Standby;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
@@ -67,7 +68,6 @@ import de.sgollmer.solvismax.model.objects.data.SingleData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData;
 import de.sgollmer.solvismax.model.objects.data.SolvisData.SmartHomeData;
 import de.sgollmer.solvismax.model.objects.screen.AbstractScreen;
-import de.sgollmer.solvismax.model.objects.screen.AbstractScreen.GotoStatus;
 import de.sgollmer.solvismax.model.objects.screen.History;
 import de.sgollmer.solvismax.model.objects.screen.Screen;
 import de.sgollmer.solvismax.model.objects.screen.SolvisScreen;
@@ -80,13 +80,13 @@ import de.sgollmer.solvismax.objects.Coordinate;
 public class Solvis {
 
 	private static final boolean DEBUG_POWER_ON = Constants.Debug.SOLVIS_RESULT_NULL;
-
-	// private static final org.slf4j.Logger logger =
-	// LoggerFactory.getLogger(Solvis.class);
-	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
 	private static final Level LEARN = Level.getLevel("LEARN");
+
+	private static final ILogger logger = LogManager.getInstance().getLogger(Solvis.class);
+
 	private final SolvisState solvisState;
 	private final HumanAccess humanAccess;
+	private final ScreenRestore screenRestore;
 	private final SolvisDescription solvisDescription;
 	private final AllSolvisData allSolvisData;
 	private final SystemGrafics grafics;
@@ -94,12 +94,12 @@ public class Solvis {
 
 	private SolvisWorkers worker;
 
+	private boolean controlEnabled = true;
+
 	private final int echoInhibitTime_ms;
 	private long configurationMask = 0;
 	private SolvisScreen currentScreen = null;
 	private AbstractScreen previousScreen = null;
-	private AbstractScreen savedScreen = null;
-	private AbstractScreen defaultScreen = null;
 	private Screen home = null;
 	private SolvisMeasurements measureData = null;
 	private boolean screenSaverActive = false;
@@ -130,6 +130,7 @@ public class Solvis {
 			final String timeZone, final int echoInhibitTime_ms, final File writePath, final boolean mustLearn) {
 		this.unit = unit;
 		this.humanAccess = new HumanAccess(this);
+		this.screenRestore = new ScreenRestore(this);
 		this.allSolvisData = new AllSolvisData(this);
 		this.solvisState = new SolvisState(this);
 		this.echoInhibitTime_ms = echoInhibitTime_ms;
@@ -175,7 +176,7 @@ public class Solvis {
 		return this.getCurrentScreen(true);
 	}
 
-	SolvisScreen getCurrentScreen(final boolean screensaverOff) throws IOException, TerminationException {
+	public SolvisScreen getCurrentScreen(final boolean screensaverOff) throws IOException, TerminationException {
 		if (this.screenSaverActive && (screensaverOff || this.currentScreen == null)) {
 			this.resetScreensaver();
 		}
@@ -378,12 +379,8 @@ public class Solvis {
 		public void commandEnable(boolean enable);
 	}
 
-	public void controlEnable(final boolean enable) {
-		this.worker.controlEnable(enable);
-	}
-
 	public void screenRestore(final boolean enable, final Object service) {
-		this.worker.screenRestore(enable, service);
+		this.screenRestore.set(enable, service);
 	}
 
 	public void execute(final Command command) {
@@ -483,35 +480,11 @@ public class Solvis {
 	}
 
 	void saveScreen() throws IOException, TerminationException {
-		if (this.defaultScreen == null) {
-			AbstractScreen current = SolvisScreen.get(this.getCurrentScreen(false));
-			if (current == null) {
-				current = SolvisScreen.get(this.getCurrentScreen());
-			}
-			if (current == null) {
-				current = this.getHomeScreen();
-			}
-			if (current != this.savedScreen) {
-				logger.info("Screen <" + current.getId() + "> saved");
-				this.savedScreen = current;
-			}
-		}
+		this.screenRestore.save();
 	}
 
 	void restoreScreen() throws IOException, TerminationException {
-
-		AbstractScreen screen = this.defaultScreen == null ? this.savedScreen : this.defaultScreen;
-
-		if (screen != null) {
-			if (screen.isNoRestore()) {
-				screen = this.defaultScreen == null ? this.getHomeScreen() : this.defaultScreen;
-			}
-			if (screen != SolvisScreen.get(this.getCurrentScreen(false))) {
-				if (screen.goTo(this) == GotoStatus.CHANGED) {
-					logger.info("Screen <" + screen.getId() + "> restored.");
-				}
-			}
-		}
+		this.screenRestore.restore();
 	}
 
 	/**
@@ -950,7 +923,7 @@ public class Solvis {
 	}
 
 	public void setDefaultScreen(final AbstractScreen defaultScreen) {
-		this.defaultScreen = defaultScreen;
+		this.screenRestore.setDefault(defaultScreen);
 	}
 
 	public AbstractScreen getPreviousScreen() {
@@ -1003,6 +976,15 @@ public class Solvis {
 
 	public Mqtt getMqtt() {
 		return this.mqtt;
+	}
+
+	public boolean isControlEnabled() {
+		// TODO Auto-generated method stub
+		return this.controlEnabled && this.unit.getFeatures().isInteractiveGUIAccess();
+	}
+
+	public void setControlEnabled(boolean controlEnabled) {
+		this.controlEnabled = controlEnabled;
 	}
 
 }
