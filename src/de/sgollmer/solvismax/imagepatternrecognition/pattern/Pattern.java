@@ -19,7 +19,7 @@ import de.sgollmer.solvismax.objects.Rectangle;
 
 public class Pattern extends MyImage {
 
-	private Integer hashCode = null;
+//	private Integer hashCode = null;
 
 	private Pattern(final BufferedImage image) {
 		super(image);
@@ -46,45 +46,45 @@ public class Pattern extends MyImage {
 		this.shrink();
 	}
 
-	@Override
-	public int hashCode() {
-		if (this.hashCode == null) {
-			this.hashCode = 569;
-			for (int x = 0; x < this.getWidth(); ++x) {
-				for (int y = 0; y < this.getHeight(); ++y) {
-					boolean light = this.isLight(x, y);
-					this.hashCode = this.hashCode * 251 + (light ? 379 : 0);
-				}
-			}
-		}
-		return this.hashCode;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (!(obj instanceof Pattern)) {
-			return false;
-		}
-		Pattern p = (Pattern) obj;
-
-		if (this.getWidth() != p.getWidth() || this.getHeight() != p.getHeight()) {
-			return false;
-		}
-		if (this.hashCode() != p.hashCode()) {
-			return false;
-		}
-		for (int x = 0; x < this.getWidth(); ++x) {
-			for (int y = 0; y < this.getHeight(); ++y) {
-				boolean light1 = this.isLight(x, y);
-				boolean light2 = p.isLight(x, y);
-				if (light1 != light2) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
+//	@Override
+//	public int hashCode() {
+//		if (this.hashCode == null) {
+//			this.hashCode = 569;
+//			for (int x = 0; x < this.getWidth(); ++x) {
+//				for (int y = 0; y < this.getHeight(); ++y) {
+//					boolean light = this.isLight(x, y);
+//					this.hashCode = this.hashCode * 251 + (light ? 379 : 0);
+//				}
+//			}
+//		}
+//		return this.hashCode;
+//	}
+//
+//	@Override
+//	public boolean equals(final Object obj) {
+//		if (!(obj instanceof Pattern)) {
+//			return false;
+//		}
+//		Pattern p = (Pattern) obj;
+//
+//		if (this.getWidth() != p.getWidth() || this.getHeight() != p.getHeight()) {
+//			return false;
+//		}
+//		if (this.hashCode() != p.hashCode()) {
+//			return false;
+//		}
+//		for (int x = 0; x < this.getWidth(); ++x) {
+//			for (int y = 0; y < this.getHeight(); ++y) {
+//				boolean light1 = this.isLight(x, y);
+//				boolean light2 = p.isLight(x, y);
+//				if (light1 != light2) {
+//					return false;
+//				}
+//			}
+//		}
+//		return true;
+//	}
+//
 	public static void main(final String[] args) {
 
 		File parent = new File("testFiles\\images");

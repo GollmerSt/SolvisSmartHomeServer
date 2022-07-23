@@ -196,8 +196,8 @@ public class SystemGrafics implements IXmlWriteable {
 
 	public boolean areRelevantFeaturesEqual(final Map<String, Boolean> features) {
 		for (Map.Entry<String, Boolean> entry : this.features.entrySet()) {
-			if (Features.XML_ADMIN.equals(entry.getKey())) {
-				if (!entry.getValue() && features.get(Features.XML_ADMIN)) {
+			if (Features.getAdminKey().equals(entry.getKey())) {
+				if (!entry.getValue() && features.get(Features.getAdminKey())) {
 					return false;
 				}
 			} else {

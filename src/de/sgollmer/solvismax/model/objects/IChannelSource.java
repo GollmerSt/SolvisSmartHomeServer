@@ -13,6 +13,7 @@ import java.util.Collection;
 import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
@@ -32,7 +33,7 @@ public interface IChannelSource extends IGraficsLearnable {
 	public boolean mustBackuped();
 
 	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime)
-			throws IOException, PowerOnException, TerminationException, TypeException;
+			throws IOException, PowerOnException, TerminationException, TypeException, SolvisErrorException;
 
 	public static class SetResult {
 		private final ResultStatus status;
@@ -58,7 +59,8 @@ public interface IChannelSource extends IGraficsLearnable {
 		}
 	}
 
-	public SetResult setValue(final Solvis solvis, final SolvisData value) throws IOException, TerminationException;
+	public SetResult setValue(final Solvis solvis, final SolvisData value)
+			throws IOException, TerminationException, SolvisErrorException;
 
 	public SetResult setDebugValue(final Solvis solvis, final SingleData<?> value)
 			throws IOException, TerminationException, TypeException;

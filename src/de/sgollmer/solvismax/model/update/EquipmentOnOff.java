@@ -137,7 +137,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			this.checkInterval = checkInterval;
 			this.readInterval = readInterval;
 			this.hourly = hourly;
-			this.equipmentTimeSyncEnabled = this.solvis.getUnit().getFeatures().isEquipmentTimeSynchronisation();
+			this.equipmentTimeSyncEnabled = solvis.getUnit().getFeatures().isEquipmentTimeSynchronisation();
 			this.syncActiveForced = this.equipmentTimeSyncEnabled;
 			this.equipment.registerContinuousObserver(this);
 			this.setHourlyWindow(false);
@@ -357,7 +357,7 @@ public class EquipmentOnOff extends Strategy<EquipmentOnOff> {
 			}
 		}
 
-		@SuppressWarnings("unused")
+
 		private void updateByMeasurement(final SolvisData data) {
 
 			if (!(EquipmentOnOff.this.source instanceof Control)) {

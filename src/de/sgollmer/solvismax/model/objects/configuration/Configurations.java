@@ -15,6 +15,7 @@ import java.util.Iterator;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
@@ -61,7 +62,8 @@ public class Configurations {
 		this.configurations = configurations;
 	}
 
-	public int get(final Solvis solvis) throws IOException, TerminationException, LearningException {
+	public int get(final Solvis solvis)
+			throws IOException, TerminationException, LearningException, SolvisErrorException {
 
 		solvis.gotoHome(true);
 		AbstractScreen current = solvis.getHomeScreen();

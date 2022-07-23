@@ -49,7 +49,7 @@ public class Configuration {
 	public boolean isInConfiguration(final Solvis solvis, boolean init) {
 		if (solvis.isLearning()) {
 			if (this.admin.isAdmin(false)) {
-				solvis.addFeatureDependency(Features.XML_ADMIN);
+				solvis.addFeatureDependency(Features.getAdminKey());
 			}
 			if (this.feature != null) {
 				solvis.addFeatureDependency(this.feature.getId());

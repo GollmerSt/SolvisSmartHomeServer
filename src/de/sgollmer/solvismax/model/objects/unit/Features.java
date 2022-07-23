@@ -17,19 +17,64 @@ public class Features {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(Features.class);
 
-	private static final String XML_CLOCK_TUNING = "ClockTuning";
-	private static final String XML_EQUIPMENT_TIME_SYNC = "EquipmentTimeSynchronisation";
-	private static final String XML_UPDATE_AFTER_USER_ACCESS = "UpdateAfterUserAccess";
-	private static final String XML_DETECT_SERVICE_ACCESS = "DetectServiceAccess";
-	private static final String XML_END_OF_USER_BY_SCREEN_SAVER = "EndOfUserInterventionDetectionThroughScreenSaver";
-	private static final String XMl_POWEROFF_IS_SERVICE_ACCESS = "PowerOffIsServiceAccess";
-	private static final String XMl_SEND_MAIL_ON_ERROR = "SendMailOnError";
-	private static final String XMl_SEND_MAIL_ON_ERRORS_CLEARED = "SendMailOnErrorsCleared";
-	private static final String XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL = "ClearErrorMessageAfterMail";
-	private static final String XML_ONLY_MEASUREMENT = "OnlyMeasurements";
-	private static final String XML_INTERACTIVE_GUI_ACCESS = "InteractiveGUIAccess";
-	public static final String XML_ADMIN = "Admin";
-	private static final String XML_FEATURE = "Feature";
+	private enum FeatureSetting {
+		XML_CLOCK_TUNING("ClockTuning", false), //
+		XML_EQUIPMENT_TIME_SYNC("EquipmentTimeSynchronisation", false), //
+		XML_UPDATE_AFTER_USER_ACCESS("UpdateAfterUserAccess", false), //
+		XML_DETECT_SERVICE_ACCESS("DetectServiceAccess", false), //
+		XML_END_OF_USER_BY_SCREEN_SAVER("EndOfUserInterventionDetectionThroughScreenSaver", false), //
+		XMl_POWEROFF_IS_SERVICE_ACCESS("PowerOffIsServiceAccess", false), //
+		XMl_SEND_MAIL_ON_ERROR("SendMailOnError", false), //
+		XMl_SEND_MAIL_ON_ERRORS_CLEARED("SendMailOnErrorsCleared", false), //
+		XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL("ClearErrorMessageAfterMail", true), //
+		XML_ONLY_MEASUREMENT("OnlyMeasurements", true), //
+		XML_INTERACTIVE_GUI_ACCESS("InteractiveGUIAccess", false), //
+		XML_ADMIN("Admin", false), //
+		//
+		XML_FEATURE("Feature");
+
+		private final String id;
+		private final Boolean missingValue; // null if Feature
+
+		private FeatureSetting(final String id, final Boolean missingValue) {
+			this.id = id;
+			this.missingValue = missingValue;
+		}
+
+		private FeatureSetting(final String id) {
+			this(id, null);
+		}
+
+		public String getId() {
+			return this.id;
+		}
+
+		public boolean getMissingValue() {
+			return this.missingValue;
+		}
+
+		public static FeatureSetting get(final String id) {
+			for (FeatureSetting setting : FeatureSetting.values()) {
+				if (setting.id.equals(id)) {
+					return setting;
+				}
+			}
+			return null;
+		}
+
+		public boolean isFeature() {
+			return this.missingValue == null;
+		}
+
+		@Override
+		public String toString() {
+			return this.id;
+		}
+	}
+
+	public static String getAdminKey() {
+		return FeatureSetting.XML_ADMIN.getId();
+	}
 
 	private final Map<String, Boolean> features;
 	private Boolean interactiveGUIAccess = null;
@@ -39,7 +84,7 @@ public class Features {
 		this.checkInteractiveGUIAccess();
 	}
 
-	private boolean get(final String feature, final boolean missingValue) {
+	public boolean get(String feature, boolean missingValue) {
 		Boolean result = this.features.get(feature);
 		if (result == null) {
 			return missingValue;
@@ -48,37 +93,59 @@ public class Features {
 		}
 	}
 
-	private boolean get(final String feature) {
-		return this.get(feature, false);
+	public boolean get(final FeatureSetting setting) {
+		return this.get(setting.getId(), setting.getMissingValue());
 	}
 
 	public boolean isClockTuning() {
-		return this.get(XML_CLOCK_TUNING);
+		return this.get(FeatureSetting.XML_CLOCK_TUNING);
 	}
 
 	public boolean isEquipmentTimeSynchronisation() {
-		return this.get(XML_EQUIPMENT_TIME_SYNC);
+		return this.get(FeatureSetting.XML_EQUIPMENT_TIME_SYNC);
 	}
 
 	public boolean isUpdateAfterUserAccess() {
-		return this.get(XML_UPDATE_AFTER_USER_ACCESS);
+		return this.get(FeatureSetting.XML_UPDATE_AFTER_USER_ACCESS);
 	}
 
 	public boolean isDetectServiceAccess() {
-		return this.get(XML_DETECT_SERVICE_ACCESS);
+		return this.get(FeatureSetting.XML_DETECT_SERVICE_ACCESS);
+	}
+
+	public boolean isClearErrorMessageAfterMail() {
+		return this.get(FeatureSetting.XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL);
+	}
+
+	public boolean isPowerOffIsServiceAccess() {
+		return this.get(FeatureSetting.XMl_POWEROFF_IS_SERVICE_ACCESS);
+	}
+
+	public boolean isSendMailOnError() {
+		return this.get(FeatureSetting.XMl_SEND_MAIL_ON_ERROR);
+	}
+
+	public boolean isSendMailOnErrorsCleared() {
+		return this.isSendMailOnError() && this.get(FeatureSetting.XMl_SEND_MAIL_ON_ERRORS_CLEARED);
+	}
+
+	public boolean isEndOfUserByScreenSaver() {
+		return this.get(FeatureSetting.XML_END_OF_USER_BY_SCREEN_SAVER);
+	}
+
+	public boolean isAdmin() {
+		return this.get(FeatureSetting.XML_ADMIN);
 	}
 
 	private boolean checkInteractiveGUIAccess() throws XmlException {
-		Boolean interactiveGUIAccess = this.getMap().get(XML_INTERACTIVE_GUI_ACCESS);
-		Boolean onlyMeasurements = this.getMap().get(XML_ONLY_MEASUREMENT);
-		if (interactiveGUIAccess == null && onlyMeasurements == null) {
-			throw new XmlException("Exactly one of the feature \"" + XML_INTERACTIVE_GUI_ACCESS + "\" or \""
-					+ XML_ONLY_MEASUREMENT + "\" is missing.");
-		} else if (interactiveGUIAccess != null && onlyMeasurements != null) {
-			throw new XmlException("The feature \"" + XML_INTERACTIVE_GUI_ACCESS + "\" AND \"" + XML_ONLY_MEASUREMENT
-					+ "\" are defined. Only one is possible.");
+		boolean guiAccessValid = this.getMap().containsKey(FeatureSetting.XML_INTERACTIVE_GUI_ACCESS.getId());
+		boolean onlyMeasurementsValid = this.getMap().containsKey(FeatureSetting.XML_ONLY_MEASUREMENT.getId());
+		if (guiAccessValid == onlyMeasurementsValid) {
+			throw new XmlException("Exactly one and only one of the feature \""
+					+ FeatureSetting.XML_INTERACTIVE_GUI_ACCESS + "\" or \"" + FeatureSetting.XML_ONLY_MEASUREMENT
+					+ "\" must be defined. Gui acces will be inhibited.");
 		}
-		return interactiveGUIAccess != null && interactiveGUIAccess || onlyMeasurements != null && !onlyMeasurements;
+		return this.get(FeatureSetting.XML_INTERACTIVE_GUI_ACCESS) || !this.get(FeatureSetting.XML_ONLY_MEASUREMENT);
 	}
 
 	public boolean isInteractiveGUIAccess() {
@@ -92,32 +159,8 @@ public class Features {
 		return this.interactiveGUIAccess;
 	}
 
-	public boolean isClearErrorMessageAfterMail() {
-		return this.get(XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL);
-	}
-
-	public boolean isPowerOffIsServiceAccess() {
-		return this.get(XMl_POWEROFF_IS_SERVICE_ACCESS);
-	}
-
-	public boolean isSendMailOnError() {
-		return this.get(XMl_SEND_MAIL_ON_ERROR);
-	}
-
-	public boolean isSendMailOnErrorsCleared() {
-		return this.get(XMl_SEND_MAIL_ON_ERROR) && this.get(XMl_SEND_MAIL_ON_ERRORS_CLEARED, true);
-	}
-	
-	public boolean isEndOfUserByScreenSaver() {
-		return this.get(XML_END_OF_USER_BY_SCREEN_SAVER);
-	}
-
-	public boolean isAdmin() {
-		return this.get(XML_ADMIN);
-	}
-
 	public Boolean getFeature(final String id) {
-		return this.get(id);
+		return this.get(id, false);
 	}
 
 	static class Creator extends CreatorByXML<Features> {
@@ -140,49 +183,27 @@ public class Features {
 		@Override
 		public CreatorByXML<?> getCreator(final QName name) {
 			String id = name.getLocalPart();
-			switch (id) {
-				case XML_CLOCK_TUNING:
-				case XML_EQUIPMENT_TIME_SYNC:
-				case XML_UPDATE_AFTER_USER_ACCESS:
-				case XML_DETECT_SERVICE_ACCESS:
-				case XMl_POWEROFF_IS_SERVICE_ACCESS:
-				case XMl_SEND_MAIL_ON_ERROR:
-				case XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL:
-				case XML_ONLY_MEASUREMENT:
-				case XML_ADMIN:
-					return new StringElement.Creator(id, this.getBaseCreator());
-				case XML_FEATURE:
-					return new Feature.Creator(id, this.getBaseCreator());
+			FeatureSetting setting = FeatureSetting.get(id);
+			if (setting == null) {
+				return null;
+			} else if (setting.isFeature()) {
+				return new Feature.Creator(id, this.getBaseCreator());
+			} else {
+				return new StringElement.Creator(id, this.getBaseCreator());
 			}
-			return null;
 		}
 
 		@Override
 		public void created(final CreatorByXML<?> creator, final Object created) {
-			if (created instanceof StringElement) {
-				boolean bool = Boolean.parseBoolean(((StringElement) created).toString());
-				String id = creator.getId();
-				switch (id) {
-					case XML_CLOCK_TUNING:
-					case XML_EQUIPMENT_TIME_SYNC:
-					case XML_UPDATE_AFTER_USER_ACCESS:
-					case XML_DETECT_SERVICE_ACCESS:
-					case XMl_POWEROFF_IS_SERVICE_ACCESS:
-					case XMl_SEND_MAIL_ON_ERROR:
-					case XMl_CLEAR_ERROR_MESSAGE_AFTER_MAIL:
-					case XML_ONLY_MEASUREMENT:
-					case XML_ADMIN:
-						this.features.put(id, bool);
-						break;
-				}
-			} else {
-				switch (creator.getId()) {
-					case XML_FEATURE:
-						Feature feature = (Feature) created;
-						this.features.put(feature.id, feature.value);
-						break;
-					default:
-						System.err.println("Check <" + creator.getId() + "> in the base.xml file, wrong value format ");
+
+			FeatureSetting setting = FeatureSetting.get(creator.getId());
+
+			if (setting != null) {
+				if (setting.isFeature()) {
+					Feature feature = (Feature) created;
+					this.features.put(feature.getId(), feature.isSet());
+				} else {
+					this.features.put(setting.getId(), Boolean.parseBoolean(created.toString()));
 				}
 			}
 		}
@@ -197,8 +218,8 @@ public class Features {
 		if (!this.isSendMailOnError()) {
 			logger.error("Mail was sent, but the mail is not activated for the unit \"" + unitId
 					+ "\". Attributes involved:");
-			logger.error(Features.XMl_SEND_MAIL_ON_ERROR + ": " + Boolean.toString(this.isSendMailOnError()));
-			logger.error(Features.XMl_SEND_MAIL_ON_ERRORS_CLEARED + ": "
+			logger.error(FeatureSetting.XMl_SEND_MAIL_ON_ERROR + ": " + Boolean.toString(this.isSendMailOnError()));
+			logger.error(FeatureSetting.XMl_SEND_MAIL_ON_ERRORS_CLEARED + ": "
 					+ Boolean.toString(this.isSendMailOnErrorsCleared()));
 		}
 

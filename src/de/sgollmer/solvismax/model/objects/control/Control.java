@@ -16,6 +16,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.Csv;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -84,7 +85,7 @@ public class Control extends ChannelSource {
 
 	@Override
 	public boolean getValue(final SolvisData destin, final Solvis solvis, final long executionStartTime)
-			throws IOException, TerminationException, TypeException {
+			throws IOException, TerminationException, TypeException, SolvisErrorException {
 		if (!this.guiPrepare(solvis)) {
 			return false;
 		}
@@ -98,7 +99,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public SetResult setValue(final Solvis solvis, final SolvisData value) throws IOException, TerminationException {
+	public SetResult setValue(final Solvis solvis, final SolvisData value)
+			throws IOException, TerminationException, SolvisErrorException {
 
 		if (!this.guiPrepare(solvis)) {
 			return null;
@@ -141,7 +143,7 @@ public class Control extends ChannelSource {
 		return this.strategy.setValueFast(solvis, value);
 	}
 
-	private boolean guiPrepare(final Solvis solvis) throws IOException, TerminationException {
+	private boolean guiPrepare(final Solvis solvis) throws IOException, TerminationException, SolvisErrorException {
 		((Screen) this.guiAccess.getScreen().get(solvis)).goTo(solvis);
 		if (!this.guiAccess.prepare(solvis)) {
 			return false;
@@ -258,7 +260,8 @@ public class Control extends ChannelSource {
 	}
 
 	@Override
-	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException {
+	public void learn(final Solvis solvis)
+			throws IOException, LearningException, TerminationException, SolvisErrorException {
 		if (this.strategy.mustBeLearned()) {
 			SingleData<?> data = null;
 			AbstractScreen screen = this.guiAccess.getScreen().get(solvis);

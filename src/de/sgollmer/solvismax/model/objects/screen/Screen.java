@@ -21,6 +21,7 @@ import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.LearningTerminationException;
 import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
@@ -341,7 +342,8 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 //
-	public static void learnScreens(final Solvis solvis) throws IOException, TerminationException, LearningException {
+	public static void learnScreens(final Solvis solvis)
+			throws IOException, TerminationException, LearningException, SolvisErrorException {
 		Collection<IScreenPartCompare> learnGrafics = solvis.getSolvisDescription().getLearnGrafics(solvis);
 		while (learnGrafics.size() > 0) {
 			solvis.getHomeScreen().learn(solvis, learnGrafics);
@@ -351,7 +353,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 	@Override
 	public void learn(final Solvis solvis, final Collection<IScreenPartCompare> descriptions)
-			throws IOException, TerminationException, LearningException {
+			throws IOException, TerminationException, LearningException, SolvisErrorException {
 
 		// Seach all LearnScreens object of current screen and learn the
 		// ScreenGrafic
@@ -431,7 +433,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 							logger.log(LEARN, "Screen <" + nextScreen.getId() + "> not learned. " + e.getMessage());
 						}
 						if (!success) {
-							solvis.sendBack();
+							solvis.sendBackWithCheckError();
 							current = SolvisScreen.get(solvis.getCurrentScreen());
 						}
 					}
@@ -468,11 +470,12 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	 * @param learnScreens
 	 * @throws IOException
 	 * @throws LearningException
+	 * @throws SolvisErrorException
 	 */
 	@Override
 	public boolean gotoLearning(final Solvis solvis, final AbstractScreen currentScreen,
 			final Collection<IScreenPartCompare> descriptions)
-			throws IOException, TerminationException, LearningException {
+			throws IOException, TerminationException, LearningException, SolvisErrorException {
 		AbstractScreen current = currentScreen;
 		if (current == null) {
 			if (this != solvis.getHomeScreen()) {
@@ -517,7 +520,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 								logger.log(LEARN,
 										"Warning: Goto with an unlearned Screen, algorithm or control.xml fail?");
 //								solvis.gotoHome();
-								solvis.sendBack();
+								solvis.sendBackWithCheckError();
 								logger.log(LEARN, "Pepartation failed, goto learning will tried again.");
 								return false;
 							}
@@ -546,11 +549,13 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	 * @throws IOException
 	 * @throws TerminationException
 	 * @throws LearningException
+	 * @throws SolvisErrorException
 	 */
 	private static AbstractScreen back(final Solvis solvis, final AbstractScreen currentScreen,
-			Collection<IScreenPartCompare> descriptions) throws IOException, TerminationException, LearningException {
+			Collection<IScreenPartCompare> descriptions)
+			throws IOException, TerminationException, LearningException, SolvisErrorException {
 		AbstractScreen back = currentScreen.getBackScreen(solvis);
-		solvis.sendBack();
+		solvis.sendBackWithCheckError();
 		AbstractScreen current = SolvisScreen.get(solvis.getCurrentScreen());
 		if (current == null) {
 			solvis.gotoHome();
@@ -593,7 +598,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 	}
 
 	@Override
-	public GotoStatus goTo(final Solvis solvis) throws IOException, TerminationException {
+	public GotoStatus goTo(final Solvis solvis) throws IOException, TerminationException, SolvisErrorException {
 
 		if (SolvisScreen.get(solvis.getCurrentScreen()) == this) {
 			return GotoStatus.SAME;
@@ -605,7 +610,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 
 				for (int cnt = 0; cnt < Constants.FAIL_REPEATS
 						&& SolvisScreen.get(solvis.getCurrentScreen()) == null; ++cnt) {
-					solvis.sendBack();
+					solvis.sendBackWithCheckError();
 				}
 
 				if (SolvisScreen.get(solvis.getCurrentScreen()) == null) {
@@ -649,7 +654,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 					}
 
 					if (foundScreenTouch == null) {
-						solvis.sendBack();
+						solvis.sendBackWithCheckError();
 					} else {
 						if (!foundScreenTouch.execute(solvis, current)) {
 							gone = false;
@@ -667,7 +672,7 @@ public class Screen extends AbstractScreen implements Comparable<AbstractScreen>
 			if (!gone) {
 				logger.info("Goto screen <" + this.getId() + "> not succcessful. Will be retried.");
 				if (cnt == 0) {
-					solvis.sendBack();
+					solvis.sendBackWithCheckError();
 				} else {
 					solvis.gotoHome(); // try it from beginning
 				}

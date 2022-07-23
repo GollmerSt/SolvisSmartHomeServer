@@ -22,6 +22,7 @@ import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.Helper;
@@ -116,7 +117,7 @@ public class AllChannelDescriptions implements IGraficsLearnable {
 	}
 
 	@Override
-	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException {
+	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException, SolvisErrorException {
 		for (OfConfigs<ChannelDescription> descriptions : this.descriptions.values()) {
 			ChannelDescription description = descriptions.get(solvis);
 			if (description != null && description instanceof IGraficsLearnable) {
@@ -130,7 +131,8 @@ public class AllChannelDescriptions implements IGraficsLearnable {
 	}
 
 	public void measure(final Solvis solvis, final AllSolvisData datas, final MeasureMode mode)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException {
+			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException,
+			SolvisErrorException {
 		solvis.clearMeasuredData();
 		solvis.getMeasureData();
 		solvis.getDistributor().setBurstUpdate(true);

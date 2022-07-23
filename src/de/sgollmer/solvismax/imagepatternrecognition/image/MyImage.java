@@ -286,7 +286,7 @@ public class MyImage {
 		int height = maxY + 1 - minY;
 		this.size = new Coordinate(width, height);
 		this.origin = new Coordinate(minX + this.origin.getX(), minY + this.origin.getY());
-
+		this.hashCode = null;
 	}
 
 	public int getHeight() {
@@ -674,6 +674,7 @@ public class MyImage {
 			this.histogramY.set(i, this.histogramY.get(i) - thicknessX);
 		}
 
+		this.hashCode = null;
 	}
 
 	/**

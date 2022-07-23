@@ -10,6 +10,7 @@ import java.util.Set;
 
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.model.Solvis;
@@ -91,16 +92,17 @@ public abstract class AbstractScreen
 	}
 
 	public abstract boolean gotoLearning(Solvis solvis, AbstractScreen current,
-			Collection<IScreenPartCompare> desscriptions) throws IOException, TerminationException, LearningException;
+			Collection<IScreenPartCompare> desscriptions)
+			throws IOException, TerminationException, LearningException, SolvisErrorException;
 
 	public abstract void learn(Solvis solvis, Collection<IScreenPartCompare> descriptions)
-			throws IOException, TerminationException, LearningException;
+			throws IOException, TerminationException, LearningException, SolvisErrorException;
 
 	public enum GotoStatus {
 		FAILED, CHANGED, SAME
 	}
 
-	public abstract GotoStatus goTo(Solvis solvis) throws IOException, TerminationException;
+	public abstract GotoStatus goTo(Solvis solvis) throws IOException, TerminationException, SolvisErrorException;
 
 	public abstract boolean isIgnoreChanges();
 
@@ -180,11 +182,13 @@ public abstract class AbstractScreen
 			return this.preparation;
 		}
 
-		boolean selectScreen(Solvis solvis, Screen startingScreen) throws IOException, TerminationException {
+		boolean selectScreen(Solvis solvis, Screen startingScreen)
+				throws IOException, TerminationException, SolvisErrorException {
 			return this.selectScreenStrategy.execute(solvis, startingScreen);
 		}
 
-		boolean execute(Solvis solvis, AbstractScreen startingScreen) throws IOException, TerminationException {
+		boolean execute(Solvis solvis, AbstractScreen startingScreen)
+				throws IOException, TerminationException, SolvisErrorException {
 			boolean success = Preparation.prepare(this.preparation, solvis);
 			if (success) {
 				this.selectScreenStrategy.execute(solvis, startingScreen);
@@ -356,7 +360,7 @@ public abstract class AbstractScreen
 				throw new ReferenceException("Preparation of reference < " + this.preparationId + " > not found");
 			}
 		}
-		this.initialized=true;
+		this.initialized = true;
 	}
 
 	@Override

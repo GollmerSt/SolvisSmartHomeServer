@@ -842,6 +842,10 @@ sub InterpreteSolvisState {
             readingsSingleUpdate($self,'state',$stateString,1);
              Log($self, 3, 'Solvis disconnected');
         },
+        'ERROR' => sub {
+            readingsSingleUpdate($self,'state',$stateString,1);
+             Log($self, 3, 'Solvis error');
+        },
         'CONTROL_WRITE_ONGOING' => sub {
             readingsSingleUpdate($self,'Control','wr_ongoing',1);
              Log($self, 4, 'Server queue write ongoing');

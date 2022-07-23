@@ -14,10 +14,12 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.objects.clock.ClockMonitor;
 import de.sgollmer.solvismax.model.objects.configuration.Configurations;
+import de.sgollmer.solvismax.model.objects.screen.ErrorDetection;
 import de.sgollmer.solvismax.model.objects.screen.IScreenPartCompare;
 import de.sgollmer.solvismax.model.objects.screen.ScreenGraficDescription;
 import de.sgollmer.solvismax.model.objects.screen.ScreenSaver;
@@ -292,7 +294,7 @@ public class SolvisDescription {
 	}
 
 	public long getConfigurationFromGui(final Solvis solvis)
-			throws IOException, TerminationException, LearningException {
+			throws IOException, TerminationException, LearningException, SolvisErrorException {
 		return this.configurations.get(solvis);
 	}
 

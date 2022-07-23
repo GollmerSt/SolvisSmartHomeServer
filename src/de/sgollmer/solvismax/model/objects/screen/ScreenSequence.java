@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
 import de.sgollmer.solvismax.log.LogManager;
@@ -113,7 +114,8 @@ public class ScreenSequence extends AbstractScreen {
 
 	@Override
 	public boolean gotoLearning(final Solvis solvis, final AbstractScreen current,
-			final Collection<IScreenPartCompare> descriptions) throws IOException, TerminationException {
+			final Collection<IScreenPartCompare> descriptions)
+			throws IOException, TerminationException, SolvisErrorException {
 		AbstractScreen previous = this.getPreviousScreen(solvis);
 		previous.goTo(solvis);
 		return previous == SolvisScreen.get(solvis.getCurrentScreen());
@@ -121,7 +123,7 @@ public class ScreenSequence extends AbstractScreen {
 
 	@Override
 	public void learn(final Solvis solvis, final Collection<IScreenPartCompare> descriptions)
-			throws TerminationException, IOException, LearningException {
+			throws TerminationException, IOException, LearningException, SolvisErrorException {
 		boolean preparationSuccess = true;
 		if (this.preparation != null) {
 			preparationSuccess = this.preparation.learn(solvis);

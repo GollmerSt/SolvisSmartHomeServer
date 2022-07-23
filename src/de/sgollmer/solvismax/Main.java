@@ -34,6 +34,7 @@ import de.sgollmer.solvismax.error.JsonException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.MqttConnectionLost;
 import de.sgollmer.solvismax.error.PackageException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -344,6 +345,9 @@ public class Main {
 				System.exit(ExitCodes.READING_CONFIGURATION_FAIL);
 			} catch (TerminationException e) {
 				System.exit(ExitCodes.OK);
+			} catch (SolvisErrorException e) {
+				logger.error("Solvis unit error occured while learning");
+				System.exit(ExitCodes.SOLVIS_UNIT_ERROR);
 			}
 			serverSocket = this.openSocket(baseData.getPort());
 		}

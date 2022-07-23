@@ -51,6 +51,7 @@ public class HumanAccess extends Observer.Observable<HumanAccess.Status> {
 	private final boolean endOfUserByScreenSaver;
 	private final int releaseBlockingAfterUserChange_ms;
 	private final int releaseBlockingAfterServiceAccess_ms;
+	private final boolean detectServiceAccess;
 
 	private long lastAccess = System.currentTimeMillis();
 	private long lastUserAccessTime = 0;
@@ -67,6 +68,7 @@ public class HumanAccess extends Observer.Observable<HumanAccess.Status> {
 		this.releaseBlockingAfterUserChange_ms = BaseData.DEBUG ? Debug.USER_ACCESS_TIME
 				: unit.getReleaseBlockingAfterUserAccess_ms();
 		this.releaseBlockingAfterServiceAccess_ms = unit.getReleaseBlockingAfterServiceAccess_ms();
+		this.detectServiceAccess = solvis.getFeatures().isDetectServiceAccess();
 
 	}
 
@@ -198,20 +200,21 @@ public class HumanAccess extends Observer.Observable<HumanAccess.Status> {
 	private void processHumanAccess(final HumanAccess.Status access, final long time)
 			throws IOException, TerminationException {
 
-		HumanAccess.Status current = this.getStatus();
+		HumanAccess.Status last = this.getStatus();
 
-		if (current != HumanAccess.Status.UNKNOWN) {
-			if (current == access) {
+		if (last != HumanAccess.Status.UNKNOWN) {
+			if (last == access) {
 				return;
 			}
 			this.notify(access);
 		}
 
-		if (current != access && access == HumanAccess.Status.NONE) {
+		if (last != access && access == HumanAccess.Status.NONE) {
 			this.lastAccess = time;
 		}
+		
+		HumanAccess.Status current = access;
 
-		current = access;
 
 		switch (current) {
 			case SERVICE:
@@ -219,7 +222,7 @@ public class HumanAccess extends Observer.Observable<HumanAccess.Status> {
 				logger.info(current.getAccessType() + " access detected.");
 				break;
 			case NONE:
-				logger.info(current.getAccessType() + " access finished.");
+				logger.info(last.getAccessType() + " access finished.");
 				this.solvis.saveScreen();
 				break;
 			case UNKNOWN:
@@ -246,10 +249,10 @@ public class HumanAccess extends Observer.Observable<HumanAccess.Status> {
 	}
 
 	public Event getEvent(SolvisScreen realScreen) throws IOException, TerminationException {
-		
-		if ( realScreen.equalsWoIgnore(this.solvis.getCurrentScreen(false))) {
+
+		if (realScreen.equalsWoIgnore(this.solvis.getCurrentScreen(false))) {
 			return Event.NONE;
-		} else if (realScreen.isService() && this.solvis.getFeatures().isDetectServiceAccess()) {
+		} else if (realScreen.isService() && this.detectServiceAccess) {
 			return Event.HUMAN_ACCESS_SERVICE;
 		} else {
 			return Event.HUMAN_ACCESS_USER;

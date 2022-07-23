@@ -19,6 +19,7 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.HelperException;
 import de.sgollmer.solvismax.error.LearningException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -144,7 +145,7 @@ public class ClockMonitor implements IGraficsLearnable, IXmlElement<SolvisDescri
 	}
 
 	interface IAdjustStrategy {
-		boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException;
+		boolean execute(NextAdjust nextAdjust) throws IOException, TerminationException, SolvisErrorException;
 
 		void notExecuted();
 	}
@@ -310,6 +311,7 @@ public class ClockMonitor implements IGraficsLearnable, IXmlElement<SolvisDescri
 
 		private AdjustmentType adjustmentTypeRequestPending = AdjustmentType.NONE;
 		private final Solvis solvis;
+		private final boolean clockTuuning;
 		private ClockAdjustmentThread adjustmentThread = null;
 		private final StrategyAdjust strategyAdjust = new StrategyAdjust();
 		private final AverageInt averageDiff = new AverageInt(30);
@@ -319,6 +321,7 @@ public class ClockMonitor implements IGraficsLearnable, IXmlElement<SolvisDescri
 
 		private Executable(final Solvis solvis) {
 			this.solvis = solvis;
+			this.clockTuuning = solvis.getFeatures().isClockTuning();
 			solvis.registerAbortObserver(new IObserver<Boolean>() {
 
 				@Override
@@ -334,7 +337,7 @@ public class ClockMonitor implements IGraficsLearnable, IXmlElement<SolvisDescri
 
 		@Override
 		public void update(final SolvisData data, final Object source) {
-			if (!this.solvis.getFeatures().isClockTuning()) {
+			if (!this.clockTuuning) {
 				return;
 			}
 			String channelId = data.getId();
@@ -424,7 +427,8 @@ public class ClockMonitor implements IGraficsLearnable, IXmlElement<SolvisDescri
 		private class StrategyAdjust implements IAdjustStrategy {
 
 			@Override
-			public boolean execute(final NextAdjust nextAdjust) throws IOException, TerminationException {
+			public boolean execute(final NextAdjust nextAdjust)
+					throws IOException, TerminationException, SolvisErrorException {
 				Solvis solvis = Executable.this.solvis;
 				Calendar adjustmentCalendar = Calendar.getInstance();
 				long now = adjustmentCalendar.getTimeInMillis();
@@ -577,7 +581,7 @@ public class ClockMonitor implements IGraficsLearnable, IXmlElement<SolvisDescri
 	}
 
 	@Override
-	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException {
+	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException, SolvisErrorException {
 		Screen screen = (Screen) this.screen.get(solvis);
 		if (screen == null) {
 			String error = "Learning of the clock screens not possible, rejected."
@@ -619,7 +623,7 @@ public class ClockMonitor implements IGraficsLearnable, IXmlElement<SolvisDescri
 				if (repeat > Constants.LEARNING_RETRIES / 2) {
 					solvis.gotoHome(true);
 				} else {
-					solvis.sendBack();
+					solvis.sendBackWithCheckError();
 				}
 			}
 		}

@@ -23,14 +23,14 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.mail.Mail.Recipient;
 import de.sgollmer.solvismax.mail.Mail.Security;
-import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
+import de.sgollmer.solvismax.model.objects.ErrorState;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
 import de.sgollmer.xmllibrary.ArrayXml;
 import de.sgollmer.xmllibrary.BaseCreator;
 import de.sgollmer.xmllibrary.CreatorByXML;
 
-public class ExceptionMail implements IObserver<SolvisErrorInfo> {
+public class ExceptionMail implements IObserver<ErrorState.Info> {
 
 	private static final ILogger logger = LogManager.getInstance().getLogger(ExceptionMail.class);
 
@@ -149,7 +149,10 @@ public class ExceptionMail implements IObserver<SolvisErrorInfo> {
 //	}
 //
 	@Override
-	public void update(final SolvisErrorInfo info, final Object source) {
+	public void update(final ErrorState.Info info, final Object source) {
+		if ( info == null) {
+			return;
+		}
 		try {
 			this.send(info.getMessage(), "", info.getImage());
 		} catch (MessagingException | IOException e) {

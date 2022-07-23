@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.model.objects.control;
 import java.io.IOException;
 import java.util.List;
 
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
@@ -28,7 +29,7 @@ public abstract class  AbstractStrategy {
 			final boolean optional) throws TerminationException, IOException;
 
 	abstract SetResult setValue(final Solvis solvis, final SolvisData value)
-			throws IOException, TerminationException, TypeException;
+			throws IOException, TerminationException, TypeException, SolvisErrorException;
 
 	abstract SetResult setValueFast(final Solvis solvis, final SolvisData value) throws IOException, TerminationException;
 

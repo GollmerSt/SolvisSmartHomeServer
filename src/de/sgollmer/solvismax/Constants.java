@@ -156,6 +156,7 @@ public class Constants {
 		public static final int XML_VERIFICATION_ERROR = 20;
 		public static final int MQTT_ERROR = 21;
 		public static final int TASK_CREATING_ERROR = 22;
+		public static final int SOLVIS_UNIT_ERROR = 23;
 	}
 
 	public static class Mqtt {

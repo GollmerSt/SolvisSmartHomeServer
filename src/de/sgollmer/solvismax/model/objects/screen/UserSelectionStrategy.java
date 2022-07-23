@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.HelperException;
 import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.helper.AbortHelper;
 import de.sgollmer.solvismax.imagepatternrecognition.image.MyImage;
@@ -42,7 +43,7 @@ public class UserSelectionStrategy implements ISelectScreenStrategy, IXmlElement
 
 	@Override
 	public boolean execute(final Solvis solvis, final AbstractScreen startingScreen)
-			throws IOException, TerminationException {
+			throws IOException, TerminationException, SolvisErrorException {
 
 		boolean success = false;
 

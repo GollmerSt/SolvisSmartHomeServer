@@ -13,6 +13,7 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -35,7 +36,7 @@ public class FallBack {
 	private final FallBack lastChance;
 
 	private interface IFallBackObject {
-		void execute(final Solvis solvis) throws IOException, TerminationException;
+		void execute(final Solvis solvis) throws IOException, TerminationException, SolvisErrorException;
 	}
 
 	private FallBack(final Collection<IFallBackObject> sequence, final FallBack lastChance) {
@@ -43,7 +44,8 @@ public class FallBack {
 		this.lastChance = lastChance;
 	}
 
-	public void execute(final Solvis solvis, final boolean lastChance) throws IOException, TerminationException {
+	public void execute(final Solvis solvis, final boolean lastChance)
+			throws IOException, TerminationException, SolvisErrorException {
 		if (lastChance && this.lastChance != null) {
 			this.lastChance.execute(solvis, false);
 		} else {
@@ -115,7 +117,7 @@ public class FallBack {
 		}
 
 		@Override
-		public void execute(final Solvis solvis) throws IOException, TerminationException {
+		public void execute(final Solvis solvis) throws IOException, TerminationException, SolvisErrorException {
 			Screen screen = (Screen) this.getScreen().getIfSingle();
 
 			if (screen == null) {
@@ -149,8 +151,8 @@ public class FallBack {
 		}
 
 		@Override
-		public void execute(Solvis solvis) throws IOException, TerminationException {
-			solvis.sendBack();
+		public void execute(Solvis solvis) throws IOException, TerminationException, SolvisErrorException {
+			solvis.sendBackWithCheckError();
 		}
 
 		private static class Creator extends CreatorByXML<Back> {

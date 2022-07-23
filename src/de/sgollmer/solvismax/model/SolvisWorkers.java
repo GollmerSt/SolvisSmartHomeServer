@@ -16,6 +16,7 @@ import java.util.ListIterator;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -29,6 +30,7 @@ import de.sgollmer.solvismax.model.command.CommandObserver;
 import de.sgollmer.solvismax.model.command.Handling;
 import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
+import de.sgollmer.solvismax.model.objects.ErrorState;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
@@ -83,9 +85,36 @@ public class SolvisWorkers {
 		private int writeCnt = 0;
 		private int readCnt = 0;
 		private long nextWatchDogTime = 0L;
+		private boolean forceRestoreScreen = false;
+		private boolean messageErrorVisible = false;
 
 		private ControlWorkerThread() {
 			super("ControlWorkerThread");
+
+			SolvisWorkers.this.solvis.registerSolvisErrorObserver(new IObserver<ErrorState.Info>() {
+
+				private boolean messageError = false;
+
+				@Override
+				public void update(ErrorState.Info data, Object source) {
+
+					synchronized (ControlWorkerThread.this) {
+
+						SolvisState solvisState = SolvisWorkers.this.solvis.getSolvisState();
+
+						boolean error = solvisState.isMessageError();
+						boolean messageErrorVisible = solvisState.isMessageErrorVisible();
+
+						ControlWorkerThread.this.forceRestoreScreen |= //
+								this.messageError && !error
+										|| ControlWorkerThread.this.messageErrorVisible && !messageErrorVisible;
+						this.messageError = error;
+
+						ControlWorkerThread.this.messageErrorVisible = messageErrorVisible;
+					}
+				}
+			});
+
 		}
 
 		@Override
@@ -113,17 +142,27 @@ public class SolvisWorkers {
 				int waitTime = 0;
 
 				SolvisStatus state = SolvisWorkers.this.solvis.getSolvisState().getState();
+
 				if (state == SolvisStatus.SOLVIS_CONNECTED || state == SolvisStatus.ERROR) {
 					synchronized (this) {
+
+						boolean queueInhibit = !SolvisWorkers.this.solvis.isControlEnabled()
+								|| this.messageErrorVisible;
+
 						if (this.queue.isEmpty()) {
 							this.handleCommandAddedRemoved(null, false);
 						}
 
-						if (this.queue.isEmpty() && SolvisWorkers.this.solvis.isControlEnabled()) {
+						if (this.queue.isEmpty()) {
 							this.channelsOfQueueRead.clear();
+							if (this.forceRestoreScreen) {
+								executeRestoreScreen = true;
+								this.forceRestoreScreen = false;
+							}
 							if (!queueWasEmpty) {
 								firstDelayedCircle = true;
 								waitTime = Constants.CYCLE_TIME_WHERE_QUEUE_EMPTY;
+								queueWasEmpty = true;
 							} else if (firstDelayedCircle) {
 								firstDelayedCircle = false;
 								executeRestoreScreen = true;
@@ -131,14 +170,23 @@ public class SolvisWorkers {
 							} else {
 								waitTime = Constants.CYCLE_TIME_WHERE_QUEUE_EMPTY;
 							}
-							queueWasEmpty = true;
 
 						} else {
-							queueWasEmpty = false;
 							firstDelayedCircle = false;
-							command = this.queue.peek();
+							this.forceRestoreScreen = false;
+							queueWasEmpty = false;
+
+							if (queueInhibit) {
+
+								waitTime = Constants.CYCLE_TIME_WHERE_QUEUE_EMPTY;
+
+							} else {
+
+								command = this.queue.peek();
+							}
 						}
 					}
+
 					if (this.abort) {
 						return;
 					}
@@ -148,12 +196,12 @@ public class SolvisWorkers {
 						if (command != null
 								&& command.getScreen(SolvisWorkers.this.solvis) == SolvisScreen
 										.get(SolvisWorkers.this.solvis.getCurrentScreen(false))
-								&& !SolvisWorkers.this.solvis.getSolvisState().isError() | stateChanged) {
+								&& !SolvisWorkers.this.solvis.getSolvisState().isMessageError() | stateChanged) {
 							setExecuteWatchDog();
 						}
 						stateChanged = false;
 						if (executeRestoreScreen) {
-							SolvisWorkers.this.solvis.restoreScreen();
+							executeRestoreScreen &= !SolvisWorkers.this.solvis.restoreScreen();
 						}
 
 						long time = System.currentTimeMillis();
@@ -164,10 +212,15 @@ public class SolvisWorkers {
 
 						if (command != null && !command.isInhibit()) {
 							SolvisWorkers.this.executingControlObserver.notify(true);
-							status = this.processCommand(command);
-							SolvisWorkers.this.executingControlObserver.notify(false);
+							try {
+								status = this.processCommand(command);
+							} catch (IOException | PowerOnException | SolvisErrorException e) {
+								throw e;
+							} finally {
+								SolvisWorkers.this.executingControlObserver.notify(false);
+							}
 						}
-					} catch (IOException | PowerOnException e) {
+					} catch (IOException | PowerOnException | SolvisErrorException e) {
 						status = ResultStatus.NO_SUCCESS;
 					} catch (TerminationException e3) {
 						return;
@@ -214,7 +267,7 @@ public class SolvisWorkers {
 		}
 
 		private final ResultStatus processCommand(final Command command) throws IOException, TerminationException,
-				PowerOnException, NumberFormatException, TypeException, XmlException {
+				PowerOnException, NumberFormatException, TypeException, XmlException, SolvisErrorException {
 
 			String commandString = command.toString();
 			logger.debug("Command <" + commandString + "> will be executed");
@@ -404,7 +457,7 @@ public class SolvisWorkers {
 	}
 
 	private ResultStatus execute(final Command command) throws IOException, TerminationException, PowerOnException,
-			NumberFormatException, TypeException, XmlException {
+			NumberFormatException, TypeException, XmlException, SolvisErrorException {
 
 		ResultStatus resultStatus = command.preExecute(this.solvis, this.controlsThread.queueStatus);
 

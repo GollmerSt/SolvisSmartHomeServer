@@ -41,6 +41,7 @@ public class Unit implements IAccountInfo {
 	private static final String XML_CHANNEL_OPTIONS = "ChannelOptions";
 
 	private final String id;
+	private final boolean admin;
 	private final Configuration configuration;
 	private final Collection<String> urls;
 	private final String url;
@@ -109,6 +110,8 @@ public class Unit implements IAccountInfo {
 		this.csvUnit = csvUnit;
 		this.durations = durations;
 		this.channelOptions = channelOptions;
+		this.admin = features.isAdmin();
+		;
 	}
 
 	public String getId() {
@@ -479,7 +482,7 @@ public class Unit implements IAccountInfo {
 	}
 
 	public boolean isAdmin() {
-		return this.features.isAdmin();
+		return this.admin;
 	}
 
 	public Long getForcedConfigMask() {

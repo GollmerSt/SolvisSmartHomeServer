@@ -17,6 +17,7 @@ import de.sgollmer.solvismax.error.AliasException;
 import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
@@ -74,25 +75,27 @@ public class ChannelDescription implements IChannelSource, OfConfigs.IElement<Ch
 		return this.getId();
 	}
 
-	public boolean getValue(final Solvis solvis)
-			throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
+	public boolean getValue(final Solvis solvis) throws NumberFormatException, IOException, PowerOnException,
+			TerminationException, TypeException, SolvisErrorException {
 		return this.getValue(solvis, -1L);
 	}
 
-	public boolean getValue(final Solvis solvis, final long executionStartTime)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException {
+	public boolean getValue(final Solvis solvis, final long executionStartTime) throws IOException, PowerOnException,
+			TerminationException, NumberFormatException, TypeException, SolvisErrorException {
 		SolvisData data = solvis.getAllSolvisData().get(this);
 		return this.getValue(data, solvis, executionStartTime);
 	}
 
 	@Override
 	public boolean getValue(final SolvisData dest, final Solvis solvis, final long executionStartTime)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException {
+			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException,
+			SolvisErrorException {
 		return this.channelSource.getValue(dest, solvis, executionStartTime);
 	}
 
 	@Override
-	public SetResult setValue(final Solvis solvis, final SolvisData value) throws IOException, TerminationException {
+	public SetResult setValue(final Solvis solvis, final SolvisData value)
+			throws IOException, TerminationException, SolvisErrorException {
 		return this.channelSource.setValue(solvis, value);
 	}
 
@@ -223,7 +226,8 @@ public class ChannelDescription implements IChannelSource, OfConfigs.IElement<Ch
 	}
 
 	@Override
-	public void learn(final Solvis solvis) throws IOException, LearningException, TerminationException {
+	public void learn(final Solvis solvis)
+			throws IOException, LearningException, TerminationException, SolvisErrorException {
 		this.channelSource.learn(solvis);
 
 	}

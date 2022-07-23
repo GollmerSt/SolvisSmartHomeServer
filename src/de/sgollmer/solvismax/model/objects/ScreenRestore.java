@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
@@ -40,12 +41,16 @@ public class ScreenRestore {
 		return this.inhibitServices.size() == 0;
 	}
 
-	public void restore() throws IOException, TerminationException {
+	public boolean restore() throws IOException, TerminationException, SolvisErrorException {
+		
+		if ( this.solvis.getSolvisState().isMessageErrorVisible()) {
+			return false;
+		}
 
-		boolean error = this.solvis.getSolvisState().isError();
+		boolean error = this.solvis.getSolvisState().isMessageError();
 
 		if (this.solvis.isControlEnabled() && !error && !this.isEnabled()) {
-			return;
+			return false;
 		}
 
 		AbstractScreen screen;
@@ -68,6 +73,7 @@ public class ScreenRestore {
 				}
 			}
 		}
+		return true;
 	}
 
 	public void save() throws IOException, TerminationException {

@@ -10,6 +10,7 @@ package de.sgollmer.solvismax.model.objects.clock;
 import java.io.IOException;
 
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.model.Solvis;
 import de.sgollmer.solvismax.model.command.Command;
@@ -29,7 +30,7 @@ public class CommandClock extends Command {
 
 	@Override
 	public ResultStatus execute(final Solvis solvis, final Handling.QueueStatus queueStatus)
-			throws IOException, TerminationException, PowerOnException {
+			throws IOException, TerminationException, PowerOnException, SolvisErrorException {
 		this.strategy.execute(this.nextAdjust);
 		return ResultStatus.SUCCESS;
 	}

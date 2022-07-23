@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.log.LogManager;
@@ -82,8 +83,8 @@ public class Standby {
 			this.standbyState = standbyState;
 		}
 
-		public boolean set(final boolean standby)
-				throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
+		public boolean set(final boolean standby) throws NumberFormatException, IOException, PowerOnException,
+				TerminationException, TypeException, SolvisErrorException {
 			ChannelDescription description = this.solvisData.getDescription();
 			SingleData<?> state = null;
 			if (standby) {
@@ -137,8 +138,8 @@ public class Standby {
 			}
 		}
 
-		public boolean set(final SolvisData data)
-				throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
+		public boolean set(final SolvisData data) throws NumberFormatException, IOException, PowerOnException,
+				TerminationException, TypeException, SolvisErrorException {
 			StandbyChannel channel = this.standbyChannels.get(data.getDescription());
 			if (channel == null) {
 				logger.error("Standby channel <" + data.getDescription() + "> not defined. Setting ignored.");
@@ -148,8 +149,8 @@ public class Standby {
 			}
 		}
 
-		public void reset()
-				throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
+		public void reset() throws NumberFormatException, IOException, PowerOnException, TerminationException,
+				TypeException, SolvisErrorException {
 			for (StandbyChannel channel : this.standbyChannels.values()) {
 				channel.set(false);
 			}

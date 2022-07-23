@@ -15,6 +15,7 @@ import javax.xml.namespace.QName;
 
 import de.sgollmer.solvismax.Constants;
 import de.sgollmer.solvismax.Constants.Csv;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -273,7 +274,7 @@ public class StrategyReheat extends AbstractStrategy {
 
 	@Override
 	public SetResult setValue(final Solvis solvis, final SolvisData value)
-			throws IOException, TerminationException, TypeException {
+			throws IOException, TerminationException, TypeException, SolvisErrorException {
 
 		StrategyReheat.this.interpretSetData(value.getSingleData(), false);
 
@@ -290,7 +291,7 @@ public class StrategyReheat extends AbstractStrategy {
 		boolean notRequired = Reheat.isNotRequired(solvis.getCurrentScreen());
 
 		if (notRequired) {
-			solvis.sendBack();
+			solvis.sendBackWithCheckError();
 			return new SetResult(ResultStatus.SUCCESS, new ModeValue<>(Mode.NOT_REQUIRED, System.currentTimeMillis()),
 					true);
 		} else {

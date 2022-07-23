@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.model.Solvis;
@@ -122,8 +123,9 @@ public abstract class Command {
 	public void setDependencyPrepared(final boolean dependencyPrepared) {
 	}
 
-	public abstract ResultStatus execute(final Solvis solvis, final QueueStatus queueStatus) throws IOException,
-			TerminationException, PowerOnException, NumberFormatException, TypeException, XmlException;
+	public abstract ResultStatus execute(final Solvis solvis, final QueueStatus queueStatus)
+			throws IOException, TerminationException, PowerOnException, NumberFormatException, TypeException,
+			XmlException, SolvisErrorException;
 
 	public Type getType() {
 		return Type.OTHER;

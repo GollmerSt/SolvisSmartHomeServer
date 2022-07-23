@@ -49,14 +49,29 @@ public class Observer<D> {
 					try {
 						observer.update(data, source);
 					} catch (ObserverException e) {
-						if (exceptions == null) {
-							exceptions = new ArrayList<>();
-						}
-						exceptions.add(e);
+						exceptions = this.exceptionAdd(e, exceptions);
 					}
 				}
 			}
 			return exceptions;
+		}
+
+		private Collection<ObserverException> exceptionAdd(final ObserverException exception,
+				final Collection<ObserverException> exeptions) {
+			Collection<ObserverException> exeptionCollection;
+			if (exeptions == null) {
+				exeptionCollection = new ArrayList<>();
+			} else {
+				exeptionCollection = exeptions;
+			}
+			if (exception.getExceptions() != null) {
+				for (ObserverException e : exception.getExceptions()) {
+					exeptionCollection = exceptionAdd(e, exeptionCollection);
+				}
+			} else {
+				exeptionCollection = exceptionAdd(exception, exeptionCollection);
+			}
+			return exeptionCollection;
 		}
 
 		public synchronized boolean isEmpty() {

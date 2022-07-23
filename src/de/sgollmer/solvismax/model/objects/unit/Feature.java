@@ -12,8 +12,8 @@ import de.sgollmer.xmllibrary.CreatorByXML;
 import de.sgollmer.xmllibrary.XmlException;
 
 public class Feature implements ArrayXml.IElement<Feature, Feature> {
-	final String id;
-	final boolean value;
+	private final String id;
+	private final boolean value;
 
 	public Feature(final String id, final boolean value) {
 		this.id = id;

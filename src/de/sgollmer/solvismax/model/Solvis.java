@@ -36,6 +36,7 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ObserverException;
 import de.sgollmer.solvismax.error.PowerOnException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.AbortHelper;
@@ -45,7 +46,6 @@ import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 import de.sgollmer.solvismax.log.LogManager.Level;
 import de.sgollmer.solvismax.model.HumanAccess.Status;
-import de.sgollmer.solvismax.model.SolvisState.SolvisErrorInfo;
 import de.sgollmer.solvismax.model.WatchDog.Event;
 import de.sgollmer.solvismax.model.command.Command;
 import de.sgollmer.solvismax.model.command.CommandControl;
@@ -54,6 +54,7 @@ import de.sgollmer.solvismax.model.objects.AllChannelDescriptions.MeasureMode;
 import de.sgollmer.solvismax.model.objects.AllSolvisData;
 import de.sgollmer.solvismax.model.objects.ChannelDescription;
 import de.sgollmer.solvismax.model.objects.Duration;
+import de.sgollmer.solvismax.model.objects.ErrorState;
 import de.sgollmer.solvismax.model.objects.Observer;
 import de.sgollmer.solvismax.model.objects.Observer.IObserver;
 import de.sgollmer.solvismax.model.objects.Observer.Observable;
@@ -110,7 +111,7 @@ public class Solvis {
 	private final Distributor distributor;
 	private final MeasurementUpdateThread measurementUpdateThread;
 	private final Observable<Boolean> abortObservable = new Observable<>();
-	private final Observable<SolvisErrorInfo> solvisErrorObservable = new Observable<>();
+	private final Observable<ErrorState.Info> solvisErrorObservable = new Observable<>();
 	private final String timeZone;
 	private final boolean delayAfterSwitchingOnEnable;
 	private final Unit unit;
@@ -124,6 +125,7 @@ public class Solvis {
 	private Map<String, Collection<UpdateStrategies.IExecutable>> updateStrategies = new HashMap<>();
 	private Standby.Executable standby;
 	private ZipOutputStream zipOutputStream = null;
+	private final boolean updateAfterUserAccess;
 
 	Solvis(final Unit unit, final SolvisDescription solvisDescription, final SystemGrafics grafics,
 			final SolvisConnection connection, final Mqtt mqtt, final BackupHandler measurementsBackupHandler,
@@ -148,9 +150,10 @@ public class Solvis {
 		this.distributor = new Distributor(this);
 		this.measurementUpdateThread = new MeasurementUpdateThread(unit);
 		this.timeZone = timeZone;
-		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
 		this.writePath = writePath;
 		this.mustLearn = mustLearn;
+		this.delayAfterSwitchingOnEnable = unit.isDelayAfterSwitchingOnEnable();
+		this.updateAfterUserAccess = unit.getFeatures().isUpdateAfterUserAccess();
 
 		this.humanAccess.register(new IObserver<HumanAccess.Status>() {
 
@@ -278,18 +281,22 @@ public class Solvis {
 		this.clearCurrentScreen();
 	}
 
+	public void sendBackWithCheckError() throws IOException, TerminationException, SolvisErrorException {
+		this.getSolvisState().back();
+	}
+
 	public void sendBack() throws IOException, TerminationException {
 		this.getConnection().sendButton(Button.BACK);
 		AbortHelper.getInstance().sleep(this.getDuration("WindowChange").getTime_ms());
 		this.clearCurrentScreen();
 	}
 
-	public void gotoHome() throws IOException, TerminationException {
+	public void gotoHome() throws IOException, TerminationException, SolvisErrorException {
 		this.gotoHome(false);
 		this.setPreviousScreen(this.getHomeScreen());
 	}
 
-	public void gotoHome(final boolean lastChance) throws IOException, TerminationException {
+	public void gotoHome(final boolean lastChance) throws IOException, TerminationException, SolvisErrorException {
 		this.getHistory().set(null);
 		this.solvisDescription.getFallBack().execute(this, lastChance);
 	}
@@ -347,7 +354,7 @@ public class Solvis {
 
 			@Override
 			public void update(HumanAccess.Status data, Object source) {
-				if (data == HumanAccess.Status.NONE && Solvis.this.getUnit().getFeatures().isUpdateAfterUserAccess()) {
+				if (data == HumanAccess.Status.NONE && Solvis.this.updateAfterUserAccess) {
 					Solvis.this.getSolvisDescription().getChannelDescriptions()
 							.updateByHumanAccessFinished(Solvis.this);
 				}
@@ -364,8 +371,8 @@ public class Solvis {
 		this.getSolvisDescription().getChannelDescriptions().updateReadOnlyControlChannels(this);
 	}
 
-	void measure(final MeasureMode mode)
-			throws IOException, PowerOnException, TerminationException, NumberFormatException, TypeException {
+	void measure(final MeasureMode mode) throws IOException, PowerOnException, TerminationException,
+			NumberFormatException, TypeException, SolvisErrorException {
 		synchronized (this.solvisMeasureObject) {
 			this.getSolvisDescription().getChannelDescriptions().measure(this, this.getAllSolvisData(), mode);
 		}
@@ -467,7 +474,7 @@ public class Solvis {
 		return new SolvisStatePackage(this.worker.getSettingStatus(), this);
 	}
 
-	public void registerSolvisErrorObserver(final IObserver<SolvisErrorInfo> observer) {
+	public void registerSolvisErrorObserver(final IObserver<ErrorState.Info> observer) {
 		this.solvisErrorObservable.register(observer);
 	}
 
@@ -475,7 +482,7 @@ public class Solvis {
 		this.worker.registerControlExecutingObserver(observer);
 	}
 
-	public Collection<ObserverException> notifySolvisErrorObserver(final SolvisErrorInfo info, final Object source) {
+	public Collection<ObserverException> notifySolvisErrorObserver(final ErrorState.Info info, final Object source) {
 		return this.solvisErrorObservable.notify(info, source);
 	}
 
@@ -483,8 +490,8 @@ public class Solvis {
 		this.screenRestore.save();
 	}
 
-	void restoreScreen() throws IOException, TerminationException {
-		this.screenRestore.restore();
+	boolean restoreScreen() throws IOException, TerminationException, SolvisErrorException {
+		return this.screenRestore.restore();
 	}
 
 	/**
@@ -512,7 +519,8 @@ public class Solvis {
 		return this.grafics;
 	}
 
-	void learning(final boolean force) throws IOException, LearningException, TerminationException {
+	void learning(final boolean force)
+			throws IOException, LearningException, TerminationException, SolvisErrorException {
 		if (this.mustLearn || force) {
 			this.learning = true;
 			this.getGrafics().clear();
@@ -710,7 +718,7 @@ public class Solvis {
 		return this.timeZone;
 	}
 
-	private void initConfigurationMask() throws TerminationException, LearningException {
+	private void initConfigurationMask() throws TerminationException, LearningException, SolvisErrorException {
 		boolean connected = false;
 		this.configurationMask = 0; // must be zero! In case of learning HomeScreen and Info-Screen
 		long time = -1;
@@ -780,11 +788,11 @@ public class Solvis {
 
 	private SolvisScreen lastRealScreen = null;
 
-	static class SynchronizedScreenResult {
+	public static class SynchronizedScreenResult {
 		private final boolean changed;
 		private final SolvisScreen screen;
 
-		static SolvisScreen getScreen(final SynchronizedScreenResult result) {
+		public static SolvisScreen getScreen(final SynchronizedScreenResult result) {
 			if (result == null) {
 				return null;
 			} else {
@@ -803,7 +811,7 @@ public class Solvis {
 
 	}
 
-	SynchronizedScreenResult getSyncronizedRealScreen() throws IOException, TerminationException {
+	public SynchronizedScreenResult getSyncronizedRealScreen() throws IOException, TerminationException {
 
 		SolvisScreen lastRealScreen = this.lastRealScreen;
 		boolean isSynchronized = false;
@@ -954,8 +962,8 @@ public class Solvis {
 		return this.updateStrategies.get(triggerId);
 	}
 
-	public boolean setStandby(final String standbyId)
-			throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
+	public boolean setStandby(final String standbyId) throws NumberFormatException, IOException, PowerOnException,
+			TerminationException, TypeException, SolvisErrorException {
 		SolvisData data = this.getAllSolvisData().get(standbyId);
 		if (data == null) {
 			logger.error("Standby channel <" + standbyId + "> not definded. Setting ignored.");
@@ -964,8 +972,8 @@ public class Solvis {
 		return this.standby.set(data);
 	}
 
-	public void resetStandby()
-			throws NumberFormatException, IOException, PowerOnException, TerminationException, TypeException {
+	public void resetStandby() throws NumberFormatException, IOException, PowerOnException, TerminationException,
+			TypeException, SolvisErrorException {
 		this.standby.reset();
 		;
 	}

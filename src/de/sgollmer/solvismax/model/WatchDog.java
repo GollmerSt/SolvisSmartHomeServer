@@ -72,7 +72,6 @@ public class WatchDog {
 	WatchDog(final Solvis solvis, final ScreenSaver saver) {
 		this.solvis = solvis;
 		this.humanAccess = solvis.getHumanAccess();
-		solvis.getFeatures().isClearErrorMessageAfterMail();
 		this.saver = saver.createExecutable(solvis);
 		this.watchDogTime = this.solvis.getUnit().getWatchDogTime_ms();
 		this.solvis.registerAbortObserver(new IObserver<Boolean>() {
@@ -165,22 +164,25 @@ public class WatchDog {
 
 				Event event = Event.NONE;
 
-				if (realScreen != null && synchronizedScreenResult.isChanged()) {
+				if (realScreen != null) {
 
-					SaverEvent saverState = this.saver.getSaverState(realScreen);
+					SaverEvent saverState = SaverEvent.NONE;
+
+					if (synchronizedScreenResult.isChanged()) {
+						saverState = this.saver.getSaverState(realScreen);
+					}
+
 					if (saverState == SaverEvent.SCREENSAVER) {
 
 						event = Event.SCREENSAVER;
 
-					} else {
+					} else if (synchronizedScreenResult.isChanged()) {
 
-						Boolean enabled = this.solvis.getSolvisState().handleError(realScreen);
+						boolean canBeInterpretedFurther = this.solvis.getSolvisState().handleError(realScreen);
 
-						commandExecutionEnabled &= enabled == null ? true : enabled;
+						if (canBeInterpretedFurther && saverState != SaverEvent.POSSIBLE) {
 
-						if (enabled == null && saverState != SaverEvent.POSSIBLE) {
-
-							event = this.humanAccess.getEvent(realScreen);
+								event = this.humanAccess.getEvent(realScreen);
 						}
 					}
 				}

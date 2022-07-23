@@ -25,15 +25,16 @@ import de.sgollmer.solvismax.error.AssignmentException;
 import de.sgollmer.solvismax.error.FileException;
 import de.sgollmer.solvismax.error.LearningException;
 import de.sgollmer.solvismax.error.ReferenceException;
+import de.sgollmer.solvismax.error.SolvisErrorException;
 import de.sgollmer.solvismax.error.TerminationException;
 import de.sgollmer.solvismax.error.TypeException;
 import de.sgollmer.solvismax.helper.FileHelper;
 import de.sgollmer.solvismax.model.objects.AllSolvisGrafics;
-import de.sgollmer.solvismax.model.objects.ErrorDetection.WriteErrorScreens;
 import de.sgollmer.solvismax.model.objects.Miscellaneous;
 import de.sgollmer.solvismax.model.objects.SolvisDescription;
 import de.sgollmer.solvismax.model.objects.SystemGrafics;
 import de.sgollmer.solvismax.model.objects.backup.BackupHandler;
+import de.sgollmer.solvismax.model.objects.screen.ErrorDetection.WriteErrorScreens;
 import de.sgollmer.solvismax.model.objects.unit.Unit;
 import de.sgollmer.solvismax.smarthome.Csv;
 import de.sgollmer.solvismax.smarthome.IoBroker;
@@ -87,7 +88,8 @@ public class Instances {
 	}
 
 	public void learn(final boolean force)
-			throws IOException, LearningException, XMLStreamException, FileException, TerminationException {
+			throws IOException, LearningException, XMLStreamException, FileException, TerminationException,
+			SolvisErrorException {
 		boolean learned = true;
 		File learnDesination = new File(this.writeablePath, Constants.Files.RESOURCE_DESTINATION);
 		learnDesination = new File(learnDesination, Constants.Files.LEARN_DESTINATION);

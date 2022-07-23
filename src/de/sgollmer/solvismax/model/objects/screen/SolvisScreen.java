@@ -140,5 +140,9 @@ public class SolvisScreen {
 		}
 
 	}
+	
+	public boolean isHomeScreen() {
+		return this.solvis.getHomeScreen() == this.get(); 
+	}
 
 }
