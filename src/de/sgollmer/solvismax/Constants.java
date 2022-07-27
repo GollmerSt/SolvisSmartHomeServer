@@ -190,7 +190,7 @@ public class Constants {
 	public static class Debug {
 
 		public static final int USER_ACCESS_TIME = 60000;
-		public static final boolean NO_MAIL = true; // kein Mailversand
+		public static final boolean NO_MAIL = false; // kein Mailversand
 		public static final boolean SCREEN_SAVER_DETECTION = false; // more debugging info
 		public static final boolean DEBUG_TWO_STATIONS = false;
 

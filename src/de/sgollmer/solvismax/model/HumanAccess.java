@@ -249,8 +249,13 @@ public class HumanAccess extends Observer.Observable<HumanAccess.Status> {
 	}
 
 	public Event getEvent(SolvisScreen realScreen) throws IOException, TerminationException {
+		
+		SolvisScreen current = this.solvis.getCurrentScreen(false);
+				
+		boolean changed =  SolvisScreen.get(realScreen) !=(SolvisScreen.get(current));
+		changed |= !realScreen.equalsWoIgnore(current);
 
-		if (realScreen.equalsWoIgnore(this.solvis.getCurrentScreen(false))) {
+		if (!changed) {
 			return Event.NONE;
 		} else if (realScreen.isService() && this.detectServiceAccess) {
 			return Event.HUMAN_ACCESS_SERVICE;

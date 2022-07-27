@@ -4,6 +4,13 @@ Version 01.05.02
 
 IControlAccess
 
+    25.07.2022  Bei Human access wird der Typ des Screens als erstes verglichen (z.B. Warmwasser).
+
+    24.07.2022  Das Anlagen-Fehlerhandling wurde komplett ueberarbeitet, da beim alten
+                Fehlermeldungen verloren gingen, wenn ein Fehler waehrend einer
+                Parameterveraenderung erfolgte. Ausserdem funktionierte die Fehlerbehandlung nicht
+                immer korrekt, wenn das Feature "ClearErrorMessageAfterMail" nicht aktiviert war.
+
     23.06.2022  Das Human-Access-Handling wurde in der Klasse HumanAccess zusammengefasst
 
     21.06.2022  Der Image-Vergleich wurde verschnellert.

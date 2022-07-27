@@ -121,7 +121,7 @@ public class ErrorState extends Observable<ErrorState.Info> {
 							if (this.resetErrorTime == null) {
 
 								this.resetErrorTime = time;
-								logger.debug("Error cleared detected.");
+								logger.info("Error cleared detected.");
 
 							} else if (time > this.resetErrorTime + this.resetErrorDelayTime) {
 
