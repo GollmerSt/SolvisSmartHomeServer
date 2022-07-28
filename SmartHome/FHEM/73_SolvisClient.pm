@@ -38,6 +38,14 @@
 #                                               SolvisStatus CONTROL_WRITE_ONGOING, CONTROL_READ_ONGOING, CONTROL_FINISHED supported
 #                                               DebugChannel command supported
 #                                               Documentation updated
+#   00.02.24    21.06.2021  SCMP77              Inactivation of the  module is supported.
+#   00.02.25    29.06.2021  SCMP77              Command TRIGGER_SERVICE added.
+#   00.02.26    17.12.2021  SCMP77              Fixed rounding error with negative set values.
+#   00.02.27    03.06.2022  SCMP77              DBLog did not work when reading was defined by an external module.
+#   00.02.28    23.07.2022  SCMP77              Status ERROR added
+
+
+
 
 # !!!!!!!!!!!!!!!!! Zu beachten !!!!!!!!!!!!!!!!!!!
 # !! Version immer hinten in META.json eintragen !!
@@ -2271,7 +2279,7 @@ sub DbLog_splitFn {
   ],
   "release_status": "stable",
   "license": "GPL_2",
-  "version": "v00.02.24",
+  "version": "v00.02.28",
   "author": [
     "Stefan Gollmer <Stefan.Gollmer@gmail.com>"
   ],
