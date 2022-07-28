@@ -1,6 +1,6 @@
 A E N D E R U N G E N
 
-Version 01.05.02
+Version 01.06.00
 
 IControlAccess
 
