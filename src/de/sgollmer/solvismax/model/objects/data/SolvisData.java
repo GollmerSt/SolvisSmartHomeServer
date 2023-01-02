@@ -46,6 +46,7 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	private int executionTime;
 	private boolean fix = false;
 	private ChannelOption channelOption = null;
+	private boolean delayed = false;
 
 	private Observer.Observable<SolvisData> continousObservable = null;
 
@@ -654,8 +655,17 @@ public class SolvisData extends Observer.Observable<SolvisData> implements IObse
 	}
 
 	public boolean isDelayed() {
-		return this.channelOption != null
+		boolean delayed = this.channelOption != null
 				&& this.channelOption.getPowerOnDelay() > this.getSolvis().getTimeAfterLastSwitchingOn();
+
+		if (delayed != this.delayed) {
+			this.delayed = delayed;
+			logger.info("Delay status of channel <" + this.getName() + "> changed to "
+					+ (delayed ? "delayed." : "delay finished.") + " Time of last switch on: "
+					+ Helper.getDateString(this.getSolvis().getSolvisState().getTimeOfLastSwitchingOn())
+					+ ". Delay value: " + this.channelOption.getPowerOnDelay() + " ms.");
+		}
+		return delayed;
 	}
 
 }

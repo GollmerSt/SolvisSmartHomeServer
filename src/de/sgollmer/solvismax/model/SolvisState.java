@@ -204,7 +204,7 @@ public class SolvisState extends Observable<SolvisStatePackage> {
 		return new SolvisStatePackage(this.state, this.solvis);
 	}
 
-	long getTimeOfLastSwitchingOn() {
+	public long getTimeOfLastSwitchingOn() {
 		return this.timeOfLastSwitchingOn;
 	}
 

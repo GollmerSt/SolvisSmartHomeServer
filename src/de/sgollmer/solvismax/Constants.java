@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax;
 
+import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
 import de.sgollmer.solvismax.objects.Coordinate;
@@ -130,6 +131,15 @@ public class Constants {
 		public static final String CSV_ALL_CHANNELS = "SolvisAllChannels.csv";
 		public static final String CSV_DOCUMENTATION = "SolvisDocumentation.csv";
 		public static final String ZIP_PREFIX = "Images";
+	}
+
+	public static class Formats {
+
+		public static final SimpleDateFormat DATE = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+		public static final SimpleDateFormat DAY = new SimpleDateFormat("d.MM.yyyy");
+		public static final SimpleDateFormat DAY_SHORT = new SimpleDateFormat("d.MM.yy");
+		public static final SimpleDateFormat TIME = new SimpleDateFormat("H:mm:ss");
+
 	}
 
 	public static class XmlStrings {

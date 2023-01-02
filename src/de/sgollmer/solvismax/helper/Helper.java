@@ -7,6 +7,7 @@
 
 package de.sgollmer.solvismax.helper;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.sgollmer.solvismax.Constants.Formats;
 import de.sgollmer.solvismax.log.LogManager;
 import de.sgollmer.solvismax.log.LogManager.ILogger;
 
@@ -210,15 +212,15 @@ public class Helper {
 		@SuppressWarnings("unchecked")
 		private void add(final int value) {
 			if (this.value instanceof Integer) {
-				this.value = (R) new Integer((int) (((Integer) this.value).intValue() + value));
+				this.value = (R) Integer.valueOf((int) (((Integer) this.value).intValue() + value));
 			} else if (this.value instanceof Byte) {
-				this.value = (R) new Byte((byte) (((Byte) this.value).intValue() + value));
+				this.value = (R) Byte.valueOf((byte) (((Byte) this.value).intValue() + value));
 			} else if (this.value instanceof Long) {
-				this.value = (R) new Long((long) (((Long) this.value).longValue() + value));
+				this.value = (R) Long.valueOf((long) (((Long) this.value).longValue() + value));
 			} else if (this.value instanceof Float) {
-				this.value = (R) new Float((float) (((Float) this.value).floatValue() + value));
+				this.value = (R) Float.valueOf((float) (((Float) this.value).floatValue() + value));
 			} else if (this.value instanceof Double) {
-				this.value = (R) new Double((double) (((Double) this.value).doubleValue() + value));
+				this.value = (R) Double.valueOf((double) (((Double) this.value).doubleValue() + value));
 			} else if (this.value != null) {
 				throw new UnsupportedOperationException(
 						"add cannot be used fot element of class " + this.value.getClass().getName());
@@ -390,5 +392,27 @@ public class Helper {
 		}
 		return builder.toString();
 	}
+	
+	public static String getDateString(final Long time) {
+		if (time == null) {
+			return "not set";
+		} else {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(time);
+			return ((DateFormat) Formats.DATE.clone()).format(cal.getTime());
+		}
+	}
+
+	public static String getTimeString(final Long time) {
+		if (time == null) {
+			return "not set";
+		} else {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(time);
+			return ((DateFormat) Formats.TIME.clone()).format(cal.getTime());
+		}
+	}
+
+
 
 }
