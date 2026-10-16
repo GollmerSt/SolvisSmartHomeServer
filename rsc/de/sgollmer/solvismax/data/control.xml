@@ -1926,7 +1926,7 @@
 			</tns:Measurement>
 		</tns:ChannelDescription>
 		<tns:ChannelDescription id="S06"
-			buffered="true">
+			buffered="true" unit="°C">
 			<tns:Measurement type="signed" average="true"
 				divisor="10">
 				<tns:Field position="34" length="4" />
@@ -2281,7 +2281,8 @@
 		</tns:ChannelDescription>
 
 		<!-- LaufzeitSolarpumpe_s -->
-		<tns:ChannelDescription id="X10">
+		<tns:ChannelDescription id="X10"
+			buffered="true" unit="s">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x08"
 					andMask="0x08" />
@@ -2292,7 +2293,8 @@
 		</tns:ChannelDescription>
 
 		<!-- LaufzeitSolarpumpe2_s -->
-		<tns:ChannelDescription id="X11">
+		<tns:ChannelDescription id="X11"
+			buffered="true" unit="s">
 			<tns:Configuration>
 				<tns:ConfigurationMask andMask="0x18"
 					compareMask="0x18" />
@@ -4354,7 +4356,7 @@
 			</tns:Configuration>
 		</tns:Assignment>
 
-		<tns:Assignment id="S07" name="S07.Solardruck">
+		<tns:Assignment id="S07" name="S07.Solardruck" unit="bar">
 			<!-- nur bei Max 6 -->
 			<tns:Configuration>
 				<tns:ConfigurationMask
