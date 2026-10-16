@@ -60,6 +60,7 @@ public class ChannelAssignment implements OfConfigs.IElement<ChannelAssignment> 
 				case "unit":
 					this.unit = value;
 					break;
+				case "boolean": // Attributname laut control.xsd
 				case "booleanValue":
 					this.booleanValue = Integer.parseInt(value);
 					break;
