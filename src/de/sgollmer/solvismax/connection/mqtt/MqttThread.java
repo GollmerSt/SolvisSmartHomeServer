@@ -74,10 +74,11 @@ public class MqttThread extends Helper.Runnable {
 						subscribed = true;
 					} catch (MqttException e) {
 						if (!connected) {
-							Mqtt.logger
-									.info("Mqtt broker not available, will be retried in " + waitTime / 1000 + " s.");
+							Mqtt.logger.info("Mqtt broker not available (" + e.getReasonCode() + ": " + e.getMessage()
+									+ "), will be retried in " + waitTime / 1000 + " s.");
 						} else if (!subscribed) {
-							Mqtt.logger.error("Error on subscription, will be retried in " + waitTime / 1000 + " s.");
+							Mqtt.logger.error("Error on subscription (" + e.getReasonCode() + ": " + e.getMessage()
+									+ "), will be retried in " + waitTime / 1000 + " s.");
 							try {
 								synchronized (this.mqtt) {
 									this.mqtt.client.disconnect();
