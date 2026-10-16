@@ -17,6 +17,7 @@ public class MqttData implements Cloneable {
 	private final TopicType topicType;
 	private final Solvis solvis;
 	private final String channelId;
+	private final String rawTopic;
 	final MqttMessage message;
 
 	private MqttData(final TopicType topicType, final Solvis solvis, final String channelId, final byte[] payload,
@@ -24,13 +25,28 @@ public class MqttData implements Cloneable {
 		this.topicType = topicType;
 		this.solvis = solvis;
 		this.channelId = channelId;
+		this.rawTopic = null;
 		this.message = new MqttMessage(payload);
+		this.message.setQos(qoS);
+		this.message.setRetained(retained);
+	}
+
+	MqttData(final String rawTopic, final String utf8Data, final int qoS, final boolean retained) {
+		this.topicType = null;
+		this.solvis = null;
+		this.channelId = null;
+		this.rawTopic = rawTopic;
+		this.message = new MqttMessage(utf8Data.getBytes(Mqtt.UTF_8));
 		this.message.setQos(qoS);
 		this.message.setRetained(retained);
 	}
 
 	@Override
 	public MqttData clone() {
+		if (this.rawTopic != null) {
+			return new MqttData(this.rawTopic, new String(this.message.getPayload(), Mqtt.UTF_8),
+					this.message.getQos(), this.message.isRetained());
+		}
 		return new MqttData(this.topicType, this.solvis, this.channelId, this.message.getPayload(),
 				this.message.getQos(), this.message.isRetained());
 
@@ -77,6 +93,9 @@ public class MqttData implements Cloneable {
 
 	@Override
 	public String toString() {
+		if (this.rawTopic != null) {
+			return "RawTopic: " + this.rawTopic;
+		}
 		StringBuilder builder = new StringBuilder("TopicType: ");
 		builder.append(this.topicType.name());
 		if (this.solvis != null) {
@@ -92,6 +111,9 @@ public class MqttData implements Cloneable {
 	}
 
 	String getTopic(Mqtt mqtt) {
+		if (this.rawTopic != null) {
+			return this.rawTopic;
+		}
 		String[] parts = this.topicType.getTopicParts(mqtt, this.solvis, this.channelId);
 		return Helper.cat(parts, "/");
 	}

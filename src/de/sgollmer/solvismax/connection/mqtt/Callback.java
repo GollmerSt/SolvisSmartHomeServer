@@ -57,6 +57,7 @@ final class Callback implements MqttCallbackExtended {
 						this.mqtt.publish(CommandSetScreen.getMqttMeta(solvis));
 						solvis.getAllSolvisData().sendMetaToMqtt(this.mqtt, false);
 					}
+					this.mqtt.haDiscovery.publishDiscovery(this.mqtt.instances);
 				}
 				for (Solvis solvis : this.mqtt.instances.getUnits()) {
 					solvis.getAllSolvisData().getMeasurements().sent(observer);
@@ -78,6 +79,10 @@ final class Callback implements MqttCallbackExtended {
 	@Override
 	public void messageArrived(final String topic, final MqttMessage message) {
 		try {
+			if (this.mqtt.haDiscovery.isDiscoveryTopic(topic)) {
+				this.mqtt.haDiscovery.retainedDiscoveryReceived(topic, message.getPayload());
+				return;
+			}
 			SubscribeData subscribeData;
 			long timeStamp = System.currentTimeMillis();
 			try {

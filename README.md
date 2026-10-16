@@ -74,8 +74,146 @@ Smart-Home-System | Beschreibung
 ------------------ | ------------
 FHEM | Modul, das auf der Server-Client-Schnittstelle basiert (Teil des Progarmmpaketes).
 ioBroker | Objektliste mit Pairing-Script für das ioBroker-Modul MQTT Client (Wird vom Programm konfigurationsspezifisch generiert).
+Home Assistant | Automatische MQTT Discovery (siehe unten).
 
-Weitere sind in Vorbereitung
+#### Home Assistant – MQTT Auto-Discovery
+
+Die Integration mit [Home Assistant](https://www.home-assistant.io/) erfolgt über den eingebauten **MQTT Auto-Discovery**-Mechanismus.
+Beim ersten Verbindungsaufbau zum MQTT-Broker veröffentlicht der Server für jeden Solvis-Kanal eine Konfigurationsnachricht auf dem
+Discovery-Topic. Home Assistant erkennt daraufhin alle Entities automatisch, ohne dass eine manuelle Konfiguration erforderlich ist.
+
+##### Aktivierung
+
+In der `base.xml` das Attribut `haDiscoveryPrefix` zum `Mqtt`-Element hinzufügen:
+
+```xml
+<tns:Mqtt enable="true"
+    brokerUrl="192.168.0.x" port="1883"
+    subscribeQoS="1" publishQoS="1"
+    idPrefix="SolvisSmartHomeServer"
+    topicPrefix="SolvisSmartHomeServer"
+    smartHomeId="HomeAssistant"
+    haDiscoveryPrefix="homeassistant" />
+```
+
+Der Wert `homeassistant` entspricht dem Standard-Discovery-Prefix von Home Assistant und muss nur geändert werden,
+wenn dieser in der Home-Assistant-Konfiguration abweichend eingestellt wurde.
+
+##### Voraussetzung
+
+In Home Assistant muss die [MQTT-Integration](https://www.home-assistant.io/integrations/mqtt/) eingerichtet und
+mit demselben Broker verbunden sein.
+
+##### Erzeugte Entities
+
+Für jeden Solvis-Kanal wird automatisch der passende Entity-Typ gewählt:
+
+Entity-Typ | Kanäle
+---------- | ------
+`sensor` | Alle Messwerte (Temperaturen, Laufzeiten, Zähler, …)
+`number` | Schreibbare Zahlenwerte (Solltemperaturen, Differenzen, …)
+`select` | Betriebsmodi (z.B. Automatik / Tag / Nacht / Standby)
+`binary_sensor` | Binäre Zustände (nur lesen)
+`switch` | Schreibbare Binärkanäle
+
+Nicht angelegt werden Kanäle ohne Belegung in der aktuellen Anlagenkonfiguration (z.B. `I-2`, `O-4`) sowie
+alle Kanäle der SolvisControl-Oberfläche (`C*`), solange das Feature `InteractiveGUIAccess` nicht aktiv ist,
+weil der Server sie dann nicht liest.
+
+Die Konfigurationsnachrichten enthalten zusätzlich:
+
+* **Namen** aus `ha-labels.properties` (Begriffe des Solvis-Anschlussplans und der SolvisControl-Bildschirme,
+  z.B. `S01` → „Oben“ im Gerät „Speicher“, `C08` → „Absenktemperatur“ im Gerät „Heizkreis 1“). Ohne Eintrag wird der
+  Name aus dem Kanalnamen abgeleitet.
+* **`unique_id` und `object_id`** aus Unit und Kanal-Id (`sensor.solvis_<unitId>_s01`). Ein Umbenennen des Kanals in der
+  `base.xml` ändert damit weder die Entity-Id noch geht die Historie verloren.
+* **`entity_category`** — `diagnostic` für Anlagentyp, Systemnummer, Uhrzeit und die Server-Status-Entities, `config` für
+  die Installateur-Parameter (`C31`–`C49`).
+* **`device_class`** — aus der Einheit abgeleitet (`temperature` für °C, `duration` für s/h, `volume_flow_rate` für l/h,
+  `power` für W/kW, `energy` für Wh/kWh, `pressure` für bar, …). Differenzen in K erhalten bewusst keine Klasse, da
+  Home Assistant sie sonst als absolute Temperatur umrechnen würde.
+* **`state_class`** — `total_increasing` für Zähler, Laufzeiten und Wärmemengen, sonst `measurement`
+* **`suggested_display_precision`** — Anzahl Nachkommastellen, abgeleitet aus der konfigurierten Messgenauigkeit des Kanals
+* **`value_template`** bei Temperaturfühlern: die Solvis-Werte für offenen bzw. kurzgeschlossenen Fühler (≥ 250 °C, ≤ −35 °C)
+  werden als „unbekannt“ gemeldet statt als Messwert.
+* **`configuration_url`** — URL der Solvis-Anlage, ermöglicht direkten Aufruf aus der HA-Geräteseite
+
+**Geräte:** Die Entities einer Unit werden entsprechend dem Anlagenschema der SolvisRemote auf mehrere Home-Assistant-Geräte
+verteilt, die alle mit dem Hauptgerät „Solvis &lt;unitId&gt;“ verknüpft sind (`via_device`):
+
+Gerät | Inhalt
+--- | ---
+`Solvis <unitId>` | Außentemperatur, Anlagentyp, Systemnummer, Uhrzeit, Server-Status
+`<unitId> Speicher` | Speicherfühler S1, S3, S4, S9, Pufferparameter
+`<unitId> Solaranlage` | Kollektor, Vor-/Rücklauf, Druck, Durchfluss, Solarpumpen, Ventile, Wärmemenge, Laufzeiten
+`<unitId> Warmwasser` | Warmwasser- und Zirkulationsfühler, Pumpen, Solltemperatur, Nachheizen
+`<unitId> Heizkreis 1` … `3` | Vorlauf, Raumfühler, Pumpe, Mischer, Betriebsart, Temperaturen, Heizkurve
+`<unitId> Wärmeerzeuger` | Kessel/Brenner, Pelletkessel, Wärmepumpe, Fernwärme: Fühler, Anforderung, Ladepumpe, Störung, Laufzeiten, Starts
+
+Die Zuordnung steht in `ha-groups.properties` und ist kanalgenau, d.h. sie berücksichtigt die Belegung des
+jeweiligen Anlagentyps (`S09.Heissgas` gehört zur Wärmepumpe, `S09.Heizungspuffertemperatur_unten` zum Speicher;
+`A07.Pumpe_Solar2` zur Solaranlage, `A07.Ladepumpe` zum Wärmeerzeuger). Entity-Ids und `unique_id`s sind von der
+Gruppierung unabhängig.
+
+**Anpassung pro Anlage:** Liegt im Datenverzeichnis des Servers (neben `graficData.xml`, in `base.xml` als
+`writablePathLinux`/`writeablePathWindows` konfiguriert) eine Datei `ha-groups.properties` oder `ha-labels.properties`,
+werden deren Einträge zusätzlich zu den eingebauten geladen und überschreiben diese. Damit lassen sich Namen ändern,
+Kanäle anderen Gruppen zuordnen (`S09=waermeerzeuger`), neue Gruppen anlegen (`device.keller=Keller`) oder
+Kanäle wieder dem Hauptgerät zuweisen (leerer Wert, `S14=`). Die Dateien sind UTF-8-kodiert; Format siehe die
+eingebauten Dateien unter `rsc/de/sgollmer/solvismax/data/`. Änderungen wirken nach einem Neustart des Servers.
+
+Nach dem Verbindungsaufbau löscht der Server verwaiste Discovery-Nachrichten früherer Läufe (umbenannte Unit,
+entfallene Kanäle, alte `unique_id`s), damit in Home Assistant keine Geister-Entities zurückbleiben.
+Home Assistant verschiebt eine bestehende Entity nicht auf ein anderes Gerät, wenn sich nur die Discovery-Nachricht
+ändert. Stellt der Server beim Start fest, dass eine Entity laut der retained Nachricht des vorherigen Laufs zu einem
+anderen Gerät gehörte, entfernt er sie kurz und legt sie neu an; Entity-Id und Historie bleiben erhalten, manuell
+vergebene Bereiche oder Namen der Entity gehen dabei verloren. Hängen Entities trotzdem noch am alten Gerät
+(z.B. nach einem Update, bei dem der Broker die neuen Nachrichten schon kannte), genügt es, das Gerät in Home Assistant
+zu löschen: die Entities werden aus den retained Discovery-Nachrichten sofort wieder angelegt, jetzt auf den neuen Geräten.
+
+Zusätzlich werden folgende Statusinformationen als Entities angelegt:
+
+Entity | Beschreibung
+------ | ------------
+`sensor` Verbindungsstatus | Verbindungszustand zur Anlage (`SOLVIS_CONNECTED`, `POWER_OFF`, …)
+`sensor` GUI-Status | Aktueller GUI-Zugriff (`CONTROL_WRITE_ONGOING`, `CONTROL_FINISHED`, …)
+`sensor` Anlagenzugriff | Manueller Zugriff an der Anlage (`USER_ACCESS_DETECTED`, …)
+`binary_sensor` Schreibzugriff aktiviert | `true` wenn GUI-Steuerung aktiv und nicht blockiert ist
+
+##### Schreibzugriff
+
+Schreibbare Entities (Sollwerte, Modi) senden Befehle über MQTT zurück an den Server, der sie anschließend über
+die GUI-Steuerung (OCR + simulierte Klicks) in der SolvisControl umsetzt. Dafür muss in der `base.xml` das Feature
+`InteractiveGUIAccess` aktiviert sein:
+
+```xml
+<tns:Feature id="InteractiveGUIAccess" value="true" />
+```
+
+Ob der Schreibzugriff aktuell möglich ist, zeigt der Binary Sensor **„Schreibzugriff aktiviert"**.
+
+### Anlagenkonfiguration
+
+#### Pelletkessel SolvisLino
+
+Für eine SolvisMax mit Pelletkessel SolvisLino gibt es in der `base.xml` die Hauptheizung `mainHeating="Pellet"`.
+Sie entspricht `Extern` (Kesselfühler S14, Anforderung über O-1), bildet aber die Lino-Belegung des Anschlussplans ab:
+A12 ist die interne Brenneranforderung der SolvisControl, A14 bleibt unbelegt, und die Störmeldung des Kessels wird als
+`binary_sensor` „Störung Pelletkessel“ angelegt (I-3 bei `type="SolvisMax6"`, also Futur; I-1 bei `SolvisMax6PurSolo`, also Solo).
+
+#### Heizkreise ohne Raumfühler
+
+Hat ein Heizkreis keinen Raumfühler (z.B. weil Raumthermostate direkt am Heizkreisverteiler regeln), liefert der
+Fühlereingang dauerhaft 0,0 °C und der Parameter „Raumeinfluss“ ist bedeutungslos. Mit den Extensions
+`OhneRaumfuehler_HK1`, `OhneRaumfuehler_HK2` und `OhneRaumfuehler_HK3` in der `base.xml` entfallen Raumfühler und
+Raumeinfluss des jeweiligen Heizkreises vollständig (kein MQTT-Kanal, keine Entity):
+
+```xml
+<tns:Extensions>
+    <tns:Extension id="OhneRaumfuehler_HK1" />
+    <tns:Extension id="OhneRaumfuehler_HK2" />
+</tns:Extensions>
+```
 
 ### Installation
 Die genauen Installationsanweisungen enthält die unten angehängte ausführliche Dokumentation. Hier daher nur ein grober Überblick.

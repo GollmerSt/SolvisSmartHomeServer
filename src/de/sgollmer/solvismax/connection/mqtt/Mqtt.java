@@ -67,6 +67,8 @@ public class Mqtt {
 	final int publishQoS;
 	final int subscribeQoS;
 	final Ssl ssl;
+	private final String haDiscoveryPrefix;
+	final HomeAssistantDiscovery haDiscovery;
 
 	Instances instances = null;
 	CommandHandler commandHandler = null;
@@ -75,7 +77,7 @@ public class Mqtt {
 
 	private Mqtt(final boolean enable, final String brokerUrl, final int port, final String userName,
 			final CryptAes passwordCrypt, final String topicPrefix, final String idPrefix, final String smartHomeId,
-			final int publishQoS, final int subscribeQoS, final Ssl ssl) {
+			final int publishQoS, final int subscribeQoS, final Ssl ssl, final String haDiscoveryPrefix) {
 		this.enable = enable;
 		this.brokerUrl = brokerUrl;
 		this.port = port;
@@ -87,7 +89,9 @@ public class Mqtt {
 		this.publishQoS = publishQoS;
 		this.subscribeQoS = subscribeQoS;
 		this.ssl = ssl;
+		this.haDiscoveryPrefix = haDiscoveryPrefix;
 		this.mqttQueue = new MqttQueue(this);
+		this.haDiscovery = new HomeAssistantDiscovery(this);
 
 		LoggerFactory.setLogger("de.sgollmer.solvismax.connection.mqtt.Logger");
 	}
@@ -105,6 +109,7 @@ public class Mqtt {
 		private int publishQoS;
 		private int subscribeQoS;
 		private Ssl ssl;
+		private String haDiscoveryPrefix = null;
 
 		public Creator(String id, BaseCreator<?> creator) {
 			super(id, creator);
@@ -144,6 +149,9 @@ public class Mqtt {
 					case "subscribeQoS":
 						this.subscribeQoS = Integer.parseInt(value);
 						break;
+					case "haDiscoveryPrefix":
+						this.haDiscoveryPrefix = value;
+						break;
 				}
 			} catch (CryptException e) {
 				this.enable = false;
@@ -160,7 +168,8 @@ public class Mqtt {
 		@Override
 		public Mqtt create() throws XmlException, IOException {
 			return new Mqtt(this.enable, this.brokerUrl, this.port, this.userName, this.passwordCrypt, this.topicPrefix,
-					this.idPrefix, this.smartHomeId, this.publishQoS, this.subscribeQoS, this.ssl);
+					this.idPrefix, this.smartHomeId, this.publishQoS, this.subscribeQoS, this.ssl,
+					this.haDiscoveryPrefix);
 		}
 
 		@Override
@@ -453,5 +462,9 @@ public class Mqtt {
 
 	public boolean isEnable() {
 		return this.enable;
+	}
+
+	public String getHaDiscoveryPrefix() {
+		return this.haDiscoveryPrefix;
 	}
 }
