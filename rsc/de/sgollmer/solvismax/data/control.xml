@@ -2641,7 +2641,7 @@
 		<!-- Tagestemperatur_HK1 -->
 		<tns:ChannelDescription id="C07" unit="°C">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x07"
+				<tns:ConfigurationMask andMask="0x01"
 					compareMask="0x01" />
 			</tns:Configuration>
 			<tns:Control>
@@ -3011,8 +3011,8 @@
 		<!-- Vorlauf_Soll_HK2 -->
 		<tns:ChannelDescription id="C17" unit="°C">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x04"
-					compareMask="0x04" />
+				<tns:ConfigurationMask andMask="0x02"
+					compareMask="0x02" />
 			</tns:Configuration>
 			<tns:Control>
 				<tns:GuiAccess screenId="Heizkreis-2-4_5">
