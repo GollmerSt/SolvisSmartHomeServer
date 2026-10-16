@@ -69,9 +69,9 @@ public class AllSolvisGrafics implements IXmlWriteable {
 
 	@Override
 	public void writeXml(final XMLStreamWriter writer) throws XMLStreamException, IOException {
+		writer.writeAttribute("controlResourceHashCode", Long.toString(this.controlResourceHashCode));
+		writer.writeAttribute("controlFileHashCode", Long.toString(this.controlFileHashCode));
 		for (SystemGrafics system : this.systems) {
-			writer.writeAttribute("controlResourceHashCode", Long.toString(this.controlResourceHashCode));
-			writer.writeAttribute("controlFileHashCode", Long.toString(this.controlFileHashCode));
 			writer.writeStartElement(XML_SYSTEM);
 			system.writeXml(writer);
 			writer.writeEndElement();
