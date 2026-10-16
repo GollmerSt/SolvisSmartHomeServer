@@ -45,6 +45,9 @@
 			<tns:Type id="Fern" configuration="0x8000" />
 			<tns:Type id="WaermeP" configuration="0x0040" />
 			<tns:Type id="Extern" configuration="0x0020" />
+			<!-- Pelletkessel SolvisLino: wie Extern (Kesselfuehler S14, Anforderung O-1),
+				aber A12/A14 unbelegt und Stoermeldung an I-3 (Futur) bzw. I-1 (Solo) -->
+			<tns:Type id="Pellet" configuration="0x0820" />
 		</tns:MainHeatings>
 
 		<tns:HeaterCircuits>
@@ -62,6 +65,13 @@
 
 		<tns:Extensions>
 			<tns:Type id="Festbrennstoff" configuration="0x0400" />
+			<!-- Heizkreis ohne Raumfuehler: Raumfuehler und Raumeinfluss entfallen -->
+			<tns:Type id="OhneRaumfuehler_HK1" configuration="0x00010000"
+				dontCare="true" />
+			<tns:Type id="OhneRaumfuehler_HK2" configuration="0x00020000"
+				dontCare="true" />
+			<tns:Type id="OhneRaumfuehler_HK3" configuration="0x00040000"
+				dontCare="true" />
 			<tns:Type id="Zaehlfunktion2Screens" configuration="0x0100"
 				dontCare="true" />
 			<tns:Type id="SolarOstWest" configuration="0x0088"
@@ -2774,6 +2784,10 @@
 
 		<!-- Raumeinfluss_HK1 -->
 		<tns:ChannelDescription id="C10" unit="%">
+			<tns:Configuration>
+				<tns:ConfigurationMask andMask="0x00010000"
+					compareMask="0x00000000" />
+			</tns:Configuration>
 			<tns:Control optional="true">
 				<tns:GuiAccess screenId="Heizkreis-1-4_5">
 					<tns:CurrentValue>
@@ -2978,7 +2992,7 @@
 		<!-- Raumeinfluss_HK2 -->
 		<tns:ChannelDescription id="C16" unit="%">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x02"
+				<tns:ConfigurationMask andMask="0x00020002"
 					compareMask="0x02" />
 			</tns:Configuration>
 			<tns:Control optional="true">
@@ -3189,7 +3203,7 @@
 		<!-- Raumeinfluss_HK3 -->
 		<tns:ChannelDescription id="C22" unit="%">
 			<tns:Configuration>
-				<tns:ConfigurationMask andMask="0x04"
+				<tns:ConfigurationMask andMask="0x00040004"
 					compareMask="0x04" />
 			</tns:Configuration>
 			<tns:Control optional="true">
@@ -4559,23 +4573,44 @@
 				<tns:ConfigurationMask compareMask="0x0048"
 					andMask="0x0048" />
 				<tns:ConfigurationMask
-					compareMask="0x04000008" andMask="0x07000008" />
+					compareMask="0x04000008" andMask="0x07000808" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="I-3" name="I-3.Stoerung_Pelletkessel"
+			boolean="0">
+			<!-- Max6 Futur mit SolvisLino: Stoermeldung LI3 an I-3 (ALS-MAX Kap. 3) -->
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000800" andMask="0x07000850" />
+			</tns:Configuration>
+		</tns:Assignment>
+		<tns:Assignment id="I-1" name="I-1.Stoerung_Pelletkessel"
+			boolean="0">
+			<!-- Max6 Solo mit SolvisLino: Stoermeldung LI3 an I-1 (ALS-MAX Kap. 5) -->
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x01000810" andMask="0x07000850" />
 			</tns:Configuration>
 		</tns:Assignment>
 
-		<tns:Assignment id="RF1" name="RF1.Raumfuehler_HK1"></tns:Assignment>
+		<tns:Assignment id="RF1" name="RF1.Raumfuehler_HK1">
+			<tns:Configuration>
+				<tns:ConfigurationMask compareMask="0x00000000"
+					andMask="0x00010000" />
+			</tns:Configuration>
+		</tns:Assignment>
 
 		<tns:Assignment id="RF2" name="RF2.Raumfuehler_HK2">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x02"
-					andMask="0x02" />
+					andMask="0x00020002" />
 			</tns:Configuration>
 		</tns:Assignment>
 
 		<tns:Assignment id="RF3" name="RF3.Raumfuehler_HK3">
 			<tns:Configuration>
 				<tns:ConfigurationMask compareMask="0x04"
-					andMask="0x04" />
+					andMask="0x00040004" />
 			</tns:Configuration>
 		</tns:Assignment>
 
@@ -4755,11 +4790,19 @@
 			</tns:Configuration>
 		</tns:Assignment>
 
+		<tns:Assignment id="A12" name="A12.Brenneranforderung"
+			alias="alias.Brenner">
+			<!-- Pellet: Klemme unbelegt, die SolvisControl schaltet A12 trotzdem als Anforderung -->
+			<tns:Configuration>
+				<tns:ConfigurationMask
+					compareMask="0x00000800" andMask="0x00008840" />
+			</tns:Configuration>
+		</tns:Assignment>
 		<tns:Assignment id="A12" name="A12.Brenner"
 			alias="alias.Brenner">
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x00000000" andMask="0x00008040" />
+					compareMask="0x00000000" andMask="0x00008840" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="A12"
@@ -4844,9 +4887,10 @@
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="A14" name="A14.Brenner">
+			<!-- Fremdkessel mit potentialfreiem Kontakt, nicht bei Pellet -->
 			<tns:Configuration>
 				<tns:ConfigurationMask
-					compareMask="0x01000020" andMask="0x0700f060" />
+					compareMask="0x01000020" andMask="0x0700f860" />
 			</tns:Configuration>
 		</tns:Assignment>
 		<tns:Assignment id="A14" name="A14.Ventil2">

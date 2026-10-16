@@ -22,6 +22,7 @@
 		<!----><!-- Fern -->
 		<!----><!-- WaermeP -->
 		<!----><!-- Extern -->
+		<!----><!-- Pellet (SolvisLino, Stoermeldung an I-3 bei Futur / I-1 bei Solo) -->
 
 		<!-- heatingCircuits: -->
 		<!----><!-- 1-3 -->
@@ -43,6 +44,10 @@
 			ignoredFrameThicknesScreenSaver="3">
 			<tns:Extensions>
 				<!-- <tns:Extension id="Festbrennstoff" /> -->
+				<!-- Heizkreis ohne Raumfuehler (z.B. Raumthermostate am Verteiler): -->
+				<!-- <tns:Extension id="OhneRaumfuehler_HK1" /> -->
+				<!-- <tns:Extension id="OhneRaumfuehler_HK2" /> -->
+				<!-- <tns:Extension id="OhneRaumfuehler_HK3" /> -->
 				<!-- <tns:Extension id="SolarOstWest"/> -->
 				<!-- <tns:Extension id="Zaehlfunktion2Screens"/> -->
 			</tns:Extensions>

@@ -24,6 +24,7 @@
 			<enumeration value="Fern"></enumeration>
 			<enumeration value="WaermeP"></enumeration>
 			<enumeration value="Extern"></enumeration>
+			<enumeration value="Pellet"></enumeration>
 		</restriction>
 	</simpleType>
 
@@ -1835,6 +1836,9 @@
 		<restriction base="string">
 			<enumeration value="SolarOstWest"></enumeration>
 			<enumeration value="Festbrennstoff"></enumeration>
+								<enumeration value="OhneRaumfuehler_HK1"></enumeration>
+								<enumeration value="OhneRaumfuehler_HK2"></enumeration>
+								<enumeration value="OhneRaumfuehler_HK3"></enumeration>
 			<enumeration value="Zaehlfunktion2Screens">
 			</enumeration>
 		</restriction>
@@ -1850,6 +1854,9 @@
 							<restriction base="string">
 								<enumeration value="SolarOstWest"></enumeration>
 								<enumeration value="Festbrennstoff"></enumeration>
+								<enumeration value="OhneRaumfuehler_HK1"></enumeration>
+								<enumeration value="OhneRaumfuehler_HK2"></enumeration>
+								<enumeration value="OhneRaumfuehler_HK3"></enumeration>
 								<enumeration value="Zaehlfunktion2Screens">
 								</enumeration>
 							</restriction>

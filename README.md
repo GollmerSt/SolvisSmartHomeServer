@@ -77,6 +77,29 @@ ioBroker | Objektliste mit Pairing-Script für das ioBroker-Modul MQTT Client (W
 
 Weitere sind in Vorbereitung
 
+### Anlagenkonfiguration
+
+#### Pelletkessel SolvisLino
+
+Für eine SolvisMax mit Pelletkessel SolvisLino gibt es in der `base.xml` die Hauptheizung `mainHeating="Pellet"`.
+Sie entspricht `Extern` (Kesselfühler S14, Anforderung über O-1), bildet aber die Lino-Belegung des Anschlussplans ab:
+A12 ist die interne Brenneranforderung der SolvisControl, A14 bleibt unbelegt, und die Störmeldung des Kessels wird als
+`binary_sensor` „Störung Pelletkessel“ angelegt (I-3 bei `type="SolvisMax6"`, also Futur; I-1 bei `SolvisMax6PurSolo`, also Solo).
+
+#### Heizkreise ohne Raumfühler
+
+Hat ein Heizkreis keinen Raumfühler (z.B. weil Raumthermostate direkt am Heizkreisverteiler regeln), liefert der
+Fühlereingang dauerhaft 0,0 °C und der Parameter „Raumeinfluss“ ist bedeutungslos. Mit den Extensions
+`OhneRaumfuehler_HK1`, `OhneRaumfuehler_HK2` und `OhneRaumfuehler_HK3` in der `base.xml` entfallen Raumfühler und
+Raumeinfluss des jeweiligen Heizkreises vollständig (kein MQTT-Kanal, keine Entity):
+
+```xml
+<tns:Extensions>
+    <tns:Extension id="OhneRaumfuehler_HK1" />
+    <tns:Extension id="OhneRaumfuehler_HK2" />
+</tns:Extensions>
+```
+
 ### Installation
 Die genauen Installationsanweisungen enthält die unten angehängte ausführliche Dokumentation. Hier daher nur ein grober Überblick.
 
